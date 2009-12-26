@@ -14,7 +14,7 @@ import org.navalplanner.business.orders.entities.Order;
  */
 public interface ICompletedEstimatedHoursPerTaskModel {
 
-    JRDataSource getCompletedEstimatedHoursReportPerTask(Order order, Date deadlineDate);
+    JRDataSource getCompletedEstimatedHoursReportPerTask(Order order, Date referenceDate);
 
     List<Order> getOrders();
 

@@ -15,7 +15,7 @@ import org.navalplanner.business.resources.entities.Worker;
  */
 public interface IWorkingProgressPerTaskModel {
 
-    JRDataSource getWorkingProgressPerTaskReport(Order order, Date deadlineDate);
+    JRDataSource getWorkingProgressPerTaskReport(Order order, Date referenceDate);
 
     List<Order> getOrders();
 

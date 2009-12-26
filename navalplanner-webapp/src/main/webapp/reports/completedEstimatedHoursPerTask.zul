@@ -52,8 +52,8 @@
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Deadline date:')}" />
-                             <datebox id="deadlineDate" />
+                             <label value="${i18n:_('Reference date:')}" />
+                             <datebox id="referenceDate" />
                          </row>
                      </rows>
                  </grid>

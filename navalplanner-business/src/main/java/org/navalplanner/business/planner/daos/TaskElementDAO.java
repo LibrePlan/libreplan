@@ -111,20 +111,16 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
 
     private List<Task> getTasksByOrderAndDate(Order order, LocalDate deadline) {
 
-        if (deadline == null) {
-            deadline = new LocalDate();
-        }
-
         final List<OrderElement> orders = (order != null) ? order
                 .getOrderElements() : new ArrayList<OrderElement>();
 
+        // Prepare query
         String strQuery =
             "SELECT task "
             + "FROM TaskSource taskSource "
             + "LEFT OUTER JOIN taskSource.task task "
             + "LEFT OUTER JOIN taskSource.orderElement orderElement "
-            + "WHERE task IN (SELECT task FROM Task task) "
-            + "AND task.deadline <= :deadline ";
+            + "WHERE task IN (SELECT task FROM Task task) ";
 
         if (orders != null && !orders.isEmpty()) {
             strQuery += "AND orderElement IN (:orders) ";
@@ -132,7 +128,6 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
 
         // Execute query
         Query query = getSession().createQuery(strQuery);
-        query.setParameter("deadline", deadline);
         if (orders != null && !orders.isEmpty()) {
             query.setParameterList("orders", orders);
         }

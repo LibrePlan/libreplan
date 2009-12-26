@@ -46,7 +46,7 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
 
     private Listbox lbOrders;
 
-    private Datebox deadlineDate;
+    private Datebox referenceDate;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -76,18 +76,18 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
     }
 
     private Date getDeadlineDate() {
-        Date result = deadlineDate.getValue();
+        Date result = referenceDate.getValue();
         if (result == null) {
-            deadlineDate.setValue(new Date());
+            referenceDate.setValue(new Date());
         }
-        return deadlineDate.getValue();
+        return referenceDate.getValue();
     }
 
     @Override
     protected Map<String, Object> getParameters() {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        result.put("deadlineDate", getDeadlineDate());
+        result.put("referenceDate", getDeadlineDate());
 
         return result;
     }

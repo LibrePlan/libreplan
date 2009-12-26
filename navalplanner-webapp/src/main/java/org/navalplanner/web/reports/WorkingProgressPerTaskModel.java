@@ -75,10 +75,10 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
 
     @Override
     public JRDataSource getWorkingProgressPerTaskReport(Order order,
-            Date deadlineDate) {
+            Date referenceDate) {
 
         final List<WorkingProgressPerTaskDTO> workingHoursPerWorkerList =
-            taskDAO.getWorkingProgressPerTaskReport(order, new LocalDate(deadlineDate));
+            taskDAO.getWorkingProgressPerTaskReport(order, new LocalDate(referenceDate));
 
         if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
             return new JRBeanCollectionDataSource(workingHoursPerWorkerList);

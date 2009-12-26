@@ -224,7 +224,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         topItem(_("Reports"), "", "",
                 subItem(_("Hours worked per worker"),
                         "/reports/hoursWorkedPerWorkerReport.zul", ""),
-                subItem(_("Completed estimated hours"),
+                subItem(_("Completed estimated hours per task"),
                         "/reports/completedEstimatedHoursPerTask.zul", ""),
                 subItem(_("Working progress per task"),
                         "/reports/workingProgressPerTaskReport.zul", ""));

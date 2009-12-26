@@ -4,7 +4,7 @@
 	<style name="SubTitle" isDefault="false" forecolor="#666666" fontName="Arial" fontSize="18"/>
 	<style name="Column header" isDefault="false" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" isDefault="false" fontName="Arial" fontSize="12"/>
-	<parameter name="deadlineDate" class="java.util.Date"/>
+	<parameter name="referenceDate" class="java.util.Date"/>
 	<field name="taskName" class="java.lang.String"/>
 	<field name="estimatedHours" class="java.lang.Integer"/>
 	<field name="totalPlannedHours" class="java.lang.Integer"/>
@@ -32,7 +32,7 @@
 			</staticText>
 			<staticText>
 				<reportElement style="SubTitle" x="34" y="46" width="240" height="22">
-					<printWhenExpression><![CDATA[new java.lang.Boolean($P{deadlineDate} != null)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new java.lang.Boolean($P{referenceDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement/>
 				<text><![CDATA[Working progress per task]]></text>
@@ -42,168 +42,179 @@
 				<imageExpression class="java.lang.String"><![CDATA["logos/navalpro_logo.gif"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="76" width="78" height="20"/>
+				<reportElement x="0" y="76" width="85" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Deadline date:]]></text>
+				<text><![CDATA[Reference date:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="78" y="76" width="100" height="20"/>
+				<reportElement x="85" y="76" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.util.Date"><![CDATA[$P{deadlineDate}]]></textFieldExpression>
+				<textFieldExpression class="java.util.Date"><![CDATA[$P{referenceDate}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement mode="Opaque" x="0" y="132" width="555" height="20" forecolor="#000000" backcolor="#E0E4FB"/>
 			</rectangle>
 			<staticText>
-				<reportElement style="Column header" x="39" y="137" width="62" height="15"/>
-				<textElement verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Total hours]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="315" y="137" width="56" height="15"/>
-				<textElement verticalAlignment="Top">
+				<reportElement style="Column header" x="361" y="137" width="192" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Difference]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="188" y="137" width="46" height="15"/>
-				<textElement verticalAlignment="Top">
-					<font size="10" isBold="true"/>
+				<reportElement style="Column header" mode="Opaque" x="85" y="152" width="30" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Progress]]></text>
+				<text><![CDATA[Est.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="119" y="137" width="70" height="15"/>
-				<textElement verticalAlignment="Top">
+				<reportElement style="Column header" x="200" y="152" width="35" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Real]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="235" y="152" width="39" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ave.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="316" y="152" width="45" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Plan.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="398" y="152" width="38" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Plan.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="494" y="152" width="61" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Plan. ratio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="1" y="152" width="84" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="115" y="152" width="52" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Plan.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="167" y="152" width="33" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Plan.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="85" y="137" width="82" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total hours]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="274" y="152" width="42" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Imp.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="361" y="152" width="37" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cost]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="436" y="152" width="58" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cost. ratio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="167" y="137" width="68" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Hours on time]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" mode="Opaque" x="39" y="152" width="30" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
+				<reportElement style="Column header" x="235" y="137" width="126" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Est. hr]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="68" y="152" width="52" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Tot Plan. hr]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="119" y="152" width="35" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Plan. hr]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="154" y="152" width="35" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Real. hr]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="189" y="152" width="39" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Av. prog]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="228" y="152" width="43" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Imp. prog]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="270" y="152" width="45" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Plan. prog]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="315" y="152" width="39" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Cost. dif]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="353" y="152" width="37" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Plan. dif]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="389" y="152" width="60" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Cost dif. ratio]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="Column header" x="448" y="152" width="59" height="15"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Plan dif. ratio]]></text>
+				<text><![CDATA[Progress]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -216,64 +227,64 @@
 	<detail>
 		<band height="16" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="1" y="0" width="39" height="16"/>
-				<textElement/>
+				<reportElement x="1" y="0" width="84" height="16"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{taskName}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="69" y="0" width="52" height="16"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{totalPlannedHours}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="39" y="0" width="28" height="16"/>
+				<reportElement x="85" y="0" width="30" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{estimatedHours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="122" y="0" width="34" height="16"/>
+				<reportElement x="166" y="0" width="34" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{partialPlannedHours}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="156" y="0" width="34" height="16"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{realHours}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="190" y="0" width="39" height="16"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{averageProgress}]]></textFieldExpression>
-			</textField>
-			<textField pattern="###0.00" isBlankWhenNull="true">
-				<reportElement x="230" y="0" width="42" height="16"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.Double"><![CDATA[$F{imputedProgress}]]></textFieldExpression>
-			</textField>
 			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
-				<reportElement x="272" y="0" width="43" height="16"/>
+				<reportElement x="316" y="0" width="45" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{plannedProgress}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="315" y="0" width="38" height="16"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{costDifference}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="353" y="0" width="36" height="16"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{planningDifference}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="389" y="0" width="58" height="16"/>
+				<reportElement x="436" y="0" width="59" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{ratioCostDifference}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="447" y="0" width="58" height="16"/>
+				<reportElement x="495" y="0" width="60" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{ratioPlanningDifference}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="115" y="0" width="51" height="16"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{totalPlannedHours}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="0" width="35" height="16"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{realHours}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="274" y="0" width="42" height="16"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{imputedProgress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="398" y="0" width="38" height="16"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{planningDifference}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="235" y="0" width="39" height="16"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{averageProgress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="361" y="0" width="37" height="16"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{costDifference}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

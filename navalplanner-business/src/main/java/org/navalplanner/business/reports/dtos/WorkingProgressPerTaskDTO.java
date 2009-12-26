@@ -76,7 +76,7 @@ public class WorkingProgressPerTaskDTO {
         this.totalPlannedHours = calculatePlannedHours(task, null);
         this.partialPlannedHours = calculatePlannedHours(task, date);
         this.realHours = calculateRealHours(task, date);
-        this.averageProgress = task.getOrderElement().getAdvancePercentage();
+        this.averageProgress = task.getOrderElement().getAdvancePercentage(date);
 
         this.imputedProgress = (totalPlannedHours != 0) ? new Double(realHours / totalPlannedHours.doubleValue()) : new Double(0);
         this.plannedProgress = (totalPlannedHours != 0) ? new Double(partialPlannedHours / totalPlannedHours.doubleValue()) : new Double(0);
