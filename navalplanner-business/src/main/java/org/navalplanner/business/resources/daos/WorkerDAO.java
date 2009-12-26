@@ -65,6 +65,13 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
 
     @Override
     public List<Worker> getWorkers() {
+        return getSession().createQuery(
+                "FROM Worker worker WHERE worker NOT IN (FROM VirtualWorker)")
+                .list();
+    }
+
+    @Override
+    public List<Worker> getAll() {
         return list(Worker.class);
     }
 

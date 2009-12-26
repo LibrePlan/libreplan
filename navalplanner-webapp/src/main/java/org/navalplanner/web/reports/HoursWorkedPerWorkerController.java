@@ -69,8 +69,9 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     @Override
     protected JRDataSource getDataSource() {
-        return hoursWorkedPerWorkerModel.getWorkerReport(getSelectedWorkers(), getStartingDate(), getEndingDate());
-    }
+        return hoursWorkedPerWorkerModel.getWorkerReport(getSelectedWorkers(),
+                getStartingDate(), getEndingDate());
+ }
 
     private List<Worker> getSelectedWorkers() {
         List<Worker> result = new ArrayList<Worker>();

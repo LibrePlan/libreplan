@@ -62,6 +62,13 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
     Worker findUniqueByNif(String nif) throws InstanceNotFoundException;
 
     /**
+     * Return list of workers and virtual workers
+     *
+     * @return
+     */
+    List<Worker> getAll();
+
+    /**
      * Return list of workers
      *
      * @return
