@@ -104,7 +104,7 @@ public class MaterialsController extends
                 for (Iterator i = rows.getChildren().iterator(); i.hasNext(); ) {
                     final Row row = (Row) i.next();
                     final Material material = (Material) row.getValue();
-                    Button btnDelete = (Button) row.getChildren().get(5);
+                    Button btnDelete = (Button) row.getChildren().get(6);
                     if (!material.isNewObject()) {
                         btnDelete.setDisabled(true);
                         btnDelete.setImage("/common/img/ico_borrar_out.png");

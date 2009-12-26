@@ -202,7 +202,11 @@ public class MaterialsModel implements IMaterialsModel {
     @Override
     @Transactional(readOnly = true)
     public Collection<? extends Material> getMaterials() {
-        return materialDAO.getAll();
+        List<Material> result = new ArrayList<Material>();
+        for (MaterialCategory each: materialCategories.asList()) {
+            result.addAll(each.getMaterials());
+        }
+        return result;
     }
 
 }

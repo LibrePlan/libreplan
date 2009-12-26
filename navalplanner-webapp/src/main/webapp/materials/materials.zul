@@ -90,17 +90,19 @@
                                             <newdatasortablecolumn label="${i18n:_('Description')}" />
                                             <newdatasortablecolumn label="${i18n:_('Unit price')}" />
                                             <newdatasortablecolumn label="${i18n:_('Unit type')}" />
+                                            <newdatasortablecolumn label="${i18n:_('Category')}" />
                                             <newdatasortablecolumn label="${i18n:_('Disabled')}" />
                                             <newdatasortablecolumn label="" />
                                         </columns>
                                         <rows>
-                                            <row self="@{each='material'}" value="@{material}">
+                                            <row self="@{each='material'}" value="@{material}" >
                                                 <textbox id="code" value="@{material.code}"
                                                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                                                 <textbox value="@{material.description}" />
                                                 <doublebox value="@{material.defaultUnitPrice}" />
                                                 <listbox mold="select" model="@{unitTypes}"
                                                     selectedItem="@{material.unitType}"/>
+                                                <label value="@{material.category.name}" />
                                                 <checkbox checked="@{material.disabled}" />
                                                 <button sclass="icono"
                                                     image="/common/img/ico_borrar1.png"
