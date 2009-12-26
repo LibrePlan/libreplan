@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
@@ -37,8 +38,6 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 
 public class OrderLine extends OrderElement {
-
-    private static final String INITIAL_HOURS_GROUP_NAME = "New hours group 0";
 
     public static OrderLine create() {
         OrderLine result = new OrderLine();
@@ -50,7 +49,6 @@ public class OrderLine extends OrderElement {
         OrderLine result = create();
         HoursGroup hoursGroup = HoursGroup.create(result);
         result.addHoursGroup(hoursGroup);
-        hoursGroup.setCode(_(INITIAL_HOURS_GROUP_NAME));
         hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
         hoursGroup.setWorkingHours(hours);
@@ -164,7 +162,6 @@ public class OrderLine extends OrderElement {
             HoursGroup hoursGroup = HoursGroup.create(this);
             hoursGroup.setWorkingHours(workHours);
             hoursGroup.setPercentage((new BigDecimal(1).setScale(2)));
-            hoursGroup.setCode(_(INITIAL_HOURS_GROUP_NAME));
             hoursGroups.add(hoursGroup);
         } else {
 
@@ -504,6 +501,21 @@ public class OrderLine extends OrderElement {
     @NotNull(message = "last hours group sequence code not specified")
     public Integer getLastHoursGroupSequenceCode() {
         return lastHoursGroupSequenceCode;
+    }
+
+    @AssertTrue(message = "some code is repeated between hours group codes")
+    public boolean checkConstraintHoursGroupsCodeNotRepeated() {
+        Set<String> codes = new HashSet<String>();
+
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            String code = hoursGroup.getCode();
+            if (codes.contains(code)) {
+                return false;
+            }
+            codes.add(code);
+        }
+
+        return true;
     }
 
 }
