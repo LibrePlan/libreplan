@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -92,6 +93,8 @@ public class OrderElementTest {
                 .createOrderLineWithUnfixedPercentage(hours);
         orderLine.setName(name);
         orderLine.setCode(code);
+        orderLine.getHoursGroups().get(0).setCode(
+                "hours-group-" + UUID.randomUUID());
 
         return orderLine;
     }
