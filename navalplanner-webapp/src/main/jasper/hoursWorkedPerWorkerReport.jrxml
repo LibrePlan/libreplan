@@ -14,11 +14,11 @@
 	<field name="orderElementCode" class="java.lang.String"/>
 	<field name="descriptionValues" class="java.lang.String"/>
 	<field name="labels" class="java.lang.String"/>
-	<variable name="sumHoursPerDay" class="java.lang.Integer" resetType="Group" resetGroup="Data" incrementType="Group" incrementGroup="Data" calculation="Sum">
+	<variable name="sumHoursPerDay" class="java.lang.Integer" resetType="Group" resetGroup="Data" calculation="Sum">
 		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
 	</variable>
-	<variable name="sumHoursPerWorker" class="java.lang.Integer" resetType="Group" resetGroup="Worker" incrementType="Group" incrementGroup="Worker" calculation="Sum">
+	<variable name="sumHoursPerWorker" class="java.lang.Integer" resetType="Group" resetGroup="Worker" incrementType="Group" incrementGroup="Data" calculation="Sum">
 		<variableExpression><![CDATA[$V{sumHoursPerDay}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
 	</variable>
