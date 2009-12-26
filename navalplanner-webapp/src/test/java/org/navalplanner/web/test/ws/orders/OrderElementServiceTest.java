@@ -283,7 +283,7 @@ public class OrderElementServiceTest {
         assertThat(constraintViolations.size(), equalTo(2));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
             assertThat(constraintViolationDTO.fieldName, anyOf(
-                    equalTo("HoursGroup::name"),
+                    equalTo("HoursGroup::code"),
                     equalTo("HoursGroup::workingHours")));
         }
 
@@ -738,7 +738,7 @@ public class OrderElementServiceTest {
         assertThat(orderLine.getHoursGroups().size(), equalTo(2));
 
         for (HoursGroup hoursGroup : orderLine.getHoursGroups()) {
-            assertThat(hoursGroup.getName(), anyOf(equalTo("hours-group"),
+            assertThat(hoursGroup.getCode(), anyOf(equalTo("hours-group"),
                     equalTo("hours-group2")));
             assertThat(hoursGroup.getWorkingHours(), anyOf(
                     equalTo(1500), equalTo(2000)));

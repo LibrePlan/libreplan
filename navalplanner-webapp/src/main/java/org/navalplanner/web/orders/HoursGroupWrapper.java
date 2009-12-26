@@ -82,13 +82,13 @@ public class HoursGroupWrapper implements INewObject,
         }
     }
 
-    public String getName() {
-        return this.hoursGroup.getName();
+    public String getCode() {
+        return this.hoursGroup.getCode();
     }
 
-    public void setName(String name) {
+    public void setCode(String code) {
         if (hoursGroup != null) {
-            hoursGroup.setName(name);
+            hoursGroup.setCode(code);
         }
     }
 
@@ -358,16 +358,16 @@ public class HoursGroupWrapper implements INewObject,
 
     @Override
     public int compareTo(HoursGroupWrapper hoursGroupWrapper) {
-        final String name = getName();
-        final String otherName = hoursGroupWrapper.getName();
-        if (name == null) {
-            LOG.warn(hoursGroup + " has a null name");
+        final String code = getCode();
+        final String otherCode = hoursGroupWrapper.getCode();
+        if (code == null) {
+            LOG.warn(hoursGroup + " has a null code");
             return -1;
         }
-        if (otherName == null) {
-            LOG.warn(hoursGroupWrapper.hoursGroup + " has a null name");
+        if (otherCode == null) {
+            LOG.warn(hoursGroupWrapper.hoursGroup + " has a null code");
             return 1;
         }
-        return name.compareTo(otherName);
+        return code.compareTo(otherCode);
     }
 }

@@ -131,7 +131,7 @@ public final class OrderElementConverter {
     public final static HoursGroupDTO toDTO(HoursGroup hoursGroup) {
         ResourceEnumDTO resourceType = ResourceEnumConverter.toDTO(hoursGroup
                 .getResourceType());
-        return new HoursGroupDTO(hoursGroup.getName(), resourceType, hoursGroup
+        return new HoursGroupDTO(hoursGroup.getCode(), resourceType, hoursGroup
                 .getWorkingHours());
     }
 
@@ -246,7 +246,7 @@ public final class OrderElementConverter {
         ResourceEnum resourceType = ResourceEnumConverter
                 .fromDTO(hoursGroupDTO.resourceType);
         HoursGroup hoursGroup = HoursGroup.createUnvalidated(
-                hoursGroupDTO.name, resourceType, hoursGroupDTO.workingHours);
+                hoursGroupDTO.code, resourceType, hoursGroupDTO.workingHours);
         return hoursGroup;
     }
 
@@ -261,9 +261,9 @@ public final class OrderElementConverter {
 
             for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
                 if (((OrderLine) orderElement)
-                        .containsHoursGroup(hoursGroupDTO.name)) {
+                        .containsHoursGroup(hoursGroupDTO.code)) {
                     update(((OrderLine) orderElement)
-                            .getHoursGroup(hoursGroupDTO.name), hoursGroupDTO);
+                            .getHoursGroup(hoursGroupDTO.code), hoursGroupDTO);
                 } else {
                     ((OrderLine) orderElement)
                             .addHoursGroup(toEntity(hoursGroupDTO));
@@ -353,7 +353,7 @@ public final class OrderElementConverter {
 
     public final static void update(HoursGroup hoursGroup,
             HoursGroupDTO hoursGroupDTO) {
-        if (!hoursGroup.getName().equals(hoursGroupDTO.name)) {
+        if (!hoursGroup.getCode().equals(hoursGroupDTO.code)) {
             throw new RuntimeException(
                     _("Not the same hours group, impossible to update"));
         }

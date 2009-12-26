@@ -33,7 +33,7 @@ import org.navalplanner.ws.common.api.ResourceEnumDTO;
 public class HoursGroupDTO {
 
     @XmlAttribute(name = "code")
-    public String name;
+    public String code;
 
     @XmlAttribute(name = "resource-type")
     public ResourceEnumDTO resourceType;
@@ -46,7 +46,7 @@ public class HoursGroupDTO {
 
     public HoursGroupDTO(String name, ResourceEnumDTO resourceType,
             Integer workingHours) {
-        this.name = name;
+        this.code = name;
         this.resourceType = resourceType;
         this.workingHours = workingHours;
     }

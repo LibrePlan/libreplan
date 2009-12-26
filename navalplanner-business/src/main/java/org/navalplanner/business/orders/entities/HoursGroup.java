@@ -47,13 +47,13 @@ public class HoursGroup extends BaseEntity implements Cloneable {
     public static HoursGroup createUnvalidated(String name,
             ResourceEnum resourceType, Integer workingHours) {
         HoursGroup result = new HoursGroup();
-        result.setName(name);
+        result.setCode(name);
         result.setResourceType(resourceType);
         result.setWorkingHours(workingHours);
         return create(result);
     }
 
-    private String name;
+    private String code;
 
     private ResourceEnum resourceType = ResourceEnum.WORKER;
 
@@ -81,13 +81,13 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         this.parentOrderLine = parentOrderLine;
     }
 
-    @NotEmpty(message = "name (code) not specified")
-    public String getName() {
-        return name;
+    @NotEmpty(message = "code not specified")
+    public String getCode() {
+        return code;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCode(String name) {
+        this.code = name;
     }
 
     public ResourceEnum getResourceType() {

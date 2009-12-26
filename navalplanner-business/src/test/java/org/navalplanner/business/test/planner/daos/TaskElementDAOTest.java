@@ -114,7 +114,7 @@ public class TaskElementDAOTest {
 
     private Task createValidTask() {
         associatedHoursGroup = new HoursGroup();
-        associatedHoursGroup.setName("hoursGroupName");
+        associatedHoursGroup.setCode("hoursGroupName");
         OrderLine orderLine = createOrderLine();
         orderLine.addHoursGroup(associatedHoursGroup);
         TaskSource taskSource = TaskSource
@@ -131,7 +131,7 @@ public class TaskElementDAOTest {
         orderLine.setName("bla");
         orderLine.setCode("code-" + UUID.randomUUID());
         HoursGroup hoursGroup = new HoursGroup();
-        hoursGroup.setName("hoursGroupName");
+        hoursGroup.setCode("hoursGroupName");
         orderLine.addHoursGroup(hoursGroup);
         Order order = Order.create();
         order.setName("bla");

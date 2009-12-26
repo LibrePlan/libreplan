@@ -49,7 +49,7 @@ public class OrderLine extends OrderElement {
         OrderLine result = create();
         HoursGroup hoursGroup = HoursGroup.create(result);
         result.addHoursGroup(hoursGroup);
-        hoursGroup.setName(_(INITIAL_HOURS_GROUP_NAME));
+        hoursGroup.setCode(_(INITIAL_HOURS_GROUP_NAME));
         hoursGroup.setFixedPercentage(false);
         hoursGroup.setPercentage(new BigDecimal(1));
         hoursGroup.setWorkingHours(hours);
@@ -161,7 +161,7 @@ public class OrderLine extends OrderElement {
             HoursGroup hoursGroup = HoursGroup.create(this);
             hoursGroup.setWorkingHours(workHours);
             hoursGroup.setPercentage((new BigDecimal(1).setScale(2)));
-            hoursGroup.setName(_(INITIAL_HOURS_GROUP_NAME));
+            hoursGroup.setCode(_(INITIAL_HOURS_GROUP_NAME));
             hoursGroups.add(hoursGroup);
         } else {
 
@@ -476,18 +476,18 @@ public class OrderLine extends OrderElement {
         return null;
     }
 
-    public boolean containsHoursGroup(String name) {
+    public boolean containsHoursGroup(String code) {
         for (HoursGroup hoursGroup : getHoursGroups()) {
-            if (hoursGroup.getName().equals(name)) {
+            if (hoursGroup.getCode().equals(code)) {
                 return true;
             }
         }
         return false;
     }
 
-    public HoursGroup getHoursGroup(String name) {
+    public HoursGroup getHoursGroup(String code) {
         for (HoursGroup hoursGroup : getHoursGroups()) {
-            if (hoursGroup.getName().equals(name)) {
+            if (hoursGroup.getCode().equals(code)) {
                 return hoursGroup;
             }
         }
