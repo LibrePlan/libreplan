@@ -86,8 +86,8 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return code;
     }
 
-    public void setCode(String name) {
-        this.code = name;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public ResourceEnum getResourceType() {
