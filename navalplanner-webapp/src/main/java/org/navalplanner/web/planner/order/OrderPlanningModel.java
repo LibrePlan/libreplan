@@ -47,7 +47,9 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ICostCalculator;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -579,11 +581,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         taskElementAdapter.setOrder(orderReloaded);
         TaskGroup taskElement = orderReloaded
                 .getAssociatedTaskElement();
+        final List<Resource> allResources = resourceDAO.list(Resource.class);
         forceLoadOfChildren(Arrays.asList(taskElement));
-        planningState = new PlanningState(taskElement,
-                orderReloaded.getAssociatedTasks(),
-                resourceDAO.list(Resource.class));
-        forceLoadOfChildren(planningState.getInitial());
+        planningState = new PlanningState(taskElement, orderReloaded
+                .getAssociatedTasks(), allResources);
         forceLoadOfDependenciesCollections(planningState.getInitial());
         forceLoadOfWorkingHours(planningState.getInitial());
         forceLoadOfLabels(planningState.getInitial());
@@ -598,10 +599,26 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void forceLoadOfChildren(Collection<? extends TaskElement> initial) {
         for (TaskElement each : initial) {
+            forceLoadOfResourceAllocationsResources(each);
             if (each instanceof TaskGroup) {
                 findChildrenWithQueryToAvoidProxies((TaskGroup) each);
                 List<TaskElement> children = each.getChildren();
                 forceLoadOfChildren(children);
+            }
+        }
+    }
+
+    /**
+     * Forcing the load of all resources so the resources at planning state and
+     * at allocations are the same
+     */
+    private void forceLoadOfResourceAllocationsResources(TaskElement taskElement) {
+        Set<ResourceAllocation<?>> resourceAllocations = taskElement
+                .getResourceAllocations();
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            each.getAssociatedResources();
+            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
+                eachDerived.getResources();
             }
         }
     }

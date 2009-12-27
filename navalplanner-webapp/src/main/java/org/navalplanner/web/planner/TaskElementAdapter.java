@@ -28,12 +28,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -43,12 +45,18 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.DerivedAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -100,6 +108,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private ITaskElementDAO taskDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     private List<IOnMoveListener> listeners = new ArrayList<IOnMoveListener>();
 
@@ -157,12 +168,42 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         @Override
                         public Long execute() {
                             taskDAO.reattach(taskElement);
+                            reattachAllResourcesForTask();
                             Long result = setBeginDateInsideTransaction(beginDate);
                             fireTaskElementMoved(taskElement);
                             return result;
                         }
                     });
             return runOnReadOnlyTransaction;
+        }
+
+        private void reattachAllResourcesForTask() {
+            Set<Resource> resources = resourcesForTask();
+            for (Resource each : resources) {
+                resourceDAO.reattach(each);
+            }
+            for (Machine machine : Resource.machines(resources)) {
+                Set<MachineWorkersConfigurationUnit> configurationUnits = machine
+                        .getConfigurationUnits();
+                for (MachineWorkersConfigurationUnit eachUnit : configurationUnits) {
+                    Hibernate.initialize(eachUnit);
+                }
+            }
+        }
+
+        private Set<Resource> resourcesForTask() {
+            Set<ResourceAllocation<?>> resourceAllocations = taskElement.getResourceAllocations();
+            Set<Resource> resources = new HashSet<Resource>();
+            for (ResourceAllocation<?> each : resourceAllocations) {
+                resources.addAll(each
+                        .getAssociatedResources());
+                for (DerivedAllocation derivedAllocation : each
+                        .getDerivedAllocations()) {
+                    resources
+                            .addAll(derivedAllocation.getResources());
+                }
+            }
+            return resources;
         }
 
         private Long setBeginDateInsideTransaction(final Date beginDate) {
