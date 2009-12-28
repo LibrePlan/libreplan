@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
+import org.navalplanner.business.qualityforms.entities.QualityFormItem;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityFormItem;
 
@@ -85,21 +86,33 @@ public interface IAssignedTaskQualityFormsToOrderElementModel {
     void setOrderModel(IOrderModel orderModel);
 
     /**
-     * Reset or clear the current {@link TaskQualityForm} selected for editing
-     * @param
-     */
-    void clearEditTaskQualityFormItems();
-
-    /**
-     * Returns all the {@link TaskQualityFormItem} assigned the current
-     * {@link TaskQualityForm}
-     * @return
-     */
-    List<TaskQualityFormItem> getTaskQualityFormItems();
-
-    /**
-     * Set {@link TaskQualityForm}
+     * Update the date and the property passed of all the
+     * {@link TaskQualityFormItem} of the {@ TaskQualityForm}
      * @param taskQualityForm
      */
-    void setTaskQualityForm(TaskQualityForm taskQualityForm);
+    void updatePassedTaskQualityFormItems(TaskQualityForm taskQualityForm);
+
+    /**
+     * Check whether {@link QualityFormItem} the property passed must be
+     * disabled
+     * @param taskQualityForm
+     *            ,item
+     */
+    boolean isDisabledPassedItem(TaskQualityForm taskQualityForm,
+            TaskQualityFormItem item);
+
+    /**
+     * Check whether {@link QualityFormItem} date mustbe disabled
+     * @param taskQualityForm
+     *            ,item
+     */
+    boolean isDisabledDateItem(TaskQualityForm taskQualityForm,
+            TaskQualityFormItem item);
+
+    /**
+     * Check whether all {@link QualityForm} and its {@link QualityFormItem} are
+     * valid.
+     * @param
+     */
+    void validate();
 }

@@ -37,7 +37,7 @@
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
                  onClick = "controller.reloadHoursGroupOrder();"/>
             <tab label="${i18n:_('Materials')}" />
-            <tab label="${i18n:_('Task quality forms')}" />
+            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}" />
         </tabs>
         <tabpanels>
             <tabpanel>

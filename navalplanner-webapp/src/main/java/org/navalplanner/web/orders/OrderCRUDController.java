@@ -274,6 +274,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (!assignedCriterionRequirementController.close()) {
             selectTab("tabRequirements");
         }
+        selectTab("tabTaskQualityForm");
+        if (!assignedTaskQualityFormController.confirm()) {
+            return false;
+        }
         try {
             orderModel.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));

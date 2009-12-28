@@ -2,9 +2,11 @@ package org.navalplanner.business.qualityforms.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
@@ -72,6 +74,64 @@ public class TaskQualityForm extends BaseEntity {
                     .create(qualityFormItem);
             taskQualityFormItems.add(taskQualityFormItem);
         }
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "dates must be consecutive.")
+    public boolean checkConstraintCorrectConsecutivesDate() {
+        for (TaskQualityFormItem item : taskQualityFormItems) {
+            if (!isCorrectConsecutiveDate(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "dates must be consecutive.")
+    public boolean checkConstraintConsecutivePassedItems() {
+        for (TaskQualityFormItem item : taskQualityFormItems) {
+            if (!isCorrectConsecutivePassed(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isCorrectConsecutivePassed(TaskQualityFormItem item) {
+        if (item.getPassed()) {
+            return (isPassedPreviousItem(item));
+        }
+        return true;
+    }
+
+    public boolean isCorrectConsecutiveDate(TaskQualityFormItem item) {
+        if (item.getPassed()) {
+            return ((isPassedPreviousItem(item)) && (isLaterToPreviousItemDate(item)));
+        }
+        return (item.getDate() == null);
+    }
+
+    public boolean isPassedPreviousItem(TaskQualityFormItem item) {
+        Integer previousPosition = item.getPosition() - 1;
+        if ((previousPosition >= 0)
+                && (previousPosition < taskQualityFormItems.size())) {
+            return taskQualityFormItems.get(previousPosition).getPassed();
+        }
+        return true;
+    }
+
+    public boolean isLaterToPreviousItemDate(TaskQualityFormItem item) {
+        Integer previousPosition = item.getPosition() - 1;
+        if ((previousPosition >= 0)
+                && (previousPosition < taskQualityFormItems.size())) {
+            Date previousDate = taskQualityFormItems.get(previousPosition)
+                    .getDate();
+            return ((previousDate != null) && (item.getDate() != null) && ((previousDate
+                    .before(item.getDate())) || (previousDate.equals(item
+                    .getDate()))));
+        }
+        return true;
     }
 
 }

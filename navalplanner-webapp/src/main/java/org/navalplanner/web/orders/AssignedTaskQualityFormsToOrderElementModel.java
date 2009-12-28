@@ -20,10 +20,14 @@
 
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
@@ -68,7 +72,6 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
     @Transactional(readOnly = true)
     public void init(OrderElement orderElement) {
         this.orderElement = orderElement;
-        this.taskQualityForm = null;
         initializeOrderElement(this.orderElement);
     }
 
@@ -155,24 +158,85 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
         this.orderModel = orderModel;
     }
 
-    // Operations to manage the task quality form items
-
-    private TaskQualityForm taskQualityForm;
-
-    public void setTaskQualityForm(TaskQualityForm taskQualityForm) {
-        this.taskQualityForm = taskQualityForm;
-    }
-
-    @Override
-    public void clearEditTaskQualityFormItems() {
-        this.taskQualityForm = null;
-    }
-
-    @Override
-    public List<TaskQualityFormItem> getTaskQualityFormItems() {
-        if (this.taskQualityForm != null) {
-            return taskQualityForm.getTaskQualityFormItems();
+    public boolean isDisabledPassedItem(TaskQualityForm taskQualityForm,
+            TaskQualityFormItem item) {
+        if ((taskQualityForm == null) || ((item == null))) {
+            return true;
         }
-        return new ArrayList<TaskQualityFormItem>();
+        return (!(item.getPassed() || taskQualityForm
+                .isPassedPreviousItem(item)));
     }
+
+    public boolean isDisabledDateItem(TaskQualityForm taskQualityForm,
+            TaskQualityFormItem item) {
+        if ((taskQualityForm == null) || ((item == null))) {
+            return true;
+        }
+        return (!item.getPassed());
+    }
+
+    public void updatePassedTaskQualityFormItems(TaskQualityForm taskQualityForm) {
+        if (taskQualityForm != null) {
+            Integer position = getFirstNotPassedPosition(taskQualityForm);
+            List<TaskQualityFormItem> items = taskQualityForm
+                .getTaskQualityFormItems();
+            for (int i = position; i < items.size(); i++) {
+                items.get(i).setPassed(false);
+                items.get(i).setDate(null);
+            }
+        }
+    }
+
+    private Integer getFirstNotPassedPosition(TaskQualityForm taskQualityForm) {
+        Integer position = 0;
+        for (TaskQualityFormItem item : taskQualityForm
+                .getTaskQualityFormItems()) {
+            if (!item.getPassed()) {
+                return position;
+            }
+            position++;
+        }
+        return position;
+    }
+
+    // Operation to confirm and validate
+
+    @Override
+    public void validate() {
+        if (getOrderElement() != null) {
+            for (TaskQualityForm taskQualityForm : orderElement
+                    .getTaskQualityForms()) {
+                validateTaskQualityForm(taskQualityForm);
+            }
+        }
+    }
+
+    private void validateTaskQualityForm(TaskQualityForm taskQualityForm) {
+        validateTaskQualityFormItems(taskQualityForm);
+    }
+
+    private void validateTaskQualityFormItems(TaskQualityForm taskQualityForm) {
+        for (TaskQualityFormItem item : taskQualityForm
+                .getTaskQualityFormItems()) {
+
+            if (!taskQualityForm.isCorrectConsecutivePassed(item)) {
+                throw new ValidationException(new InvalidValue(
+                        _("must be consecutive"), TaskQualityForm.class,
+                        "passed", item.getName(), taskQualityForm));
+            }
+
+            if (!taskQualityForm.isCorrectConsecutiveDate(item)) {
+                throw new ValidationException(new InvalidValue(
+                        _("must be consecutive"), TaskQualityForm.class,
+                        "date", item.getName(), taskQualityForm));
+            }
+
+            if (!item.checkConstraintIfDateCanBeNull()) {
+                throw new ValidationException(new InvalidValue(
+                        _("cannot be null"), TaskQualityForm.class, "date",
+                        item.getName(), taskQualityForm));
+            }
+        }
+    }
+
 }

@@ -29,7 +29,7 @@
 <window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
     closable="true" visible="false">
-<tabbox height="620px">
+<tabbox height="620px" id="tabboxOrderElement">
 	<tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}"></tab>
             <tab label="${i18n:_('Assigned hours')}"></tab>
@@ -37,7 +37,7 @@
             <tab label="${i18n:_('Labels')}"></tab>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"></tab>
             <tab label="${i18n:_('Materials')}"></tab>
-            <tab label="${i18n:_('Task quality forms')}"></tab>
+            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>

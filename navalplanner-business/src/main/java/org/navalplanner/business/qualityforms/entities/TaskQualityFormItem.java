@@ -11,9 +11,9 @@ import org.navalplanner.business.INewObject;
 
 public class TaskQualityFormItem implements INewObject {
 
-    public final static String propertyName = "name";
+    public final static String propertyDate = "date";
 
-    public final static String propertyPercentage = "percentage";
+    public final static String propertyPassed = "passed";
 
     static TaskQualityFormItem create(QualityFormItem qualityFormItem) {
         TaskQualityFormItem taskQualityFormItem = new TaskQualityFormItem(
@@ -109,4 +109,13 @@ public class TaskQualityFormItem implements INewObject {
         return false;
     }
 
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "date not specified")
+    public boolean checkConstraintIfDateCanBeNull() {
+        if ((passed == null) || (!passed)) {
+            return true;
+        } else {
+            return (date != null);
+        }
+    }
 }

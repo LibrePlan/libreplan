@@ -193,6 +193,10 @@ public class OrderElementController extends GenericForwardComposer {
             selectTab("tabRequirements");
             return;
         }
+        selectTab("tabTaskQualityForm");
+        if (!assignedTaskQualityFormsController.confirm()) {
+            return;
+        }
         close();
     }
 
