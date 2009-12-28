@@ -163,10 +163,10 @@ public class DerivedAllocation extends BaseEntity {
 
     public void resetAssignmentsTo(LocalDate startInclusive,
             LocalDate endExclusive, List<DerivedDayAssignment> newAssignments) {
+        checkAreValid(newAssignments);
         List<DerivedDayAssignment> toBeRemoved = DayAssignment.getAtInterval(
                 getAssignments(), startInclusive, endExclusive);
         assignments.removeAll(toBeRemoved);
-        checkAreValid(newAssignments);
         assignments.addAll(DayAssignment.getAtInterval(newAssignments,
                 startInclusive, endExclusive));
     }

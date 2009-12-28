@@ -39,6 +39,7 @@ import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -337,11 +338,47 @@ public class Task extends TaskElement {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
+        updateDerived(copied);
         mergeAllocation(asLocalDate(getStartDate()), asLocalDate(getEndDate()),
                 calculatedValue, Collections
                         .<ResourceAllocation<?>> emptyList(), copied,
                 Collections.<ResourceAllocation<?>> emptyList());
     }
+
+    private void updateDerived(List<ModifiedAllocation> allocations) {
+        for (ModifiedAllocation each : allocations) {
+            ResourceAllocation<?> original = each.getOriginal();
+            if (!original.getDerivedAllocations().isEmpty()) {
+                IWorkerFinder workersFinder = createFromExistentDerivedAllocationsFinder(original);
+                each.getModification().createDerived(workersFinder);
+            }
+        }
+    }
+
+    private IWorkerFinder createFromExistentDerivedAllocationsFinder(
+            ResourceAllocation<?> original) {
+        Set<DerivedAllocation> derivedAllocations = original
+                .getDerivedAllocations();
+        final Set<Worker> allWorkers = new HashSet<Worker>();
+        for (DerivedAllocation each : derivedAllocations) {
+            allWorkers.addAll(Resource.workers(each.getResources()));
+        }
+        return new IWorkerFinder() {
+
+            @Override
+            public Collection<Worker> findWorkersMatching(
+                    Collection<? extends Criterion> requiredCriterions) {
+                Collection<Worker> result = new ArrayList<Worker>();
+                for (Worker each : allWorkers) {
+                    if (each.satisfiesCriterions(requiredCriterions)) {
+                        result.add(each);
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
 
     private LocalDate asLocalDate(Date date) {
         return new LocalDate(date.getTime());
