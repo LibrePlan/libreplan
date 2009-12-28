@@ -78,7 +78,9 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Column;
 import org.zkoss.zul.api.Window;
 
@@ -459,6 +461,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (AllocationInput allocationInput : allocationInputs) {
             allocationInput.getResultReceiver().cancel();
         }
+    }
+
+    public ListModel getZoomLevels() {
+        return new SimpleListModel(ZoomLevel.values());
+    }
+
+    public void setZoomLevel(final ZoomLevel zoomLevel) {
+        timeTracker.setZoomLevel(zoomLevel);
     }
 
     public void onClick$zoomIncrease() {

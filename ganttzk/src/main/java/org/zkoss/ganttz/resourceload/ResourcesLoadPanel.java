@@ -26,6 +26,7 @@ import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
@@ -37,7 +38,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.SimpleListModel;
 
 public class ResourcesLoadPanel extends HtmlMacroComponent {
 
@@ -68,6 +71,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
         registerNeededScripts();
+    }
+
+    public ListModel getZoomLevels() {
+        return new SimpleListModel(ZoomLevel.values());
+    }
+
+    public void setZoomLevel(final ZoomLevel zoomLevel) {
+        timeTracker.setZoomLevel(zoomLevel);
     }
 
     public void zoomIncrease() {
