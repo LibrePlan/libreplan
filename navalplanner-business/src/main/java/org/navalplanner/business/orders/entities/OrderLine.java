@@ -499,6 +499,9 @@ public class OrderLine extends OrderElement {
     }
 
     public void incrementLastHoursGroupSequenceCode() {
+        if(lastHoursGroupSequenceCode==null){
+            lastHoursGroupSequenceCode = 0;
+        }
         lastHoursGroupSequenceCode++;
     }
 

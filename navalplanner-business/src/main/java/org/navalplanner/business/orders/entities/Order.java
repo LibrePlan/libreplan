@@ -206,6 +206,9 @@ public class Order extends OrderLineGroup {
     }
 
     public void incrementLastOrderElementSequenceCode() {
+        if (this.lastOrderElementSequenceCode == null) {
+            this.lastOrderElementSequenceCode = 0;
+        }
         this.lastOrderElementSequenceCode++;
     }
 
