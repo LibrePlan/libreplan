@@ -220,17 +220,7 @@ public class WorkReportModel implements IWorkReportModel {
     @Transactional
     public OrderElement findOrderElement(String orderCode)
             throws InstanceNotFoundException {
-        String[] parts = orderCode.split("-");
-
-        OrderElement parent = orderElementDAO.findUniqueByCodeAndParent(null,
-                parts[0]);
-        for (int i = 1; i < parts.length && parent != null; i++) {
-            OrderElement child = orderElementDAO.findUniqueByCodeAndParent(
-                    parent, parts[i]);
-            parent = child;
-        }
-
-        return parent;
+        return orderElementDAO.findUniqueByCode(orderCode);
     }
 
     @Override
@@ -276,12 +266,6 @@ public class WorkReportModel implements IWorkReportModel {
     @Override
     public boolean isEditing() {
         return editing;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public String getDistinguishedCode(OrderElement orderElement) throws InstanceNotFoundException {
-        return orderElementDAO.getDistinguishedCode(orderElement);
     }
 
     @Override

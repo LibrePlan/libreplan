@@ -741,12 +741,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             @Override
             public String get() {
                 if (workReportLine.getOrderElement() != null) {
-                    try {
-                        return workReportModel
-                                .getDistinguishedCode(workReportLine
-                                        .getOrderElement());
-                    } catch (InstanceNotFoundException e) {
-                    }
+                    return workReportLine.getOrderElement().getCode();
                 }
                 return "";
             }
@@ -1063,11 +1058,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     public String getCodeOrderElement() {
         if ((getWorkReport() != null)
                 && (getWorkReport().getOrderElement() != null)) {
-            try {
-                return workReportModel.getDistinguishedCode(getWorkReport()
-                        .getOrderElement());
-            } catch (InstanceNotFoundException e) {
-            }
+            return getWorkReport().getOrderElement().getCode();
         }
         return null;
     }

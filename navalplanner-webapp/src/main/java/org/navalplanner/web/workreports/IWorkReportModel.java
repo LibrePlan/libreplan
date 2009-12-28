@@ -77,15 +77,6 @@ public interface IWorkReportModel {
     Worker findWorker(String nif) throws InstanceNotFoundException;
 
     /**
-     * Returns distinguished code for {@link OrderElement}
-     *
-     * @param orderElement
-     * @return
-     */
-    String getDistinguishedCode(OrderElement orderElement)
-            throws InstanceNotFoundException;
-
-    /**
      * Gets the current {@link WorkReport}.
      *
      * @return A {@link WorkReport}

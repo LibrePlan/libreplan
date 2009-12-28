@@ -96,18 +96,6 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         return ((List<OrderElement>) c.list());
     }
 
-    public String getDistinguishedCode(OrderElement orderElement)
-            throws InstanceNotFoundException {
-        String code = orderElement.getCode();
-
-        while (orderElement.getParent() != null) {
-            OrderElement parent = find(orderElement.getParent().getId());
-            code = parent.getCode() + "-" + code;
-            orderElement = parent;
-        }
-        return code;
-    }
-
     @Override
     @Transactional(readOnly = true)
     public int getAssignedHours(OrderElement orderElement) {

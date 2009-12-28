@@ -171,36 +171,6 @@ public class OrderElementDAOTest {
     }
 
     @Test
-    public void testFindDistinguishedCode() {
-        // Create OrderLineGroupLine
-        OrderLineGroup orderLineGroup = createValidOrderLineGroup();
-        orderElementDAO.save(orderLineGroup);
-        orderLineGroup.setCode(((Long) orderLineGroup.getId()).toString());
-        orderElementDAO.save(orderLineGroup);
-
-        // Create OrderLineGroup
-        OrderLine orderLine = createValidOrderLine();
-        orderElementDAO.save(orderLine);
-        orderLine.setCode(((Long) orderLine.getId()).toString());
-        orderLineGroup.add(orderLine);
-        orderElementDAO.save(orderLine);
-
-        try {
-            String distinguishedCode = orderElementDAO
-                    .getDistinguishedCode(orderLine);
-            String code = orderLine.getCode();
-            OrderElement orderElement = orderLine;
-            while (orderElement.getParent() != null) {
-                code = orderLine.getParent().getCode() + "-" + code;
-                orderElement = orderElement.getParent();
-            }
-            assertTrue(distinguishedCode.equals(code));
-        } catch (InstanceNotFoundException e) {
-
-        }
-    }
-
-    @Test
     public void testSaveOrderLineWithAdvanceAssignments()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException,

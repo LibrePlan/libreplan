@@ -60,16 +60,6 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
             OrderElement orderElement);
 
     /**
-     * Returns the unique code that distinguishes an OrderElement (unique path
-     * from root to OrderElement)
-     *
-     * @param orderElement must be attached
-     * @return
-     */
-    public String getDistinguishedCode(OrderElement orderElement)
-            throws InstanceNotFoundException;
-
-    /**
      * Returns the number of assigned hours for an {@link OrderElement}
      *
      * @param orderElement
