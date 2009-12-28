@@ -54,10 +54,17 @@
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{referenceDate}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement mode="Opaque" x="0" y="132" width="555" height="20" forecolor="#000000" backcolor="#E0E4FB"/>
+				<reportElement mode="Opaque" x="0" y="137" width="555" height="15" forecolor="#000000" backcolor="#E0E4FB"/>
 			</rectangle>
 			<staticText>
-				<reportElement style="Column header" x="361" y="137" width="192" height="15"/>
+				<reportElement style="Column header" x="361" y="137" width="194" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -164,6 +171,13 @@
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="85" y="137" width="82" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -204,6 +218,13 @@
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="167" y="137" width="68" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -211,6 +232,13 @@
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="235" y="137" width="126" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -256,32 +284,32 @@
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{ratioPlanningDifference}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="115" y="0" width="51" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{totalPlannedHours}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="200" y="0" width="35" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{realHours}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
 				<reportElement x="274" y="0" width="42" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{imputedProgress}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="398" y="0" width="38" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{planningDifference}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="235" y="0" width="39" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{averageProgress}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="361" y="0" width="37" height="16"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{costDifference}]]></textFieldExpression>
