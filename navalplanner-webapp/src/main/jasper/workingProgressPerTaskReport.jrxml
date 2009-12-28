@@ -5,6 +5,7 @@
 	<style name="Column header" isDefault="false" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" isDefault="false" fontName="Arial" fontSize="12"/>
 	<parameter name="referenceDate" class="java.util.Date"/>
+	<parameter name="orderName" class="java.lang.String"/>
 	<field name="taskName" class="java.lang.String"/>
 	<field name="estimatedHours" class="java.lang.Integer"/>
 	<field name="totalPlannedHours" class="java.lang.Integer"/>
@@ -42,14 +43,14 @@
 				<imageExpression class="java.lang.String"><![CDATA["logos/navalpro_logo.gif"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="76" width="85" height="20"/>
+				<reportElement x="1" y="96" width="85" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Reference date:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="85" y="76" width="100" height="20"/>
+				<reportElement x="86" y="96" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{referenceDate}]]></textFieldExpression>
 			</textField>
@@ -244,6 +245,18 @@
 				</textElement>
 				<text><![CDATA[Progress]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="1" y="76" width="85" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Order:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="86" y="76" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{orderName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
