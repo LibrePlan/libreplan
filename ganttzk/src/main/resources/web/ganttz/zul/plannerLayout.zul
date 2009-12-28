@@ -8,10 +8,11 @@ planner = self;
        <north height="30px" border="0">
        <hbox align="center" id="toolbar" sclass="toolbar-box">
         <separator/>
-        <button onClick="planner.zoomIncrease();" class="planner-icon"
-            image="/common/img/zoom_in.png" tooltiptext="${i18n:_('Zoom increase')}" />
-        <button onClick="planner.zoomDecrease();" class="planner-icon"
-            image="/common/img/zoom_out.png" tooltiptext="${i18n:_('Zoom decrease')}" />
+        <label>${i18n:_('Zoom level')}:</label>
+        <listbox mold="select" rows="1"
+            model="${planner.zoomLevels}"
+            onSelect="planner.setZoomLevel(self.selectedItem.value);" >
+        </listbox>
         <separator/>
         <label>${i18n:_('Filter')}:</label>
         <combobox>

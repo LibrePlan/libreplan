@@ -26,6 +26,7 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
@@ -103,4 +104,9 @@ public class GanttPanel extends XulElement implements AfterCompose {
     public TimeTracker getTimeTracker() {
         return timeTrackerComponent.getTimeTracker();
     }
+
+    public void setZoomLevel(ZoomLevel zoomLevel) {
+        getTimeTracker().setZoomLevel(zoomLevel);
+    }
+
 }

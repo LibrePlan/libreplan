@@ -152,6 +152,11 @@ public class TimeTracker {
         invalidatingChangeHappened();
     }
 
+    public void setZoomLevel(ZoomLevel zoomLevel) {
+        detailLevel = zoomLevel;
+        invalidatingChangeHappened();
+    }
+
     private void invalidatingChangeHappened() {
         clearDetailLevelDependantData();
         fireZoomChanged();

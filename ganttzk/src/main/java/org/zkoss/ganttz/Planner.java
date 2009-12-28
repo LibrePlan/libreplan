@@ -41,6 +41,7 @@ import org.zkoss.ganttz.print.Print;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
@@ -50,7 +51,9 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Button;
 
 public class Planner extends HtmlMacroComponent  {
@@ -135,6 +138,28 @@ public class Planner extends HtmlMacroComponent  {
                 dependencies)) {
             dependencyList.addDependencyComponent(d);
         }
+    }
+
+    public ListModel getZoomLevels() {
+        return new SimpleListModel(ZoomLevel.values());
+    }
+
+    public void setZoomLevel(final ZoomLevel zoomLevel) {
+        if (ganttPanel == null) {
+            return;
+        }
+        LongOperationFeedback.execute(ganttPanel, new ILongOperation() {
+
+            @Override
+            public String getName() {
+                return _("changing zoom");
+            }
+
+            @Override
+            public void doAction() throws Exception {
+                ganttPanel.setZoomLevel(zoomLevel);
+            }
+        });
     }
 
     public void zoomIncrease() {

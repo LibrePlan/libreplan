@@ -20,12 +20,14 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 /**
  * @author Francisco Javier Moran Rúa
  */
 public enum ZoomLevel {
 
-    DETAIL_ONE {
+    DETAIL_ONE(_("Year")) {
         @Override
         public TimeTrackerState getTimeTrackerState(
                 IDetailItemModificator firstLevel,
@@ -33,7 +35,7 @@ public enum ZoomLevel {
             return new DetailOneTimeTrackerState(firstLevel, secondLevel);
         }
     },
-    DETAIL_TWO {
+    DETAIL_TWO(_("Quarter")) {
         @Override
         public TimeTrackerState getTimeTrackerState(
                 IDetailItemModificator firstLevel,
@@ -41,7 +43,7 @@ public enum ZoomLevel {
             return new DetailTwoTimeTrackerState(firstLevel, secondLevel);
         }
     },
-    DETAIL_THREE {
+    DETAIL_THREE(_("Month")) {
         @Override
         public TimeTrackerState getTimeTrackerState(
                 IDetailItemModificator firstLevel,
@@ -49,7 +51,7 @@ public enum ZoomLevel {
             return new DetailThreeTimeTrackerState(firstLevel, secondLevel);
         }
     },
-    DETAIL_FOUR {
+    DETAIL_FOUR(_("Week")) {
         @Override
         public TimeTrackerState getTimeTrackerState(
                 IDetailItemModificator firstLevel,
@@ -57,7 +59,7 @@ public enum ZoomLevel {
             return new DetailFourTimeTrackerState(firstLevel, secondLevel);
         }
     },
-    DETAIL_FIVE {
+    DETAIL_FIVE(_("Day")) {
         @Override
         public TimeTrackerState getTimeTrackerState(
                 IDetailItemModificator firstLevel,
@@ -65,6 +67,12 @@ public enum ZoomLevel {
             return new DetailFiveTimeTrackerState(firstLevel, secondLevel);
         }
     };
+
+    private String name;
+
+    private ZoomLevel(String name) {
+        this.name = name;
+    }
 
     /**
      * @return if there is no next, returns <code>this</code>. Otherwise returns
@@ -92,5 +100,10 @@ public enum ZoomLevel {
     public abstract TimeTrackerState getTimeTrackerState(
             IDetailItemModificator firstLevel,
             IDetailItemModificator secondLevel);
+
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }
