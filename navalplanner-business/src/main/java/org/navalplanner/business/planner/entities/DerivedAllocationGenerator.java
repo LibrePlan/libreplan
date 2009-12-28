@@ -114,8 +114,10 @@ public class DerivedAllocationGenerator {
             List<ResourceWithAssignedHours> distributeForDay) {
         List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
         for (ResourceWithAssignedHours each : distributeForDay) {
-            result.add(DerivedDayAssignment.create(day, each.hours,
-                    each.resource, parent));
+            if (each.hours > 0) {
+                result.add(DerivedDayAssignment.create(day, each.hours,
+                        each.resource, parent));
+            }
         }
         return result;
     }
