@@ -20,6 +20,7 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -47,11 +48,25 @@ public class HoursDistributor {
 
     private final List<IWorkHours> workHours;
 
+    private final List<Integer> capacities;
+
     public HoursDistributor(List<Resource> resources) {
         this.resources = resources;
         this.workHours = new ArrayList<IWorkHours>();
         for (Resource resource : resources) {
             this.workHours.add(generateWorkHoursFor(resource));
+        }
+        this.capacities = new ArrayList<Integer>();
+        for (Resource resource : resources) {
+            this.capacities.add(getCapacityFor(resource));
+        }
+    }
+
+    private Integer getCapacityFor(Resource resource) {
+        if (resource.getCalendar() != null) {
+            return resource.getCalendar().getCapacity();
+        } else {
+            return 1;
         }
     }
 
@@ -65,31 +80,78 @@ public class HoursDistributor {
 
     public List<ResourceWithAssignedHours> distributeForDay(LocalDate day,
             int totalHours) {
-        List<ResourceWithAssignedHours> result = new ArrayList<ResourceWithAssignedHours>();
-        List<Share> shares = currentSharesFor(day);
-        ShareDivision currentDivision = ShareDivision.create(shares);
+        List<ShareSource> shares = divisionAt(day);
+        ShareDivision currentDivision = ShareSource.all(shares);
         ShareDivision newDivison = currentDivision.plus(totalHours);
         int[] differences = currentDivision.to(newDivison);
-        for (int i = 0; i < differences.length; i++) {
-            assert differences[i] >= 0;
-            result.add(new ResourceWithAssignedHours(differences[i], resources
-                    .get(i)));
-        }
-        return result;
+        return ShareSource.hoursForEachResource(shares, differences, resources);
     }
 
-    public List<Share> currentSharesFor(LocalDate day) {
-        List<Share> shares = new ArrayList<Share>();
+    private static final ResourcesPerDay ONE = ResourcesPerDay.amount(1);
+
+    private static class ShareSource {
+
+        public static ShareDivision all(Collection<ShareSource> sources) {
+            List<Share> shares = new ArrayList<Share>();
+            for (ShareSource shareSource : sources) {
+                shares.addAll(shareSource.shares);
+            }
+            return ShareDivision.create(shares);
+        }
+
+        public static List<ResourceWithAssignedHours> hoursForEachResource(
+                List<ShareSource> sources, int[] differences,
+                List<Resource> resources) {
+            List<ResourceWithAssignedHours> result = new ArrayList<ResourceWithAssignedHours>();
+            int differencesIndex = 0;
+            for (int i = 0; i < resources.size(); i++) {
+                Resource resource = resources.get(i);
+                ShareSource shareSource = sources.get(i);
+                final int differencesToTake = shareSource.shares.size();
+                int sum = sumDifferences(differences, differencesIndex,
+                        differencesToTake);
+                differencesIndex += differencesToTake;
+                result.add(new ResourceWithAssignedHours(sum, resource));
+            }
+            return result;
+        }
+
+        private static int sumDifferences(int[] differences, int start,
+                final int toTake) {
+            int sum = 0;
+            for (int i = 0; i < toTake; i++) {
+                sum += differences[start + i];
+            }
+            return sum;
+        }
+
+        private final List<Share> shares;
+
+        private ShareSource(List<Share> shares) {
+            this.shares = shares;
+        }
+
+    }
+
+    public List<ShareSource> divisionAt(LocalDate day) {
+        List<ShareSource> result = new ArrayList<ShareSource>();
         for (int i = 0; i < resources.size(); i++) {
+            List<Share> shares = new ArrayList<Share>();
             Resource resource = resources.get(i);
             IWorkHours workHoursForResource = workHours.get(i);
             int alreadyAssignedHours = resource.getAssignedHours(day);
-            Integer workableHours = workHoursForResource.getCapacityAt(day);
-            // a resource would have a zero share if all it's hours for a
-            // given day are filled
-            shares.add(new Share(alreadyAssignedHours - workableHours));
+            Integer capacityEachOne = workHoursForResource.toHours(day, ONE);
+            final int capacityUnits = capacities.get(i);
+            assert capacityUnits >= 1;
+            final int assignedForEach = alreadyAssignedHours / capacityUnits;
+            final int remainder = alreadyAssignedHours % capacityUnits;
+            for (int j = 0; j < capacityUnits; j++) {
+                int assigned = assignedForEach + (j < remainder ? 1 : 0);
+                shares.add(new Share(assigned - capacityEachOne));
+            }
+            result.add(new ShareSource(shares));
         }
-        return shares;
+        return result;
     }
 
 }
