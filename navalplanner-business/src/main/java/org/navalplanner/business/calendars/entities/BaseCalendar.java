@@ -32,6 +32,7 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -258,6 +259,10 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
      * calendar restrictions.
      */
     public Integer getCapacityAt(LocalDate date) {
+        return getWorkableHours(date);
+    }
+
+    private Integer getWorkableHours(LocalDate date) {
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
             return exceptionDay.getHours();
@@ -772,6 +777,12 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
             }
         }
         calendarAvailability.setEndDate(endDate);
+    }
+
+    @Override
+    public Integer toHours(LocalDate day, ResourcesPerDay resourcesPerDay) {
+        final Integer workableHours = getWorkableHours(day);
+        return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
     }
 
 }

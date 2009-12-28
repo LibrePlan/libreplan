@@ -21,8 +21,18 @@
 package org.navalplanner.business.calendars.entities;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 public interface IWorkHours {
+
+    /**
+     * Translates the received amount into the corresponding hours at the given
+     * date
+     * @param day
+     * @param amount
+     * @return
+     */
+    public Integer toHours(LocalDate day, ResourcesPerDay amount);
 
     /**
      * Calculates the capacity at a given date. It means all the hours that

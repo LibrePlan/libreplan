@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 public abstract class CombinedWorkHours implements IWorkHours {
 
@@ -52,6 +53,22 @@ public abstract class CombinedWorkHours implements IWorkHours {
         return current;
     }
 
+    @Override
+    public Integer toHours(LocalDate day, ResourcesPerDay amount) {
+        Integer current = null;
+        for (IWorkHours each : workHours) {
+            current = current == null ? initialHours(each, day, amount)
+                    : updateHours(current, each, day, amount);
+        }
+        return current;
+    }
+
+    protected abstract Integer updateHours(Integer current,
+            IWorkHours workHours, LocalDate day, ResourcesPerDay amount);
+
+    protected abstract Integer initialHours(IWorkHours workHours,
+            LocalDate day, ResourcesPerDay amount);
+
     protected abstract Integer capacity(IWorkHours workHour, LocalDate date);
 
     protected abstract Integer updateCapacity(Integer current,
@@ -75,4 +92,17 @@ class Min extends CombinedWorkHours {
     protected Integer capacity(IWorkHours workHour, LocalDate date) {
         return workHour.getCapacityAt(date);
     }
+
+    @Override
+    protected Integer initialHours(IWorkHours workHours, LocalDate day,
+            ResourcesPerDay amount) {
+        return workHours.toHours(day, amount);
+    }
+
+    @Override
+    protected Integer updateHours(Integer current, IWorkHours workHours,
+            LocalDate day, ResourcesPerDay amount) {
+        return Math.min(workHours.toHours(day, amount), current);
+    }
+
 }
