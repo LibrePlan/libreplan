@@ -65,13 +65,28 @@ public class SpecificResourceAllocationTest {
         this.assignedHours = assignedHours;
     }
 
-    private void givenResourceCalendarAlwaysReturning(int hours) {
+    private void givenResourceCalendarAlwaysReturning(final int hours) {
         this.calendar = createNiceMock(ResourceCalendar.class);
         expect(this.calendar.getCapacityAt(isA(LocalDate.class))).andReturn(
                 hours).anyTimes();
         expect(this.calendar.getWorkableHours(isA(Date.class)))
                 .andReturn(hours).anyTimes();
+        expect(this.calendar.toHours(isA(LocalDate.class),
+                        isA(ResourcesPerDay.class))).andAnswer(
+                toHoursAnswer(hours)).anyTimes();
         replay(this.calendar);
+    }
+
+    private IAnswer<Integer> toHoursAnswer(final int hours) {
+        return new IAnswer<Integer>() {
+
+            @Override
+            public Integer answer() throws Throwable {
+                ResourcesPerDay perDay = (ResourcesPerDay) EasyMock
+                        .getCurrentArguments()[1];
+                return perDay.asHoursGivenResourceWorkingDayOf(hours);
+            }
+        };
     }
 
     private void givenResourceCalendar(final int defaultAnswer, final Map<LocalDate, Integer> answersForDates){
@@ -87,19 +102,24 @@ public class SpecificResourceAllocationTest {
                 return defaultAnswer;
             }
         }).anyTimes();
-        expect(this.calendar.getWorkableHours(isA(Date.class)))
-        .andAnswer(new IAnswer<Integer>() {
+        expect(
+                this.calendar.toHours(isA(LocalDate.class),
+                        isA(ResourcesPerDay.class))).andAnswer(
+                new IAnswer<Integer>() {
 
-            @Override
-            public Integer answer() throws Throwable {
-                Date date = (Date) EasyMock.getCurrentArguments()[0];
-                LocalDate localDate = new LocalDate(date.getTime());
-                if(answersForDates.containsKey(localDate)){
-                    return answersForDates.get(localDate);
-                }
-                return defaultAnswer;
-            }
-        }).anyTimes();
+                    @Override
+                    public Integer answer() throws Throwable {
+                        LocalDate date = (LocalDate) EasyMock
+                                .getCurrentArguments()[0];
+                        int hours;
+                        if (answersForDates.containsKey(date)) {
+                            hours = answersForDates.get(date);
+                        } else {
+                            hours = defaultAnswer;
+                        }
+                        return toHoursAnswer(hours).answer();
+                    }
+                }).anyTimes();
         replay(this.calendar);
     }
 

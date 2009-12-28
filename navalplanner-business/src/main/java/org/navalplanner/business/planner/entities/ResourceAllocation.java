@@ -450,8 +450,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final int calculateTotalToDistribute(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
-        Integer workableHours = getWorkHoursPerDay().getCapacityAt(day);
-        return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
+        return getWorkHoursPerDay().toHours(day, resourcesPerDay);
     }
 
     private ResourcesPerDay calculateResourcesPerDayFromAssignments() {
@@ -459,16 +458,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 .byDay(getAssignments());
         int sumTotalHours = 0;
         int sumWorkableHours = 0;
+        final ResourcesPerDay one = ResourcesPerDay.amount(1);
         for (Entry<LocalDate, List<DayAssignment>> entry : byDay.entrySet()) {
-            sumWorkableHours += getWorkHoursPerDay().getCapacityAt(
-                    entry.getKey());
+            sumWorkableHours += getWorkHoursPerDay().toHours(entry.getKey(),
+                    one);
             sumTotalHours += getAssignedHours(entry.getValue());
         }
         if (sumWorkableHours == 0) {
             return ResourcesPerDay.amount(0);
         }
-        return ResourcesPerDay.calculateFrom(
-                sumTotalHours, sumWorkableHours);
+        return ResourcesPerDay.calculateFrom(sumTotalHours, sumWorkableHours);
     }
 
     private IWorkHours getWorkHoursPerDay() {
