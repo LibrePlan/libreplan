@@ -72,11 +72,7 @@ public class WorkingProgressPerTaskDTO {
     public WorkingProgressPerTaskDTO(Task task, LocalDate date) {
         this();
 
-        String taskName = task.getName();
-        if (taskName == null || taskName.isEmpty()) {
-            taskName = task.getOrderElement().getName();
-        }
-        this.taskName = taskName;
+        this.taskName = getTaskName(task);
 
         this.estimatedHours = task.getHoursSpecifiedAtOrder();
         this.totalPlannedHours = calculatePlannedHours(task, null);
@@ -93,6 +89,14 @@ public class WorkingProgressPerTaskDTO {
                         partialPlannedHours));
         this.ratioCostDifference = calculateRatioCostDifference(averageProgress, imputedProgress);
         this.ratioPlanningDifference = calculateRatioPlanningDifference(averageProgress, plannedProgress);
+    }
+
+    public String getTaskName(Task task) {
+        String result = task.getName();
+        if (result == null || result.isEmpty()) {
+            result = task.getOrderElement().getName();
+        }
+        return result;
     }
 
     public Integer calculatePlannedHours(Task task, LocalDate date) {
