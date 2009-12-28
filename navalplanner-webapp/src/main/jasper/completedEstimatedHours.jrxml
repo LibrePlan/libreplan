@@ -47,10 +47,17 @@
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{referenceDate}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement mode="Opaque" x="64" y="132" width="382" height="20" forecolor="#000000" backcolor="#E0E4FB"/>
+				<reportElement mode="Opaque" x="64" y="137" width="382" height="15" forecolor="#000000" backcolor="#E0E4FB"/>
 			</rectangle>
 			<staticText>
 				<reportElement style="Column header" x="130" y="137" width="158" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -58,6 +65,13 @@
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="288" y="137" width="158" height="15"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
