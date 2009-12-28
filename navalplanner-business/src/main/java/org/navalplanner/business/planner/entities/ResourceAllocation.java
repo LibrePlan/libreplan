@@ -425,7 +425,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             List<Share> shares = new ArrayList<Share>();
             for (LocalDate day : days) {
                 shares.add(new Share(-getWorkHoursPerDay()
-                        .getWorkableHours(day)));
+                        .getCapacityAt(day)));
             }
             ShareDivision original = ShareDivision.create(shares);
             ShareDivision newShare = original.plus(hoursToSum);
@@ -450,7 +450,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final int calculateTotalToDistribute(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
-        Integer workableHours = getWorkHoursPerDay().getWorkableHours(day);
+        Integer workableHours = getWorkHoursPerDay().getCapacityAt(day);
         return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
     }
 
@@ -460,7 +460,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         int sumTotalHours = 0;
         int sumWorkableHours = 0;
         for (Entry<LocalDate, List<DayAssignment>> entry : byDay.entrySet()) {
-            sumWorkableHours += getWorkHoursPerDay().getWorkableHours(
+            sumWorkableHours += getWorkHoursPerDay().getCapacityAt(
                     entry.getKey());
             sumTotalHours += getAssignedHours(entry.getValue());
         }
@@ -478,12 +478,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private IWorkHours getTaskWorkHoursLimit() {
         return new IWorkHours() {
             @Override
-            public Integer getWorkableHours(LocalDate day) {
+            public Integer getCapacityAt(LocalDate day) {
                 if (getTaskCalendar() == null) {
                     return SameWorkHoursEveryDay.getDefaultWorkingDay()
-                            .getWorkableHours(day);
+                            .getCapacityAt(day);
                 } else {
-                    return getTaskCalendar().getWorkableHours(day);
+                    return getTaskCalendar().getCapacityAt(day);
                 }
             }
         };

@@ -692,7 +692,7 @@ public abstract class Resource extends BaseEntity{
         final int days = Days.daysBetween(start, end).getDays();
         for (int i = 0; i < days; i++) {
             LocalDate current = start.plusDays(i);
-            Integer workableHours = calendar.getWorkableHours(current);
+            Integer workableHours = calendar.getCapacityAt(current);
             if (workableHours != null) {
                 sum += workableHours;
             }

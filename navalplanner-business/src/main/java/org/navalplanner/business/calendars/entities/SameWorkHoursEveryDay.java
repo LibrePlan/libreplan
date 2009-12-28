@@ -40,7 +40,7 @@ public class SameWorkHoursEveryDay implements IWorkHours {
     }
 
     @Override
-    public Integer getWorkableHours(LocalDate date) {
+    public Integer getCapacityAt(LocalDate date) {
         return hours;
     }
 

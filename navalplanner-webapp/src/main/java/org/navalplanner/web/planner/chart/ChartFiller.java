@@ -123,10 +123,10 @@ public abstract class ChartFiller implements IChartFiller {
         int result = 0;
         ResourceCalendar calendar = resource.getCalendar();
         if (calendar != null) {
-            result += calendar.getWorkableHours(day);
+            result += calendar.getCapacityAt(day);
         } else {
             result += SameWorkHoursEveryDay.getDefaultWorkingDay()
-                    .getWorkableHours(day);
+                    .getCapacityAt(day);
         }
         return result;
     }

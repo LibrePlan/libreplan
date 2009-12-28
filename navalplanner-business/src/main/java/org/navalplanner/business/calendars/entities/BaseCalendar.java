@@ -250,14 +250,14 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
      * calendar restrictions.
      */
     public Integer getWorkableHours(Date date) {
-        return getWorkableHours(new LocalDate(date));
+        return getCapacityAt(new LocalDate(date));
     }
 
     /**
      * Returns the number of workable hours for a specific date depending on the
      * calendar restrictions.
      */
-    public Integer getWorkableHours(LocalDate date) {
+    public Integer getCapacityAt(LocalDate date) {
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
             return exceptionDay.getHours();
@@ -329,7 +329,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         int total = 0;
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            total += getWorkableHours(current);
+            total += getCapacityAt(current);
             init = init.plusDays(1);
         }
         return total;
@@ -442,7 +442,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
             return DayType.ANCESTOR_EXCEPTION;
         }
 
-        if (getWorkableHours(date) == 0) {
+        if (getCapacityAt(date) == 0) {
             return DayType.ZERO_HOURS;
         }
 
@@ -640,7 +640,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         Set<LocalDate> result = new HashSet<LocalDate>();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            if (getWorkableHours(current) == 0) {
+            if (getCapacityAt(current) == 0) {
                 result.add(current);
             }
         }

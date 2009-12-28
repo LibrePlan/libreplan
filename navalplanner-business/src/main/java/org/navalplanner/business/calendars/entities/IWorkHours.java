@@ -24,6 +24,13 @@ import org.joda.time.LocalDate;
 
 public interface IWorkHours {
 
-    public Integer getWorkableHours(LocalDate date);
+    /**
+     * Calculates the capacity at a given date. It means all the hours that
+     * could be worked without having overtime
+     * @param date
+     *            the date at which the capacity is calculated
+     * @return the capacity at which the resource can work
+     */
+    public Integer getCapacityAt(LocalDate date);
 
 }

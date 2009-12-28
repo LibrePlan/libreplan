@@ -625,9 +625,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     BaseCalendar calendar = resource.getCalendar();
 
                     int workableHours = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getWorkableHours(day);
+                            .getDefaultWorkingDay().getCapacityAt(day);
                     if (calendar != null) {
-                        workableHours = calendar.getWorkableHours(day);
+                        workableHours = calendar.getCapacityAt(day);
                     }
 
                     int assignedHours = dayAssignmentGrouped.get(day).get(
@@ -657,9 +657,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     BaseCalendar calendar = resource.getCalendar();
 
                     int workableHours = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getWorkableHours(day);
+                            .getDefaultWorkingDay().getCapacityAt(day);
                     if (calendar != null) {
-                        workableHours = calendar.getWorkableHours(day);
+                        workableHours = calendar.getCapacityAt(day);
                     }
 
                     int assignedHours = dayAssignmentGrouped.get(day).get(

@@ -853,9 +853,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             BaseCalendar calendar = resource.getCalendar();
 
             int workableHours = SameWorkHoursEveryDay.getDefaultWorkingDay()
-                    .getWorkableHours(day);
+                    .getCapacityAt(day);
             if (calendar != null) {
-                workableHours = calendar.getWorkableHours(day);
+                workableHours = calendar.getCapacityAt(day);
             }
 
             return workableHours;

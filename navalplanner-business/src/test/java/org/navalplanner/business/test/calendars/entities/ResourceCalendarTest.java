@@ -72,8 +72,8 @@ public class ResourceCalendarTest {
     public void testGetWorkableHours() {
         ResourceCalendar calendar = createBasicResourceCalendar();
 
-        assertThat(calendar.getWorkableHours(PAST), equalTo(0));
-        assertThat(calendar.getWorkableHours(FUTURE), equalTo(8));
+        assertThat(calendar.getCapacityAt(PAST), equalTo(0));
+        assertThat(calendar.getCapacityAt(FUTURE), equalTo(8));
     }
 
     @Test(expected = IllegalArgumentException.class)

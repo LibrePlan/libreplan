@@ -84,7 +84,7 @@ public class HoursDistributor {
             Resource resource = resources.get(i);
             IWorkHours workHoursForResource = workHours.get(i);
             int alreadyAssignedHours = resource.getAssignedHours(day);
-            Integer workableHours = workHoursForResource.getWorkableHours(day);
+            Integer workableHours = workHoursForResource.getCapacityAt(day);
             // a resource would have a zero share if all it's hours for a
             // given day are filled
             shares.add(new Share(alreadyAssignedHours - workableHours));

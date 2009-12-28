@@ -55,13 +55,13 @@ public class CombinedWorkHoursTest {
     public void returnsTheMinOfCalendars() {
         IWorkHours minOf = CombinedWorkHours
                 .minOf(hours(4), hours(2), hours(7));
-        Integer hours = minOf.getWorkableHours(new LocalDate(2000, 3, 3));
+        Integer hours = minOf.getCapacityAt(new LocalDate(2000, 3, 3));
         assertThat(hours, equalTo(2));
     }
 
     private IWorkHours hours(int hours) {
         IWorkHours result = createNiceMock(IWorkHours.class);
-        expect(result.getWorkableHours(isA(LocalDate.class))).andReturn(hours);
+        expect(result.getCapacityAt(isA(LocalDate.class))).andReturn(hours);
         replay(result);
         return result;
     }

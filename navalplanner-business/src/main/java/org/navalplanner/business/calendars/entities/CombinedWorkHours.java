@@ -43,18 +43,18 @@ public abstract class CombinedWorkHours implements IWorkHours {
     }
 
     @Override
-    public Integer getWorkableHours(LocalDate date) {
+    public Integer getCapacityAt(LocalDate date) {
         Integer current = null;
         for (IWorkHours workHour : workHours) {
-            current = current == null ? workHours(workHour, date)
-                    : updateWorkHours(current, workHour, date);
+            current = current == null ? capacity(workHour, date)
+                    : updateCapacity(current, workHour, date);
         }
         return current;
     }
 
-    protected abstract Integer workHours(IWorkHours workHour, LocalDate date);
+    protected abstract Integer capacity(IWorkHours workHour, LocalDate date);
 
-    protected abstract Integer updateWorkHours(Integer current,
+    protected abstract Integer updateCapacity(Integer current,
             IWorkHours workHour, LocalDate date);
 
 }
@@ -66,13 +66,13 @@ class Min extends CombinedWorkHours {
     }
 
     @Override
-    protected Integer updateWorkHours(Integer current, IWorkHours workHour,
+    protected Integer updateCapacity(Integer current, IWorkHours workHour,
             LocalDate date) {
-        return Math.min(current, workHour.getWorkableHours(date));
+        return Math.min(current, workHour.getCapacityAt(date));
     }
 
     @Override
-    protected Integer workHours(IWorkHours workHour, LocalDate date) {
-        return workHour.getWorkableHours(date);
+    protected Integer capacity(IWorkHours workHour, LocalDate date) {
+        return workHour.getCapacityAt(date);
     }
 }
