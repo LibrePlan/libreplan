@@ -54,11 +54,19 @@ public class CompletedEstimatedHoursPerTaskDTO {
 
     public CompletedEstimatedHoursPerTaskDTO(Task task, LocalDate date) {
         this();
-        this.taskName = task.getName();
+        this.taskName = getTaskName(task);
         this.estimatedHours = task.getHoursSpecifiedAtOrder();
         this.totalPlannedHours = calculatePlannedHours(task, null);
         this.partialPlannedHours = calculatePlannedHours(task, date);
         this.realHours = calculateRealHours(task, date);
+    }
+
+    public String getTaskName(Task task) {
+        String result = task.getName();
+        if (result == null || result.isEmpty()) {
+            result = task.getOrderElement().getName();
+        }
+        return result;
     }
 
     public Integer calculatePlannedHours(Task task, LocalDate date) {
