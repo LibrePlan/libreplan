@@ -85,6 +85,8 @@ public class DerivedAllocation extends BaseEntity {
 
     private Set<DerivedDayAssignment> assignments = new HashSet<DerivedDayAssignment>();
 
+    private Set<DerivedDayAssignment> detached = new HashSet<DerivedDayAssignment>();
+
     public BigDecimal getAlpha() {
         return configurationUnit.getAlpha();
     }
@@ -131,6 +133,7 @@ public class DerivedAllocation extends BaseEntity {
 
     public void resetAssignmentsTo(List<DerivedDayAssignment> dayAssignments) {
         checkAreValid(dayAssignments);
+        detachAssignments(this.assignments);
         this.assignments.clear();
         this.assignments.addAll(dayAssignments);
     }
@@ -167,8 +170,16 @@ public class DerivedAllocation extends BaseEntity {
         List<DerivedDayAssignment> toBeRemoved = DayAssignment.getAtInterval(
                 getAssignments(), startInclusive, endExclusive);
         assignments.removeAll(toBeRemoved);
+        detachAssignments(toBeRemoved);
         assignments.addAll(DayAssignment.getAtInterval(newAssignments,
                 startInclusive, endExclusive));
+    }
+
+    private void detachAssignments(Collection<DerivedDayAssignment> toBeRemoved) {
+        for (DerivedDayAssignment each : toBeRemoved) {
+            each.detach();
+        }
+        detached.addAll(toBeRemoved);
     }
 
     public List<DerivedDayAssignment> getAssignments() {
@@ -184,4 +195,13 @@ public class DerivedAllocation extends BaseEntity {
         }
         return result;
     }
+
+    public Set<DerivedDayAssignment> getDetached() {
+        return new HashSet<DerivedDayAssignment>(detached);
+    }
+
+    public void clearDetached() {
+        detached.clear();
+    }
+
 }

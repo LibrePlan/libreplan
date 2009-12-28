@@ -20,8 +20,11 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.Collection;
+
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -36,5 +39,13 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         implements IDayAssignmentDAO {
+
+    @Override
+    public void removeDerived(
+            Collection<? extends DerivedDayAssignment> assignments) {
+        for (DerivedDayAssignment each : assignments) {
+            getSession().delete(each);
+        }
+    }
 
 }

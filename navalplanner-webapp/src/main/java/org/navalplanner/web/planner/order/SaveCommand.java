@@ -34,12 +34,12 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +62,9 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
+
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
 
     private PlanningState state;
 
@@ -124,15 +127,32 @@ public class SaveCommand implements ISaveCommand {
 
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
+            removeDetachedDerivedDayAssignments(taskElement);
             taskElementDAO.save(taskElement);
-            if (taskElement instanceof Task) {
-                saveTask(taskElement, (Task) taskElement);
-            }
             dontPoseAsTransient(taskElement);
         }
         if (!state.getTasksToSave().isEmpty()) {
             updateRootTaskPosition();
         }
+    }
+
+    private void removeDetachedDerivedDayAssignments(TaskElement taskElement) {
+        for (ResourceAllocation<?> each : taskElement.getResourceAllocations()) {
+            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
+                removeAssigments(eachDerived.getDetached());
+                eachDerived.clearDetached();
+            }
+        }
+    }
+
+    private void removeAssigments(Set<DerivedDayAssignment> detached) {
+        List<DerivedDayAssignment> toRemove = new ArrayList<DerivedDayAssignment>();
+        for (DerivedDayAssignment eachAssignment : detached) {
+            if (!eachAssignment.isNewObject()) {
+                toRemove.add(eachAssignment);
+            }
+        }
+        dayAssignmentDAO.removeDerived(toRemove);
     }
 
     // newly added TaskElement such as milestones must be called
@@ -215,21 +235,6 @@ public class SaveCommand implements ISaveCommand {
             }
         }
         return result;
-    }
-
-    private void saveTask(TaskElement taskElement, Task task) {
-        if (!task.isValidResourceAllocationWorkers()) {
-            throw new RuntimeException(_("The task '{0}' has some repeated Worker assigned",
-                        taskElement.getName()));
-        }
-        for (ResourceAllocation<?> resourceAllocation : task
-                .getResourceAllocations()) {
-            resourceAllocation.dontPoseAsTransientObjectAnymore();
-            for (DayAssignment dayAssignment : (List<? extends DayAssignment>) resourceAllocation
-                    .getAssignments()) {
-                dayAssignment.dontPoseAsTransientObjectAnymore();
-            }
-        }
     }
 
     @Override
