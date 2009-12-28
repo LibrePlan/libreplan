@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.reports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +30,9 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -90,6 +94,14 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
         result.put("referenceDate", getDeadlineDate());
 
         return result;
+    }
+
+    public void showReport(ExtendedJasperreport jasperreport) {
+        final Order order = getSelectedOrder();
+        if (order == null) {
+            throw new WrongValueException(lbOrders, _("Please, select an order"));
+        }
+        super.showReport(jasperreport);
     }
 
 }
