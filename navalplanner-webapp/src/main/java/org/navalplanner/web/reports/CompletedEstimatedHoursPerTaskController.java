@@ -91,6 +91,7 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
     protected Map<String, Object> getParameters() {
         Map<String, Object> result = new HashMap<String, Object>();
 
+        result.put("orderName", getSelectedOrder().getName());
         result.put("referenceDate", getDeadlineDate());
 
         return result;
