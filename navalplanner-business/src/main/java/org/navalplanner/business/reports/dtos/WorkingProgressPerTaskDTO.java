@@ -71,7 +71,13 @@ public class WorkingProgressPerTaskDTO {
 
     public WorkingProgressPerTaskDTO(Task task, LocalDate date) {
         this();
-        this.taskName = task.getName();
+
+        String taskName = task.getName();
+        if (taskName == null || taskName.isEmpty()) {
+            taskName = task.getOrderElement().getName();
+        }
+        this.taskName = taskName;
+
         this.estimatedHours = task.getHoursSpecifiedAtOrder();
         this.totalPlannedHours = calculatePlannedHours(task, null);
         this.partialPlannedHours = calculatePlannedHours(task, date);
