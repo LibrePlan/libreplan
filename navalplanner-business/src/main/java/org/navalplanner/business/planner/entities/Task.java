@@ -368,6 +368,9 @@ public class Task extends TaskElement {
             @Override
             public Collection<Worker> findWorkersMatching(
                     Collection<? extends Criterion> requiredCriterions) {
+                if (requiredCriterions.isEmpty()) {
+                    return new ArrayList<Worker>();
+                }
                 Collection<Worker> result = new ArrayList<Worker>();
                 for (Worker each : allWorkers) {
                     if (each.satisfiesCriterions(requiredCriterions)) {

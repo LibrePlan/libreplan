@@ -234,10 +234,15 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             public Collection<Worker> findWorkersMatching(
                     Collection<? extends Criterion> requiredCriterions) {
                 reassociateResourcesWithSession();
-                List<Resource> findAllSatisfyingCriterions = resourceDAO
-                        .findAllSatisfyingCriterions(requiredCriterions);
+                List<Resource> allSatisfyingCriterions;
+                if (!requiredCriterions.isEmpty()) {
+                    allSatisfyingCriterions = resourceDAO
+                            .findAllSatisfyingCriterions(requiredCriterions);
+                } else {
+                    allSatisfyingCriterions = new ArrayList<Resource>();
+                }
                 return Resource.workers(reloadResources(Resource
-                        .workers(findAllSatisfyingCriterions)));
+                        .workers(allSatisfyingCriterions)));
             }
         };
     }
