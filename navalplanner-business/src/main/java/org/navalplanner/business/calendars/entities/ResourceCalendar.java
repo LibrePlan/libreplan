@@ -63,7 +63,14 @@ public class ResourceCalendar extends BaseCalendar {
         if (!isActive(date)) {
             return 0;
         }
-        return super.getWorkableHours(date);
+        return multiplyByCapacity(super.getWorkableHours(date));
+    }
+
+    private Integer multiplyByCapacity(Integer workableHours) {
+        if (capacity == null) {
+            return workableHours;
+        }
+        return capacity * workableHours;
     }
 
     @AssertTrue(message = "Capacity must be a positive integer number")
