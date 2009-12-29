@@ -21,19 +21,29 @@ Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa.
 * Data de comezo estimada
 * Data de finalización
 * Responsable
-* Cliente
 * Descrición
-* Outros campos ainda por decidir...
+
+Sen embargo, o propio pedido está relacionado con outras entidades que finalmente o dotarán de unha maior riqueza:
+* Horas asignadas ó pedido.
+* Avances imputados ó pedido.
+* Etiquetas.
+* Criterios asignados ó pedido.
+* Materiais
+* Formularios de calidade
 
 Para editar ou crear un pedido é posible realizalo dende varios puntos da aplicación:
 
-* Accedendo á pestana de pedidos dentro da vista global de empresa.
-* Accedendo a un pedido no diagrama de Gantt e cambiando de perpectiva á de edición de pedido.
+* Accedendo á perspectiva de "Lista de pedidos" dentro da vista global de empresa.
+
+   * A edición realízase premendo no botón de editar sobre o pedido elixido.
+   * A creación realízase premendo en "Novo pedido".
+
+* Accedendo a un pedido no diagrama de Gantt e cambiando de perpectiva á de detalles de pedido.
 
 
-Dende a edición de pedido é posible acceder a dúas pestanas:
+Dende a edición de pedido é posible acceder ás seguintes pestanas:
 
-* Edición dos datos de pedidos. Dende dita pantalla é posible editoar os datos básicos do pedido. Actualmente:
+* Edición dos datos de pedidos. Dende dita pantalla é posible editar os datos básicos do pedido. Actualmente:
 
   * Nome
   * Código
@@ -60,7 +70,42 @@ Dende a edición de pedido é posible acceder a dúas pestanas:
 .. figure:: images/order-elements-list.png
    :scale: 70
 
+* Horas asignadas. Pantalla na que se amosan as horas totais imputadas ó proxecto, tratándose de unha pantalla de visualización onde se agrupan as horas imputadas ós elementos de pedido.
 
+.. figure:: images/order-assigned-hours.png
+   :scale: 70
+
+* Avances. Pantalla na que se permiten imputar tipos de avances e medidas de avances ó pedido. Ver sección de "Avances" para o funcionamento da mesma.
+
+* Etiquetas. Pantalla na que se permite asignar etiquetas a un pedido e coñecer as etiquetas directas e indirectas que xa foron asignadas. Ver capítulo de "Etiquetas" para coñecer o funcionamento da mesma.
+
+.. figure:: images/order-labels.png
+   :scale: 70
+
+* Criterios. Pantalla na que se poden asignar os criterios que se desexan aplicar globalmente a todas as tarefas de un pedido. Estes criterios serían aplicados de xeito automático a todos os elementos de pedido, excepto que estes fosen invalidados explícitamente. Asimesmo, pódense visualizar os grupos de horas dos elementos de pedidos agrupados por criterios, o cal permite coñecer os criterios que se esixen ó longo de un pedido.
+
+.. figure:: images/order-criterions.png
+   :scale: 70
+
+* Materiais. Pantalla na que se pode asignar o material dispoñible no sistema ó pedido. O material será seleccionable de entre as categorías de material que existen na aplicación. Os materiais son xestionados do seguinte modo:
+
+   * O usuario selecciona a pestana que se amosa na zona inferior da pantalla chamada "Búsqueda de materiais".
+   * O usuario pode introducir un texto para a procura de materiais ou seleccionar as categorías para as que se desexa amosar materiais.
+   * O sistema filtra os resultados.
+   * O usuario selecciona os materiais que desexa (para seleccionar máis de un material o usuario pode premer no botón "Ctrl" que permite a selección múltiple no listado.
+   * O usuario preme en "Asignar".
+   * O sistema amosa o listado de materiais xa asignado ó pedido.
+   * O usuario selecciona as unidades e o estado que desexa asignarlle ó pedido.
+   * O usuario preme en "Gardar" ou "Gardar e Continuar".
+   * Se o usuario desexa xestionar a recepción de material, o sistema permite premer en "Dividir" para cambiar o estado dunha cantidade parcial de materiais.
+
+.. figure:: images/order-material.png
+   :scale: 70
+
+* Calidade. É posible asignar un formulario de calidade ó pedido co obxectivo de ser cumplimentado para asegurar a realización de certas actividades asociadas ó pedido.
+
+.. figure:: images/order-quality.png
+   :scale: 70
 
 Edición de elementos de pedido
 ===============================
@@ -68,9 +113,12 @@ Edición de elementos de pedido
 A edición de elementos de pedido realizarase dende a pestana de listado de elementos de pedido a partir da icona de edición. Se o usuario preme na icona de edición, o sistema amosa unha nova pantalla dende a que o usuario pode realizar o seguinte:
 
 * Editar a información do elemento de pedido.
+* Visualización de horas imputadas a elemento de pedido.
 * Xestionar os avances dos elementos de pedido.
 * Xestionar as etiquetas do pedido.
-* Visualización de horas imputadas a elemento de pedido.
+* Xestionar os criterios esixidos polo elemento de pedido.
+* Xestionar os materiais.
+* Xestionar os formularios de calidade.
 
 Edición da información do elemento de pedido
 --------------------------------------------

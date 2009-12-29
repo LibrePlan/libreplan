@@ -34,7 +34,7 @@ Xestión de traballadores
 ========================
 
 
-A xestión de traballadores realizarase dende a pestana de "Recursos" e a operación de "Navalpro". Dende a lista de recursos é posible editar cada un dos traballadores premendo na icona estándar de edición.
+A xestión de traballadores realizarase dende a pestana de "Recursos" e a operación de "Lista de traballadores". Dende a lista de recursos é posible editar cada un dos traballadores premendo na icona estándar de edición.
 
 Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestanas:
 
@@ -49,7 +49,7 @@ Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestan
 
 2) Pestana de criterios. Dende este punto poderase configurar os criterios que un traballador satisfai. O usuario poderá asignar calquera valor de criterio de tipo traballador ou xenérico que así considere a un traballador. É importante, para que a aplicación sexa utilizada en todo o seu valor, que os traballadores satisfagan criterios. Para asignar criterios o usuario debe:
 
-   i. Premer no botón "Navalpro".
+   i. Premer no botón "Engadir criterio".
 
    ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
 
@@ -62,9 +62,14 @@ Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestan
 .. figure:: images/worker-criterions.png
    :scale: 70
 
-3)  Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para a máquina. Cada máquina disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir da creación dun baleiro, copia a partir dun existente ou creación a partir dun calendario derivado.
+3)  Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para o recurso traballador. Cada traballador disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir dun existente.
 
 .. figure:: images/worker-calendar.png
+   :scale: 70
+
+4)  Pestana de categoría de custo. Pestana dende a que se pode configurar a categoría de custo que satisfai un recurso nun período dado. Estes datos son utilizados para posteriormente calcular os custos asociados ó traballador nun proxecto.
+
+.. figure:: images/worker-costcategory.png
    :scale: 70
 
 
@@ -76,14 +81,17 @@ Xestión de máquinas
 
 As máquinas son recursos a todos os efectos, polo cal, tal e como sucede cos traballadores, as máquinas serán administrables e asignables a tarefas. A asignación de recursos tratarase na sección de asignación. Neste punto explicaranse as características específicas das máquinas.
 
-As máquinas son administradas dende a sección de recursos. En dita sección existe unha operación chamada "Listado de máquinas" que permitirá a visualización das máquinas que dipoñen nunha empresa. A partir deste listado poderáse editar ou borrar unha máquina.
+As máquinas son administradas dende a entrada de menú "Recursos". En dita sección existe unha operación chamada "Listado de máquinas" que permitirá a visualización das máquinas que dipoñen nunha empresa. A partir deste listado poderase editar ou borrar unha máquina.
 
 
-A edición dunha máquina o sistema amosará unha serie de pestanas dende as cales se permitirá administrar a seguinte información:
-1) Pestana de datos da máquina. Pestana para a Edición de datos identificativos das máquinas. Os datos modificables nesta pestana son:
+Na edición dunha máquina o sistema amosará unha serie de pestanas dende as cales se permitirá administrar diferentes datos:
+
+1) Pestana de datos da máquina. Pestana para a edición de datos identificativos das máquinas. Os datos modificables nesta pestana son:
 
    i Nome.
+
    ii Código da máquina.
+
    iii Descrición da máquina.
 
 
@@ -91,23 +99,22 @@ A edición dunha máquina o sistema amosará unha serie de pestanas dende as cal
    :scale: 70
 
 
-2) Pestana de criterios. Tal e como se comentou na anterior sección de recursos traballadores, esta será a pestana na que se poden engadir criterios que satisfán as diversas máquinas do sistema. Os criterios que serán asignables ás máquinas serán aqueles que se identificaran como criterios de máquina ou xenéricos. Non se poderán asignar criterios de traballadores. Para asignar criterios o usuario deberá:
+2) Pestana de criterios. Tal e como se comentou na anterior sección de recursos traballadores, esta será a pestana na que se poden engadir criterios que satisfán as diversas máquinas do sistema. Os criterios que serán asignables ás máquinas serán os de criterios de tipo máquina ou xenéricos. Non se poderán asignar criterios de traballadores. Para asignar criterios o usuario deberá:
 
-   i. Premer no botón "Navalpro".
+   i. Premer no botón "Engadir criterio".
 
    ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
 
-   iii. Premer no botón de engadir.
+   iii. Seleccionar data de inicio do criterio dende o momento que deba aplicarse.
 
-   iv. Seleccionar data de inicio do criterio dende o momento que deba aplicarse.
+   iv. Seleccionar a data de fin de aplicación do criterio ó recurso. Dita data non é obrigatoria indicando que o criterio é indefinido.
 
-   v. Seleccionar a data de fin de aplicación do criterio ó recurso. Dita data non é obrigatoria indicando que o criterio é indefinido.
+   v. Premer no botón de "Gardar e Continuar".
 
 .. figure:: images/machine-criterions.png
    :scale: 70
 
-3)  Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para a máquina. Cada máquina disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir da creación dun baleiro, copia a partir dun existente ou creación a partir dun calendario derivado.
-
+3) Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para o recurso máquina. Cada traballador disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir dun existente.
 
 .. figure:: images/machine-calendar.png
    :scale: 70
@@ -115,23 +122,31 @@ A edición dunha máquina o sistema amosará unha serie de pestanas dende as cal
 4) Pestana de configuración de máquinas: Dende esta pestana será posible configurar a relación das máquinas cos recursos traballadores existentes. Unha máquina disporá de un alfa que indicará a relación entre a máquina e os recursos implicados, tal e como xa se comentou, un alfa de 0.5 indicará que se consumirá traballo de 0.5 persoas para cada xornada completa de máquina. O sistema, a partir dun alfa, crea automáticamente asignacións á traballadores que estean dalgún xeito relaciondao coa máquina unha vez se asigna unha máquina a unha tarefa. A forma de relacionar un traballador con unha máquina pódese facer de dous xeitos:
 
    i Asignando específicamente un rango de datas nas que o traballador se desexa asignar a unha máquina. Será unha asignación específica de modo que o sistema asignará automáticamente horas ó traballador cando se planifique a máquina.
+
    ii Asignando específicamente criterios que se desexa satisfagan os traballadores que sexan asignados ás máquinas. Deste xeito farase unha asignación xenérica ós traballadores que satisfan os criterios.
 
+.. figure:: images/machine-configuration.png
+   :scale: 70
+
+5) Pestana de categoría de custo. Pestana dende a que se pode configurar a categoría de custo que satisfai unha máquina nun período dado. Estes datos son utilizados para posteriormente calcular os custos asociados ó traballador nun proxecto.
+
+.. figure:: images/machine-costcategory.png
+   :scale: 70
 
 Grupos de traballadores virtuais
 ================================
 
-A aplicación permite a creación de recursos no sistema os cales non son traballadores reais, senón que son persoal simulado que permite aumentar a capacidade productiva nun momento determinado segundo as configuracións que se definan do seu calendario. 
+A aplicación permite a creación de recursos no sistema os cales non son traballadores reais, senón que son persoal simulado que permite aumentar a capacidade productiva nun momento determinado segundo as configuracións que se definan do seu calendario.
 
 Mediante os grupos de traballadores virtuais será posible comprobar como se vería afectada a planificación dos proxectos contratando e asignando persoal que satisfaga os criterios que se definan, axudando deste modo no proceso de toma de decisións
 
-As pestanas das que consta o formulario de creación de grupos de traballadores virtuals son as mesmas que as que permiten configurar os traballadores, e dicir:
+As pestanas das que consta o formulario de creación de grupos de traballadores virtuais son as mesmas que as que permiten configurar os traballadores, e dicir:
 
    * Datos xerais
    * Criterios asignados
    * Calendarios
    * Horas asociadas
 
-A diferencia con respecto ós traballadores, e que nos grupos de traballadores virtuais especificaremos un nome para o grupo e unha cantidade que se corresponderá co número de persoas reais que forman este grupo. Adicionalmente existe un campo de observacións no que se pode aportar información adicional como por exemplo para que proxecto estaría prevista a contratación do equivalente do grupo de recursos virtuais, etc.
+A diferencia con respecto ós traballadores, e que nos grupos de traballadores virtuais especifícase un nome para o grupo e unha cantidade que se corresponderá co número de persoas reais que forman este grupo. Adicionalmente existe un campo de observacións no que se pode aportar información adicional como por exemplo para que proxecto estaría prevista a contratación do equivalente do grupo de recursos virtuais, etc.
 
 

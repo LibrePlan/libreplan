@@ -3,54 +3,72 @@ Calendarios
 
 .. contents::
 
-Os calendarios serán os elementos do portal que determinen as dispoñibilidades para o traballo dos distintos recursos. Un calendario na aplicación estará formado por unha serie de días anuais, cada día disporá de unha serie de horas dispoñibles para o traballo.
+Os calendarios serán as entidades do portal que determinen as capacidade de carga dos distintos recursos. Un calendario na aplicación estará formado por unha serie de días anuais, onde cada día disporá de unha serie de horas dispoñibles para traballar.
 
 Por exemplo, un festivo terá 0 horas dispoñibles e, se as horas de traballo dentro dun día laboral son 8, será este número o que se asignará de dispoñibilidade para ese día.
+
+Existen dous modos de indicarlle ó sistema cantas horas de traballo ten un día:
+
+* Por día da semana. Por exemplo, os luns trabállanse 8 horas xeralmente.
+* Por excepcións. Por exemplo, o luns 30 de Xaneiro trabállanse 10 horas.
 
 Administración de calendarios
 =============================
 
-A administración de calendarios actuará do seguinte xeito:
+O sistema de calendarios é xerárquico de modo que se poden crear calendarios base e tamén calendarios que herdan dos calendarios base, mantendo unha estrutura arbórea. Un calendario que herda dun calendario de nivel superior da árbore, herdará as adicacións diarias e as excepcións sempre e cando non sexan modificadas explícitamente para o calendario fillo. Ademáis, é necesario entender os seguites conceptos para administrar calendarios:
 
 * Cada día é independente entre sí e cada ano ten días diferentes, é dicir, se se marca o 8 de Decembro de 2009 como festivo eso non quere dicir que o ano 2010 xa teña o día 8 de Decembro como festivo.
 * Os días laborais márcanse en base a días da semana, é dicir, se se determina que o normal é traballar 8 horas os luns, quedarán todos os luns de todas as semanas dos diferentes anos marcados como 8 horas dispoñibles.
-* É posible marcar excepcións, é dicir, elixir un día concreto no que as horas dispoñibles sexan diferentes á regla xeral para dito día da semana.
+* É posible marcar excepcións ou intervalos de excepción, é dicir, elixir un día concreto ou grupo de días nos que as horas dispoñibles sexan diferentes á regla xeral para dito día da semana.
 
+.. figure:: images/calendar-administration.png
+   :scale: 70
 
-A administración de calendarios está accesible dende as operacións de "Administración". Desde dito punto o usuario pode realizar o seguinte
+A administración de calendarios está accesible dende as operacións da pestana de "Administración". Desde dito punto o usuario pode realizar as seguintes operacións:
 
 1. Crear un novo calendario dende cero.
 2. Crear un calendario derivado de outro calendario.
 3. Crear un calendario como copia de outro calendario.
 4. Editar un calendario existente.
 
-.. figure:: images/calendar-administration.png
-   :scale: 70
-
-
-
 Creación dun novo calendario
 ----------------------------
 
 Para a creación dun novo calendario é necesario premer no botón "Navalpro". O sistema amosará un formulario no que o usuario poderá realizar as seguintes operacións:
 
-* Marcar as horas dispoñibles para cada día da semana (luns, martes, mércores, xoves, venres, sábados e domingos).
-* Seleccionar un día específico do calendario.
-* Asignar horas como excepción a un día específico do calendario.
+* Elixir a pestana na que desexa traballar:
 
-Con estas operacións un usuario da aplicación ten a capacidade de personalizar os calendarios completamente ás súas necesidades. Para almacenar os cambios no formulario é necesario premer no botón "Navalpro".
+   * Marcado de excepcións
+   * Selección de horas traballadas por día.
+
+* Se o usuario selecciona o marcado de excepcións:
+   * Seleccionar un día específico do calendario.
+   * Marcar o tipo de excepción. Os tipos dispoñibles son: vacacións, baixa, folga, festivo, festivo traballable.
+   * Seleccionar a data de fin do intervalo de excepción (para marcar excepcións de 1 día de duración non se necesita modificar este campo).
+   * Marcar o número de horas traballadas durante os días excepcionais.
+   * Borrar excepcións previas.
+
+* Se o usuario elixe a selección de horas traballadas por día:
+
+   * Marcar as horas dispoñibles para cada día da semana (luns, martes, mércores, xoves, venres, sábados e domingos).
+   * Crear novas distribucións de horas semanais aplicables no futuro.
+   * Borrar distribucións de horas realizadas previamente.
+
+Con estas operacións un usuario da aplicación ten a capacidade de personalizar os calendarios completamente ás súas necesidades. Para almacenar os cambios no formulario é necesario premer no botón "Gardar".
 
 .. figure:: images/calendar-edition.png
    :scale: 70
 
+.. figure:: images/calendar-exceptions.png
+   :scale: 70
 
 
 Creación dun calendario derivado
 --------------------------------
 
-Un calendario derivado é un calendario que se crea como derivación dun existente, é dicir, herda todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades.
+Un calendario derivado é un calendario que se crea como fillo dun existente, é dicir, herda todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades.
 
-Un exemplo de uso de calendarios derivados é a existencia dun calendario xeral para España e a creación dun derivado para só incluir os 2 festivos galegos sobre o xeral.
+Un exemplo de uso de calendarios derivados é a existencia dun calendario xeral para España e a creación dun derivado para só incluir os festivos galegos engadidos sobre os que xa estaban definidos no xeral.
 
 É importante destacar que ante calquera modificación realizada sobre o calendario orixinal o calendario derivado será directamente afectado, sempre e cando, non se definira unha actuación concreta sobre el mesmo. Por exemplo, no calendario de España inclúese un día laboral no 17 de Maio con 8 horas de traballo e no calendario galego, que se creou como derivación, o día 17 de Maio é considerado un día de 0 horas de traballo por ser festivo. Se sobre o calendario español se cambian os días da semana do 17 Maio para que as horas dispoñibles sexan 4 diarias, no galego o que sucederá é que todos os días da semana do 17 de Maio terán 4 horas dispoñibles excepto o mesmo día 17 que terá 0 horas, tal e como explícitamente se establecera antes.
 
@@ -61,7 +79,7 @@ Para crear un calendario derivado na aplicación, é necesario facer o seguinte:
 
 * Acceder ó menú de *Administración*.
 * Premer na operación de administración de calendarios.
-* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Navalpro".
+* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Crear".
 * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
 
 Creación dun calendario por copia
@@ -71,33 +89,76 @@ Un calendario copiado é un calendario que se crea como copia exacta de outro ex
 
 A diferencia entre copiar e derivar un calendario radica nos cambios no orixinal. No caso de copias, se o orixinal é modificado, non afectará á copia, sen embargo, cando se deriva, sí afecta ó fillo.
 
-Un exemplo de uso de calendario por copia é o dispor de un calendario para Pontevedra e necesitar un calendario para A Coruña onde a maioría das características son as mesmas sen embargo, non se espera que os cambios nun afecten ó outro.
+Un exemplo de uso de calendario por copia é o dispor de un calendario para Pontevedra e necesitar un calendario para A Coruña onde a maioría das características son as mesmas, sen embargo, non se espera que os cambios nun afecten ó outro.
 
 Para crear un calendario copiado na aplicación, é necesario facer o seguinte:
 
 * Acceder ó menú de *Administración*.
 * Premer na operación de administración de calendarios.
-* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Navalpro".
+* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Crear".
 * Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
+
+Calendario por defecto
+----------------------
+Un dos calendarios existentes no sistema pode ser dado de alta como calendario por defecto. Este calendario será o que se asigne a calquera entidade que no sistema sexa xestionado con calendarios.
+
+Para configurar o calendario por defecto débese realizar o seguinte:
+
+* Acceder ó menú de *Administración*.
+* Premer na operación *configuración*.
+* Onde aparece o texto *Calendario por defecto*, seleccionar o que se desexe establecer como calendario por defecto da aplicación.
+* Premer en *Gardar*.
+
+.. figure:: images/default-calendar.png
+   :scale: 70
+
 
 Asignación de calendario a recursos
 -----------------------------------
 
-Un recurso poderá recibir como asignación un calendario existente ou un calendario creado específicamente para o recurso. En calquera dos casos, unha vez se asigna un calendario a un recurso, é posible realizar modificacións específicas para ese recurso.
+Os recursos só teñen activación, é dicir, horas dispoñibles para traballar, se o dispoñen de un calendario asignado con un período válido de activación. Se non se lle asignou ningún calendario ós recursos, os recursos teñen asignado o calendario por defecto con un período de activación que comeza na data de alta e sen data de caducidade.
 
-Os casos posibles son:
+.. figure:: images/resource-calendar.png
+   :scale: 70
 
-* *Creación de un calendario para o recurso a partir de cero*. Neste caso, o calendario será únicamente para o recurso e calqueira característica que se lle desexe asignar deberá ser modificada no propio calendario do recurso.
-* *Creación de un calendario para o recurso como copia de calendario existente*. O calendario recollerá dende un principio as especificidades do calendario orixinal, sen embargo, unha vez asignado, deberá ser modificado dende o propio recurso.
-* *Creación de un calendario para o recurso como derivado de calendario existente*. O calendario recollerá dende un principio as especificidades do calendario orixinal e, ó mesmo tempo, se o calendario orixinal é modificado para todos, o propio recurso recibirá esas modificacións de xeito indirecto, tal e como se comentou na sección de calendarios derivados.
+Sen embargo, é posible eliminar o calendario asignado previamente a un recurso e crear un calendario novo a partir de un existente. Deste xeito haberá recursos que poidan ser completamente personalizados a nivel de calendario.
 
 Para asignar un calendario a un recurso é necesario dar os seguintes pasos:
 
 * Acceder á edición de recursos.
-* Seleccionar a pestana de "Navalpro".
-* A partir da pestana anterior aparecerá un formulario de edición de calendarios que permitirá:
-  * Crear un calendario dende cero premendo no botón "Navalpro".
-  * Crear un calendario derivado premendo no botón "Navalpro".
-  * Crear un botón como copia premendo no botón "Navalpro".
-* O sistema amosará un formulario de edición de calendarios cos datos cargados en base á opción elixida no paso anterior.
-* Para almacenar é necsario premer en Save.
+* Elixir un recurso e premer en editar.
+* Seleccionar a pestana de "Calendario".
+* A partir da pestana anterior aparecerá un calendario coas excepcións, as horas traballables por día e os períodos de activación.
+* Para cada pestana:
+
+   * Excepcións: Será posible elixir o tipo de excepción e un período no que se aplica para poder incluír as vacacións, días festivos, laborables diferentes, etc.
+   * Semana de traballo: Será posible modificar as horas traballadas durante os distintos días da semana (luns, martes, etc.).
+   * Períodos de activación: Será posible crear novos períodos de activación que reflexe as datas de inicio e fin dos contratos asociados ó recurso. Ver a seguinte imaxe.
+
+* Para almacenar é necesario premer en *Gardar*.
+* O usuario pode premer en *Borrar* se desexa cambiar o calendario asignado ó recurso.
+
+.. figure:: images/new-resource-calendar.png
+   :scale: 70
+
+Asignación de calendario a pedidos
+----------------------------------
+
+Os proxectos poden dispor de un calendario diferente do calendario por defecto. Para cambiar o calendario do pedido é necesario:
+
+   * Acceder ó listado de pedidos dentro da vista global de empresa.
+   * Editar o pedido en cuestión.
+   * Acceder á pestana de "Datos xerais".
+   * Seleccionar no despregable de selección o calendario que se desexa asignar.
+   * Premer en "Gardar" ou "Gardar e Continuar".
+
+Asignación de calendario a tarefas
+----------------------------------
+Do mesmo xeito que se permite asignar calendarios a recursos ou pedidos, é posible realizar a mesma operación para tarefas planificadas. Esta operación permite definir calendarios específicos para momentos concretos dun proxecto. Para realizar esta operación será necesario:
+
+   * Acceder á planificación de un proxecto.
+   * Premer no botón dereito sobre a tarefa á que se desexa asignar calendario.
+   * Seleccionar a operación "Asignación de calendario".
+   * Elixir o que se desexa asignar á tarefa.
+   * Premer en "Aceptar".
+

@@ -3,18 +3,48 @@ Introdución
 
 .. contents::
 
-A aplicación para xestión da produción do sector auxiliar do naval pretende resolver principalmente o problema da planificación nas empresas pertencentes ó sector. Para elo desenvolvéronse unha serie de funcionalidades que dan solución a certos problemas detectados durante a análise do proxecto.
+A aplicación para xestión da produción do sector auxiliar do naval pretende resolver principalmente o problema da planificación nas empresas pertencentes ó sector. Para elo desenvolvéronse unha serie de funcionalidades que dan solución a certos problemas detectados durante a análise do proxecto. Sen embargo, a solucións propostas para as problemáticas xurdidas non deben ser vistas como exclusivas do sector naval, senon que poden ser útiles para calquera empresa á que os conceptos base utilizados lle sexan aplicables.
 
 
 .. figure:: images/company_view.png
    :scale: 50
 
+Vista global da empresa e xestión de perspectivas
+=================================================
+
+Tal e como se visualiza na anterior captura, a principal pantalla da aplicación e a vista global da empresa, unha vista na que o usuario poderá visualiar a lista de proxectos planificados para coñecer o estado global da empresa, tanto a nivel de pedidos, como de uso de recursos. A vista global de empresa está, asimesmo, formada por 3 perspectivas:
+* Vista de planificación: Vista que conxuga dous puntos de vista:
+
+   * Vista dos pedidos e a sua temporalidade: Cada proxecto é unha caixa de diagramas de Gantt indicando a data de comezo e de fin do proxecto. Ademáis, combínase dita información co amosado da data acordada de finalización (*deadline*) e con un contraste entre porcentaxe de avance e horas adicadas realmente a cada proxecto. Esta información da unha visión clara de como se atopa a empresa nun momento dado. Esta vista é a portada da aplicación.
+   * Gráfica de uso dos recursos da empresa: Gráfica que busca a información de asignacións dos recursos ós proxectos e que ofrece un resumo de como está o uso dos recursos de toda a empresa: a cor verde indica asignacións de recursos por debaixo do 100%, a liña negra indica a carga dispoñible de recursos e a cor amarela indica as asignacións a recursos que están por enriba do 100%. É posible dispor de menos asignacións que recursos dispoñibles e ó mesmo tempo contar con sobreasignacións en recursos concretos.
+
+* Vista de carga de recursos: Pantalla que amosa o listado de traballadores da empresa e a carga debido a asignacións específicas a tarefas ou asignacións xenéricas debido a que o recurso satisfai unha lista de criterios. Ver a seguinte imaxe. Para acceder a esta vista é necesario premer en *Carga global de recursos*.
+* Vista de administración de pedidos. Pantalla que amosa o listado de pedidos da empresa onde o usuario poderá realizar as seguintes operacións: filtrar, editar, borrar, visualizar en planificación ou crear novo pedido. Para acceder a esta vista é necesario premer en *Lista de pedidos*.
+
+.. figure:: images/resources_global.png
+   :scale: 50
+
+.. figure:: images/order_list.png
+   :scale: 50
+
+A xestión de perspectivas que se comentou para a vista global de empresa é moi similar á prantexada para un só proxecto. O acceso a un proxecto pódese realizar de varias formas:
+* Premendo no botón dereito sobre a caixa de diagrama de Gantt do pedido e seleccionando en *Planificar*.
+* Accedendo ó listado de pedidos e premendo na icona simbolizando os diagramas de Gantt.
+* Creando un novo pedido e cambiar de perspectiva sobre o pedido sendo visualizado.
+
+Sobre un pedido, a aplicación amosa as seguintes perspectivas:
+* Vista de planificación. Vista na que o usuario pode visualizar a planificación das tarefas, dependencias, fitos, etc. Ver sección de *Planificación* para máis información.
+* Vista de carga de recursos. Vista na que o usuario pode comprobar a carga dos recursos asignados ó proxecto. O código de cores é o mesmo que na vista global de empresa: verde para carga menor ó 100%, amarelo para carga igual a 100% e vermello para carga maior a 100%. A carga pode vir dada por unha tarefa our por unha lista de criterios (asignación xenérica).
+* Vista de edición de pedido. Vista na que o usuario pode administrar os datos do pedido. Ver sección de *Pedidos* para máis información..
+* Vista de asignación avanzada de recursos. Vista na que o usuario pode asignar os recursos de xeito avanzado, seleccionando as horas por día ou as funcións de asignación que desexa aplicar. Ver sección de *Asignación de recursos* para máis información.
+
 ¿Por que me é útil "Navalpro"?
 ==============================
 
-"Navalpro" é un proxecto desenvolvido co obxectivo de dotar ó usuario dunha ferramenta de planificación que se basea nunha serie de conceptos clave, os cales forman parte das características que distinguen a aplicación e a definen como unha ferramenta diseñada tendo en conta os problemas clave do sector:
+"Navalpro" é un proxecto desenvolvido co obxectivo de dotar ó usuario dunha ferramenta de planificación que se basea nunha serie de conceptos, que forman parte das características que distinguen a aplicación e a definen como unha ferramenta diseñada tendo en conta os problemas clave do sector naval:
 
 * Vista global de empresa e multiproxecto: "Navalpro" é unha aplicación orientada específicamente a dotar de información ós usuarios dos proxectos que se levan a cabo nunha empresa, polo que a base é multiproxecto. Non se determinou que o enfoque do proxecto sexa orientado individualmente a cada proxecto. Sen embargo, tamén será posible dipoñer de varias vistas específicas, entre elas a de proxectos individuais.
+* Xestión de perspectivas: A vista global de empresa ou a vista multiproxecto vense complementadas coas perspectivas sobre a información que se almacena. Por exemplo, a vista global de empresa permite visualizar os pedidos e contrastar o estado dos mesmos, visualizar a carga xeral de recursos da empresa e administrar os pedidos. Por outro lado, na vista de proxecto, é posible visualizar a planificación, a carga de recursos, a vista de asignación de recursos avanzada e a edición do pedido relacionado.
 * Criterios: Os criterios son unha entidade do sistema que permitirán clasificar os recursos (tanto humanos como máquinas) e as tarefas. Dende o punto de vista dos recursos, estes satisfarán criterios e, dende o punto de vista das tarefas, estas requerirán criterios a ser satisfeitos. Correspóndense con un dos aspectos máis importantes da aplicación, xa que os criterios formarán parte da base das asignacións xenéricas na aplicación, resolvendo un dos problemas máis importantes para o sector, a alta temporalidade dos recursos humanos e a dificultade para ter estimacións de carga da empresa a longo prazo.
 * Recursos: Serán de dous tipos diferentes: humanos e máquinas. Os recursos humanos serán os traballadores da empresa que se utilizarán para controlar a carga da empresa e de uso dos mesmos. Por outro lado, as máquinas, dependentes das persoas que as xestionan, serán outros recursos que tamén serán controlables na aplicación.
 * Asignación de recursos: Unha das claves é o feito de ofrecer a posibilidade de dous tipos diferentes de asignación: asignación específica e asignación xenérica. A xenérica é unha asignación baseada nos criterios que se lle establecen a unha tarefa para ser satisfeitos polos usuarios que teñen a capacidade de realizala.
