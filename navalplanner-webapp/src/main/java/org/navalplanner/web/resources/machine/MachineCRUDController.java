@@ -148,6 +148,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         resourcesCostCategoryAssignmentController.setResource(machineModel.getMachine());
         selectMachineDataTab();
         showEditWindow(_("Create machine"));
+        resourceCalendarModel.cancel();
     }
 
     private void showEditWindow(String title) {
@@ -349,9 +350,11 @@ public class MachineCRUDController extends GenericForwardComposer {
 
             @Override
             public void save() {
-                machineModel
-                        .setCalendarOfMachine((ResourceCalendar) resourceCalendarModel
-                                .getBaseCalendar());
+                ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel
+                        .getBaseCalendar();
+                if (calendar != null) {
+                    machineModel.setCalendarOfMachine(calendar);
+                }
                 reloadWindow();
             }
 

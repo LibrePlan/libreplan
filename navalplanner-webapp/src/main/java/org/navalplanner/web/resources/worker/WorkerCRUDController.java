@@ -223,16 +223,15 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateForm() {
-            getBookmarker().goToCreateForm();
-            workerModel.prepareForCreate();
-        if (workerModel.getCalendar() == null) {
-            createCalendar();
-        }
-            createAsignedCriterions();
-            resourcesCostCategoryAssignmentController.setResource(workerModel.getWorker());
-            editWindow.setTitle(_("Create Worker"));
-            getVisibility().showOnly(editWindow);
-            Util.reloadBindings(editWindow);
+        getBookmarker().goToCreateForm();
+        workerModel.prepareForCreate();
+        createAsignedCriterions();
+        resourcesCostCategoryAssignmentController.setResource(workerModel
+                .getWorker());
+        editWindow.setTitle(_("Create Worker"));
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+        resourceCalendarModel.cancel();
     }
 
     @Override
@@ -403,9 +402,11 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             @Override
             public void save() {
                 Integer capacity = workerModel.getCapacity();
-                workerModel
-                        .setCalendar((ResourceCalendar) resourceCalendarModel
-                                .getBaseCalendar());
+                ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel
+                        .getBaseCalendar();
+                if (calendar != null) {
+                    workerModel.setCalendar(calendar);
+                }
                 reloadCurrentWindow();
                 workerModel.setCapacity(capacity);
             }
@@ -442,15 +443,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void goToCreateVirtualWorkerForm() {
         workerModel.prepareForCreate(true);
-        if (workerModel.getCalendar() == null) {
-            createCalendar();
-        }
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
         editWindow.setTitle(_("Create virtual resource"));
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+        resourceCalendarModel.cancel();
     }
 
     public boolean isVirtualWorker() {
