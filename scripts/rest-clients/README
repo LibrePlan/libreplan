@@ -28,6 +28,20 @@
     - Check the returned errors are consistent with the comments in
       resources-sample.xml.
 
+  * Export order elements:
+
+    - export-order-element.sh ORDER-ELEMENT-CODE (authenticate with
+      wsreader/wsreader)
+
+  * Import orders:
+
+    - import-order.sh order-sample.xml (authenticate with wswriter/wswriter)
+
+  * Update orders:
+
+    - update-order.sh order-update-sample.xml (authenticate with
+      wswriter/wswriter)
+
 + When working with the online demo:
 
   * import-criterions-types.sh --prod criterion-types-sample.xml
@@ -37,3 +51,12 @@
 
   * import-resources.sh --prod resources-sample.xml
     (authenticate with wswriter/wswriter)
+
+  * export-order-element.sh --prod ORDER-ELEMENT-CODE (authenticate with
+      wsreader/wsreader)
+
+  * import-order.sh --prod order-sample.xml (authenticate with
+    wswriter/wswriter)
+
+  * update-order.sh --prod order-update-sample.xml (authenticate with
+    wswriter/wswriter)

@@ -22,7 +22,7 @@ done
 
 if [ "$file" = "" ]; then
     printf "Missing file\n" 1>&2
-    exit -1
+    exit 1
 fi
 
 authorization=`./base64.sh $loginName:$password`

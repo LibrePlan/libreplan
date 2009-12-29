@@ -16,18 +16,16 @@ do
         baseServiceURL=$PRODUCTION_BASE_SERVICE_URL
         certificate=$PRODUCTION_CERTIFICATE
     else
-       file=$i
+       orderElementCode=$i
     fi
 done
 
-if [ "$file" = "" ]; then
-    printf "Missing file\n" 1>&2
+if [ "$orderElementCode" = "" ]; then
+    printf "Missing order element code\n" 1>&2
     exit 1
 fi
 
 authorization=`./base64.sh $loginName:$password`
 
-curl -sv -X POST $certificate -d @$file \
-    --header "Content-type: application/xml" \
-    --header "Authorization: Basic $authorization" \
-    $baseServiceURL/criteriontypes | tidy -xml -i -q -utf8
+curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
+    $baseServiceURL/orderelements/$orderElementCode/ | tidy -xml -i -q -utf8
