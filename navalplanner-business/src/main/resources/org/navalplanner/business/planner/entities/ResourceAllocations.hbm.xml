@@ -20,7 +20,7 @@
             column="ASSIGNMENT_FUNCTION" not-null="false"
             cascade="all" lazy="false" />
 
-        <set name="derivedAllocations" cascade="all" inverse="true">
+        <set name="derivedAllocations" cascade="all-delete-orphan" inverse="true">
             <key column="RESOURCE_ALLOCATION_ID" />
             <one-to-many class="DerivedAllocation"/>
         </set>
