@@ -148,18 +148,7 @@ public class Planner extends HtmlMacroComponent  {
         if (ganttPanel == null) {
             return;
         }
-        LongOperationFeedback.execute(ganttPanel, new ILongOperation() {
-
-            @Override
-            public String getName() {
-                return _("changing zoom");
-            }
-
-            @Override
-            public void doAction() throws Exception {
-                ganttPanel.setZoomLevel(zoomLevel);
-            }
-        });
+        ganttPanel.setZoomLevel(zoomLevel);
     }
 
     public void zoomIncrease() {
