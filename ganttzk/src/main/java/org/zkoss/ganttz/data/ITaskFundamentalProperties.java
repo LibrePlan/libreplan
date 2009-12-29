@@ -70,6 +70,8 @@ public interface ITaskFundamentalProperties {
 
     public String getLabelsText();
 
+    public String getResourcesText();
+
     List<Constraint<Date>> getStartConstraints();
 
     public void moveTo(Date date);

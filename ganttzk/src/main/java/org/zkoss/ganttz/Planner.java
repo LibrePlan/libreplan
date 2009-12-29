@@ -375,6 +375,17 @@ public class Planner extends HtmlMacroComponent  {
         }
     }
 
+    public void showAllResources() {
+        Button showAllLabelsButton = (Button) getFellow("showAllResources");
+        if (showAllLabelsButton.getSclass().equals("planner-command")) {
+            Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
+            showAllLabelsButton.setSclass("planner-command clicked");
+        } else {
+            Clients.evalJavaScript("zkTasklist.hideResourceTooltips();");
+            showAllLabelsButton.setSclass("planner-command");
+        }
+    }
+
     public void print() {
         Print.print(diagramGraph);
     }

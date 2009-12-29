@@ -35,6 +35,9 @@ planner = self;
         <button id="showAllLabels" onClick="planner.showAllLabels();"
             label="${i18n:_('Show all labels')}" class="planner-command" sclass="planner-command" />
 
+        <button id="showAllResources" onClick="planner.showAllResources();"
+            label="${i18n:_('Show all resources')}" class="planner-command" sclass="planner-command" />
+
         <button id="btnPrint" onClick="planner.print()"
             label="${i18n:_('Print')}" />
 

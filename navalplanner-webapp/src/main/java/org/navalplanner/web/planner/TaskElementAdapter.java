@@ -363,6 +363,21 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     });
         }
 
+        @Override
+        public String getResourcesText() {
+            return transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<String>() {
+
+                        @Override
+                        public String execute() {
+                            orderElementDAO
+                                    .reattachUnmodifiedEntity(taskElement
+                                            .getOrderElement());
+                            return buildResourcesText();
+                        }
+                    });
+        }
+
         private String buildLabelsText() {
             StringBuilder result = new StringBuilder();
 
@@ -379,6 +394,31 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 }
             }
 
+            return result.toString();
+        }
+
+        private String buildResourcesText() {
+            StringBuilder result = new StringBuilder();
+            List<Resource> foundResources = new ArrayList<Resource>();
+
+            if (taskElement.getResourceAllocations() != null) {
+                for (ResourceAllocation each : taskElement.getResourceAllocations()) {
+
+                    List<Resource> list = each.getAssociatedResources();
+
+                    if (!list.isEmpty()) {
+                        for (Resource r : list) {
+                            if (!foundResources.contains(r)) {
+                                result.append(r.getName()).append(",");
+                                foundResources.add(r);
+                            }
+                        }
+                    }
+                }
+                if (result.length() > 1) {
+                    result.delete(result.length() - 1, result.length());
+                }
+            }
             return result.toString();
         }
 
@@ -445,6 +485,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
             return deadline.toDateTimeAtStartOfDay().toDate();
         }
+
     }
 
     @Override

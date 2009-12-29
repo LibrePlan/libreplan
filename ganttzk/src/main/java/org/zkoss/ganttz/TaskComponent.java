@@ -455,4 +455,8 @@ public class TaskComponent extends Div implements AfterCompose {
         return task.getLabelsText();
     }
 
+    public String getResourcesText() {
+        return task.getResourcesText();
+    }
+
 }

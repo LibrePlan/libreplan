@@ -71,6 +71,21 @@ zkTasklist.hideAllTooltips = function(elem) {
 	}
 }
 
+zkTasklist.showResourceTooltips = function(elem) {
+	var tooltips = YAHOO.util.Selector.query('.task-resources');
+	for (j=0;j<tooltips.length;j++) {
+		tooltips[j].style["display"] = "inline";
+	}
+}
+
+zkTasklist.hideResourceTooltips = function(elem) {
+	var tooltips = YAHOO.util.Selector.query('.task-resources');
+	for (j=0;j<tooltips.length;j++) {
+		tooltips[j].style["display"] = "none";
+	}
+}
+
+
 
 zkTasklist.hideTooltip = function(elem) {
 	if (zkTasklist.tooltipTimeout) {

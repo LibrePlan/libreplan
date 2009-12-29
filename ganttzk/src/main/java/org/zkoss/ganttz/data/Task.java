@@ -250,6 +250,10 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getLabelsText();
     }
 
+    public String getResourcesText() {
+        return fundamentalProperties.getResourcesText();
+    }
+
     public void moveTo(Date date) {
         Date previousStart = getBeginDate();
         long previousLength = getLengthMilliseconds();

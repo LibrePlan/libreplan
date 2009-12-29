@@ -52,6 +52,8 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private String labelsText;
 
+    private String resourcesText;
+
     public DefaultFundamentalProperties() {
     }
 
@@ -70,6 +72,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         this.advancePercentage = advancePercentage;
         this.tooltipText = "Default tooltip";
         this.labelsText = "";
+        this.resourcesText = "";
     }
 
     public String getName() {
@@ -138,6 +141,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public String getLabelsText() {
         return labelsText;
+    }
+
+    @Override
+    public String getResourcesText() {
+        return resourcesText;
     }
 
     @Override

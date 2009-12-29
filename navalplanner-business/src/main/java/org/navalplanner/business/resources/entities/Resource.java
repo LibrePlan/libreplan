@@ -119,6 +119,8 @@ public abstract class Resource extends BaseEntity{
 
     public abstract String getShortDescription();
 
+    public abstract String getName();
+
     private interface IPredicate {
         public boolean accepts(CriterionSatisfaction satisfaction);
     }
