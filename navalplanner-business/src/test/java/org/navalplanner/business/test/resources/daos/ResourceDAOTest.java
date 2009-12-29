@@ -70,7 +70,7 @@ public class ResourceDAOTest {
 
         Resource foundResource = resourceDAO.find(resource.getId());
         assertNotSame(resource, foundResource);
-        assertNotNull(foundResource.getCalendar().getId());
+        assertNotNull(foundResource.getCalendar());
         assertThat(foundResource.getCalendar().getId(),
                 equalTo(resourceCalendar.getId()));
     }
@@ -81,7 +81,7 @@ public class ResourceDAOTest {
         return resourceCalendar;
     }
 
-    private Worker givenValidWorker() {
+    public static Worker givenValidWorker() {
         Worker worker = Worker.create();
         worker.setFirstName("First name");
         worker.setSurname("Surname");

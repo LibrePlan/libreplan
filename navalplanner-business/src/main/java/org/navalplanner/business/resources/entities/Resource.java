@@ -647,6 +647,9 @@ public abstract class Resource extends BaseEntity{
 
     public void setCalendar(ResourceCalendar calendar) {
         this.calendar = calendar;
+        if (calendar != null) {
+            calendar.setResource(this);
+        }
     }
 
     public ResourceCalendar getCalendar() {

@@ -47,7 +47,10 @@ import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.test.calendars.entities.BaseCalendarTest;
+import org.navalplanner.business.test.resources.daos.ResourceDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -73,6 +76,9 @@ public class BaseCalendarDAOTest {
 
     @Autowired
     private SessionFactory session;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     @Resource
     private IDataBootstrap calendarBootstrap;
@@ -292,14 +298,17 @@ public class BaseCalendarDAOTest {
         BaseCalendar calendar2 = BaseCalendarTest.createBasicCalendar();
         calendar1.setName("Test2");
 
+        Worker worker = ResourceDAOTest.givenValidWorker();
         ResourceCalendar resourceCalendar = ResourceCalendar.create();
         resourceCalendar.setName("testResourceCalendar");
         BaseCalendarTest.setHoursForAllDays(resourceCalendar, 8);
+        worker.setCalendar(resourceCalendar);
 
         baseCalendarDAO.save(calendar1);
         baseCalendarDAO.save(calendar2);
-        baseCalendarDAO.save(resourceCalendar);
+        resourceDAO.save(worker);
         baseCalendarDAO.flush();
+        resourceDAO.flush();
 
         baseCalendars = baseCalendarDAO.getBaseCalendars();
         assertThat(baseCalendars.size(), equalTo(previous + 2));

@@ -34,6 +34,9 @@
         <joined-subclass name="ResourceCalendar">
             <key column="BASE_CALENDAR_ID" />
             <property name="capacity" not-null="true" />
+            <one-to-one name="resource"
+                class="org.navalplanner.business.resources.entities.Resource"
+                access="field" property-ref="calendar" />
         </joined-subclass>
     </class>
 

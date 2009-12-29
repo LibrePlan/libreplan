@@ -24,7 +24,7 @@
 
     <many-to-one name="calendar" access="field" cascade="all"
         class="org.navalplanner.business.calendars.entities.ResourceCalendar"
-        unique="true" />
+        column="BASE_CALENDAR_ID" unique="true" />
 
     <set name="resourcesCostCategoryAssignments" inverse="true" cascade="all-delete-orphan">
         <key column="RESOURCE_ID"/>
