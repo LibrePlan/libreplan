@@ -67,6 +67,8 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     private Textbox passwordBox;
 
+    private Textbox passwordConfirmationBox;
+
     private Combobox userRolesCombo;
 
     private Autocomplete profileAutocomplete;
@@ -78,6 +80,7 @@ public class UserCRUDController extends GenericForwardComposer implements
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
         passwordBox = (Textbox) createWindow.getFellowIfAny("password");
+        passwordConfirmationBox = (Textbox) createWindow.getFellowIfAny("passwordConfirmation");
         profileAutocomplete = (Autocomplete) createWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) createWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRoles(userRolesCombo);
@@ -112,6 +115,10 @@ public class UserCRUDController extends GenericForwardComposer implements
                 _("The password for a new user cannot be empty"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
+        //clean the password boxes, they are not cleared automatically
+        //because they are not directly associated to an attribute
+        passwordBox.setRawValue("");
+        passwordConfirmationBox.setRawValue("");
     }
 
     @Override
@@ -122,8 +129,9 @@ public class UserCRUDController extends GenericForwardComposer implements
         passwordBox.setConstraint((Constraint)null);
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
-        //this line makes the new Constraint (null) apply
+        //cleans the box and forces the check of the new Constraint (null)
         passwordBox.setValue("");
+        passwordConfirmationBox.setValue("");
     }
 
     public void cancel() {
