@@ -20,7 +20,10 @@
 
 package org.navalplanner.business.users.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 
 /**
@@ -29,5 +32,13 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public interface IOrderAuthorizationDAO extends IGenericDAO<OrderAuthorization, Long> {
+
+    /**
+     * Retrieves the list of {@link OrderAuthorization} objects related with
+     * the specified {@link Order} object.
+     * @param order {@link Order} object
+     * @return list of {@link OrderAuthorization} objects
+     */
+    List<OrderAuthorization> listByOrder(Order order);
 
 }

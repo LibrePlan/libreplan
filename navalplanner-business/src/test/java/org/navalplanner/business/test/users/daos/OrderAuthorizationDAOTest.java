@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -80,6 +81,9 @@ public class OrderAuthorizationDAOTest {
     @Autowired
     IOrderDAO orderDAO;
 
+    @Autowired
+    IBaseCalendarDAO baseCalendarDAO;
+
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
@@ -104,7 +108,10 @@ public class OrderAuthorizationDAOTest {
 
     private Order createValidOrder() {
         Order order = Order.create();
-        order.setCalendar(BaseCalendar.create());
+        BaseCalendar baseCalendar = BaseCalendar.create();
+        baseCalendar.setName(UUID.randomUUID().toString());
+        baseCalendarDAO.save(baseCalendar);
+        order.setCalendar(baseCalendar);
         order.setInitDate(new Date());
         order.setName(UUID.randomUUID().toString());
         order.setCode(UUID.randomUUID().toString());
@@ -154,6 +161,28 @@ public class OrderAuthorizationDAOTest {
         orderAuthorizationDAO.save(profileOrderAuthorization);
         assertEquals(previous + 2, orderAuthorizationDAO.list(OrderAuthorization.class).size());
     }
+
+    @Test
+    public void testListOrderAuthorizationsByOrder() {
+        int previous = orderAuthorizationDAO.list(OrderAuthorization.class).size();
+
+        Order order = createValidOrder();
+        orderDAO.save(order);
+
+        UserOrderAuthorization userOrderAuthorization1 = createValidUserOrderAuthorization();
+        userOrderAuthorization1.setOrder(order);
+        orderAuthorizationDAO.save(userOrderAuthorization1);
+
+        UserOrderAuthorization userOrderAuthorization2 = createValidUserOrderAuthorization();
+        userOrderAuthorization2.setOrder(order);
+        orderAuthorizationDAO.save(userOrderAuthorization2);
+
+        assertEquals(previous + 2, orderAuthorizationDAO.listByOrder(order).size());
+
+        userOrderAuthorization2.setOrder(null);
+        orderAuthorizationDAO.save(userOrderAuthorization2);
+        assertEquals(previous + 1, orderAuthorizationDAO.listByOrder(order).size());
+   }
 
     @Test
     public void testNavigateFromOrderAuthorizationToUser() {

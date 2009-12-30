@@ -20,7 +20,12 @@
 
 package org.navalplanner.business.users.daos;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.springframework.stereotype.Repository;
 
@@ -33,4 +38,10 @@ import org.springframework.stereotype.Repository;
 public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorization, Long>
     implements IOrderAuthorizationDAO {
 
+    @Override
+    public List<OrderAuthorization> listByOrder(Order order) {
+        Criteria c = getSession().createCriteria(OrderAuthorization.class);
+        c.add(Restrictions.eq("order", order));
+        return c.list();
+    }
 }
