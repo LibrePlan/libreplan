@@ -106,6 +106,8 @@ public abstract class Resource extends BaseEntity{
         }
         return list;
     }
+
+    @Valid
     public Set<CriterionSatisfaction> getCriterionSatisfactions() {
         Set<CriterionSatisfaction> satisfactionActives =
                 new HashSet<CriterionSatisfaction>();

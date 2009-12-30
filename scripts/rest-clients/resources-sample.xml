@@ -27,4 +27,14 @@
     <!--  Missing first name, surname, and nif. -->
     <worker first-name="" nif=""/>
 
+    <!--  Missing start date in criterion satisfaction. -->
+    <worker first-name="w2-firstName" surname="w2-surname" nif=" w2-nif ">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                finish-date="2009-12-25"/>
+        </criterion-satisfaction-list>
+    </worker>
+
 </resource-list>

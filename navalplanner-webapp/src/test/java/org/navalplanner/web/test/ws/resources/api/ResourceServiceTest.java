@@ -164,6 +164,39 @@ public class ResourceServiceTest {
 
     @Test
     @NotTransactional
+    public void testAddResourceWithCriterionSatisfactionsWithoutStartDate() {
+
+        /* Create a criterion type. */
+        CriterionType ct = createCriterionType();
+
+        /* Create a resource DTO. */
+        MachineDTO machineDTO = new MachineDTO(ct.getName(), "name", "desc");
+        machineDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(ct.getName() , "c1",
+                null, Calendar.getInstance().getTime())); // Missing start date.
+
+        /* Test. */
+        List<ResourceDTO> resources = new ArrayList<ResourceDTO>();
+        resources.add(machineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            resourceService.addResources(new ResourceListDTO(resources)).
+                instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.size() == 1);
+        assertTrue(instanceConstraintViolationsList.get(0).
+            constraintViolations.size() == 1);
+
+        try {
+            findUniqueMachineByCode(machineDTO.code);
+            fail("InstanceNotFoundException expected");
+        } catch (InstanceNotFoundException e) {
+        }
+
+    }
+
+    @Test
+    @NotTransactional
     public void testAddResourceWithCriterionSatisfactionsWithIncorrectNames() {
 
         /* Create a criterion type. */
