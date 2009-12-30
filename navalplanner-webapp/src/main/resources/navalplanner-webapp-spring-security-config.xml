@@ -19,12 +19,12 @@
         <intercept-url pattern="/common/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/zkau/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/common/layout/login.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/**" access="ROLE_BASIC_USER" />
         <intercept-url pattern="/advance/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMINISTRATION"/>
         <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/labels/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/**" access="ROLE_BASIC_USER" />
         <form-login login-page="/common/layout/login.zul" authentication-failure-url="/common/layout/login.zul?login_error=x"/>
 
     </http>
