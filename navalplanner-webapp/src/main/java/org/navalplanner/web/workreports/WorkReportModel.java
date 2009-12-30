@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.workreports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +46,7 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
+import org.navalplanner.web.orders.IPredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -248,6 +251,18 @@ public class WorkReportModel implements IWorkReportModel {
         return resultDTOs;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<WorkReportDTO> getFilterWorkReportDTOs(IPredicate predicate) {
+        List<WorkReportDTO> resultDTOs = new ArrayList<WorkReportDTO>();
+        for (WorkReportDTO workReportDTO : getWorkReportDTOs()) {
+            if (predicate.accepts(workReportDTO)) {
+                resultDTOs.add(workReportDTO);
+            }
+        }
+        return resultDTOs;
+    }
+
     private List<WorkReport> getAllWorkReports() {
         List<WorkReport> result = new ArrayList<WorkReport>();
         for (WorkReport each : workReportDAO.list(WorkReport.class)) {
@@ -432,4 +447,28 @@ public class WorkReportModel implements IWorkReportModel {
         return descriptionField.getLength();
     }
 
+    /**
+     * Set the selected default work report type to filter the work reports
+     */
+    public static final String SHOW_ALL_TYPES = _("Show all");
+
+    private final WorkReportType defaultType = WorkReportType.create(
+            SHOW_ALL_TYPES, "");
+
+    public WorkReportType getDefaultType() {
+        return defaultType;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<WorkReportType> getWorkReportTypes() {
+        List<WorkReportType> result = workReportTypeDAO
+                .list(WorkReportType.class);
+        if (result.isEmpty()) {
+            result.add(getDefaultType());
+        } else {
+            result.add(0, getDefaultType());
+        }
+        return result;
+    }
 }

@@ -22,6 +22,7 @@ package org.navalplanner.web.workreports;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.orders.IPredicate;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -63,9 +65,12 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -118,6 +123,16 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private static final String ITEM = "item";
 
+    private transient IPredicate predicate;
+
+    private Grid listing;
+
+    private Listbox listType;
+
+    private Datebox filterStartDate;
+
+    private Datebox filterFinishDate;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -145,6 +160,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
             if (Messagebox.OK == status) {
                 workReportModel.remove(workReport);
+                loadComponentslist(listWindow);
                 Util.reloadBindings(listWindow);
             }
         } catch (InterruptedException e) {
@@ -451,6 +467,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     @Override
     public void goToList() {
         getVisibility().showOnly(listWindow);
+        loadComponentslist(listWindow);
         Util.reloadBindings(listWindow);
     }
 
@@ -491,6 +508,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         autocompleteResource = (Autocomplete) window
                 .getFellow("autocompleteResource");
         txtOrderElement = (Textbox) window.getFellow("txtOrderElement");
+    }
+
+    private void loadComponentslist(Component window) {
+        // components work report list
+        listing = (Grid) window.getFellow("listing");
+        listType = (Listbox) window.getFellow("listType");
+        filterStartDate = (Datebox) window.getFellow("filterStartDate");
+        filterFinishDate = (Datebox) window.getFellow("filterFinishDate");
+        clearFilterDates();
     }
 
     /**
@@ -670,6 +696,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             }
         });
         row.appendChild(date);
+    }
+
+    private String getFormatDate(Date value) {
+        return value != null ? (new SimpleDateFormat("dd/MM/yyyy"))
+                .format((Date) value) : new String("");
     }
 
     /**
@@ -1221,4 +1252,95 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
+    /**
+     * Filter or show all work Reports
+     */
+
+    private final String SHOW_ALL = _("Show all");
+
+    private final String FILTER = _("Filter work reports");
+
+    public List<WorkReportType> getWorkReportTypes() {
+        return workReportModel.getWorkReportTypes();
+    }
+
+    public WorkReportType getDefaultWorkReportType() {
+        return workReportModel.getDefaultType();
+    }
+
+    public void setDefaultWorkReportType(WorkReportType type) {
+
+    }
+
+    /**
+     * Apply filter to work reports
+     * @param event
+     */
+    public void onApplyFilter(Event event) {
+        createPredicate();
+        filterByPredicate();
+    }
+
+    public Constraint checkConstraintFinishDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date finishDate = (Date) value;
+                if ((finishDate != null)
+                        && (filterStartDate.getValue() != null)
+                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
+                    filterFinishDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be greater than start date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date startDate = (Date) value;
+                if ((startDate != null)
+                        && (filterFinishDate.getValue() != null)
+                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
+                    filterStartDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be lower than finish date"));
+                }
+            }
+        };
+    }
+
+    private void createPredicate() {
+        WorkReportType type = getSelectedType();
+        Date startDate = filterStartDate.getValue();
+        Date finishDate = filterFinishDate.getValue();
+        predicate = new WorkReportPredicate(type, startDate, finishDate);
+    }
+
+    private WorkReportType getSelectedType() {
+        Listitem itemSelected = listType.getSelectedItem();
+        if ((itemSelected != null)
+                && (!((WorkReportType) itemSelected.getValue())
+                        .equals(getDefaultWorkReportType()))) {
+            return (WorkReportType) itemSelected.getValue();
+        }
+        return null;
+    }
+
+    private void filterByPredicate() {
+        List<WorkReportDTO> filterWorkReports = workReportModel
+                .getFilterWorkReportDTOs(predicate);
+        listing.setModel(new SimpleListModel(filterWorkReports.toArray()));
+        listing.invalidate();
+    }
+
+    private void clearFilterDates() {
+        filterStartDate.setValue(null);
+        filterFinishDate.setValue(null);
+    }
 }

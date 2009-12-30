@@ -35,6 +35,7 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
+import org.navalplanner.web.orders.IPredicate;
 
 /**
  * Contract for {@link WorkRerportType}
@@ -98,8 +99,13 @@ public interface IWorkReportModel {
     List<WorkReportDTO> getWorkReportDTOs();
 
     /**
+     * Get all {@link WorkReportType} elements
+     * @return
+     */
+    List<WorkReportType> getWorkReportTypes();
+
+    /**
      * Returns true if WorkReport is being edited
-     *
      * @return
      */
     boolean isEditing();
@@ -188,4 +194,16 @@ public interface IWorkReportModel {
      */
     Integer getLength(DescriptionValue descriptionValue);
 
+    /**
+     * checks if work report holds predicate. In case it's true, add workReport
+     * and all its children to filtered workReports list
+     * @return
+     */
+    List<WorkReportDTO> getFilterWorkReportDTOs(IPredicate predicate);
+
+    /**
+     * Return a selected default {@link WorkReportType} to filter the work reports
+     * @return
+     */
+    WorkReportType getDefaultType();
 }

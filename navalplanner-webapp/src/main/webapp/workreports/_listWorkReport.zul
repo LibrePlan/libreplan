@@ -19,7 +19,28 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Work report listing')}">
-    <grid id="listing"  mold="paging" pageSize="10"
+        <div align="right">
+        <hbox id="hboxFilter" align="end">
+          <!-- Filter by type, start date and finish date -->
+          <label value="${i18n:_('Filter work report by :')}"/>
+          <label value="${i18n:_('Type')}"/>
+          <listbox id="listType" mold="select" rows="1"
+            model="@{controller.workReportTypes}" width="150px"
+                selectedItem="@{controller.defaultWorkReportType}">
+                <listitem self="@{each='workReportType'}" value="@{workReportType}">
+                  <listcell label="@{workReportType.name}" />
+               </listitem>
+          </listbox>
+          <label value="${i18n:_('from')}"/>
+          <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
+          <label value="${i18n:_('to')}"/>
+          <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
+          <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                onClick="controller.onApplyFilter(event)"/>
+        </hbox>
+        </div>
+        <separator bar="false" spacing="20px" orient="horizontal"/>
+        <grid id="listing"  mold="paging" pageSize="10"
         model="@{controller.workReportDTOs}"
         onInitRender ="controller.sortWorkReports();">
         <columns sizable="true">
