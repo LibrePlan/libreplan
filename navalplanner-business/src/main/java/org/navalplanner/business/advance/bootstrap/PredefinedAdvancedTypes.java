@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.advance.bootstrap;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -27,10 +29,11 @@ import org.navalplanner.business.common.Registry;
 
 public enum PredefinedAdvancedTypes {
 
-    CHILDREN("children", new BigDecimal(100), new BigDecimal(0.01), true), PERCENTAGE(
-            "percentage", new BigDecimal(100), new BigDecimal(0.01), true), UNITS(
-            "units", new BigDecimal(Integer.MAX_VALUE), new BigDecimal(1),
-            false);
+    CHILDREN(_("children"), new BigDecimal(100), new BigDecimal(0.01), true), PERCENTAGE(
+            _("percentage"), new BigDecimal(100), new BigDecimal(0.01), true), UNITS(
+            _("units"), new BigDecimal(Integer.MAX_VALUE), new BigDecimal(1),
+            false), SUBCONTRACTOR(_("subcontractor"), new BigDecimal(100),
+            new BigDecimal(0.01), true);
 
     private PredefinedAdvancedTypes(String name, BigDecimal defaultMaxValue,
             BigDecimal precision, boolean percentage) {
