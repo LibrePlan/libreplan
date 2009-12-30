@@ -27,6 +27,8 @@ package org.navalplanner.business.users.entities;
  */
 public class UserOrderAuthorization extends OrderAuthorization {
 
+    private User user;
+
     /**
      * Necessary for Hibernate.
      */
@@ -42,5 +44,13 @@ public class UserOrderAuthorization extends OrderAuthorization {
 
     public static UserOrderAuthorization create(OrderAuthorizationType type) {
         return create(new UserOrderAuthorization(type));
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

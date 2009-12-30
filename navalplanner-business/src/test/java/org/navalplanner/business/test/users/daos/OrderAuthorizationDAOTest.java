@@ -26,14 +26,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.daos.IProfileDAO;
+import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
+import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -54,12 +63,29 @@ public class OrderAuthorizationDAOTest {
     @Autowired
     IOrderAuthorizationDAO orderAuthorizationDAO;
 
+    @Autowired
+    IUserDAO userDAO;
+
+    @Autowired
+    IProfileDAO profileDAO;
+
     private UserOrderAuthorization createValidUserOrderAuthorization() {
         return UserOrderAuthorization.create(OrderAuthorizationType.READ_AUTHORIZATION);
     }
 
     private ProfileOrderAuthorization createValidProfileOrderAuthorization() {
         return ProfileOrderAuthorization.create(OrderAuthorizationType.READ_AUTHORIZATION);
+    }
+
+    private User createValidUser() {
+        String loginName = UUID.randomUUID().toString();
+        return User.create(loginName, loginName, new HashSet<UserRole>());
+    }
+
+    private Profile createValidProfile() {
+        Set<UserRole> roles = new HashSet<UserRole>();
+        roles.add(UserRole.ROLE_BASIC_USER);
+        return Profile.create(UUID.randomUUID().toString(), roles);
     }
 
     @Test
@@ -99,5 +125,25 @@ public class OrderAuthorizationDAOTest {
         ProfileOrderAuthorization profileOrderAuthorization = createValidProfileOrderAuthorization();
         orderAuthorizationDAO.save(profileOrderAuthorization);
         assertEquals(previous + 2, orderAuthorizationDAO.list(OrderAuthorization.class).size());
+    }
+
+    @Test
+    public void testNavigateFromOrderAuthorizationToUser() {
+        User user = createValidUser();
+        userDAO.save(user);
+        UserOrderAuthorization userOrderAuthorization = createValidUserOrderAuthorization();
+        userOrderAuthorization.setUser(user);
+        orderAuthorizationDAO.save(userOrderAuthorization);
+        assertEquals(user.getId(), userOrderAuthorization.getUser().getId());
+    }
+
+    @Test
+    public void testNavigateFromOrderAuthorizationToProfile() {
+        Profile profile = createValidProfile();
+        profileDAO.save(profile);
+        ProfileOrderAuthorization profileOrderAuthorization = createValidProfileOrderAuthorization();
+        profileOrderAuthorization.setProfile(profile);
+        orderAuthorizationDAO.save(profileOrderAuthorization);
+        assertEquals(profile.getId(), profileOrderAuthorization.getProfile().getId());
     }
 }

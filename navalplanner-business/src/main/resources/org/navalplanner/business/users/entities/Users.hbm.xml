@@ -82,9 +82,11 @@
         </property>
 
         <subclass name="UserOrderAuthorization" discriminator-value="USER">
+            <many-to-one name="user" class="User" column="USER_ID" />
         </subclass>
 
         <subclass name="ProfileOrderAuthorization" discriminator-value="PROFILE">
+            <many-to-one name="profile" class="Profile" column="PROFILE_ID" />
         </subclass>
 
     </class>

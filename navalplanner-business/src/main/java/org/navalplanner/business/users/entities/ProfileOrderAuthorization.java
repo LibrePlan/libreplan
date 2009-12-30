@@ -27,6 +27,8 @@ package org.navalplanner.business.users.entities;
  */
 public class ProfileOrderAuthorization extends OrderAuthorization {
 
+    private Profile profile;
+
     /**
      * Necessary for Hibernate.
      */
@@ -42,5 +44,13 @@ public class ProfileOrderAuthorization extends OrderAuthorization {
 
     public static ProfileOrderAuthorization create(OrderAuthorizationType type) {
         return create(new ProfileOrderAuthorization(type));
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Profile getProfile() {
+        return profile;
     }
 }
