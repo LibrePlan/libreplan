@@ -26,6 +26,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -51,9 +52,9 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return advanceAssignment;
     }
 
-    @NotNull
     private BigDecimal maxValue;
 
+    @Valid
     private SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>(
             new AdvanceMeasurementComparator());
 
@@ -68,6 +69,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         this.maxValue.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
+    @NotNull(message = "maximum value not specified")
     public BigDecimal getMaxValue() {
         return this.maxValue;
     }

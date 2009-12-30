@@ -41,13 +41,10 @@ public class AdvanceMeasurement extends BaseEntity {
         return advanceMeasurement;
     }
 
-    @NotNull
     private LocalDate date;
 
-    @NotNull
     private BigDecimal value;
 
-    @NotNull
     private AdvanceAssignment advanceAssignment;
 
     public AdvanceMeasurement() {
@@ -56,13 +53,16 @@ public class AdvanceMeasurement extends BaseEntity {
     private AdvanceMeasurement(LocalDate date, BigDecimal value) {
         this.date = date;
         this.value = value;
-        this.value.setScale(2,BigDecimal.ROUND_HALF_UP);
+        if (this.value != null) {
+            this.value.setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
     }
 
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
+    @NotNull(message = "date not specified")
     public LocalDate getDate() {
         return this.date;
     }
@@ -74,6 +74,7 @@ public class AdvanceMeasurement extends BaseEntity {
         }
     }
 
+    @NotNull(message = "value not specified")
     public BigDecimal getValue() {
         return this.value;
     }
@@ -82,6 +83,7 @@ public class AdvanceMeasurement extends BaseEntity {
         this.advanceAssignment = advanceAssignment;
     }
 
+    @NotNull(message = "advance assignment not specified")
     public AdvanceAssignment getAdvanceAssignment() {
         return this.advanceAssignment;
     }

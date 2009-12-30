@@ -76,6 +76,7 @@ public abstract class OrderElement extends BaseEntity {
 
     private String description;
 
+    @Valid
     protected Set<DirectAdvanceAssignment> directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>();
 
     @Valid
