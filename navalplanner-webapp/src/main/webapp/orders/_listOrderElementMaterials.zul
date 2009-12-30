@@ -90,9 +90,9 @@
                                                 onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
                                             <doublebox value="@{assignedMaterial.totalPrice}"
                                                 onChange="assignedMaterialsController.updateUnitPrice(self.parent)" />
+                                            <label value="@{assignedMaterial.material.category.name}" width="150px" />
                                             <listbox mold="select" model="@{materialStatus}"
                                                 selectedItem="@{assignedMaterial.status}"/>
-                                            <label value="@{assignedMaterial.material.category.name}" width="150px" />
                                             <hbox>
                                                 <button sclass="icono"
                                                     image="/common/img/ico_borrar1.png"
