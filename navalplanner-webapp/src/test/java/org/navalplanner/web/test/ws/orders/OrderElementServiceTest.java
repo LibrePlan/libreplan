@@ -753,6 +753,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    // FIXME move to subcontractors service when it exists
     public void invalidOrderWithInvalidAdvanceMeasurements()
             throws InstanceNotFoundException {
         String code = "order-code";
@@ -794,6 +795,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    // FIXME move to subcontractors service when it exists
     public void validOrderWithAdvanceMeasurements()
             throws InstanceNotFoundException {
         String code = "order-code";
@@ -827,6 +829,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
+    // FIXME move to subcontractors service when it exists
     public void updateAdvanceMeasurements() throws InstanceNotFoundException,
             IncompatibleTypeException {
         String code = "order-code";

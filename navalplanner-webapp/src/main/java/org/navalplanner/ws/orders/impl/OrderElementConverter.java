@@ -73,7 +73,8 @@ public final class OrderElementConverter {
     private OrderElementConverter() {
     }
 
-    public final static OrderElementDTO toDTO(OrderElement orderElement) {
+    public final static OrderElementDTO toDTO(OrderElement orderElement,
+            ConfigurationOrderElementConverter configuration) {
         String name = orderElement.getName();
         String code = orderElement.getCode();
         Date initDate = orderElement.getInitDate();
@@ -81,24 +82,33 @@ public final class OrderElementConverter {
         String description = orderElement.getDescription();
 
         Set<LabelDTO> labels = new HashSet<LabelDTO>();
-        for (Label label : orderElement.getLabels()) {
-            labels.add(toDTO(label));
+        if (configuration.isLabels()) {
+            for (Label label : orderElement.getLabels()) {
+                labels.add(toDTO(label));
+            }
         }
 
         Set<MaterialAssignmentDTO> materialAssignments = new HashSet<MaterialAssignmentDTO>();
-        for (MaterialAssignment materialAssignment : orderElement
-                .getMaterialAssignments()) {
-            materialAssignments.add(toDTO(materialAssignment));
+        if (configuration.isMaterialAssignments()) {
+            for (MaterialAssignment materialAssignment : orderElement
+                    .getMaterialAssignments()) {
+                materialAssignments.add(toDTO(materialAssignment));
+            }
         }
 
-        Set<AdvanceMeasurementDTO> advanceMeasurements = toDTO(orderElement
-                .getReportGlobalAdvanceAssignment());
+        Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
+        if (configuration.isAdvanceMeasurements()) {
+            advanceMeasurements = toDTO(orderElement
+                    .getReportGlobalAdvanceAssignment());
+        }
 
         if (orderElement instanceof OrderLine) {
             Set<HoursGroupDTO> hoursGroups = new HashSet<HoursGroupDTO>();
-            for (HoursGroup hoursGroup : ((OrderLine) orderElement)
-                    .getHoursGroups()) {
-                hoursGroups.add(toDTO(hoursGroup));
+            if (configuration.isHoursGroups()) {
+                for (HoursGroup hoursGroup : ((OrderLine) orderElement)
+                        .getHoursGroups()) {
+                    hoursGroups.add(toDTO(hoursGroup));
+                }
             }
 
             return new OrderLineDTO(name, code, initDate, deadline,
@@ -107,7 +117,7 @@ public final class OrderElementConverter {
         } else { // orderElement instanceof OrderLineGroup
             List<OrderElementDTO> children = new ArrayList<OrderElementDTO>();
             for (OrderElement element : orderElement.getChildren()) {
-                children.add(toDTO(element));
+                children.add(toDTO(element, configuration));
             }
 
             if (orderElement instanceof Order) {
@@ -180,20 +190,23 @@ public final class OrderElementConverter {
                 .getWorkingHours());
     }
 
-    public final static OrderElement toEntity(OrderElementDTO orderElementDTO) {
+    public final static OrderElement toEntity(OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration) {
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
             orderElement = OrderLine.create();
 
-            for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
-                HoursGroup hoursGroup = toEntity(hoursGroupDTO);
-                ((OrderLine) orderElement).addHoursGroup(hoursGroup);
+            if (configuration.isHoursGroups()) {
+                for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
+                    HoursGroup hoursGroup = toEntity(hoursGroupDTO);
+                    ((OrderLine) orderElement).addHoursGroup(hoursGroup);
+                }
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
             List<OrderElement> children = new ArrayList<OrderElement>();
             for (OrderElementDTO element : ((OrderLineGroupDTO) orderElementDTO).children) {
-                children.add(toEntity(element));
+                children.add(toEntity(element, configuration));
             }
 
             if (orderElementDTO instanceof OrderDTO) {
@@ -227,15 +240,22 @@ public final class OrderElementConverter {
         orderElement.setDeadline(orderElementDTO.deadline);
         orderElement.setDescription(orderElementDTO.description);
 
-        for (LabelDTO labelDTO : orderElementDTO.labels) {
-            orderElement.addLabel(toEntity(labelDTO));
+        if (configuration.isLabels()) {
+            for (LabelDTO labelDTO : orderElementDTO.labels) {
+                orderElement.addLabel(toEntity(labelDTO));
+            }
         }
 
-        for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
-            orderElement.addMaterialAssignment(toEntity(materialAssignmentDTO));
+        if (configuration.isMaterialAssignments()) {
+            for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
+                orderElement
+                        .addMaterialAssignment(toEntity(materialAssignmentDTO));
+            }
         }
 
-        addAdvanceMeasurements(orderElement, orderElementDTO);
+        if (configuration.isAdvanceMeasurements()) {
+            addAdvanceMeasurements(orderElement, orderElementDTO);
+        }
 
         return orderElement;
     }
@@ -298,7 +318,9 @@ public final class OrderElementConverter {
     }
 
     public final static void update(OrderElement orderElement,
-            OrderElementDTO orderElementDTO) throws IncompatibleTypeException {
+            OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration)
+            throws IncompatibleTypeException {
 
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
@@ -306,14 +328,17 @@ public final class OrderElementConverter {
                         OrderLine.class, orderElement.getClass());
             }
 
-            for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
-                if (((OrderLine) orderElement)
-                        .containsHoursGroup(hoursGroupDTO.code)) {
-                    update(((OrderLine) orderElement)
-                            .getHoursGroup(hoursGroupDTO.code), hoursGroupDTO);
-                } else {
-                    ((OrderLine) orderElement)
-                            .addHoursGroup(toEntity(hoursGroupDTO));
+            if (configuration.isHoursGroups()) {
+                for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
+                    if (((OrderLine) orderElement)
+                            .containsHoursGroup(hoursGroupDTO.code)) {
+                        update(((OrderLine) orderElement)
+                                .getHoursGroup(hoursGroupDTO.code),
+                                hoursGroupDTO);
+                    } else {
+                        ((OrderLine) orderElement)
+                                .addHoursGroup(toEntity(hoursGroupDTO));
+                    }
                 }
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
@@ -353,34 +378,41 @@ public final class OrderElementConverter {
             for (OrderElementDTO childDTO : ((OrderLineGroupDTO) orderElementDTO).children) {
                 if (orderElement.containsOrderElement(childDTO.code)) {
                     update(orderElement.getOrderElement(childDTO.code),
-                            childDTO);
+                            childDTO, configuration);
                 } else {
-                    ((OrderLineGroup) orderElement).add(toEntity(childDTO));
+                    ((OrderLineGroup) orderElement).add(toEntity(childDTO,
+                            configuration));
                 }
             }
 
         }
 
-        for (LabelDTO labelDTO : orderElementDTO.labels) {
-            if (!orderElement.containsLabel(labelDTO.name, labelDTO.type)) {
-                orderElement.addLabel(toEntity(labelDTO));
+        if (configuration.isLabels()) {
+            for (LabelDTO labelDTO : orderElementDTO.labels) {
+                if (!orderElement.containsLabel(labelDTO.name, labelDTO.type)) {
+                    orderElement.addLabel(toEntity(labelDTO));
+                }
             }
         }
 
-        for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
-            if (orderElement
-                    .containsMaterialAssignment(materialAssignmentDTO.materialCode)) {
-                update(
-                        orderElement
-                                .getMaterialAssignment(materialAssignmentDTO.materialCode),
-                        materialAssignmentDTO);
-            } else {
-                orderElement
-                        .addMaterialAssignment(toEntity(materialAssignmentDTO));
+        if (configuration.isMaterialAssignments()) {
+            for (MaterialAssignmentDTO materialAssignmentDTO : orderElementDTO.materialAssignments) {
+                if (orderElement
+                        .containsMaterialAssignment(materialAssignmentDTO.materialCode)) {
+                    update(
+                            orderElement
+                                    .getMaterialAssignment(materialAssignmentDTO.materialCode),
+                            materialAssignmentDTO);
+                } else {
+                    orderElement
+                            .addMaterialAssignment(toEntity(materialAssignmentDTO));
+                }
             }
         }
 
-        addAdvanceMeasurements(orderElement, orderElementDTO);
+        if (configuration.isAdvanceMeasurements()) {
+            addAdvanceMeasurements(orderElement, orderElementDTO);
+        }
 
         if (orderElementDTO.name != null) {
             orderElement.setName(orderElementDTO.name);

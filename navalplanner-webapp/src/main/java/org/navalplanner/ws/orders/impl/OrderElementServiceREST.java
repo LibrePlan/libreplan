@@ -68,7 +68,8 @@ public class OrderElementServiceREST implements IOrderElementService {
     public OrderElementDTO getOrderElement(@PathParam("code") String code)
             throws InstanceNotFoundException {
         return OrderElementConverter.toDTO(orderElementDAO
-                .findUniqueByCode(code));
+                .findUniqueByCode(code), ConfigurationOrderElementConverter
+                .noAdvanceMeasurements());
     }
 
     @Override
@@ -81,8 +82,11 @@ public class OrderElementServiceREST implements IOrderElementService {
 
         InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
         try {
-            OrderElement orderElement = OrderElementConverter
-                    .toEntity(orderDTO);
+            OrderElement orderElement = OrderElementConverter.toEntity(
+                    orderDTO, ConfigurationOrderElementConverter
+                            .all());
+            // FIXME change all() for noAdvanceMeasurements() when
+            // subcontractors service exists
             orderElement.validate();
             orderElementDAO.save(orderElement);
         } catch (ValidationException e) {
@@ -117,7 +121,10 @@ public class OrderElementServiceREST implements IOrderElementService {
 
         InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
         try {
-            OrderElementConverter.update((Order) orderElement, orderDTO);
+            OrderElementConverter.update((Order) orderElement, orderDTO,
+                    ConfigurationOrderElementConverter.all());
+            // FIXME change all() for noAdvanceMeasurements() when
+            // subcontractors service exists
             orderElement.validate();
             orderElementDAO.save(orderElement);
         } catch (ValidationException e) {
