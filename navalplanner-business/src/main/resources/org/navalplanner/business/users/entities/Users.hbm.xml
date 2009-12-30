@@ -61,4 +61,32 @@
             </element>
         </set>
     </class>
+
+    <class name="OrderAuthorization" table="ORDER_AUTHORIZATION">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <discriminator column="ORDER_AUTHORIZATION_SUBCLASS" type="string"/>
+
+        <version name="version" access="property" type="long" />
+
+        <property name="authorizationType" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.users.entities.OrderAuthorizationType</param>
+                <!-- 12 is java.sql.Types.VARCHAR -->
+                <param name="type">12</param>
+            </type>
+        </property>
+
+        <subclass name="UserOrderAuthorization" discriminator-value="USER">
+        </subclass>
+
+        <subclass name="ProfileOrderAuthorization" discriminator-value="PROFILE">
+        </subclass>
+
+    </class>
+
 </hibernate-mapping>
