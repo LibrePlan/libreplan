@@ -42,6 +42,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
+import org.navalplanner.web.users.OrderAuthorizationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -167,6 +168,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         setupAssignedCriterionRequirementsToOrderElementController(comp);
         setupAssignedMaterialsToOrderElementController(comp);
         setupAssignedTaskQualityFormsToOrderElementController(comp);
+        setupOrderAuthorizationController(comp);
     }
 
     private void setupOrderElementTreeController(Component comp,
@@ -235,6 +237,16 @@ public class OrderCRUDController extends GenericForwardComposer {
         assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
                 .getVariable("assignedTaskQualityFormsController", true);
     }
+    
+    private OrderAuthorizationController orderAuthorizationController;
+
+    private void setupOrderAuthorizationController(
+            Component comp) {
+        Component orderElementAuthorizations = editWindow
+            .getFellowIfAny("orderElementAuthorizations");
+        orderAuthorizationController = (OrderAuthorizationController) orderElementAuthorizations
+            .getVariable("orderAuthorizationController", true);
+    }
 
     public List<Order> getOrders() {
         return orderModel.getOrders();
@@ -278,6 +290,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (!assignedTaskQualityFormController.confirm()) {
             return false;
         }
+        orderAuthorizationController.save();
         try {
             orderModel.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
@@ -361,6 +374,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         planningControllerEntryPoints.goToOrderDetails(order);
+        orderAuthorizationController.setOrder(order);
     }
 
     public void initEdit(Order order) {

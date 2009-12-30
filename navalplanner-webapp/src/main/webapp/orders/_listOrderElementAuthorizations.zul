@@ -29,21 +29,26 @@
                     autodrop="true" finder="ProfileFinder" />
                 <checkbox id="profileReadAuthCheckbox" label="${i18n:_('Read')}" />
                 <checkbox id="profileWriteAuthCheckbox" label="${i18n:_('Write')}" />
-                <button label="${i18n:_('Authorize')}" />
+                <button label="${i18n:_('Authorize')}"
+                    onClick="orderAuthorizationController.addOrderAuthorization(
+                        profileAutocomplete.selectedItem, profileReadAuthCheckbox.checked,
+                        profileWriteAuthCheckbox.checked);"/>
             </hbox>
-            <grid id="profilesAuthListing">
+            <grid id="profilesAuthListing"
+                model="@{orderAuthorizationController.profileOrderAuthorizations}">
                 <columns sizable="true">
                     <column label="${i18n:_('Profile name')}" />
                     <column label="${i18n:_('Permissions')}" />
                     <column label="${i18n:_('Actions')}" />
                 </columns>
                 <rows>
-                    <row>
-                        <label/>
-                        <label/>
+                    <row self="@{each='authorization'}" value="@{authorization}">
+                        <label value="@{authorization.profile.profileName}" />
+                        <label value="@{authorization.authorizationType.displayName}" />
                         <hbox>
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
                                 hoverImage="/common/img/ico_borrar.png"
+                                onClick="controller.removeOrderAuthorization(self.parent.parent.value);"
                                 tooltiptext="${i18n:_('Delete')}" />
                         </hbox>
                     </row>
@@ -60,18 +65,22 @@
                     autodrop="true" finder="UserFinder" />
                 <checkbox id="userReadAuthCheckbox" label="${i18n:_('Read')}" />
                 <checkbox id="userWriteAuthCheckbox" label="${i18n:_('Write')}" />
-                <button label="${i18n:_('Authorize')}" />
+                <button label="${i18n:_('Authorize')}"
+                    onClick="orderAuthorizationController.addOrderAuthorization(
+                        usersAutocomplete.selectedItem, userReadAuthCheckbox.checked,
+                        userWriteAuthCheckbox.checked);"/>
             </hbox>
-            <grid id="usersAuthListing">
+            <grid id="usersAuthListing"
+                model="@{orderAuthorizationController.userOrderAuthorizations}">
                 <columns sizable="true">
                     <column label="${i18n:_('Profile name')}" />
                     <column label="${i18n:_('Permissions')}" />
                     <column label="${i18n:_('Actions')}" />
                 </columns>
                 <rows>
-                    <row>
-                        <label/>
-                        <label/>
+                    <row self="@{each='authorization'}" value="@{authorization}">
+                        <label value="@{authorization.user.loginName}" />
+                        <label value="@{authorization.authorizationType.displayName}" />
                         <hbox>
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
                                 hoverImage="/common/img/ico_borrar.png"

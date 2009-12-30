@@ -20,7 +20,17 @@
 
 package org.navalplanner.web.users;
 
+import java.util.List;
+
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.Profile;
+import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
+import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Comboitem;
 
 /**
  * Controller for CRUD actions over an {@link OrderAuthorization}
@@ -30,4 +40,40 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 @SuppressWarnings("serial")
 public class OrderAuthorizationController extends GenericForwardComposer{
 
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        comp.setVariable("orderAuthorizationController", this, true);
+    }
+
+    public void setOrder(Order order) {
+        // TODO implement
+
+    }
+
+    public void save() {
+        // TODO implement
+
+    }
+
+    public List<ProfileOrderAuthorization> getProfileOrderAuthorizations() {
+        // TODO implement
+        return null;
+    }
+
+    public List<UserOrderAuthorization> getUserOrderAuthorizations() {
+        // TODO implement
+        return null;
+    }
+
+    public void addOrderAuthorization(Comboitem comboItem,
+            boolean readAuthorization, boolean writeAuthorization) {
+        // TODO implement
+
+    }
+
+    public void removeOrderAuthorization(OrderAuthorization orderAuthorization) {
+        // TODO implement
+
+    }
 }
