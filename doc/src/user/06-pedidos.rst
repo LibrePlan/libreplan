@@ -22,6 +22,9 @@ Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa.
 * Data de finalización
 * Responsable
 * Descrición
+* Calendario asignado.
+* Autoxeneración de códigos. Campo para indicarlle ó sistema que autoxenere os códigos dos elementos de pedido e dos grupos de horas.
+* Preferencia entre dependencias e restricións. O usuario pode elixir dependencias ou restricións como prioritarios á hora de ser aplicados no caso en que entren en conflicto.
 
 Sen embargo, o propio pedido está relacionado con outras entidades que finalmente o dotarán de unha maior riqueza:
 * Horas asignadas ó pedido.
@@ -77,7 +80,7 @@ Dende a edición de pedido é posible acceder ás seguintes pestanas:
 
 * Avances. Pantalla na que se permiten imputar tipos de avances e medidas de avances ó pedido. Ver sección de "Avances" para o funcionamento da mesma.
 
-* Etiquetas. Pantalla na que se permite asignar etiquetas a un pedido e coñecer as etiquetas directas e indirectas que xa foron asignadas. Ver capítulo de "Etiquetas" para coñecer o funcionamento da mesma.
+* Etiquetas. Pantalla na que se permite asignar etiquetas a un pedido e coñecer as etiquetas directas e indirectas que xa foron asignadas. Ver a seguinte sección de edición de elementos de pedido máis en profundidade para coñecer o procedemento de xestionar as etiquetas.
 
 .. figure:: images/order-labels.png
    :scale: 70
@@ -102,7 +105,7 @@ Dende a edición de pedido é posible acceder ás seguintes pestanas:
 .. figure:: images/order-material.png
    :scale: 70
 
-* Calidade. É posible asignar un formulario de calidade ó pedido co obxectivo de ser cumplimentado para asegurar a realización de certas actividades asociadas ó pedido.
+* Calidade. É posible asignar un formulario de calidade ó pedido co obxectivo de ser cumplimentado para asegurar a realización de certas actividades asociadas ó pedido. Ver a seguinte sección de edición de elementos de pedido máis en profundidade para coñecer o procedemento de xestionar o formulario de calidade.
 
 .. figure:: images/order-quality.png
    :scale: 70
@@ -120,6 +123,8 @@ A edición de elementos de pedido realizarase dende a pestana de listado de elem
 * Xestionar os materiais.
 * Xestionar os formularios de calidade.
 
+As seguintes subseccións tratan cada un das operacións en profundidade.
+
 Edición da información do elemento de pedido
 --------------------------------------------
 
@@ -133,9 +138,21 @@ A edición de información de elemento de pedido inclúe a edición dos seguinte
 * **Grupos de horas**: É posible engadir un ou varios grupos de horas ó elemento de pedido. **O significado destes grupos de horas** é o establecemento dos requirimentos que se lle esixirán ós recursos que vaian a ser asignados para realizalas.
 * Criterios: É posible engadir criterios que se deben satisfacer para poder se asignado xenéricamente para realizar dito elemento de pedido.
 
-.. figure:: images/order-edition.png
+.. figure:: images/order-element-edition.png
    :scale: 70
 
+Visualización de horas imputadas a elementos de pedido
+------------------------------------------------------
+
+A pestana de "Horas Navalpro" permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.
+
+.. figure:: images/order-element-hours.png
+   :scale: 70
+
+A pantalla está dividida en dúas partes:
+
+* Listado de partes de traballo: O usuario verá o listado de partes de traballo que están asociados ó elemento de pedido podendo comprobar a data e hora, recurso e número de horas adicadas á tarefa.
+* Uso das horas presupostadas: O sistema calcula o total de horas adicadas á tarefa e as contrasta coas que estaban presupostadas.
 
 Xestión de avances dos elementos de pedido
 ------------------------------------------
@@ -159,15 +176,94 @@ Tal e como se pode ver na imaxe, dende a pestana de **etiquetas**, o usuario pod
 * Asignar etiquetas existentes: Un usuario poderá asignar etiquetas existentes a partir da procura dunha entre as existentes no formulario inferior ó listado de etiquetas directas. Para buscar unha etiqueta chega con premer na icona coa lupa ou escribir o inicio da etiqueta na entrada de texto para que o sistema amose as opcións dispoñibles.
 * Crear e asignar etiquetas novas: Un usuario poderá crear novas etiquetas asociadas a un tipo de etiquetas existente dende dito formulario. Para relizar a operación é necesario que seleccione un tipo de etiqueta á que se asociará e se introduza o valor da etiqueta para o tipo seleccionado. Premendo en "Navalpro e Navalpro" o sistema xa a creará automáticamente e a asigna ó elemento de pedido.
 
-Visualización de horas imputadas a elementos de pedido
-------------------------------------------------------
 
-A pestana de "Horas Navalpro" permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.
+Xestionar os criterios esixidos polo elemento de pedido e os grupos de horas
+----------------------------------------------------------------------------
 
-.. figure:: images/order-element-hours.png
+Tanto un pedido como un elemento de pedido poden ter asignados os criterios que se esixen para ser realizados. Os criterios poden afectar de xeito directo ou de xeito indirecto:
+
+* Criterios directos: Son os que se asignan directamente ó elemento de pedido. Son os criterios que se van a esixir ós grupos de horas que forman parte do elemento de pedido.
+* Criterios indirectos: Son os criterios que se asignan en elementos de pedido superiores na xerarquía e son herdados polo elemento en edición.
+
+A maiores do criterio esixido, é posible definir un ou varios grupos de horas que forman parte do elemento de pedido. Dependendo de se o elemento de pedido contén outros elementos de pedido como fillos ou é un nodo folla. No primeiro dos casos os datos de horas e grupos de horas son solo visualizables e no caso de nodos folla son editables. O funcionamento neste segundo caso é o seguinte:
+
+* Por defecto, o sistema crea un grupo de horas asociado ó elemento de pedido. Os datos modificables para un grupo de horas é:
+   * Código do grupo de horas, se non é autoxenerado.
+   * Tipo de criterio. O usuario pode elixir se desexa asignar un criterio de tipo máquina ou traballador.
+   * Número de horas do grupo de horas.
+   * Lista de criterios que se aplican ó grupo de horas. Para engadir novos criterios o usuario debe premer en "Engadir criterio" e seleccionar un no buscador que aparece tras premer no botón.
+* O usuario pode engadir novos grupos de horas con características diferentes que os grupos de horas anteriores. Exemplo desto sería que un elemento de pedido debe ser feito por un soldador (30h) e por un pintor (40h).
+
+.. figure:: images/order-element-criterion.png
    :scale: 70
 
-A pantalla está dividida en dúas partes:
 
-* Listado de partes de traballo: O usuario verá o listado de partes de traballo que están asociados ó elemento de pedido podendo comprobar a data e hora, recurso e número de horas adicadas á tarefa.
-* Uso das horas presupostadas: O sistema calcula o total de horas adicadas á tarefa e as contrasta coas que estaban presupostadas.
+Xestionar os materiais
+----------------------
+
+Os materiais son xestionados nos proxectos como un listado asociado a cada liña de pedido ou a un pedido globalmente. O listado de materiais está formado polos seguintes campos:
+
+* Código
+* Data
+* Unidades: Unidades necesarias.
+* Tipo de unidade: Tipo de unidade no que se mide o material.
+* Prezo da unidade: Precio unitario.
+* Prezo total: Prezo resultante de multiplicar o prezo unitario polas unidades.
+* Categoría: Categoría de material á que pertence.
+* Estado: Recibido, Solicitado, Pendente, Procesando, Cancelado.
+
+O modo de traballar cos materiais é o seguinte:
+
+* O usuario selecciona a pestana de "Materiais" dun elemento de pedido.
+* O sistema amosa dúas subpestanas: "Materiais" e "Búsqueda de materiais".
+* Se o elemento de pedido non tiña materiais asignados, a primeira pestana amosará un listado baleiro.
+* O usuario preme en "Búsqueda de materiais" na zona inferior esquerda da ventana.
+* O sistema amosa o listado de categorías dispoñibles e os materiais asociados.
+
+.. figure:: images/order-element-material-search.png
+   :scale: 70
+
+* O usuario selecciona categorías nas que buscar para afinar a procura de materiais.
+* O sistema amosa os materiais pertencentes ás cetegorías seleccionadas.
+* O usuario selecciona no listado de materiais aqueles que desexa asignar ó elemento de pedido.
+* O usuario preme en "Asignar".
+* O sistema amosa o listado seleccionado de materiais na pestana de "Materiais" con novos campos por cubrir.
+
+.. figure:: images/order-element-material-assign.png
+   :scale: 70
+
+* O usuario selecciona as unidades, estado e data dos materiais asignados.
+
+Para control posterior dos materiais é posible cambiar o estado dun grupo de unidades do material recibido. Para realizar esta operación o usuario debe:
+
+* Premer no botón "Dividir" que se amosa no listado de materiais á dereita de cada fila.
+* Seleccionar o número de unidades para os que desexa dividir a fila.
+* A aplicación amosa dúas filas co material dividido.
+* O usuario cambia o estado da fila de material que desexa.
+
+A utilidade desta operación de división é a de poder recibir entregas parciais de material sin necesidade de esperar a recibilo todo para marcalo como recibido.
+
+Xestionar os formularios de calidade
+------------------------------------
+
+Existen elementos de pedido que deben certificar que certas tarefas foron realizados para poder ser marcadas como completadas. É por eso que xurden os formularios de calidade, os cales están formados por unha lista de preguntas que poden ter asignado un peso segundo sexa contestada positivamente.
+
+É importante destacar que un formulario de calidade debe ser creado previamente para poder ser asignado ó elemento de pedido.
+
+Para xestionar os formulario de calidade:
+
+* O usuario accede á pestana de "Formularios de calidade".
+
+.. figure:: images/order-element-material-quality.png
+   :scale: 70
+
+* A aplicación amosa un buscador de formularios de calidade. Existen dous tipos de formularios de calidade: por elementos ou porcentaxe.
+
+   * Por elementos: Cada elemento é independente.
+   * Por porcentaxe: Cada pregunta incrementa o avance no elemento de pedido en un porcentaxe. As porcentaxes deben ser incrementales ata o 100%.
+
+* O usuario selecciona un dos formularios dados de alta dende a interface de administración e preme en "Asignar".
+* A aplicación asigna o formulario elixido no listado de formularios asignados ó elemento de pedido.
+* O usuario preme no botón "Editar" do elemento de pedido.
+* A aplicación desprega as preguntas do formulario de calidade no listado inferior.
+* O usuario marca como acadadas as preguntas que son realizadas.
