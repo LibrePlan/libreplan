@@ -164,7 +164,8 @@ public class AdvanceType extends BaseEntity {
     }
 
     public static boolean equivalentInDB(AdvanceType type, AdvanceType otherType) {
-        if (type.getId() == null || otherType.getId() == null) {
+        if (type == null || type.getId() == null || otherType == null
+                || otherType.getId() == null) {
             return false;
         }
         return type.getId().equals(otherType.getId());
