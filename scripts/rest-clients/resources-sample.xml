@@ -25,6 +25,6 @@
         </criterion-satisfaction-list>
     </worker>
     <!--  Missing first name, surname, and nif. -->
-    <worker first-name="" surname="" nif=""/>
+    <worker first-name="" nif=""/>
 
 </resource-list>

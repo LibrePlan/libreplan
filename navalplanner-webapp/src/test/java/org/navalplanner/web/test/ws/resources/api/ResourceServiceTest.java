@@ -94,8 +94,8 @@ public class ResourceServiceTest {
                                                       // optional).
         String w1Nif = getUniqueName();
         WorkerDTO w1 = new WorkerDTO("w1-first-name", "w1-surname", w1Nif);
-        WorkerDTO w2 = new WorkerDTO("", "", ""); // Missing first name,
-                                                  // surname, and nif.
+        WorkerDTO w2 = new WorkerDTO("", null, ""); // Missing first name,
+                                                    // surname, and nif.
 
         List<ResourceDTO> resources = new ArrayList<ResourceDTO>();
         resources.add(m1);

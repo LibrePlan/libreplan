@@ -26,6 +26,7 @@ import java.util.List;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.StringUtils;
 
 /**
  * This class models a worker.
@@ -127,8 +128,12 @@ public class Worker extends Resource {
         return !isVirtual();
     }
 
-    @AssertTrue(message = "Worker with the same firstname, surname and nif previously existed")
+    @AssertTrue(message = "Worker with the same first name, surname and nif previously existed")
     public boolean checkConstraintUniqueFirstName() {
+
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
 
         if (this instanceof VirtualWorker) {
             return true;
@@ -145,5 +150,13 @@ public class Worker extends Resource {
         }
 
     }
+
+   private boolean firstLevelValidationsPassed() {
+
+       return !StringUtils.isEmpty(firstName) &&
+           !StringUtils.isEmpty(surname) &&
+           !StringUtils.isEmpty(nif);
+
+   }
 
 }
