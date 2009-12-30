@@ -76,7 +76,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Hours on time]]></text>
+				<text><![CDATA[Hours up to date]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" mode="Opaque" x="171" y="152" width="79" height="15"/>
