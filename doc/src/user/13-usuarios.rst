@@ -41,5 +41,17 @@ Para administrar usuarios é necesario realizar os seguintes pasos:
 Administración de perfiles
 --------------------------
 
+Para administrar os perfiles da aplicación é necesario dar os seguintes pasos:
+
+* Acceder á operación de "Xestionar perfiles de usuario" do menú de "Administración".
+* A aplicación amosará un listado de perfiles.
+* Premer o botón de edición do perfil elixido ou premer no botón "Crear".
+* A aplicación amosará un formulario cos seguintes campos:
+
+   * Nome
+   * Lista de roles (permisos) asociados ó perfil. Para engadir un rol asociado ó perfil deberáse seleccionar un da lista de roles e premer en "Engadir".
+
 .. figure:: images/manage-user-profile.png
    :scale: 50
+
+* Premer en "Gardar" ou "Gardar e Continuar" e o sistema almacenará o perfil creado ou modificado.
