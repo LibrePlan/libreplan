@@ -246,6 +246,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             .getFellowIfAny("orderElementAuthorizations");
         orderAuthorizationController = (OrderAuthorizationController) orderElementAuthorizations
             .getVariable("orderAuthorizationController", true);
+        orderAuthorizationController.setMessagesForUserComponent(messagesForUser);
     }
 
     public List<Order> getOrders() {

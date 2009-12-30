@@ -47,25 +47,43 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
     @Override
     public List<OrderAuthorizationType> addProfileOrderAuthorization(
             Profile profile, List<OrderAuthorizationType> authorizations) {
+        List<OrderAuthorizationType> duplicated =
+            new ArrayList<OrderAuthorizationType>();
+        List<ProfileOrderAuthorization> existingAuthorizations =
+            listAuthorizationsByProfile(profile);
         for(OrderAuthorizationType type : authorizations) {
-            ProfileOrderAuthorization orderAuthorization =
-                createProfileOrderAuthorization(order, profile);
-            orderAuthorization.setAuthorizationType(type);
-            profileOrderAuthorizationList.add(orderAuthorization);
+            if(listContainsAuthorizationType(existingAuthorizations, type)) {
+                duplicated.add(type);
+            }
+            else {
+                ProfileOrderAuthorization orderAuthorization =
+                    createProfileOrderAuthorization(order, profile);
+                orderAuthorization.setAuthorizationType(type);
+                profileOrderAuthorizationList.add(orderAuthorization);
+            }
         }
-        return null;
+        return duplicated.isEmpty()? null : duplicated;
     }
 
     @Override
     public List<OrderAuthorizationType> addUserOrderAuthorization(
             User user, List<OrderAuthorizationType> authorizations) {
+        List<OrderAuthorizationType> duplicated =
+            new ArrayList<OrderAuthorizationType>();
+        List<UserOrderAuthorization> existingAuthorizations =
+            listAuthorizationsByUser(user);
         for(OrderAuthorizationType type : authorizations) {
-            UserOrderAuthorization orderAuthorization =
-                createUserOrderAuthorization(order, user);
-            orderAuthorization.setAuthorizationType(type);
-            userOrderAuthorizationList.add(orderAuthorization);
+            if(listContainsAuthorizationType(existingAuthorizations, type)) {
+                duplicated.add(type);
+            }
+            else {
+                UserOrderAuthorization orderAuthorization =
+                    createUserOrderAuthorization(order, user);
+                orderAuthorization.setAuthorizationType(type);
+                userOrderAuthorizationList.add(orderAuthorization);
+            }
         }
-        return null;
+        return duplicated.isEmpty()? null : duplicated;
     }
 
     @Override
@@ -184,4 +202,33 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         this.order = newOrder;
     }
 
+    private List<UserOrderAuthorization> listAuthorizationsByUser(User user) {
+        List<UserOrderAuthorization> list = new ArrayList<UserOrderAuthorization>();
+        for(UserOrderAuthorization authorization : userOrderAuthorizationList) {
+            if(authorization.getUser().getId().equals(user.getId())) {
+                list.add(authorization);
+            }
+        }
+        return list;
+    }
+
+    private List<ProfileOrderAuthorization> listAuthorizationsByProfile(Profile profile){
+        List<ProfileOrderAuthorization> list = new ArrayList<ProfileOrderAuthorization>();
+        for(ProfileOrderAuthorization authorization : profileOrderAuthorizationList) {
+            if(authorization.getProfile().getId().equals(profile.getId())) {
+                list.add(authorization);
+            }
+        }
+        return list;
+    }
+
+    private boolean listContainsAuthorizationType(List<? extends OrderAuthorization> list,
+            OrderAuthorizationType authorizationType) {
+        for(OrderAuthorization authorization : list) {
+            if(authorization.getAuthorizationType().equals(authorizationType)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

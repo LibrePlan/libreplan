@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.users;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,8 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -46,6 +50,8 @@ public class OrderAuthorizationController extends GenericForwardComposer{
     private Component window;
 
     private IOrderAuthorizationModel orderAuthorizationModel;
+
+    private IMessagesForUser messagesForUser;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -88,12 +94,26 @@ public class OrderAuthorizationController extends GenericForwardComposer{
                 authorizations.add(OrderAuthorizationType.WRITE_AUTHORIZATION);
             }
             if (comboItem.getValue() instanceof User) {
-                orderAuthorizationModel.addUserOrderAuthorization(
-                        (User)comboItem.getValue(), authorizations);
+                List<OrderAuthorizationType> result =
+                    orderAuthorizationModel.addUserOrderAuthorization(
+                            (User)comboItem.getValue(), authorizations);
+                if(result != null) {
+                    messagesForUser.showMessage(Level.WARNING,
+                            _("Cannot add some authorizations for user {0}. " +
+                                    "Probably they are already present.",
+                                    ((User)comboItem.getValue()).getLoginName()));
+                }
             }
             else if (comboItem.getValue() instanceof Profile) {
-                orderAuthorizationModel.addProfileOrderAuthorization(
-                        (Profile)comboItem.getValue(), authorizations);
+                List<OrderAuthorizationType> result =
+                    orderAuthorizationModel.addProfileOrderAuthorization(
+                            (Profile)comboItem.getValue(), authorizations);
+                if(result != null) {
+                    messagesForUser.showMessage(Level.WARNING,
+                            _("Cannot add some authorizations for profile {0}. " +
+                                    "Probably they are already present.",
+                                    ((Profile)comboItem.getValue()).getProfileName()));
+                }
             }
         }
         Util.reloadBindings(window);
@@ -102,5 +122,9 @@ public class OrderAuthorizationController extends GenericForwardComposer{
     public void removeOrderAuthorization(OrderAuthorization orderAuthorization) {
         orderAuthorizationModel.removeOrderAuthorization(orderAuthorization);
         Util.reloadBindings(window);
+    }
+
+    public void setMessagesForUserComponent(IMessagesForUser component) {
+        messagesForUser = component;
     }
 }
