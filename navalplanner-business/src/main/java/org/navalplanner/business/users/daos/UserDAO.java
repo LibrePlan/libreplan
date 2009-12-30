@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.users.daos;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -97,6 +99,13 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsByLoginNameAnotherTransaction(String loginName) {
         return existsByLoginName(loginName);
+    }
+
+    @Override
+    public List<User> listNotDisabled() {
+        Criteria c = getSession().createCriteria(User.class);
+        c.add(Restrictions.eq("disabled", false));
+        return c.list();
     }
 
 }

@@ -21,12 +21,14 @@
 package org.navalplanner.business.test.users.daos;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -218,6 +220,20 @@ public class UserDAOTest {
         catch(InstanceNotFoundException e) {
             assertEquals((String)e.getKey(),user.getLoginName());
         }
+    }
+
+    @Test
+    public void testListNotDisabled() {
+        User user1 = createUser(getUniqueName());
+        user1.setDisabled(true);
+        userDAO.save(user1);
+        User user2 = createUser(getUniqueName());
+        user2.setDisabled(false);
+        userDAO.save(user2);
+
+        List<User> list = userDAO.listNotDisabled();
+        assertTrue(list.contains(user2));
+        assertFalse(list.contains(user1));
     }
 
     @Test
