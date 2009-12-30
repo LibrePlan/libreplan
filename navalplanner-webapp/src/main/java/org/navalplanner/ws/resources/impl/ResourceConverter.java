@@ -24,7 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
-import org.navalplanner.business.common.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;

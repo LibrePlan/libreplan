@@ -23,10 +23,10 @@ package org.navalplanner.business.resources.entities;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.StringUtils;
 
 /**
  * This class models a worker.
@@ -153,9 +153,9 @@ public class Worker extends Resource {
 
    private boolean firstLevelValidationsPassed() {
 
-       return !StringUtils.isEmpty(firstName) &&
-           !StringUtils.isEmpty(surname) &&
-           !StringUtils.isEmpty(nif);
+       return !StringUtils.isBlank(firstName) &&
+           !StringUtils.isBlank(surname) &&
+           !StringUtils.isBlank(nif);
 
    }
 

@@ -25,12 +25,12 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 import java.util.Comparator;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.StringUtils;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -84,7 +84,7 @@ public class CriterionSatisfaction extends BaseEntity {
             Registry.getCriterionTypeDAO();
 
         /* Get CriterionType. */
-        if (StringUtils.isEmpty(criterionTypeName)) {
+        if (StringUtils.isBlank(criterionTypeName)) {
             throw new CreateUnvalidatedException(
                 _("criterion type name not specified"));
         }
@@ -99,7 +99,7 @@ public class CriterionSatisfaction extends BaseEntity {
         }
 
         /* Get Criterion. */
-        if (StringUtils.isEmpty(criterionName)) {
+        if (StringUtils.isBlank(criterionName)) {
             throw new CreateUnvalidatedException(
                 _("criterion name not specified"));
         }
