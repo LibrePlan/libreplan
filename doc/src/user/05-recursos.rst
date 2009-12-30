@@ -149,4 +149,5 @@ As pestanas das que consta o formulario de creación de grupos de traballadores 
 
 A diferencia con respecto ós traballadores, e que nos grupos de traballadores virtuais especifícase un nome para o grupo e unha cantidade que se corresponderá co número de persoas reais que forman este grupo. Adicionalmente existe un campo de observacións no que se pode aportar información adicional como por exemplo para que proxecto estaría prevista a contratación do equivalente do grupo de recursos virtuais, etc.
 
-
+.. figure:: images/virtual-resources.png
+   :scale: 70

@@ -254,7 +254,7 @@ Para xestionar os formulario de calidade:
 
 * O usuario accede á pestana de "Formularios de calidade".
 
-.. figure:: images/order-element-material-quality.png
+.. figure:: images/order-element-quality.png
    :scale: 70
 
 * A aplicación amosa un buscador de formularios de calidade. Existen dous tipos de formularios de calidade: por elementos ou porcentaxe.
@@ -267,3 +267,5 @@ Para xestionar os formulario de calidade:
 * O usuario preme no botón "Editar" do elemento de pedido.
 * A aplicación desprega as preguntas do formulario de calidade no listado inferior.
 * O usuario marca como acadadas as preguntas que son realizadas.
+   * Se o tipo de formulario de calidade é por porcentaxe, as preguntas serán contestadas por orde.
+   * Se o tipo de formulario de calidade é por elementos, as preguntas serán contestadas en calquera orde.
