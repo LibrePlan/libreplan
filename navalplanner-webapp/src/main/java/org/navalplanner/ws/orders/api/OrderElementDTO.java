@@ -62,12 +62,17 @@ public class OrderElementDTO {
     @XmlElement(name = "material-assignment")
     public Set<MaterialAssignmentDTO> materialAssignments = new HashSet<MaterialAssignmentDTO>();
 
+    @XmlElementWrapper(name = "advance-measurements")
+    @XmlElement(name = "advance-measurement")
+    public Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
+
     public OrderElementDTO() {
     }
 
     public OrderElementDTO(String name, String code, Date initDate,
             Date deadline, String description, Set<LabelDTO> labels,
-            Set<MaterialAssignmentDTO> materialAssignments) {
+            Set<MaterialAssignmentDTO> materialAssignments,
+            Set<AdvanceMeasurementDTO> advanceMeasurements) {
         this.name = name;
         this.code = code;
         this.initDate = initDate;
@@ -75,6 +80,7 @@ public class OrderElementDTO {
         this.description = description;
         this.labels = labels;
         this.materialAssignments = materialAssignments;
+        this.advanceMeasurements = advanceMeasurements;
     }
 
 }

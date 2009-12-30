@@ -22,6 +22,8 @@ package org.navalplanner.ws.orders.impl;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -29,6 +31,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.NonUniqueResultException;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -47,6 +51,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
 import org.navalplanner.ws.common.impl.ResourceEnumConverter;
+import org.navalplanner.ws.orders.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.orders.api.HoursGroupDTO;
 import org.navalplanner.ws.orders.api.LabelDTO;
 import org.navalplanner.ws.orders.api.MaterialAssignmentDTO;
@@ -83,6 +88,9 @@ public final class OrderElementConverter {
             materialAssignments.add(toDTO(materialAssignment));
         }
 
+        Set<AdvanceMeasurementDTO> advanceMeasurements = toDTO(orderElement
+                .getReportGlobalAdvanceAssignment());
+
         if (orderElement instanceof OrderLine) {
             Set<HoursGroupDTO> hoursGroups = new HashSet<HoursGroupDTO>();
             for (HoursGroup hoursGroup : ((OrderLine) orderElement)
@@ -91,7 +99,8 @@ public final class OrderElementConverter {
             }
 
             return new OrderLineDTO(name, code, initDate, deadline,
-                    description, labels, materialAssignments, hoursGroups);
+                    description, labels, materialAssignments,
+                    advanceMeasurements, hoursGroups);
         } else { // orderElement instanceof OrderLineGroup
             List<OrderElementDTO> children = new ArrayList<OrderElementDTO>();
             for (OrderElement element : orderElement.getChildren()) {
@@ -108,13 +117,46 @@ public final class OrderElementConverter {
                 }
 
                 return new OrderDTO(name, code, initDate, deadline,
-                        description, labels, materialAssignments, children,
+                        description, labels, materialAssignments,
+                        advanceMeasurements, children,
                         dependenciesConstraintsHavePriority, calendarName);
             } else { // orderElement instanceof OrderLineGroup
                 return new OrderLineGroupDTO(name, code, initDate, deadline,
-                        description, labels, materialAssignments, children);
+                        description, labels, materialAssignments,
+                        advanceMeasurements, children);
             }
         }
+    }
+
+    public final static Set<AdvanceMeasurementDTO> toDTO(
+            DirectAdvanceAssignment advanceAssignment) {
+        Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
+
+        if (advanceAssignment != null) {
+            BigDecimal maxValue = advanceAssignment.getMaxValue();
+            for (AdvanceMeasurement advanceMeasurement : advanceAssignment
+                    .getAdvanceMeasurements()) {
+                advanceMeasurements.add(toDTO(maxValue, advanceAssignment
+                        .getAdvanceType().getPercentage(), advanceMeasurement));
+            }
+        }
+
+        return advanceMeasurements;
+    }
+
+    public final static AdvanceMeasurementDTO toDTO(BigDecimal maxValue,
+            boolean isPercentage, AdvanceMeasurement advanceMeasurement) {
+        BigDecimal value;
+        if (isPercentage) {
+            value = advanceMeasurement.getValue();
+        } else {
+            value = advanceMeasurement.getValue().divide(maxValue,
+                    RoundingMode.DOWN);
+        }
+        Date date = advanceMeasurement.getDate().toDateTimeAtStartOfDay()
+                .toDate();
+
+        return new AdvanceMeasurementDTO(date, value);
     }
 
     public final static MaterialAssignmentDTO toDTO(
