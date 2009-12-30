@@ -28,6 +28,7 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
@@ -40,40 +41,56 @@ import org.zkoss.zul.Comboitem;
 @SuppressWarnings("serial")
 public class OrderAuthorizationController extends GenericForwardComposer{
 
+    private Component window;
+
+    private IOrderAuthorizationModel orderAuthorizationModel;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("orderAuthorizationController", this, true);
+        this.window = comp;
     }
 
-    public void setOrder(Order order) {
-        // TODO implement
+    public void setNewOrder(Order order) {
+        orderAuthorizationModel.initSetNewOrder(order);
+        Util.reloadBindings(window);
+    }
 
+    public void setExistingOrder(Order order) {
+        orderAuthorizationModel.initSetExistingOrder(order);
+        Util.reloadBindings(window);
     }
 
     public void save() {
-        // TODO implement
-
+        orderAuthorizationModel.confirmSave();
     }
 
     public List<ProfileOrderAuthorization> getProfileOrderAuthorizations() {
-        // TODO implement
-        return null;
+        return orderAuthorizationModel.getProfileOrderAuthorizations();
     }
 
     public List<UserOrderAuthorization> getUserOrderAuthorizations() {
-        // TODO implement
-        return null;
+        return orderAuthorizationModel.getUserOrderAuthorizations();
     }
 
     public void addOrderAuthorization(Comboitem comboItem,
             boolean readAuthorization, boolean writeAuthorization) {
-        // TODO implement
-
+        if(comboItem != null) {
+            if (comboItem.getValue() instanceof User) {
+                orderAuthorizationModel.addUserOrderAuthorization(
+                        (User)comboItem.getValue(), readAuthorization, writeAuthorization);
+            }
+            else if (comboItem.getValue() instanceof Profile) {
+                orderAuthorizationModel.addProfileOrderAuthorization(
+                        (Profile)comboItem.getValue(), readAuthorization, writeAuthorization);
+            }
+        }
+        Util.reloadBindings(window);
     }
 
     public void removeOrderAuthorization(OrderAuthorization orderAuthorization) {
-        // TODO implement
-
+        orderAuthorizationModel.removeOrderAuthorization(orderAuthorization);
+        Util.reloadBindings(window);
     }
 }

@@ -374,7 +374,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         planningControllerEntryPoints.goToOrderDetails(order);
-        orderAuthorizationController.setOrder(order);
+        orderAuthorizationController.setExistingOrder(order);
     }
 
     public void initEdit(Order order) {
@@ -410,6 +410,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         try {
             orderModel.prepareForCreate();
             showEditWindow(_("Create order"));
+            orderAuthorizationController.setNewOrder((Order) orderModel.getOrder());
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
