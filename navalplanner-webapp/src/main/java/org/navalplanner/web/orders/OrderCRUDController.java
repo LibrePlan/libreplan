@@ -267,6 +267,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         final boolean couldSave = save();
         if (couldSave) {
             orderModel.initEdit((Order) orderModel.getOrder());
+            orderAuthorizationController.setExistingOrder((Order) orderModel.getOrder());
             initializeTabs();
             showWindow(editWindow);
         }
