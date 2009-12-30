@@ -45,41 +45,27 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
     private IOrderDAO orderDAO;
 
     @Override
-    public void addProfileOrderAuthorization(Profile profile,
-            boolean readAuthorization, boolean writeAuthorization) {
-        if (readAuthorization) {
+    public List<OrderAuthorizationType> addProfileOrderAuthorization(
+            Profile profile, List<OrderAuthorizationType> authorizations) {
+        for(OrderAuthorizationType type : authorizations) {
             ProfileOrderAuthorization orderAuthorization =
                 createProfileOrderAuthorization(order, profile);
-            orderAuthorization.setAuthorizationType(
-                OrderAuthorizationType.READ_AUTHORIZATION);
+            orderAuthorization.setAuthorizationType(type);
             profileOrderAuthorizationList.add(orderAuthorization);
         }
-        if (writeAuthorization) {
-            ProfileOrderAuthorization orderAuthorization =
-                createProfileOrderAuthorization(order, profile);
-            orderAuthorization.setAuthorizationType(
-                OrderAuthorizationType.WRITE_AUTHORIZATION);
-            profileOrderAuthorizationList.add(orderAuthorization);
-        }
+        return null;
     }
 
     @Override
-    public void addUserOrderAuthorization(User user,
-            boolean readAuthorization, boolean writeAuthorization) {
-        if (readAuthorization) {
-            UserOrderAuthorization userOrderAuthorization =
+    public List<OrderAuthorizationType> addUserOrderAuthorization(
+            User user, List<OrderAuthorizationType> authorizations) {
+        for(OrderAuthorizationType type : authorizations) {
+            UserOrderAuthorization orderAuthorization =
                 createUserOrderAuthorization(order, user);
-            userOrderAuthorization.setAuthorizationType(
-                OrderAuthorizationType.READ_AUTHORIZATION);
-            userOrderAuthorizationList.add(userOrderAuthorization);
+            orderAuthorization.setAuthorizationType(type);
+            userOrderAuthorizationList.add(orderAuthorization);
         }
-        if (writeAuthorization) {
-            UserOrderAuthorization userOrderAuthorization =
-                createUserOrderAuthorization(order, user);
-            userOrderAuthorization.setAuthorizationType(
-                OrderAuthorizationType.WRITE_AUTHORIZATION);
-            userOrderAuthorizationList.add(userOrderAuthorization);
-        }
+        return null;
     }
 
     @Override

@@ -20,10 +20,12 @@
 
 package org.navalplanner.web.users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
@@ -77,13 +79,21 @@ public class OrderAuthorizationController extends GenericForwardComposer{
     public void addOrderAuthorization(Comboitem comboItem,
             boolean readAuthorization, boolean writeAuthorization) {
         if(comboItem != null) {
+            List<OrderAuthorizationType> authorizations =
+                new ArrayList<OrderAuthorizationType>();
+            if(readAuthorization) {
+                authorizations.add(OrderAuthorizationType.READ_AUTHORIZATION);
+            }
+            if(writeAuthorization) {
+                authorizations.add(OrderAuthorizationType.WRITE_AUTHORIZATION);
+            }
             if (comboItem.getValue() instanceof User) {
                 orderAuthorizationModel.addUserOrderAuthorization(
-                        (User)comboItem.getValue(), readAuthorization, writeAuthorization);
+                        (User)comboItem.getValue(), authorizations);
             }
             else if (comboItem.getValue() instanceof Profile) {
                 orderAuthorizationModel.addProfileOrderAuthorization(
-                        (Profile)comboItem.getValue(), readAuthorization, writeAuthorization);
+                        (Profile)comboItem.getValue(), authorizations);
             }
         }
         Util.reloadBindings(window);
