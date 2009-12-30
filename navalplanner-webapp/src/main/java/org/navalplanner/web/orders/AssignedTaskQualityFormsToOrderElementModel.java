@@ -163,8 +163,8 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
         if ((taskQualityForm == null) || ((item == null))) {
             return true;
         }
-        return (!(item.getPassed() || taskQualityForm
-                .isPassedPreviousItem(item)));
+        return ((!taskQualityForm.isByItems()) && (!(item.getPassed() || taskQualityForm
+                .isPassedPreviousItem(item))));
     }
 
     public boolean isDisabledDateItem(TaskQualityForm taskQualityForm,
@@ -172,7 +172,18 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
         if ((taskQualityForm == null) || ((item == null))) {
             return true;
         }
-        return (!item.getPassed());
+        return (!taskQualityForm.isByItems() && (!item.getPassed()));
+    }
+
+    public boolean isCorrectConsecutiveDate(TaskQualityForm taskQualityForm,
+            TaskQualityFormItem item) {
+        if ((taskQualityForm == null) || ((item == null))) {
+            return true;
+        }
+        if (taskQualityForm.isByItems()) {
+            return true;
+        }
+        return (taskQualityForm.isCorrectConsecutiveDate(item));
     }
 
     public void updatePassedTaskQualityFormItems(TaskQualityForm taskQualityForm) {
@@ -219,13 +230,15 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
         for (TaskQualityFormItem item : taskQualityForm
                 .getTaskQualityFormItems()) {
 
-            if (!taskQualityForm.isCorrectConsecutivePassed(item)) {
+            if ((!taskQualityForm.isByItems())
+                    && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
                 throw new ValidationException(new InvalidValue(
                         _("must be consecutive"), TaskQualityForm.class,
                         "passed", item.getName(), taskQualityForm));
-            }
 
-            if (!taskQualityForm.isCorrectConsecutiveDate(item)) {
+            }
+            if ((!taskQualityForm.isByItems())
+                    && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
                 throw new ValidationException(new InvalidValue(
                         _("must be consecutive"), TaskQualityForm.class,
                         "date", item.getName(), taskQualityForm));

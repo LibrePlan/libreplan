@@ -79,9 +79,11 @@ public class TaskQualityForm extends BaseEntity {
     @SuppressWarnings("unused")
     @AssertTrue(message = "dates must be consecutive.")
     public boolean checkConstraintCorrectConsecutivesDate() {
-        for (TaskQualityFormItem item : taskQualityFormItems) {
-            if (!isCorrectConsecutiveDate(item)) {
-                return false;
+        if (!isByItems()) {
+            for (TaskQualityFormItem item : taskQualityFormItems) {
+                if (!isCorrectConsecutiveDate(item)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -90,9 +92,11 @@ public class TaskQualityForm extends BaseEntity {
     @SuppressWarnings("unused")
     @AssertTrue(message = "dates must be consecutive.")
     public boolean checkConstraintConsecutivePassedItems() {
-        for (TaskQualityFormItem item : taskQualityFormItems) {
-            if (!isCorrectConsecutivePassed(item)) {
-                return false;
+        if (!isByItems()) {
+            for (TaskQualityFormItem item : taskQualityFormItems) {
+                if (!isCorrectConsecutivePassed(item)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -134,4 +138,12 @@ public class TaskQualityForm extends BaseEntity {
         return true;
     }
 
+    public boolean isByItems() {
+        if ((this.qualityForm != null)
+                && (this.qualityForm.getQualityFormType() != null)) {
+            return (this.qualityForm.getQualityFormType()
+                    .equals(QualityFormType.BY_ITEMS));
+        }
+        return true;
+    }
 }

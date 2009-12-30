@@ -102,11 +102,19 @@ public interface IAssignedTaskQualityFormsToOrderElementModel {
             TaskQualityFormItem item);
 
     /**
-     * Check whether {@link QualityFormItem} date mustbe disabled
+     * Check whether {@link QualityFormItem} date must be disabled
      * @param taskQualityForm
      *            ,item
      */
     boolean isDisabledDateItem(TaskQualityForm taskQualityForm,
+            TaskQualityFormItem item);
+
+    /**
+     * Check whether {@link QualityFormItem} date is consecutive
+     * @param taskQualityForm
+     *            ,item
+     */
+    boolean isCorrectConsecutiveDate(TaskQualityForm taskQualityForm,
             TaskQualityFormItem item);
 
     /**

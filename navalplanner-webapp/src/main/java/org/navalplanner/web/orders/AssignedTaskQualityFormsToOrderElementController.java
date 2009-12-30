@@ -33,7 +33,6 @@ import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityFormItem;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -210,6 +209,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     private void reloadTaskQualityForms() {
         Util.reloadBindings(bdQualityForms);
         Util.reloadBindings(assignedTaskQualityForms);
+        assignedTaskQualityForms.invalidate();
     }
 
     public void close() {
@@ -224,7 +224,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         @Override
         public void render(Row row, Object data) throws Exception {
             TaskQualityForm taskQualityForm = (TaskQualityForm) data;
-            row.setValue(data);
+            row.setValue(taskQualityForm);
 
             appendDetails(row, taskQualityForm);
             appendNewLabel(row, taskQualityForm.getQualityForm().getName());
@@ -319,7 +319,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         @Override
         public void render(Row row, Object data) throws Exception {
             TaskQualityFormItem item = (TaskQualityFormItem) data;
-            row.setValue(data);
+            row.setValue(item);
 
             appendNewLabel(row, item.getName());
             appendNewLabel(row, item.getPosition().toString());
@@ -342,9 +342,6 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         final TaskQualityForm taskQualityForm = getTaskQualityFormByRow(row);
         final TaskQualityFormItem item = (TaskQualityFormItem) row.getValue();
 
-        date.setDisabled(assignedTaskQualityFormsToOrderElementModel
-                .isDisabledDateItem(taskQualityForm, item));
-
         Util.bind(date, new Util.Getter<Date>() {
             @Override
             public Date get() {
@@ -358,6 +355,8 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             }
         });
 
+        date.setDisabled(assignedTaskQualityFormsToOrderElementModel
+                .isDisabledDateItem(taskQualityForm, item));
         date.setConstraint(checkConsecutiveDate(row));
     }
 
@@ -367,9 +366,6 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
         final TaskQualityForm taskQualityForm = getTaskQualityFormByRow(row);
         final TaskQualityFormItem item = (TaskQualityFormItem) row.getValue();
-
-        checkbox.setDisabled(assignedTaskQualityFormsToOrderElementModel
-                .isDisabledPassedItem(taskQualityForm, item));
 
         Util.bind(checkbox, new Util.Getter<Boolean>() {
             @Override
@@ -384,14 +380,20 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             }
         });
 
-        checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                assignedTaskQualityFormsToOrderElementModel
-                        .updatePassedTaskQualityFormItems(taskQualityForm);
-                Util.reloadBindings(assignedTaskQualityForms);
-            }
-        });
+        checkbox.setDisabled(assignedTaskQualityFormsToOrderElementModel
+                .isDisabledPassedItem(taskQualityForm, item));
+
+        if (!taskQualityForm.isByItems()) {
+            checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    Grid gridItems = row.getGrid();
+                    gridItems.setModel(new SimpleListModel(taskQualityForm
+                            .getTaskQualityFormItems().toArray()));
+                    gridItems.invalidate();
+                }
+            });
+        }
     }
 
     private Constraint checkConsecutiveDate(final Row row) {
@@ -412,11 +414,12 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                         throw new WrongValueException(comp,
                                 _("The date cannot be null."));
                     }
-                    if (!taskQualityForm.isCorrectConsecutiveDate(item)) {
+                    if (!assignedTaskQualityFormsToOrderElementModel
+                            .isCorrectConsecutiveDate(taskQualityForm, item)) {
                         item.setDate(null);
                         throw new WrongValueException(
                                 comp,
-                                _("The date must be later the previous item date, and previous the later item date."));
+                                _("must be consecutive."));
                     }
                 }
             }
@@ -435,11 +438,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     // Operations to confirm and validate
 
     public boolean confirm() {
-        return (validateConstraints() && validate());
-    }
-
-    private boolean validateConstraints() {
-        return ConstraintChecker.isValid(self);
+        return validate();
     }
 
     /**
@@ -490,11 +489,13 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
                 if (rowItem != null) {
                     if (TaskQualityFormItem.propertyDate.equals(propertyName)) {
+                        openDetails(rowItem);
                         Datebox datebox = getDatebox(rowItem);
                         throw new WrongValueException(datebox, invalidValue
                             .getMessage());
                     }
                     if (TaskQualityFormItem.propertyPassed.equals(propertyName)) {
+                        openDetails(rowItem);
                         Checkbox checkbox = getCheckbox(rowItem);
                         throw new WrongValueException(checkbox, invalidValue
                                 .getMessage());
@@ -529,10 +530,18 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     }
 
     private void openDetails(Row row) {
+        Detail details = getDetails(row);
+        if (details != null) {
+            details.setOpen(true);
+            assignedTaskQualityForms.invalidate();
+        }
+    }
+
+    private Detail getDetails(Row row) {
         if (row.getValue() instanceof TaskQualityForm) {
-            ((Detail) row.getFirstChild()).setOpen(true);
+            return ((Detail) row.getFirstChild());
         } else {
-            ((Detail) row.getGrid().getParent()).setOpen(true);
+            return ((Detail) row.getGrid().getParent());
         }
     }
 
