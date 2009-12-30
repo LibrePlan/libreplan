@@ -26,13 +26,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -69,6 +77,12 @@ public class OrderAuthorizationDAOTest {
     @Autowired
     IProfileDAO profileDAO;
 
+    @Autowired
+    IOrderDAO orderDAO;
+
+    @Resource
+    private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+
     private UserOrderAuthorization createValidUserOrderAuthorization() {
         return UserOrderAuthorization.create(OrderAuthorizationType.READ_AUTHORIZATION);
     }
@@ -86,6 +100,20 @@ public class OrderAuthorizationDAOTest {
         Set<UserRole> roles = new HashSet<UserRole>();
         roles.add(UserRole.ROLE_BASIC_USER);
         return Profile.create(UUID.randomUUID().toString(), roles);
+    }
+
+    private Order createValidOrder() {
+        Order order = Order.create();
+        order.setCalendar(BaseCalendar.create());
+        order.setInitDate(new Date());
+        order.setName(UUID.randomUUID().toString());
+        order.setCode(UUID.randomUUID().toString());
+        return order;
+    }
+
+    @Before
+    public void loadRequiredaData() {
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
     }
 
     @Test
@@ -145,5 +173,16 @@ public class OrderAuthorizationDAOTest {
         profileOrderAuthorization.setProfile(profile);
         orderAuthorizationDAO.save(profileOrderAuthorization);
         assertEquals(profile.getId(), profileOrderAuthorization.getProfile().getId());
+    }
+
+    @Test
+    public void testNavigateFromOrderAuthorizationToOrder() {
+        Order order = createValidOrder();
+        orderDAO.save(order);
+
+        UserOrderAuthorization userOrderAuthorization = createValidUserOrderAuthorization();
+        userOrderAuthorization.setOrder(order);
+        orderAuthorizationDAO.save(userOrderAuthorization);
+        assertEquals(order.getId(),userOrderAuthorization.getOrder().getId());
     }
 }

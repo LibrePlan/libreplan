@@ -22,6 +22,7 @@ package org.navalplanner.business.users.entities;
 
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.orders.entities.Order;
 
 /**
  * Base entity for modeling a order authorization.
@@ -32,6 +33,8 @@ public abstract class OrderAuthorization extends BaseEntity {
 
     private OrderAuthorizationType authorizationType;
 
+    private Order order;
+
     public void setAuthorizationType(OrderAuthorizationType authorizationType) {
         this.authorizationType = authorizationType;
     }
@@ -39,6 +42,14 @@ public abstract class OrderAuthorization extends BaseEntity {
     @NotNull(message="an authorization type must be set")
     public OrderAuthorizationType getAuthorizationType() {
         return authorizationType;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 
 }

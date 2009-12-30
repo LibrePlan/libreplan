@@ -81,6 +81,8 @@
             </type>
         </property>
 
+        <many-to-one name="order" class="org.navalplanner.business.orders.entities.Order" column="ORDER_ID" />
+
         <subclass name="UserOrderAuthorization" discriminator-value="USER">
             <many-to-one name="user" class="User" column="USER_ID" />
         </subclass>
