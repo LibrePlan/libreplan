@@ -290,9 +290,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (!assignedTaskQualityFormController.confirm()) {
             return false;
         }
-        orderAuthorizationController.save();
         try {
             orderModel.save();
+            orderAuthorizationController.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
             return true;
         } catch (ValidationException e) {

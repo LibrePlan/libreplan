@@ -1,8 +1,14 @@
 package org.navalplanner.web.users;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -34,6 +40,9 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
 
     @Autowired
     private IOrderAuthorizationDAO dao;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Override
     public void addProfileOrderAuthorization(Profile profile,
@@ -76,6 +85,17 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
     @Override
     @Transactional
     public void confirmSave() {
+        try {
+            if(order.isNewObject()) {
+                //if it was new, we reload the order from the DAO
+                Order newOrder = orderDAO.find(order.getId());
+                replaceOrder(newOrder);
+            }
+        }catch (InstanceNotFoundException e) {
+            InvalidValue invalidValue = new InvalidValue(_("Order does not exist"),
+                    OrderAuthorization.class, "order", order, null);
+            throw new ValidationException(invalidValue);
+        }
         for(OrderAuthorization authorization : profileOrderAuthorizationList) {
             dao.save(authorization);
         }
@@ -164,6 +184,18 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         orderAuthorization.setOrder(order);
         orderAuthorization.setUser(user);
         return orderAuthorization;
+    }
+
+    private void replaceOrder(Order newOrder) {
+        for(OrderAuthorization authorization : profileOrderAuthorizationList) {
+            authorization.setOrder(newOrder);
+            dao.save(authorization);
+        }
+        for(OrderAuthorization authorization : userOrderAuthorizationList) {
+            authorization.setOrder(newOrder);
+            dao.save(authorization);
+        }
+        this.order = newOrder;
     }
 
 }
