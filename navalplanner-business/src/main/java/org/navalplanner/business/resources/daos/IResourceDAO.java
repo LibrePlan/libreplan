@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -43,6 +44,7 @@ public interface IResourceDAO extends IGenericDAO<Resource, Long> {
 
     public List<Worker> getVirtualWorkers();
 
+    public List<Machine> getMachines();
     /**
      * Returns all {@link Resource} which satisfy a set of {@link Criterion}
      */
@@ -51,4 +53,6 @@ public interface IResourceDAO extends IGenericDAO<Resource, Long> {
     List<Resource> findResourcesRelatedTo(List<Task> tasks);
 
     List<Resource> getResources();
+
+    List<Resource> getRealResources();
 }

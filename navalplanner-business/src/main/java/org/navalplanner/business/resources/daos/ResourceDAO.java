@@ -32,6 +32,7 @@ import org.hibernate.Query;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -153,5 +154,18 @@ public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
 
     public List<Resource> getResources() {
         return list(Resource.class);
+    }
+
+    @Override
+    public List<Machine> getMachines() {
+        return list(Machine.class);
+    }
+
+    @Override
+    public List<Resource> getRealResources() {
+        List<Resource> list = new ArrayList<Resource>();
+        list.addAll(getRealWorkers());
+        list.addAll(getMachines());
+        return list;
     }
 }
