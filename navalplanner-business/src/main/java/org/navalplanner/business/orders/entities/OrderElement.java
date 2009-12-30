@@ -36,6 +36,7 @@ import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -883,6 +884,34 @@ public abstract class OrderElement extends BaseEntity {
         }
 
         return null;
+    }
+
+    public DirectAdvanceAssignment getDirectAdvanceAssignmentSubcontractor() {
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            if (directAdvanceAssignment.getAdvanceType().getUnitName().equals(
+                    PredefinedAdvancedTypes.SUBCONTRACTOR.getTypeName())) {
+                return directAdvanceAssignment;
+            }
+        }
+
+        return null;
+    }
+
+    public DirectAdvanceAssignment addSubcontractorAdvanceAssignment()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        boolean reportGlobalAdvance = false;
+        if (getReportGlobalAdvanceAssignment() == null) {
+            reportGlobalAdvance = true;
+        }
+
+        DirectAdvanceAssignment directAdvanceAssignment = DirectAdvanceAssignment
+                .create(reportGlobalAdvance, new BigDecimal(100));
+        directAdvanceAssignment
+                .setAdvanceType(PredefinedAdvancedTypes.SUBCONTRACTOR.getType());
+
+        addAdvanceAssignment(directAdvanceAssignment);
+        return directAdvanceAssignment;
     }
 
 }

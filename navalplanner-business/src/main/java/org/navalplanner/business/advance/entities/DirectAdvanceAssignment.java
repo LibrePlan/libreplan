@@ -134,4 +134,23 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
                 RoundingMode.DOWN);
     }
 
+    public void addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
+        this.advanceMeasurements.add(advanceMeasurement);
+        advanceMeasurement.setAdvanceAssignment(this);
+    }
+
+    public AdvanceMeasurement getAdvanceMeasurementAtExactDate(LocalDate date) {
+        if (advanceMeasurements.isEmpty()) {
+            return null;
+        }
+
+        for (AdvanceMeasurement advanceMeasurement : advanceMeasurements) {
+            if (advanceMeasurement.getDate().equals(date)) {
+                return advanceMeasurement;
+            }
+        }
+
+        return null;
+    }
+
 }

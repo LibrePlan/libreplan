@@ -31,8 +31,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.NonUniqueResultException;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -232,6 +235,8 @@ public final class OrderElementConverter {
             orderElement.addMaterialAssignment(toEntity(materialAssignmentDTO));
         }
 
+        addAdvanceMeasurements(orderElement, orderElementDTO);
+
         return orderElement;
     }
 
@@ -375,6 +380,8 @@ public final class OrderElementConverter {
             }
         }
 
+        addAdvanceMeasurements(orderElement, orderElementDTO);
+
         if (orderElementDTO.name != null) {
             orderElement.setName(orderElementDTO.name);
         }
@@ -427,6 +434,49 @@ public final class OrderElementConverter {
             materialAssignment
                     .setEstimatedAvailability(materialAssignmentDTO.estimatedAvailability);
         }
+    }
+
+    private static void addAdvanceMeasurements(OrderElement orderElement,
+            OrderElementDTO orderElementDTO) {
+        if (!orderElementDTO.advanceMeasurements.isEmpty()) {
+            DirectAdvanceAssignment directAdvanceAssignment = getDirectAdvanceAssignmentSubcontractor(orderElement);
+
+            for (AdvanceMeasurementDTO advanceMeasurementDTO : orderElementDTO.advanceMeasurements) {
+                AdvanceMeasurement advanceMeasurement = null;
+                LocalDate date = null;
+                if (advanceMeasurementDTO.date != null) {
+                    date = new LocalDate(advanceMeasurementDTO.date);
+                    advanceMeasurement = directAdvanceAssignment
+                            .getAdvanceMeasurementAtExactDate(date);
+                }
+
+                if (advanceMeasurement == null) {
+                    advanceMeasurement = AdvanceMeasurement.create(date,
+                            advanceMeasurementDTO.value);
+                    directAdvanceAssignment
+                            .addAdvanceMeasurements(advanceMeasurement);
+                } else {
+                    advanceMeasurement.setValue(advanceMeasurementDTO.value);
+                }
+            }
+        }
+    }
+
+    private static DirectAdvanceAssignment getDirectAdvanceAssignmentSubcontractor(
+            OrderElement orderElement) {
+        DirectAdvanceAssignment directAdvanceAssignment = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        if (directAdvanceAssignment == null) {
+            try {
+                directAdvanceAssignment = orderElement
+                        .addSubcontractorAdvanceAssignment();
+            } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
+                throw new RuntimeException(e);
+            } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return directAdvanceAssignment;
     }
 
 }
