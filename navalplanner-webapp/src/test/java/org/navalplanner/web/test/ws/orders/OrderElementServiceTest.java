@@ -34,14 +34,18 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_T
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.annotation.Resource;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
@@ -55,6 +59,7 @@ import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
+import org.navalplanner.ws.orders.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.orders.api.HoursGroupDTO;
 import org.navalplanner.ws.orders.api.IOrderElementService;
 import org.navalplanner.ws.orders.api.LabelDTO;
@@ -744,6 +749,137 @@ public class OrderElementServiceTest {
                     equalTo(1500), equalTo(2000)));
             assertThat(hoursGroup.getResourceType(),
                     equalTo(ResourceEnum.WORKER));
+        }
+    }
+
+    @Test
+    public void invalidOrderWithInvalidAdvanceMeasurements()
+            throws InstanceNotFoundException {
+        String code = "order-code";
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order with code " + code + " already exists");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO();
+        orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: date, value
+        assertThat(constraintViolations.size(), equalTo(2));
+        for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
+            assertThat(constraintViolationDTO.fieldName, anyOf(
+                    equalTo("AdvanceMeasurement::date"),
+                    equalTo("AdvanceMeasurement::value")));
+        }
+
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order shouldn't be stored");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+    }
+
+    @Test
+    public void validOrderWithAdvanceMeasurements()
+            throws InstanceNotFoundException {
+        String code = "order-code";
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order with code " + code + " already exists");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO(
+                new Date(), BigDecimal.TEN);
+        orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+        DirectAdvanceAssignment advanceAssignment = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        assertNotNull(advanceAssignment);
+        assertThat(advanceAssignment.getAdvanceMeasurements().size(),
+                equalTo(1));
+    }
+
+    @Test
+    public void updateAdvanceMeasurements() throws InstanceNotFoundException,
+            IncompatibleTypeException {
+        String code = "order-code";
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order with code " + code + " already exists");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        LocalDate date = new LocalDate();
+        AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO(
+                date.toDateTimeAtStartOfDay().toDate(), new BigDecimal(15));
+        orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+        DirectAdvanceAssignment advanceAssignment = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        assertNotNull(advanceAssignment);
+        assertThat(advanceAssignment.getAdvanceMeasurements().size(),
+                equalTo(1));
+
+        AdvanceMeasurementDTO advanceMeasurementDTO2 = new AdvanceMeasurementDTO(
+                date.plusWeeks(1).toDateTimeAtStartOfDay().toDate(),
+                new BigDecimal(20));
+        orderDTO.advanceMeasurements.add(advanceMeasurementDTO2);
+        instanceConstraintViolationsList = orderElementService
+                .updateOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+        advanceAssignment = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        assertNotNull(advanceAssignment);
+        SortedSet<AdvanceMeasurement> advanceMeasurements = advanceAssignment
+                .getAdvanceMeasurements();
+        assertThat(advanceMeasurements.size(), equalTo(2));
+        for (AdvanceMeasurement advanceMeasurement : advanceMeasurements) {
+            assertThat(advanceMeasurement.getDate(), anyOf(equalTo(date),
+                    equalTo(date.plusWeeks(1))));
+            assertThat(advanceMeasurement.getValue(), anyOf(equalTo(new BigDecimal(15)),
+                    equalTo(new BigDecimal(20))));
         }
     }
 
