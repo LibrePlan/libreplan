@@ -268,7 +268,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         final boolean couldSave = save();
         if (couldSave) {
             orderModel.initEdit((Order) orderModel.getOrder());
-            orderAuthorizationController.setExistingOrder((Order) orderModel.getOrder());
+            orderAuthorizationController.setOrder((Order) orderModel.getOrder());
             initializeTabs();
             showWindow(editWindow);
         }
@@ -376,7 +376,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         planningControllerEntryPoints.goToOrderDetails(order);
-        orderAuthorizationController.setExistingOrder(order);
+        orderAuthorizationController.setOrder(order);
     }
 
     public void initEdit(Order order) {
@@ -412,7 +412,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         try {
             orderModel.prepareForCreate();
             showEditWindow(_("Create order"));
-            orderAuthorizationController.setNewOrder((Order) orderModel.getOrder());
+            orderAuthorizationController.setOrder((Order) orderModel.getOrder());
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }

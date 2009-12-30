@@ -120,34 +120,27 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initSetExistingOrder(Order order) {
+    public void initSetOrder(Order order) {
         this.order = order;
         profileOrderAuthorizationList =
             new ArrayList<ProfileOrderAuthorization>();
         userOrderAuthorizationList =
             new ArrayList<UserOrderAuthorization>();
 
-        //Retrieve the OrderAuthorizations associated with this order
-        for(OrderAuthorization authorization : dao.listByOrder(order)) {
-            forceLoadEntities(authorization);
-            if(authorization instanceof UserOrderAuthorization) {
-                userOrderAuthorizationList.add(
-                        (UserOrderAuthorization) authorization);
-            }
-            if(authorization instanceof ProfileOrderAuthorization) {
-                profileOrderAuthorizationList.add(
-                        (ProfileOrderAuthorization) authorization);
+        if(!order.isNewObject()) {
+            //Retrieve the OrderAuthorizations associated with this order
+            for(OrderAuthorization authorization : dao.listByOrder(order)) {
+                forceLoadEntities(authorization);
+                if(authorization instanceof UserOrderAuthorization) {
+                    userOrderAuthorizationList.add(
+                            (UserOrderAuthorization) authorization);
+                }
+                if(authorization instanceof ProfileOrderAuthorization) {
+                    profileOrderAuthorizationList.add(
+                            (ProfileOrderAuthorization) authorization);
+                }
             }
         }
-    }
-
-    @Override
-    public void initSetNewOrder(Order order) {
-        this.order = order;
-        profileOrderAuthorizationList =
-            new ArrayList<ProfileOrderAuthorization>();
-        userOrderAuthorizationList =
-            new ArrayList<UserOrderAuthorization>();
     }
 
     private void forceLoadEntities(OrderAuthorization authorization) {

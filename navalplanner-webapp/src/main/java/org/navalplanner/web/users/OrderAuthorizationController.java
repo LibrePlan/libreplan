@@ -60,13 +60,8 @@ public class OrderAuthorizationController extends GenericForwardComposer{
         this.window = comp;
     }
 
-    public void setNewOrder(Order order) {
-        orderAuthorizationModel.initSetNewOrder(order);
-        Util.reloadBindings(window);
-    }
-
-    public void setExistingOrder(Order order) {
-        orderAuthorizationModel.initSetExistingOrder(order);
+    public void setOrder(Order order) {
+        orderAuthorizationModel.initSetOrder(order);
         Util.reloadBindings(window);
     }
 
