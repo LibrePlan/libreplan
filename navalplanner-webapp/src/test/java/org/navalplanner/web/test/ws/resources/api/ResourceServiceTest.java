@@ -87,12 +87,16 @@ public class ResourceServiceTest {
     public void testAddResourcesWithBasicContraintViolations()
         throws InstanceNotFoundException {
 
-        String m1Code = getUniqueName();
+        String m1Code = ' ' + getUniqueName() + ' '; // Blank spaces
+                                                     // intentionally
+                                                     // added (OK).
         MachineDTO m1 = new MachineDTO(m1Code, "name", "desc");
         MachineDTO m2 = new MachineDTO("", null, ""); // Missing code and name
                                                       // (description is
                                                       // optional).
-        String w1Nif = getUniqueName();
+        String w1Nif = ' ' + getUniqueName() + ' '; // Blank spaces
+                                                    // intentionally
+                                                     // added (OK).
         WorkerDTO w1 = new WorkerDTO("w1-first-name", "w1-surname", w1Nif);
         WorkerDTO w2 = new WorkerDTO("", null, ""); // Missing first name,
                                                     // surname, and nif.
@@ -112,8 +116,8 @@ public class ResourceServiceTest {
             constraintViolations.size() == 2); // m2 constraint violations.
         assertTrue(instanceConstraintViolationsList.get(1).
             constraintViolations.size() == 3); // w2 constraint violations.
-        assertTrue(machineDAO.findByNameOrCode(m1Code).size() == 1);
-        workerDAO.findUniqueByNif(w1Nif);
+        assertTrue(machineDAO.findByNameOrCode(m1Code.trim()).size() == 1);
+        workerDAO.findUniqueByNif(w1Nif.trim());
 
     }
 
@@ -128,7 +132,9 @@ public class ResourceServiceTest {
         /* Create a resource DTO. */
         MachineDTO machineDTO = new MachineDTO(ct.getName(), "name", "desc");
         machineDTO.criterionSatisfactions.add(
-            new CriterionSatisfactionDTO(ct.getName(), "c1",
+            new CriterionSatisfactionDTO(
+                ' ' + ct.getName() + ' ', " c1 ", // Blank spaces intentionally
+                                                  // added (OK).
                 Calendar.getInstance().getTime(), null));
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName(), "c2",

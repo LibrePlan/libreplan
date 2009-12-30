@@ -288,7 +288,7 @@ public class CriterionType extends BaseEntity implements
         throws InstanceNotFoundException {
 
         for (Criterion c : criterions) {
-            if (c.getName().trim().equalsIgnoreCase(criterionName)) {
+            if (c.getName().equalsIgnoreCase(criterionName)) {
                 return c;
             }
         }

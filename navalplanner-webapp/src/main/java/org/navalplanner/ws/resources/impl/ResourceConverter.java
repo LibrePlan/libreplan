@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.navalplanner.business.common.StringUtils;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
@@ -68,14 +69,16 @@ public class ResourceConverter {
 
     private final static Machine createResourceWithBasicData(
         MachineDTO machineDTO) {
-        return Machine.createUnvalidated(machineDTO.code,machineDTO.name,
-            machineDTO.description);
+        return Machine.createUnvalidated(StringUtils.trim(machineDTO.code),
+            StringUtils.trim(machineDTO.name),
+            StringUtils.trim(machineDTO.description));
     }
 
     private final static Worker createResourceWithBasicData(
         WorkerDTO workerDTO) {
-        return Worker.createUnvalidated(workerDTO.firstName, workerDTO.surname,
-            workerDTO.nif);
+        return Worker.createUnvalidated(StringUtils.trim(workerDTO.firstName),
+            StringUtils.trim(workerDTO.surname),
+            StringUtils.trim(workerDTO.nif));
     }
 
     private static void addCriterionSatisfactions(Resource resource,
@@ -99,8 +102,8 @@ public class ResourceConverter {
         throws CreateUnvalidatedException {
 
         return CriterionSatisfaction.createUnvalidated(
-            criterionSatisfactionDTO.criterionTypeName,
-            criterionSatisfactionDTO.criterionName,
+            StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
+            StringUtils.trim(criterionSatisfactionDTO.criterionName),
             resource,
             DateConverter.toDate(criterionSatisfactionDTO.startDate),
             DateConverter.toDate(criterionSatisfactionDTO.finishDate));

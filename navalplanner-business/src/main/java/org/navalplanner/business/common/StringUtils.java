@@ -30,10 +30,19 @@ public class StringUtils {
     private StringUtils() {}
 
     /**
-     * Check if a String is null or "" after being trimmed.
+     * Checks if a string is <code>null</code> or empty ("" after being
+     * trimmed).
      */
     public static boolean isEmpty(String s) {
         return s == null ? true : s.trim().equals("");
+    }
+
+    /**
+     * Trims a string if is not <code>null</code>; otherwise, it returns
+     * <code>null</code>.
+     */
+    public static String trim(String s) {
+        return s == null ? null : s.trim();
     }
 
 }
