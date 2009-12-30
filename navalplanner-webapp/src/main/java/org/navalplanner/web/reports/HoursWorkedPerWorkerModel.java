@@ -48,7 +48,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     private IWorkerDAO workerDAO;
 
     @Transactional(readOnly = true)
-    public JRDataSource getWorkerReport(List<Worker> workers, Date startingDate, Date endingDate) {
+    public JRDataSource getHoursWorkedPerWorkerReport(List<Worker> workers, Date startingDate, Date endingDate) {
         final List<HoursWorkedPerWorkerDTO> workingHoursPerWorkerList = workerDAO.getWorkingHoursPerWorker(workers, startingDate, endingDate);
 
         if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
