@@ -53,7 +53,7 @@ public interface IQualityFormModel {
      * Returns all {@link QualityForm}
      * @return
      */
-    List<QualityForm> getQualityForms();
+    List<QualityForm> getQualityForms(String predicate);
 
     /**
      * Starts conversation creating new {@link QualityForm}

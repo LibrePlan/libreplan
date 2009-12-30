@@ -39,8 +39,10 @@ import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Column;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
@@ -76,6 +78,12 @@ public class QualityFormCRUDController extends GenericForwardComposer {
 
     private Grid gridQualityFormItems;
 
+    private String predicate;
+
+    private Combobox cbFilterQualityFormName;
+
+    private Textbox txtFilter;
+
     public QualityFormCRUDController() {
 
     }
@@ -87,6 +95,9 @@ public class QualityFormCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         messagesEditWindow = new MessagesForUser(editWindow
                 .getFellowIfAny("messagesContainer"));
+        txtFilter = (Textbox) listWindow.getFellowIfAny("txtFilter");
+        cbFilterQualityFormName = (Combobox) listWindow
+                .getFellowIfAny("cbFilterQualityFormName");
         gridQualityFormItems = (Grid) editWindow
                 .getFellowIfAny("gridQualityFormItems");
         gridQualityForms = (Grid) listWindow.getFellowIfAny("qualityFormsList");
@@ -109,7 +120,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
      * @return
      */
     public List<QualityForm> getQualityForms() {
-        return qualityFormModel.getQualityForms();
+        return qualityFormModel.getQualityForms(predicate);
     }
 
     /**
@@ -174,6 +185,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
      */
     private void goToList() {
         getVisibility().showOnly(listWindow);
+        clearFilter();
         Util.reloadBindings(listWindow);
     }
 
@@ -462,6 +474,25 @@ public class QualityFormCRUDController extends GenericForwardComposer {
     public void upQualityFormItem(QualityFormItem qualityFormItem) {
         qualityFormModel.upQualityFormItem(qualityFormItem);
         Util.reloadBindings(gridQualityFormItems);
+    }
+
+    /**
+     * Apply filter to quality forms
+     * @param event
+     */
+    public void onApplyFilter(Event event) {
+        // Filter quality forms by name
+        predicate = getSelectedName();
+        Util.reloadBindings(gridQualityForms);
+    }
+
+    private String getSelectedName() {
+        return txtFilter.getValue();
+    }
+
+    private void clearFilter() {
+        txtFilter.setValue("");
+        predicate = getSelectedName();
     }
 
 }

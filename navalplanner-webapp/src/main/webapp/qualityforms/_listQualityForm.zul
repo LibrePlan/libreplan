@@ -19,6 +19,18 @@
 -->
 
 <window id="${arg.id}" title="${i18n:_('List quality forms')}">
+    <separator bar="false" spacing="20px" orient="vertical"/>
+    <div align="right">
+        <hbox align="end">
+          <!-- Filter by name -->
+          <label value="${i18n:_('Filter quality forms by :')}"/>
+          <label value="${i18n:_('name')}"/>
+          <textbox value="" id="txtFilter"/>
+          <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                onClick="controller.onApplyFilter(event)"/>
+        </hbox>
+    </div>
+    <separator bar="false" spacing="20px" orient="vertical"/>
     <grid id="qualityFormsList" model="@{controller.qualityForms}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
