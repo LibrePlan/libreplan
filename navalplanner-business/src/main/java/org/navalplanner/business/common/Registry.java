@@ -30,6 +30,7 @@ import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
@@ -108,6 +109,9 @@ public class Registry {
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
 
+    @Autowired
+    private ICriterionDAO criterionDAO;
+
     private Registry() {
     }
 
@@ -181,4 +185,9 @@ public class Registry {
     public static IWorkReportLineDAO getWorkReportLineDAO() {
         return getInstance().workReportLineDAO;
     }
+
+    public static ICriterionDAO getCriterionDAO() {
+        return getInstance().criterionDAO;
+    }
+
 }

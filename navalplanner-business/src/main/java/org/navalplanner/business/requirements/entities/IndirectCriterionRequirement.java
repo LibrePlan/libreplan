@@ -20,9 +20,9 @@
 
 package org.navalplanner.business.requirements.entities;
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.resources.entities.Criterion;
 
 
 /**
@@ -67,7 +67,7 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
         super(criterion,orderElement,hoursGroup);
     }
 
-    @NotNull
+    @NotNull(message = "parent not specified")
     public DirectCriterionRequirement getParent() {
         return parent;
     }

@@ -36,7 +36,8 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 
-public class HoursGroup extends BaseEntity implements Cloneable {
+public class HoursGroup extends BaseEntity implements Cloneable,
+        ICriterionRequirable {
 
     public static HoursGroup create(OrderLine parentOrderLine) {
         HoursGroup result = new HoursGroup(parentOrderLine);
@@ -154,6 +155,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
     }
 
     @Valid
+    @Override
     public Set<CriterionRequirement> getCriterionRequirements() {
         return criterionRequirements;
     }
@@ -171,6 +173,7 @@ public class HoursGroup extends BaseEntity implements Cloneable {
         return Collections.unmodifiableSet(criterions);
     }
 
+    @Override
     public void addCriterionRequirement(CriterionRequirement requirement) {
         if (!isValidResourceType(requirement)) {
             throw new IllegalStateException(

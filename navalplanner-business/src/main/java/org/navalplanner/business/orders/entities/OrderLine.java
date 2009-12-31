@@ -490,6 +490,10 @@ public class OrderLine extends OrderElement {
     }
 
     public HoursGroup getHoursGroup(String code) {
+        if (code == null) {
+            return null;
+        }
+
         for (HoursGroup hoursGroup : getHoursGroups()) {
             if (hoursGroup.getCode().equals(code)) {
                 return hoursGroup;

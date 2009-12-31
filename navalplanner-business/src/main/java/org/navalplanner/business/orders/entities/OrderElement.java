@@ -61,7 +61,9 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
-public abstract class OrderElement extends BaseEntity {
+
+public abstract class OrderElement extends BaseEntity implements
+        ICriterionRequirable {
 
     @NotEmpty(message = "name not specified")
     private String name;
@@ -515,6 +517,7 @@ public abstract class OrderElement extends BaseEntity {
     }
 
     @Valid
+    @Override
     public Set<CriterionRequirement> getCriterionRequirements() {
         return Collections.unmodifiableSet(criterionRequirements);
     }
@@ -555,7 +558,7 @@ public abstract class OrderElement extends BaseEntity {
             CriterionRequirement newRequirement) {
         if (criterionRequirementHandler.canAddCriterionRequirement(this,
                 newRequirement)) {
-            addCriterionRequirement(newRequirement);
+            basicAddCriterionRequirement(newRequirement);
             criterionRequirementHandler
                     .propagateDirectCriterionRequirementAddition(this,
                             newRequirement);
@@ -570,13 +573,23 @@ public abstract class OrderElement extends BaseEntity {
 
     void addIndirectCriterionRequirement(
             IndirectCriterionRequirement criterionRequirement) {
-        addCriterionRequirement(criterionRequirement);
+        basicAddCriterionRequirement(criterionRequirement);
     }
 
-    protected void addCriterionRequirement(
+    protected void basicAddCriterionRequirement(
             CriterionRequirement criterionRequirement) {
             criterionRequirement.setOrderElement(this);
             this.criterionRequirements.add(criterionRequirement);
+    }
+
+    @Override
+    public void addCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+        if (criterionRequirement instanceof DirectCriterionRequirement) {
+            addDirectCriterionRequirement((DirectCriterionRequirement) criterionRequirement);
+        } else { // criterionRequirement instanceof IndirectCriterionRequirement
+            addIndirectCriterionRequirement((IndirectCriterionRequirement) criterionRequirement);
+        }
     }
 
     public void updateCriterionRequirements() {
@@ -847,6 +860,10 @@ public abstract class OrderElement extends BaseEntity {
     }
 
     public OrderElement getOrderElement(String code) {
+        if (code == null) {
+            return null;
+        }
+
         for (OrderElement child : getChildren()) {
             if (child.getCode().equals(code)) {
                 return child;

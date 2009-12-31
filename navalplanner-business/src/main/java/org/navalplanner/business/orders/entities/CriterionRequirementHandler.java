@@ -255,7 +255,7 @@ public class CriterionRequirementHandler implements
                 .getIndirectCriterionRequirement();
         for (IndirectCriterionRequirement current : currents) {
             if (!indirects.contains(current)) {
-                orderElement.addCriterionRequirement(current);
+                orderElement.basicAddCriterionRequirement(current);
             }
         }
     }
@@ -367,12 +367,12 @@ public class CriterionRequirementHandler implements
         // copy the directCriterionRequirement
         for (DirectCriterionRequirement newRequirement : copyDirectRequirements(orderLine
                 .getDirectCriterionRequirement())) {
-            container.addCriterionRequirement(newRequirement);
+            container.basicAddCriterionRequirement(newRequirement);
         }
         // copy the IndirectCriterionRequirement
         for (IndirectCriterionRequirement newRequirement : copyIndirectRequirements(orderLine
                 .getIndirectCriterionRequirement())) {
-            container.addCriterionRequirement(newRequirement);
+            container.basicAddCriterionRequirement(newRequirement);
         }
     }
 

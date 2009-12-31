@@ -46,12 +46,15 @@ import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.PredefinedMaterialCategories;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.ICriterionRequirable;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
@@ -229,6 +232,96 @@ public final class OrderElementConverter {
 
     public final static OrderElement toEntity(OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration) {
+        OrderElement orderElement = toEntityExceptCriterionRequirements(
+                orderElementDTO, configuration);
+        if (configuration.isCriterionRequirements()) {
+            addOrCriterionRequirements(orderElement, orderElementDTO);
+        }
+        return orderElement;
+    }
+
+    private static void addOrCriterionRequirements(OrderElement orderElement,
+            OrderElementDTO orderElementDTO) {
+        addOrCriterionRequirementsEntities(orderElement,
+                orderElementDTO.criterionRequirements);
+
+        if (orderElementDTO instanceof OrderLineDTO) {
+            for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
+                HoursGroup hoursGroup = ((OrderLine) orderElement)
+                        .getHoursGroup(hoursGroupDTO.code);
+                if (hoursGroup != null) {
+                    addOrCriterionRequirementsEntities(hoursGroup,
+                            hoursGroupDTO.criterionRequirements);
+                }
+            }
+        } else { // orderElementDTO instanceof OrderLineGroupDTO
+            for (OrderElementDTO childDTO : ((OrderLineGroupDTO) orderElementDTO).children) {
+                OrderElement child = ((OrderLineGroup) orderElement)
+                        .getOrderElement(childDTO.code);
+                addOrCriterionRequirements(child, childDTO);
+            }
+        }
+    }
+
+    private static void addOrCriterionRequirementsEntities(
+            ICriterionRequirable criterionRequirable,
+            Set<CriterionRequirementDTO> criterionRequirements) {
+        for (CriterionRequirementDTO criterionRequirementDTO : criterionRequirements) {
+            Criterion criterion = getCriterion(criterionRequirementDTO.name,
+                    criterionRequirementDTO.type);
+            if (criterion != null) {
+                if (criterionRequirementDTO instanceof DirectCriterionRequirementDTO) {
+                    DirectCriterionRequirement directCriterionRequirement = getDirectCriterionRequirementByCriterion(
+                            criterionRequirable, criterion);
+                    if (directCriterionRequirement == null) {
+                        criterionRequirable
+                                .addCriterionRequirement(DirectCriterionRequirement
+                                        .create(criterion));
+                    }
+                } else { // criterionRequirementDTO instanceof
+                    // IndirectCriterionRequirementDTO
+                    if (criterion != null) {
+                        IndirectCriterionRequirement indirectCriterionRequirement = getIndirectCriterionRequirementByCriterion(
+                                criterionRequirable, criterion);
+                        if (indirectCriterionRequirement != null) {
+                            indirectCriterionRequirement
+                                    .setIsValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).isValid);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static DirectCriterionRequirement getDirectCriterionRequirementByCriterion(
+            ICriterionRequirable criterionRequirable, Criterion criterion) {
+        for (CriterionRequirement criterionRequirement : criterionRequirable
+                .getCriterionRequirements()) {
+            if (criterionRequirement instanceof DirectCriterionRequirement) {
+                if (criterionRequirement.getCriterion().isEquivalent(criterion)) {
+                    return (DirectCriterionRequirement) criterionRequirement;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static IndirectCriterionRequirement getIndirectCriterionRequirementByCriterion(
+            ICriterionRequirable criterionRequirable, Criterion criterion) {
+        for (CriterionRequirement criterionRequirement : criterionRequirable
+                .getCriterionRequirements()) {
+            if (criterionRequirement instanceof IndirectCriterionRequirement) {
+                if (criterionRequirement.getCriterion().isEquivalent(criterion)) {
+                    return (IndirectCriterionRequirement) criterionRequirement;
+                }
+            }
+        }
+        return null;
+    }
+
+    private final static OrderElement toEntityExceptCriterionRequirements(
+            OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration) {
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
@@ -236,7 +329,8 @@ public final class OrderElementConverter {
 
             if (configuration.isHoursGroups()) {
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
-                    HoursGroup hoursGroup = toEntity(hoursGroupDTO);
+                    HoursGroup hoursGroup = toEntity(hoursGroupDTO,
+                            configuration);
                     ((OrderLine) orderElement).addHoursGroup(hoursGroup);
                 }
             }
@@ -297,6 +391,26 @@ public final class OrderElementConverter {
         return orderElement;
     }
 
+    private static Criterion getCriterion(String name, String type) {
+        List<Criterion> criterions = Registry.getCriterionDAO()
+                .findByNameAndType(name, type);
+        if (criterions.size() != 1) {
+            return null;
+        }
+        return criterions.get(0);
+    }
+
+    public static DirectCriterionRequirement toEntity(
+            DirectCriterionRequirementDTO criterionRequirementDTO) {
+        Criterion criterion = getCriterion(criterionRequirementDTO.name,
+                criterionRequirementDTO.type);
+        if (criterion == null) {
+            return null;
+        }
+
+        return DirectCriterionRequirement.create(criterion);
+    }
+
     public final static MaterialAssignment toEntity(
             MaterialAssignmentDTO materialAssignmentDTO) {
         Material material = null;
@@ -346,7 +460,8 @@ public final class OrderElementConverter {
         return label;
     }
 
-    public final static HoursGroup toEntity(HoursGroupDTO hoursGroupDTO) {
+    public final static HoursGroup toEntity(HoursGroupDTO hoursGroupDTO,
+            ConfigurationOrderElementConverter configuration) {
         ResourceEnum resourceType = ResourceEnumConverter
                 .fromDTO(hoursGroupDTO.resourceType);
         HoursGroup hoursGroup = HoursGroup.createUnvalidated(
@@ -356,6 +471,17 @@ public final class OrderElementConverter {
 
     public final static void update(OrderElement orderElement,
             OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration)
+            throws IncompatibleTypeException {
+        updateExceptCriterionRequirements(orderElement, orderElementDTO,
+                configuration);
+        if (configuration.isCriterionRequirements()) {
+            addOrCriterionRequirements(orderElement, orderElementDTO);
+        }
+    }
+
+    private final static void updateExceptCriterionRequirements(
+            OrderElement orderElement, OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
             throws IncompatibleTypeException {
 
@@ -371,10 +497,11 @@ public final class OrderElementConverter {
                             .containsHoursGroup(hoursGroupDTO.code)) {
                         update(((OrderLine) orderElement)
                                 .getHoursGroup(hoursGroupDTO.code),
-                                hoursGroupDTO);
+                                hoursGroupDTO, configuration);
                     } else {
                         ((OrderLine) orderElement)
-                                .addHoursGroup(toEntity(hoursGroupDTO));
+                                .addHoursGroup(toEntity(
+                                hoursGroupDTO, configuration));
                     }
                 }
             }
@@ -470,7 +597,8 @@ public final class OrderElementConverter {
     }
 
     public final static void update(HoursGroup hoursGroup,
-            HoursGroupDTO hoursGroupDTO) {
+            HoursGroupDTO hoursGroupDTO,
+            ConfigurationOrderElementConverter configuration) {
         if (!hoursGroup.getCode().equals(hoursGroupDTO.code)) {
             throw new RuntimeException(
                     _("Not the same hours group, impossible to update"));

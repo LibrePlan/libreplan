@@ -53,4 +53,6 @@ public interface ICriterionDAO extends IGenericDAO<Criterion, Long> {
 
     boolean thereIsOtherWithSameNameAndType(Criterion criterion);
 
+    List<Criterion> findByNameAndType(String name, String type);
+
 }

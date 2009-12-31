@@ -73,10 +73,20 @@ public class CriterionDAO extends GenericDAOHibernate<Criterion, Long>
         if (criterion.getType() == null) {
             return new ArrayList<Criterion>();
         }
+        return findByNameAndType(criterion.getName(), criterion.getType()
+                .getName());
+    }
+
+    @Override
+    public List<Criterion> findByNameAndType(String name, String type) {
+        if ((name == null) || (type == null)) {
+            return new ArrayList<Criterion>();
+        }
+
         Criteria c = getSession().createCriteria(Criterion.class);
-        c.add(Restrictions.eq("name", criterion.getName()).ignoreCase())
-                .createCriteria("type")
-                .add(Restrictions.eq("name", criterion.getType().getName()).ignoreCase());
+        c.add(Restrictions.eq("name", name).ignoreCase())
+                .createCriteria("type").add(
+                        Restrictions.eq("name", type).ignoreCase());
 
         return (List<Criterion>) c.list();
     }

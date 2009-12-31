@@ -52,7 +52,7 @@ public class CriterionRequirement extends BaseEntity{
         this.hoursGroup = hoursGroup;
     }
 
-    @NotNull
+    @NotNull(message = "criterion not specified")
     public Criterion getCriterion() {
         return criterion;
     }
