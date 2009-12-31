@@ -29,30 +29,34 @@ package org.navalplanner.ws.orders.impl;
 public class ConfigurationOrderElementConverter {
 
     public static ConfigurationOrderElementConverter all() {
-        return new ConfigurationOrderElementConverter(true, true, true, true);
+        return new ConfigurationOrderElementConverter(true, true, true, true,
+                true);
     }
 
     public static ConfigurationOrderElementConverter none() {
         return new ConfigurationOrderElementConverter(false, false, false,
-                false);
+                false, false);
     }
 
     public static ConfigurationOrderElementConverter noAdvanceMeasurements() {
-        return new ConfigurationOrderElementConverter(true, true, false, true);
+        return new ConfigurationOrderElementConverter(true, true, false, true,
+                true);
     }
 
     private boolean labels;
     private boolean materialAssignments;
     private boolean advanceMeasurements;
     private boolean hoursGroups;
+    private boolean criterionRequirements;
 
     private ConfigurationOrderElementConverter(boolean labels,
             boolean materialAssignments, boolean advanceMeasurements,
-            boolean hoursGroups) {
+            boolean hoursGroups, boolean criterionRequirements) {
         this.labels = labels;
         this.materialAssignments = materialAssignments;
         this.advanceMeasurements = advanceMeasurements;
         this.hoursGroups = hoursGroups;
+        this.criterionRequirements = criterionRequirements;
     }
 
     public boolean isLabels() {
@@ -69,6 +73,10 @@ public class ConfigurationOrderElementConverter {
 
     public boolean isHoursGroups() {
         return hoursGroups;
+    }
+
+    public boolean isCriterionRequirements() {
+        return criterionRequirements;
     }
 
 }

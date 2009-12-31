@@ -20,7 +20,13 @@
 
 package org.navalplanner.ws.orders.api;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
@@ -41,14 +47,22 @@ public class HoursGroupDTO {
     @XmlAttribute(name = "working-hours")
     public Integer workingHours;
 
+    @XmlElementWrapper(name = "criterion-requirements")
+    @XmlElements( {
+            @XmlElement(name = "direct-criterion-requirement", type = DirectCriterionRequirementDTO.class),
+            @XmlElement(name = "indirect-criterion-requirement", type = IndirectCriterionRequirementDTO.class) })
+    public Set<CriterionRequirementDTO> criterionRequirements = new HashSet<CriterionRequirementDTO>();
+
     public HoursGroupDTO() {
     }
 
     public HoursGroupDTO(String name, ResourceEnumDTO resourceType,
-            Integer workingHours) {
+            Integer workingHours,
+            Set<CriterionRequirementDTO> criterionRequirements) {
         this.code = name;
         this.resourceType = resourceType;
         this.workingHours = workingHours;
+        this.criterionRequirements = criterionRequirements;
     }
 
 }

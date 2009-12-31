@@ -50,9 +50,10 @@ public class OrderLineDTO extends OrderElementDTO {
             String description, Set<LabelDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
             Set<AdvanceMeasurementDTO> advanceMeasurements,
+            Set<CriterionRequirementDTO> criterionRequirements,
             Set<HoursGroupDTO> hoursGroups) {
         super(name, code, initDate, deadline, description, labels,
-                materialAssignments, advanceMeasurements);
+                materialAssignments, advanceMeasurements, criterionRequirements);
         this.hoursGroups = hoursGroups;
     }
 

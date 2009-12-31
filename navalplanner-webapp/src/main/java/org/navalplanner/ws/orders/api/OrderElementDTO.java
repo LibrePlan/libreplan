@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -66,13 +67,20 @@ public class OrderElementDTO {
     @XmlElement(name = "advance-measurement")
     public Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
 
+    @XmlElementWrapper(name = "criterion-requirements")
+    @XmlElements( {
+            @XmlElement(name = "direct-criterion-requirement", type = DirectCriterionRequirementDTO.class),
+            @XmlElement(name = "indirect-criterion-requirement", type = IndirectCriterionRequirementDTO.class) })
+    public Set<CriterionRequirementDTO> criterionRequirements = new HashSet<CriterionRequirementDTO>();
+
     public OrderElementDTO() {
     }
 
     public OrderElementDTO(String name, String code, Date initDate,
             Date deadline, String description, Set<LabelDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
-            Set<AdvanceMeasurementDTO> advanceMeasurements) {
+            Set<AdvanceMeasurementDTO> advanceMeasurements,
+            Set<CriterionRequirementDTO> criterionRequirements) {
         this.name = name;
         this.code = code;
         this.initDate = initDate;
@@ -81,6 +89,7 @@ public class OrderElementDTO {
         this.labels = labels;
         this.materialAssignments = materialAssignments;
         this.advanceMeasurements = advanceMeasurements;
+        this.criterionRequirements = criterionRequirements;
     }
 
 }
