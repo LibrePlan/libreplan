@@ -3,12 +3,26 @@
 <resource-list xmlns="http://rest.ws.navalplanner.org">
 
     <!--  *** Machines *** -->
+
     <!-- OK -->
     <machine code=" m1 " name="m1-name" description="m1-desc"/>
+
     <!--  Missing code and name (description is optional). -->
     <machine code="" description=""/>
 
+    <!--  Criterion satisfaction of incorrect type. -->
+    <machine code="m2" name="m2-name" description="m2-desc">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name=" WORK_RELATIONSHIP "
+                criterion-name=" hiredResourceWorkingRelationship "
+                start-date="2009-01-01"
+                finish-date=""/>
+        </criterion-satisfaction-list>
+    </machine>
+
     <!--  *** Workers *** -->
+
     <!-- OK -->
     <worker first-name="w1-firstName" surname="w1-surname" nif=" w1-nif ">
         <criterion-satisfaction-list>
@@ -24,6 +38,7 @@
                 finish-date="2009-12-25"/>
         </criterion-satisfaction-list>
     </worker>
+
     <!--  Missing first name, surname, and nif. -->
     <worker first-name="" nif=""/>
 

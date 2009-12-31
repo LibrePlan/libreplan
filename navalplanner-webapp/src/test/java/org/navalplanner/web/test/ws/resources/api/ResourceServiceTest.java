@@ -46,6 +46,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
@@ -135,7 +136,7 @@ public class ResourceServiceTest {
         CriterionType ct = createCriterionType();
 
         /* Create a resource DTO. */
-        MachineDTO machineDTO = new MachineDTO(ct.getName(), "name", "desc");
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(
                 ' ' + ct.getName() + ' ', " c1 ", // Blank spaces intentionally
@@ -172,7 +173,7 @@ public class ResourceServiceTest {
         CriterionType ct = createCriterionType();
 
         /* Create a machine DTO. */
-        MachineDTO machineDTO = new MachineDTO(ct.getName(), "name", "desc");
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName() , "c1",
                 null, Calendar.getInstance().getTime())); // Missing start date.
@@ -182,6 +183,36 @@ public class ResourceServiceTest {
             resourceService.addResources(createResourceListDTO(machineDTO)));
         assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
             machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithCriterionSatisfactionsWithIncorrectType() {
+
+        /* Create two criterion types. */
+        CriterionType machineCt = createCriterionType(ResourceEnum.MACHINE);
+        CriterionType workerCt = createCriterionType(ResourceEnum.WORKER);
+
+        /* Create resource DTOs. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+        machineDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(workerCt.getName() , "c1",
+                Calendar.getInstance().getTime(), null)); // Incorrect type.
+        WorkerDTO workerDTO = new WorkerDTO(getUniqueName(), "surname", "nif");
+        workerDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(machineCt.getName() , "c1",
+                Calendar.getInstance().getTime(), null)); // Incorrect type.
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+                machineDTO.code));
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(workerDTO)));
+        assertTrue(workerDAO.findByFirstNameSecondNameAndNifAnotherTransaction(
+            workerDTO.firstName, workerDTO.surname, workerDTO.nif).size() == 0);
 
     }
 
@@ -282,6 +313,10 @@ public class ResourceServiceTest {
     }
 
     private CriterionType createCriterionType() {
+        return createCriterionType(ResourceEnum.RESOURCE);
+    }
+
+    private CriterionType createCriterionType(final ResourceEnum resourceType) {
 
         IOnTransaction<CriterionType> createCriterionType =
             new IOnTransaction<CriterionType>() {
@@ -291,6 +326,7 @@ public class ResourceServiceTest {
 
                 CriterionType ct = CriterionType.create(getUniqueName(),
                     "desc");
+                ct.setResource(resourceType);
                 Criterion c1 = Criterion.create("c1", ct);
                 Criterion c2 = Criterion.create("c2", ct);
                 ct.getCriterions().add(c1);

@@ -132,4 +132,14 @@ public class Machine extends Resource {
             return true;
         }
     }
+
+    @Override
+    protected boolean isCriterionSatisfactionOfCorrectType(
+       CriterionSatisfaction c) {
+
+        return super.isCriterionSatisfactionOfCorrectType(c) ||
+            c.getResourceType().equals(ResourceEnum.MACHINE);
+
+    }
+
 }

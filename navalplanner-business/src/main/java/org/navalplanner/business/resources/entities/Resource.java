@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertFalse;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
@@ -821,6 +822,27 @@ public abstract class Resource extends BaseEntity{
 
     public boolean isVirtual() {
         return false;
+    }
+
+    @AssertTrue(message="There are criterion satisfactions referring to " +
+        "criterion types not applicable to this resource")
+    public boolean checkConstraintCriterionSatisfactionsWithCorrectType() {
+
+        for (CriterionSatisfaction c : getCriterionSatisfactions()) {
+            if (!isCriterionSatisfactionOfCorrectType(c)) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    protected boolean isCriterionSatisfactionOfCorrectType(
+        CriterionSatisfaction c) {
+
+        return c.getResourceType().equals(ResourceEnum.RESOURCE);
+
     }
 
 }

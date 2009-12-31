@@ -282,4 +282,9 @@ public class CriterionSatisfaction extends BaseEntity {
             Validate.isTrue(finishDate == null || startDate.equals(finishDate)
                     || startDate.before(finishDate));
     }
+
+    public ResourceEnum getResourceType() {
+        return criterion.getType().getResource();
+    }
+
 }
