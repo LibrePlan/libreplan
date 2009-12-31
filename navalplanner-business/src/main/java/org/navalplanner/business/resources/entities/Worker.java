@@ -143,10 +143,14 @@ public class Worker extends Resource {
                 .findByFirstNameSecondNameAndNifAnotherTransaction(firstName,
                         surname, nif);
 
-        if ((isNewObject() && list.isEmpty()) || list.isEmpty()) {
-            return true;
+        if (isNewObject()) {
+            return list.isEmpty();
         } else {
-            return list.get(0).getId().equals(getId());
+            if (list.isEmpty()) {
+                return true;
+            } else {
+                return list.get(0).getId().equals(getId());
+            }
         }
 
     }

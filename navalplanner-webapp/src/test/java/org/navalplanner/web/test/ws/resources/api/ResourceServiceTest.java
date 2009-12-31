@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.test.ws.resources.api;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -38,13 +39,16 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.IResourceService;
 import org.navalplanner.ws.resources.api.MachineDTO;
@@ -72,6 +76,9 @@ public class ResourceServiceTest {
     private IResourceService resourceService;
 
     @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
     private IMachineDAO machineDAO;
 
     @Autowired
@@ -87,6 +94,7 @@ public class ResourceServiceTest {
     public void testAddResourcesWithBasicContraintViolations()
         throws InstanceNotFoundException {
 
+        /* Create resource DTOs. */
         String m1Code = ' ' + getUniqueName() + ' '; // Blank spaces
                                                      // intentionally
                                                      // added (OK).
@@ -101,14 +109,9 @@ public class ResourceServiceTest {
         WorkerDTO w2 = new WorkerDTO("", null, ""); // Missing first name,
                                                     // surname, and nif.
 
-        List<ResourceDTO> resources = new ArrayList<ResourceDTO>();
-        resources.add(m1);
-        resources.add(m2);
-        resources.add(w1);
-        resources.add(w2);
-
+        /* Test. */
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            resourceService.addResources(new ResourceListDTO(resources)).
+            resourceService.addResources(createResourceListDTO(m1, m2, w1, w2)).
                 instanceConstraintViolationsList;
 
         assertTrue(instanceConstraintViolationsList.size() == 2);
@@ -116,8 +119,10 @@ public class ResourceServiceTest {
             constraintViolations.size() == 2); // m2 constraint violations.
         assertTrue(instanceConstraintViolationsList.get(1).
             constraintViolations.size() == 3); // w2 constraint violations.
-        assertTrue(machineDAO.findByNameOrCode(m1Code.trim()).size() == 1);
-        workerDAO.findUniqueByNif(w1Nif.trim());
+        machineDAO.findUniqueByCode(m1Code.trim());
+        assertTrue(
+            workerDAO.findByFirstNameSecondNameAndNif(
+                w1.firstName, w1.surname, w1.nif.trim()).size() == 1);
 
     }
 
@@ -141,16 +146,13 @@ public class ResourceServiceTest {
                 Calendar.getInstance().getTime(), null));
 
         /* Test. */
-        List<ResourceDTO> resources = new ArrayList<ResourceDTO>();
-        resources.add(machineDTO);
-
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            resourceService.addResources(new ResourceListDTO(resources)).
+            resourceService.addResources(createResourceListDTO(machineDTO)).
                 instanceConstraintViolationsList;
 
         assertTrue(instanceConstraintViolationsList.isEmpty());
 
-        Machine machine = findUniqueMachineByCode(machineDTO.code);
+        Machine machine = findUniqueMachineByCodeInitialized(machineDTO.code);
         assertTrue(machine.getCriterionSatisfactions().size() == 2);
 
         for (CriterionSatisfaction cs : machine.getCriterionSatisfactions()) {
@@ -169,29 +171,17 @@ public class ResourceServiceTest {
         /* Create a criterion type. */
         CriterionType ct = createCriterionType();
 
-        /* Create a resource DTO. */
+        /* Create a machine DTO. */
         MachineDTO machineDTO = new MachineDTO(ct.getName(), "name", "desc");
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName() , "c1",
                 null, Calendar.getInstance().getTime())); // Missing start date.
 
         /* Test. */
-        List<ResourceDTO> resources = new ArrayList<ResourceDTO>();
-        resources.add(machineDTO);
-
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            resourceService.addResources(new ResourceListDTO(resources)).
-                instanceConstraintViolationsList;
-
-        assertTrue(instanceConstraintViolationsList.size() == 1);
-        assertTrue(instanceConstraintViolationsList.get(0).
-            constraintViolations.size() == 1);
-
-        try {
-            findUniqueMachineByCode(machineDTO.code);
-            fail("InstanceNotFoundException expected");
-        } catch (InstanceNotFoundException e) {
-        }
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
 
     }
 
@@ -202,7 +192,7 @@ public class ResourceServiceTest {
         /* Create a criterion type. */
         CriterionType ct = createCriterionType();
 
-        /* Create resource DTOs. */
+        /* Create machines DTOs. */
         MachineDTO m1 = new MachineDTO(getUniqueName(), "name", "desc");
         m1.criterionSatisfactions.add(
             new CriterionSatisfactionDTO("", "X", // Missing criterion type.
@@ -242,12 +232,52 @@ public class ResourceServiceTest {
         }
 
         for (MachineDTO m : machines) {
-            try {
-                findUniqueMachineByCode(m.code);
-                fail("InstanceNotFoundException expected");
-            } catch (InstanceNotFoundException e) {
-            }
+            assertFalse(
+                machineDAO.existsMachineWithCodeInAnotherTransaction(m.code));
         }
+
+    }
+
+    @Test
+    @NotTransactional
+    public void createMachineWithExistingCode()
+        throws InstanceNotFoundException {
+
+        /* Create a machine. */
+        Machine m1 = Machine.createUnvalidated(getUniqueName(), "name", "desc");
+        saveResource(m1);
+
+        /* Create a machine DTO with the same code. */
+        MachineDTO m2 = new MachineDTO(m1.getCode(), "name", "desc");
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(m2)));
+        machineDAO.findUniqueByCodeInAnotherTransaction(m1.getCode());
+
+    }
+
+    @Test
+    @NotTransactional
+    public void createWorkerWithExistingFirstNameSurnameAndNif() {
+
+        /* Create a worker. */
+        Worker w1 = Worker.createUnvalidated(getUniqueName(), "surname", "nif");
+        saveResource(w1);
+
+        /*
+         * Create a worker DTO with the same first name, surname, and nif as
+         * the previous one.
+         */
+        WorkerDTO w2 = new WorkerDTO(w1.getFirstName(), w1.getSurname(),
+            w1.getNif());
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(w2)));
+        assertTrue(
+            workerDAO.findByFirstNameSecondNameAndNifAnotherTransaction(
+                w2.firstName, w2.surname, w2.nif).size() == 1);
 
     }
 
@@ -276,7 +306,7 @@ public class ResourceServiceTest {
 
     }
 
-    private Machine findUniqueMachineByCode(final String code)
+    private Machine findUniqueMachineByCodeInitialized(final String code)
         throws InstanceNotFoundException {
 
         IOnTransaction<Machine> find = new IOnTransaction<Machine>() {
@@ -302,6 +332,21 @@ public class ResourceServiceTest {
 
     }
 
+    private void saveResource(final Resource resource) {
+
+        IOnTransaction<Void> save = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                resourceDAO.save(resource);
+                return null;
+            }
+        };
+
+        transactionService.runOnTransaction(save);
+
+    }
+
     private Resource initializeResource(Resource resource) {
 
         for (CriterionSatisfaction cs : resource.getCriterionSatisfactions()) {
@@ -309,6 +354,33 @@ public class ResourceServiceTest {
         }
 
         return resource;
+
+    }
+
+    private ResourceListDTO createResourceListDTO(ResourceDTO... resources) {
+
+        List<ResourceDTO> resourceList = new ArrayList<ResourceDTO>();
+
+        for (ResourceDTO r : resources) {
+            resourceList.add(r);
+        }
+
+
+        return new ResourceListDTO(resourceList);
+
+    }
+
+    private void assertOneConstraintViolation(
+        InstanceConstraintViolationsListDTO
+        instanceConstraintViolationsListDTO) {
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            instanceConstraintViolationsListDTO.
+                instanceConstraintViolationsList;
+
+         assertTrue(instanceConstraintViolationsList.size() == 1);
+         assertTrue(instanceConstraintViolationsList.get(0).
+             constraintViolations.size() == 1);
 
     }
 
