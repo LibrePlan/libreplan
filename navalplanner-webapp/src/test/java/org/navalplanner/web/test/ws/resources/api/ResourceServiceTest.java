@@ -167,6 +167,54 @@ public class ResourceServiceTest {
 
     @Test
     @NotTransactional
+    public void AddResourceWithCriterionSatisfactionsWithIncorrectNames() {
+
+        /* Create a criterion type. */
+        CriterionType ct = createCriterionType();
+
+        /* Create a machine DTO. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+
+        /* Test. */
+        machineDTO.criterionSatisfactions.add( // Non-existent criterion type.
+                new CriterionSatisfactionDTO(ct.getName() + 'X' , "c1",
+                    Calendar.getInstance().getTime(), null));
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+        machineDTO.criterionSatisfactions.clear();
+        machineDTO.criterionSatisfactions.add( // Non-existent criterion.
+                new CriterionSatisfactionDTO(ct.getName() , "c1" + 'X',
+                    Calendar.getInstance().getTime(), null));
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+        machineDTO.criterionSatisfactions.clear();
+        machineDTO.criterionSatisfactions.add( // Criterion type null.
+                new CriterionSatisfactionDTO(null , "c1",
+                    Calendar.getInstance().getTime(), null));
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+        machineDTO.criterionSatisfactions.clear();
+        machineDTO.criterionSatisfactions.add( // Criterion null.
+                new CriterionSatisfactionDTO(ct.getName() , null,
+                    Calendar.getInstance().getTime(), null));
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
     public void testAddResourceWithCriterionSatisfactionsWithoutStartDate() {
 
         /* Create a criterion type. */

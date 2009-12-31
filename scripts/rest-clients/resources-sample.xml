@@ -14,8 +14,8 @@
     <machine code="m2" name="m2-name" description="m2-desc">
         <criterion-satisfaction-list>
             <criterion-satisfaction
-                criterion-type-name=" WORK_RELATIONSHIP "
-                criterion-name=" hiredResourceWorkingRelationship "
+                criterion-type-name="WORK_RELATIONSHIP"
+                criterion-name="hiredResourceWorkingRelationship"
                 start-date="2009-01-01"
                 finish-date=""/>
         </criterion-satisfaction-list>
@@ -49,6 +49,48 @@
                 criterion-type-name="LEAVE"
                 criterion-name="paternityLeave"
                 finish-date="2009-12-25"/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!--  Non-existent criterion type. -->
+    <worker first-name="w3-firstName" surname="w3-surname" nif=" w3-nif ">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="WORK_RELATIONSHIP_XXX"
+                criterion-name="hiredResourceWorkingRelationship"
+                start-date="2009-01-01"
+                finish-date=""/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!--  Non-existent criterion. -->
+    <worker first-name="w4-firstName" surname="w4-surname" nif=" w4-nif ">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="WORK_RELATIONSHIP"
+                criterion-name="hiredResourceWorkingRelationshipXXX"
+                start-date="2009-01-01"
+                finish-date=""/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!-- Criterion not specified. -->
+    <worker first-name="w5-firstName" surname="w5-surname" nif=" w5-nif ">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="WORK_RELATIONSHIP"
+                start-date="2009-01-01"
+                finish-date=""/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!-- Criterion type not specified. -->
+    <worker first-name="w6-firstName" surname="w6-surname" nif=" w6-nif ">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-name="hiredResourceWorkingRelationship"
+                start-date="2009-01-01"
+                finish-date=""/>
         </criterion-satisfaction-list>
     </worker>
 
