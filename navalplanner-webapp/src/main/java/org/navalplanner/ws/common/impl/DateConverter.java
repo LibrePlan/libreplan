@@ -60,7 +60,8 @@ public class DateConverter {
             dateAsXMLGregorianCalendar =
                DatatypeFactory.newInstance().newXMLGregorianCalendarDate(
                    dateAsCalendar.get(Calendar.YEAR),
-                   dateAsCalendar.get(Calendar.MONTH),
+                   convertMonthFieldFromCalendarToXMLGregorianCalendar(
+                           dateAsCalendar.get(Calendar.MONTH)),
                    dateAsCalendar.get(Calendar.DAY_OF_MONTH),
                    DatatypeConstants.FIELD_UNDEFINED);
         } catch (DatatypeConfigurationException e) {
@@ -69,6 +70,19 @@ public class DateConverter {
 
         return dateAsXMLGregorianCalendar;
 
+    }
+
+    /**
+     * Converts from @{link Calendar} month field format to
+     * @{link XMLGregorianCalendar} format.
+     *
+     * It is needed the conversion because
+     * @{link XMLGregorianCalendar} months go from 1 to 12 while
+     * @{link Calendar} months go from 0 to 11
+     *
+     */
+    private final static int convertMonthFieldFromCalendarToXMLGregorianCalendar(int month) {
+        return month+1;
     }
 
     /**

@@ -121,10 +121,10 @@ public class ResourceTest {
         Worker worker = Worker.create("firstName", "surName", "2333232");
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(0));
         worker.addSatisfaction(criterionWithItsType, Interval
-                .range(year(2000),year(2010)));
+                .range(year(2000),year(2020)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(1));
         worker.addSatisfaction(criterionWithItsType, Interval
-                .from(year(2010)));
+                .from(year(2020)));
         assertThat(worker.getCurrentCriterionsFor(type).size(), equalTo(1));
         worker.addSatisfaction(otherCriterionWithItsType, Interval
                 .from(year(2000)));
