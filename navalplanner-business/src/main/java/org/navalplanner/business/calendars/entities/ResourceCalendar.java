@@ -37,6 +37,9 @@ public class ResourceCalendar extends BaseCalendar {
     private Integer capacity = 1;
 
     public Integer getCapacity() {
+        if (capacity == null) {
+            return 1;
+        }
         return capacity;
     }
 
