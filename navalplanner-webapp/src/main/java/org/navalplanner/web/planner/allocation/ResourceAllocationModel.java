@@ -317,7 +317,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachResource(Resource resource) {
         resourceDAO.reattach(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
-        calendarDAO.reattachUnmodifiedEntity(resource.getCalendar());
+        if (resource.getCalendar() != null) {
+            calendarDAO.reattachUnmodifiedEntity(resource.getCalendar());
+        }
         for (DayAssignment dayAssignment : resource.getAssignments()) {
             Hibernate.initialize(dayAssignment);
         }
