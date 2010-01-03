@@ -20,6 +20,7 @@
 package org.navalplanner.business.templates.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Min;
@@ -102,6 +103,8 @@ public abstract class OrderElementTemplate extends BaseEntity {
         }
         return infoComponent;
     }
+
+    public abstract List<OrderElementTemplate> getChildrenTemplates();
 
     @Min(0)
     public Integer getDeadlineAsDaysFromBeginning() {

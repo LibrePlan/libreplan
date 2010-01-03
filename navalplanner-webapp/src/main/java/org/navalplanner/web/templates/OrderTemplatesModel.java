@@ -21,6 +21,8 @@ package org.navalplanner.web.templates;
 
 import java.util.List;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
@@ -45,6 +47,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Autowired
     private IOrderElementTemplateDAO dao;
 
+    @Autowired
+    private IAdHocTransactionService transaction;
+
     private OrderElementTemplate template;
 
     @Override
@@ -58,9 +63,24 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     }
 
     @Override
-    @Transactional
     public void confirmSave() {
-        dao.save(template);
+        transaction.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                dao.save(template);
+                return null;
+            }
+        });
+        dontPoseAsTransient(template);
+    }
+
+    private void dontPoseAsTransient(OrderElementTemplate template) {
+        template.dontPoseAsTransientObjectAnymore();
+        List<OrderElementTemplate> childrenTemplates = template
+                .getChildrenTemplates();
+        for (OrderElementTemplate each : childrenTemplates) {
+            dontPoseAsTransient(each);
+        }
     }
 
     @Override

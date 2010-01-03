@@ -20,6 +20,7 @@
 package org.navalplanner.business.templates.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -55,5 +56,10 @@ public class OrderLineGroupTemplate extends OrderElementTemplate {
     }
 
     private List<OrderElementTemplate> children = new ArrayList<OrderElementTemplate>();
+
+    @Override
+    public List<OrderElementTemplate> getChildrenTemplates() {
+        return Collections.unmodifiableList(children);
+    }
 
 }
