@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -89,11 +90,11 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     @Override
-    public List<OrderElement> findParent(OrderElement orderElement) {
-        Criteria c = getSession().createCriteria(OrderElement.class)
-                .createCriteria("children").add(
-                        Restrictions.idEq(orderElement.getId()));
-        return ((List<OrderElement>) c.list());
+    public OrderElement findParent(OrderElement orderElement) {
+        Query query = getSession().createQuery(
+                "select e.parent from OrderElement e where e.id = :id")
+                .setParameter("id", orderElement.getId());
+        return (OrderElement) query.uniqueResult();
     }
 
     @Override

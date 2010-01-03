@@ -56,8 +56,13 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
     public OrderElement findUniqueByCodeAndParent(OrderElement parent,
             String code) throws InstanceNotFoundException;
 
-    public List<OrderElement> findParent(
-            OrderElement orderElement);
+    /**
+     * @param orderElement
+     *            the order element for which the parent is searched
+     * @return <code>null</code> if there is no parent for order element, the
+     *         parent of order element loaded from the database otherwise
+     */
+    public OrderElement findParent(OrderElement orderElement);
 
     /**
      * Returns the number of assigned hours for an {@link OrderElement}
