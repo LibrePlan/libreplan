@@ -69,7 +69,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     public List<OrderElement> findByCodeAndParent(OrderElement parent,
             String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("code", code));
+        c.add(Restrictions.eq("infoComponent.code", code));
         if (parent != null) {
             c.add(Restrictions.eq("parent", parent));
         } else {
@@ -155,7 +155,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     @Override
     public List<OrderElement> findByCode(String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("code", code).ignoreCase());
+        c.add(Restrictions.eq("infoComponent.code", code).ignoreCase());
         return (List<OrderElement>) c.list();
     }
 
@@ -163,7 +163,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     public OrderElement findUniqueByCode(String code)
             throws InstanceNotFoundException {
         Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("code", code));
+        c.add(Restrictions.eq("infoComponent.code", code));
 
         OrderElement orderElement = (OrderElement) c.uniqueResult();
         if (orderElement == null) {

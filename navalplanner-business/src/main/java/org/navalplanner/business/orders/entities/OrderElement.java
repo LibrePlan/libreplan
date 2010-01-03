@@ -33,7 +33,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
-import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -65,8 +64,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 public abstract class OrderElement extends BaseEntity implements
         ICriterionRequirable {
 
-    @NotEmpty(message = "name not specified")
-    private String name;
+    private InfoComponent infoComponent = new InfoComponent();
 
     private Date initDate;
 
@@ -76,7 +74,6 @@ public abstract class OrderElement extends BaseEntity implements
 
     private Boolean mandatoryEnd = false;
 
-    private String description;
 
     @Valid
     protected Set<DirectAdvanceAssignment> directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>();
@@ -89,8 +86,6 @@ public abstract class OrderElement extends BaseEntity implements
 
     private Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();
 
-    @NotEmpty(message = "code not specified")
-    private String code;
 
     private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
@@ -261,11 +256,11 @@ public abstract class OrderElement extends BaseEntity implements
     public abstract List<HoursGroup> getHoursGroups();
 
     public String getName() {
-        return name;
+        return getInfoComponent().getName();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.getInfoComponent().setName(name);
     }
 
     public abstract boolean isLeaf();
@@ -309,11 +304,11 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.getInfoComponent().setDescription(description);
     }
 
     public String getDescription() {
-        return description;
+        return getInfoComponent().getDescription();
     }
 
     public abstract OrderLine toLeaf();
@@ -340,11 +335,11 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.getInfoComponent().setCode(code);
     }
 
     public String getCode() {
-        return code;
+        return getInfoComponent().getCode();
     }
 
     public abstract DirectAdvanceAssignment getReportGlobalAdvanceAssignment();
@@ -841,7 +836,7 @@ public abstract class OrderElement extends BaseEntity implements
         } else {
             try {
                 OrderElement orderElement = orderElementDAO
-                        .findUniqueByCodeAnotherTransaction(code);
+                        .findUniqueByCodeAnotherTransaction(getInfoComponent().getCode());
                 return orderElement.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
@@ -930,6 +925,14 @@ public abstract class OrderElement extends BaseEntity implements
 
         addAdvanceAssignment(directAdvanceAssignment);
         return directAdvanceAssignment;
+    }
+
+    @Valid
+    private InfoComponent getInfoComponent() {
+        if (infoComponent == null) {
+            infoComponent = new InfoComponent();
+        }
+        return infoComponent;
     }
 
 }
