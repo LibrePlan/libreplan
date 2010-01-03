@@ -18,7 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?component name="orderElementTree" inline="true" macroURI="_orderElementTree.zul"?>
+<?component name="orderElementTree" macroURI="components/_orderElementTree.zul"
+  class="org.navalplanner.web.orders.components.TreeComponent"?>
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
@@ -104,7 +105,7 @@
                 </grid>
             </tabpanel>
             <tabpanel sclass="orderelements-tab">
-                <orderElementTree />
+                <orderElementTree id="orderElementTree"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementHours id="orderElementHours" />

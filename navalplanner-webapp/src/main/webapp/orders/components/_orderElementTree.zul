@@ -18,30 +18,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<vbox id="orderElementTree">
+<vbox>
     <vbox>
         <hbox>
             <button id="btnNew" label="${i18n:_('New order element')}"
-                onClick="orderElementTreeController.addOrderElement();" />
+                onClick="treeController.addOrderElement();" />
             <button label="${i18n:_('Create Template')}"
-                onClick="orderElementTreeController.createTemplate();" />
+                onClick="treeController.createTemplate();" />
             <button id="btnDown" label="${i18n:_('Down')}"
-                onClick="orderElementTreeController.down();" />
+                onClick="treeController.down();" />
             <button id="btnUp" label="${i18n:_('Up')}"
-                onClick="orderElementTreeController.up();" />
+                onClick="treeController.up();" />
             <button id="btnUnindent" label="${i18n:_('Unindent')}"
-                onClick="orderElementTreeController.unindent();" />
+                onClick="treeController.unindent();" />
             <button id="btnIndent" label="${i18n:_('Indent')}"
-                onClick="orderElementTreeController.indent();" />
+                onClick="treeController.indent();" />
             <button id="btnDelete" label="${i18n:_('Delete order element')}"
-                onClick="orderElementTreeController.removeOrderElement();" />
+                onClick="treeController.removeOrderElement();" />
         </hbox>
     </vbox>
     <vbox>
         <hbox>
           <!-- Filter by label -->
           <combobox id="cbFilterType" value="${i18n:_('Show all')}"
-                onChange="orderElementTreeController.onShowAll(event)"
+                onChange="treeController.onShowAll(event)"
                 constraint="no empty:${i18n:_('cannot be null or empty')}"
                 readonly="true" >
               <comboitem label="${i18n:_('Show all')}"
@@ -50,17 +50,17 @@
                     description="${i18n:_('Filter all order elements by label')}" />
           </combobox>
           <bandboxSearch id="bdFilter" finder="LabelBandboxFinder"
-                model="@{orderElementTreeController.labels}"/>
+                model="@{treeController.labels}"/>
           <button label="${i18n:_('Filter')}" style="margin-top: -4px"
-                onClick="orderElementTreeController.onApplyFilter(event)"/>
+                onClick="treeController.onApplyFilter(event)"/>
         </hbox>
     </vbox>
     <vbox>
         <tree id="tree" width="1050" multiple="true" droppable="true"
-            onDrop="orderElementTreeController.move(self, event.dragged)"
-            onSelect="orderElementTreeController.updateControlButtons(event)"
-            model="@{orderElementTreeController.orderElementTreeModel}"
-            treeitemRenderer="@{orderElementTreeController.renderer}" pageSize="10"
+            onDrop="treeController.move(self, event.dragged)"
+            onSelect="treeController.updateControlButtons(event)"
+            model="@{treeController.orderElementTreeModel}"
+            treeitemRenderer="@{treeController.renderer}" pageSize="10"
             sclass="orderTree"
             zclass="z-dottree">
             <treecols sizable="true">

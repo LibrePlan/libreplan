@@ -41,6 +41,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.orders.components.TreeComponent;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.users.OrderAuthorizationController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,9 +174,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void setupOrderElementTreeController(Component comp,
             OrderElementController orderElementController) throws Exception {
-        OrderElementTreeController controller = new OrderElementTreeController(
-                orderModel, orderElementController);
-        controller.doAfterCompose(editWindow.getFellowIfAny("orderElementTree"));
+        TreeComponent orderElementsTree = (TreeComponent) editWindow
+                .getFellow("orderElementTree");
+        orderElementsTree.useController(new OrderElementTreeController(
+                orderModel, orderElementController));
     }
 
     private IOrderElementModel getOrderElementModel() {
@@ -404,8 +406,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void clearEditWindow() {
-        OrderElementTreeController controller = (OrderElementTreeController) editWindow.getVariable("orderElementTreeController", true);
-        controller.clear();
+        TreeComponent treeComponent = (TreeComponent) editWindow
+                .getFellow("orderElementTree");
+        treeComponent.clear();
     }
 
     public void goToCreateForm() {

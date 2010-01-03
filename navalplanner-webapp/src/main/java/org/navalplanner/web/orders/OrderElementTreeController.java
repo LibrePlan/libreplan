@@ -293,7 +293,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("orderElementTreeController", this, true);
     }
 
     public class OrderElementTreeitemRenderer implements TreeitemRenderer,
