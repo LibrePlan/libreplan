@@ -26,6 +26,7 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
+<?component name="edition" inline="true" macroURI="_list.zul"?>
 <zk>
     <zscript><![CDATA[
         templateController = orderTemplatesController;

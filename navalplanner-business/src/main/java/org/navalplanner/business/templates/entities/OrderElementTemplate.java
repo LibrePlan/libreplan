@@ -113,15 +113,35 @@ public abstract class OrderElementTemplate extends BaseEntity {
         return startAsDaysFromBeginning;
     }
 
+    public void setStartAsDaysFromBeginning(Integer days) {
+        this.startAsDaysFromBeginning = days;
+    }
+
+    public void setDeadlineAsDaysFromBeginning(Integer days) {
+        this.deadlineAsDaysFromBeginning = days;
+    }
+
     public String getCode() {
         return getInfoComponent().getCode();
+    }
+
+    public void setCode(String code) {
+        getInfoComponent().setCode(code);
     }
 
     public String getDescription() {
         return getInfoComponent().getDescription();
     }
 
+    public void setDescription(String description) {
+        getInfoComponent().setDescription(description);
+    }
+
     public String getName() {
         return getInfoComponent().getName();
+    }
+
+    public void setName(String name) {
+        getInfoComponent().setName(name);
     }
 }

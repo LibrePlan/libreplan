@@ -45,19 +45,31 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Autowired
     private IOrderElementTemplateDAO dao;
 
+    private OrderElementTemplate template;
+
     @Override
     public List<OrderElementTemplate> getTemplates() {
         return dao.list(OrderElementTemplate.class);
     }
 
     @Override
+    public OrderElementTemplate getTemplate() {
+        return template;
+    }
+
+    @Override
+    @Transactional
+    public void confirmSave() {
+        dao.save(template);
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public OrderElementTemplate createTemplateFrom(OrderElement orderElement) {
+    public void createTemplateFrom(OrderElement orderElement) {
         loadParentsInOrderToAvoidProxies(orderElement);
         OrderElement reloaded = orderElementDAO
                 .findExistingEntity(orderElement.getId());
-        OrderElementTemplate result = reloaded.createTemplate();
-        return result;
+        template = reloaded.createTemplate();
     }
 
     private void loadParentsInOrderToAvoidProxies(OrderElement orderElement) {

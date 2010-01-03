@@ -1,0 +1,67 @@
+<!--
+  This file is part of ###PROJECT_NAME###
+
+  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+                     Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="${arg.top_id}">
+    <tabbox>
+        <tabs>
+            <tab id="tabGeneralData" label="${i18n:_('General data')}" />
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column  />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Name')}" />
+                            <textbox value="@{templateController.template.name}" width="500px"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Code')}" />
+                            <hbox>
+                                <textbox value="@{templateController.template.code}" width="250px" />
+                            </hbox>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Days from Beginning to Start')}" />
+                            <intbox
+                                value="@{templateController.template.startAsDaysFromBeginning}" constraint="no negative"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Days from Beginning to Deadline')}" />
+                            <intbox
+                                value="@{templateController.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+    <hbox>
+        <button label="${i18n:_('Save')}" onClick="templateController.saveAndExit()"
+            sclass="save-button global-action" />
+        <button label="${i18n:_('Save &amp; Continue')}" onClick="templateController.saveAndContinue()"
+            sclass="saveandcontinue-button global-action" />
+        <button label="${i18n:_('Cancel')}" onClick="templateController.cancel()"
+            sclass="cancel-button global-action" />
+    </hbox>
+</window>

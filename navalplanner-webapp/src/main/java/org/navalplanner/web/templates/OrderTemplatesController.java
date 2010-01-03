@@ -19,17 +19,21 @@
  */
 package org.navalplanner.web.templates;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.OnlyOneVisible;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -49,6 +53,8 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     private Window listWindow;
 
+    private Window editWindow;
+
     @Autowired
     private IURLHandlerRegistry handlerRegistry;
 
@@ -63,9 +69,48 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         return cachedOnlyOneVisible;
     }
 
+    public OrderElementTemplate getTemplate() {
+        return model.getTemplate();
+    }
+
     @Override
     public void goToCreateTemplateFrom(OrderElement orderElement) {
-        OrderElementTemplate template = model.createTemplateFrom(orderElement);
+        model.createTemplateFrom(orderElement);
+        show(getEditWindow());
+    }
+
+    private void show(Component window) {
+        Util.reloadBindings(window);
+        getVisibility().showOnly(window);
+    }
+
+    private Component getEditWindow() {
+        if (editWindow == null) {
+            editWindow = (Window) Executions.createComponents(
+                    "/templates/_edition.zul", self, topId("editWindow"));
+            Util.createBindingsFor(editWindow);
+            Util.reloadBindings(editWindow);
+        }
+        return editWindow;
+    }
+
+    public void saveAndExit() {
+        model.confirmSave();
+        show(listWindow);
+    }
+
+    public void cancel() {
+        show(listWindow);
+    }
+
+    public void saveAndContinue() {
+        model.confirmSave();
+    }
+
+    private Map<String, Object> topId(String value) {
+        Map<String, Object> arguments = new HashMap<String, Object>();
+        arguments.put("top_id", value);
+        return arguments;
     }
 
     @Override

@@ -32,5 +32,9 @@ public interface IOrderTemplatesModel {
 
     List<OrderElementTemplate> getTemplates();
 
-    OrderElementTemplate createTemplateFrom(OrderElement orderElement);
+    void createTemplateFrom(OrderElement orderElement);
+
+    OrderElementTemplate getTemplate();
+
+    void confirmSave();
 }
