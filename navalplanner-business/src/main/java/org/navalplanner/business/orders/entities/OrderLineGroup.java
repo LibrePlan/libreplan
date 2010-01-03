@@ -46,7 +46,53 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
-public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
+import org.navalplanner.business.trees.ITreeNode;
+import org.navalplanner.business.trees.TreeNodeOnList;
+
+
+public class OrderLineGroup extends OrderElement implements
+        ITreeNode<OrderElement> {
+
+    private final class ChildrenManipulator extends
+            TreeNodeOnList<OrderElement, OrderLineGroup> {
+
+        private ChildrenManipulator(OrderLineGroup parent,
+                List<OrderElement> children) {
+            super(parent, children);
+        }
+
+        @Override
+        protected void onChildAdded(OrderElement newChild) {
+            final OrderLineGroup parent = getParent();
+            if (parent != null) {
+                SchedulingState schedulingState = newChild
+                        .getSchedulingState();
+                removeSchedulingStateFromParent(newChild);
+                parent.getSchedulingState().add(schedulingState);
+            }
+        }
+
+        @Override
+        protected void onChildRemoved(OrderElement previousChild) {
+            removeSchedulingStateFromParent(previousChild);
+        }
+
+        private void removeSchedulingStateFromParent(
+                OrderElement previousChild) {
+            SchedulingState schedulingState = previousChild
+                    .getSchedulingState();
+            if (!schedulingState.isRoot()) {
+                schedulingState.getParent().removeChild(schedulingState);
+            }
+        }
+
+        @Override
+        protected void setParentIfRequired(OrderElement newChild) {
+            if (getParent() != null) {
+                newChild.setParent(getParent());
+            }
+        }
+    }
 
     public static OrderLineGroup create() {
         OrderLineGroup result = new OrderLineGroup();
@@ -146,9 +192,8 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
         getManipulator().up(orderElement);
     }
 
-    private OrderLineGroupManipulator getManipulator() {
-        return OrderLineGroupManipulator.createManipulatorForOrderLineGroup(
-                this, children);
+    private ChildrenManipulator getManipulator() {
+        return new ChildrenManipulator(this, children);
     }
 
     @Override

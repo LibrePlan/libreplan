@@ -32,10 +32,10 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.HoursGroup;
-import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -262,7 +262,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         return cachedOnlyOneVisible;
     }
 
-    public IOrderLineGroup getOrder() {
+    public OrderLineGroup getOrder() {
         return orderModel.getOrder();
     }
 

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -117,7 +116,7 @@ public class OrderElementTreeModel {
 
     private void addOrderElementAt(OrderElement parent,
             OrderElement orderElement) {
-        IOrderLineGroup container = turnIntoContainerIfNeeded(parent);
+        OrderLineGroup container = turnIntoContainerIfNeeded(parent);
         container.add(orderElement);
         addToTree(toNode(container), orderElement);
         updateCriterionRequirementsInHierarchy(parent, orderElement,
@@ -126,7 +125,7 @@ public class OrderElementTreeModel {
 
     private void addOrderElementAt(OrderElement destinationNode,
             OrderElement elementToAdd, int position) {
-        IOrderLineGroup container = turnIntoContainerIfNeeded(destinationNode);
+        OrderLineGroup container = turnIntoContainerIfNeeded(destinationNode);
         container.add(position, elementToAdd);
         addToTree(toNode(container), position, elementToAdd);
         updateCriterionRequirementsInHierarchy(destinationNode, elementToAdd,
@@ -143,16 +142,16 @@ public class OrderElementTreeModel {
         }
     }
 
-    private OrderElement toNode(IOrderLineGroup container) {
-        return (OrderElement) container;
+    private OrderElement toNode(OrderLineGroup container) {
+        return container;
     }
 
-    private IOrderLineGroup turnIntoContainerIfNeeded(
+    private OrderLineGroup turnIntoContainerIfNeeded(
             OrderElement selectedForTurningIntoContainer) {
-        if (selectedForTurningIntoContainer instanceof IOrderLineGroup) {
-            return (IOrderLineGroup) selectedForTurningIntoContainer;
+        if (selectedForTurningIntoContainer instanceof OrderLineGroup) {
+            return (OrderLineGroup) selectedForTurningIntoContainer;
         }
-        IOrderLineGroup parentContainer = asOrderLineGroup(getParent(selectedForTurningIntoContainer));
+        OrderLineGroup parentContainer = asOrderLineGroup(getParent(selectedForTurningIntoContainer));
         OrderLineGroup asContainer = selectedForTurningIntoContainer
                 .toContainer();
         parentContainer.replace(selectedForTurningIntoContainer, asContainer);
@@ -234,13 +233,13 @@ public class OrderElementTreeModel {
     }
 
     public void up(OrderElement node) {
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(tree.getParent(node));
+        OrderLineGroup orderLineGroup = asOrderLineGroup(tree.getParent(node));
         orderLineGroup.up(node);
         tree.up(node);
     }
 
     public void down(OrderElement node) {
-        IOrderLineGroup orderLineGroup = asOrderLineGroup(tree.getParent(node));
+        OrderLineGroup orderLineGroup = asOrderLineGroup(tree.getParent(node));
         orderLineGroup.down(node);
         tree.down(node);
     }

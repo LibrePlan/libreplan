@@ -49,7 +49,6 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
-import org.navalplanner.business.orders.entities.IOrderLineGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -406,7 +405,7 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
-    public IOrderLineGroup getOrder() {
+    public OrderLineGroup getOrder() {
         return order;
     }
 
