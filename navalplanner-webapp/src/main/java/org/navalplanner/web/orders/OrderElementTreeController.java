@@ -47,6 +47,7 @@ import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -68,6 +69,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.Vbox;
 
 /**
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
@@ -75,6 +77,8 @@ import org.zkoss.zul.Treerow;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class OrderElementTreeController extends GenericForwardComposer {
+
+    private Vbox filter;
 
     private IMessagesForUser messagesForUser;
 
@@ -293,6 +297,8 @@ public class OrderElementTreeController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
+        Executions.createComponents("/orders/_orderElementTreeFilter.zul",
+                filter, new HashMap<String, String>());
     }
 
     public class OrderElementTreeitemRenderer implements TreeitemRenderer,

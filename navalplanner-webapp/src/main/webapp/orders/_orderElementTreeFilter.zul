@@ -1,0 +1,16 @@
+<hbox>
+  <!-- Filter by label -->
+  <combobox id="cbFilterType" value="${i18n:_('Show all')}"
+        onChange="treeController.onShowAll(event)"
+        constraint="no empty:${i18n:_('cannot be null or empty')}"
+        readonly="true" >
+      <comboitem label="${i18n:_('Show all')}"
+            description="${i18n:_('Show all order elements')}" />
+      <comboitem label="${i18n:_('Filter by Label')}"
+            description="${i18n:_('Filter all order elements by label')}" />
+  </combobox>
+  <bandboxSearch id="bdFilter" finder="LabelBandboxFinder"
+        model="@{treeController.labels}"/>
+  <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+        onClick="treeController.onApplyFilter(event)"/>
+</hbox>
