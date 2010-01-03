@@ -21,8 +21,11 @@ package org.navalplanner.web.templates;
 
 import java.util.List;
 
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.OnlyOneVisible;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
+import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -36,7 +39,8 @@ import org.zkoss.zul.Window;
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class OrderTemplatesController extends GenericForwardComposer{
+public class OrderTemplatesController extends GenericForwardComposer implements
+        IOrderTemplatesControllerEntryPoints {
 
     @Autowired
     private IOrderTemplatesModel model;
@@ -44,6 +48,9 @@ public class OrderTemplatesController extends GenericForwardComposer{
     private OnlyOneVisible cachedOnlyOneVisible;
 
     private Window listWindow;
+
+    @Autowired
+    private IURLHandlerRegistry handlerRegistry;
 
     public List<OrderElementTemplate> getTemplates() {
         return model.getTemplates();
@@ -57,9 +64,17 @@ public class OrderTemplatesController extends GenericForwardComposer{
     }
 
     @Override
+    public void goToCreateTemplateFrom(OrderElement orderElement) {
+        System.out.println("TODO: create template from " + orderElement);
+    }
+
+    @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         getVisibility().showOnly(listWindow);
+        final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
+                .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
+        handler.registerListener(this, page);
     }
 
 }

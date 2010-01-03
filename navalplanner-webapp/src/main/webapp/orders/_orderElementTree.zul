@@ -23,6 +23,8 @@
         <hbox>
             <button id="btnNew" label="${i18n:_('New order element')}"
                 onClick="orderElementTreeController.addOrderElement();" />
+            <button label="${i18n:_('Create Template')}"
+                onClick="orderElementTreeController.createTemplate();" />
             <button id="btnDown" label="${i18n:_('Down')}"
                 onClick="orderElementTreeController.down();" />
             <button id="btnUp" label="${i18n:_('Up')}"

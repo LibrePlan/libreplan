@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -43,6 +45,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
+import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -92,6 +95,9 @@ public class OrderElementTreeController extends GenericForwardComposer {
     private final OrderElementController orderElementController;
 
     private transient IPredicate predicate;
+
+    @Resource
+    private IOrderTemplatesControllerEntryPoints orderTemplates;
 
     public List<org.navalplanner.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
@@ -150,6 +156,16 @@ public class OrderElementTreeController extends GenericForwardComposer {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().up(orderElement);
         filterByPredicateIfAny();
+    }
+
+    public void createTemplate() {
+        if (tree.getSelectedCount() == 1) {
+            createTemplate(getSelectedNode());
+        }
+    }
+
+    private void createTemplate(OrderElement selectedNode) {
+        orderTemplates.goToCreateTemplateFrom(selectedNode);
     }
 
     public void down() {
@@ -566,6 +582,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         private void addOperationsCell(final Treeitem item,
                 final OrderElement currentOrderElement) {
             addCell(createEditButton(currentOrderElement),
+                    createTemplateButton(currentOrderElement),
                     createUpButton(item,currentOrderElement),
                     createDownListener(item,currentOrderElement),
                     createUnindentButton(item, currentOrderElement),
@@ -585,6 +602,21 @@ public class OrderElementTreeController extends GenericForwardComposer {
                         }
                     });
             return editbutton;
+        }
+
+        private Component createTemplateButton(
+                final OrderElement currentOrderElement) {
+            Button templateButton = createButton(
+                    "/common/img/ico_derived1.png", _("Create Template"),
+                    "/common/img/ico_derived.png",
+                    "icono",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            createTemplate(currentOrderElement);
+                        }
+                    });
+            return templateButton;
         }
 
         private Button createUpButton(final Treeitem item,
