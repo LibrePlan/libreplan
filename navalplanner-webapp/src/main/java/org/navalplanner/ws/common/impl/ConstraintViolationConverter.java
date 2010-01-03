@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 
 /**
  * Converter for constraint violations.
@@ -47,10 +47,10 @@ public class ConstraintViolationConverter {
         if ( (invalidValue.getPropertyName() != null) &&
              (!invalidValue.getPropertyName().
                  startsWith(CHECK_CONSTRAINT_METHOD_PREFIX))) {
-
-            fieldName = invalidValue.getBean().getClass().getSimpleName() +
-                "::" + invalidValue.getPropertyName();
-
+            final String rootObjectClassName = invalidValue.getRootBean()
+                    .getClass().getSimpleName();
+            final String propertyPath = invalidValue.getPropertyPath();
+            fieldName = rootObjectClassName + "::" + propertyPath;
         }
 
         return new ConstraintViolationDTO(fieldName,

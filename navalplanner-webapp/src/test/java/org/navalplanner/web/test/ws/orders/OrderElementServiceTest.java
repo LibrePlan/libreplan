@@ -43,6 +43,9 @@ import java.util.SortedSet;
 
 import javax.annotation.Resource;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -200,8 +203,8 @@ public class OrderElementServiceTest {
         // Mandatory fields: code, name
         assertThat(constraintViolations.size(), equalTo(2));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(
-                    equalTo("Order::code"), equalTo("Order::name")));
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
+                    mustEnd("name")));
         }
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -303,9 +306,8 @@ public class OrderElementServiceTest {
         // Mandatory fields: name, workingHours
         assertThat(constraintViolations.size(), equalTo(2));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(
-                    equalTo("HoursGroup::code"),
-                    equalTo("HoursGroup::workingHours")));
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
+                    mustEnd("workingHours")));
         }
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -471,8 +473,7 @@ public class OrderElementServiceTest {
         assertThat(constraintViolations.size(), equalTo(2));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
             assertThat(constraintViolationDTO.fieldName, anyOf(
-                    equalTo("MaterialAssignment::units"),
-                    equalTo("MaterialAssignment::unitPrice")));
+                    mustEnd("units"), mustEnd("unitPrice")));
         }
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
@@ -549,8 +550,7 @@ public class OrderElementServiceTest {
                 .get(0).constraintViolations;
         // Mandatory fields: material, units, unitPrice
         assertThat(constraintViolations.size(), equalTo(1));
-        assertThat(constraintViolations.get(0).fieldName,
-                equalTo("Label::name"));
+        assertThat(constraintViolations.get(0).fieldName, mustEnd("name"));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
@@ -802,9 +802,8 @@ public class OrderElementServiceTest {
         // Mandatory fields: date, value
         assertThat(constraintViolations.size(), equalTo(2));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(
-                    equalTo("AdvanceMeasurement::date"),
-                    equalTo("AdvanceMeasurement::value")));
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("date"),
+                    mustEnd("value")));
         }
 
         try {
@@ -1137,6 +1136,25 @@ public class OrderElementServiceTest {
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
         assertFalse(((IndirectCriterionRequirement) orderElement
                 .getCriterionRequirements().iterator().next()).isIsValid());
+    }
+
+    public static Matcher<String> mustEnd(final String property) {
+        return new BaseMatcher<String>() {
+
+            @Override
+            public boolean matches(Object object) {
+                if (object instanceof String) {
+                    String s = (String) object;
+                    return s.endsWith(property);
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("must end with " + property);
+            }
+        };
     }
 
 }
