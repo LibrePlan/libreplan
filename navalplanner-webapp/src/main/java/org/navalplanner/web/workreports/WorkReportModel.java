@@ -89,6 +89,8 @@ public class WorkReportModel implements IWorkReportModel {
 
     private static final Map<LabelType, List<Label>> mapLabelTypes = new HashMap<LabelType, List<Label>>();
 
+    private List<WorkReportDTO> listWorkReportDTOs = new ArrayList<WorkReportDTO>();
+
     @Override
     public WorkReport getWorkReport() {
         return workReport;
@@ -242,20 +244,19 @@ public class WorkReportModel implements IWorkReportModel {
     @Transactional(readOnly = true)
     public List<WorkReportDTO> getWorkReportDTOs() {
         // load the work reports DTOs
-        List<WorkReport> listWorkReports = getAllWorkReports();
-        List<WorkReportDTO> resultDTOs = new ArrayList<WorkReportDTO>();
-        for (WorkReport workReport : listWorkReports) {
+        listWorkReportDTOs.clear();
+        for (WorkReport workReport : getAllWorkReports()) {
             WorkReportDTO workReportDTO = new WorkReportDTO(workReport);
-            resultDTOs.add(workReportDTO);
+            listWorkReportDTOs.add(workReportDTO);
         }
-        return resultDTOs;
+        return listWorkReportDTOs;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<WorkReportDTO> getFilterWorkReportDTOs(IPredicate predicate) {
         List<WorkReportDTO> resultDTOs = new ArrayList<WorkReportDTO>();
-        for (WorkReportDTO workReportDTO : getWorkReportDTOs()) {
+        for (WorkReportDTO workReportDTO : listWorkReportDTOs) {
             if (predicate.accepts(workReportDTO)) {
                 resultDTOs.add(workReportDTO);
             }
