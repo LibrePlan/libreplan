@@ -31,6 +31,9 @@
                     org/navalplanner/business/orders/entities/Orders.hbm.xml
                 </value>
                 <value>
+                    org/navalplanner/business/templates/entities/Templates.hbm.xml
+                </value>
+                <value>
                     org/navalplanner/business/planner/entities/Tasks.hbm.xml
                 </value>
                 <value>

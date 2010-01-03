@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.templates.entities" default-access="field">
+
+    <class name="OrderElementTemplate" abstract="true">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <component name="infoComponent" class="org.navalplanner.business.orders.entities.InfoComponent">
+            <property name="name" access="field" />
+            <property name="description" access="field" />
+            <property name="code" access="field"/>
+        </component>
+        <property name="startAsDaysFromBeginning" />
+        <property name="deadlineAsDaysFromBeginning" />
+
+        <many-to-one name="parent" access="field" />
+
+        <joined-subclass name="OrderLineGroupTemplate">
+            <key column="GROUP_TEMPLATE_ID"></key>
+            <list name="children" access="field" cascade="all">
+                <key column="parent" not-null="false"></key>
+                <index column="positionInContainer"></index>
+                <one-to-many class="OrderElementTemplate" />
+            </list>
+
+            <joined-subclass name="OrderTemplate">
+                <key column="ORDER_TEMPLATE_ID"></key>
+                <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
+                    class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
+            </joined-subclass>
+        </joined-subclass>
+
+        <joined-subclass name="OrderLineTemplate">
+            <key column="ORDER_LINE_TEMPLATE_ID"></key>
+        </joined-subclass>
+    </class>
+
+</hibernate-mapping>
