@@ -22,11 +22,37 @@ package org.navalplanner.business.templates.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
+
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
 public class OrderLineGroupTemplate extends OrderElementTemplate {
+
+    public static OrderLineGroupTemplate create(OrderLineGroup group) {
+        return create(new OrderLineGroupTemplate(), group);
+    }
+
+    protected static <T extends OrderLineGroupTemplate> T create(T beingBuilt,
+            OrderLineGroup group) {
+        List<OrderElementTemplate> result = buildChildrenTemplates(beingBuilt,
+                group.getChildren());
+        beingBuilt.children = result;
+        return OrderElementTemplate.create(beingBuilt, group);
+    }
+
+    private static List<OrderElementTemplate> buildChildrenTemplates(
+            OrderLineGroupTemplate parent, List<OrderElement> children) {
+        List<OrderElementTemplate> result = new ArrayList<OrderElementTemplate>();
+        for (OrderElement each : children) {
+            OrderElementTemplate template = each.createTemplate();
+            template.setParent(parent);
+            result.add(template);
+        }
+        return result;
+    }
 
     private List<OrderElementTemplate> children = new ArrayList<OrderElementTemplate>();
 

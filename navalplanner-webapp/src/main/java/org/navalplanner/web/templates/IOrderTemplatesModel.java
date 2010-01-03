@@ -21,6 +21,7 @@ package org.navalplanner.web.templates;
 
 import java.util.List;
 
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
@@ -30,4 +31,6 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
 public interface IOrderTemplatesModel {
 
     List<OrderElementTemplate> getTemplates();
+
+    OrderElementTemplate createTemplateFrom(OrderElement orderElement);
 }

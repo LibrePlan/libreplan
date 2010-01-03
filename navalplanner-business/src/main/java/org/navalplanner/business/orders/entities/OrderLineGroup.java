@@ -44,6 +44,8 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
 public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
 
     public static OrderLineGroup create() {
@@ -691,6 +693,11 @@ public class OrderLineGroup extends OrderElement implements IOrderLineGroup {
             }
         }
         return null;
+    }
+
+    @Override
+    public OrderElementTemplate createTemplate() {
+        return OrderLineGroupTemplate.create(this);
     }
 
 }

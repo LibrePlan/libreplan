@@ -33,6 +33,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.templates.entities.OrderTemplate;
 
 /**
  * It represents an {@link Order} with its related information. <br />
@@ -231,6 +232,11 @@ public class Order extends OrderLineGroup {
         }
 
         return true;
+    }
+
+    @Override
+    public OrderTemplate createTemplate() {
+        return OrderTemplate.create(this);
     }
 
 }

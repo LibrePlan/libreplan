@@ -36,6 +36,7 @@ import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.templates.entities.OrderLineTemplate;
 
 public class OrderLine extends OrderElement {
 
@@ -527,6 +528,11 @@ public class OrderLine extends OrderElement {
         }
 
         return true;
+    }
+
+    @Override
+    public OrderLineTemplate createTemplate() {
+        return OrderLineTemplate.create(this);
     }
 
 }

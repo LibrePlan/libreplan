@@ -65,7 +65,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     @Override
     public void goToCreateTemplateFrom(OrderElement orderElement) {
-        System.out.println("TODO: create template from " + orderElement);
+        OrderElementTemplate template = model.createTemplateFrom(orderElement);
     }
 
     @Override

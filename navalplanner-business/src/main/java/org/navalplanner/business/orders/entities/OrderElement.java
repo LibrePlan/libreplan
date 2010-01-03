@@ -60,6 +60,7 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 public abstract class OrderElement extends BaseEntity implements
         ICriterionRequirable {
@@ -341,6 +342,8 @@ public abstract class OrderElement extends BaseEntity implements
     public String getCode() {
         return getInfoComponent().getCode();
     }
+
+    public abstract OrderElementTemplate createTemplate();
 
     public abstract DirectAdvanceAssignment getReportGlobalAdvanceAssignment();
 
@@ -928,7 +931,7 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     @Valid
-    private InfoComponent getInfoComponent() {
+    public InfoComponent getInfoComponent() {
         if (infoComponent == null) {
             infoComponent = new InfoComponent();
         }

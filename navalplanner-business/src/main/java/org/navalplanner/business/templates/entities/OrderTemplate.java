@@ -21,12 +21,19 @@ package org.navalplanner.business.templates.entities;
 
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.orders.entities.Order;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
 public class OrderTemplate extends OrderLineGroupTemplate {
+
+    public static OrderTemplate create(Order order) {
+        OrderTemplate beingBuilt = new OrderTemplate();
+        beingBuilt.calendar = order.getCalendar();
+        return create(beingBuilt, order);
+    }
 
     @NotNull(message = "order calendar not specified")
     private BaseCalendar calendar;

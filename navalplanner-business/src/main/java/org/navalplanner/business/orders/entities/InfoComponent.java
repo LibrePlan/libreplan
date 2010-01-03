@@ -60,4 +60,12 @@ public class InfoComponent {
     public String getDescription() {
         return description;
     }
+
+    public InfoComponent copy() {
+        InfoComponent result = new InfoComponent();
+        result.setCode(getCode());
+        result.setName(getName());
+        result.setDescription(getDescription());
+        return result;
+    }
 }

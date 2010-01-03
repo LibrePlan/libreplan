@@ -19,16 +19,65 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import java.util.Date;
+
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.Valid;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.InfoComponent;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
 public abstract class OrderElementTemplate extends BaseEntity {
+
+    public static <T extends OrderElementTemplate> T create(T beingBuilt,
+            OrderElement origin) {
+        InfoComponent infoComponentCopied = origin.getInfoComponent().copy();
+        Order order = origin.getOrder();
+        Days fromBeginningToStart = daysBetween(order.getInitDate(), origin
+                .getInitDate());
+        Days fromBeginningToEnd = daysBetween(order.getDeadline(), origin
+                .getDeadline());
+        return create(beingBuilt, infoComponentCopied,
+                fromBeginningToStart, fromBeginningToEnd);
+    }
+
+    private static <T extends OrderElementTemplate> T create(T beingBuilt,
+            InfoComponent infoComponentCopied, Days fromBeginningToStart,
+            Days fromBeginningToEnd) {
+        Validate.isTrue(isNullOrPositive(fromBeginningToStart));
+        Validate.isTrue(isNullOrPositive(fromBeginningToEnd));
+        beingBuilt.infoComponent = infoComponentCopied;
+        beingBuilt.startAsDaysFromBeginning = daysToInteger(fromBeginningToStart);
+        beingBuilt.deadlineAsDaysFromBeginning = daysToInteger(fromBeginningToEnd);
+        return create(beingBuilt);
+    }
+
+    private static Days daysBetween(Date start, Date end) {
+        if (start == null || end == null) {
+            return null;
+        }
+        return Days.daysBetween(asDateTime(start), asDateTime(end));
+    }
+
+    private static DateTime asDateTime(Date date) {
+        return new DateTime(date);
+    }
+
+    private static boolean isNullOrPositive(Days days) {
+        return days == null || days.getDays() >= 0;
+    }
+
+    private static Integer daysToInteger(Days days) {
+        return days != null ? days.getDays() : null;
+    }
 
     private InfoComponent infoComponent;
 
@@ -37,6 +86,14 @@ public abstract class OrderElementTemplate extends BaseEntity {
     private Integer deadlineAsDaysFromBeginning;
 
     private OrderLineGroupTemplate parent;
+
+    public OrderLineGroupTemplate getParent() {
+        return parent;
+    }
+
+    protected void setParent(OrderLineGroupTemplate parent) {
+        this.parent = parent;
+    }
 
     @Valid
     private InfoComponent getInfoComponent() {

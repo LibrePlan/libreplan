@@ -19,10 +19,16 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import org.navalplanner.business.orders.entities.OrderLine;
+
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
 public class OrderLineTemplate extends OrderElementTemplate {
+
+    public static OrderLineTemplate create(OrderLine orderLine) {
+        return create(new OrderLineTemplate(), orderLine);
+    }
 
 }
