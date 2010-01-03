@@ -17,16 +17,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.navalplanner.business.trees;
 
-package org.navalplanner.business.orders.entities;
-
-import org.navalplanner.business.trees.ITreeNode;
 
 /**
- * Container of {@link OrderElement}. <br />
- *
+ * Represents an entity that can work as a node at a tree<br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface IOrderLineGroup extends ITreeNode<OrderElement> {
+public interface ITreeNode<T> {
+
+    public void add(T newChild);
+
+    public void remove(T existentChild);
+
+    public void replace(T previousChild, T newChild);
+
+    public void up(T existentChild);
+
+    public void down(T existentChild);
+
+    public void add(int position, T newChild);
 
 }

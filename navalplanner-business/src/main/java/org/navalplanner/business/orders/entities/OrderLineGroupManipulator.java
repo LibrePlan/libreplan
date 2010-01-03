@@ -20,15 +20,16 @@
 
 package org.navalplanner.business.orders.entities;
 
-import java.util.Collections;
 import java.util.List;
 
+import org.navalplanner.business.trees.TreeNodeOnList;
 
 /**
  * Implementation of {@link IOrderLineGroup}. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class OrderLineGroupManipulator implements IOrderLineGroup {
+public class OrderLineGroupManipulator extends
+        TreeNodeOnList<OrderElement, OrderLineGroup> {
 
     public static OrderLineGroupManipulator createManipulatorForOrder(
             List<OrderElement> orderElements) {
@@ -40,34 +41,34 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
         return new OrderLineGroupManipulator(group, children);
     }
 
-    private final List<OrderElement> orderElements;
-    private final OrderLineGroup parent;
-
     private OrderLineGroupManipulator(OrderLineGroup parent,
             List<OrderElement> orderElements) {
-        this.parent = parent;
-        this.orderElements = orderElements;
+        super(parent, orderElements);
+    }
+
+    protected void setParentIfRequired(OrderElement orderElement) {
+        if (getParent() != null) {
+            orderElement.setParent(getParent());
+        }
     }
 
     @Override
-    public void add(OrderElement orderElement) {
-        setParentIfRequired(orderElement);
-        orderElements.add(orderElement);
-        addSchedulingStateToParent(orderElement);
-    }
-
-    private void setParentIfRequired(OrderElement orderElement) {
-        if (this.parent != null) {
-            orderElement.setParent(this.parent);
-        }
+    protected void onChildAdded(OrderElement newChild) {
+        addSchedulingStateToParent(newChild);
     }
 
     private void addSchedulingStateToParent(OrderElement orderElement) {
-        if (this.parent != null) {
+        final OrderLineGroup parent = getParent();
+        if (parent != null) {
             SchedulingState schedulingState = orderElement.getSchedulingState();
             removeSchedulingStateFromParent(orderElement);
-            this.parent.getSchedulingState().add(schedulingState);
+            parent.getSchedulingState().add(schedulingState);
         }
+    }
+
+    @Override
+    protected void onChildRemoved(OrderElement previousChild) {
+        removeSchedulingStateFromParent(previousChild);
     }
 
     private void removeSchedulingStateFromParent(OrderElement orderElement) {
@@ -76,43 +77,4 @@ public class OrderLineGroupManipulator implements IOrderLineGroup {
             schedulingState.getParent().removeChild(schedulingState);
         }
     }
-
-    @Override
-    public void remove(OrderElement orderElement) {
-        orderElements.remove(orderElement);
-        removeSchedulingStateFromParent(orderElement);
-    }
-
-    @Override
-    public void replace(OrderElement oldOrderElement, OrderElement orderElement) {
-        setParentIfRequired(orderElement);
-        Collections.replaceAll(orderElements, oldOrderElement, orderElement);
-        addSchedulingStateToParent(orderElement);
-    }
-
-    @Override
-    public void down(OrderElement orderElement) {
-        int position = orderElements.indexOf(orderElement);
-        if (position < orderElements.size() - 1) {
-            orderElements.remove(position);
-            orderElements.add(position + 1, orderElement);
-        }
-    }
-
-    @Override
-    public void up(OrderElement orderElement) {
-        int position = orderElements.indexOf(orderElement);
-        if (position > 0) {
-            orderElements.remove(position);
-            orderElements.add(position - 1, orderElement);
-        }
-    }
-
-    @Override
-    public void add(int position, OrderElement orderElement) {
-        setParentIfRequired(orderElement);
-        orderElements.add(position, orderElement);
-        addSchedulingStateToParent(orderElement);
-    }
-
 }
