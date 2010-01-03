@@ -30,7 +30,7 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  */
 public interface IOrderTemplatesModel {
 
-    List<OrderElementTemplate> getTemplates();
+    List<OrderElementTemplate> getRootTemplates();
 
     void createTemplateFrom(OrderElement orderElement);
 

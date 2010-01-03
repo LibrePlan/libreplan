@@ -53,8 +53,8 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     private OrderElementTemplate template;
 
     @Override
-    public List<OrderElementTemplate> getTemplates() {
-        return dao.list(OrderElementTemplate.class);
+    public List<OrderElementTemplate> getRootTemplates() {
+        return dao.getRootTemplates();
     }
 
     @Override

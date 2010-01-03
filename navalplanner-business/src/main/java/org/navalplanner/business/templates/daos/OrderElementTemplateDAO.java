@@ -19,11 +19,15 @@
  */
 package org.navalplanner.business.templates.daos;
 
+import java.util.List;
+
+import org.hibernate.Query;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -35,5 +39,14 @@ import org.springframework.stereotype.Repository;
 public class OrderElementTemplateDAO extends
         GenericDAOHibernate<OrderElementTemplate, Long> implements
         IOrderElementTemplateDAO {
+
+    @Override
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    public List<OrderElementTemplate> getRootTemplates() {
+        Query query = getSession().createQuery(
+                "select t from OrderElementTemplate t where t.parent = NULL");
+        return query.list();
+    }
 
 }

@@ -59,7 +59,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private IURLHandlerRegistry handlerRegistry;
 
     public List<OrderElementTemplate> getTemplates() {
-        return model.getTemplates();
+        return model.getRootTemplates();
     }
 
     private OnlyOneVisible getVisibility() {
