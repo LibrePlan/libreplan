@@ -37,4 +37,6 @@ public interface IOrderTemplatesModel {
     OrderElementTemplate getTemplate();
 
     void confirmSave();
+
+    void initEdit(OrderElementTemplate template);
 }

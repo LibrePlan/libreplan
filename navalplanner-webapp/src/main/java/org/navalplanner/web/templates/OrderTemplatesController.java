@@ -79,6 +79,11 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         show(getEditWindow());
     }
 
+    public void goToEditForm(OrderElementTemplate template) {
+        model.initEdit(template);
+        show(getEditWindow());
+    }
+
     private void show(Component window) {
         Util.reloadBindings(window);
         getVisibility().showOnly(window);

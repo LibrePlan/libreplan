@@ -79,4 +79,10 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(OrderElementTemplate template) {
+        this.template = dao.findExistingEntity(template.getId());
+    }
+
 }
