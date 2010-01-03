@@ -17,43 +17,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navalplanner.web.orders.components;
+package org.navalplanner.web.templates;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.navalplanner.web.orders.OrderElementTreeController;
-import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zk.ui.util.Composer;
+import org.navalplanner.web.orders.components.TreeComponent;
 
 /**
- * macro component for order elements tree and similar pages<br />
+ * Tree component for templates <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class TreeComponent extends HtmlMacroComponent {
-
-    private static final String CONTROLLER_NAME = "treeController";
-
-    public void clear() {
-        OrderElementTreeController controller = (OrderElementTreeController) getVariable(
-                CONTROLLER_NAME, true);
-        controller.clear();
-    }
-
-    public void useController(Composer controller) {
-        doAfterComposeOnController(controller);
-        this.setVariable(CONTROLLER_NAME, controller, true);
-    }
-
-    private void doAfterComposeOnController(Composer controller) {
-        try {
-            controller.doAfterCompose(this);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class TemplatesTreeComponent extends TreeComponent {
 
     public String getAddElementLabel() {
-        return _("New order element");
+        return _("New Template element");
     }
 
     public boolean isCreateTemplateEnabled() {
@@ -61,15 +38,15 @@ public class TreeComponent extends HtmlMacroComponent {
     }
 
     public String getRemoveElementLabel() {
-        return _("Delete order element");
+        return _("Delete Template element");
     }
 
     public String getHoursTooltip() {
-        return _("Total order element hours");
+        return _("Total Template hours");
     }
 
     public String getOperationsTooltip() {
-        return _("Click on the icons to execute operation in the order element");
+        return _("Click on the icons to execute operation in the template");
     }
 
 }

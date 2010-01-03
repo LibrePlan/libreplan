@@ -17,11 +17,13 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
+<?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
+  class="org.navalplanner.web.templates.TemplatesTreeComponent"?>
 <window id="${arg.top_id}">
     <tabbox>
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />
+            <tab label="${i18n:_('Template Tree')}" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -53,6 +55,9 @@
                         </row>
                     </rows>
                 </grid>
+            </tabpanel>
+            <tabpanel>
+                <orderElementTree id="orderElementTree"/>
             </tabpanel>
         </tabpanels>
     </tabbox>

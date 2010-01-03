@@ -29,6 +29,7 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.orders.components.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -93,6 +94,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         if (editWindow == null) {
             editWindow = (Window) Executions.createComponents(
                     "/templates/_edition.zul", self, topId("editWindow"));
+            TreeComponent treeComponent = (TreeComponent) editWindow
+                    .getFellow("orderElementTree");
+            treeComponent.useController(new TemplatesTreeController());
             Util.createBindingsFor(editWindow);
             Util.reloadBindings(editWindow);
         }
