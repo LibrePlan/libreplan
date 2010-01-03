@@ -20,11 +20,16 @@
 
 package org.navalplanner.business.orders.daos;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Dao for {@link HoursGroup}
@@ -35,4 +40,45 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class HoursGroupDAO extends GenericDAOHibernate<HoursGroup, Long>
         implements IHoursGroupDAO {
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByCodeAnotherTransaction(HoursGroup hoursGroup) {
+        return existsByCode(hoursGroup);
+    }
+
+    private boolean existsByCode(HoursGroup hoursGroup) {
+        try {
+            HoursGroup result = findUniqueByCode(hoursGroup);
+            return result != null && result != hoursGroup;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public HoursGroup findUniqueByCodeAnotherTransaction(HoursGroup hoursGroup)
+            throws InstanceNotFoundException {
+        return findUniqueByCode(hoursGroup);
+    }
+
+    private HoursGroup findUniqueByCode(HoursGroup hoursGroup)
+            throws InstanceNotFoundException {
+        if ((hoursGroup == null) || (hoursGroup.getCode() == null)) {
+            return null;
+        }
+
+        Criteria c = getSession().createCriteria(HoursGroup.class);
+        c.add(Restrictions.eq("code", hoursGroup.getCode()));
+
+        HoursGroup result = (HoursGroup) c.uniqueResult();
+        if (result == null) {
+            throw new InstanceNotFoundException(hoursGroup.getCode(),
+                    HoursGroup.class.getName());
+        } else {
+            return result;
+        }
+    }
+
 }

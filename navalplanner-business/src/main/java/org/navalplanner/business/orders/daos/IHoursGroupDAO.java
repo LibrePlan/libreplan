@@ -21,6 +21,7 @@
 package org.navalplanner.business.orders.daos;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 
 /**
@@ -29,5 +30,10 @@ import org.navalplanner.business.orders.entities.HoursGroup;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public interface IHoursGroupDAO extends IGenericDAO<HoursGroup, Long> {
+
+    boolean existsByCodeAnotherTransaction(HoursGroup hoursGroup);
+
+    HoursGroup findUniqueByCodeAnotherTransaction(HoursGroup hoursGroup)
+            throws InstanceNotFoundException;
 
 }

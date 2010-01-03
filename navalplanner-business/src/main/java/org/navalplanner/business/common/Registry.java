@@ -28,6 +28,7 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -112,6 +113,9 @@ public class Registry {
     @Autowired
     private ICriterionDAO criterionDAO;
 
+    @Autowired
+    private IHoursGroupDAO hoursGroupDAO;
+
     private Registry() {
     }
 
@@ -188,6 +192,10 @@ public class Registry {
 
     public static ICriterionDAO getCriterionDAO() {
         return getInstance().criterionDAO;
+    }
+
+    public static IHoursGroupDAO getHoursGroupDAO() {
+        return getInstance().hoursGroupDAO;
     }
 
 }

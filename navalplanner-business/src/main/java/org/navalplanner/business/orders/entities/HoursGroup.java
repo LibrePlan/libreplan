@@ -26,10 +26,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
@@ -273,6 +277,23 @@ public class HoursGroup extends BaseEntity implements Cloneable,
             }
         }
         return false;
+    }
+
+    @AssertTrue(message = "code is already being used")
+    public boolean checkConstraintUniqueCode() {
+        IHoursGroupDAO hoursGroupDAO = Registry.getHoursGroupDAO();
+
+        if (isNewObject()) {
+            return !hoursGroupDAO.existsByCodeAnotherTransaction(this);
+        } else {
+            try {
+                HoursGroup hoursGroup = hoursGroupDAO
+                        .findUniqueByCodeAnotherTransaction(this);
+                return hoursGroup.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
+        }
     }
 
 }
