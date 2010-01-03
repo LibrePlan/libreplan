@@ -197,4 +197,9 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         return existsOtherOrderElementByCode(orderElement);
     }
 
+    @Override
+    public List<OrderElement> getAll() {
+        return list(OrderElement.class);
+    }
+
 }

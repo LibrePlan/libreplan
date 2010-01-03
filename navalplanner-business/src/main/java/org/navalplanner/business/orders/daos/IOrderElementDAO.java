@@ -84,4 +84,6 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
 
     boolean existsByCodeAnotherTransaction(OrderElement orderElement);
 
+    List<OrderElement> getAll();
+
 }
