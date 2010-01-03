@@ -129,7 +129,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         filterByPredicateIfAny();
     }
 
-    public TreeModel getOrderElementTreeModel() {
+    public TreeModel getTreeModel() {
         return (getModel() != null) ? getModel().asTree() : null;
     }
 
@@ -207,7 +207,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         filterByPredicateIfAny();
     }
 
-    public void addOrderElement() {
+    public void addElement() {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         try {
             if (tree.getSelectedCount() == 1) {
@@ -277,7 +277,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         }
     }
 
-    public void removeOrderElement() {
+    public void removeElement() {
         Set<Treeitem> selectedItems = tree.getSelectedItems();
         for (Treeitem treeItem : selectedItems) {
             remove((OrderElement) treeItem.getValue());

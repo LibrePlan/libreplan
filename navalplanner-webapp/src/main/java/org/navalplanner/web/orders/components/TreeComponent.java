@@ -19,6 +19,8 @@
  */
 package org.navalplanner.web.orders.components;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import org.navalplanner.web.orders.OrderElementTreeController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
@@ -48,6 +50,26 @@ public class TreeComponent extends HtmlMacroComponent {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getAddElementLabel() {
+        return _("New order element");
+    }
+
+    public boolean isCreateTemplateEnabled() {
+        return true;
+    }
+
+    public String getRemoveElementLabel() {
+        return _("Delete order element");
+    }
+
+    public String getHoursTooltip() {
+        return _("Total order element hours");
+    }
+
+    public String getOperationsTooltip() {
+        return _("Click on the icons to execute operation in the order element");
     }
 
 }
