@@ -19,7 +19,7 @@
 		<initialValueExpression><![CDATA[new java.lang.Integer(0)]]></initialValueExpression>
 	</variable>
 	<variable name="sumHoursPerWorker" class="java.lang.Integer" resetType="Group" resetGroup="Worker group" incrementType="Group" incrementGroup="Date group" calculation="Sum">
-		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
+		<variableExpression><![CDATA[$V{sumHoursPerDay}]]></variableExpression>
 		<initialValueExpression><![CDATA[new java.lang.Integer(0)]]></initialValueExpression>
 	</variable>
 	<group name="Worker group">
@@ -42,7 +42,7 @@
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="25">
+			<band height="24">
 				<staticText>
 					<reportElement x="13" y="1" width="136" height="15"/>
 					<textElement verticalAlignment="Middle">
