@@ -206,4 +206,7 @@ public interface IWorkReportModel {
      * @return
      */
     WorkReportType getDefaultType();
+
+    List<OrderElement> getOrderElements();
+
 }

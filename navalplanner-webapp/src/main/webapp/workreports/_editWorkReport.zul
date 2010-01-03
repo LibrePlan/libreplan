@@ -50,8 +50,8 @@
                                     selectedItem="@{controller.workReport.resource}"/>
                         </row>
                         <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
-                                <label value="${i18n:_('OrderElement Code')}:" />
-                                <textbox id="txtOrderElement" value="@{controller.codeOrderElement}" />
+                            <label value="${i18n:_('OrderElement Code')}:" />
+                            <textbox id="txtOrderElement" value="@{controller.codeOrderElement}" />
                         </row>
                     </rows>
                 </grid>

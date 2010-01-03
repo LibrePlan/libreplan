@@ -34,6 +34,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.databind.DataBinder;
+import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
@@ -468,6 +469,52 @@ public class Util {
             }
         });
         return radio;
+    }
+
+    /**
+     * Binds a {@link Bandbox} with a {@link Getter}. The {@link Getter} will be
+     * used to get the value that is going to be showed in the {@link Bandbox}.
+     *
+     * @param bandBox
+     *            The {@link Bandbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @return The {@link Bandbox} bound
+     */
+    public static Bandbox bind(Bandbox bandBox, Getter<String> getter) {
+        bandBox.setValue(getter.get());
+        bandBox.setDisabled(true);
+        return bandBox;
+    }
+
+    /**
+     * Binds a {@link Bandbox} with a {@link Getter}. The {@link Getter} will be
+     * used to get the value that is going to be showed in the {@link Bandbox}.
+     * The {@link Setter} will be used to store the value inserted by the user
+     * in the {@link Bandbox}.
+     *
+     * @param bandBox
+     *            The {@link Bandbox} to be bound
+     * @param getter
+     *            The {@link Getter} interface that will implement a get method.
+     * @param setter
+     *            The {@link Setter} interface that will implement a set method.
+     * @return The {@link Bandbox} bound
+     */
+    public static Bandbox bind(final Bandbox bandBox,
+            final Getter<String> getter, final Setter<String> setter) {
+        bandBox.setValue(getter.get());
+        bandBox.addEventListener(Events.ON_CHANGE, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                InputEvent newInput = (InputEvent) event;
+                String value = newInput.getValue();
+                setter.set(value);
+                bandBox.setValue(getter.get());
+            }
+        });
+        return bandBox;
     }
 
     /**

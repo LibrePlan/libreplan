@@ -471,4 +471,11 @@ public class WorkReportModel implements IWorkReportModel {
         }
         return result;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderElement> getOrderElements() {
+        return orderElementDAO.getAll();
+    }
+
 }
