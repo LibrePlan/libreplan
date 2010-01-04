@@ -38,6 +38,8 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
 
     private List<UserOrderAuthorization> userOrderAuthorizationList;
 
+    private List<OrderAuthorization> orderAuthorizationRemovalList;
+
     @Autowired
     private IOrderAuthorizationDAO dao;
 
@@ -106,6 +108,12 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         for(OrderAuthorization authorization : userOrderAuthorizationList) {
             dao.save(authorization);
         }
+        for(OrderAuthorization authorization : orderAuthorizationRemovalList) {
+            try {
+                dao.remove(authorization.getId());
+            }
+            catch(InstanceNotFoundException e) {}
+        }
     }
 
     @Override
@@ -126,6 +134,8 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
             new ArrayList<ProfileOrderAuthorization>();
         userOrderAuthorizationList =
             new ArrayList<UserOrderAuthorization>();
+        orderAuthorizationRemovalList =
+            new ArrayList<OrderAuthorization>();
 
         if(!order.isNewObject()) {
             //Retrieve the OrderAuthorizations associated with this order
@@ -162,6 +172,9 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         if(orderAuthorization instanceof ProfileOrderAuthorization) {
             profileOrderAuthorizationList.remove(
                     (ProfileOrderAuthorization) orderAuthorization);
+        }
+        if(!orderAuthorization.isNewObject()) {
+            orderAuthorizationRemovalList.add(orderAuthorization);
         }
     }
 

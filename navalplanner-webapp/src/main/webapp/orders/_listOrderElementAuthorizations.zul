@@ -48,7 +48,8 @@
                         <hbox>
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
                                 hoverImage="/common/img/ico_borrar.png"
-                                onClick="controller.removeOrderAuthorization(self.parent.parent.value);"
+                                onClick="orderAuthorizationController.
+                                    removeOrderAuthorization(self.parent.parent.value);"
                                 tooltiptext="${i18n:_('Delete')}" />
                         </hbox>
                     </row>
@@ -83,6 +84,8 @@
                         <label value="@{authorization.authorizationType.displayName}" />
                         <hbox>
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                onClick="orderAuthorizationController.
+                                    removeOrderAuthorization(self.parent.parent.value);"
                                 hoverImage="/common/img/ico_borrar.png"
                                 tooltiptext="${i18n:_('Delete')}" />
                         </hbox>
