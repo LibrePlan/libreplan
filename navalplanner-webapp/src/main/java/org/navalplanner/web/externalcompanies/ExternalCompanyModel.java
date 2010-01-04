@@ -26,6 +26,7 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.users.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -47,8 +48,13 @@ public class ExternalCompanyModel implements IExternalCompanyModel {
     private ExternalCompany externalCompany;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ExternalCompany> getCompanies() {
-        return externalCompanyDAO.list(ExternalCompany.class);
+        List<ExternalCompany> list = externalCompanyDAO.list(ExternalCompany.class);
+        for(ExternalCompany company : list) {
+            forceLoadEntities(company);
+        }
+        return list;
     }
 
     @Override
@@ -100,6 +106,11 @@ public class ExternalCompanyModel implements IExternalCompanyModel {
         if(company.getCompanyUser() != null) {
             company.getCompanyUser().getLoginName();
         }
+    }
+
+    @Override
+    public void setCompanyUser(User companyUser) {
+        externalCompany.setCompanyUser(companyUser);
     }
 
 }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.users.entities.User;
 
 /**
  * Model for UI operations related to {@link ExternalCompany}
@@ -67,4 +68,12 @@ public interface IExternalCompanyModel {
      *             If validation fails
      */
     void confirmSave();
+
+    /**
+     * Changes the value of the attribute companyUser in the inner
+     * {@link ExternalCompany} object.
+     *
+     * @param companyUser
+     */
+    void setCompanyUser(User companyUser);
 }

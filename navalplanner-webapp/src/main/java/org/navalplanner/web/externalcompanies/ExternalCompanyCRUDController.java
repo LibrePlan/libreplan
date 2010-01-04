@@ -35,6 +35,7 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Window;
 
 /**
@@ -123,6 +124,15 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
 
     public ExternalCompany getCompany() {
         return externalCompanyModel.getCompany();
+    }
+
+    public void setCompanyUser(Comboitem selectedItem) {
+        if (selectedItem != null) {
+            externalCompanyModel.setCompanyUser((User) selectedItem.getValue());
+        }
+        else {
+            externalCompanyModel.setCompanyUser(null);
+        }
     }
 
     private OnlyOneVisible getVisibility() {

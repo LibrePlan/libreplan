@@ -59,6 +59,10 @@
                             </row>
                             <row>
                                 <label value="${i18n:_('User')}:" />
+                                <autocomplete id="user"
+                                    onChange ="controller.setCompanyUser(self.selectedItem);"
+                                    selectedItem="@{controller.company.companyUser}"
+                                    autodrop="true" finder="UserFinder" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Interacts with applications')}:" />
