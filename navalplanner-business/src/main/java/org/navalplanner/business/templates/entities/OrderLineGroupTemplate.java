@@ -25,12 +25,61 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.trees.ITreeParentNode;
+import org.navalplanner.business.trees.TreeNodeOnList;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public class OrderLineGroupTemplate extends OrderElementTemplate {
+public class OrderLineGroupTemplate extends OrderElementTemplate implements
+        ITreeParentNode<OrderElementTemplate> {
+
+    private final class ChildrenManipulator extends
+            TreeNodeOnList<OrderElementTemplate> {
+
+        ChildrenManipulator(List<OrderElementTemplate> templates) {
+            super(templates);
+        }
+
+        @Override
+        protected void onChildAdded(OrderElementTemplate newChild) {
+        }
+
+        @Override
+        protected void onChildRemoved(OrderElementTemplate previousChild) {
+        }
+
+        @Override
+        protected void setParentIfRequired(OrderElementTemplate newChild) {
+            newChild.setParent(OrderLineGroupTemplate.this);
+        }
+
+        @Override
+        public ITreeParentNode<OrderElementTemplate> getParent() {
+            return OrderLineGroupTemplate.this.getParent();
+        }
+
+        @Override
+        public OrderElementTemplate getThis() {
+            return OrderLineGroupTemplate.this;
+        }
+
+        @Override
+        public ITreeParentNode<OrderElementTemplate> toContainer() {
+            return OrderLineGroupTemplate.this.toContainer();
+        }
+
+        @Override
+        public OrderElementTemplate toLeaf() {
+            return OrderLineGroupTemplate.this.toLeaf();
+        }
+
+    }
+
+    public static OrderLineGroupTemplate createNew() {
+        return create(new OrderLineGroupTemplate());
+    }
 
     public static OrderLineGroupTemplate create(OrderLineGroup group) {
         return create(new OrderLineGroupTemplate(), group);
@@ -60,6 +109,58 @@ public class OrderLineGroupTemplate extends OrderElementTemplate {
     @Override
     public List<OrderElementTemplate> getChildrenTemplates() {
         return Collections.unmodifiableList(children);
+    }
+
+    private ChildrenManipulator getManipulator() {
+        return new ChildrenManipulator(children);
+    }
+
+    @Override
+    public void add(OrderElementTemplate newChild) {
+        getManipulator().add(newChild);
+    }
+
+    @Override
+    public void add(int position, OrderElementTemplate newChild) {
+        getManipulator().add(position, newChild);
+    }
+
+    @Override
+    public void down(OrderElementTemplate existentChild) {
+        getManipulator().down(existentChild);
+    }
+
+    @Override
+    public void remove(OrderElementTemplate existentChild) {
+        getManipulator().remove(existentChild);
+    }
+
+    @Override
+    public void replace(OrderElementTemplate previousChild,
+            OrderElementTemplate newChild) {
+        getManipulator().replace(previousChild, newChild);
+    }
+
+    @Override
+    public void up(OrderElementTemplate existentChild) {
+        getManipulator().up(existentChild);
+    }
+
+    @Override
+    public List<OrderElementTemplate> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
+
+    @Override
+    public ITreeParentNode<OrderElementTemplate> toContainer() {
+        return this;
+    }
+
+    @Override
+    public OrderElementTemplate toLeaf() {
+        OrderLineTemplate result = OrderLineTemplate.createNew();
+        copyTo(result);
+        return result;
     }
 
 }

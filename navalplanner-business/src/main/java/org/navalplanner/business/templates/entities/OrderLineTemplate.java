@@ -19,6 +19,7 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,9 +35,30 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return create(new OrderLineTemplate(), orderLine);
     }
 
+    public static OrderLineTemplate createNew() {
+        return create(new OrderLine());
+    }
+
     @Override
     public List<OrderElementTemplate> getChildrenTemplates() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public OrderElementTemplate toLeaf() {
+        return this;
+    }
+
+    @Override
+    public OrderLineGroupTemplate toContainer() {
+        OrderLineGroupTemplate result = OrderLineGroupTemplate.createNew();
+        copyTo(result);
+        return result;
+    }
+
+    @Override
+    public List<OrderElementTemplate> getChildren() {
+        return new ArrayList<OrderElementTemplate>();
     }
 
 }

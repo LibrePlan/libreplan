@@ -31,12 +31,14 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.InfoComponent;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.trees.ITreeNode;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public abstract class OrderElementTemplate extends BaseEntity {
+public abstract class OrderElementTemplate extends BaseEntity implements
+        ITreeNode<OrderElementTemplate> {
 
     public static <T extends OrderElementTemplate> T create(T beingBuilt,
             OrderElement origin) {
@@ -146,5 +148,18 @@ public abstract class OrderElementTemplate extends BaseEntity {
 
     public void setName(String name) {
         getInfoComponent().setName(name);
+    }
+
+    @Override
+    public OrderElementTemplate getThis() {
+        return this;
+    }
+
+    protected void copyTo(OrderElementTemplate result) {
+        result.setCode(getCode());
+        result.setName(getName());
+        result.setDescription(getDescription());
+        result.setDeadlineAsDaysFromBeginning(getDeadlineAsDaysFromBeginning());
+        result.setStartAsDaysFromBeginning(getStartAsDaysFromBeginning());
     }
 }
