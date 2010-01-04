@@ -211,9 +211,9 @@ public class OrderElementTreeController extends GenericForwardComposer {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         try {
             if (tree.getSelectedCount() == 1) {
-                getModel().addOrderElementAt(getSelectedNode());
+                getModel().addElementAt(getSelectedNode());
             } else {
-                getModel().addOrderElement();
+                getModel().addElement();
             }
             filterByPredicateIfAny();
         } catch (IllegalStateException e) {
