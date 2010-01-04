@@ -26,6 +26,8 @@
     <property name="ourCompanyLogin" />
 
     <property name="ourCompanyPassword" />
+
+    <many-to-one name="companyUser" class="org.navalplanner.business.users.entities.User" />
 </class>
 
 </hibernate-mapping>

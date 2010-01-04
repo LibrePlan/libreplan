@@ -24,9 +24,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -37,6 +40,9 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,6 +63,9 @@ public class ExternalCompanyDAOTest {
 
     @Autowired
     IExternalCompanyDAO externalCompanyDAO;
+
+    @Autowired
+    IUserDAO userDAO;
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -87,6 +96,41 @@ public class ExternalCompanyDAOTest {
         ExternalCompany externalCompany = createValidExternalCompany();
         externalCompanyDAO.save(externalCompany);
         assertEquals(previous + 1, externalCompanyDAO.list(ExternalCompany.class).size());
+    }
+
+    @Test
+    @NotTransactional
+    public void testRelationWithUser() throws InstanceNotFoundException {
+        final User user = createValidUser();
+        final ExternalCompany externalCompany = createValidExternalCompany();
+        externalCompany.setCompanyUser(user);
+
+        IOnTransaction<Void> saveEntities = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                userDAO.save(user);
+                externalCompanyDAO.save(externalCompany);
+                return null;
+            }
+        };
+        transactionService.runOnTransaction(saveEntities);
+
+        IOnTransaction<Void> retrieveEntitiesInOtherTransaction = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try{
+                    ExternalCompany retrievedCompany = externalCompanyDAO.find(externalCompany.getId());
+                    assertEquals(user.getLoginName(), retrievedCompany.getCompanyUser().getLoginName());
+                }
+                catch (InstanceNotFoundException e) {
+                    fail("Unexpected InstanceNotFoundException");
+                }
+                return null;
+            }
+        };
+        transactionService.runOnTransaction(retrieveEntitiesInOtherTransaction);
     }
 
     @Test
@@ -152,5 +196,11 @@ public class ExternalCompanyDAOTest {
     private ExternalCompany createValidExternalCompany() {
         return ExternalCompany.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+    }
+
+    private User createValidUser() {
+        Set<UserRole> roles = new HashSet<UserRole>();
+        return User.create(UUID.randomUUID().toString(),
+        UUID.randomUUID().toString(), roles);
     }
 }
