@@ -36,6 +36,7 @@ import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 /**
@@ -59,18 +60,28 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
 
     private Component messagesContainer;
 
+    private Textbox appURI;
+
+    private Textbox ourCompanyLogin;
+
+    private Textbox ourCompanyPassword;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
+        appURI = (Textbox) createWindow.getFellow("appURI");
+        ourCompanyLogin = (Textbox) createWindow.getFellow("ourCompanyLogin");
+        ourCompanyPassword = (Textbox) createWindow.getFellow("ourCompanyPassword");
     }
 
     @Override
     public void goToCreateForm() {
         externalCompanyModel.initCreate();
         getVisibility().showOnly(createWindow);
+        setInteractionFieldsActivation(getCompany().getInteractsWithApplications());
         Util.reloadBindings(createWindow);
     }
 
@@ -78,6 +89,7 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
     public void goToEditForm(ExternalCompany company) {
         externalCompanyModel.initEdit(company);
         getVisibility().showOnly(createWindow);
+        setInteractionFieldsActivation(company.getInteractsWithApplications());
         Util.reloadBindings(createWindow);
     }
 
@@ -133,6 +145,33 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         else {
             externalCompanyModel.setCompanyUser(null);
         }
+    }
+
+    public void setInteractionFieldsActivation(boolean active) {
+        if(active) {
+            enableInteractionFields();
+        }
+        else {
+            disableInteractionFields();
+        }
+    }
+
+    private void enableInteractionFields() {
+        appURI.setDisabled(false);
+        ourCompanyLogin.setDisabled(false);
+        ourCompanyPassword.setDisabled(false);
+        appURI.setConstraint("no empty:" + _("cannot be null or empty"));
+        ourCompanyLogin.setConstraint("no empty:" + _("cannot be null or empty"));
+        ourCompanyPassword.setConstraint("no empty:" + _("cannot be null or empty"));
+    }
+
+    private void disableInteractionFields() {
+        appURI.setDisabled(true);
+        ourCompanyLogin.setDisabled(true);
+        ourCompanyPassword.setDisabled(true);
+        appURI.setConstraint("");
+        ourCompanyLogin.setConstraint("");
+        ourCompanyPassword.setConstraint("");
     }
 
     private OnlyOneVisible getVisibility() {

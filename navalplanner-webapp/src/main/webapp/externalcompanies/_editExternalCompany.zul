@@ -67,6 +67,7 @@
                             <row>
                                 <label value="${i18n:_('Interacts with applications')}:" />
                                 <checkbox id="interactsWithApplication"
+                                    onCheck="controller.setInteractionFieldsActivation(self.checked);"
                                     checked="@{controller.company.interactsWithApplications}" width="300px" />
                             </row>
                             <row>
