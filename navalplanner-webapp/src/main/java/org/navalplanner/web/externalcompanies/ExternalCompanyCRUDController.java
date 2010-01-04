@@ -75,7 +75,9 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
 
     @Override
     public void goToEditForm(ExternalCompany company) {
-        // TODO implement
+        externalCompanyModel.initEdit(company);
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
     }
 
     @Override

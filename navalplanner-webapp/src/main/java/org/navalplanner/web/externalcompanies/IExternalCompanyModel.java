@@ -53,6 +53,14 @@ public interface IExternalCompanyModel {
     void initCreate();
 
     /**
+     * Makes some operations needed before edit a {@link ExternalCompany}.
+     *
+     * @param company
+     *            The object to be edited
+     */
+    void initEdit(ExternalCompany company);
+
+    /**
      * Stores the current {@link ExternalCompany}.
      *
      * @throws ValidationException

@@ -22,6 +22,8 @@ package org.navalplanner.web.externalcompanies;
 
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,41 @@ public class ExternalCompanyModel implements IExternalCompanyModel {
     @Transactional
     public void confirmSave() {
         externalCompanyDAO.save(externalCompany);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(ExternalCompany company) {
+        Validate.notNull(company);
+        externalCompany = getFromDB(company);
+    }
+
+    @Transactional(readOnly = true)
+    private ExternalCompany getFromDB(ExternalCompany company) {
+        return getFromDB(company.getId());
+    }
+
+    @Transactional(readOnly = true)
+    private ExternalCompany getFromDB(Long id) {
+        try {
+            ExternalCompany result = externalCompanyDAO.find(id);
+            forceLoadEntities(result);
+            return result;
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Load entities that will be needed in the conversation
+     *
+     * @param company
+     */
+    private void forceLoadEntities(ExternalCompany company) {
+        company.getName();
+        if(company.getCompanyUser() != null) {
+            company.getCompanyUser().getLoginName();
+        }
     }
 
 }
