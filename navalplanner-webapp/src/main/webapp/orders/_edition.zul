@@ -29,18 +29,18 @@
 <?component name="listOrderElementAuthorizations" inline="true" macroURI="_listOrderElementAuthorizations.zul"?>
 
 <window id="${arg.top_id}">
-    <tabbox>
+    <tabbox id="tabboxOrder">
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />
-            <tab label="${i18n:_('Order elements')}" />
-            <tab label="${i18n:_('Assigned hours')}" />
+            <tab id="tabOrderElements" label="${i18n:_('Order elements')}" />
+            <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}" />
             <tab id="tabAdvances" label="${i18n:_('Advances')}" />
-            <tab label="${i18n:_('Label')}" />
+            <tab id="tabLabels" label="${i18n:_('Label')}" />
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
                  onClick = "controller.reloadHoursGroupOrder();"/>
-            <tab label="${i18n:_('Materials')}" />
+            <tab id="tabMaterials" label="${i18n:_('Materials')}" />
             <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}" />
-            <tab label="${i18n:_('Authorizations')}" />
+            <tab id="tabAuthorizations" label="${i18n:_('Authorizations')}" />
         </tabs>
         <tabpanels>
             <tabpanel>

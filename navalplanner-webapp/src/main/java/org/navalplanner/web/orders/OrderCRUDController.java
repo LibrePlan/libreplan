@@ -56,6 +56,7 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -114,6 +115,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Window editWindow;
 
     private Window listWindow;
+
+    private Tabbox tabboxOrder;
+
+    private Tab selectedTab;
 
     private OnlyOneVisible cachedOnlyOneVisible;
 
@@ -267,8 +272,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndContinue() {
+        setCurrentTab();
         final boolean couldSave = save();
         if (couldSave) {
+            selectTab(getCurrentTab().getId());
             orderModel.initEdit((Order) orderModel.getOrder());
             orderAuthorizationController.setOrder((Order) orderModel.getOrder());
             initializeTabs();
@@ -284,6 +291,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private boolean save() {
+
         if (!manageOrderElementAdvancesController.save()) {
             selectTab("tabAdvances");
         }
@@ -303,6 +311,17 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
         }
         return false;
+    }
+
+    private void setCurrentTab() {
+        Tabbox tabboxOrder = (Tabbox) editWindow.getFellowIfAny("tabboxOrder");
+        if (tabboxOrder != null) {
+            selectedTab = tabboxOrder.getSelectedTab();
+        }
+    }
+
+    private Tab getCurrentTab() {
+        return selectedTab;
     }
 
     private void selectTab(String str) {
