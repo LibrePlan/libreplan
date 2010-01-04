@@ -23,16 +23,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Implementation of {@link ITreeNode} that mutates a list <br />
+ * Implementation of {@link ITreeParentNode} that mutates a list <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class TreeNodeOnList<T, P> implements ITreeNode<T> {
+public abstract class TreeNodeOnList<T extends ITreeNode<T>> implements
+        ITreeParentNode<T> {
 
     private final List<T> children;
-    private final P parent;
 
-    protected TreeNodeOnList(P parent, List<T> children) {
-        this.parent = parent;
+    protected TreeNodeOnList(List<T> children) {
         this.children = children;
     }
 
@@ -41,10 +40,6 @@ public abstract class TreeNodeOnList<T, P> implements ITreeNode<T> {
         setParentIfRequired(newChild);
         children.add(newChild);
         onChildAdded(newChild);
-    }
-
-    protected P getParent() {
-        return parent;
     }
 
     protected abstract void setParentIfRequired(T newChild);
@@ -90,6 +85,10 @@ public abstract class TreeNodeOnList<T, P> implements ITreeNode<T> {
         setParentIfRequired(newChild);
         children.add(position, newChild);
         onChildAdded(newChild);
+    }
+
+    public List<T> getChildren() {
+        return Collections.unmodifiableList(children);
     }
 
 }

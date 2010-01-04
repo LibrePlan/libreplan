@@ -46,24 +46,26 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
-import org.navalplanner.business.trees.ITreeNode;
+import org.navalplanner.business.trees.ITreeParentNode;
 import org.navalplanner.business.trees.TreeNodeOnList;
 
 
 public class OrderLineGroup extends OrderElement implements
-        ITreeNode<OrderElement> {
+        ITreeParentNode<OrderElement> {
 
     private final class ChildrenManipulator extends
-            TreeNodeOnList<OrderElement, OrderLineGroup> {
+            TreeNodeOnList<OrderElement> {
+
+        private final OrderLineGroup parent;
 
         private ChildrenManipulator(OrderLineGroup parent,
                 List<OrderElement> children) {
-            super(parent, children);
+            super(children);
+            this.parent = parent;
         }
 
         @Override
         protected void onChildAdded(OrderElement newChild) {
-            final OrderLineGroup parent = getParent();
             if (parent != null) {
                 SchedulingState schedulingState = newChild
                         .getSchedulingState();
@@ -88,9 +90,29 @@ public class OrderLineGroup extends OrderElement implements
 
         @Override
         protected void setParentIfRequired(OrderElement newChild) {
-            if (getParent() != null) {
-                newChild.setParent(getParent());
+            if (parent != null) {
+                newChild.setParent(parent);
             }
+        }
+
+        @Override
+        public ITreeParentNode<OrderElement> getParent() {
+            return OrderLineGroup.this.getParent();
+        }
+
+        @Override
+        public ITreeParentNode<OrderElement> toContainer() {
+            return OrderLineGroup.this.toContainer();
+        }
+
+        @Override
+        public OrderElement toLeaf() {
+            return OrderLineGroup.this.toLeaf();
+        }
+
+        @Override
+        public OrderElement getThis() {
+            return OrderLineGroup.this;
         }
     }
 
@@ -743,6 +765,11 @@ public class OrderLineGroup extends OrderElement implements
     @Override
     public OrderElementTemplate createTemplate() {
         return OrderLineGroupTemplate.create(this);
+    }
+
+    @Override
+    public OrderLineGroup getThis() {
+        return this;
     }
 
 }

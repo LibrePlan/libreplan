@@ -61,9 +61,10 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.trees.ITreeNode;
 
 public abstract class OrderElement extends BaseEntity implements
-        ICriterionRequirable {
+        ICriterionRequirable, ITreeNode<OrderElement> {
 
     private InfoComponent infoComponent = new InfoComponent();
 
@@ -936,6 +937,11 @@ public abstract class OrderElement extends BaseEntity implements
             infoComponent = new InfoComponent();
         }
         return infoComponent;
+    }
+
+    @Override
+    public OrderElement getThis() {
+        return this;
     }
 
 }

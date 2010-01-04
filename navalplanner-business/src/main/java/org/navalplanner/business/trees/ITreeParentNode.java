@@ -19,27 +19,23 @@
  */
 package org.navalplanner.business.trees;
 
-import java.util.List;
 
 /**
+ * Represents an entity that can work as a node at a tree<br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public interface ITreeNode<T extends ITreeNode<T>> {
+public interface ITreeParentNode<T extends ITreeNode<T>> extends ITreeNode<T> {
 
-    ITreeParentNode<T> getParent();
+    public void add(T newChild);
 
-    List<T> getChildren();
+    public void remove(T existentChild);
 
-    ITreeParentNode<T> toContainer();
+    public void replace(T previousChild, T newChild);
 
-    T toLeaf();
+    public void up(T existentChild);
 
-    /**
-     * Using <a href="http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ206"
-     * >getThis trick</a>
-     * @return
-     */
-    T getThis();
+    public void down(T existentChild);
+
+    public void add(int position, T newChild);
 
 }
