@@ -67,7 +67,11 @@ public class ConstraintChecker {
 
     private static void inputElementIsValid(InputElement component) {
         if (!component.isValid()) {
-            throw new WrongValueException(component, component.getErrorMessage());
+            final String errorMessage = component.getErrorMessage();
+            if (errorMessage != null) {
+                throw new WrongValueException(component, component
+                        .getErrorMessage());
+            }
         }
     }
 
