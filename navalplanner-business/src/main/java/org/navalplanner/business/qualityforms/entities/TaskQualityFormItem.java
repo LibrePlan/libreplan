@@ -45,7 +45,7 @@ public class TaskQualityFormItem implements INewObject {
 
     private Date date;
 
-    @NotEmpty
+    @NotEmpty(message = "task quality form item name not specified")
     public String getName() {
         return name;
     }
@@ -54,7 +54,7 @@ public class TaskQualityFormItem implements INewObject {
         this.name = name;
     }
 
-    @NotNull
+    @NotNull(message = "percentage not specified")
     public BigDecimal getPercentage() {
         return percentage;
     }
@@ -63,7 +63,7 @@ public class TaskQualityFormItem implements INewObject {
         this.percentage = percentage;
     }
 
-    @NotNull
+    @NotNull(message = "position not specified")
     public Integer getPosition() {
         return position;
     }
@@ -72,7 +72,7 @@ public class TaskQualityFormItem implements INewObject {
         this.position = position;
     }
 
-    @NotNull
+    @NotNull(message = "passed not specified")
     public Boolean getPassed() {
         return passed == null ? false : passed;
     }

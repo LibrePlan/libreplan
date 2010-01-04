@@ -48,7 +48,7 @@ public class TaskQualityForm extends BaseEntity {
         this.taskQualityFormItems = taskQualityFormItems;
     }
 
-    @NotNull
+    @NotNull(message = "order element not specified")
     public OrderElement getOrderElement() {
         return orderElement;
     }
@@ -57,7 +57,7 @@ public class TaskQualityForm extends BaseEntity {
         this.orderElement = orderElement;
     }
 
-    @NotNull
+    @NotNull(message = "quality form not specified")
     public QualityForm getQualityForm() {
         return qualityForm;
     }
@@ -77,7 +77,7 @@ public class TaskQualityForm extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "dates must be consecutive.")
+    @AssertTrue(message = "Each date must be greater than the dates of the previous task quality form items.")
     public boolean checkConstraintCorrectConsecutivesDate() {
         if (!isByItems()) {
             for (TaskQualityFormItem item : taskQualityFormItems) {
@@ -90,7 +90,7 @@ public class TaskQualityForm extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "dates must be consecutive.")
+    @AssertTrue(message = "the items can not passes until the previous items are passed.")
     public boolean checkConstraintConsecutivePassedItems() {
         if (!isByItems()) {
             for (TaskQualityFormItem item : taskQualityFormItems) {

@@ -163,8 +163,11 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
         if ((taskQualityForm == null) || ((item == null))) {
             return true;
         }
-        return ((!taskQualityForm.isByItems()) && (!(item.getPassed() || taskQualityForm
-                .isPassedPreviousItem(item))));
+        if (!taskQualityForm.isByItems()) {
+            return (!(item.getPassed() || taskQualityForm
+                    .isPassedPreviousItem(item)));
+        }
+        return false;
     }
 
     public boolean isDisabledDateItem(TaskQualityForm taskQualityForm,
@@ -233,20 +236,22 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
                 throw new ValidationException(new InvalidValue(
-                        _("must be consecutive"), TaskQualityForm.class,
+                        _("can not pass until the previous item is passed."),
+                        TaskQualityForm.class,
                         "passed", item.getName(), taskQualityForm));
 
             }
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
                 throw new ValidationException(new InvalidValue(
-                        _("must be consecutive"), TaskQualityForm.class,
+                        _("must be greater than the previous date."),
+                        TaskQualityForm.class,
                         "date", item.getName(), taskQualityForm));
             }
 
             if (!item.checkConstraintIfDateCanBeNull()) {
                 throw new ValidationException(new InvalidValue(
-                        _("cannot be null"), TaskQualityForm.class, "date",
+                        _("date not specified"), TaskQualityForm.class, "date",
                         item.getName(), taskQualityForm));
             }
         }

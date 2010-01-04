@@ -39,10 +39,11 @@
                 <separator bar="false" spacing="40px" orient="vertical"/>
                 <grid id="assignedTaskQualityForms" height="300px" fixedLayout="true"
                     rowRenderer = "@{assignedTaskQualityFormsController.taskQualityFormsRowRenderer}"
-                    model="@{assignedTaskQualityFormsController.taskQualityForms}">
+                    model="@{assignedTaskQualityFormsController.taskQualityForms}"
+                    onInitRender ="assignedTaskQualityFormsController.sortTaskQualityForms();">
                     <columns>
                         <column width="25px"/>
-                        <column label="${i18n:_('Task quality form name')}" sort="auto(qualityForm.name)"/>
+                        <column label="${i18n:_('Task quality form name')}" sort="auto(qualityForm.name)" sortDirection="descending"/>
                         <column label="${i18n:_('Type')}" />
                         <column label="${i18n:_('Operations')}" />
                     </columns>

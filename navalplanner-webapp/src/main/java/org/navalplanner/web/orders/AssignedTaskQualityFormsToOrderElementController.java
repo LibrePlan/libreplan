@@ -33,6 +33,7 @@ import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityFormItem;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -212,6 +213,20 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         assignedTaskQualityForms.invalidate();
     }
 
+    public void sortTaskQualityForms() {
+        Column columnName = (Column) assignedTaskQualityForms.getColumns()
+                .getChildren().get(1);
+        if (columnName != null) {
+            if (columnName.getSortDirection().equals("ascending")) {
+                columnName.sort(false, false);
+                columnName.setSortDirection("ascending");
+            } else if (columnName.getSortDirection().equals("descending")) {
+                columnName.sort(true, false);
+                columnName.setSortDirection("descending");
+            }
+        }
+    }
+
     public void close() {
     }
 
@@ -387,6 +402,8 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
+                    assignedTaskQualityFormsToOrderElementModel
+                            .updatePassedTaskQualityFormItems(taskQualityForm);
                     Grid gridItems = row.getGrid();
                     gridItems.setModel(new SimpleListModel(taskQualityForm
                             .getTaskQualityFormItems().toArray()));
@@ -401,6 +418,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             @Override
             public void validate(Component comp, Object value)
                     throws WrongValueException {
+
                 final TaskQualityFormItem item = (TaskQualityFormItem) row
                         .getValue();
                 final TaskQualityForm taskQualityForm = getTaskQualityFormByRow(row);
@@ -412,14 +430,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                             && (!item.checkConstraintIfDateCanBeNull())) {
                         item.setDate(null);
                         throw new WrongValueException(comp,
-                                _("The date cannot be null."));
+                                _("date not specified."));
                     }
                     if (!assignedTaskQualityFormsToOrderElementModel
                             .isCorrectConsecutiveDate(taskQualityForm, item)) {
                         item.setDate(null);
                         throw new WrongValueException(
                                 comp,
-                                _("must be consecutive."));
+                                _("must be greater than the previous date."));
                     }
                 }
             }
@@ -438,7 +456,12 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     // Operations to confirm and validate
 
     public boolean confirm() {
+        validateConstraints();
         return validate();
+    }
+
+    public void validateConstraints() {
+        ConstraintChecker.isValid(self);
     }
 
     /**
@@ -448,7 +471,6 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     private boolean validate() throws ValidationException {
         try {
             assignedTaskQualityFormsToOrderElementModel.validate();
-            reloadTaskQualityForms();
         } catch (ValidationException e) {
             showInvalidValues(e);
             return false;
