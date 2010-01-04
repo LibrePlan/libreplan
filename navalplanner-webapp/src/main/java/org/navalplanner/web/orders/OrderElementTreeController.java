@@ -24,11 +24,8 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -38,14 +35,12 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
-import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
+import org.navalplanner.web.tree.TreeController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -53,7 +48,6 @@ import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
@@ -64,7 +58,6 @@ import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
-import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -76,23 +69,15 @@ import org.zkoss.zul.Vbox;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class OrderElementTreeController extends GenericForwardComposer {
+public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Vbox filter;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
 
     private Combobox cbFilterType;
 
     private BandboxSearch bdFilter;
 
-    private Tree tree;
-
     private OrderElementTreeitemRenderer renderer = new OrderElementTreeitemRenderer();
-
-    private TreeViewStateSnapshot snapshotOfOpenedNodes;
 
     private final IOrderModel orderModel;
 
@@ -107,59 +92,21 @@ public class OrderElementTreeController extends GenericForwardComposer {
         return orderModel.getLabels();
     }
 
+    @Override
     public OrderElementTreeitemRenderer getRenderer() {
         return renderer;
     }
 
     public OrderElementTreeController(IOrderModel orderModel,
             OrderElementController orderElementController) {
+        super(OrderElement.class);
         this.orderModel = orderModel;
         this.orderElementController = orderElementController;
     }
 
-    public void indent() {
-        if (tree.getSelectedCount() == 1) {
-            indent(getSelectedNode());
-        }
-    }
-
-    private void indent(OrderElement orderElement) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        getModel().indent(orderElement);
-        filterByPredicateIfAny();
-    }
-
-    public TreeModel getTreeModel() {
-        return (getModel() != null) ? getModel().asTree() : null;
-    }
-
-    private OrderElementTreeModel getModel() {
+    @Override
+    protected OrderElementTreeModel getModel() {
         return orderModel.getOrderElementTreeModel();
-    }
-
-    public void unindent() {
-        if (tree.getSelectedCount() == 1) {
-            unindent(getSelectedNode());
-        }
-    }
-
-    private void unindent(OrderElement orderElement) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        getModel().unindent(orderElement);
-        filterByPredicateIfAny();
-    }
-
-    public void up() {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        if (tree.getSelectedCount() == 1) {
-            up(getSelectedNode());
-        }
-    }
-
-    public void up(OrderElement orderElement) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        getModel().up(orderElement);
-        filterByPredicateIfAny();
     }
 
     public void createTemplate() {
@@ -172,56 +119,7 @@ public class OrderElementTreeController extends GenericForwardComposer {
         orderTemplates.goToCreateTemplateFrom(selectedNode);
     }
 
-    public void down() {
-        if (tree.getSelectedCount() == 1) {
-            down(getSelectedNode());
-        }
-    }
-
-    public void down(OrderElement orderElement) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        getModel().down(orderElement);
-        filterByPredicateIfAny();
-    }
-
-    private OrderElement getSelectedNode() {
-        return (OrderElement) tree.getSelectedItemApi().getValue();
-    }
-
-    public void move(Component dropedIn, Component dragged) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-
-        Treerow from = (Treerow) dragged;
-        OrderElement fromNode = (OrderElement) ((Treeitem) from.getParent())
-                .getValue();
-        if (dropedIn instanceof Tree) {
-            getModel().moveToRoot(fromNode);
-        }
-        if (dropedIn instanceof Treerow) {
-            Treerow to = (Treerow) dropedIn;
-            OrderElement toNode = (OrderElement) ((Treeitem) to.getParent())
-                    .getValue();
-
-            getModel().move(fromNode, toNode);
-        }
-        filterByPredicateIfAny();
-    }
-
-    public void addElement() {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
-        try {
-            if (tree.getSelectedCount() == 1) {
-                getModel().addElementAt(getSelectedNode());
-            } else {
-                getModel().addElement();
-            }
-            filterByPredicateIfAny();
-        } catch (IllegalStateException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-        }
-    }
-
-    private void filterByPredicateIfAny() {
+    protected void filterByPredicateIfAny() {
         if (predicate != null) {
             filterByPredicate();
         }
@@ -234,61 +132,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
         tree.invalidate();
     }
 
-    private static class TreeViewStateSnapshot {
-        private final Set<Object> all;
-        private final Set<Object> dataOpen;
-
-        private TreeViewStateSnapshot(Set<Object> dataOpen, Set<Object> all) {
-            this.dataOpen = dataOpen;
-            this.all = all;
-        }
-
-        public static TreeViewStateSnapshot snapshotOpened(Tree tree) {
-            Iterator<Treeitem> itemsIterator = tree.getTreechildrenApi()
-                    .getItems().iterator();
-            Set<Object> dataOpen = new HashSet<Object>();
-            Set<Object> all = new HashSet<Object>();
-            while (itemsIterator.hasNext()) {
-                Treeitem treeitem = (Treeitem) itemsIterator.next();
-                Object value = getAssociatedValue(treeitem);
-                if (treeitem.isOpen()) {
-                    dataOpen.add(value);
-                }
-                all.add(value);
-            }
-            return new TreeViewStateSnapshot(dataOpen, all);
-        }
-
-        private static Object getAssociatedValue(Treeitem treeitem) {
-            return treeitem.getValue();
-        }
-
-        public void openIfRequired(Treeitem item) {
-            Object value = getAssociatedValue(item);
-            item.setOpen(isNewlyCreated(value) || wasOpened(value));
-        }
-
-        private boolean wasOpened(Object value) {
-            return dataOpen.contains(value);
-        }
-
-        private boolean isNewlyCreated(Object value) {
-            return !all.contains(value);
-        }
-    }
-
-    public void removeElement() {
-        Set<Treeitem> selectedItems = tree.getSelectedItems();
-        for (Treeitem treeItem : selectedItems) {
-            remove((OrderElement) treeItem.getValue());
-        }
-        filterByPredicateIfAny();
-    }
-
-    private void remove(OrderElement orderElement) {
-        getModel().removeNode(orderElement);
-    }
-
     void doEditFor(Order order) {
         Util.reloadBindings(tree);
     }
@@ -296,7 +139,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
         Executions.createComponents("/orders/_orderElementTreeFilter.zul",
                 filter, new HashMap<String, String>());
     }
@@ -822,16 +664,6 @@ public class OrderElementTreeController extends GenericForwardComposer {
         return (org.navalplanner.business.labels.entities.Label) bdFilter
                 .getSelectedElement();
     }
-
-    public boolean isItemSelected() {
-        return (tree.getSelectedItem() != null);
-    }
-
-    public boolean isNotItemSelected() {
-        return !isItemSelected();
-    }
-
-    private Button btnNew, btnDown, btnUp, btnUnindent, btnIndent, btnDelete;
 
     private void resetControlButtons() {
         final boolean disabled = tree.getSelectedItem() == null;
