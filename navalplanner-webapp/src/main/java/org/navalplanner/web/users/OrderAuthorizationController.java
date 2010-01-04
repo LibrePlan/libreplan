@@ -97,10 +97,10 @@ public class OrderAuthorizationController extends GenericForwardComposer{
                 List<OrderAuthorizationType> result =
                     orderAuthorizationModel.addUserOrderAuthorization(
                             (User)comboItem.getValue(), authorizations);
-                if(result != null) {
+                if(result != null && result.size()==authorizations.size()) {
                     messagesForUser.showMessage(Level.WARNING,
-                            _("Cannot add some authorizations for user {0}. " +
-                                    "Probably they are already present.",
+                            _("Could not add those authorizations to user {0} " +
+                                    "because they were already present.",
                                     ((User)comboItem.getValue()).getLoginName()));
                 }
             }
@@ -108,10 +108,10 @@ public class OrderAuthorizationController extends GenericForwardComposer{
                 List<OrderAuthorizationType> result =
                     orderAuthorizationModel.addProfileOrderAuthorization(
                             (Profile)comboItem.getValue(), authorizations);
-                if(result != null) {
+                if(result != null && result.size()==authorizations.size()) {
                     messagesForUser.showMessage(Level.WARNING,
-                            _("Cannot add some authorizations for profile {0}. " +
-                                    "Probably they are already present.",
+                            _("Could not add those authorizations to profile {0} " +
+                                    "because they were already present.",
                                     ((Profile)comboItem.getValue()).getProfileName()));
                 }
             }
