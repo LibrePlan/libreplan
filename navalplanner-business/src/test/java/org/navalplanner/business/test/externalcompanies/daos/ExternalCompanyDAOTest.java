@@ -123,6 +123,32 @@ public class ExternalCompanyDAOTest {
         transactionService.runOnTransaction(createCompanyWithRepeatedName);
     }
 
+    @Test(expected=ValidationException.class)
+    @NotTransactional
+    public void testUniqueCompanyNifCheck() throws ValidationException {
+        final ExternalCompany externalCompany1 = createValidExternalCompany();
+
+        IOnTransaction<Void> createCompany = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                externalCompanyDAO.save(externalCompany1);
+                return null;
+            }
+        };
+        IOnTransaction<Void> createCompanyWithRepeatedNif = new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                ExternalCompany externalCompany2 = createValidExternalCompany();
+                externalCompany2.setNif(externalCompany1.getNif());
+                externalCompanyDAO.save(externalCompany2);
+                return null;
+            }
+        };
+        transactionService.runOnTransaction(createCompany);
+        //the second object has the same cif, a exception is thrown when saving it
+        transactionService.runOnTransaction(createCompanyWithRepeatedNif);
+    }
+
     private ExternalCompany createValidExternalCompany() {
         return ExternalCompany.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());

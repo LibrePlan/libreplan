@@ -77,4 +77,39 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         return findUniqueByName(name);
     }
 
+    @Override
+    public boolean existsByNif(String nif) {
+        try {
+            findUniqueByNif(nif);
+            return true;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNifInAnotherTransaction(String nif) {
+        return existsByNif(nif);
+    }
+
+    @Override
+    public ExternalCompany findUniqueByNif(String nif) throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(ExternalCompany.class);
+        c.add(Restrictions.eq("nif", nif));
+
+        ExternalCompany found = (ExternalCompany) c.uniqueResult();
+        if (found == null)
+            throw new InstanceNotFoundException(nif, ExternalCompany.class.getName());
+
+        return found;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public ExternalCompany findUniqueByNifInAnotherTransaction(String nif)
+            throws InstanceNotFoundException {
+        return findUniqueByNif(nif);
+    }
+
 }

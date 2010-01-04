@@ -40,4 +40,13 @@ public interface IExternalCompanyDAO extends IGenericDAO<ExternalCompany, Long> 
     ExternalCompany findUniqueByNameInAnotherTransaction(String name)
         throws InstanceNotFoundException;
 
+    boolean existsByNif(String nif);
+
+    boolean existsByNifInAnotherTransaction(String nif);
+
+    ExternalCompany findUniqueByNif(String nif) throws InstanceNotFoundException;
+
+    ExternalCompany findUniqueByNifInAnotherTransaction(String nif)
+        throws InstanceNotFoundException;
+
 }
