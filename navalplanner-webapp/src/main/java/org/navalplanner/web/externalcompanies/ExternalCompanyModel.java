@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link ExternalCompany}
@@ -41,9 +42,27 @@ public class ExternalCompanyModel implements IExternalCompanyModel {
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
+    private ExternalCompany externalCompany;
+
     @Override
     public List<ExternalCompany> getCompanies() {
         return externalCompanyDAO.list(ExternalCompany.class);
+    }
+
+    @Override
+    public ExternalCompany getCompany() {
+        return externalCompany;
+    }
+
+    @Override
+    public void initCreate() {
+        externalCompany = ExternalCompany.create();
+    }
+
+    @Override
+    @Transactional
+    public void confirmSave() {
+        externalCompanyDAO.save(externalCompany);
     }
 
 }

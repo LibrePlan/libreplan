@@ -20,11 +20,16 @@
 
 package org.navalplanner.web.externalcompanies;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
@@ -63,8 +68,9 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
 
     @Override
     public void goToCreateForm() {
-        // TODO implement
-
+        externalCompanyModel.initCreate();
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
     }
 
     @Override
@@ -78,8 +84,43 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         Util.reloadBindings(listWindow);
     }
 
+    public void cancel() {
+        goToList();
+    }
+
+    public void saveAndExit() {
+        if (save()) {
+            goToList();
+        }
+    }
+
+    public void saveAndContinue() {
+        if (save()) {
+            goToEditForm(getCompany());
+        }
+    }
+
+    public boolean save() {
+        if(!ConstraintChecker.isValid(createWindow)) {
+            return false;
+        }
+        try {
+            externalCompanyModel.confirmSave();
+            messagesForUser.showMessage(Level.INFO,
+                    _("Company saved"));
+            return true;
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
+        return false;
+    }
+
     public List<ExternalCompany> getCompanies() {
         return externalCompanyModel.getCompanies();
+    }
+
+    public ExternalCompany getCompany() {
+        return externalCompanyModel.getCompany();
     }
 
     private OnlyOneVisible getVisibility() {

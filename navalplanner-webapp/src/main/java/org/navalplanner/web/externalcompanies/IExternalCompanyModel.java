@@ -22,6 +22,7 @@ package org.navalplanner.web.externalcompanies;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 
 /**
@@ -37,4 +38,25 @@ public interface IExternalCompanyModel {
      * @return A list of {@link ExternalCompany} objects.
      */
     List<ExternalCompany> getCompanies();
+
+    /**
+     * Gets the current {@link ExternalCompany}.
+     *
+     * @return A {@link ExternalCompany}
+     */
+    ExternalCompany getCompany();
+
+    /**
+     * Makes some operations needed before create a new {@link ExternalCompany}.
+     *
+     */
+    void initCreate();
+
+    /**
+     * Stores the current {@link ExternalCompany}.
+     *
+     * @throws ValidationException
+     *             If validation fails
+     */
+    void confirmSave();
 }

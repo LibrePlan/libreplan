@@ -22,4 +22,76 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Edit external company')}">
 
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Company data')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <vbox>
+                    <grid fixedLayout="false">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Company name')}:" />
+                                <textbox id="name"
+                                    value="@{controller.company.name}" width="300px"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('NIF')}:" />
+                                <textbox id="nif"
+                                    value="@{controller.company.nif}" width="300px"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Client')}:" />
+                                <checkbox id="client"
+                                    checked="@{controller.company.client}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Subcontractor')}:" />
+                                <checkbox id="subcontractor"
+                                    checked="@{controller.company.subcontractor}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('User')}:" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Interacts with applications')}:" />
+                                <checkbox id="interactsWithApplication"
+                                    checked="@{controller.company.interactsWithApplications}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Application URI')}:" />
+                                <textbox id="appURI"
+                                    value="@{controller.company.appURI}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Our company login')}:" />
+                                <textbox id="ourCompanyLogin"
+                                    value="@{controller.company.ourCompanyLogin}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Our company password')}:" />
+                                <textbox id="ourCompanyPassword"
+                                    value="@{controller.company.ourCompanyPassword}" width="300px" />
+                            </row>
+                        </rows>
+                    </grid>
+                </vbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <button onClick="controller.saveAndExit();"
+        label="${i18n:_('Save')}" sclass="save-button global-action" />
+    <button onClick="controller.saveAndContinue();"
+        label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
+    <button onClick="controller.cancel();"
+        label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
+
 </window>
