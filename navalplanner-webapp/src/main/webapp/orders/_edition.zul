@@ -19,7 +19,7 @@
 -->
 
 <?component name="orderElementTree" macroURI="components/_orderElementTree.zul"
-  class="org.navalplanner.web.orders.components.TreeComponent"?>
+  class="org.navalplanner.web.tree.TreeComponent"?>
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>

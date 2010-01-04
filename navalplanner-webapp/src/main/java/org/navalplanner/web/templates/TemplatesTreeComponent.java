@@ -21,7 +21,7 @@ package org.navalplanner.web.templates;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.navalplanner.web.orders.components.TreeComponent;
+import org.navalplanner.web.tree.TreeComponent;
 
 /**
  * Tree component for templates <br />

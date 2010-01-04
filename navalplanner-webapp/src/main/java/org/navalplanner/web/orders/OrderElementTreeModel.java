@@ -29,7 +29,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.business.trees.ITreeParentNode;
-import org.navalplanner.web.orders.components.EntitiesTree;
+import org.navalplanner.web.tree.EntitiesTree;
 
 /**
  * Model for a the {@link OrderElement} tree for a {@link Order} <br />
