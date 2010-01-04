@@ -24,6 +24,7 @@ import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
@@ -111,6 +112,9 @@ public class Registry {
     private IWorkReportLineDAO workReportLineDAO;
 
     @Autowired
+    private IExternalCompanyDAO externalCompanyDAO;
+
+    @Autowired
     private ICriterionDAO criterionDAO;
 
     @Autowired
@@ -188,6 +192,10 @@ public class Registry {
     }
     public static IWorkReportLineDAO getWorkReportLineDAO() {
         return getInstance().workReportLineDAO;
+    }
+
+    public static IExternalCompanyDAO getExternalCompanyDAO() {
+        return getInstance().externalCompanyDAO;
     }
 
     public static ICriterionDAO getCriterionDAO() {

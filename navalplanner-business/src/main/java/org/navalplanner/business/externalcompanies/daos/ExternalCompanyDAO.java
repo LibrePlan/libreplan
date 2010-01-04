@@ -20,11 +20,16 @@
 
 package org.navalplanner.business.externalcompanies.daos;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate DAO for {@link ExternalCompany}
@@ -35,5 +40,41 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Long>
         implements IExternalCompanyDAO {
+
+    @Override
+    public boolean existsByName(String name) {
+        try {
+            findUniqueByName(name);
+            return true;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameInAnotherTransaction(String name) {
+        return existsByName(name);
+    }
+
+    @Override
+    public ExternalCompany findUniqueByName(String name)
+            throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(ExternalCompany.class);
+        c.add(Restrictions.eq("name", name));
+
+        ExternalCompany found = (ExternalCompany) c.uniqueResult();
+        if (found == null)
+            throw new InstanceNotFoundException(name, ExternalCompany.class.getName());
+
+        return found;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public ExternalCompany findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findUniqueByName(name);
+    }
 
 }

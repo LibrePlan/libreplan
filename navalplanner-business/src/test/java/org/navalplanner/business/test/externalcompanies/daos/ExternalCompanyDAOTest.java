@@ -31,10 +31,14 @@ import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +57,9 @@ public class ExternalCompanyDAOTest {
 
     @Autowired
     IExternalCompanyDAO externalCompanyDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Test
     public void testInSpringContainer() {
@@ -80,6 +87,40 @@ public class ExternalCompanyDAOTest {
         ExternalCompany externalCompany = createValidExternalCompany();
         externalCompanyDAO.save(externalCompany);
         assertEquals(previous + 1, externalCompanyDAO.list(ExternalCompany.class).size());
+    }
+
+    @Test
+    public void testFindUniqueByName() throws InstanceNotFoundException {
+        ExternalCompany externalCompany = createValidExternalCompany();
+        externalCompanyDAO.save(externalCompany);
+        assertEquals(externalCompany.getId(),
+                externalCompanyDAO.findUniqueByName(externalCompany.getName()).getId());
+    }
+
+    @Test
+    public void testExistsByName() throws InstanceNotFoundException {
+        ExternalCompany externalCompany = createValidExternalCompany();
+        assertFalse(externalCompanyDAO.existsByName(externalCompany.getName()));
+        externalCompanyDAO.save(externalCompany);
+        assertTrue(externalCompanyDAO.existsByName(externalCompany.getName()));
+    }
+
+    @Test(expected=ValidationException.class)
+    @NotTransactional
+    public void testUniqueCompanyNameCheck() throws ValidationException {
+        final ExternalCompany externalCompany1 = createValidExternalCompany();
+
+        IOnTransaction<Void> createCompanyWithRepeatedName = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                externalCompanyDAO.save(externalCompany1);
+                return null;
+            }
+        };
+        transactionService.runOnTransaction(createCompanyWithRepeatedName);
+        //the second time we save the same object, a exception is thrown
+        transactionService.runOnTransaction(createCompanyWithRepeatedName);
     }
 
     private ExternalCompany createValidExternalCompany() {

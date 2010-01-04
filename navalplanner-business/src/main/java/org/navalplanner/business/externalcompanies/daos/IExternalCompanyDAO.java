@@ -21,6 +21,7 @@
 package org.navalplanner.business.externalcompanies.daos;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 
 /**
@@ -29,5 +30,14 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public interface IExternalCompanyDAO extends IGenericDAO<ExternalCompany, Long> {
+
+    boolean existsByName(String name);
+
+    boolean existsByNameInAnotherTransaction(String name);
+
+    ExternalCompany findUniqueByName(String name) throws InstanceNotFoundException;
+
+    ExternalCompany findUniqueByNameInAnotherTransaction(String name)
+        throws InstanceNotFoundException;
 
 }

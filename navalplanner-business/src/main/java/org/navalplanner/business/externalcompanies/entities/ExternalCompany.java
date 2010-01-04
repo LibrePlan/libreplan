@@ -20,8 +20,12 @@
 
 package org.navalplanner.business.externalcompanies.entities;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.users.entities.User;
 
 /**
@@ -136,5 +140,22 @@ public class ExternalCompany extends BaseEntity {
 
     public String getOurCompanyPassword() {
         return ourCompanyPassword;
+    }
+
+    @AssertTrue(message="company name has to be unique. It is already used")
+    public boolean checkConstraintUniqueName() {
+        IExternalCompanyDAO dao = Registry.getExternalCompanyDAO();
+
+        if (isNewObject()) {
+            return !dao.existsByNameInAnotherTransaction(name);
+        } else {
+            try {
+                ExternalCompany company =
+                    dao.findUniqueByNameInAnotherTransaction(name);
+                return company.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
+        }
     }
 }
