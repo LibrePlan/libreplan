@@ -1157,4 +1157,56 @@ public class OrderElementServiceTest {
         };
     }
 
+    @Test
+    public void importDirectCriterionRequirementsAndIndirectCriterionRequirements()
+            throws InstanceNotFoundException, IncompatibleTypeException {
+        String code = "order-code";
+        try {
+            orderElementDAO.findUniqueByCode(code);
+            fail("Order with code " + code + " already exists");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name";
+        orderDTO.code = code;
+        orderDTO.initDate = new Date();
+
+        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LEAVE.getName();
+
+        CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
+                name, type);
+        orderDTO.criterionRequirements.add(criterionRequirementDTO);
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.name = "Order line";
+        orderLineDTO.code = "order-line-code";
+        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group",
+                ResourceEnumDTO.WORKER, 1000,
+                new HashSet<CriterionRequirementDTO>());
+        orderLineDTO.hoursGroups.add(hoursGroupDTO);
+
+        IndirectCriterionRequirementDTO indirectCriterionRequirementDTO = new IndirectCriterionRequirementDTO(
+                name, type, false);
+        orderLineDTO.criterionRequirements.add(indirectCriterionRequirementDTO);
+
+        orderDTO.children.add(orderLineDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrder(orderDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+
+        OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+        assertNotNull(orderElement);
+        assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
+
+        orderElement = orderElementDAO.findUniqueByCode("order-line-code");
+        assertNotNull(orderElement);
+        assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
+        assertFalse(((IndirectCriterionRequirement) orderElement
+                .getCriterionRequirements().iterator().next()).isIsValid());
+    }
+
 }
