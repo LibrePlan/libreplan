@@ -80,6 +80,11 @@ public class OrderAuthorizationController extends GenericForwardComposer{
     public void addOrderAuthorization(Comboitem comboItem,
             boolean readAuthorization, boolean writeAuthorization) {
         if(comboItem != null) {
+            if(!readAuthorization && !writeAuthorization) {
+                messagesForUser.showMessage(Level.WARNING,
+                        _("No authorizations were added because you did not select any."));
+                return;
+            }
             List<OrderAuthorizationType> authorizations =
                 new ArrayList<OrderAuthorizationType>();
             if(readAuthorization) {
