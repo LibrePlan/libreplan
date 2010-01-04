@@ -44,7 +44,6 @@ import org.navalplanner.web.tree.TreeController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -54,14 +53,11 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.TreeitemRenderer;
-import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -143,37 +139,16 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 filter, new HashMap<String, String>());
     }
 
-    public class OrderElementTreeitemRenderer implements TreeitemRenderer,
-            RendererCtrl {
+    public class OrderElementTreeitemRenderer extends Renderer {
 
         private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
-        private Treerow currentTreeRow;
 
         public OrderElementTreeitemRenderer() {
         }
 
-        private Treecell addCell(Component... components) {
-            return addCell(null, components);
-        }
-
-        private Treecell addCell(String cssClass, Component... components) {
-            Treecell cell = new Treecell();
-            if (cssClass != null) {
-                cell.setSclass(cssClass);
-            }
-            for (Component component : components) {
-                cell.appendChild(component);
-            }
-            currentTreeRow.appendChild(cell);
-            return cell;
-        }
-
         @Override
-        public void render(final Treeitem item, Object data) throws Exception {
-            item.setValue(data);
-            applySnapshot(item);
-            currentTreeRow = getTreeRowWithoutChildrenFor(item);
-            final OrderElement currentOrderElement = (OrderElement) data;
+        protected void createCells(Treeitem item,
+                OrderElement currentOrderElement) {
             addSchedulingStateCell(currentOrderElement);
             addCodeCell(currentOrderElement);
             addHoursCell(currentOrderElement);
@@ -181,23 +156,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             addInitDateCell(currentOrderElement);
             addEndDateCell(currentOrderElement);
             addOperationsCell(item, currentOrderElement);
-
-            onDropMoveFromDraggedToTarget();
-        }
-
-        private void applySnapshot(final Treeitem item) {
-            if (snapshotOfOpenedNodes != null) {
-                snapshotOfOpenedNodes.openIfRequired(item);
-            }
-        }
-
-        private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
-            Treerow result = createOrRetrieveFor(item);
-            // Attach treecells to treerow
-            result.setDraggable("true");
-            result.setDroppable("true");
-            result.getChildren().clear();
-            return result;
         }
 
         private void addTaskNumberCell(final OrderElement orderElementForThisRow) {
@@ -237,27 +195,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     });
 
             addCell(cssClass, taskNumber, textBox);
-        }
-
-        private String pathAsString(int[] path) {
-            StringBuilder result = new StringBuilder();
-            for (int i = 0; i < path.length; i++) {
-                if (i != 0) {
-                    result.append(".");
-                }
-                result.append(path[i] + 1);
-            }
-            return result.toString();
-        }
-
-        private Treerow createOrRetrieveFor(final Treeitem item) {
-            if (item.getTreerow() == null) {
-                Treerow result = new Treerow();
-                result.setParent(item);
-                return result;
-            } else {
-                return item.getTreerow();
-            }
         }
 
         private String getDecorationFromState(SchedulingState state) {
@@ -578,40 +515,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             return result;
         }
 
-        private void onDropMoveFromDraggedToTarget() {
-            currentTreeRow.addEventListener("onDrop", new EventListener() {
-                @Override
-                public void onEvent(org.zkoss.zk.ui.event.Event event)
-                        throws Exception {
-                    DropEvent dropEvent = (DropEvent) event;
-                    move((Component) dropEvent.getTarget(),
-                            (Component) dropEvent.getDragged());
-                }
-            });
-        }
-
-        @Override
-        public void doCatch(Throwable ex) throws Throwable {
-
-        }
-
-        @Override
-        public void doFinally() {
-            resetControlButtons();
-        }
-
-        @Override
-        public void doTry() {
-
-        }
-    }
-
-    private boolean isFirstLevelElement(Treeitem item) {
-        return (item.getLevel() == 0);
-    }
-
-    private boolean isSecondLevelElement(Treeitem item) {
-        return (item.getLevel() == 1);
     }
 
     private boolean isPredicateApplied() {
@@ -665,15 +568,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 .getSelectedElement();
     }
 
-    private void resetControlButtons() {
-        final boolean disabled = tree.getSelectedItem() == null;
-
-        btnNew.setDisabled(isPredicateApplied());
-        btnIndent.setDisabled(disabled);
-        btnUnindent.setDisabled(disabled);
-        btnUp.setDisabled(disabled);
-        btnDown.setDisabled(disabled);
-        btnDelete.setDisabled(disabled);
+    @Override
+    protected boolean isNewButtonDisabled() {
+        return isPredicateApplied();
     }
 
     /**
@@ -686,9 +583,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     public void updateControlButtons(Tree tree) {
         final Treeitem item = tree.getSelectedItem();
 
-        boolean disabledLevel1 = isPredicateApplied()
+        boolean disabledLevel1 = isNewButtonDisabled()
                 && isFirstLevelElement(item);
-        boolean disabledLevel2 = isPredicateApplied()
+        boolean disabledLevel2 = isNewButtonDisabled()
                 && (isFirstLevelElement(item) || isSecondLevelElement(item));
 
         btnNew.setDisabled(false);

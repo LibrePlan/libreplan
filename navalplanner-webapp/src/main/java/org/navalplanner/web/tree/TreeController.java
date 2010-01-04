@@ -30,10 +30,14 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.DropEvent;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
+import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
@@ -226,6 +230,126 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected TreeViewStateSnapshot getSnapshotOfOpenedNodes() {
         return snapshotOfOpenedNodes;
+    }
+
+    private void resetControlButtons() {
+        final boolean disabled = tree.getSelectedItem() == null;
+        btnNew.setDisabled(isNewButtonDisabled());
+        btnIndent.setDisabled(disabled);
+        btnUnindent.setDisabled(disabled);
+        btnUp.setDisabled(disabled);
+        btnDown.setDisabled(disabled);
+        btnDelete.setDisabled(disabled);
+    }
+
+    protected abstract boolean isNewButtonDisabled();
+
+    protected boolean isFirstLevelElement(Treeitem item) {
+        return item.getLevel() == 0;
+    }
+
+    protected boolean isSecondLevelElement(Treeitem item) {
+        return item.getLevel() == 1;
+    }
+
+    public abstract class Renderer implements TreeitemRenderer,
+            RendererCtrl {
+
+        private Treerow currentTreeRow;
+
+        public Renderer() {
+        }
+
+        protected Treecell addCell(Component... components) {
+            return addCell(null, components);
+        }
+
+        protected Treecell addCell(String cssClass, Component... components) {
+            Treecell cell = new Treecell();
+            if (cssClass != null) {
+                cell.setSclass(cssClass);
+            }
+            for (Component component : components) {
+                cell.appendChild(component);
+            }
+            currentTreeRow.appendChild(cell);
+            return cell;
+        }
+
+        @Override
+        public void render(final Treeitem item, Object data) throws Exception {
+            item.setValue(data);
+            applySnapshot(item);
+            currentTreeRow = getTreeRowWithoutChildrenFor(item);
+            final T currentElement = type.cast(data);
+            createCells(item, currentElement);
+            onDropMoveFromDraggedToTarget();
+        }
+
+        protected abstract void createCells(Treeitem item, T currentElement);
+
+        private void applySnapshot(final Treeitem item) {
+            if (snapshotOfOpenedNodes != null) {
+                snapshotOfOpenedNodes.openIfRequired(item);
+            }
+        }
+
+        private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
+            Treerow result = createOrRetrieveFor(item);
+            // Attach treecells to treerow
+            result.setDraggable("true");
+            result.setDroppable("true");
+            result.getChildren().clear();
+            return result;
+        }
+
+        protected String pathAsString(int[] path) {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < path.length; i++) {
+                if (i != 0) {
+                    result.append(".");
+                }
+                result.append(path[i] + 1);
+            }
+            return result.toString();
+        }
+
+        private Treerow createOrRetrieveFor(final Treeitem item) {
+            if (item.getTreerow() == null) {
+                Treerow result = new Treerow();
+                result.setParent(item);
+                return result;
+            } else {
+                return item.getTreerow();
+            }
+        }
+
+        private void onDropMoveFromDraggedToTarget() {
+            currentTreeRow.addEventListener("onDrop", new EventListener() {
+                @Override
+                public void onEvent(org.zkoss.zk.ui.event.Event event)
+                        throws Exception {
+                    DropEvent dropEvent = (DropEvent) event;
+                    move((Component) dropEvent.getTarget(),
+                            (Component) dropEvent.getDragged());
+                }
+            });
+        }
+
+        @Override
+        public void doCatch(Throwable ex) throws Throwable {
+
+        }
+
+        @Override
+        public void doFinally() {
+            resetControlButtons();
+        }
+
+        @Override
+        public void doTry() {
+
+        }
     }
 
 }
