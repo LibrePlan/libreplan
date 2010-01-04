@@ -111,8 +111,6 @@ public class OrderLine extends OrderElement {
         if (getCode() != null) {
             this.setCode(getCode());
         }
-        result.add(this);
-
         return result;
     }
 

@@ -128,6 +128,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
                 .toContainer();
         parentContainer.replace(selectedForTurningIntoContainer.getThis(),
                 asContainer.getThis());
+        asContainer.add(selectedForTurningIntoContainer.getThis());
         tree.replace(selectedForTurningIntoContainer.getThis(), asContainer
                 .getThis());
         addChildren(tree, Collections.singletonList(asContainer.getThis()));
