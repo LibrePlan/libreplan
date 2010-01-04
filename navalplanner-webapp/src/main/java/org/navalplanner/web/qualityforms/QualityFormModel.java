@@ -47,6 +47,8 @@ public class QualityFormModel implements IQualityFormModel {
 
     private QualityForm qualityForm;
 
+    private List<QualityForm> listQualityForms = new ArrayList<QualityForm>();
+
     public QualityFormModel() {
 
     }
@@ -54,23 +56,23 @@ public class QualityFormModel implements IQualityFormModel {
     @Override
     @Transactional(readOnly=true)
     public List<QualityForm> getQualityForms(String predicate) {
-        List<QualityForm> listAll = qualityFormDAO.getAll();
-        if ((predicate != null) && (!predicate.isEmpty())) {
-            return filterQualityForms(listAll,predicate);
-        }
-        return listAll;
+        listQualityForms.clear();
+        listQualityForms = qualityFormDAO.getAll();
+        return listQualityForms;
     }
 
-    private List<QualityForm> filterQualityForms(List<QualityForm> listAll,
-            String predicate) {
-        List<QualityForm> result = new ArrayList<QualityForm>();
-        for (QualityForm qualityForm : listAll) {
-            if (qualityForm.getName().toLowerCase().contains(
-                    predicate.toLowerCase())) {
-                result.add(qualityForm);
+    public List<QualityForm> filterQualityForms(String predicate) {
+        if ((predicate != null) && (!predicate.isEmpty())) {
+            List<QualityForm> result = new ArrayList<QualityForm>();
+            for (QualityForm qualityForm : listQualityForms) {
+                if (qualityForm.getName().toLowerCase().contains(
+                        predicate.toLowerCase())) {
+                    result.add(qualityForm);
+                }
             }
+            return result;
         }
-        return result;
+        return listQualityForms;
     }
 
     @Override

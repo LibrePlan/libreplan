@@ -382,7 +382,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 getQualityForm().setName((String) value);
                 if(((String)value == null) || (((String)value)).isEmpty()){
-                    throw new WrongValueException(comp, _("cannot be null or empty"));
+                    throw new WrongValueException(comp, _("cannot be empty"));
                 } else if (!qualityFormModel
                         .checkConstraintUniqueQualityFormName()) {
                     getQualityForm().setName(null);
@@ -404,7 +404,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
                 if (((String) value == null) || (((String) value)).isEmpty()) {
                     item.setName(null);
                     throw new WrongValueException(comp,
-                            _("cannot be null or empty"));
+ _("cannot be empty"));
                 } else if (!qualityFormModel
                         .checkConstraintUniqueQualityFormItemName()) {
                     item.setName(null);
@@ -428,7 +428,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
 
                 if (newPercentage == null) {
                     item.setPercentage(null);
-                    throw new WrongValueException(comp, _("cannot be null"));
+                    throw new WrongValueException(comp, _("cannot be empty"));
                 }
                 if (qualityFormModel
                         .checkConstraintOutOfRangeQualityFormItemPercentage(item)) {
