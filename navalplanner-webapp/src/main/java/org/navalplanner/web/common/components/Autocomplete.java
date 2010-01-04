@@ -86,10 +86,6 @@ public class Autocomplete extends Combobox {
             public void onEvent(Event event) throws Exception {
                 String text = autocomplete.getValue();
                 Object object = getItemByText(text);
-                if (object == null) {
-                    throw new WrongValueException(autocomplete,
-                            _("Please, select an item"));
-                }
                 autocomplete.setSelectedItem(object);
             }
         });
@@ -114,7 +110,9 @@ public class Autocomplete extends Combobox {
     }
 
     public void setSelectedItem(Object object) {
-        this.setValue(finder._toString(object));
+        if(object != null) {
+            this.setValue(finder._toString(object));
+        }
     }
 
     private Object getBean(String classname) {
