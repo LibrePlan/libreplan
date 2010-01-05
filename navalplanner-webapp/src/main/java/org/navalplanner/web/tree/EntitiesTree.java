@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.business.trees.ITreeParentNode;
 import org.zkoss.ganttz.util.MutableTreeModel;
@@ -235,8 +234,8 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         }
     }
 
-    public int[] getPath(OrderElement orderElement) {
-        return tree.getPath(tree.getRoot(), orderElement);
+    public int[] getPath(T element) {
+        return tree.getPath(tree.getRoot(), element);
     }
 
 }
