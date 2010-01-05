@@ -99,7 +99,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Transactional(readOnly = true)
     public void initEdit(OrderElementTemplate template) {
         this.template = dao.findExistingEntity(template.getId());
-        treeModel = new TemplatesTree(template);
+        treeModel = new TemplatesTree(this.template);
     }
 
     @Override
