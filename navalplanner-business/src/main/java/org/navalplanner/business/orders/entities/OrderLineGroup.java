@@ -266,6 +266,14 @@ public class OrderLineGroup extends OrderElement implements
         return hoursGroups;
     }
 
+    public BigDecimal getAdvancePercentage(AdvanceType advanceType, LocalDate date) {
+        final DirectAdvanceAssignment directAdvanceAssignment = this.getAdvanceAssignmentByType(advanceType);
+        if (directAdvanceAssignment != null) {
+            return directAdvanceAssignment.getAdvancePercentage(date);
+        }
+        return null;
+    }
+
     @Override
     public BigDecimal getAdvancePercentage(LocalDate date) {
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
@@ -757,6 +765,21 @@ public class OrderLineGroup extends OrderElement implements
         for (IndirectAdvanceAssignment indirectAdvanceAssignment : getIndirectAdvanceAssignments()) {
             if (indirectAdvanceAssignment.getReportGlobalAdvance()) {
                 return calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
+            }
+        }
+        return null;
+    }
+
+    public DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type) {
+        for (DirectAdvanceAssignment each : getDirectAdvanceAssignments()) {
+            if (type != null && each.getAdvanceType().getId().equals(type.getId())) {
+                return each;
+            }
+        }
+
+        for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
+            if (type != null && each.getAdvanceType().getId().equals(type.getId())) {
+                return calculateFakeDirectAdvanceAssignment(each);
             }
         }
         return null;

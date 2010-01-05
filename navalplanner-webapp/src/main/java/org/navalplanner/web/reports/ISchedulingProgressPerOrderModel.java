@@ -18,41 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.orders.daos;
+package org.navalplanner.web.reports;
 
 import java.util.Date;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import net.sf.jasperreports.engine.JRDataSource;
+
+import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
-import org.navalplanner.business.planner.entities.Task;
 
 /**
- * Contract for {@link OrderDAO}
- * @author Óscar González Fernández <ogonzalez@igalia.com>
- * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ *
  * @author Diego Pino Garcia <dpino@igalia.com>
+ *
  */
-public interface IOrderDAO extends IGenericDAO<Order, Long> {
+public interface ISchedulingProgressPerOrderModel {
 
-    /**
-     * Gets all the orders.
-     * @return A {@link List} of {@link Order} objects
-     */
+    JRDataSource getSchedulingProgressPerOrderReport(List<Order> orders,
+            AdvanceType advanceType, Date startingDate, Date endingDate,
+            LocalDate referenceDate);
+
     List<Order> getOrders();
 
-    /**
-     * Builds contents for OrderCostsPerResource report
-     * @return A {@link List} of {@link OrderCostsPerResourceDTO} objects for
-     * reporting
-     */
-    List<OrderCostsPerResourceDTO> getOrderCostsPerResource(List<Order> orders,
-            Date startingDate, Date endingDate);
-    /*
-     * @param order
-     * @return
-     */
-    List<Task> getTasksByOrder(Order order);
+    List<AdvanceType> getAdvanceTypes();
 
 }

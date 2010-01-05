@@ -96,19 +96,6 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return advanceMeasurements.first();
     }
 
-    public BigDecimal getAdvancePercentage() {
-        if (maxValue.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO;
-        }
-
-        AdvanceMeasurement advanceMeasurement = getLastAdvanceMeasurement();
-        if (advanceMeasurement == null) {
-            return BigDecimal.ZERO;
-        }
-        return advanceMeasurement.getValue().setScale(2).divide(maxValue,
-                RoundingMode.DOWN);
-    }
-
     public AdvanceMeasurement getAdvanceMeasurement(LocalDate date) {
         if (advanceMeasurements.isEmpty()) {
             return null;
@@ -123,12 +110,17 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return null;
     }
 
+    public BigDecimal getAdvancePercentage() {
+        return getAdvancePercentage(null);
+    }
+
     public BigDecimal getAdvancePercentage(LocalDate date) {
         if (maxValue.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
 
-        AdvanceMeasurement advanceMeasurement = getAdvanceMeasurement(date);
+        AdvanceMeasurement advanceMeasurement = (date != null) ? getAdvanceMeasurement(date)
+                : getLastAdvanceMeasurement();
         if (advanceMeasurement == null) {
             return BigDecimal.ZERO;
         }

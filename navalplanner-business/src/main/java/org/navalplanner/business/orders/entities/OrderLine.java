@@ -501,6 +501,16 @@ public class OrderLine extends OrderElement {
         return null;
     }
 
+    @Override
+    public DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
+            if (directAdvanceAssignment.getAdvanceType().equals(type)) {
+                return directAdvanceAssignment;
+            }
+        }
+        return null;
+    }
+
     public void incrementLastHoursGroupSequenceCode() {
         if(lastHoursGroupSequenceCode==null){
             lastHoursGroupSequenceCode = 0;
@@ -524,7 +534,6 @@ public class OrderLine extends OrderElement {
             }
             codes.add(code);
         }
-
         return true;
     }
 

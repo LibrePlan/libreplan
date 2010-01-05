@@ -33,9 +33,11 @@ import org.navalplanner.business.costcategories.daos.CostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.planner.entities.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -90,7 +92,6 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
         String orderStrQuery = "FROM Order order ";
         Query orderQuery = getSession().createQuery(orderStrQuery);
         List<Order> orderList = orderQuery.list();
-
         String strQuery = "SELECT new org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO(worker, wrl) "
                 + "FROM Worker worker, WorkReportLine wrl "
                 + "LEFT OUTER JOIN wrl.resource resource "
@@ -111,6 +112,7 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
         strQuery += "ORDER BY worker.id, wrl.date";
 
         Query query = getSession().createQuery(strQuery);
+
         if (startingDate != null) {
             query.setParameter("startingDate", startingDate);
         }
@@ -149,11 +151,27 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
                 each.setCostPerHour(pricePerHour);
                 each.setCost(each.getCostPerHour().multiply(
                         new BigDecimal(each.getNumHours())));
-
                     filteredList.add(each);
             }
         }
         return filteredList;
+    }
+
+    @Override
+    public List<Task> getTasksByOrder(Order order) {
+        reattach(order);
+        List<OrderElement> orderElements = order.getAllChildren();
+        orderElements.add(order);
+
+        final String strQuery = "SELECT taskSource.task "
+                + "FROM TaskSource taskSource "
+                + "WHERE taskSource.orderElement IN (:orderElements) "
+                + " AND taskSource.task IN (FROM Task)";
+
+        Query query = getSession().createQuery(strQuery);
+        query.setParameterList("orderElements", orderElements);
+
+        return (List<Task>) query.list();
     }
 
 }

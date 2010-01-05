@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.advance.daos;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -32,7 +33,11 @@ import org.navalplanner.business.common.daos.IGenericDAO;
 
 public interface IAdvanceTypeDAO extends IGenericDAO<AdvanceType, Long>{
     public boolean existsNameAdvanceType(String unitName);
-    public AdvanceType findByName(String name);
+
     public List<AdvanceType> findActivesAdvanceTypes();
+
+    public AdvanceType findByName(String name);
+
+    public Collection<? extends AdvanceType> getAll();
 
 }

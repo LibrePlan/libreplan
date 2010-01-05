@@ -31,6 +31,7 @@ import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -102,6 +103,9 @@ public class Registry {
 
     @Autowired
     private IProfileDAO profileDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -212,6 +216,10 @@ public class Registry {
 
     public static ICostCategoryDAO getCostCategoryDAO() {
         return getInstance().costCategoryDAO;
+    }
+
+    public static IOrderDAO getOrderDAO() {
+        return getInstance().orderDAO;
     }
 
 }

@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.advance.daos;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
@@ -54,5 +55,10 @@ public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
     public List<AdvanceType> findActivesAdvanceTypes() {
         return getSession().createCriteria(AdvanceType.class).add(
                 Restrictions.eq("active", Boolean.TRUE)).list();
+    }
+
+    @Override
+    public Collection<? extends AdvanceType> getAll() {
+        return list(AdvanceType.class);
     }
 }
