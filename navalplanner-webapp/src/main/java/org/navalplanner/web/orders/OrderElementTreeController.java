@@ -147,15 +147,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         @Override
-        protected void createCells(Treeitem item,
-                OrderElement currentOrderElement) {
-            addSchedulingStateCell(currentOrderElement);
-            addCodeCell(currentOrderElement);
-            addHoursCell(currentOrderElement);
-            addTaskNumberCell(currentOrderElement);
-            addInitDateCell(currentOrderElement);
-            addEndDateCell(currentOrderElement);
-            addOperationsCell(item, currentOrderElement);
+        protected void addDescriptionCell(OrderElement element) {
+            addTaskNumberCell(element);
         }
 
         private void addTaskNumberCell(final OrderElement orderElementForThisRow) {
@@ -207,8 +200,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             return cssclass;
         }
 
-        private void addSchedulingStateCell(
-                final OrderElement currentOrderElement) {
+        void addSchedulingStateCell(final OrderElement currentOrderElement) {
             SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(currentOrderElement
                     .getSchedulingState());
             final Treecell cell = addCell(
@@ -235,7 +227,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             schedulingStateToggler.afterCompose();
         }
 
-        private void addCodeCell(final OrderElement orderElement) {
+        protected void addCodeCell(final OrderElement orderElement) {
             Textbox textBoxCode = new Textbox();
             Util.bind(textBoxCode, new Util.Getter<String>() {
                 @Override
@@ -268,7 +260,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             addCell(textBoxCode);
         }
 
-        private void addInitDateCell(final OrderElement currentOrderElement) {
+        void addInitDateCell(final OrderElement currentOrderElement) {
             addCell(Util.bind(new Datebox(), new Util.Getter<Date>() {
 
                 @Override
@@ -284,7 +276,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }));
         }
 
-        private void addEndDateCell(final OrderElement currentOrderElement) {
+        void addEndDateCell(final OrderElement currentOrderElement) {
             addCell(Util.bind(new Datebox(), new Util.Getter<Date>() {
 
                 @Override
@@ -300,7 +292,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }));
         }
 
-        private void addHoursCell(final OrderElement currentOrderElement) {
+        void addHoursCell(final OrderElement currentOrderElement) {
             Intbox intboxHours = buildHoursIntboxFor(currentOrderElement);
             hoursIntBoxByOrderElement.put(currentOrderElement, intboxHours);
             addCell(intboxHours);
@@ -363,7 +355,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             };
         }
 
-        private void addOperationsCell(final Treeitem item,
+        @Override
+        protected void addOperationsCell(final Treeitem item,
                 final OrderElement currentOrderElement) {
             addCell(createEditButton(currentOrderElement),
                     createTemplateButton(currentOrderElement),

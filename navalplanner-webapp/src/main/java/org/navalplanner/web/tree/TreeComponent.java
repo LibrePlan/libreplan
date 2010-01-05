@@ -23,9 +23,11 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.web.orders.OrderElementTreeController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Treeitem;
 
 /**
  * macro component for order elements tree and similar pages<br />
@@ -35,7 +37,7 @@ public abstract class TreeComponent extends HtmlMacroComponent {
 
     private static final String CONTROLLER_NAME = "treeController";
 
-    public static class Column {
+    public static abstract class Column {
         private String label;
 
         private String cssClass;
@@ -63,13 +65,41 @@ public abstract class TreeComponent extends HtmlMacroComponent {
         public String getTooltip() {
             return tooltip;
         }
+
+        public abstract <T extends ITreeNode<T>> void doCell(
+                TreeController<T>.Renderer renderer,
+                Treeitem item, T currentElement);
     }
 
-    protected final Column codeColumn = new Column(_("Code"), "code");
+    protected final Column codeColumn = new Column(_("Code"), "code") {
+
+        @Override
+        public <T extends ITreeNode<T>> void doCell(
+                TreeController<T>.Renderer renderer,
+                Treeitem item, T currentElement) {
+            renderer.addCodeCell(currentElement);
+        }
+    };
     protected final Column nameAndDescriptionColumn = new Column(
-            _("Name and description"), "name");
+            _("Name and description"), "name") {
+
+        @Override
+        public <T extends ITreeNode<T>> void doCell(
+                TreeController<T>.Renderer renderer,
+                Treeitem item, T currentElement) {
+            renderer.addDescriptionCell(currentElement);
+        }
+    };
     protected final Column operationsColumn = new Column(_("Operations"),
-            "operations");
+            "operations") {
+
+        @Override
+        public <T extends ITreeNode<T>> void doCell(
+                TreeController<T>.Renderer renderer,
+                Treeitem item, T currentElement) {
+            renderer.addOperationsCell(item, currentElement);
+        }
+    };
 
     public abstract List<Column> getColumns();
 
@@ -81,6 +111,7 @@ public abstract class TreeComponent extends HtmlMacroComponent {
 
     public void useController(TreeController<?> controller) {
         doAfterComposeOnController(controller);
+        controller.setColumns(getColumns());
         this.setVariable(CONTROLLER_NAME, controller, true);
     }
 

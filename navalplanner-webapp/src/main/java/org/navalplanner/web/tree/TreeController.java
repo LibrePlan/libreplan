@@ -21,6 +21,7 @@ package org.navalplanner.web.tree;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -29,6 +30,7 @@ import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.tree.TreeComponent.Column;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.EventListener;
@@ -227,6 +229,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected Button btnNew, btnDown, btnUp, btnUnindent, btnIndent, btnDelete;
 
+    private List<Column> columns;
+
 
     protected TreeViewStateSnapshot getSnapshotOfOpenedNodes() {
         return snapshotOfOpenedNodes;
@@ -286,7 +290,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             onDropMoveFromDraggedToTarget();
         }
 
-        protected abstract void createCells(Treeitem item, T currentElement);
+        private void createCells(Treeitem item, T currentElement) {
+            for (Column each : columns) {
+                each.doCell(this, item, currentElement);
+            }
+        }
 
         private void applySnapshot(final Treeitem item) {
             if (snapshotOfOpenedNodes != null) {
@@ -336,6 +344,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             });
         }
 
+        protected abstract void addCodeCell(final T element);
+
+        protected abstract void addDescriptionCell(final T element);
+
+        protected abstract void addOperationsCell(final Treeitem item,
+                final T currentElement);
+
         @Override
         public void doCatch(Throwable ex) throws Throwable {
 
@@ -350,6 +365,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void doTry() {
 
         }
+    }
+
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
     }
 
 }

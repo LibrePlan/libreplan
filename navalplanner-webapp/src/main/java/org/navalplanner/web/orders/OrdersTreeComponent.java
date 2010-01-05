@@ -24,7 +24,12 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.trees.ITreeNode;
+import org.navalplanner.web.orders.OrderElementTreeController.OrderElementTreeitemRenderer;
 import org.navalplanner.web.tree.TreeComponent;
+import org.navalplanner.web.tree.TreeController;
+import org.zkoss.zul.Treeitem;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -32,15 +37,72 @@ import org.navalplanner.web.tree.TreeComponent;
  */
 public class OrdersTreeComponent extends TreeComponent {
 
+    abstract class OrdersTreeColumn extends Column {
+        OrdersTreeColumn(String label, String cssClass, String tooltip) {
+            super(label, cssClass, tooltip);
+        }
+
+        OrdersTreeColumn(String label, String cssClass) {
+            super(label, cssClass);
+        }
+
+        @Override
+        public <T extends ITreeNode<T>> void doCell(
+                TreeController<T>.Renderer renderer,
+                Treeitem item, T currentElement) {
+            OrderElementTreeitemRenderer treeRenderer = OrderElementTreeitemRenderer.class
+                    .cast(renderer);
+            doCell(treeRenderer, OrderElement.class.cast(currentElement));
+        }
+
+        protected abstract void doCell(
+                OrderElementTreeitemRenderer treeRenderer,
+                OrderElement currentElement);
+
+    }
+
     public List<Column> getColumns() {
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new Column(_("Scheduling state"), "scheduling_state"));
+        columns.add(new OrdersTreeColumn(_("Scheduling state"),
+                "scheduling_state") {
+
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addSchedulingStateCell(currentElement);
+            }
+
+        });
         columns.add(codeColumn);
-        columns.add(new Column(_("Hours"), "hours",
-                _("Total order element hours")));
+        columns.add(new OrdersTreeColumn(_("Hours"), "hours",
+                _("Total order element hours")) {
+
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addHoursCell(currentElement);
+            }
+
+        });
         columns.add(nameAndDescriptionColumn);
-        columns.add(new Column(_("Must start after"), "estimated_init"));
-        columns.add(new Column(_("Deadline"), "estimated_end"));
+        columns.add(new OrdersTreeColumn(_("Must start after"),
+                "estimated_init") {
+
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addInitDateCell(currentElement);
+            }
+
+        });
+        columns.add(new OrdersTreeColumn(_("Deadline"), "estimated_end") {
+
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addEndDateCell(currentElement);
+            }
+        });
         columns.add(operationsColumn);
         return columns;
     }

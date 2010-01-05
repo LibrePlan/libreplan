@@ -24,7 +24,10 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.web.tree.TreeComponent;
+import org.navalplanner.web.tree.TreeController;
+import org.zkoss.zul.Treeitem;
 
 /**
  * Tree component for templates <br />
@@ -49,8 +52,22 @@ public class TemplatesTreeComponent extends TreeComponent {
         List<Column> result = new ArrayList<Column>();
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
-        result.add(new Column(_("Must start after"), "estimated_init"));
-        result.add(new Column(_("Deadline"), "estimated_end"));
+        result.add(new Column(_("Must start after"), "estimated_init") {
+
+            @Override
+            public <T extends ITreeNode<T>> void doCell(
+                    TreeController<T>.Renderer renderer,
+                    Treeitem item, T currentElement) {
+            }
+        });
+        result.add(new Column(_("Deadline"), "estimated_end") {
+
+            @Override
+            public <T extends ITreeNode<T>> void doCell(
+                    TreeController<T>.Renderer renderer,
+                    Treeitem item, T currentElement) {
+            }
+        });
         result.add(operationsColumn);
         return result;
     }
