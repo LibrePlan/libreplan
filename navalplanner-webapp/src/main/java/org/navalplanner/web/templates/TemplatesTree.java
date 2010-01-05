@@ -19,48 +19,38 @@
  */
 package org.navalplanner.web.templates;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.templates.entities.OrderLineTemplate;
+import org.navalplanner.business.trees.ITreeNode;
+import org.navalplanner.business.trees.ITreeParentNode;
 import org.navalplanner.web.tree.EntitiesTree;
-import org.navalplanner.web.tree.TreeController;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.TreeitemRenderer;
 
 /**
- * Controller for template element tree <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ *
  */
-public class TemplatesTreeController extends
-        TreeController<OrderElementTemplate> {
+public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
-    private final IOrderTemplatesModel model;
-
-    public TemplatesTreeController(IOrderTemplatesModel model) {
-        super(OrderElementTemplate.class);
-        this.model = model;
+    public TemplatesTree(OrderElementTemplate root) {
+        super(OrderElementTemplate.class, root);
     }
 
     @Override
-    protected void filterByPredicateIfAny() {
+    protected void added(ITreeNode<OrderElementTemplate> destination,
+            ITreeNode<OrderElementTemplate> added,
+            ITreeParentNode<OrderElementTemplate> turnedIntoContainer) {
+        // do nothing
     }
 
     @Override
-    protected EntitiesTree<OrderElementTemplate> getModel() {
-        return model.getTemplatesTreeModel();
-    }
-
-    @Override
-    public TreeitemRenderer getRenderer() {
-        return new TreeitemRenderer() {
-
-            @Override
-            public void render(Treeitem item, Object data) throws Exception {
-            }
-        };
-    }
-
-    @Override
-    protected boolean isNewButtonDisabled() {
-        return false;
+    protected OrderElementTemplate createNewElement() {
+        OrderLineTemplate result = OrderLineTemplate.createNew();
+        result.setName(_("New template"));
+        result.setCode(_("New code"));
+        result.setDescription(_("New Description"));
+        return result;
     }
 
 }

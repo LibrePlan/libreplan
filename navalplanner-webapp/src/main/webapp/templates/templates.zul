@@ -33,6 +33,7 @@
     ]]>
     </zscript>
     <div self="@{define(content)}" apply="${templateController}">
+        <vbox id="messagesContainer" />
         <list top_id="listWindow" />
     </div>
 </zk>

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.tree.EntitiesTree;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -39,4 +40,6 @@ public interface IOrderTemplatesModel {
     void confirmSave();
 
     void initEdit(OrderElementTemplate template);
+
+    EntitiesTree<OrderElementTemplate> getTemplatesTreeModel();
 }

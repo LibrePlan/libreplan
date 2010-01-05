@@ -21,6 +21,9 @@ package org.navalplanner.web.templates;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.navalplanner.web.tree.TreeComponent;
 
 /**

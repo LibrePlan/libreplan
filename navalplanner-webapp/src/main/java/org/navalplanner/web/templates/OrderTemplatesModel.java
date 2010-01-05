@@ -52,6 +52,8 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     private OrderElementTemplate template;
 
+    private TemplatesTree treeModel;
+
     @Override
     public List<OrderElementTemplate> getRootTemplates() {
         return dao.getRootTemplates();
@@ -90,12 +92,19 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         OrderElement reloaded = orderElementDAO
                 .findExistingEntity(orderElement.getId());
         template = reloaded.createTemplate();
+        treeModel = new TemplatesTree(template);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void initEdit(OrderElementTemplate template) {
         this.template = dao.findExistingEntity(template.getId());
+        treeModel = new TemplatesTree(template);
+    }
+
+    @Override
+    public TemplatesTree getTemplatesTreeModel() {
+        return treeModel;
     }
 
 }

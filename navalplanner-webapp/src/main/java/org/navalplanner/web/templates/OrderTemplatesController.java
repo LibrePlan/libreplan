@@ -96,7 +96,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                     "/templates/_edition.zul", self, topId("editWindow"));
             TreeComponent treeComponent = (TreeComponent) editWindow
                     .getFellow("orderElementTree");
-            treeComponent.useController(new TemplatesTreeController());
+            treeComponent.useController(new TemplatesTreeController(model));
             Util.createBindingsFor(editWindow);
             Util.reloadBindings(editWindow);
         }
