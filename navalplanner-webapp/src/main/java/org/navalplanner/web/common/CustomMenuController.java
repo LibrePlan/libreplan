@@ -206,8 +206,13 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Virtual worker groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
 
         topItem(_("Work reports"), "/workreports/workReportTypes.zul", "",
-            subItem(_("Work report types"),"/workreports/workReportTypes.zul","09-partes.html#id2"),
-            subItem(_("Work report list"), "/workreports/workReport.zul", "09-partes.html#id3"));
+                subItem(_("Work report types"),
+                        "/workreports/workReportTypes.zul",
+                        "09-partes.html#id2"), subItem(_("Work report list"),
+                        "/workreports/workReport.zul", "09-partes.html#id3"),
+                subItem(_("Work report query"),
+                        "/workreports/workReportQuery.zul",
+                        "09-partes.html#id4"));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration"), "/advance/advanceTypes.zul", "",
@@ -222,8 +227,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Quality forms"),"/qualityforms/qualityForms.zul",""),
                 subItem(_("Manage user profiles"), "/users/profiles.zul",""),
                 subItem(_("Manage user accounts"), "/users/users.zul",""));
-        }
-        topItem(_("Reports"), "", "",
+            }
+            topItem(_("Reports"), "", "",
                 subItem(_("Hours worked per worker"),
                         "/reports/hoursWorkedPerWorkerReport.zul", ""),
                 subItem(_("Completed estimated hours per task"),

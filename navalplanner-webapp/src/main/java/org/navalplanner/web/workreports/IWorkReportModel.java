@@ -39,8 +39,8 @@ import org.navalplanner.web.orders.IPredicate;
 
 /**
  * Contract for {@link WorkRerportType}
- *
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IWorkReportModel {
 
@@ -53,7 +53,6 @@ public interface IWorkReportModel {
 
     /**
      * Converts @{link Resource} to @{link Worker}
-     *
      * @param resource
      * @return
      * @throws InstanceNotFoundException
@@ -105,14 +104,39 @@ public interface IWorkReportModel {
     List<WorkReportType> getWorkReportTypes();
 
     /**
-     * Returns true if WorkReport is being edited
+     * Return all the {@link WorkReportLine}
+     * @return
+     */
+    List<WorkReportLine> getAllWorkReportLines();
+
+    /**
+     * Return all the {@link WorkReportLine} are filtered by a predicate
+     * @return
+     */
+    List<WorkReportLine> getFilterWorkReportLines(IPredicate predicate);
+
+    /**
+     * Returns true if {@link WorkReport} is being edited
      * @return
      */
     boolean isEditing();
 
     /**
+     * Returns true if {@link WorkReport} is being edited from the query of the
+     * {@link WorkReportLine} list
+     * @return
+     */
+    boolean isListingQuery();
+
+    /**
+     * Set if the {@link WorkReport} is being edited from the query of the
+     * {@link WorkReportLine} list
+     * @return
+     */
+    void setListingQuery(boolean listingQuery);
+
+    /**
      * Makes some operations needed before edit a {@link WorkReport}.
-     *
      * @param workReport
      *            The object to be edited
      */

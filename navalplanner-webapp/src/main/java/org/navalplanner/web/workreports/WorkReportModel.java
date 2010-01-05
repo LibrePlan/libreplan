@@ -55,8 +55,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link WorkReport}.
- *
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -83,6 +83,8 @@ public class WorkReportModel implements IWorkReportModel {
 
     private boolean editing = false;
 
+    private boolean listingQuery = false;
+
     private Map<DescriptionValue, DescriptionField> mapDescriptonValues = new HashMap<DescriptionValue, DescriptionField>();
 
     private Map<Label, Integer> mapLabels = new HashMap<Label, Integer>();
@@ -90,6 +92,8 @@ public class WorkReportModel implements IWorkReportModel {
     private static final Map<LabelType, List<Label>> mapLabelTypes = new HashMap<LabelType, List<Label>>();
 
     private List<WorkReportDTO> listWorkReportDTOs = new ArrayList<WorkReportDTO>();
+
+    private List<WorkReportLine> listWorkReportLine = new ArrayList<WorkReportLine>();
 
     @Override
     public WorkReport getWorkReport() {
@@ -164,10 +168,8 @@ public class WorkReportModel implements IWorkReportModel {
 
         // Load WorkReportLines
         for (WorkReportLine workReportLine : workReport.getWorkReportLines()) {
-            workReportLine.getNumHours();
-            workReportLine.getResource().getShortDescription();
-            workReportLine.getOrderElement().getName();
-            workReportLine.getTypeOfWorkHours().getName();
+            //Load pricipal data
+            forceLoadPrincipalDataWorkReportLines(workReportLine);
 
             // Load Labels
             for (Label label : workReportLine.getLabels()) {
@@ -180,8 +182,14 @@ public class WorkReportModel implements IWorkReportModel {
                     .getDescriptionValues()) {
                 descriptionValue.getFieldName();
             }
-
         }
+    }
+
+    private void forceLoadPrincipalDataWorkReportLines(WorkReportLine line) {
+        line.getNumHours();
+        line.getResource().getShortDescription();
+        line.getOrderElement().getName();
+        line.getTypeOfWorkHours().getName();
     }
 
     private void forceLoadWorkReportTypeFromDB(WorkReportType workReportType) {
@@ -280,8 +288,43 @@ public class WorkReportModel implements IWorkReportModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<WorkReportLine> getAllWorkReportLines() {
+        listWorkReportLine.clear();
+        for (WorkReport workReport : getAllWorkReports()) {
+            for (WorkReportLine workReportLine : workReport
+                    .getWorkReportLines()) {
+                forceLoadPrincipalDataWorkReportLines(workReportLine);
+                listWorkReportLine.add(workReportLine);
+            }
+        }
+        return listWorkReportLine;
+    }
+
+    @Override
+    public List<WorkReportLine> getFilterWorkReportLines(IPredicate predicate) {
+        List<WorkReportLine> result = new ArrayList<WorkReportLine>();
+        for (WorkReportLine workReportLine : listWorkReportLine) {
+            if (predicate.accepts(workReportLine)) {
+                result.add(workReportLine);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public boolean isEditing() {
         return editing;
+    }
+
+    @Override
+    public boolean isListingQuery() {
+        return this.listingQuery;
+    }
+
+    @Override
+    public void setListingQuery(boolean listingQuery) {
+        this.listingQuery = listingQuery;
     }
 
     @Override

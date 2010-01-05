@@ -24,14 +24,13 @@ import java.util.List;
 
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com> Implements a
- *         {@link IFinder} class for providing {@link Worker} elements
+ *         {@link IFinder} class for providing {@link Resource} elements
  */
 @Repository
 public class ResourceFinder extends Finder implements IFinder {

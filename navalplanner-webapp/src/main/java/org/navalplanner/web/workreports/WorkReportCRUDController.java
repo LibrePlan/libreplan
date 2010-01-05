@@ -85,8 +85,8 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions over a {@link WorkReport}
- *
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class WorkReportCRUDController extends GenericForwardComposer implements
         IWorkReportCRUDControllerEntryPoints {
@@ -96,6 +96,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private Window createWindow;
 
     private Window listWindow;
+
+    private Window listQueryWindow;
 
     private IWorkReportModel workReportModel;
 
@@ -137,6 +139,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDate;
 
+    private IPredicate predicateFilterLines;
+
+    private Grid gridListQuery;
+
+    private Autocomplete filterResource;
+
+    private Datebox filterStartDateLine;
+
+    private Datebox filterFinishDateLine;
+
+    private Textbox filterOrderElement;
+
+    private Autocomplete filterHoursType;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -147,7 +163,16 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
-        goToList();
+        initCurrentList();
+    }
+
+    private void initCurrentList() {
+        if (listWindow != null) {
+            workReportModel.setListingQuery(false);
+        } else if (listQueryWindow != null) {
+            workReportModel.setListingQuery(true);
+        }
+        this.goToList();
     }
 
     /**
@@ -184,7 +209,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
-                listWindow)
+                listWindow, listQueryWindow)
                 : visibility;
     }
 
@@ -470,9 +495,23 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToList() {
+        if (workReportModel.isListingQuery()) {
+            goToListQueryWorkReportLines();
+        } else {
+            goToListWorkReports();
+        }
+    }
+
+    public void goToListWorkReports() {
         getVisibility().showOnly(listWindow);
         loadComponentslist(listWindow);
         Util.reloadBindings(listWindow);
+    }
+
+    public void goToListQueryWorkReportLines() {
+        getVisibility().showOnly(listQueryWindow);
+        loadComponentslistLines(listQueryWindow);
+        Util.reloadBindings(listQueryWindow);
     }
 
     public void cancel() {
@@ -492,8 +531,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public void goToEditForm(WorkReportDTO workReportDTO) {
-        WorkReport workReport = workReportDTO.getWorkReport();
-        goToEditForm(workReport);
+        workReportModel.setListingQuery(false);
+        goToEditForm(workReportDTO.getWorkReport());
     }
 
     public void goToEditForm(WorkReport workReport) {
@@ -523,6 +562,16 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         clearFilterDates();
     }
 
+    private void loadComponentslistLines(Component window) {
+        gridListQuery = (Grid) window.getFellow("gridListQuery");
+        filterResource = (Autocomplete) window.getFellow("filterResource");
+        filterStartDateLine = (Datebox) window.getFellow("filterStartDateLine");
+        filterFinishDateLine = (Datebox) window
+                .getFellow("filterFinishDateLine");
+        filterOrderElement = (Textbox) window.getFellow("filterOrderElement");
+        filterHoursType = (Autocomplete) window.getFellow("filterHoursType");
+        clearFilterDatesLines();
+    }
     /**
      * {@link WorkReportLine} list is finally constructed dynamically
      *
@@ -1403,6 +1452,134 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private List<OrderElement> getOrderElements() {
         return workReportModel.getOrderElements();
+    }
+
+    /**
+     * Method to manage the query work report lines
+     */
+
+    public List<WorkReportLine> getQueryWorkReportLines() {
+        return workReportModel.getAllWorkReportLines();
+    }
+
+    public void sortQueryWorkReportLines() {
+        Column columnDateLine = (Column) listQueryWindow.getFellow("date");
+        if (columnDateLine != null) {
+            if (columnDateLine.getSortDirection().equals("ascending")) {
+                columnDateLine.sort(false, false);
+                columnDateLine.setSortDirection("ascending");
+            } else if (columnDateLine.getSortDirection().equals("descending")) {
+                columnDateLine.sort(true, false);
+                columnDateLine.setSortDirection("descending");
+            }
+        }
+    }
+
+    public void goToEditFormQuery(WorkReportLine line) {
+        workReportModel.setListingQuery(true);
+        goToEditForm(line.getWorkReport());
+    }
+
+    /**
+     * Apply filter to work report lines
+     * @param event
+     */
+    public void onApplyFilterWorkReportLines(Event event) {
+        createPredicateLines();
+        filterByPredicateLines();
+    }
+
+    private void createPredicateLines() {
+        Resource resource = getSelectedResource();
+        Date startDate = filterStartDateLine.getValue();
+        Date finishDate = filterFinishDateLine.getValue();
+        OrderElement orderElement = getSelectedOrderElement();
+        TypeOfWorkHours hoursType = getSelectedHoursType();
+        predicateFilterLines = new WorkReportLinePredicate(resource, startDate,
+                finishDate, orderElement, hoursType);
+    }
+
+    private Resource getSelectedResource() {
+        Comboitem itemSelected = filterResource.getSelectedItem();
+        if ((itemSelected != null)
+                && (((Resource) itemSelected.getValue()) != null)) {
+            return (Resource) itemSelected.getValue();
+        }
+        return null;
+    }
+
+    public OrderElement getSelectedOrderElement() {
+        String code = filterOrderElement.getValue();
+        if ((code != null) && (!code.isEmpty())) {
+            try {
+                return workReportModel.findOrderElement(code);
+            } catch (InstanceNotFoundException e) {
+                throw new WrongValueException(filterOrderElement,
+                        _("OrderElement not found"));
+            }
+        }
+        return null;
+    }
+
+    private TypeOfWorkHours getSelectedHoursType() {
+        Comboitem itemSelected = filterHoursType.getSelectedItem();
+        if ((itemSelected != null)
+                && (((TypeOfWorkHours) itemSelected.getValue()) != null)) {
+            return (TypeOfWorkHours) itemSelected.getValue();
+        }
+        return null;
+    }
+
+    private void filterByPredicateLines() {
+        List<WorkReportLine> filterWorkReportLines = workReportModel
+                .getFilterWorkReportLines(predicateFilterLines);
+        gridListQuery.setModel(new SimpleListModel(filterWorkReportLines
+                .toArray()));
+        gridListQuery.invalidate();
+    }
+
+    private void clearFilterDatesLines() {
+        filterResource.setValue(null);
+        filterOrderElement.setValue("");
+        filterStartDateLine.setValue(null);
+        filterFinishDateLine.setValue(null);
+        filterHoursType.setValue(null);
+    }
+
+    public Constraint checkConstraintFinishDateLine() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date finishDateLine = (Date) value;
+                if ((finishDateLine != null)
+                        && (filterStartDateLine.getValue() != null)
+                        && (finishDateLine.compareTo(filterStartDateLine
+                                .getValue()) < 0)) {
+                    filterFinishDateLine.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be greater than start date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintStartDateLine() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date startDateLine = (Date) value;
+                if ((startDateLine != null)
+                        && (filterFinishDateLine.getValue() != null)
+                        && (startDateLine.compareTo(filterFinishDateLine
+                                .getValue()) > 0)) {
+                    filterStartDateLine.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be lower than finish date"));
+                }
+            }
+        };
     }
 
 }
