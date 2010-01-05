@@ -21,7 +21,7 @@ package org.navalplanner.web.templates;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.navalplanner.web.tree.TreeComponent;
@@ -44,12 +44,15 @@ public class TemplatesTreeComponent extends TreeComponent {
         return _("Delete Template element");
     }
 
-    public String getHoursTooltip() {
-        return _("Total Template hours");
-    }
-
-    public String getOperationsTooltip() {
-        return _("Click on the icons to execute operation in the template");
+    @Override
+    public List<Column> getColumns() {
+        List<Column> result = new ArrayList<Column>();
+        result.add(codeColumn);
+        result.add(nameAndDescriptionColumn);
+        result.add(new Column(_("Must start after"), "estimated_init"));
+        result.add(new Column(_("Deadline"), "estimated_end"));
+        result.add(operationsColumn);
+        return result;
     }
 
 }

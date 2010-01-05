@@ -19,6 +19,11 @@
  */
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.navalplanner.web.tree.TreeComponent;
 
 /**
@@ -27,5 +32,17 @@ import org.navalplanner.web.tree.TreeComponent;
  */
 public class OrdersTreeComponent extends TreeComponent {
 
+    public List<Column> getColumns() {
+        List<Column> columns = new ArrayList<Column>();
+        columns.add(new Column(_("Scheduling state"), "scheduling_state"));
+        columns.add(codeColumn);
+        columns.add(new Column(_("Hours"), "hours",
+                _("Total order element hours")));
+        columns.add(nameAndDescriptionColumn);
+        columns.add(new Column(_("Must start after"), "estimated_init"));
+        columns.add(new Column(_("Deadline"), "estimated_end"));
+        columns.add(operationsColumn);
+        return columns;
+    }
 
 }

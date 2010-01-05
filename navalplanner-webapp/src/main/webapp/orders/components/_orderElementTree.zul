@@ -54,15 +54,8 @@
             sclass="orderTree"
             zclass="z-dottree">
             <treecols sizable="true">
-                <treecol label="${i18n:_('Scheduling state')}" class="scheduling_state"/>
-                <treecol label="${i18n:_('Code')}" class="code"/>
-                <treecol label="${i18n:_('Hours')}" class="hours"
-                    tooltiptext="${treeComponent.hoursTooltip}" />
-                <treecol label="${i18n:_('Name and description')}" class="name"/>
-                <treecol label="${i18n:_('Must start after')}" class="estimated_init"/>
-                <treecol label="${i18n:_('Deadline')}" class="estimated_end"/>
-                <treecol label="${i18n:_('Operations')}" class="operations"
-                    tooltiptext="${treeComponent.operationsTooltip}"/>
+                <treecol label="${each.label}" class="${each.cssClass}" tooltiptext="${each.tooltip}"
+                    forEach="${treeComponent.columns}"/>
             </treecols>
         </tree>
     </vbox>

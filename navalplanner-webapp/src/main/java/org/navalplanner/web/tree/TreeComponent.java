@@ -21,6 +21,8 @@ package org.navalplanner.web.tree;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.List;
+
 import org.navalplanner.web.orders.OrderElementTreeController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.util.Composer;
@@ -29,9 +31,47 @@ import org.zkoss.zk.ui.util.Composer;
  * macro component for order elements tree and similar pages<br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class TreeComponent extends HtmlMacroComponent {
+public abstract class TreeComponent extends HtmlMacroComponent {
 
     private static final String CONTROLLER_NAME = "treeController";
+
+    public static class Column {
+        private String label;
+
+        private String cssClass;
+
+        private String tooltip;
+
+        public Column(String label, String cssClass){
+            this(label, cssClass, null);
+        }
+
+        public Column(String label, String cssClass, String tooltip) {
+            this.label = label;
+            this.cssClass = cssClass;
+            this.tooltip = tooltip;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public String getCssClass() {
+            return cssClass;
+        }
+
+        public String getTooltip() {
+            return tooltip;
+        }
+    }
+
+    protected final Column codeColumn = new Column(_("Code"), "code");
+    protected final Column nameAndDescriptionColumn = new Column(
+            _("Name and description"), "name");
+    protected final Column operationsColumn = new Column(_("Operations"),
+            "operations");
+
+    public abstract List<Column> getColumns();
 
     public void clear() {
         OrderElementTreeController controller = (OrderElementTreeController) getVariable(
@@ -39,7 +79,7 @@ public class TreeComponent extends HtmlMacroComponent {
         controller.clear();
     }
 
-    public void useController(Composer controller) {
+    public void useController(TreeController<?> controller) {
         doAfterComposeOnController(controller);
         this.setVariable(CONTROLLER_NAME, controller, true);
     }
@@ -62,14 +102,6 @@ public class TreeComponent extends HtmlMacroComponent {
 
     public String getRemoveElementLabel() {
         return _("Delete order element");
-    }
-
-    public String getHoursTooltip() {
-        return _("Total order element hours");
-    }
-
-    public String getOperationsTooltip() {
-        return _("Click on the icons to execute operation in the order element");
     }
 
 }
