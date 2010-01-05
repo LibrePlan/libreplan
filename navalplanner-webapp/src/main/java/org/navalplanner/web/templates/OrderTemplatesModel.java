@@ -52,6 +52,8 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     private OrderElementTemplate template;
 
+    private TemplatesTree treeModel;
+
     @Override
     public List<OrderElementTemplate> getRootTemplates() {
         return dao.getRootTemplates();
@@ -86,23 +88,18 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Override
     @Transactional(readOnly = true)
     public void createTemplateFrom(OrderElement orderElement) {
-        loadParentsInOrderToAvoidProxies(orderElement);
+        orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
         OrderElement reloaded = orderElementDAO
                 .findExistingEntity(orderElement.getId());
         template = reloaded.createTemplate();
-    }
-
-    private void loadParentsInOrderToAvoidProxies(OrderElement orderElement) {
-        OrderElement current = orderElement;
-        while (current != null) {
-            current = orderElementDAO.findParent(current);
-        }
+        treeModel = new TemplatesTree(template);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void initEdit(OrderElementTemplate template) {
         this.template = dao.findExistingEntity(template.getId());
+        treeModel = new TemplatesTree(this.template);
     }
 
 }

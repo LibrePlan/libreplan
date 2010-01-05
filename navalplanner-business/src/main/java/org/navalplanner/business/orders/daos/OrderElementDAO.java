@@ -28,6 +28,8 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -59,6 +61,9 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Override
     public List<OrderElement> findWithoutParent() {
@@ -95,6 +100,25 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
                 "select e.parent from OrderElement e where e.id = :id")
                 .setParameter("id", orderElement.getId());
         return (OrderElement) query.uniqueResult();
+    }
+
+    @Override
+    public void loadOrderAvoidingProxyFor(final OrderElement orderElement) {
+        OrderElement order = transactionService
+                .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
+
+            @Override
+            public OrderElement execute() {
+                OrderElement current = orderElement;
+                OrderElement result = current;
+                while (current != null) {
+                    result = current;
+                    current = findParent(current);
+                }
+                return result;
+            }
+        });
+        findExistingEntity(order.getId());
     }
 
     @Override
