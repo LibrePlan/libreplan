@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.test.ws.resources.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -32,10 +33,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.IConfigurationBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
@@ -89,7 +95,21 @@ public class ResourceServiceTest {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Autowired
+    private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private IConfigurationBootstrap configurationBootstrap;
+
+    @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Before
+    public void loadConfiguration() {
+        configurationBootstrap.loadRequiredData();
+    }
 
     @Test
     public void testAddResourcesWithBasicContraintViolations()
@@ -342,6 +362,62 @@ public class ResourceServiceTest {
 
     }
 
+    @Test
+    @NotTransactional
+    public void testAddResourceWithDefaultCalendar()
+        throws InstanceNotFoundException {
+
+        /* Create a machine DTO. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+
+        /* Test. */
+        assertNoConstraintViolations(resourceService.
+             addResources(createResourceListDTO(machineDTO)));
+        Machine machine = findUniqueMachineByCodeInitialized(machineDTO.code);
+        assertEquals(getDefaultCalendar().getId(),
+            machine.getCalendar().getParent().getId());
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithSpecificCalendar()
+        throws InstanceNotFoundException {
+
+        /* Create a base calendar. */
+        BaseCalendar baseCalendar = createBaseCalendar();
+
+        /* Create a machine DTO. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+        machineDTO.calendarName =
+            ' ' + baseCalendar.getName().toUpperCase() + ' ';
+
+        /* Test. */
+        assertNoConstraintViolations(resourceService.
+             addResources(createResourceListDTO(machineDTO)));
+        Machine machine = findUniqueMachineByCodeInitialized(machineDTO.code);
+        assertEquals(baseCalendar.getId(),
+            machine.getCalendar().getParent().getId());
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithNonExistentCalendar()
+        throws InstanceNotFoundException {
+
+        /* Create a machine DTO. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+        machineDTO.calendarName = getUniqueName();
+
+        /* Test. */
+        assertOneConstraintViolation(resourceService.
+            addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+    }
+
     private CriterionType createCriterionType() {
         return createCriterionType(ResourceEnum.RESOURCE);
     }
@@ -398,6 +474,18 @@ public class ResourceServiceTest {
 
     }
 
+    private Resource initializeResource(Resource resource) {
+
+        for (CriterionSatisfaction cs : resource.getCriterionSatisfactions()) {
+            cs.getCriterion().getType().getName();
+        }
+
+        resource.getCalendar().getParent();
+
+        return resource;
+
+    }
+
     private void saveResource(final Resource resource) {
 
         IOnTransaction<Void> save = new IOnTransaction<Void>() {
@@ -413,13 +501,35 @@ public class ResourceServiceTest {
 
     }
 
-    private Resource initializeResource(Resource resource) {
+    public BaseCalendar getDefaultCalendar() {
 
-        for (CriterionSatisfaction cs : resource.getCriterionSatisfactions()) {
-            cs.getCriterion().getType().getName();
-        }
+        IOnTransaction<BaseCalendar> find = new IOnTransaction<BaseCalendar>() {
 
-        return resource;
+            @Override
+            public BaseCalendar execute() {
+                return configurationDAO.getConfiguration().getDefaultCalendar();
+            }
+        };
+
+        return transactionService.runOnTransaction(find);
+
+    }
+
+    private BaseCalendar createBaseCalendar() {
+
+        IOnTransaction<BaseCalendar> create =
+            new IOnTransaction<BaseCalendar>() {
+
+            @Override
+            public BaseCalendar execute() {
+                BaseCalendar baseCalendar = BaseCalendar.create();
+                baseCalendar.setName(getUniqueName());
+                baseCalendarDAO.save(baseCalendar);
+                return baseCalendar;
+            }
+        };
+
+        return transactionService.runOnTransaction(create);
 
     }
 
@@ -433,6 +543,15 @@ public class ResourceServiceTest {
 
 
         return new ResourceListDTO(resourceList);
+
+    }
+
+    private void assertNoConstraintViolations(
+        InstanceConstraintViolationsListDTO
+        instanceConstraintViolationsListDTO) {
+
+        assertTrue(instanceConstraintViolationsListDTO.
+            instanceConstraintViolationsList.size() == 0);
 
     }
 

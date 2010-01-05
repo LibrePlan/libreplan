@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
@@ -56,12 +58,13 @@ public class ResourceConverter {
             resource = createResourceWithBasicData((WorkerDTO) resourceDTO);
         } else {
             throw new RuntimeException(
-                _("Service does not manages resource of type: {0}",
+                _("Service does not manage resource of type: {0}",
                     resourceDTO.getClass().getName()));
         }
 
         addCriterionSatisfactions(resource,
             resourceDTO.criterionSatisfactions);
+        setResourceCalendar(resource, resourceDTO.calendarName);
 
         return resource;
 
@@ -107,6 +110,22 @@ public class ResourceConverter {
             resource,
             DateConverter.toDate(criterionSatisfactionDTO.startDate),
             DateConverter.toDate(criterionSatisfactionDTO.finishDate));
+
+    }
+
+    private static void setResourceCalendar(Resource resource,
+        String calendarName) throws CreateUnvalidatedException {
+
+        try {
+            resource.setResourceCalendar(calendarName);
+        } catch (InstanceNotFoundException e) {
+             throw new CreateUnvalidatedException(
+                _("{0}: calendar not found", calendarName));
+        } catch (MultipleInstancesException e) {
+            throw new CreateUnvalidatedException(
+                _("there exist multiple calendars with name {0}",
+                    calendarName));
+        }
 
     }
 

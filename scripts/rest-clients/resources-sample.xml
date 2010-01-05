@@ -5,7 +5,7 @@
     <!--  *** Machines *** -->
 
     <!-- OK -->
-    <machine code=" m1 " name="m1-name" description="m1-desc"/>
+    <machine code="m1" name="m1-name" description="m1-desc"/>
 
     <!--  Missing code and name (description is optional). -->
     <machine code="" description=""/>
@@ -24,14 +24,18 @@
     <!--  Another machine is being imported with the same code. -->
     <machine code="m1" name="m3-name" description="m3-desc"/>
 
+    <!-- OK or not OK depending on the existence of "CalendarTest". -->
+    <machine code="m4" name="m4-name" description="m4-desc"
+        calendar-name="CalendarTest"/>
+
     <!--  *** Workers *** -->
 
     <!-- OK -->
-    <worker first-name="w1-firstName" surname="w1-surname" nif=" w1-nif ">
+    <worker first-name="w1-firstName" surname="w1-surname" nif="w1-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
-                criterion-type-name=" WORK_RELATIONSHIP "
-                criterion-name=" hiredResourceWorkingRelationship "
+                criterion-type-name="WORK_RELATIONSHIP"
+                criterion-name="hiredResourceWorkingRelationship"
                 start-date="2009-01-01"
                 finish-date=""/>
             <criterion-satisfaction
@@ -46,7 +50,7 @@
     <worker first-name="" nif=""/>
 
     <!--  Missing start date in criterion satisfaction. -->
-    <worker first-name="w2-firstName" surname="w2-surname" nif=" w2-nif ">
+    <worker first-name="w2-firstName" surname="w2-surname" nif="w2-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
                 criterion-type-name="LEAVE"
@@ -56,7 +60,7 @@
     </worker>
 
     <!--  Non-existent criterion type. -->
-    <worker first-name="w3-firstName" surname="w3-surname" nif=" w3-nif ">
+    <worker first-name="w3-firstName" surname="w3-surname" nif="w3-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
                 criterion-type-name="WORK_RELATIONSHIP_XXX"
@@ -67,7 +71,7 @@
     </worker>
 
     <!--  Non-existent criterion. -->
-    <worker first-name="w4-firstName" surname="w4-surname" nif=" w4-nif ">
+    <worker first-name="w4-firstName" surname="w4-surname" nif="w4-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
                 criterion-type-name="WORK_RELATIONSHIP"
@@ -78,7 +82,7 @@
     </worker>
 
     <!-- Criterion not specified. -->
-    <worker first-name="w5-firstName" surname="w5-surname" nif=" w5-nif ">
+    <worker first-name="w5-firstName" surname="w5-surname" nif="w5-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
                 criterion-type-name="WORK_RELATIONSHIP"
@@ -88,7 +92,7 @@
     </worker>
 
     <!-- Criterion type not specified. -->
-    <worker first-name="w6-firstName" surname="w6-surname" nif=" w6-nif ">
+    <worker first-name="w6-firstName" surname="w6-surname" nif="w6-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
                 criterion-name="hiredResourceWorkingRelationship"
@@ -100,5 +104,9 @@
     <!-- Another worker is being imported with the same first name, surname,
          and nif. -->
     <worker first-name="w1-firstName" surname="w1-surname" nif="w1-nif"/>
+
+    <!-- OK or not OK depending on the existence of "CalendarTest". -->
+    <worker first-name="w8-firstName" surname="w8-surname" nif="w8-nif"
+        calendar-name="CalendarTest" />
 
 </resource-list>

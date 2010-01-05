@@ -31,6 +31,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.AssertTrue;
@@ -38,10 +39,14 @@ import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -657,6 +662,37 @@ public abstract class Resource extends BaseEntity{
 
     public ResourceCalendar getCalendar() {
         return calendar;
+    }
+
+    public void setResourceCalendar(String calendarName)
+        throws InstanceNotFoundException, MultipleInstancesException {
+
+        ResourceCalendar calendar;
+
+        if (StringUtils.isBlank(calendarName)) {
+
+            calendar = Registry.getConfigurationDAO().getConfiguration().
+                getDefaultCalendar().newDerivedResourceCalendar();
+
+        } else {
+
+            List<BaseCalendar> baseCalendars = Registry.getBaseCalendarDAO().
+                findByName(StringUtils.trim(calendarName));
+
+            if (baseCalendars.isEmpty()) {
+                throw new InstanceNotFoundException(calendarName,
+                    BaseCalendar.class.getName());
+            } if (baseCalendars.size() > 1) {
+                throw new MultipleInstancesException(calendarName,
+                    BaseCalendar.class.getName());
+            } else {
+                calendar = baseCalendars.get(0).newDerivedResourceCalendar();
+            }
+
+        }
+
+        setCalendar(calendar);
+
     }
 
     public int getAssignedHours(LocalDate localDate) {

@@ -18,28 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.resources.api;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+package org.navalplanner.business.common.exceptions;
 
 /**
- * DTO for <code>Resource</code> entity.
+ * An exception for specifying that there exist multiple persistent instances
+ * with the same "logic" identifier (e.g. a name).
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public abstract class ResourceDTO {
+@SuppressWarnings("serial")
+public class MultipleInstancesException extends InstanceException {
 
-    @XmlAttribute(name="calendar-name")
-    public String calendarName;
-
-    @XmlElementWrapper(name="criterion-satisfaction-list")
-    @XmlElement(name="criterion-satisfaction")
-    public List<CriterionSatisfactionDTO> criterionSatisfactions =
-        new ArrayList<CriterionSatisfactionDTO>();
+    public MultipleInstancesException(String logicId, String className) {
+        super("Multiple instances with the same logic identifier",
+            logicId, className);
+    }
 
 }

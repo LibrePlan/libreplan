@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * DAO for {@link BaseCalendar}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -88,8 +90,13 @@ public class BaseCalendarDAO extends GenericDAOHibernate<BaseCalendar, Long>
 
     @Override
     public List<BaseCalendar> findByName(String name) {
+
+        if (StringUtils.isBlank(name)) {
+            return new ArrayList<BaseCalendar>();
+        }
+
         Criteria c = getSession().createCriteria(BaseCalendar.class);
-        c.add(Restrictions.eq("name", name));
+        c.add(Restrictions.eq("name", name).ignoreCase());
 
         List<BaseCalendar> list = (List<BaseCalendar>) c.list();
         removeResourceCalendarInstances(list);
