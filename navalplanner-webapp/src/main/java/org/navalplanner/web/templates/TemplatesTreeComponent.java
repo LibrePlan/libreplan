@@ -24,7 +24,9 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
+import org.navalplanner.web.templates.TemplatesTreeController.TemplatesTreeRenderer;
 import org.navalplanner.web.tree.TreeComponent;
 import org.navalplanner.web.tree.TreeController;
 import org.zkoss.zul.Treeitem;
@@ -34,6 +36,28 @@ import org.zkoss.zul.Treeitem;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TemplatesTreeComponent extends TreeComponent {
+
+    private abstract class TemplatesTreeColumn extends Column {
+
+        TemplatesTreeColumn(String label, String cssClass, String tooltip) {
+            super(label, cssClass, tooltip);
+        }
+
+        TemplatesTreeColumn(String label, String cssClass) {
+            super(label, cssClass);
+        }
+
+        public final <T extends ITreeNode<T>> void doCell(
+                TreeController<T>.Renderer renderer,
+                Treeitem item, T currentElement) {
+            doCell(TemplatesTreeRenderer.class.cast(renderer), item,
+                    OrderElementTemplate.class.cast(currentElement));
+        }
+
+        protected abstract void doCell(TemplatesTreeRenderer renderer,
+                Treeitem item, OrderElementTemplate currentElement);
+
+    }
 
     public String getAddElementLabel() {
         return _("New Template element");
@@ -50,23 +74,38 @@ public class TemplatesTreeComponent extends TreeComponent {
     @Override
     public List<Column> getColumns() {
         List<Column> result = new ArrayList<Column>();
+        result.add(new TemplatesTreeColumn("", "") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addFirstCell(currentElement);
+            }
+
+        });
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
-        result.add(new Column(_("Must start after"), "estimated_init") {
+        result.add(new TemplatesTreeColumn(
+                _("Must start after (days since beginning project)"),
+                "estimated_init") {
 
             @Override
-            public <T extends ITreeNode<T>> void doCell(
-                    TreeController<T>.Renderer renderer,
-                    Treeitem item, T currentElement) {
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addInitCell(currentElement);
             }
+
         });
-        result.add(new Column(_("Deadline"), "estimated_end") {
+        result.add(new TemplatesTreeColumn(
+                _("Deadline (days since beggining project)"),
+                "estimated_end") {
 
             @Override
-            public <T extends ITreeNode<T>> void doCell(
-                    TreeController<T>.Renderer renderer,
-                    Treeitem item, T currentElement) {
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addEndCell(currentElement);
             }
+
         });
         result.add(operationsColumn);
         return result;

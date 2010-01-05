@@ -19,9 +19,16 @@
  */
 package org.navalplanner.web.templates;
 
+import org.hibernate.validator.ClassValidator;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.Util.Getter;
+import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.tree.EntitiesTree;
 import org.navalplanner.web.tree.TreeController;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 
@@ -31,6 +38,106 @@ import org.zkoss.zul.TreeitemRenderer;
  */
 public class TemplatesTreeController extends
         TreeController<OrderElementTemplate> {
+
+    final class TemplatesTreeRenderer extends Renderer {
+
+        private final ClassValidator<OrderElementTemplate> validator = new ClassValidator<OrderElementTemplate>(
+                OrderElementTemplate.class);
+
+        void addFirstCell(OrderElementTemplate currentElement) {
+            int[] path = getModel().getPath(currentElement);
+            String cssClass = "depth_" + path.length;
+            Label label = new Label();
+            label.setValue("");
+            label.setSclass(cssClass);
+            addCell(label);
+        }
+
+        @Override
+        protected void addOperationsCell(Treeitem item,
+                OrderElementTemplate currentElement) {
+            addCell(new Label());
+        }
+
+        @Override
+        protected void addDescriptionCell(final OrderElementTemplate element) {
+            Textbox textBox = Util.bind(new Textbox(),
+                    new Util.Getter<String>() {
+
+                        @Override
+                        public String get() {
+                            return element.getName();
+                        }
+                    }, new Util.Setter<String>() {
+
+                        @Override
+                        public void set(String value) {
+                            element.setName(value);
+                        }
+                    });
+
+            addCell(textBox);
+        }
+
+        @Override
+        protected void addCodeCell(final OrderElementTemplate element) {
+            Textbox textBoxCode = new Textbox();
+            Util.bind(textBoxCode, new Util.Getter<String>() {
+                @Override
+                public String get() {
+                    return element.getCode();
+                }
+            }, new Util.Setter<String>() {
+
+                @Override
+                public void set(String value) {
+                    element.setCode(value);
+                }
+            });
+            addCell(textBoxCode);
+        }
+
+        void addInitCell(final OrderElementTemplate currentElement) {
+            final Intbox intbox = new Intbox();
+            Util.bind(intbox, new Getter<Integer>() {
+
+                @Override
+                public Integer get() {
+                    return currentElement.getStartAsDaysFromBeginning();
+                }
+            }, new Setter<Integer>() {
+
+                @Override
+                public void set(Integer value) {
+                    checkInvalidValues(validator, "startAsDaysFromBeginning",
+                            value, intbox);
+                    currentElement.setStartAsDaysFromBeginning(value);
+                }
+            });
+            addCell(intbox);
+        }
+
+        void addEndCell(final OrderElementTemplate currentElement) {
+            final Intbox intbox = new Intbox();
+            Util.bind(intbox, new Getter<Integer>() {
+
+                @Override
+                public Integer get() {
+                    return currentElement.getDeadlineAsDaysFromBeginning();
+                }
+            }, new Setter<Integer>() {
+
+                @Override
+                public void set(Integer value) {
+                    checkInvalidValues(validator,
+                            "deadlineAsDaysFromBeginning", value, intbox);
+                    currentElement.setDeadlineAsDaysFromBeginning(value);
+                }
+            });
+            addCell(intbox);
+        }
+
+    }
 
     private final IOrderTemplatesModel model;
 
@@ -50,12 +157,7 @@ public class TemplatesTreeController extends
 
     @Override
     public TreeitemRenderer getRenderer() {
-        return new TreeitemRenderer() {
-
-            @Override
-            public void render(Treeitem item, Object data) throws Exception {
-            }
-        };
+        return new TemplatesTreeRenderer();
     }
 
     @Override

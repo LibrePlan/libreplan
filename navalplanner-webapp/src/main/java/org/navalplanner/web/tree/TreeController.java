@@ -26,16 +26,21 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.tree.TreeComponent.Column;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
@@ -288,6 +293,17 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             final T currentElement = type.cast(data);
             createCells(item, currentElement);
             onDropMoveFromDraggedToTarget();
+        }
+
+        protected void checkInvalidValues(
+                ClassValidator<OrderElementTemplate> validator,
+                String property, Integer value, final Intbox component) {
+            InvalidValue[] invalidValues = validator.getPotentialInvalidValues(
+                    property, value);
+            if (invalidValues.length > 0) {
+                throw new WrongValueException(component, invalidValues[0]
+                        .getMessage());
+            }
         }
 
         private void createCells(Treeitem item, T currentElement) {
