@@ -1,0 +1,130 @@
+<!--
+    This file is part of ###PROJECT_NAME###
+
+    Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+    Desenvolvemento Tecnolóxico de Galicia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page  id="reports"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<?component name="combobox_output_format" macroURI="combobox_output_format.zul"
+    class="org.navalplanner.web.reports.ComboboxOutputFormat" ?>
+
+<?component name="extendedjasperreport"
+    class="org.navalplanner.web.common.components.ExtendedJasperreport"
+    extends="jasperreport" ?>
+
+<zk>
+
+    <window self="@{define(content)}"
+        apply="org.navalplanner.web.reports.WorkingArrangementsPerOrderController"
+        title="${i18n:_('Working arrangements')}"
+        border="normal" >
+
+        <!-- Select orders -->
+        <panel title="${i18n:_('Filter by orders')}"
+            border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <listbox id="lbOrders"
+                        width="600px"
+                        multiple="false"
+                        model="@{controller.orders}">
+                    <listhead>
+                        <listheader label="${i18n:_('Name')}" sort="auto(name)" />
+                        <listheader label="${i18n:_('Code')}" sort="auto(code)" />
+                    </listhead>
+                    <listitem self="@{each='order'}" value="@{order}">
+                        <listcell label="@{order.name}" />
+                        <listcell label="@{order.code}" />
+                    </listitem>
+                </listbox>
+            </panelchildren>
+        </panel>
+
+        <!-- Task status -->
+        <panel title="${i18n:_('Filter by task status')}"
+            border="normal" >
+            <panelchildren>
+                <listbox id="lbTaskStatus"
+                        model="@{controller.tasksStatus}"
+                        mold="select" />
+            </panelchildren>
+        </panel>
+
+        <!-- Show dependencies -->
+        <panel title="${i18n:_('Dependencies')}"
+            border="normal" >
+            <panelchildren>
+                <grid width="600px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Show dependencies:')}" />
+                            <checkbox id="cbShowDependencies" />
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+
+        <!-- Select output format -->
+        <panel title="${i18n:_('Format')}" border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="600px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Output format:')}" />
+                            <combobox_output_format id="outputFormat" />
+                        </row>
+                    </rows>
+                </grid>
+
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal"/>
+
+        <hbox style="display: none" id="URItext">
+            <label value="${i18n:_('Click on ')}" />
+            <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
+                    label="${i18n:_('direct link')}" />
+            <label value="${i18n:_(' to go to output directly')}" />
+        </hbox>
+        <separator spacing="10px" orient="horizontal" />
+
+        <button label="Show" onClick="controller.showReport(report)" />
+
+        <extendedjasperreport style="display: none" id="report" />
+
+    </window>
+
+</zk>

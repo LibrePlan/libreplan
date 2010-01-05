@@ -18,27 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.workreports.daos;
+package org.navalplanner.business.planner.entities;
 
-import java.util.List;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.workreports.entities.WorkReportLine;
+public enum TaskStatusEnum {
+    ALL(_(" ")),
+    FINISHED(_("Finished")),
+    IN_PROGRESS(_("In progress")),
+    PENDING(_("Pending")),
+    BLOCKED(_("Blocked"));
 
-/**
- * Dao for {@link WorkReportLine}
- *
- * @author Diego Pino García <dpino@igalia.com>
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- */
-public interface IWorkReportLineDAO extends IGenericDAO<WorkReportLine, Long>{
+    private String value;
 
-    List<WorkReportLine> findByOrderElement(OrderElement orderElement);
+    private TaskStatusEnum(String value) {
+        this.value = value;
+    }
 
-    List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement);
-
-    List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement, boolean sortByDate);
-
+    public String toString() {
+        return value;
+    }
 }

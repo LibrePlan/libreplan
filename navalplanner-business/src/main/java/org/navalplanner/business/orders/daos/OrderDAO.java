@@ -1,21 +1,21 @@
 /*
  * This file is part of ###PROJECT_NAME###
- *
+ * 
  * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
- *                    Desenvolvemento Tecnolóxico de Galicia
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
+ * Desenvolvemento Tecnolóxico de Galicia
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
+ * 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.navalplanner.business.orders.daos;
@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.hibernate.Query;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -46,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Dao for {@link Order}
+ * 
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
@@ -76,7 +76,7 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
     }
 
     private boolean isOrderNameContained(String code, List<Order> orders) {
-        for (Order each:orders) {
+        for (Order each : orders) {
             if (each.getCode().equals(code)) {
                 return true;
             }
@@ -84,7 +84,6 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
         return false;
     }
 
-    @Override
     @Transactional(readOnly = true)
     public List<OrderCostsPerResourceDTO> getOrderCostsPerResource(
             List<Order> orders, Date startingDate, Date endingDate) {
@@ -145,13 +144,13 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
                         if (defaultprice.getCode().equals(each.getHoursType())) {
                             pricePerHour = defaultprice.getDefaultPrice();
                         }
-                        }
                     }
+                }
 
                 each.setCostPerHour(pricePerHour);
                 each.setCost(each.getCostPerHour().multiply(
                         new BigDecimal(each.getNumHours())));
-                    filteredList.add(each);
+                filteredList.add(each);
             }
         }
         return filteredList;
@@ -160,14 +159,16 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
     @Override
     public List<Task> getTasksByOrder(Order order) {
         reattach(order);
-        List<OrderElement> orderElements = order.getAllChildren();
-        orderElements.add(order);
+
+        final List<OrderElement> orderElements = order.getAllChildren();
+        if (orderElements.isEmpty()) {
+            return new ArrayList<Task>();
+        }
 
         final String strQuery = "SELECT taskSource.task "
                 + "FROM TaskSource taskSource "
                 + "WHERE taskSource.orderElement IN (:orderElements) "
                 + " AND taskSource.task IN (FROM Task)";
-
         Query query = getSession().createQuery(strQuery);
         query.setParameterList("orderElements", orderElements);
 

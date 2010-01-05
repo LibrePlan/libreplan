@@ -49,7 +49,8 @@ public interface IOrderDAO extends IGenericDAO<Order, Long> {
      */
     List<OrderCostsPerResourceDTO> getOrderCostsPerResource(List<Order> orders,
             Date startingDate, Date endingDate);
-    /*
+
+    /**
      * @param order
      * @return
      */

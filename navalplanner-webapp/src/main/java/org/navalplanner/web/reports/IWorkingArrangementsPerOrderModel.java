@@ -18,27 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.workreports.daos;
+package org.navalplanner.web.reports;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import net.sf.jasperreports.engine.JRDataSource;
+
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.business.planner.entities.TaskStatusEnum;
 
 /**
- * Dao for {@link WorkReportLine}
  *
- * @author Diego Pino García <dpino@igalia.com>
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ *
  */
-public interface IWorkReportLineDAO extends IGenericDAO<WorkReportLine, Long>{
+public interface IWorkingArrangementsPerOrderModel {
 
-    List<WorkReportLine> findByOrderElement(OrderElement orderElement);
+    JRDataSource getWorkingArrangementsPerOrderReportReport(Order order,
+            TaskStatusEnum taskStatus, boolean showDependencies);
 
-    List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement);
-
-    List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement, boolean sortByDate);
+    List<Order> getOrders();
 
 }

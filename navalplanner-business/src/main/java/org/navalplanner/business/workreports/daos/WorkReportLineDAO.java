@@ -20,11 +20,13 @@
 
 package org.navalplanner.business.workreports.daos;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -43,6 +45,7 @@ import org.springframework.stereotype.Repository;
 public class WorkReportLineDAO extends
         GenericDAOHibernate<WorkReportLine, Long> implements IWorkReportLineDAO {
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<WorkReportLine> findByOrderElement(OrderElement orderElement){
         Criteria c = getSession().createCriteria(WorkReportLine.class).createCriteria("orderElement");
@@ -53,14 +56,23 @@ public class WorkReportLineDAO extends
     @Override
     public List<WorkReportLine> findByOrderElementAndChildren(
             OrderElement orderElement) {
-        Criteria c = getSession().createCriteria(WorkReportLine.class);
+        return findByOrderElementAndChildren(orderElement, false);
+    }
 
-        List<OrderElement> orderElements = orderElement.getAllChildren();
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement, boolean sortByDate) {
+        // Create collection with current orderElement and all its children
+        Collection<OrderElement> orderElements = orderElement.getAllChildren();
         orderElements.add(orderElement);
 
-        c.add(Restrictions.in("orderElement", orderElements));
-
-        return (List<WorkReportLine>) c.list();
+        // Prepare criteria
+        final Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+        criteria.add(Restrictions.in("orderElement", orderElements));
+        if (sortByDate) {
+            criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+        }
+        return criteria.list();
     }
 
 }
