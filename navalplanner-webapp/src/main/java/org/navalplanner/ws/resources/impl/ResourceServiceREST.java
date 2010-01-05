@@ -20,14 +20,19 @@
 
 package org.navalplanner.ws.resources.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -37,8 +42,10 @@ import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
 import org.navalplanner.ws.common.impl.Util;
 import org.navalplanner.ws.resources.api.IResourceService;
+import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourceListDTO;
+import org.navalplanner.ws.resources.api.WorkerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +73,7 @@ public class ResourceServiceREST implements IResourceService {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             new ArrayList<InstanceConstraintViolationsDTO>();
         int instanceNumber = 1;
+        Set<String> resourceUserProvidedIds = new HashSet<String>();
 
         /* Process resources. */
         for (ResourceDTO resourceDTO : resources.resources) {
@@ -81,7 +89,7 @@ public class ResourceServiceREST implements IResourceService {
                 instanceConstraintViolationsDTO =
                     InstanceConstraintViolationsDTO.create(
                         Util.generateInstanceId(instanceNumber,
-                            resourceDTO.getUserProvidedId()),
+                            getUserProvidedId(resourceDTO)),
                         e.getMessage());
             }
 
@@ -89,20 +97,36 @@ public class ResourceServiceREST implements IResourceService {
             if (resource != null) {
                 try {
 
-                    /*
-                     * See CriterionServiceREST::addCriterionTypes for a
-                     * justification of the explicit use of
-                     * BaseEntity::validate.
-                     *
-                     */
-                    resource.validate();
-                    resourceDAO.save(resource);
+                    if (resourceUserProvidedIds.contains(
+                        getUserProvidedId(resourceDTO).toLowerCase())) {
+
+                        instanceConstraintViolationsDTO =
+                            InstanceConstraintViolationsDTO.create(
+                                Util.generateInstanceId(instanceNumber,
+                                    getUserProvidedId(resourceDTO)),
+                                    getDuplicatedImportedResourceErrorMessage(
+                                        resourceDTO));
+
+                    } else {
+
+                        /*
+                         * See CriterionServiceREST::addCriterionTypes for a
+                         * justification of the explicit use of
+                         * BaseEntity::validate.
+                         *
+                         */
+                        resource.validate();
+                        resourceDAO.save(resource);
+                        resourceUserProvidedIds.add(
+                            getUserProvidedId(resourceDTO).toLowerCase());
+
+                    }
 
                 } catch (ValidationException e) {
                     instanceConstraintViolationsDTO =
                         ConstraintViolationConverter.toDTO(
                             Util.generateInstanceId(instanceNumber,
-                                resourceDTO.getUserProvidedId()),
+                                getUserProvidedId(resourceDTO)),
                             e.getInvalidValues());
                 }
             }
@@ -119,6 +143,40 @@ public class ResourceServiceREST implements IResourceService {
 
         return new InstanceConstraintViolationsListDTO(
                 instanceConstraintViolationsList);
+
+    }
+
+    private String getUserProvidedId(ResourceDTO resourceDTO) {
+
+        if (resourceDTO instanceof MachineDTO) {
+            MachineDTO m = (MachineDTO) resourceDTO;
+            return "machine" + '-' + StringUtils.trim(m.code);
+        } else if (resourceDTO instanceof WorkerDTO) {
+            WorkerDTO w = (WorkerDTO) resourceDTO;
+            return "worker" + '-' + StringUtils.trim(w.firstName) +
+                '-' + StringUtils.trim(w.surname) + '-' +
+                StringUtils.trim(w.nif);
+        } else {
+            throw new RuntimeException(
+                _("Service does not manages resource of type: {0}",
+                    resourceDTO.getClass().getName()));
+        }
+
+    }
+
+    private String getDuplicatedImportedResourceErrorMessage(
+        ResourceDTO resourceDTO) {
+
+        if (resourceDTO instanceof MachineDTO) {
+            return _("code is used by another machine being imported");
+        } else if (resourceDTO instanceof WorkerDTO) {
+            return _("first name, surname, and nif are used by another " +
+                "worker being imported");
+        } else {
+            throw new RuntimeException(
+                 _("Service does not manages resource of type: {0}",
+                    resourceDTO.getClass().getName()));
+        }
 
     }
 

@@ -46,10 +46,4 @@ public class WorkerDTO extends ResourceDTO {
         this.nif = nif;
     }
 
-    @Override
-    public String getUserProvidedId() {
-
-        return "worker" + '-' + firstName + '-' + surname + '-' + nif;
-    }
-
 }

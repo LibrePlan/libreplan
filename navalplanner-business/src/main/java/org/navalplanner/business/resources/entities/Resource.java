@@ -824,7 +824,7 @@ public abstract class Resource extends BaseEntity{
         return false;
     }
 
-    @AssertTrue(message="There are criterion satisfactions referring to " +
+    @AssertTrue(message="there are criterion satisfactions referring to " +
         "criterion types not applicable to this resource")
     public boolean checkConstraintCriterionSatisfactionsWithCorrectType() {
 

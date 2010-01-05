@@ -21,6 +21,9 @@
         </criterion-satisfaction-list>
     </machine>
 
+    <!--  Another machine is being imported with the same code. -->
+    <machine code="m1" name="m3-name" description="m3-desc"/>
+
     <!--  *** Workers *** -->
 
     <!-- OK -->
@@ -93,5 +96,9 @@
                 finish-date=""/>
         </criterion-satisfaction-list>
     </worker>
+
+    <!-- Another worker is being imported with the same first name, surname,
+         and nif. -->
+    <worker first-name="w1-firstName" surname="w1-surname" nif="w1-nif"/>
 
 </resource-list>

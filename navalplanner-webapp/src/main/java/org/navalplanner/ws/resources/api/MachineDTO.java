@@ -46,9 +46,4 @@ public class MachineDTO extends ResourceDTO {
         this.description = description;
     }
 
-    @Override
-    public String getUserProvidedId() {
-        return "machine" + '-' + code;
-    }
-
 }

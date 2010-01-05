@@ -129,6 +129,79 @@ public class ResourceServiceTest {
 
     @Test
     @NotTransactional
+    public void testAddMachineWithExistingCode()
+        throws InstanceNotFoundException {
+
+        /* Create a machine. */
+        Machine m1 = Machine.createUnvalidated(getUniqueName(), "name", "desc");
+        saveResource(m1);
+
+        /* Create a machine DTO with the same code. */
+        MachineDTO m2 = new MachineDTO(m1.getCode(), "name", "desc");
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(m2)));
+        machineDAO.findUniqueByCodeInAnotherTransaction(m1.getCode());
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddWorkerWithExistingFirstNameSurnameAndNif() {
+
+        /* Create a worker. */
+        Worker w1 = Worker.createUnvalidated(getUniqueName(), "surname", "nif");
+        saveResource(w1);
+
+        /*
+         * Create a worker DTO with the same first name, surname, and nif as
+         * the previous one.
+         */
+        WorkerDTO w2 = new WorkerDTO(w1.getFirstName(), w1.getSurname(),
+            w1.getNif());
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(w2)));
+        assertTrue(
+            workerDAO.findByFirstNameSecondNameAndNifAnotherTransaction(
+                w2.firstName, w2.surname, w2.nif).size() == 1);
+
+    }
+
+
+    @Test
+    public void testAddResourcesWithDuplicateResourcesBeingImported()
+        throws InstanceNotFoundException {
+
+        /* Create resource DTOs. */
+        MachineDTO m1 = new MachineDTO(getUniqueName(), "m1-name", "m1-desc");
+        MachineDTO m2 = new MachineDTO(' ' + m1.code.toUpperCase() + ' ',
+            "m2-name", "m2-desc");
+        WorkerDTO w1 = new WorkerDTO(getUniqueName(), "w1-surname", "w1-nif");
+        WorkerDTO w2 = new WorkerDTO(w1.firstName,
+            ' ' + w1.surname.toUpperCase() + ' ', w1.nif);
+
+        /* Test. */
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            resourceService.addResources(createResourceListDTO(m1, m2, w1, w2)).
+                instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.size() == 2);
+        assertTrue(instanceConstraintViolationsList.get(0).
+            constraintViolations.size() == 1);
+        assertTrue(instanceConstraintViolationsList.get(1).
+            constraintViolations.size() == 1);
+        machineDAO.findUniqueByCode(m1.code);
+        assertTrue(
+            workerDAO.findByFirstNameSecondNameAndNif(
+                w1.firstName, w1.surname, w1.nif.trim()).size() == 1);
+
+    }
+
+    @Test
+    @NotTransactional
     public void testAddResourceWithCriterionSatisfactions()
         throws InstanceNotFoundException {
 
@@ -162,54 +235,6 @@ public class ResourceServiceTest {
                 fail("Criterion not expected");
             }
         }
-
-    }
-
-    @Test
-    @NotTransactional
-    public void AddResourceWithCriterionSatisfactionsWithIncorrectNames() {
-
-        /* Create a criterion type. */
-        CriterionType ct = createCriterionType();
-
-        /* Create a machine DTO. */
-        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
-
-        /* Test. */
-        machineDTO.criterionSatisfactions.add( // Non-existent criterion type.
-                new CriterionSatisfactionDTO(ct.getName() + 'X' , "c1",
-                    Calendar.getInstance().getTime(), null));
-        assertOneConstraintViolation(
-            resourceService.addResources(createResourceListDTO(machineDTO)));
-        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
-            machineDTO.code));
-
-        machineDTO.criterionSatisfactions.clear();
-        machineDTO.criterionSatisfactions.add( // Non-existent criterion.
-                new CriterionSatisfactionDTO(ct.getName() , "c1" + 'X',
-                    Calendar.getInstance().getTime(), null));
-        assertOneConstraintViolation(
-            resourceService.addResources(createResourceListDTO(machineDTO)));
-        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
-            machineDTO.code));
-
-        machineDTO.criterionSatisfactions.clear();
-        machineDTO.criterionSatisfactions.add( // Criterion type null.
-                new CriterionSatisfactionDTO(null , "c1",
-                    Calendar.getInstance().getTime(), null));
-        assertOneConstraintViolation(
-            resourceService.addResources(createResourceListDTO(machineDTO)));
-        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
-            machineDTO.code));
-
-        machineDTO.criterionSatisfactions.clear();
-        machineDTO.criterionSatisfactions.add( // Criterion null.
-                new CriterionSatisfactionDTO(ct.getName() , null,
-                    Calendar.getInstance().getTime(), null));
-        assertOneConstraintViolation(
-            resourceService.addResources(createResourceListDTO(machineDTO)));
-        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
-            machineDTO.code));
 
     }
 
@@ -314,49 +339,6 @@ public class ResourceServiceTest {
             assertFalse(
                 machineDAO.existsMachineWithCodeInAnotherTransaction(m.code));
         }
-
-    }
-
-    @Test
-    @NotTransactional
-    public void createMachineWithExistingCode()
-        throws InstanceNotFoundException {
-
-        /* Create a machine. */
-        Machine m1 = Machine.createUnvalidated(getUniqueName(), "name", "desc");
-        saveResource(m1);
-
-        /* Create a machine DTO with the same code. */
-        MachineDTO m2 = new MachineDTO(m1.getCode(), "name", "desc");
-
-        /* Test. */
-        assertOneConstraintViolation(
-            resourceService.addResources(createResourceListDTO(m2)));
-        machineDAO.findUniqueByCodeInAnotherTransaction(m1.getCode());
-
-    }
-
-    @Test
-    @NotTransactional
-    public void createWorkerWithExistingFirstNameSurnameAndNif() {
-
-        /* Create a worker. */
-        Worker w1 = Worker.createUnvalidated(getUniqueName(), "surname", "nif");
-        saveResource(w1);
-
-        /*
-         * Create a worker DTO with the same first name, surname, and nif as
-         * the previous one.
-         */
-        WorkerDTO w2 = new WorkerDTO(w1.getFirstName(), w1.getSurname(),
-            w1.getNif());
-
-        /* Test. */
-        assertOneConstraintViolation(
-            resourceService.addResources(createResourceListDTO(w2)));
-        assertTrue(
-            workerDAO.findByFirstNameSecondNameAndNifAnotherTransaction(
-                w2.firstName, w2.surname, w2.nif).size() == 1);
 
     }
 

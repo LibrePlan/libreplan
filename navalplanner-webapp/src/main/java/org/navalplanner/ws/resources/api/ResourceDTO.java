@@ -38,6 +38,4 @@ public abstract class ResourceDTO {
     public List<CriterionSatisfactionDTO> criterionSatisfactions =
         new ArrayList<CriterionSatisfactionDTO>();
 
-    public abstract String getUserProvidedId();
-
 }
