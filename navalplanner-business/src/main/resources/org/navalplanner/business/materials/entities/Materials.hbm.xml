@@ -63,9 +63,11 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="units" />
-
-    <property name="unitPrice" column="UNIT_PRICE" />
+    <component name="materialInfo">
+	    <property name="units" />
+	    <property name="unitPrice" column="UNIT_PRICE" />
+	    <many-to-one name="material" class="Material" column="MATERIAL_ID" />
+    </component>
 
     <property name="estimatedAvailability" column="ESTIMATED_AVAILABILITY" />
 
@@ -76,8 +78,6 @@
     </property>
 
     <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" />
-
-    <many-to-one name="material" class="Material" column="MATERIAL_ID" />
 
 </class>
 

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 
-import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -35,11 +35,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
  */
 public class MaterialAssignment extends BaseEntity implements Comparable {
 
-    private Material material;
-
-    private Double units = 0.0;
-
-    private BigDecimal unitPrice = BigDecimal.ZERO;
+    private MaterialInfo materialInfo = new MaterialInfo();
 
     private Date estimatedAvailability;
 
@@ -72,31 +68,36 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
         return result;
     }
 
-    @NotNull(message = "material not specified")
+    @Valid
+    private MaterialInfo getMaterialInfo() {
+        if (materialInfo == null) {
+            materialInfo = new MaterialInfo();
+        }
+        return materialInfo;
+    }
+
     public Material getMaterial() {
-        return material;
+        return getMaterialInfo().getMaterial();
     }
 
     public void setMaterial(Material material) {
-        this.material = material;
+        getMaterialInfo().setMaterial(material);
     }
 
-    @NotNull(message = "units not specified")
     public Double getUnits() {
-        return units;
+        return getMaterialInfo().getUnits();
     }
 
     public void setUnits(Double units) {
-        this.units = units;
+        getMaterialInfo().setUnits(units);
     }
 
-    @NotNull(message = "unit price not specified")
     public BigDecimal getUnitPrice() {
-        return unitPrice;
+        return getMaterialInfo().getUnitPrice();
     }
 
     public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
+        getMaterialInfo().setUnitPrice(unitPrice);
     }
 
     public BigDecimal getTotalPrice() {
@@ -106,7 +107,8 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
 
     public void setTotalPrice(BigDecimal totalPrice) {
         BigDecimal unitPrice = totalPrice;
-        unitPrice = unitPrice.divide(new BigDecimal(units), 3, RoundingMode.HALF_UP);
+        unitPrice = unitPrice.divide(new BigDecimal(getUnits()), 3,
+                RoundingMode.HALF_UP);
         setUnitPrice(unitPrice);
     }
 
