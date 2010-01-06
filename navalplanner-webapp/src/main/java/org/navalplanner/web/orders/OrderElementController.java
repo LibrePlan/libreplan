@@ -147,7 +147,7 @@ public class OrderElementController extends GenericForwardComposer {
         manageOrderElementAdvancesController.openWindow(model);
         assignedLabelsController.openWindow(model);
         assignedCriterionRequirementController.openWindow(model);
-        assignedMaterialsController.openWindow(model);
+        assignedMaterialsController.openWindow(model.getOrderElement());
         assignedTaskQualityFormsController.openWindow(model);
 
         try {

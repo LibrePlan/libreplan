@@ -37,7 +37,6 @@ import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.orders.IOrderElementModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -93,8 +92,8 @@ public class AssignedMaterialsToOrderElementController extends
         comp.setVariable("assignedMaterialsController", this, true);
     }
 
-    public void openWindow(IOrderElementModel orderElementModel) {
-        assignedMaterialsToOrderElementModel.initEdit(orderElementModel);
+    public void openWindow(OrderElement orderElement) {
+        assignedMaterialsToOrderElementModel.initEdit(orderElement);
         prepareCategoriesTree();
         prepareAllCategoriesTree();
     }

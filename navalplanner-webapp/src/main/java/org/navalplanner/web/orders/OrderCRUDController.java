@@ -421,7 +421,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         manageOrderElementAdvancesController.openWindow(orderElementModel);
         assignedLabelsController.openWindow(orderElementModel);
         assignedCriterionRequirementController.openWindow(orderElementModel);
-        assignedMaterialsController.openWindow(orderElementModel);
+        assignedMaterialsController.openWindow(orderElementModel
+                .getOrderElement());
         assignedTaskQualityFormController.openWindow(orderElementModel);
     }
 

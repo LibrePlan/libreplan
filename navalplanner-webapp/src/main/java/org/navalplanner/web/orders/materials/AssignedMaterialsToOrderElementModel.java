@@ -33,7 +33,6 @@ import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.web.orders.IOrderElementModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -59,8 +58,6 @@ public class AssignedMaterialsToOrderElementModel implements
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    private IOrderElementModel orderElementModel;
-
     private OrderElement orderElement;
 
     private MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
@@ -73,9 +70,8 @@ public class AssignedMaterialsToOrderElementModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public void initEdit(IOrderElementModel orderElementModel) {
-        this.orderElementModel = orderElementModel;
-        this.orderElement = this.orderElementModel.getOrderElement();
+    public void initEdit(OrderElement orderElement) {
+        this.orderElement = orderElement;
         orderElementDAO.reattach(this.orderElement);
         materialCategories = MutableTreeModel.create(MaterialCategory.class);
         initializeMaterialAssigments(this.orderElement.getMaterialAssignments());

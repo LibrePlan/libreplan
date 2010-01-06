@@ -27,7 +27,6 @@ import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.web.orders.IOrderElementModel;
 import org.zkoss.zul.TreeModel;
 
 
@@ -88,7 +87,7 @@ public interface IAssignedMaterialsToOrderElementModel {
      */
     double getUnits(MaterialCategory materialCategory);
 
-    void initEdit(IOrderElementModel orderElementModel);
+    void initEdit(OrderElement orderElement);
 
     void removeMaterialAssignment(MaterialAssignment materialAssignment);
 
