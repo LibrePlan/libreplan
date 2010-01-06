@@ -81,4 +81,22 @@
 
 </class>
 
+<class name="MaterialAssignmentTemplate" table="MATERIAL_ASSIGMENT">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+        <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <component name="materialInfo">
+        <property name="units" />
+        <property name="unitPrice" column="UNIT_PRICE" />
+        <many-to-one name="material" class="Material" column="MATERIAL_ID" />
+    </component>
+
+    <many-to-one name="orderElementTemplate" class="org.navalplanner.business.templates.entities.OrderElementTemplate" column="ORDER_ELEMENT_TEMPLATE_ID" />
+
+</class>
+
 </hibernate-mapping>

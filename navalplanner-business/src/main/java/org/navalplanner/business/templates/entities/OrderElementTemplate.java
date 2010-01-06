@@ -19,8 +19,11 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Min;
@@ -28,6 +31,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
 import org.navalplanner.business.orders.entities.InfoComponent;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -89,6 +93,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private Integer deadlineAsDaysFromBeginning;
 
     private OrderLineGroupTemplate parent;
+
+    private Set<MaterialAssignmentTemplate> materialAssignments = new HashSet<MaterialAssignmentTemplate>();
 
     public OrderLineGroupTemplate getParent() {
         return parent;
@@ -161,5 +167,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         result.setDescription(getDescription());
         result.setDeadlineAsDaysFromBeginning(getDeadlineAsDaysFromBeginning());
         result.setStartAsDaysFromBeginning(getStartAsDaysFromBeginning());
+    }
+
+    public Set<MaterialAssignmentTemplate> getMaterialAssignments() {
+        return Collections.unmodifiableSet(materialAssignments);
     }
 }

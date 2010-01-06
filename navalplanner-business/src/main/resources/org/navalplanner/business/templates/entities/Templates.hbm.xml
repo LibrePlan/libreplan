@@ -19,6 +19,11 @@
 
         <many-to-one name="parent" access="field" />
 
+        <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
+            <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
+            <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignmentTemplate" />
+        </set>
+
         <joined-subclass name="OrderLineGroupTemplate">
             <key column="GROUP_TEMPLATE_ID"></key>
             <list name="children" access="field" cascade="all">
