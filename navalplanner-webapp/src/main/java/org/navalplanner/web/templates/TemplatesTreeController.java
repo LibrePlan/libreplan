@@ -56,7 +56,11 @@ public class TemplatesTreeController extends
         @Override
         protected void addOperationsCell(Treeitem item,
                 OrderElementTemplate currentElement) {
-            addCell(new Label());
+            addCell(createUpButton(item, currentElement),
+                    createDownButton(item, currentElement),
+                    createUnindentButton(item, currentElement),
+                    createIndentButton(item, currentElement),
+                    createRemoveButton(currentElement));
         }
 
         @Override
