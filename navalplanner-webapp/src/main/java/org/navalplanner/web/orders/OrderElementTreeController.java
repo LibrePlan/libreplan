@@ -56,7 +56,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
@@ -582,29 +581,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     @Override
     protected boolean isNewButtonDisabled() {
         return isPredicateApplied();
-    }
-
-    /**
-     * Disable control buttons (new, up, down, indent, unindent, delete)
-     */
-    public void updateControlButtons(Event event) {
-        updateControlButtons((Tree) event.getTarget());
-    }
-
-    public void updateControlButtons(Tree tree) {
-        final Treeitem item = tree.getSelectedItem();
-
-        boolean disabledLevel1 = isNewButtonDisabled()
-                && isFirstLevelElement(item);
-        boolean disabledLevel2 = isNewButtonDisabled()
-                && (isFirstLevelElement(item) || isSecondLevelElement(item));
-
-        btnNew.setDisabled(false);
-        btnDown.setDisabled(disabledLevel1);
-        btnUp.setDisabled(disabledLevel1);
-        btnUnindent.setDisabled(disabledLevel2);
-        btnIndent.setDisabled(disabledLevel1);
-        btnDelete.setDisabled(false);
     }
 
     /**

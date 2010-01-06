@@ -37,6 +37,7 @@ import org.navalplanner.web.tree.TreeComponent.Column;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
@@ -385,6 +386,32 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     public void setColumns(List<Column> columns) {
         this.columns = columns;
+    }
+
+    /**
+     * Disable control buttons (new, up, down, indent, unindent, delete)
+     */
+    public void updateControlButtons(Event event) {
+        updateControlButtons((Tree) event.getTarget());
+    }
+
+    public void updateControlButtons(Tree tree) {
+        final Treeitem item = tree.getSelectedItem();
+        if (item == null) {
+            resetControlButtons();
+            return;
+        }
+        boolean disabledLevel1 = isNewButtonDisabled()
+                && isFirstLevelElement(item);
+        boolean disabledLevel2 = isNewButtonDisabled()
+                && (isFirstLevelElement(item) || isSecondLevelElement(item));
+
+        btnNew.setDisabled(false);
+        btnDown.setDisabled(disabledLevel1);
+        btnUp.setDisabled(disabledLevel1);
+        btnUnindent.setDisabled(disabledLevel2);
+        btnIndent.setDisabled(disabledLevel1);
+        btnDelete.setDisabled(false);
     }
 
 }
