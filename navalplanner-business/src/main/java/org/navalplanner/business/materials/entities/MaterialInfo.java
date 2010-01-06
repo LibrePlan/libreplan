@@ -62,4 +62,12 @@ public class MaterialInfo {
         this.unitPrice = unitPrice;
     }
 
+    public MaterialInfo copy() {
+        MaterialInfo result = new MaterialInfo();
+        result.setMaterial(getMaterial());
+        result.setUnits(getUnits());
+        result.setUnitPrice(getUnitPrice());
+        return result;
+    }
+
 }

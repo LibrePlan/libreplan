@@ -69,7 +69,7 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
     }
 
     @Valid
-    private MaterialInfo getMaterialInfo() {
+    public MaterialInfo getMaterialInfo() {
         if (materialInfo == null) {
             materialInfo = new MaterialInfo();
         }

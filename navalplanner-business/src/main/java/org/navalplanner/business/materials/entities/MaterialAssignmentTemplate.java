@@ -48,6 +48,14 @@ public class MaterialAssignmentTemplate extends BaseEntity {
         return result;
     }
 
+    public static MaterialAssignmentTemplate copyFrom(
+            MaterialAssignment assignment, OrderElementTemplate destination) {
+        MaterialAssignmentTemplate result = new MaterialAssignmentTemplate();
+        result.materialInfo = assignment.getMaterialInfo().copy();
+        result.orderElementTemplate = destination;
+        return result;
+    }
+
     private MaterialInfo materialInfo = new MaterialInfo();
 
     private OrderElementTemplate orderElementTemplate;
@@ -65,11 +73,6 @@ public class MaterialAssignmentTemplate extends BaseEntity {
 
     public OrderElementTemplate getOrderElementTemplate() {
         return orderElementTemplate;
-    }
-
-    public void setOrderElementTemplate(
-            OrderElementTemplate orderElementTemplate) {
-        this.orderElementTemplate = orderElementTemplate;
     }
 
     public Material getMaterial() {

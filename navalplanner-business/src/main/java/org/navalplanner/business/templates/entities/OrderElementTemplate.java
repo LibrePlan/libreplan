@@ -19,6 +19,7 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
 import org.navalplanner.business.orders.entities.InfoComponent;
 import org.navalplanner.business.orders.entities.Order;
@@ -52,8 +54,19 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 .getInitDate());
         Days fromBeginningToEnd = daysBetween(order.getDeadline(), origin
                 .getDeadline());
+        beingBuilt.materialAssignments = copyMaterialAssignmentsFrom(beingBuilt, origin
+                .getMaterialAssignments());
         return create(beingBuilt, infoComponentCopied,
                 fromBeginningToStart, fromBeginningToEnd);
+    }
+
+    private static Set<MaterialAssignmentTemplate> copyMaterialAssignmentsFrom(OrderElementTemplate beingBuilt,
+            Collection<? extends MaterialAssignment> assignments) {
+        Set<MaterialAssignmentTemplate> result = new HashSet<MaterialAssignmentTemplate>();
+        for (MaterialAssignment each : assignments) {
+            result.add(MaterialAssignmentTemplate.copyFrom(each, beingBuilt));
+        }
+        return result;
     }
 
     private static <T extends OrderElementTemplate> T create(T beingBuilt,
