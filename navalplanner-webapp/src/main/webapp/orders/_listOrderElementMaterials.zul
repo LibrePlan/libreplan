@@ -19,7 +19,7 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AssignedMaterialsToOrderElementController" >
+    apply="org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController" >
 
     <zscript>
         Object[] unitTypes = org.navalplanner.business.materials.entities.UnitTypeEnum

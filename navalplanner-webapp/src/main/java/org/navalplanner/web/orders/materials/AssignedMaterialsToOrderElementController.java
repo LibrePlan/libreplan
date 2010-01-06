@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.orders;
+package org.navalplanner.web.orders.materials;
 
 import static org.navalplanner.web.I18nHelper._;
 
@@ -37,6 +37,7 @@ import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.orders.IOrderElementModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;

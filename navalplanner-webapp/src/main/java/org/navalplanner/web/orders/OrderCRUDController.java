@@ -41,6 +41,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.tree.TreeComponent;
 import org.navalplanner.web.users.OrderAuthorizationController;

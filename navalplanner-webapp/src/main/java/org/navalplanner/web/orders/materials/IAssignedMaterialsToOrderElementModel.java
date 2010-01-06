@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.orders;
+package org.navalplanner.web.orders.materials;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,6 +27,7 @@ import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.web.orders.IOrderElementModel;
 import org.zkoss.zul.TreeModel;
 
 
