@@ -53,6 +53,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
@@ -112,7 +113,24 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     private void createTemplate(OrderElement selectedNode) {
-        orderTemplates.goToCreateTemplateFrom(selectedNode);
+        if (!selectedNode.isNewObject()) {
+            orderTemplates.goToCreateTemplateFrom(selectedNode);
+        } else {
+            notifyTemplateCantBeCreated();
+        }
+    }
+
+    private void notifyTemplateCantBeCreated() {
+        try {
+            Messagebox
+                    .show(
+                            _("Templates can only be created from already existent order elements.\n"
+                                    + "Newly order elements cannot be used."),
+                            _("Operation cannot be done"), Messagebox.OK,
+                            Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void filterByPredicateIfAny() {
