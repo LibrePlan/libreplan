@@ -19,6 +19,8 @@
  */
 package org.navalplanner.web.tree;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
@@ -368,6 +371,116 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected abstract void addOperationsCell(final Treeitem item,
                 final T currentElement);
 
+        protected Button createUpButton(final Treeitem item,
+                final T currentElement) {
+            EventListener upButtonListener = new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    down(currentElement);
+                }
+            };
+            Button result;
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                result = createButton("/common/img/ico_bajar_out.png", "",
+                        "/common/img/ico_bajar_out.png", "icono",
+                        upButtonListener);
+                result.setDisabled(true);
+            } else {
+                result = createButton("/common/img/ico_bajar1.png",
+                        _("Move down"), "/common/img/ico_bajar.png", "icono",
+                        upButtonListener);
+            }
+            return result;
+        }
+
+        protected Button createDownButton(final Treeitem item, final T element) {
+            EventListener downButtonListener = new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    up(element);
+                }
+            };
+            Button result;
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                result = createButton("/common/img/ico_subir_out.png", "",
+                        "/common/img/ico_subir_out.png", "icono",
+                        downButtonListener);
+                result.setDisabled(true);
+            } else {
+                result = createButton("/common/img/ico_subir1.png",
+                        _("Move up"), "/common/img/ico_subir.png", "icono",
+                        downButtonListener);
+            }
+            return result;
+        }
+
+        protected Button createUnindentButton(final Treeitem item,
+                final T element) {
+            EventListener unindentListener = new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    unindent(element);
+                }
+            };
+            final Button result;
+            if ((isFirstLevelElement(item) || isSecondLevelElement(item))
+                    && isPredicateApplied()) {
+                result = createButton("/common/img/ico_izq_out.png", "",
+                        "/common/img/ico_izq_out.png", "icono",
+                        unindentListener);
+                result.setDisabled(true);
+            } else {
+                result = createButton("/common/img/ico_izq1.png",
+                        _("Unindent"), "/common/img/ico_izq.png", "icono",
+                        unindentListener);
+            }
+            return result;
+        }
+
+        protected Button createIndentButton(final Treeitem item, final T element) {
+            EventListener indentListener = new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    indent(element);
+                }
+            };
+            final Button result;
+            if (isFirstLevelElement(item) && isPredicateApplied()) {
+                result = createButton("/common/img/ico_derecha_out.png", "",
+                        "/common/img/ico_derecha_out.png", "icono",
+                        indentListener);
+            } else {
+                result = createButton("/common/img/ico_derecha1.png",
+                        _("Indent"), "/common/img/ico_derecha.png", "icono",
+                        indentListener);
+            }
+            return result;
+        }
+
+        protected Button createRemoveButton(final T currentElement) {
+            final Button result = createButton("/common/img/ico_borrar1.png",
+                    _("Delete"), "/common/img/ico_borrar.png", "icono",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            remove(currentElement);
+                            filterByPredicateIfAny();
+                        }
+                    });
+            return result;
+        }
+
+        protected Button createButton(String image, String tooltip,
+                String hoverImage, String styleClass,
+                EventListener eventListener) {
+            Button result = new Button("", image);
+            result.setHoverImage(hoverImage);
+            result.setSclass(styleClass);
+            result.setTooltiptext(tooltip);
+            result.addEventListener(Events.ON_CLICK, eventListener);
+            return result;
+        }
+
         @Override
         public void doCatch(Throwable ex) throws Throwable {
 
@@ -413,5 +526,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         btnIndent.setDisabled(disabledLevel1);
         btnDelete.setDisabled(false);
     }
+
+    protected abstract boolean isPredicateApplied();
 
 }

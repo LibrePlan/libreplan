@@ -165,4 +165,9 @@ public class TemplatesTreeController extends
         return false;
     }
 
+    @Override
+    protected boolean isPredicateApplied() {
+        return false;
+    }
+
 }

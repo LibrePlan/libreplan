@@ -378,7 +378,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             addCell(createEditButton(currentOrderElement),
                     createTemplateButton(currentOrderElement),
                     createUpButton(item,currentOrderElement),
-                    createDownListener(item,currentOrderElement),
+                    createDownButton(item,currentOrderElement),
                     createUnindentButton(item, currentOrderElement),
                     createIndentButton(item, currentOrderElement),
                     createRemoveButton(currentOrderElement));
@@ -413,122 +413,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             return templateButton;
         }
 
-        private Button createUpButton(final Treeitem item,
-                final OrderElement currentOrderElement) {
-            EventListener upButtonListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    down(currentOrderElement);
-                }
-            };
-            Button result;
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
-                result = createButton("/common/img/ico_bajar_out.png", "",
-                        "/common/img/ico_bajar_out.png", "icono",
-                        upButtonListener);
-                result.setDisabled(true);
-            } else {
-                result = createButton("/common/img/ico_bajar1.png",
-                        _("Move down"), "/common/img/ico_bajar.png", "icono",
-                        upButtonListener);
-            }
-            return result;
-        }
-
-        private Button createDownListener(final Treeitem item,
-                final OrderElement currentOrderElement) {
-            EventListener downButtonListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    up(currentOrderElement);
-                }
-            };
-            Button result;
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
-                result = createButton("/common/img/ico_subir_out.png", "",
-                        "/common/img/ico_subir_out.png", "icono",
-                        downButtonListener);
-                result.setDisabled(true);
-            } else {
-                result = createButton("/common/img/ico_subir1.png",
-                        _("Move up"), "/common/img/ico_subir.png", "icono",
-                        downButtonListener);
-            }
-            return result;
-        }
-
-        private Button createUnindentButton(final Treeitem item,
-                final OrderElement currentOrderElement) {
-            EventListener unindentListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    unindent(currentOrderElement);
-                }
-            };
-            final Button result;
-            if ((isFirstLevelElement(item) || isSecondLevelElement(item))
-                    && isPredicateApplied()) {
-                result = createButton("/common/img/ico_izq_out.png",
-                        "", "/common/img/ico_izq_out.png", "icono",
-                        unindentListener);
-                result.setDisabled(true);
-            } else {
-                result = createButton("/common/img/ico_izq1.png",
-                        _("Unindent"), "/common/img/ico_izq.png", "icono",
-                        unindentListener);
-            }
-            return result;
-        }
-
-        private Button createIndentButton(final Treeitem item,
-                final OrderElement currentOrderElement) {
-            EventListener indentListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    indent(currentOrderElement);
-                }
-            };
-            final Button result;
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
-                result = createButton("/common/img/ico_derecha_out.png",
-                        "", "/common/img/ico_derecha_out.png", "icono",
-                        indentListener);
-            } else {
-                result = createButton("/common/img/ico_derecha1.png",
-                        _("Indent"), "/common/img/ico_derecha.png", "icono",
-                        indentListener);
-            }
-            return result;
-        }
-
-        private Button createRemoveButton(final OrderElement currentOrderElement) {
-            final Button result = createButton(
-                    "/common/img/ico_borrar1.png", _("Delete"),
-                    "/common/img/ico_borrar.png", "icono", new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            remove(currentOrderElement);
-                            filterByPredicateIfAny();
-                        }
-                    });
-            return result;
-        }
-
-        private Button createButton(String image, String tooltip,
-                String hoverImage, String styleClass,
-                EventListener eventListener) {
-            Button result = new Button("", image);
-            result.setHoverImage(hoverImage);
-            result.setSclass(styleClass);
-            result.setTooltiptext(tooltip);
-            result.addEventListener(Events.ON_CLICK, eventListener);
-            return result;
-        }
-
     }
 
-    private boolean isPredicateApplied() {
-        return (predicate != null);
+    @Override
+    protected boolean isPredicateApplied() {
+        return predicate != null;
     }
 
     private final String SHOW_ALL = _("Show all");
