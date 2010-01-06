@@ -42,6 +42,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
+import org.navalplanner.web.orders.materials.MaterialAssignmentsComponent;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.tree.TreeComponent;
 import org.navalplanner.web.users.OrderAuthorizationController;
@@ -230,10 +231,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void setupAssignedMaterialsToOrderElementController(
             Component comp) throws Exception {
-        Component orderElementMaterials = editWindow
+        MaterialAssignmentsComponent assignmentsComponent = (MaterialAssignmentsComponent) editWindow
                 .getFellowIfAny("orderElementMaterials");
-        assignedMaterialsController = (AssignedMaterialsToOrderElementController) orderElementMaterials
-                .getVariable("assignedMaterialsController", true);
+        assignedMaterialsController = assignmentsComponent.getController();
     }
 
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;

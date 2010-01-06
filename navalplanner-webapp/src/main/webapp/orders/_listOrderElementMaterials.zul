@@ -17,16 +17,18 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<zk>
+<zscript><![CDATA[
+    Object[] unitTypes = org.navalplanner.business.materials.entities.UnitTypeEnum
+                            .values();
+    Object[] materialStatus = org.navalplanner.business.materials.entities.MaterialStatusEnum
+                            .values();
+    materialAssignmentComponent = self;
+    assignedMaterialsController = materialAssignmentComponent.controller;
+]]>
+</zscript>
+<vbox apply="${assignedMaterialsController}">
 
-<vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController" >
-
-    <zscript>
-        Object[] unitTypes = org.navalplanner.business.materials.entities.UnitTypeEnum
-            .values();
-        Object[] materialStatus = org.navalplanner.business.materials.entities.MaterialStatusEnum
-            .values();
-    </zscript>
 
     <tabbox mold="accordion">
         <tabs>
@@ -184,3 +186,4 @@
     </tabbox>
 
 </vbox>
+</zk>
