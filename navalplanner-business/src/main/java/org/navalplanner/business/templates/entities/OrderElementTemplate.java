@@ -19,6 +19,7 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -195,5 +196,23 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public void removeMaterialAssignment(
             MaterialAssignmentTemplate materialAssignment) {
         materialAssignments.remove(materialAssignment);
+    }
+
+    public BigDecimal getTotalMaterialAssigmentPrice() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (MaterialAssignmentTemplate each : materialAssignments) {
+            result = result.add(each.getTotalPrice());
+        }
+        return result;
+    }
+
+    public double getTotalMaterialAssigmentUnits() {
+        double result = 0;
+        for (MaterialAssignmentTemplate each : materialAssignments) {
+            if (each.getUnits() != null) {
+                result += each.getUnits();
+            }
+        }
+        return result;
     }
 }

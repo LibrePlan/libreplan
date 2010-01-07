@@ -30,6 +30,14 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  */
 public class MaterialAssignmentTemplate extends BaseEntity {
 
+    public static MaterialAssignmentTemplate copyFrom(
+            MaterialAssignmentTemplate assignment) {
+        MaterialAssignmentTemplate result = new MaterialAssignmentTemplate();
+        result.materialInfo = assignment.getMaterialInfo().copy();
+        result.orderElementTemplate = assignment.getOrderElementTemplate();
+        return BaseEntity.create(result);
+    }
+
     public static MaterialAssignmentTemplate create() {
         return BaseEntity.create(new MaterialAssignmentTemplate());
     }
