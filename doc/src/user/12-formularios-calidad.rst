@@ -33,3 +33,5 @@ Para administrar estes formularios de calidade é necesario realizar os seguinte
 .. figure:: images/quality.png
    :scale: 50
 
+   Pantalla de administración de materiais
+

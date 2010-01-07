@@ -20,10 +20,10 @@ Os informes definidos son:
    * Data primeiro parte
    * Data estimada fin
    * Data último parte
-   * Data deadline (se existe)
-   * Prorcentaxe de Avance (o marcado como propaga).
+   * Data *deadline* (se existe)
+   * Porcentaxe de Avance (o marcado como propaga).
    * Estado actual: Finalizada, En Curso, Pendente, Bloqueada.
-   * Estado deadline: Superado, Non superado, En blanco (se non existe deadline).
+   * Estado *deadline*: Superado, Non superado, En blanco (se non existe deadline).
 
 * Informe de partes de traballo. O informe amosa o resumo de horas traballadas segundo os partes de traballo.
 * Informe de horas traballadas por traballador ou grupo de traballadores. Informe que amosa o resumo por data e subtotal de horas traballadas por recurso existente na aplicación.
@@ -31,15 +31,15 @@ Os informes definidos son:
 * Informe que lista as horas traballadas de un proxecto. Permite coñecer as:
 
    * Horas estimadas (HE)
-   * Horas planificadas totales (HP Total)
+   * Horas planificadas totais (HP Total)
    * Horas planificadas (HP)
    * Horas reais (HR)
    * Avance medido (AM)
    * Avance imputado (AI)
    * Avance planificado (AP)
-   * Desfase en Coste (CV)
+   * Desfase en Custo (CV)
    * Desfase en Planificación (SV)
-   * Ratio desfase en coste (CPI)
+   * Ratio desfase en custo (CPI)
    * Ratio desfase en planificación (SPI)
 
 * Informe de horas realizadas e imputadas por tipo de traballo.

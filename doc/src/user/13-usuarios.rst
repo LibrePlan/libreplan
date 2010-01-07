@@ -35,6 +35,8 @@ Para administrar usuarios é necesario realizar os seguintes pasos:
 .. figure:: images/manage-user.png
    :scale: 50
 
+   Administración de usuarios
+
 * Premer en "Gardar" ou "Gardar e Continuar".
 
 
@@ -49,9 +51,12 @@ Para administrar os perfiles da aplicación é necesario dar os seguintes pasos:
 * A aplicación amosará un formulario cos seguintes campos:
 
    * Nome
-   * Lista de roles (permisos) asociados ó perfil. Para engadir un rol asociado ó perfil deberáse seleccionar un da lista de roles e premer en "Engadir".
+   * Lista de roles (permisos) asociados ó perfil. Para engadir un rol asociado ó perfil deberase seleccionar un da lista de roles e premer en "Engadir".
 
 .. figure:: images/manage-user-profile.png
    :scale: 50
 
+   Xestión de perfiles de usuarios
+
 * Premer en "Gardar" ou "Gardar e Continuar" e o sistema almacenará o perfil creado ou modificado.
+

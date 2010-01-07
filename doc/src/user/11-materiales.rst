@@ -13,7 +13,7 @@ As categorías son contedores ós que se poden asignar materiais concretos e ó 
 
 Para administrar categorías:
 
-* O usuario accede á operación de "Adminstración->Materiais".
+* O usuario accede á operación de "Administración->Materiais".
 * A aplicación amosa unha árbore de categorías.
 * O usuario introduce un nome de categoría dentro da entrada de texto con un botón "Engadir" e preme no botón.
 * A aplicación engade a categoría na árbore de categorías.
@@ -22,6 +22,8 @@ Se o usuario desexa posicionar unha categoría dentro da árbore de categorías 
 
 .. figure:: images/material.png
    :scale: 50
+
+   Pantalla de administración de materiais
 
 Para administrar materiais:
 

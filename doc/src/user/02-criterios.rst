@@ -21,38 +21,43 @@ Administración de criterios
 A administración de criterios será accesible dende o menú de administración:
 
 .. figure:: images/menu.png
-   :scale: 70
+   :scale: 50
 
-A operación específica para administrar criterios é *Manage Criteriums*. A partir de dita operación é posible listar os criterios dispoñibles no sistema.
+   Pestanas de menú de primeiro nivel
+
+A operación específica para administrar criterios é *Xestionar Criterios*. A partir de dita operación é posible listar os criterios dispoñibles no sistema.
 
 .. figure:: images/lista-criterios.png
-   :scale: 70
+   :scale: 50
 
-Premendo no botón *Create* poderase acceder ó formulario de creación/edición de un criterio. A edición de un criterio farase premendo na icona de edición do mesmo.
+   Listado de criterios
+
+Premendo no botón *Crear* poderase acceder ó formulario de creación/edición de un criterio. A edición de un criterio farase premendo na icona de edición do mesmo.
 
 .. figure:: images/edicion-criterio.png
-   :scale: 55
+   :scale: 50
 
+   Edición de criterios
 
 No formulario de edición de criterios que se amosa na imaxe anterior poderanse realizar as seguintes operacións:
 
 * Edición do nome do criterio
-* Indicar se é posible asignar varios valores simultáneamente ó mesmo elemento para o tipo de criterio seleccionado. Por exemplo, un recurso que satisfai dous criterios, soldador e torneiro.
+* Indicar se é posible asignar varios valores simultaneamente ó mesmo elemento para o tipo de criterio seleccionado. Por exemplo, un recurso que satisfai dous criterios, soldador e torneiro.
 * Indicar o tipo do criterio:
 
   * Tipo xenérico: Criterio que poderá satisfacer indistintamente unha máquina ou un traballador.
   * Tipo traballador: Criterio que poderá satisfacer un traballador exclusivamente.
   * Tipo máquina: Criterio que poderá satisfacer unha máquina exclusivamente.
 
-* Indicar se o criterio é xerárquico ou non. Existen casos nos que os criterios deben ser tratados xerárquicamente, é dicir, que o feito de ser un criterio asignado a un elemento non folla faga que este criterio estea asignado automáticamente ós fillos. Un exemplo claro de xerarquización de criterios é o criterio localización, unha persoa que teña asignado Galicia como localización pertencerá á localización España por ser xerárquico.
+* Indicar se o criterio é xerárquico ou non. Existen casos nos que os criterios deben ser tratados xerarquicamente, é dicir, que o feito de ser un criterio asignado a un elemento non folla faga que este criterio estea asignado automaticamente ós fillos. Un exemplo claro de xerarquización de criterios é o criterio localización, unha persoa que teña asignado Galicia como localización pertencerá á localización España por ser xerárquico.
 * Indicar se o criterio está habilitado e deshabilitado. Esta é a forma de borrar criterios. Debido a que unha vez creado un criterio e utilizado en datos históricos, estes non poden ser cambiados, o criterio debe existir no sistema. Para evitar que este criterio saia en diferentes elementos de selección, poderá ser invalidado.
 * Realizar unha descrición do criterio.
 * Engadir novos valores. Na segunda parte do formulario aparece unha entrada de texto con un botón *New Criterion*
 * Editar o nome dos criterios existentes.
-* Desplazar verticalmente os criterios na lista dos existentes.
+* Desprazar verticalmente os criterios na lista dos existentes.
 * Eliminar un valor de criterio da lista.
 
-O formulario de administración de criterios é un formulario que responde ás características dos formularios comentados na introducción como de 3 operacións (gardar, gardar e pechar e pechar).
+O formulario de administración de criterios é un formulario que responde ás características dos formularios comentados na introdución como de 3 operacións (gardar, gardar e pechar e pechar).
 
 
 

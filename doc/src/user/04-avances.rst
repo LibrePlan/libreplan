@@ -3,7 +3,7 @@ Avances
 
 .. contents::
 
-O avance dun proxecto marca o grao no que se está cumplindo co alcance estimado para a realización do mesmo, asimesmo, o avance dunha tarefa indica ese mesmo grao para o alcance estimado para dita tarefa.
+O avance dun proxecto marca o grao no que se está cumprindo co alcance estimado para a realización do mesmo, asimesmo, o avance dunha tarefa indica ese mesmo grao para o alcance estimado para dita tarefa.
 
 Xeralmente os avances non teñen un modo automático de ser medidos, e é unha persoa quen en base á experiencia ou á realización de unha lista de chequeo determina o grao de compleción de unha tarefa ou un proxecto.
 
@@ -25,7 +25,7 @@ Cada empresa pode ter unhas necesidades diferentes de control do avance dos seus
 
 Un tipo de avance está caracterizado por un nome, un valor máximo e unha precisión:
 
-* Nome: Será un nome representativo que o usuario debe recordar para cando seleccione a asignación de avances sexa capaz de entender qué tipo de avance está medindo.
+* Nome: Será un nome representativo que o usuario debe recordar para cando seleccione a asignación de avances sexa capaz de entender que tipo de avance está medindo.
 * Valor máximo: É o valor máximo que se lle permitirá a unha tarefa ou proxecto establecer como medida total de avance. Por exemplo, traballando con *Toneladas*, se se considera que o máximo normal en toneladas é de 4000 e nunca vai a haber tarefas que requiran realizar máis de 4000 toneladas de algún material, ese debería ser o valor máximo establecido.
 * Precisión: É o valor dos incrementos que se permitirán para o tipo de avance creado. Por exemplo, se o avance en *Toneladas* se vai a medir en valores redondeados, podería ser 1 a precisión. Dende ese momento, só se poderían introducir medidas de avance con números enteiros, por exemplo, 1, 2, 300, etc.
 
@@ -35,8 +35,9 @@ O sistema conta con dous tipos de avance creados por defecto:
 * Unidades: Tipo de avance xeral que permite medir o avance en unidades sen necesidade de especificar as unidades concretas. A tarefa comprendía a creación de 3000 unidades e o avance son 500 unidades sobre as 3000 estimadas.
 
 .. figure:: images/tipos-avances.png
-   :scale: 70
+   :scale: 50
 
+   Administración de tipos de avances
 
 O usuario poderá crear novos tipos de avance do seguinte xeito:
 
@@ -53,20 +54,22 @@ O usuario poderá crear novos tipos de avance do seguinte xeito:
 
   * Nome do tipo de avance.
   * Valor máximo que acepta o tipo de avance.
-  * Precision di tipo de avance.
+  * Precisión do tipo de avance.
 
 
 Introdución de avances en base a tipo
 =====================================
 
-A introdución dos avances vaise realizar sobre os elementos de pedido, sen embargo, será posible facelo con un atallo dende as tarefas de planificación. Será responsabilidade do usuario da aplicación a decisión sobre qué tipos de avance desexa asociar a cada elemento de pedido.
+A introdución dos avances vaise realizar sobre os elementos de pedido, sen embargo, será posible facelo con un atallo dende as tarefas de planificación. Será responsabilidade do usuario da aplicación a decisión sobre que tipos de avance desexa asociar a cada elemento de pedido.
 
 Será posible introducir un tipo de avance único e defectivo para todo un pedido.
 
 Antes de poder realizar medidas de avance, é necesario asociar o tipo elixido ó pedido, por exemplo, un avance de tipo porcentaxe para medir porcentualmente os avances realizados sobre o total da tarefa ou un avance de tipo pactado por se se queren introducir a futuro medicións de avances pactadas co cliente.
 
 .. figure:: images/avance.png
-   :scale: 70
+   :scale: 40
+
+   Pantalla de introdución de avances con visualización gráfica.
 
 Para introducir medicións de avance será necesario realizar o seguinte:
 
@@ -75,17 +78,18 @@ Para introducir medicións de avance será necesario realizar o seguinte:
   * Se non existe ningún tipo de avance é necesario engadir un tipo de avance.
 
 * No formulario que aparece debaixo cos campos "Valor" e "Data" introducir o valor absoluto da medida e a data que se lle desexa asignar á medida tomada.
-* O sistema almacenará automáticamente os datos introducidos.
+* O sistema almacenará automaticamente os datos introducidos.
 
 
 
 Contraste de avances sobre un elemento do pedido
 ================================================
 
-Será posible contrastar gráficamente as evolucións dos avances dos pedidos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "Navalpro") o cal ó ser marcado se amosará a gráfica de evolucións de medidas realizadas sobre o elemento de pedido.
+Será posible contrastar graficamente as evolucións dos avances dos pedidos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "Navalpro") o cal ó ser marcado se amosará a gráfica de evolucións de medidas realizadas sobre o elemento de pedido.
 
 .. figure:: images/contraste-avance.png
-   :scale: 70
+   :scale: 40
 
+   Contraste de varios avances.
 
 

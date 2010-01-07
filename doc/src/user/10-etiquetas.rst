@@ -10,23 +10,25 @@ As etiquetas categorizanse segundo os tipos de etiquetas. Unha etiqueta só pert
 Tipos de etiquetas
 ==================
 
-Os tipos de etiquetas utilizanse para agrupar tipoloxías de etiquetas que os usuarios desexen xestionar na aplicación. Exemplos de tipos de etiquetas posibles:
+Os tipos de etiquetas utilízanse para agrupar tipoloxías de etiquetas que os usuarios desexen xestionar na aplicación. Exemplos de tipos de etiquetas posibles:
 
 i. Cliente: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base ó cliente que os solicitou.
-ii. Zona: O usuario podería estar intersado en etiquetar as tarefas, pedidos ou elementos de pedido en base á zona na que se realizan.
+ii. Zona: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base á zona na que se realizan.
 
-A administración de tipos de etiquetas xesiontarase dende a opción de menú de "Administración". Será dende esta opción, dende a que o usuario poderá editar tipos de etiqueta, crear novos tipos de etiqueta ou engadir etiquetas a tipos de etiquetas. Dende dita operación poderá accederse ó listado de etiquetas.
+A administración de tipos de etiquetas xestionarase dende a opción de menú de "Administración". Será dende esta opción, dende a que o usuario poderá editar tipos de etiqueta, crear novos tipos de etiqueta ou engadir etiquetas a tipos de etiquetas. Dende dita operación poderá accederse ó listado de etiquetas.
 
 .. figure:: images/tag-types-list.png
    :scale: 50
 
-Dendo o listado de tipos de etiquetas será posible:
+   Lista de tipos de etiquetas
+
+Dende o listado de tipos de etiquetas será posible:
 
 i. Crear novo tipo de etiquetas.
 ii. Editar un tipo de etiquetas existente.
 iii. Borrar un tipo de etiquetas con todas as súas etiquetas.
 
-Tanto a edición como a creación de etiquetas comparten formulario. Dende dito formulario o usuario poderá, asignar un nome ó tipo de etiquetas, crear ou borrar etiquetas e almacenar os cambios. Para realizar esto:
+Tanto a edición como a creación de etiquetas comparten formulario. Dende dito formulario o usuario poderá, asignar un nome ó tipo de etiquetas, crear ou borrar etiquetas e almacenar os cambios. Para realizar isto:
 
 i. O usuario debería seleccionar unha etiqueta a editar ou premer no botón de creación de unha nova.
 ii. O sistema amosará un formulario con unha entrada de texto para o nome e un listado de entradas de texto coas etiquetas existentes e asignadas.
@@ -34,12 +36,12 @@ iii. Se o usuario desexa engadir unha nova etiqueta debe premer no botón "Naval
 iv. O sistema amosará unha nova fila ó listado con unha entrada de texto baleira que o usuario debe editar.
 v. O usuario introduce un nome para a etiqueta.
 vi. O sistema engade o nome ó listado.
-vii. O usuario preme en "Navalpro" para gardar e saír ou "Navalpro e Navalpro" para gardar e continuar editando o formulario.
-
-
+vii. O usuario preme en "Gardar" para gardar e saír ou "Gardar e Continuar" para gardar e continuar editando o formulario.
 
 .. figure:: images/tag-types-edition.png
    :scale: 50
+
+   Edición de tipos de etiquetas
 
 Etiquetas
 =========
