@@ -29,7 +29,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Popup;
+import org.zkoss.zul.api.Window;
 
 public class TaskEditFormComposer extends GenericForwardComposer {
 
@@ -37,7 +37,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     }
 
-    private Popup popUp;
+    private Window popUp;
 
     private Task currentTask;
 
@@ -52,18 +52,21 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        popUp = (Popup) comp;
+        popUp = (Window) comp;
     }
 
     public void showEditFormFor(Component openRelativeTo, Task task) {
         this.currentTask = task;
-        popUp.open(openRelativeTo, "after_start");
+        try {
+            popUp.setMode("modal");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         updateComponentValuesForTask(currentTask);
     }
 
     private void updateComponentValuesForTask(
             ITaskFundamentalProperties currentTask) {
-        // popUp.setTitle(currentTask.getName());
         name.setValue(currentTask.getName());
         startDateBox.setValue(currentTask.getBeginDate());
         endDateBox.setValue(new Date(currentTask.getBeginDate().getTime()
@@ -90,7 +93,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     public void onClick$ok(Event event) {
         if (okPressed()) {
-            popUp.close();
+            popUp.setVisible(false);
         }
     }
 
