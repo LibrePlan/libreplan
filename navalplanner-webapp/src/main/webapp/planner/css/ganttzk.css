@@ -248,7 +248,7 @@ min-width:200px;
 }
 
 #ganttpanel table td {
-    padding: 0;
+    /* padding: 0; */
 }
 
 /* -------------- Timetracker -------------- */
@@ -271,7 +271,8 @@ min-width:200px;
 
 /* Watermark alternate row color */
 #watermark .timetracker_column_even {
-    background-color: #EEEEEE;
+    background-color: #EEEEEE !important;
+    height: 458px;
 }
 
 #watermark .timetracker_column_today.timetracker_column_deadline,
@@ -698,9 +699,11 @@ div.z-tree {
 
 .listdetails {
     position:relative;
-    top:-18px;
 }
 
+#listdetails_container {
+    top:-18px;
+}
 
 .listdetails .z-tree-header {
     margin-bottom:17px;

@@ -46,9 +46,8 @@ planner = self;
 
         <center border="0">
             <borderlayout sclass="plannerlayout_center">
-                <west size="300px" flex="true" collapsible="true"
-                    splittable="true" autoscroll="true">
-
+                <west flex="true" collapsible="true"
+                    splittable="true" autoscroll="true" sclass="taskheaders-border">
                     <borderlayout >
                         <north border="0" height="32px" flex="true" collapsible="true" sclass="taskheadersgap">
                             <vbox pack="center" align="center">
@@ -61,7 +60,7 @@ planner = self;
                             </tree>
                             </vbox>
                         </north>
-                        <center border="0" sclass="leftpanelcontainer" style="overflow-x:scroll">
+                        <center border="0" sclass="leftpanelcontainer">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
                         </center>
                     </borderlayout>
@@ -78,8 +77,7 @@ planner = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="200px" collapsible="true" title="Graphics"
-            sclass="scheduling-graphics">
+        <south collapsible="true" title="Graphics" sclass="scheduling-graphics">
             <div id="insertionPointChart" />
         </south>
     </borderlayout>

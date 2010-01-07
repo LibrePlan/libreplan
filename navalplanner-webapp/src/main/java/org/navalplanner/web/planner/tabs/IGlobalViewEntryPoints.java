@@ -19,6 +19,7 @@
  */
 package org.navalplanner.web.planner.tabs;
 
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.entrypoints.EntryPoint;
 import org.navalplanner.web.common.entrypoints.EntryPoints;
 
@@ -37,5 +38,8 @@ public interface IGlobalViewEntryPoints {
 
     @EntryPoint("orders_list")
     public void goToOrdersList();
+
+    @EntryPoint("order")
+    public void goToOrder(Order order);
 
 }

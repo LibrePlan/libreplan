@@ -20,41 +20,51 @@
         margin-left: -90px;
     }
 
+    /* Calculate dynamically */
+    body {
+        width: 2500px;
+    }
+
     body .z-border-layout {
         background-color: #FFFFFF;
     }
 
-    body .leftpanelcontainer, .rightpanellayout .z-center-body {
+    .plannerlayout .leftpanelcontainer,
+    .plannerlayout .rightpanellayout .z-center-body {
         overflow: hidden !important;
-        overflow-x: hidden !important;
-        overflow-y: hidden !important;
     }
 
-    /* Height dependent styles */
+    body {
+        width: 2500px;
+    }
+
+    /* ----- Height dependent styles ----- */
     body div.scheduling-graphics {
         height:0px !important;
         display: none;
     }
 
+    /* Dynamically set heights */
     body div.main-layout {
-        height: 12800px !important;
+        height: 1800px !important;
     }
 
     body div.plannerlayout {
-        height: 12790px !important;
+        height: 1790px !important;
     }
 
-    body div#timetracker,
-    #watermark .timetracker_column_even {
-        height: 12730px !important;
+    body div#timetracker {
+        height: 1730px !important;
     }
 
     body div#scroll_container {
-        height: 12710px !important;
+        height: 1710px !important;
     }
 
-}
+} /* --- End print media ----*/
 
+
+    /* ----- Predefined Height dependent styles ----- */
     .scheduling-graphics {
         height:200px;
     }
@@ -63,31 +73,23 @@
         height: 560px;
     }
 
-    #watermark {
-        height: 442px;
-    }
-
-
-    #watermark {
-        height: 12780px !important;
-    }
-
-    #timetracker, #watermark, #watermark .timetracker_column_even {
-        height: 99999px !important;
-    }
-
-    #timetracker {
-        overflow: hidden;
-    }
-
-
     .taskheaders-border {
         width: 300px;
     }
 
-    .leftpanelcontainer {
-        overflow-x: scroll;
-    }
+
+.plannerlayout #watermark,
+.plannerlayout #watermark .timetracker_column_even {
+    height: 99999px !important;
+}
+
+.plannerlayout .taskspanelgap #timetracker {
+    overflow-y: hidden;
+}
+
+.leftpanelcontainer {
+    overflow-x: scroll;
+}
 
 body {
     font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
@@ -101,6 +103,7 @@ body {
     float: left;
     clear: both;
     position: absolute;
+    border: 0;
 }
 
 .headings {

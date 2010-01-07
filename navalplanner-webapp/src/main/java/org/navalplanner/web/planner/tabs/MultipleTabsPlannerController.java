@@ -272,4 +272,10 @@ public class MultipleTabsPlannerController implements Composer,
         getTabsRegistry().show(ordersTab);
     }
 
+    @Override
+    public void goToOrder(Order order) {
+        mode.goToOrderMode(order);
+        getTabsRegistry().show(planningTab);
+    }
+
 }

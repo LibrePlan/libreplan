@@ -54,7 +54,7 @@
           </n:table>
         </n:div>
 
-    <borderlayout class="main-layout" height="560px" width="auto">
+    <borderlayout class="main-layout" width="auto">
     <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
         <n:div>

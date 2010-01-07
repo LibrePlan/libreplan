@@ -110,6 +110,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean criticalPathEnabled = true;
 
+    // private String identifier = null;
+
     private IDetailItemModificator firstLevelModificators = SeveralModificators
             .empty();
 

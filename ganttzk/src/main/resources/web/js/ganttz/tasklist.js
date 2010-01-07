@@ -248,18 +248,25 @@ function adjustScrollableDimensions() {
 
 	scroll_container.style["width"] = YAHOO.util.Selector.query('.second_level_')[0].clientWidth +"px";
 
+	document.getElementById('timetracker').style["width"] = scroll_container.style["width"];
 
+	timetracker.style["height"] =
+		Math.max((window.innerHeight - TIMETRACKER_OFFSET_TOP + 26 ),
+				  document.getElementById('listdetails_container').scrollHeight + 12 )
+				  +"px";
 
-	timetracker.style["height"] = (window.innerHeight - TIMETRACKER_OFFSET_TOP + 5)
-			+ "px"; // Extra padding
 	scroll_container.style["height"] = (window.innerHeight
 			- TIMETRACKER_OFFSET_TOP - (FOOTER_HEIGHT + SCROLLBAR_WIDTH * 2))
 			+ "px";
 
-	// Watermark heigh also needs recalculations due to the recreation
+	/* Watermark heigh also needs recalculations due to the recreation
 	document.getElementById('watermark').style["height"] = (window.innerHeight
 			- TIMETRACKER_OFFSET_TOP - (FOOTER_HEIGHT + SCROLLBAR_WIDTH))
 			+ "px";
+	// Pbs with document.getElementById('watermark').firstChild
+	YAHOO.util.Selector.query('.timetracker_column_even')[0].style["height"]= (window.innerHeight
+			- TIMETRACKER_OFFSET_TOP - (FOOTER_HEIGHT + SCROLLBAR_WIDTH))
+			+ "px"; */
 
 	// Inner divs need recalculation to adjust to new scroll displacement lenght
 	document.getElementById('ganttpanel_inner_scroller_y').style["height"] = document
