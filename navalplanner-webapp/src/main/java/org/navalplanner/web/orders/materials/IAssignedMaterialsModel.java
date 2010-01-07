@@ -32,6 +32,8 @@ import org.zkoss.zul.TreeModel;
  */
 public interface IAssignedMaterialsModel<T, A> {
 
+    void initEdit(T entity);
+
     void addMaterialAssignment(Material material);
 
     void addMaterialAssignment(A materialAssignment);
