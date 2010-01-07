@@ -185,4 +185,15 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public Set<MaterialAssignmentTemplate> getMaterialAssignments() {
         return Collections.unmodifiableSet(materialAssignments);
     }
+
+    public void addMaterialAssignment(
+            MaterialAssignmentTemplate materialAssignment) {
+        Validate.notNull(materialAssignment);
+        materialAssignments.add(materialAssignment);
+    }
+
+    public void removeMaterialAssignment(
+            MaterialAssignmentTemplate materialAssignment) {
+        materialAssignments.remove(materialAssignment);
+    }
 }
