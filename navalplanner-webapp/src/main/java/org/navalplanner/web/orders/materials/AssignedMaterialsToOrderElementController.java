@@ -58,6 +58,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Textbox;
 import org.zkoss.zul.impl.MessageboxDlg;
 
@@ -86,10 +87,14 @@ public class AssignedMaterialsToOrderElementController extends
 
     private Tab tbAssignedMaterials;
 
+    private Vbox assignmentsBox;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("assignedMaterialsController", this, true);
+        Executions.createComponents("/orders/_assignmentsBox.zul",
+                assignmentsBox, new HashMap<String, String>());
     }
 
     public void openWindow(OrderElement orderElement) {
