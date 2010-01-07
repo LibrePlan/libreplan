@@ -92,7 +92,6 @@ public class AssignedMaterialsToOrderElementController extends
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("assignedMaterialsController", this, true);
         Executions.createComponents("/orders/_assignmentsBox.zul",
                 assignmentsBox, new HashMap<String, String>());
     }
