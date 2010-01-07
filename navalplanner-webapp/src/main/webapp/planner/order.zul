@@ -41,7 +41,7 @@
     </div>
 
     <window id="taskPropertiesWindow"
-        apply="${planningController.editTaskController}" closable="true"
+        apply="${planningController.taskPropertiesController}" closable="true"
         title="${i18n:_('Task properties')}" width="650px" visible="false"
         border="normal">
 

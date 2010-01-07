@@ -47,9 +47,9 @@ import org.zkoss.zul.api.Row;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@org.springframework.stereotype.Component("editTaskController")
+@org.springframework.stereotype.Component("taskPropertiesController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class EditTaskController extends GenericForwardComposer {
+public class TaskPropertiesController extends GenericForwardComposer {
 
     // This is a workaround, because in business we don't have access to
     // I18nHelper

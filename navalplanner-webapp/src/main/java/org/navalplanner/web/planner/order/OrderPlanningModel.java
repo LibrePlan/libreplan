@@ -73,8 +73,8 @@ import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
-import org.navalplanner.web.planner.taskedition.IEditTaskCommand;
+import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
+import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -178,7 +178,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public void setConfigurationToPlanner(Planner planner, Order order,
             ViewSwitcher switcher,
             ResourceAllocationController resourceAllocationController,
-            EditTaskController editTaskController,
+            TaskPropertiesController taskPropertiesController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
         Order orderReloaded = reload(order);
@@ -198,7 +198,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
-                .addCommandOnTask(buildEditTaskCommand(editTaskController));
+                .addCommandOnTask(buildTaskPropertiesCommand(taskPropertiesController));
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
@@ -498,11 +498,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return calendarAllocationCommand;
     }
 
-    private IEditTaskCommand buildEditTaskCommand(
-            EditTaskController editTaskController) {
-        IEditTaskCommand editTaskCommand = getEditTaskCommand();
-        editTaskCommand.setEditTaskController(editTaskController);
-        return editTaskCommand;
+    private ITaskPropertiesCommand buildTaskPropertiesCommand(
+            TaskPropertiesController taskPropertiesController) {
+        ITaskPropertiesCommand taskPropertiesCommand = getTaskPropertiesCommand();
+        taskPropertiesCommand
+                .setTaskPropertiesController(taskPropertiesController);
+        return taskPropertiesCommand;
     }
 
     private IAddMilestoneCommand buildMilestoneCommand() {
@@ -680,7 +681,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     protected abstract IDeleteMilestoneCommand getDeleteMilestoneCommand();
 
-    protected abstract IEditTaskCommand getEditTaskCommand();
+    protected abstract ITaskPropertiesCommand getTaskPropertiesCommand();
 
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 

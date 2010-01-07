@@ -40,7 +40,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class EditTaskCommand implements IEditTaskCommand {
+public class TaskPropertiesCommand implements ITaskPropertiesCommand {
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -48,7 +48,7 @@ public class EditTaskCommand implements IEditTaskCommand {
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
-    private EditTaskController editTaskController;
+    private TaskPropertiesController taskPropertiesController;
 
     @Override
     @Transactional(readOnly = true)
@@ -62,7 +62,7 @@ public class EditTaskCommand implements IEditTaskCommand {
             forceLoadHoursGroup((Task) taskElement);
         }
 
-        editTaskController.showEditFormFor(context, taskElement);
+        taskPropertiesController.showEditFormFor(context, taskElement);
     }
 
     private void forceLoadHoursGroup(Task task) {
@@ -75,8 +75,9 @@ public class EditTaskCommand implements IEditTaskCommand {
     }
 
     @Override
-    public void setEditTaskController(EditTaskController editTaskController) {
-        this.editTaskController = editTaskController;
+    public void setTaskPropertiesController(
+            TaskPropertiesController taskPropertiesController) {
+        this.taskPropertiesController = taskPropertiesController;
     }
 
     @Override

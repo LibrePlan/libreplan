@@ -27,7 +27,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
+import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;
 
@@ -39,7 +39,7 @@ public interface IOrderPlanningModel {
     void setConfigurationToPlanner(Planner planner, Order order,
             ViewSwitcher viewSwitcher,
             ResourceAllocationController resourceAllocationController,
-            EditTaskController editTaskController,
+            TaskPropertiesController taskPropertiesController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional);
 

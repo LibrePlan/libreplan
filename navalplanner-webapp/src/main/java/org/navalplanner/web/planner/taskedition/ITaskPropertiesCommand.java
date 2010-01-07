@@ -24,12 +24,13 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
- * Contract for {@link EditTaskCommand} <br />
+ * Contract for {@link TaskPropertiesCommand} <br />
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IEditTaskCommand extends ICommandOnTask<TaskElement> {
+public interface ITaskPropertiesCommand extends ICommandOnTask<TaskElement> {
 
-    void setEditTaskController(EditTaskController editTaskController);
+    void setTaskPropertiesController(
+            TaskPropertiesController taskPropertiesController);
 
 }
