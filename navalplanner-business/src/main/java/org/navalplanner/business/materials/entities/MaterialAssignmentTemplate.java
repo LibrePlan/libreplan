@@ -99,4 +99,8 @@ public class MaterialAssignmentTemplate extends BaseEntity {
         getMaterialInfo().setUnitPrice(unitPrice);
     }
 
+    public BigDecimal getTotalPrice() {
+        return getMaterialInfo().getTotalPrice();
+    }
+
 }

@@ -70,4 +70,9 @@ public class MaterialInfo {
         return result;
     }
 
+    public BigDecimal getTotalPrice() {
+        BigDecimal result = new BigDecimal(getUnits());
+        return result.multiply(getUnitPrice());
+    }
+
 }

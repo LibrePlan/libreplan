@@ -100,8 +100,7 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
     }
 
     public BigDecimal getTotalPrice() {
-        BigDecimal result = new BigDecimal(getUnits());
-        return result.multiply(getUnitPrice());
+        return getMaterialInfo().getTotalPrice();
     }
 
     public Date getEstimatedAvailability() {
