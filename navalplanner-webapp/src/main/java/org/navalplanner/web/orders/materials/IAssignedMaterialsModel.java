@@ -17,20 +17,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.navalplanner.web.orders.materials;
 
-import org.navalplanner.business.materials.entities.MaterialAssignment;
-import org.navalplanner.business.orders.entities.OrderElement;
+import java.math.BigDecimal;
+import java.util.List;
 
+import org.navalplanner.business.materials.entities.Material;
+import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.zkoss.zul.TreeModel;
 
 /**
- * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ *
  */
-public interface IAssignedMaterialsToOrderElementModel extends
-        IAssignedMaterialsModel<OrderElement, MaterialAssignment> {
+public interface IAssignedMaterialsModel<T, A> {
 
-    OrderElement getOrderElement();
+    void addMaterialAssignment(Material material);
 
-    void initEdit(OrderElement orderElement);
+    void addMaterialAssignment(A materialAssignment);
+
+    TreeModel getAllMaterialCategories();
+
+    List<A> getAssignedMaterials(MaterialCategory materialCategory);
+
+    List<Material> getMatchingMaterials();
+
+    TreeModel getMaterialCategories();
+
+    BigDecimal getPrice(MaterialCategory materialCategory);
+
+    double getUnits(MaterialCategory materialCategory);
+
+    void removeMaterialAssignment(A materialAssignment);
+
+    void searchMaterials(String text, MaterialCategory materialCategory);
+
 }

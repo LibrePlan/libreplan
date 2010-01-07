@@ -37,7 +37,8 @@ import org.zkoss.zul.TreeModel;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public abstract class AssignedMaterialsModel<T, A> {
+public abstract class AssignedMaterialsModel<T, A> implements
+        IAssignedMaterialsModel<T, A> {
 
     @Autowired
     private IMaterialCategoryDAO categoryDAO;
@@ -178,8 +179,6 @@ public abstract class AssignedMaterialsModel<T, A> {
     public List<Material> getMatchingMaterials() {
         return matchingMaterials;
     }
-
-    protected abstract void addMaterialAssignment(Material material);
 
     @Transactional(readOnly = true)
     public void addMaterialAssignment(A materialAssignment) {
