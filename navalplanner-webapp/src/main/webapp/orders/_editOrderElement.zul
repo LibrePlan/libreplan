@@ -23,7 +23,7 @@
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" inline="true" macroURI="_listOrderElementLabels.zul"?>
 <?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
-<?component name="listOrderElementMaterials" class="org.navalplanner.web.orders.materials.MaterialAssignmentsComponent" macroURI="_listOrderElementMaterials.zul"?>
+<?component name="listOrderElementMaterials" class="org.navalplanner.web.orders.materials.MaterialAssignmentsComponent" macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 
 <window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
