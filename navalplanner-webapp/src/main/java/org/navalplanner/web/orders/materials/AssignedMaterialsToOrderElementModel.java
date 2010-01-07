@@ -22,12 +22,9 @@ package org.navalplanner.web.orders.materials;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
-import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
@@ -38,48 +35,30 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.util.MutableTreeModel;
-import org.zkoss.zul.TreeModel;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class AssignedMaterialsToOrderElementModel implements
+public class AssignedMaterialsToOrderElementModel extends
+        AssignedMaterialsModel<OrderElement, MaterialAssignment> implements
         IAssignedMaterialsToOrderElementModel {
-
-    @Autowired
-    private IMaterialCategoryDAO categoryDAO;
-
-    @Autowired
-    private IMaterialDAO materialDAO;
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
     private OrderElement orderElement;
 
-    private MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
-            .create(MaterialCategory.class);
-
-    private MutableTreeModel<MaterialCategory> allMaterialCategories = MutableTreeModel
-            .create(MaterialCategory.class);
-
-    private List<Material> matchingMaterials = new ArrayList<Material>();
+    @Override
+    protected void assignAndReattach(OrderElement element) {
+        this.orderElement = element;
+        orderElementDAO.reattach(this.orderElement);
+    }
 
     @Override
-    @Transactional(readOnly = true)
-    public void initEdit(OrderElement orderElement) {
-        this.orderElement = orderElement;
-        orderElementDAO.reattach(this.orderElement);
-        materialCategories = MutableTreeModel.create(MaterialCategory.class);
+    protected void initializeMaterialAssigments() {
         initializeMaterialAssigments(this.orderElement.getMaterialAssignments());
-
-        // Initialize matching materials
-        matchingMaterials.clear();
-        matchingMaterials.addAll(materialDAO.getAll());
-        initializeMaterials(matchingMaterials);
     }
 
     private void initializeMaterialAssigments(
@@ -90,123 +69,27 @@ public class AssignedMaterialsToOrderElementModel implements
         }
     }
 
-    @Transactional(readOnly = true)
-    private void initializeMaterialCategories(
-            Collection<MaterialCategory> materialCategories) {
-        for (MaterialCategory each : materialCategories) {
-            initializeMaterialCategory(each);
-        }
-    }
-
-    private void initializeMaterialCategory(MaterialCategory materialCategory) {
-        materialCategory.getName();
-        initializeMaterials(materialCategory.getMaterials());
-        initializeMaterialCategories(materialCategory.getSubcategories());
-    }
-
-    private void initializeMaterials(Collection<Material> materials) {
-        for (Material each : materials) {
-            initializeMaterial(each);
-        }
-    }
-
-    private void initializeMaterial(Material material) {
-        material.getDescription();
-        material.getCategory().getName();
-    }
-
     @Override
     public OrderElement getOrderElement() {
         return orderElement;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public MutableTreeModel<MaterialCategory> getMaterialCategories() {
-        if (orderElement != null && materialCategories.isEmpty()) {
-            feedTree(materialCategories, orderElement.getMaterialAssignments());
-            initializeMaterialCategories(materialCategories.asList());
-        }
-        return materialCategories;
-    }
-
-    private void feedTree(MutableTreeModel<MaterialCategory> tree,
-            Set<MaterialAssignment> materialAssignments) {
-        for (MaterialAssignment each : materialAssignments) {
-            final Material material = (Material) each.getMaterial();
-            addCategory(tree, material.getCategory());
-        }
-    }
-
-    /**
-     * Adds category to treeModel
-     *
-     * If category.parent is not in treeModel add it to treeModel recursively.
-     *
-     */
-    private void addCategory(
-            MutableTreeModel<MaterialCategory> materialCategories,
-            MaterialCategory materialCategory) {
-
-        categoryDAO.reattach(materialCategory);
-        final MaterialCategory parent = materialCategory.getParent();
-        if (parent == null) {
-            if (!materialCategories.contains(parent, materialCategory)) {
-                materialCategories.addToRoot(materialCategory);
-            }
-        } else {
-            if (!materialCategories.contains(parent, materialCategory)) {
-                addCategory(materialCategories, parent);
-                materialCategories.add(parent, materialCategory);
-            }
-        }
+    protected List<MaterialAssignment> getAssignments() {
+        return new ArrayList<MaterialAssignment>(orderElement
+                .getMaterialAssignments());
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public TreeModel getAllMaterialCategories() {
-        if (allMaterialCategories.isEmpty()) {
-            feedTree(allMaterialCategories, categoryDAO.getAll());
-            initializeMaterialCategories(allMaterialCategories.asList());
-        }
-        return allMaterialCategories;
-    }
-
-    private void feedTree(MutableTreeModel<MaterialCategory> tree,
-            List<MaterialCategory> materialCategories) {
-        for (MaterialCategory each : materialCategories) {
-            addCategory(tree, each);
-        }
+    protected Material getMaterial(MaterialAssignment assignment) {
+        return assignment.getMaterial();
     }
 
     @Override
-    public List<MaterialAssignment> getAssignedMaterials(
-            MaterialCategory materialCategory) {
-        List<MaterialAssignment> result = new ArrayList<MaterialAssignment>();
-        if (orderElement != null) {
-            for (MaterialAssignment materialAssigment : orderElement
-                    .getMaterialAssignments()) {
-                final Material material = materialAssigment.getMaterial();
-                if (materialCategory == null
-                        || materialCategory.getId().equals(material.getCategory().getId())) {
-                    result.add(materialAssigment);
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void searchMaterials(String text, MaterialCategory materialCategory) {
-        matchingMaterials = materialDAO
-                .findMaterialsInCategoryAndSubCategories(text, materialCategory);
-        initializeMaterials(matchingMaterials);
-    }
-
-    @Override
-    public List<Material> getMatchingMaterials() {
-        return matchingMaterials;
+    protected MaterialCategory removeAssignment(
+            MaterialAssignment materialAssignment) {
+        orderElement.removeMaterialAssignment(materialAssignment);
+        return materialAssignment.getMaterial().getCategory();
     }
 
     @Override
@@ -219,51 +102,15 @@ public class AssignedMaterialsToOrderElementModel implements
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public void addMaterialAssignment(MaterialAssignment materialAssignment) {
+    protected MaterialCategory addAssignment(
+            MaterialAssignment materialAssignment) {
         orderElement.addMaterialAssignment(materialAssignment);
-        // Add material category to materialCategories tree
-        final MaterialCategory materialCategory = materialAssignment.getMaterial().getCategory();
-        addCategory(materialCategories, materialCategory);
+        return materialAssignment.getMaterial().getCategory();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public void removeMaterialAssignment(MaterialAssignment materialAssignment) {
-        orderElement.removeMaterialAssignment(materialAssignment);
-        // Remove material category from materialCategories tree
-        final MaterialCategory materialCategory = materialAssignment.getMaterial().getCategory();
-        removeCategory(materialCategories, materialCategory);
-    }
-
-    private void removeCategory(
-            MutableTreeModel<MaterialCategory> materialCategories,
-            MaterialCategory materialCategory) {
-
-        categoryDAO.reattach(materialCategory);
-        final boolean canDelete = materialCategory.getSubcategories().isEmpty() &&  getAssignedMaterials(materialCategory).isEmpty();
-        if (canDelete) {
-            materialCategories.remove(materialCategory);
-            final MaterialCategory parent = materialCategory.getParent();
-            if (parent != null) {
-                removeCategory(materialCategories, parent);
-            }
-        }
-    }
-
-    @Override
-    public double getUnits(MaterialCategory materialCategory) {
-        double result = 0;
-        if (orderElement != null) {
-            for (MaterialAssignment materialAssignment : orderElement
-                    .getMaterialAssignments()) {
-                final Material material = materialAssignment.getMaterial();
-                if (materialCategory.equals(material.getCategory())) {
-                    result += materialAssignment.getUnits();
-                }
-            }
-        }
-        return result;
+    protected Double getUnits(MaterialAssignment assigment) {
+        return assigment.getUnits();
     }
 
     @Override
@@ -279,6 +126,16 @@ public class AssignedMaterialsToOrderElementModel implements
             }
         }
         return result;
+    }
+
+    @Override
+    protected BigDecimal getTotalPrice(MaterialAssignment materialAssignment) {
+        return materialAssignment.getTotalPrice();
+    }
+
+    @Override
+    protected boolean isInitialized() {
+        return orderElement != null;
     }
 
 }
