@@ -205,18 +205,6 @@ public class AssignedMaterialsToOrderElementController extends
     }
 
     /**
-     * On changing unit price, recalculate total price and refresh categories tree
-     *
-     * @param row
-     */
-    public void updateUnitPrice(Row row) {
-        final MaterialAssignment materialAssignment = (MaterialAssignment) row.getValue();
-        Doublebox unitPrice = (Doublebox) row.getChildren().get(4);
-        unitPrice.setValue(materialAssignment.getUnitPrice().doubleValue());
-        refreshTotalPriceAndTotalUnits(materialAssignment);
-    }
-
-    /**
      * Finds which {@link Treeitem} in tree is associated with category
      *
      * @param category

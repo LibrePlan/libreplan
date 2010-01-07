@@ -21,7 +21,6 @@
 package org.navalplanner.business.materials.entities;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 
 import org.hibernate.validator.Valid;
@@ -103,13 +102,6 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
     public BigDecimal getTotalPrice() {
         BigDecimal result = new BigDecimal(getUnits());
         return result.multiply(getUnitPrice());
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        BigDecimal unitPrice = totalPrice;
-        unitPrice = unitPrice.divide(new BigDecimal(getUnits()), 3,
-                RoundingMode.HALF_UP);
-        setUnitPrice(unitPrice);
     }
 
     public Date getEstimatedAvailability() {
