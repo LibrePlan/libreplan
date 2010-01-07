@@ -13,7 +13,7 @@ html_pages := $(patsubst %.rst,html/%.html,$(rst_srcs)) html/index.html
 svg_images := $(wildcard images/*.svg)
 png_images := $(patsubst %.svg,%.png,$(svg_images)) $(wildcard images/*.png)
 
-utildir := ../../tools/
+utildir := ../../../tools/
 
 # Main targets
 #
