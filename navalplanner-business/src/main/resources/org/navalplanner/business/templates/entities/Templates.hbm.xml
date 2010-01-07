@@ -17,7 +17,7 @@
         <property name="startAsDaysFromBeginning" />
         <property name="deadlineAsDaysFromBeginning" />
 
-        <many-to-one name="parent" access="field" />
+        <many-to-one name="parent" access="field" class="org.navalplanner.business.templates.entities.OrderLineGroupTemplate"/>
 
         <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
