@@ -122,6 +122,16 @@ button.z-button {
     background-image: none;
 }
 
+.z-button table {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-top: 1px solid transparent;
+    border-left: 1px solid transparent;
+}
+.z-button table:active {
+    border-color: #3f5917;
+}
+
 .z-button-cm:active {
     background-color: #A1D586; /* green2 (active background)*/
     border-right: 1px solid #439e32;
