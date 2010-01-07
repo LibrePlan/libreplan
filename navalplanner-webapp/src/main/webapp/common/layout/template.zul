@@ -54,11 +54,8 @@
           </n:table>
         </n:div>
 
-<n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
-  <n:tr>
-    <n:td height="400px" valign="top">
-
-    <borderlayout width="auto" class="main-layout" height="560px">
+    <borderlayout class="main-layout" height="560px" width="auto">
+    <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
         <n:div>
         <vbox pack="center" align="center" width="90px" height="30px">
@@ -72,10 +69,9 @@
     </center>
     </borderlayout>
 
-    </n:td>
-  </n:tr>
+<n:table width="100%">
   <n:tr class="footer">
-    <n:td height="52" align="right" valign="bottom" background="/navalplanner-webapp/common/img/linea_down.gif">
+    <n:td height="52" align="right" valign="bottom">
         <n:img width="403" height="50" src="/navalplanner-webapp/common/img/logos_footer.gif"/>
     </n:td>
 

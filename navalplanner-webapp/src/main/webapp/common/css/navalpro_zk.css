@@ -6,6 +6,89 @@
  * to integrate the custom appearance of the web application.
  */
 
+@media print {
+
+    .mainmenu, .user-area, .help-link {
+        display: none;
+    }
+
+    body .perspectives-column {
+        display: none;
+    }
+
+    body .main-area {
+        margin-left: -90px;
+    }
+
+    body .z-border-layout {
+        background-color: #FFFFFF;
+    }
+
+    body .leftpanelcontainer, .rightpanellayout .z-center-body {
+        overflow: hidden !important;
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+    }
+
+    /* Height dependent styles */
+    body div.scheduling-graphics {
+        height:0px !important;
+        display: none;
+    }
+
+    body div.main-layout {
+        height: 12800px !important;
+    }
+
+    body div.plannerlayout {
+        height: 12790px !important;
+    }
+
+    body div#timetracker,
+    #watermark .timetracker_column_even {
+        height: 12730px !important;
+    }
+
+    body div#scroll_container {
+        height: 12710px !important;
+    }
+
+}
+
+    .scheduling-graphics {
+        height:200px;
+    }
+
+    .main-layout {
+        height: 560px;
+    }
+
+    #watermark {
+        height: 442px;
+    }
+
+
+    #watermark {
+        height: 12780px !important;
+    }
+
+    #timetracker, #watermark, #watermark .timetracker_column_even {
+        height: 99999px !important;
+    }
+
+    #timetracker {
+        overflow: hidden;
+    }
+
+
+    .taskheaders-border {
+        width: 300px;
+    }
+
+    .leftpanelcontainer {
+        overflow-x: scroll;
+    }
+
 body {
     font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
 }
@@ -677,6 +760,19 @@ div.z-grid {
 
 .legend-gap {
     background-color: #E8E8E8;
+    border: 0;
+}
+
+.plannerlayout .z-west-nested {
+    border-left: 0;
+}
+
+.scheduling-graphics,
+.scheduling-graphics .z-tabs-ver-scroll {
+    border: 0;
+}
+.perspectives-column {
+/*    border-right: solid 1px; */
 }
 
 /* Legend colors:

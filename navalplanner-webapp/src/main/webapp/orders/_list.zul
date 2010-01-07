@@ -39,8 +39,8 @@
             <row self="@{each='order'}" value="@{order}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{order.name}" />
                 <label value="@{order.code}" />
-                <label value="@{order.initDate}" />
-                <label value="@{order.deadline}" />
+                <label value="@{order.initDate, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                <label value="@{order.deadline, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                 <label value="@{order.responsible}" />
                 <label value="@{order.customer}" />
                 <label value="@{order.description}" />

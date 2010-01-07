@@ -28,7 +28,7 @@
                 ${each.name}
                 </n:th>
             </n:tr>
-            <n:tr id="watermark" style="height:100px">
+            <n:tr id="watermark" style="height:442px">
                 <n:td class="timetracker_column${((each.even and (top.zoomLevel != 'DETAIL_FOUR'))?'_even':'')}
                     ${(each.bankHoliday?'bankHoliday':'')}
                     ${(each.currentPeriod?'timetracker_column_today':' ')}
