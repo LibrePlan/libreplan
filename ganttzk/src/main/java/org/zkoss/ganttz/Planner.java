@@ -380,23 +380,27 @@ public class Planner extends HtmlMacroComponent  {
 
     public void showAllLabels() {
         Button showAllLabelsButton = (Button) getFellow("showAllLabels");
-        if (showAllLabelsButton.getSclass().equals("planner-command")) {
+        if (showAllLabelsButton.getSclass().equals(
+                "planner-command show-labels")) {
             Clients.evalJavaScript("zkTasklist.showAllTooltips();");
-            showAllLabelsButton.setSclass("planner-command clicked");
+            showAllLabelsButton
+                    .setSclass("planner-command show-labels clicked");
         } else {
             Clients.evalJavaScript("zkTasklist.hideAllTooltips();");
-            showAllLabelsButton.setSclass("planner-command");
+            showAllLabelsButton.setSclass("planner-command show-labels");
         }
     }
 
     public void showAllResources() {
         Button showAllLabelsButton = (Button) getFellow("showAllResources");
-        if (showAllLabelsButton.getSclass().equals("planner-command")) {
+        if (showAllLabelsButton.getSclass().equals(
+                "planner-command show-resources")) {
             Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
-            showAllLabelsButton.setSclass("planner-command clicked");
+            showAllLabelsButton
+                    .setSclass("planner-command show-resources clicked");
         } else {
             Clients.evalJavaScript("zkTasklist.hideResourceTooltips();");
-            showAllLabelsButton.setSclass("planner-command");
+            showAllLabelsButton.setSclass("planner-command show-resources");
         }
     }
 

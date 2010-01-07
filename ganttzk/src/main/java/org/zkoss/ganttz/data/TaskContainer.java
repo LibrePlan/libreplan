@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * This class contains the information of a task container. It can be modified
@@ -174,6 +175,13 @@ public class TaskContainer extends Task {
                         }
                     });
         }
+        refreshTooltips();
+    }
+
+    private void refreshTooltips() {
+        // Could be optimized asking planner for tooltips display state to
+        // create expanded elements with the proper state
+        Clients.evalJavaScript("zkTasklist.refreshTooltips();");
     }
 
     @Override

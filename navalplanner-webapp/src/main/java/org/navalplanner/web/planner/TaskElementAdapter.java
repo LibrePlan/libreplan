@@ -43,10 +43,12 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -54,6 +56,7 @@ import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
@@ -111,6 +114,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IResourceAllocationDAO resourceAllocationDAO;
 
     private List<IOnMoveListener> listeners = new ArrayList<IOnMoveListener>();
 
@@ -419,23 +425,36 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         private String buildResourcesText() {
             StringBuilder result = new StringBuilder();
             List<Resource> foundResources = new ArrayList<Resource>();
-
             if (taskElement.getResourceAllocations() != null) {
                 for (ResourceAllocation each : taskElement.getResourceAllocations()) {
 
-                    List<Resource> list = each.getAssociatedResources();
-
-                    if (!list.isEmpty()) {
-                        for (Resource r : list) {
-                            if (!foundResources.contains(r)) {
-                                result.append(r.getName()).append(",");
-                                foundResources.add(r);
+                    if (each instanceof SpecificResourceAllocation) {
+                        List<Resource> list = each.getAssociatedResources();
+                        if (!list.isEmpty()) {
+                            for (Resource r : list) {
+                                if (!foundResources.contains(r)) {
+                                    result.append(r.getName()).append(", ");
+                                    foundResources.add(r);
+                                }
                             }
                         }
+                    } else {
+                        List<Criterion> listCriterions = resourceAllocationDAO
+                                .findCriterionByResourceAllocation(each);
+                        result.append("[");
+                        if (!listCriterions.isEmpty()) {
+                            for (Criterion r : listCriterions) {
+                                result.append(r.getName()).append(", ");
+                                }
+                        } else {
+                            result.append(_("All workers")).append(", ");
+                        }
+                        result.delete(result.length() - 2, result.length());
+                        result.append("], ");
+                        }
                     }
-                }
                 if (result.length() > 1) {
-                    result.delete(result.length() - 1, result.length());
+                    result.delete(result.length() - 2, result.length());
                 }
             }
             return result.toString();

@@ -11,7 +11,9 @@
         onMouseover="zkTasklist.showTooltip('tasktooltip${self.uuid}');"
         onMouseOut="zkTasklist.hideTooltip('tasktooltip${self.uuid}');">
 		<div class="task-labels">${self.labelsText}</div>
-		<div class="task-resources">${self.resourcesText}</div>
+		<div class="task-resources">
+			<div class="task-resources-inner">${self.resourcesText}</div>
+		</div>
         <div class="completion"></div>
         <div class="completion2"></div>
 		<div id="tasktooltip${self.uuid}" class="task_tooltip">${self.tooltipText}</div>

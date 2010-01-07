@@ -8,12 +8,16 @@
     <div id="${self.uuid}" z.type="ganttz.taskcontainer.TaskContainer" idTask="${self.id}"
        z.autoz="true"${self.outerAttrs}" class="taskgroup">
 		<div class="task-labels">${self.labelsText}</div>
-		<div class="task-resources">${self.resourcesText}</div>
-	<div class="taskcontainer_completion">
+		<div class="task-resources">
+			<div class="task-resources-inner">${self.resourcesText}</div>
+		</div>
+		<div class="taskcontainer_completion">
 	        <div class="completion"></div>
 	        <div class="completion2"></div>
-	</div>
-        <div class="taskgroup_start"></div>
-        <div class="taskgroup_end"></div>
+		</div>
+		<div class="border-container">
+			<div class="taskgroup_start"></div>
+			<div class="taskgroup_end"></div>
+        </div>
     </div>
 </div>

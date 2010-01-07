@@ -33,10 +33,10 @@ planner = self;
             label="${i18n:_('Critical path')}" />
 
         <button id="showAllLabels" onClick="planner.showAllLabels();"
-            label="${i18n:_('Show all labels')}" class="planner-command" sclass="planner-command" />
+            label="${i18n:_('Show all labels')}" sclass="planner-command show-labels" />
 
         <button id="showAllResources" onClick="planner.showAllResources();"
-            label="${i18n:_('Show all resources')}" class="planner-command" sclass="planner-command" />
+            label="${i18n:_('Show all resources')}" sclass="planner-command show-resources" />
 
         <button id="btnPrint" onClick="planner.print()"
             label="${i18n:_('Print')}" />

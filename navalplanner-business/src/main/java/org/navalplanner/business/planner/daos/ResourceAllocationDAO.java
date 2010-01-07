@@ -125,6 +125,20 @@ public class ResourceAllocationDAO extends
 
     @SuppressWarnings("unchecked")
     @Override
+    public List<Criterion> findCriterionByResourceAllocation(
+            ResourceAllocation allocation) {
+        List<Criterion> results = getSession()
+                .createQuery(
+                "select criterion "
+                        + "from GenericResourceAllocation as generic "
+                                + "join generic.criterions as criterion where generic in(:allocation)")
+                .setParameter("allocation", allocation)
+                .list();
+        return results;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
             List<Task> tasks) {
         if (tasks.isEmpty()) {

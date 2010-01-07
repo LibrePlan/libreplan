@@ -85,6 +85,19 @@ zkTasklist.hideResourceTooltips = function(elem) {
 	}
 }
 
+/* Refreshes
+ * Can be optimized creating the new tasks with
+ */
+zkTasklist.refreshTooltips = function(elem) {
+	var resourcesButton = YAHOO.util.Selector.query('.show-resources')[0];
+	if (resourcesButton.className.indexOf("clicked") != -1 ) {
+		zkTasklist.showResourceTooltips();
+	}
+	var resourcesButton = YAHOO.util.Selector.query('.show-labels')[0];
+	if (resourcesButton.className.indexOf("clicked") != -1 ) {
+		zkTasklist.showAllTooltips();
+	}
+}
 
 
 zkTasklist.hideTooltip = function(elem) {
