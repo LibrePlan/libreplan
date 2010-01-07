@@ -26,7 +26,7 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
-import org.navalplanner.web.orders.materials.MaterialAssignmentsComponent;
+import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -116,7 +116,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     private void setupAssignedMaterialsToOrderElementController(Component comp)
             throws Exception {
-        MaterialAssignmentsComponent assignedMaterialsComponent = (MaterialAssignmentsComponent) comp
+        OrderElementMaterialAssignmentsComponent assignedMaterialsComponent = (OrderElementMaterialAssignmentsComponent) comp
                 .getFellowIfAny("orderElementMaterials");
         assignedMaterialsController = assignedMaterialsComponent
                 .getController();

@@ -19,14 +19,18 @@
  */
 package org.navalplanner.web.orders.materials;
 
-import org.zkoss.zk.ui.HtmlMacroComponent;
-
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public abstract class MaterialAssignmentsComponent extends HtmlMacroComponent {
+public class OrderElementMaterialAssignmentsComponent extends
+        MaterialAssignmentsComponent {
 
-    public abstract AssignedMaterialsController<?, ?> getController();
+    private AssignedMaterialsToOrderElementController controller = new AssignedMaterialsToOrderElementController();
+
+    @Override
+    public AssignedMaterialsToOrderElementController getController() {
+        return controller;
+    }
 
 }
