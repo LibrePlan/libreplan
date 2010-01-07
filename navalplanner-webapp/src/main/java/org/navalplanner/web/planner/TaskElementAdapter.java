@@ -378,12 +378,31 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     });
         }
 
+
+
+        private Set<Label> getLabelsFromElementAndPredecesors(
+                OrderElement order) {
+            if (order != null) {
+                if (order.getParent() == null) {
+                    return order.getLabels();
+                } else {
+                    HashSet<Label> labels = new HashSet<Label>(order
+                            .getLabels());
+                    labels.addAll(getLabelsFromElementAndPredecesors(order
+                            .getParent()));
+                    return labels;
+                }
+            }
+            return new HashSet<Label>();
+        }
+
+
         private String buildLabelsText() {
             StringBuilder result = new StringBuilder();
 
             if (taskElement.getOrderElement() != null) {
-                Set<Label> labels = taskElement
-                        .getOrderElement().getLabels();
+                Set<Label> labels = getLabelsFromElementAndPredecesors(taskElement
+                        .getOrderElement());
 
                 if (!labels.isEmpty()) {
                     for (Label label : labels) {
