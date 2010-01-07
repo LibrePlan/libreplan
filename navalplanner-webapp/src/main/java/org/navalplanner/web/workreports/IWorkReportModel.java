@@ -84,8 +84,14 @@ public interface IWorkReportModel {
     WorkReport getWorkReport();
 
     /**
-     * Return all {@link WorkReportLine} associated with current {@link WorkReport}
-     *
+     * Gets the current {@link WorkReportType}.
+     * @return A {@link WorkReportType}
+     */
+    WorkReportType getWorkReportType();
+
+    /**
+     * Return all {@link WorkReportLine} associated with current
+     * {@link WorkReport}
      * @return
      */
     List<WorkReportLine> getWorkReportLines();

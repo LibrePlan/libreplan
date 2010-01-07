@@ -20,12 +20,12 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Work report listing')}">
         <div align="right">
-        <hbox id="hboxFilter" align="end">
+        <hbox id="hboxFilter" align="center">
           <!-- Filter by type, start date and finish date -->
           <label value="${i18n:_('Filter work report by :')}"/>
           <label value="${i18n:_('Type')}"/>
           <listbox id="listType" mold="select" rows="1"
-            model="@{controller.workReportTypes}" width="150px"
+            model="@{controller.filterWorkReportTypes}" width="150px"
                 selectedItem="@{controller.defaultWorkReportType}">
                 <listitem self="@{each='workReportType'}" value="@{workReportType}">
                   <listcell label="@{workReportType.name}" />
@@ -71,4 +71,20 @@
             </row>
         </rows>
     </grid>
+    <separator bar="false" spacing="20px" orient="horizontal"/>
+    <div align="left">
+        <hbox align="center">
+          <!-- Create new Work Report  -->
+          <label value="${i18n:_('Select type :')}"/>
+          <listbox id="listTypeToAssign" mold="select" rows="1"
+            model="@{controller.workReportTypes}" width="150px"
+            selectedItem="@{controller.firstType}">
+                <listitem self="@{each='workReportType'}" value="@{workReportType}">
+                  <listcell label="@{workReportType.name}" />
+               </listitem>
+          </listbox>
+          <button label="${i18n:_('New work report')}" style="margin-top: -4px"
+                onClick="controller.onCreateNewWorkReport()"/>
+        </hbox>
+        </div>
 </window>

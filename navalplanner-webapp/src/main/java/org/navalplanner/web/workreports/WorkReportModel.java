@@ -100,7 +100,8 @@ public class WorkReportModel implements IWorkReportModel {
         return workReport;
     }
 
-    private WorkReportType getWorkReportType() {
+    @Override
+    public WorkReportType getWorkReportType() {
         return this.workReportType;
     }
 
@@ -508,11 +509,6 @@ public class WorkReportModel implements IWorkReportModel {
     public List<WorkReportType> getWorkReportTypes() {
         List<WorkReportType> result = workReportTypeDAO
                 .list(WorkReportType.class);
-        if (result.isEmpty()) {
-            result.add(getDefaultType());
-        } else {
-            result.add(0, getDefaultType());
-        }
         return result;
     }
 

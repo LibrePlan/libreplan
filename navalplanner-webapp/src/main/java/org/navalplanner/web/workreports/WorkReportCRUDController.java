@@ -93,6 +93,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
 
+    private boolean cameBackList = false;
+
     private Window createWindow;
 
     private Window listWindow;
@@ -134,6 +136,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private Grid listing;
 
     private Listbox listType;
+
+    private Listbox listTypeToAssign;
 
     private Datebox filterStartDate;
 
@@ -515,7 +519,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public void cancel() {
-        if (workReportModel.isEditing()) {
+        if (cameBackList || workReportModel.isEditing()) {
             goToList();
         } else {
             workReportTypeCRUD.goToList();
@@ -523,6 +527,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateForm(WorkReportType workReportType) {
+        cameBackList = false;
         workReportModel.initCreate(workReportType);
         prepareWorkReportList();
         getVisibility().showOnly(createWindow);
@@ -557,6 +562,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         // components work report list
         listing = (Grid) window.getFellow("listing");
         listType = (Listbox) window.getFellow("listType");
+        listTypeToAssign = (Listbox) window.getFellow("listTypeToAssign");
         filterStartDate = (Datebox) window.getFellow("filterStartDate");
         filterFinishDate = (Datebox) window.getFellow("filterFinishDate");
         clearFilterDates();
@@ -1366,8 +1372,22 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private final String FILTER = _("Filter work reports");
 
+    public List<WorkReportType> getFilterWorkReportTypes() {
+        List<WorkReportType> result = workReportModel.getWorkReportTypes();
+        if (result.isEmpty()) {
+            result.add(getDefaultWorkReportType());
+        } else {
+            result.add(0, getDefaultWorkReportType());
+        }
+        return result;
+    }
+
     public List<WorkReportType> getWorkReportTypes() {
-        return workReportModel.getWorkReportTypes();
+        List<WorkReportType> result = workReportModel.getWorkReportTypes();
+        if (!result.isEmpty()) {
+            this.firstType = result.get(0);
+        }
+        return result;
     }
 
     public WorkReportType getDefaultWorkReportType() {
@@ -1580,6 +1600,47 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 }
             }
         };
+    }
+
+    /**
+     * Methods improved the work report edition and creation.Executed on
+     * pressing New work report button Creates a new work report for a type, and
+     * added it to the work report list
+     */
+
+    public void onCreateNewWorkReport() {
+        Listitem selectedItem = listTypeToAssign.getSelectedItem();
+        if (selectedItem == null) {
+            throw new WrongValueException(listTypeToAssign,
+                    _("please, select a work report type"));
+        }
+
+        WorkReportType type = (WorkReportType) selectedItem.getValue();
+        if (type == null) {
+            throw new WrongValueException(listTypeToAssign,
+                    _("please, select a work report type"));
+        }
+
+        goToCreateForm(type);
+        listTypeToAssign.clearSelection();
+        cameBackList = true;
+    }
+
+    private WorkReportType firstType;
+
+    public WorkReportType getFirstType() {
+        return firstType;
+    }
+
+    public void setFirstType(WorkReportType firstType) {
+        this.firstType = firstType;
+    }
+
+    public void newWorkReportWithSameType() {
+        if (save()) {
+            goToCreateForm(workReportModel.getWorkReportType());
+            cameBackList = true;
+        }
     }
 
 }
