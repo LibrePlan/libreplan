@@ -1,0 +1,5 @@
+cutycapt (20100108) lenny squeeze intrepid karmic; urgency=low
+
+  * Initial packaged release.
+
+ -- Adrian Perez <aperez@igalia.com>  Fri, 08 Jan 2009 12:25:00 +0200

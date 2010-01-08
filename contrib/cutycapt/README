@@ -1,0 +1,24 @@
+CutyCapt Debian packaging
+=========================
+
+This directory includes control files for building CutyCapt packages for
+Debian-based systems (including Ubuntu) so it can be cleanly installed.
+
+Usage
+=====
+
+1. Get the CutyCapt sources, from http://cutycapt.sourceforge.net
+
+2. Copy the included "debian" subdirectory over the CutyCapt source tree.
+
+3. If needed, install the build-time dependencies::
+
+     apt-get install libqt4-dev
+
+4. Create the package using the usual incantation::
+
+     debian/rules binary
+
+5. Now you may install the created ``.deb`` package::
+
+     dpkg -i ../cutycapt_*.deb
