@@ -1,9 +1,9 @@
-Introdución
-###########
+Introducción
+############
 
 .. contents::
 
-A aplicación para xestión da produción do sector auxiliar do naval pretende resolver principalmente o problema da planificación nas empresas pertencentes ó sector. Para elo desenvolvéronse unha serie de funcionalidades que dan solución a certos problemas detectados durante a análise do proxecto. Sen embargo, a solucións propostas para as problemáticas xurdidas non deben ser vistas como exclusivas do sector naval, senón que poden ser útiles para calquera empresa á que os conceptos base utilizados lle sexan aplicables.
+La aplicación para la gestión de la producción del sector auxiliar naval pretende, principalmente, resolver el problema de la planificación en las empresas del sector. Por esta razón, se desarrollaron una serie de características que dan solución a determinados problemas identificados durante el análisis del proyecto. Sin embargo, las soluciones propuestas a dichos problemas no deben considerarse como exclusivos del sector naval, si no que puede ser útil para cualquier empresa a la sean aplicables los conceptos básicos utilizados.
 
 
 .. figure:: images/company_view.png
