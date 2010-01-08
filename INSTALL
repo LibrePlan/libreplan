@@ -96,7 +96,7 @@ tool and a lightweight X server must be installed.
 
 The capturing tool is CutyCapt [1], which has to be either compiled or installed from
 an external package. Once compiled from the tarball the binary CutyCapt must be located
-under /usr/local/bin/ to be available to the application.
+under /usr/bin/ to be available to the application.
 
 X virtual framebuffer xvfb[2] package needs to be installed for the application running on
 a non-desktop server is capable of launching an X instance to create the print capture of

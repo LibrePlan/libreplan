@@ -22,17 +22,10 @@ package org.zkoss.ganttz;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -44,8 +37,7 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
-import org.zkoss.ganttz.servlets.CallbackServlet;
-import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
+import org.zkoss.ganttz.print.CutyPrint;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
@@ -65,12 +57,6 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Button;
 
 public class Planner extends HtmlMacroComponent  {
-
-    // Read path and Xvfb port from properties file
-    private static final String CUTYCAPT_COMMAND = "/usr/local/bin/CutyCapt ";
-
-    // Calculate dynamically width and delay parameters
-    private static final String CUTYCAPT_PARAMETERS = " --min-width=2500 --delay=1000 ";
 
     public static void registerNeededScripts() {
         IScriptsRegister register = getScriptsRegister();
@@ -407,66 +393,7 @@ public class Planner extends HtmlMacroComponent  {
     public void print() {
 
         // Pending to raise print configuration popup
-
-        HttpServletRequest request = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
-
-        String url = CallbackServlet.registerAndCreateURLFor(request,
-                new IServletRequestHandler() {
-
-                    @Override
-                    public void handle(HttpServletRequest request,
-                            HttpServletResponse response)
-                            throws ServletException, IOException {
-
-                        String forwardURL = "/planner/index.zul";
-                        String orderId = request.getParameter("order");
-
-                        if ((orderId != null) && !(orderId.equals(""))) {
-                            forwardURL += ";order=" + orderId;
-                        }
-
-                        // Pending to forward and process additional parameters
-                        // as show labels or resources
-                        request.getRequestDispatcher(forwardURL).forward(
-                                request, response);
-                    }
-                });
-
-        String CUTYCAPT_URL = "--url=http://localhost:8080" + url;
-        String captureString = CUTYCAPT_COMMAND + CUTYCAPT_URL;
-
-        captureString += CUTYCAPT_PARAMETERS;
-
-        String absolutePath = request.getSession().getServletContext()
-                .getRealPath("/");
-        String filename = "/print/"
-                + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
-                + ".pdf";
-
-        captureString += "--out=" + absolutePath + filename;
-
-        try {
-            // CutyCapt command execution
-            // If there is a not real X server environment, use framebuffer
-            String[] serverEnvironment = { "PATH=$PATH" };
-            Process server = Runtime.getRuntime().exec("env - Xvfb :99",
-                    serverEnvironment);
-            String[] environment = { "DISPLAY=:99.0" };
-            Process p = Runtime.getRuntime().exec(captureString, environment);
-            System.out.println(captureString);
-            try {
-                p.waitFor();
-                p.destroy();
-                server.destroy();
-                Executions.getCurrent().sendRedirect(filename, "_blank");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        CutyPrint.print();
     }
 
 }
