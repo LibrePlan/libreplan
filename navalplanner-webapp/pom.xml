@@ -75,7 +75,7 @@
                   <goals>
                    <goal>run</goal>
                   </goals>
-                 <phase>compile</phase>
+                 <phase>process-resources</phase>
                  <inherited>false</inherited>
                  <configuration>
                   <tasks>
