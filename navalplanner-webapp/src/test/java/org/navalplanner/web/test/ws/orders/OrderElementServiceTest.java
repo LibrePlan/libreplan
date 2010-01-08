@@ -48,7 +48,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
@@ -425,7 +424,6 @@ public class OrderElementServiceTest {
                 equalTo(previous + 1));
     }
 
-    @Ignore
     @Test
     public void orderWithInvalidMaterialAssignment() {
         int previous = orderDAO.getOrders().size();
@@ -444,8 +442,9 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: material, units, unitPrice
-        assertThat(constraintViolations.size(), equalTo(3));
+        // Mandatory fields: material code
+        assertThat(constraintViolations.size(), equalTo(1));
+        assertThat(constraintViolations.get(0).fieldName, mustEnd("code"));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }

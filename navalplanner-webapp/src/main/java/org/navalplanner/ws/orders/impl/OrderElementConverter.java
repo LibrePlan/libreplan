@@ -426,6 +426,11 @@ public final class OrderElementConverter {
                     .getMaterialCategory();
             material.setCategory(defaultMaterialCategory);
 
+            /*
+             * "validate" method avoids that "material" goes to the Hibernate's
+             * session if "material" is not valid.
+             */
+            material.validate();
             Registry.getMaterialDAO().save(material);
         }
 
@@ -447,6 +452,11 @@ public final class OrderElementConverter {
             throw new RuntimeException(e);
         } catch (InstanceNotFoundException e) {
             labelType = LabelType.create(labelDTO.type);
+            /*
+             * "validate" method avoids that "labelType" goes to the Hibernate's
+             * session if "labelType" is not valid.
+             */
+            labelType.validate();
             Registry.getLabelTypeDAO().save(labelType);
         }
 
