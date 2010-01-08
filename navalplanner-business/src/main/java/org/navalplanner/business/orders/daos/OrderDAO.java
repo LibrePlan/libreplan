@@ -20,21 +20,32 @@
 
 package org.navalplanner.business.orders.daos;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.costcategories.daos.CostCategoryDAO;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Dao for {@link Order}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -43,6 +54,9 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Override
     public List<Order> getOrders() {
@@ -57,6 +71,71 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
             taskSourceDAO.remove(each.getId());
         }
         super.remove(id);
+    }
+
+    private boolean isOrderNameContained(String code, List<Order> orders) {
+        for (Order each:orders) {
+            if (each.getCode().equals(code)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderCostsPerResourceDTO> getOrderCostsPerResource(
+            List<Order> orders, Date startingDate, Date endingDate) {
+
+        String orderStrQuery = "FROM Order order ";
+        Query orderQuery = getSession().createQuery(orderStrQuery);
+        List<Order> orderList = orderQuery.list();
+
+        String strQuery = "SELECT new org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO(worker, wrl) "
+                + "FROM Worker worker, WorkReportLine wrl "
+                + "LEFT OUTER JOIN wrl.resource resource "
+                + "WHERE resource.id = worker.id ";
+
+        // Order by
+        strQuery += "ORDER BY worker.id, wrl.date";
+
+        Query query = getSession().createQuery(strQuery);
+        List<OrderCostsPerResourceDTO> list = query.list();
+
+        List<OrderCostsPerResourceDTO> filteredList = new ArrayList<OrderCostsPerResourceDTO>();
+        for (OrderCostsPerResourceDTO each : list) {
+
+            Order order = each.getOrderElement().getOrder();
+
+            // Apply filtering
+            if (orders.isEmpty()
+                    || isOrderNameContained(order.getCode(), orders)) {
+
+                // Attach ordername value
+                each.setOrderName(order.getName());
+
+                // Attach calculated pricePerHour
+                BigDecimal pricePerHour = CostCategoryDAO
+                        .getPriceByResourceDateAndHourType(each.getWorker(),
+                                new LocalDate(each.getDate()), each
+                                        .getHoursType());
+                if (pricePerHour == null) {
+                    for (TypeOfWorkHours defaultprice : typeOfWorkHoursDAO
+                            .list(TypeOfWorkHours.class)) {
+                        if (defaultprice.getCode().equals(each.getHoursType())) {
+                            pricePerHour = defaultprice.getDefaultPrice();
+                        }
+                        }
+                    }
+
+                each.setCostPerHour(pricePerHour);
+                each.setCost(each.getCostPerHour().multiply(
+                        new BigDecimal(each.getNumHours())));
+
+                    filteredList.add(each);
+            }
+        }
+        return filteredList;
     }
 
 }

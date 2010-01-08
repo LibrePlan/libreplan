@@ -20,16 +20,22 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
@@ -38,7 +44,6 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class CostCategoryDAO extends GenericDAOHibernate<CostCategory, Long>
         implements ICostCategoryDAO {
-
 
     @Override
     public List<CostCategory> findActive() {
@@ -50,4 +55,25 @@ public class CostCategoryDAO extends GenericDAOHibernate<CostCategory, Long>
         list.addAll(c.list());
         return list;
     }
+
+    @Transactional(readOnly = true)
+    public static BigDecimal getPriceByResourceDateAndHourType(
+            Resource resource,
+            LocalDate date, String type) {
+
+        for (ResourcesCostCategoryAssignment each : resource
+                .getResourcesCostCategoryAssignments()) {
+            if ((date.isAfter(each.getInitDate()))
+                    && (!date.isBefore(each.getInitDate()))) {
+                for (HourCost hourCost : each.getCostCategory().getHourCosts()) {
+                    if (hourCost.isActiveAtDate(date)
+                            && hourCost.getType().getCode().equals(type)) {
+                        return hourCost.getPriceCost();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 }

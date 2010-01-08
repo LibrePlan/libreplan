@@ -109,6 +109,14 @@ public class HourCost extends BaseEntity {
             category.addHourCost(this);
     }
 
+    public boolean isActiveAtDate(LocalDate date) {
+        if ((date.isAfter(this.getInitDate()))
+                && (!date.isBefore(this.getInitDate()))) {
+            return true;
+        }
+        return false;
+    }
+
     @AssertTrue(message="The end date cannot be before the init date")
     public boolean checkPositiveTimeInterval() {
         if (endDate == null) {

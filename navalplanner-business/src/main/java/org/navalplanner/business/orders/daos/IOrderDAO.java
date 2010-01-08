@@ -20,22 +20,32 @@
 
 package org.navalplanner.business.orders.daos;
 
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
 
 /**
  * Contract for {@link OrderDAO}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public interface IOrderDAO extends IGenericDAO<Order, Long> {
 
     /**
      * Gets all the orders.
-     *
      * @return A {@link List} of {@link Order} objects
      */
     List<Order> getOrders();
+
+    /**
+     * Builds contents for OrderCostsPerResource report
+     * @return A {@link List} of {@link OrderCostsPerResourceDTO} objects for
+     *         reporting
+     */
+    List<OrderCostsPerResourceDTO> getOrderCostsPerResource(List<Order> orders,
+            Date startingDate, Date endingDate);
 
 }

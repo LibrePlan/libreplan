@@ -97,4 +97,5 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
         }
         return (endDate.isAfter(initDate) || initDate.equals(endDate));
     }
+
 }

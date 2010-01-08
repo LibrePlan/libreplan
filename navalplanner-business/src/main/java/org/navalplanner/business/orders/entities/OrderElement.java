@@ -718,15 +718,13 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     public Order getOrder() {
-        if (this instanceof Order) {
-            return (Order) this;
+        Order order;
+        try {
+            order = parent.getOrder();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        if (parent != null) {
-            return parent.getOrder();
-        }
-
-        return null;
+        return order;
     }
 
     @Valid

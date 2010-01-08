@@ -235,6 +235,11 @@ public class Order extends OrderLineGroup {
     }
 
     @Override
+    public Order getOrder() {
+        return this;
+    }
+
+    @Override
     public OrderTemplate createTemplate() {
         return OrderTemplate.create(this);
     }
