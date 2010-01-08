@@ -2992,3 +2992,8 @@ msgstr "La fecha no es válida, debe ser única para esta asignación de avance"
 #: navalplanner-webapp/src/main/webapp/orders/_listOrderElementLabels.zul:63
 msgid "Delete"
 msgstr "Borrar"
+
+#: File: navalplanner-webapp/src/main/webapp/common/layout/_customMenu.zul:57
+#: File: navalplanner-webapp/src/main/webapp/common/layout/_customMenu.zul:67
+msgid "en"
+msgstr "es"
