@@ -11,18 +11,19 @@ La aplicación para la gestión de la producción del sector auxiliar naval pret
 
    Vista global de empresa
 
-Vista global da empresa e xestión de perspectivas
-=================================================
+Vista global de la empresa y gestión de perspectivas
+====================================================
 
-Tal e como se visualiza na anterior captura, a principal pantalla da aplicación e a vista global da empresa, unha vista na que o usuario poderá visualizar a lista de proxectos planificados para coñecer o estado global da empresa, tanto a nivel de pedidos, como de uso de recursos. A vista global de empresa está, asimesmo, formada por 3 perspectivas:
+Como se muestra en la anterior la captura de la pantalla principal de la aplicación y la vista global de la empresa, una vista en la que el usuario puede ver la lista de proyectos planificados para conocer el estado global de la empresa, tanto a nivel de pedidos, como del uso de recursos. La vista global de la empresa está, asimismo, formado por 3 perspectivas:
 
-* Vista de planificación: Vista que conxuga dous puntos de vista:
+* Vista de planificación: Vista que combina dos puntos de vista:
 
-   * Vista dos pedidos e a sua temporalidade: Cada proxecto é unha caixa de diagramas de Gantt indicando a data de comezo e de fin do proxecto. Ademais, combínase dita información co amosado da data acordada de finalización (*deadline*) e con un contraste entre porcentaxe de avance e horas adicadas realmente a cada proxecto. Esta información da unha visión clara de como se atopa a empresa nun momento dado. Esta vista é a portada da aplicación.
-   * Gráfica de uso dos recursos da empresa: Gráfica que busca a información de asignacións dos recursos ós proxectos e que ofrece un resumo de como está o uso dos recursos de toda a empresa: a cor verde indica asignacións de recursos por debaixo do 100%, a liña negra indica a carga dispoñible de recursos e a cor amarela indica as asignacións a recursos que están por enriba do 100%. É posible dispor de menos asignacións que recursos dispoñibles e ó mesmo tempo contar con sobreasignacións en recursos concretos.
+   * Vista de los pedidos y su temporalidad: Cada proyecto es una caja de diagramas de Gantt indicando la fecha de comienzo y de fin del proyecto. Además, se combina dicha información con el mostrado de la fecha acordada de finalización (*deadline*) y con un contraste entre porcentaje de avance y horas realmente dedicadas a cada proyecto. Esta información da una visión clara de cómo se encuentra la empresa en un momento dado. Esta vista es la portada de la aplicación.
+   * Gráfica de uso de los recursos de la empresa: Gráfica que busca la información de asignaciones de los recursos a los proyectos y que ofrece un resumen de cómo está el uso de los recursos de toda la empresa: el color verde indica asignaciones de recursos por debajo del 100%, la línea negra indica la carga disponible de recursos y el color amarillo indica las asignaciones a recursos que están por encima del 100%. Es posible disponer de menos asignaciones que recursos disponibles y al mismo tiempo contar con sobreasignaciones en recursos concretos.
 
-* Vista de carga de recursos: Pantalla que amosa o listado de traballadores da empresa e a carga debido a asignacións específicas a tarefas ou asignacións xenéricas debido a que o recurso satisfai unha lista de criterios. Ver a seguinte imaxe. Para acceder a esta vista é necesario premer en *Carga global de recursos*.
-* Vista de administración de pedidos. Pantalla que amosa o listado de pedidos da empresa onde o usuario poderá realizar as seguintes operacións: filtrar, editar, borrar, visualizar en planificación ou crear novo pedido. Para acceder a esta vista é necesario premer en *Lista de pedidos*.
+* Vista de carga de recursos: Pantalla que muestra el listado de trabajadores de la empresa y la carga debido la asignaciones específicas a tareas o asignaciones genéricas debido a que el recurso satisface una lista de criterios. Ver siguiente imagen. Para acceder a esta vista es necesario hacer click en *Carga global de recursos*.
+* Vista de administración de pedidos. Pantalla que muestra el listado de pedidos de la empresa donde el usuario pode realizar las siguientes operaciones: filtrar, editar, borrar, visualizar en planificación o crear nuevo pedido. Para acceder a esta vista es necesario hacer click en *Lista de pedidos*.
+
 
 .. figure:: images/resources_global.png
    :scale: 50
@@ -34,73 +35,73 @@ Tal e como se visualiza na anterior captura, a principal pantalla da aplicación
 
    Listado de pedidos
 
-A xestión de perspectivas que se comentou para a vista global de empresa é moi similar á prantexada para un só proxecto. O acceso a un proxecto pódese realizar de varias formas:
 
-* Premendo no botón dereito sobre a caixa de diagrama de Gantt do pedido e seleccionando en *Planificar*.
-* Accedendo ó listado de pedidos e premendo na icona simbolizando os diagramas de Gantt.
-* Creando un novo pedido e cambiar de perspectiva sobre o pedido sendo visualizado.
+La gestión de perspectivas que se comentó para la vista global de empresa es muy similar a la planteada para un solo proyecto. El acceso a un proyecto se puede realizar de varias formas:
 
-Sobre un pedido, a aplicación amosa as seguintes perspectivas:
+* Presionando en el botón derecho sobre la caja de diagrama de Gantt del pedido y seleccionando en *Planificar*.
+* Accediendo al listado de pedidos y haciendo click en el icono simbolizando los diagramas de Gantt.
+* Creando un nuevo pedido y cambiar de perspectiva sobre el pedido siendo visualizado.
 
-* Vista de planificación. Vista na que o usuario pode visualizar a planificación das tarefas, dependencias, fitos, etc. Ver sección de *Planificación* para máis información.
-* Vista de carga de recursos. Vista na que o usuario pode comprobar a carga dos recursos asignados ó proxecto. O código de cores é o mesmo que na vista global de empresa: verde para carga menor ó 100%, amarelo para carga igual a 100% e vermello para carga maior a 100%. A carga pode vir dada por unha tarefa ou por unha lista de criterios (asignación xenérica).
-* Vista de edición de pedido. Vista na que o usuario pode administrar os datos do pedido. Ver sección de *Pedidos* para máis información..
-* Vista de asignación avanzada de recursos. Vista na que o usuario pode asignar os recursos de xeito avanzado, seleccionando as horas por día ou as funcións de asignación que desexa aplicar. Ver sección de *Asignación de recursos* para máis información.
+Sobre un pedido, la aplicación muestra las siguientes perspectivas:
 
-¿Por que me é útil "Navalpro"?
+* Vista de planificación. Vista en la que el usuario puede visualizar la planificación de las tareas, dependencias, hitos, etc. Ver sección de *Planificación* para más información.
+* Vista de carga de recursos. Vista en la que el usuario puede comprobar la carga de los recursos asignados al proyecto. El código de colores es mismo que en la vista global de empresa: verde para carga menor al 100%, amarillo para carga igual a 100% y rojo para carga mayor a 100%. La carga puede venir dada por una tarea o por una lista de criterios (asignación genérica).
+* Vista de edición de pedido. Vista en la que el usuario puede administrar los datos del pedido. Ver sección de *Pedidos* para más información.
+* Vista de asignación avanzada de recursos. Vista en la que el usuario puede asignar recursos de manera avanzada, seleccionando las horas por día o las funciones de asignación que desea aplicar. Ver sección de *Asignación de recursos* para más información.
+
+¿Por que es útil "Navalpro"?
 ==============================
 
-"Navalpro" é un proxecto desenvolvido co obxectivo de dotar ó usuario dunha ferramenta de planificación que se basea nunha serie de conceptos, que forman parte das características que distinguen a aplicación e a definen como unha ferramenta deseñada tendo en conta os problemas clave do sector naval:
+"Navalpro" es un proyecto desarrollado con el objetivo de dotar al usuario de una herramienta de planificación. Dicha herramienta se basa en una serie de conceptos que se detectaron analizando la problemática de la planificación en el sector naval gallego. Los conceptos base implantados sobre la aplicación son los siguientes:
 
-* Vista global de empresa e multiproxecto: "Navalpro" é unha aplicación orientada especificamente a dotar de información ós usuarios dos proxectos que se levan a cabo nunha empresa, polo que a base é multiproxecto. Non se determinou que o enfoque do proxecto sexa orientado individualmente a cada proxecto. Sen embargo, tamén será posible dispoñer de varias vistas específicas, entre elas a de proxectos individuais.
-* Xestión de perspectivas: A vista global de empresa ou a vista multiproxecto vense complementadas coas perspectivas sobre a información que se almacena. Por exemplo, a vista global de empresa permite visualizar os pedidos e contrastar o estado dos mesmos, visualizar a carga xeral de recursos da empresa e administrar os pedidos. Por outro lado, na vista de proxecto, é posible visualizar a planificación, a carga de recursos, a vista de asignación de recursos avanzada e a edición do pedido relacionado.
-* Criterios: Os criterios son unha entidade do sistema que permitirán clasificar os recursos (tanto humanos como máquinas) e as tarefas. Dende o punto de vista dos recursos, estes satisfarán criterios e, dende o punto de vista das tarefas, estas requirirán criterios a ser satisfeitos. Correspóndense con un dos aspectos máis importantes da aplicación, xa que os criterios formarán parte da base das asignacións xenéricas na aplicación, resolvendo un dos problemas máis importantes para o sector, a alta temporalidade dos recursos humanos e a dificultade para ter estimacións de carga da empresa a longo prazo.
-* Recursos: Serán de dous tipos diferentes: humanos e máquinas. Os recursos humanos serán os traballadores da empresa que se utilizarán para controlar a carga da empresa e de uso dos mesmos. Por outro lado, as máquinas, dependentes das persoas que as xestionan, serán outros recursos que tamén serán controlables na aplicación.
-* Asignación de recursos: Unha das claves é o feito de ofrecer a posibilidade de dous tipos diferentes de asignación: asignación específica e asignación xenérica. A xenérica é unha asignación baseada nos criterios que se lle establecen a unha tarefa para ser satisfeitos polos usuarios que teñen a capacidade de realizala.
-* Control de carga da empresa: Baseado nos conceptos xa comentados, a aplicación dará a posibilidade de ter un control sinxelo da carga dos recursos da empresa a medio e longo prazo xa que se poderá controlar os proxectos presentes e os potenciais proxectos a futuro, visualizando as cargas en gráficos de uso de recursos.
-* Etiquetas: Serán elementos que se usarán para o etiquetado das tarefas dos proxectos. Con estas etiquetas o usuario da aplicación poderá realizar agrupacións conceptuais das tarefas para posteriormente poder consultar información das mesmas de xeito agrupado e filtrado.
-* Filtrados: Dado que o sistema disporá de xeito natural de elementos que etiquetan ou caracterízan tarefas e recursos, será posible utilizar filtrado de criterios ou etiquetas, o cal dotará de unha gran potencia para poder consultar información categorizada ou extraer informes específicos en base a criterios ou etiquetas.
-* Calendarios: Os calendarios determinarán as horas produtivas dispoñibles dos diferentes recursos. O usuario poderá crear calendarios xerais da empresa e derivar as características para calendarios máis concretos, chegando ata a nivel de calendario por recurso ou tarefa.
-* Pedido e elementos de pedido: Os traballos solicitados polos clientes terán un reflexo na aplicación en forma de pedido, que se estrutura en elementos de pedido. O pedido cos seus elementos conformarán unha estrutura xerárquica en *n* niveis. Esta árbore de elementos será sobre a que se traballe á hora de planificar traballos.
-* Avances: A aplicación permitirá xestionar diversos tipos de avances. Un proxecto pode ser medido en porcentaxe de avance, sen embargo, pode querer ser medido en unidades, presuposto acordado, etc. Será responsabilidade da persoa que xestiona a planificación decidir que tipo de avance será utilizado para contrastar avances a niveis superiores de proxecto.
-* Tarefas: As tarefas son los elementos de planificación da aplicación. Serán utilizadas para temporalizar os traballos a realizar. As características máis importantes das tarefas serán: teñen dependencias entre si e poden requirir criterios a ser satisfeitos para asignar recursos.
-* Partes de traballo: Son os partes dos traballadores das empresas, indicando as horas traballadas e por outro lado as tarefas asignadas ás horas que un traballador realizou. Con esta información, o sistema é capaz de calcular cantas horas foron consumidas dunha tarefa con respecto ó total de horas presupostadas, permitindo contrastar os avances respecto do consumo de horas real.
+* Vista global de empresa y multiproyecto: "Navalpro" es una aplicación orientada específicamente a dotar de información a los usuarios sobre proyectos que se llevan a cabo en una empresa, por lo que la base es multiproyecto. No se determinó que el enfoque del proyecto sea orientado individualmente a cada proyecto. Sin embargo, también é posible posible disponer de varias vistas específicas, entre ellas la de proyectos individuales.
+* Gestión de perspectivas: La vista global de empresa o vista multiproyecto se ve complementada con las perspectivas sobre la información que se almacena. Por ejemplo, la vista global de empresa permite visualizar los pedidos y contrastar el estado de los mismos, visualizar la carga general de recursos de la empresa y administrar los pedidos. Por otro lado, en la vista de proyecto, es posible visualizar la planificación, la carga de recursos, la vista de asignación de recursos avanzada y la edición del pedido relacionado.
+* Criterios: Los criterios son una entidad del sistema que permiten clasificar los recursos (tanto humanos como máquinas) y las tareas. Desde el punto de vista de los recursos, estos deben satisfacer criterios y, desde el punto de vista de las tareas, estas requiren criterios a ser satisfechos. Se corresponden con uno de los aspectos más importantes de la aplicación, ya que los criterios forman parte de la base de las asignaciones genéricas en la aplicación, resolviendo uno de los problemas más importantes para el sector, la alta temporalidad de los recursos humanos y la dificultad para tener estimaciones de carga de la empresa a largo plazo.
+ Recursos: Son de dos tipos diferentes: humanos y máquinas. Los recursos humanos son los trabajadores de la empresa que se utilizan para planificar, monitorizar y controlar la carga de la empresa. Y, por outro lado, las máquinas, dependientes de las persoas que las gestionan, son otros recursos que actúan de modo similar a los recursos humanos.
+* Asignación de recursos: Una de las claves es el hecho de ofrecer la posibilidade de dos tipos de asignación: asignación específica y asignación genérica. La genérica es una asignación basada en los criterios que se requieren para realizar una tarea, y que deben ser satisfechos por recursos que tienen la capacidad de realizarlas. Para entender la asignación genérica es necesario entender el siguiente caso: Jonh Smith es soldador, generalmente el propio Jonh Smith es asignado a la tarea planificada, pero "Navalpro" ofrece la posibilidad de elegir un recurso en general entre los soldadores da empresa, sin preocuparse de si Jonh Smith es el asignado a la tarea.
+* Control de carga de la empresa: La aplicación da la posibilidad de tener un control sencillo de la carga de los recursos de la empresa. Este control se realiza a medio y largo plazo ya que se pueden controlar tanto los proyectos presentes como los potenciales proyectos a futuro. "Navalpro" ofrece gráficos de uso de recursos.
+* Etiquetas: Son elementos que se usan para lo etiquetado de las tareas de los proyectos. Con estas etiquetas el usuario de la aplicación puede realizar agrupaciones conceptuales de las tareas para posteriormente poder consultarlas de manera agrupada y filtrada.
+* Filtrados: Dado que el sistema dispone de manera natural de elementos que etiquetan o caracterízan tareas y recursos, es posible utilizar filtrado de criterios o etiquetas, lo cual dota de una gran potencia para poder consultar información categorizada o extraer informes específicos en base a criterios o etiquetas.
+* Calendarios: Los calendarios determinan las horas productivas disponibles de los diferentes recursos. El usuario puede crear calendarios generales de la empresa y derivar las características para calendarios más concretos, llegando hasta a nivel de calendario por recurso o tarea.
+* Pedido y elementos de pedido: Los trabajos solicitados por los clientes tienen un reflejo en la aplicación en forma de pedido, que se estructura en elementos de pedido. El pedido con sus elementos conforman una estructura jerárquica en *n* niveles. Este árbol de elementos es sobre la que se trabaje a la hora de planificar trabajos.
+* Avances: La aplicación permite gestionar diversos tipos de avances. Un proyecto puede ser medido en porcentaje de avance, sin embargo, puede ser medido en unidades, presupuesto acordado, etc. Es responsabilidad de la persona que gestiona la planificación decidir que tipo de avance es utilizado para contrastar avances a niveles superiores de proyecto.
+* Tareas: Las tareas son los elementos de planificación de la aplicación. Son utilizadas para temporalizar los trabajos a realizar. Las características más importantes de las tareas son: tienen dependencias entre sí y pueden requerir criterios a ser satisfechos para asignar recursos.
+* Partes de trabajo: Son los partes de los trabajadores de las empresas, indicando las horas trabajadas y por otro lado las tareas asignadas a las horas que un trabajador realizó. Con esta información, el sistema es capaz de calcular cuantas horas fueron consumidas de una tarea con respeto al total de horas presupuestadas, permitiendo contrastar los avances respeto del consumo de horas real.
 
-A maiores das funcionalidades que ofrece a aplicación caben destacar outras características que o distinguen de aplicacións similares:
+A mayores de las funcionalidades que ofrece la aplicación caben destacar otras características que lo distinguen de aplicaciones similares:
 
-* Integración con ERP: A aplicación importará información directamente dos ERP das empresas para os pedidos, recursos humanos, partes de traballo e certos criterios.
-* Xestión de versións: A aplicación permitirá a xestión de diversas versións de planificacións e ó mesmo tempo a posibilidade de consultar a información de cada unha delas.
-* Xestión de históricos: A aplicación non borra información, solo a invalida, polo que é posible consultar mediante filtrados por datas a información antiga.
+* Integración con ERP: La aplicación importa información directamente de los ERP de las empresas para los pedidos, recursos humanos, partes de trabajo y ciertos criterios.
+* Gestión de versiones: La aplicación permite la gestión de diversas versiones de planificaciones y al incluso tiempo a posibilidad de consultar la información de cada una de ellas.
+* Gestión de históricos: La aplicación no borra información, solo la invalida, por lo que es posible consultar mediante filtrados por fechas la información antigua.
 
-Convencións de usabilidade
+Convenciones de usabilidad
 ==========================
 
-Comportamento dos formularios
------------------------------
-Antes de realizar unha exposición das distintas funcionalidades asociadas ós módulos máis importantes, é necesario facer unha explicación xeral da filosofía de navegación e formularios.
+Comportamiento de los formularios
+---------------------------------
+Antes de realizar una exposición de las distintas funcionalidades asociadas a los módulos más importantes, es necesario hacer una explicación general de la filosofía de navegación y formularios.
 
 Existen fundamentalmente 3 tipos de formularios de edición:
 
-* Formularios con botón de *Voltar*. Estes formularios forman parte de unha navegación máis completa, e os cambios que se van realizando vanse almacenando en memoria. Os cambios só se aplican cando o usuario almacena explicitamente toda pantalla dende a que chegou a dito formulario.
-* Formularios con botón de *Gardar* e *Pechar*. Estes formularios permiten realizar 2 operacións. A primeira delas almacena e pecha a ventá actual e a segunda delas pecha sen almacenar os cambios.
-* Formularios con botón de *Gardar*, "Gardar e Pechar" e "Pechar". Permiten realizar 3 operacións. A primeira delas almacena pero continúa no formulario actual. A segunda almacena e pecha o formulario. E a terceira pecha a ventá sen almacenar os cambios.
+* Formularios con botón de *Volver*. Estos formularios forman parte de una navegación más completa, y los cambios que se van realizando se van almacenando en memoria. Los cambios sólo se aplican cuando el usuario almacena explícitamente toda los datos de la pantalla desde la que llegó la dicho formulario.
+* Formularios con botón de *Guardar* y *Cerrar*. Estos formularios permiten realizar 2 operaciones. La primera de ellas almacena y cierra la ventana actual y la segunda de ellas cierra sin almacenar los cambios.
+* Formularios con botón de *Guardar y Continuar*, "Guardar" y "Cerrar". Permiten realizar 3 operaciones. La primera de ellas almacena pero continúa en el formulario actual. La segunda almacena y cierra el formulario. Y la tercera cierra la ventana sin almacenar los cambios.
 
-Iconas e botóns estándar
-------------------------
+Iconos y botones estándar
+-------------------------
+* Edición: La edición de los registros de la aplicación puede ser realizada generalmente a través de un icono formado por un lápiz sobre una libreta blanca.
+* Indentado izquierda: Generalmente estas operaciones son necesarias para elementos de un árbol que se desean mover hacia niveles internos. Esta operación puede ser hecha con el icono formado por una flecha hacia derecha de color verde.
+* Indentado derecha: Generalmente estas operaciones son necesarias para elementos de un árbol que se desean mover desde niveles internos cara externos. Esta operación puede ser hecha con el icono formado por una flecha hacia izquierda de color verde.
+* Borrado: Los borrados pueden ser realizados con el icono de la papelera.
+* Búsqueda: La lupa es un icono que indica que la entrada de texto a la izquierda de la misma está pensada para la búsqueda de elementos.
 
-* Edición: A edición dos rexistros da aplicación poderá ser realizada xeralmente a través dunha icona formada por un Lápiz sobre unha libreta branca.
-* Indentado esquerda: Xeralmente estas operacións son necesarias para elementos dunha árbore que se desexan mover cara niveis internos. Esta operación poderá ser feita coa icona formada por unha frecha cara a dereita de cor verde.
-* Indentado dereita: Xeralmente estas operacións son necesarias para elementos dunha árbore que se desexan mover desde niveis internos cara externos. Esta operación poderá ser feita coa icona formada por unha frecha cara a esquerda de cor verde.
-* Borrado: Os borrados poderán ser realizados coa icona da papeleira.
-* Procura: A lupa é unha icona que indicará que a entrada de texto á esquerda da mesma está pensada para a procura de elementos.
-
-Pestanas
+Pestañas
 --------
-Existirán formularios de edición e administración de contidos que se atopan representados mediante compoñentes gráficos baseados en pestanas. Dita presentación é un mecanismo para organizar a información de un formulario global en diferentes seccións que poden ser accedidas premendo nos
-títulos das diferentes pestanas, mantendo o estado no que se atopaban as demáis. En todos estes casos, as operacións de gardar ou cancelar que se executen afectarán ó conxunto de subformularios das diferentes pestanas.
+Existirán formularios de edición y administración de contenidos que se encuentran representados mediante componentes gráficos basados en pestañas. Dicha presentación es un mecanismo para organizar la información de un formulario global en diferentes secciones que pueden ser accedidas presionando en los títulos de las diferentes pestañas, manteniendo el estado en el que se encontraban las demás. En todos estos casos, las operaciones de guardar o cancelar que se ejecuten afectan al conjunto de subformularios de las diferentes pestañas.
 
-Accións explícitas e axuda contextual
--------------------------------------
-Están implementados na aplicación compoñentes que proporcionan un texto descritivo adicional do elemento sobre que se atopa enfocado o transcorrer un segundo sobre os mesmos.
-As accións que o usuario pode executar na aplicación están explicitadas tanto nas etiquetas dos botóns e nos textos de axuda que aparecen sobre os mesmos, nas opcións do menú de navegación ou nas opcións dos menús contextuais que se despregan o facer botón dereito na área do planificador.
-Asimesmo, tamén se proporcionan atallos ás operacións principais facendo dobre click nos elementos que se listan, ou asociando os eventos de teclado cos cursores e a tecla de retorno ó desprazamento polos formularios é á acción de engadir elementos, respectivamente.
+Acciones explícitas y ayuda contextual
+--------------------------------------
+
+Están implementados en la aplicación componentes que proporcionan un texto descriptivo adicional del elemento sobre que se encuentra enfocado al transcurrir un segundo sobre los mismos.
+Las acciones que el usuario puede ejecutar en la aplicación están explicitadas tanto en las etiquetas de los botones y en los textos de ayuda que aparecen sobre los mismos, en las opciones del menú de navegación o en las opciones de los menús contextuales que se despliegan el hacer click en el botón derecho en el área del planificador.
+Asimismo, también se proporcionan atajos a las operaciones principales haciendo doble click en los elementos que se listan, o asociando los eventos de teclado con los cursores y la tecla de retorno al desplazamiento por los formularios es a la acción de añadir elementos, respectivamente.
