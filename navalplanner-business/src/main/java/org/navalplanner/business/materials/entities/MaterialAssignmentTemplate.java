@@ -28,7 +28,8 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public class MaterialAssignmentTemplate extends BaseEntity {
+public class MaterialAssignmentTemplate extends BaseEntity implements
+        Comparable<MaterialAssignmentTemplate> {
 
     public static MaterialAssignmentTemplate copyFrom(
             MaterialAssignmentTemplate assignment) {
@@ -109,6 +110,11 @@ public class MaterialAssignmentTemplate extends BaseEntity {
 
     public BigDecimal getTotalPrice() {
         return getMaterialInfo().getTotalPrice();
+    }
+
+    @Override
+    public int compareTo(MaterialAssignmentTemplate o) {
+        return getMaterial().compareTo(o.getMaterial());
     }
 
 }
