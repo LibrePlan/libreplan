@@ -67,7 +67,7 @@ public class CriterionTypeDAO extends GenericDAOHibernate<CriterionType, Long>
 
           Criteria c = getSession().createCriteria(CriterionType.class);
 
-          c.add(Restrictions.eq("name", name));
+          c.add(Restrictions.eq("name", name).ignoreCase());
 
           CriterionType criterionType = (CriterionType) c.uniqueResult();
 

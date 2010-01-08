@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
@@ -43,14 +44,14 @@ public class Machine extends Resource {
         configurationUnits.remove(unit);
     }
 
-    public static Machine createUnvalidated(String code, String name, String description) {
+    public static Machine createUnvalidated(String code, String name,
+        String description) {
 
-        Machine machine = new Machine();
+        Machine machine = create(new Machine());
 
         machine.code = code;
         machine.name = name;
         machine.description = description;
-        machine.setNewObject(true);
 
         return machine;
 
@@ -108,6 +109,13 @@ public class Machine extends Resource {
 
     @AssertTrue(message="machine code has to be unique. It is already used")
     public boolean checkConstraintUniqueCode() {
+
+        /* Check if it makes sense to check the constraint .*/
+        if (!isCodeSpecified()) {
+            return true;
+        }
+
+        /* Check the constraint. */
         boolean result;
         if (isNewObject()) {
             result = !existsMachineWithTheCode();
@@ -115,6 +123,11 @@ public class Machine extends Resource {
             result = isIfExistsTheExistentMachineThisOne();
         }
         return result;
+
+    }
+
+    private boolean isCodeSpecified() {
+        return !StringUtils.isBlank(code);
     }
 
     private boolean existsMachineWithTheCode() {

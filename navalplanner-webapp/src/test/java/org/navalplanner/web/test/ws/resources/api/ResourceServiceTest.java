@@ -29,9 +29,13 @@ import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +47,8 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.IConfigurationBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -61,6 +67,7 @@ import org.navalplanner.ws.resources.api.IResourceService;
 import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourceListDTO;
+import org.navalplanner.ws.resources.api.ResourcesCostCategoryAssignmentDTO;
 import org.navalplanner.ws.resources.api.WorkerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
@@ -101,6 +108,9 @@ public class ResourceServiceTest {
     private IBaseCalendarDAO baseCalendarDAO;
 
     @Autowired
+    private ICostCategoryDAO costCategoryDAO;
+
+    @Autowired
     private IConfigurationBootstrap configurationBootstrap;
 
     @Autowired
@@ -135,10 +145,18 @@ public class ResourceServiceTest {
             resourceService.addResources(createResourceListDTO(m1, m2, w1, w2)).
                 instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.size() == 2);
-        assertTrue(instanceConstraintViolationsList.get(0).
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.size() == 2);
+        assertTrue(
+            instanceConstraintViolationsList.get(0).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(0).
             constraintViolations.size() == 2); // m2 constraint violations.
-        assertTrue(instanceConstraintViolationsList.get(1).
+        assertTrue(
+            instanceConstraintViolationsList.get(1).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(1).
             constraintViolations.size() == 3); // w2 constraint violations.
         machineDAO.findUniqueByCode(m1Code.trim());
         assertTrue(
@@ -208,10 +226,18 @@ public class ResourceServiceTest {
             resourceService.addResources(createResourceListDTO(m1, m2, w1, w2)).
                 instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.size() == 2);
-        assertTrue(instanceConstraintViolationsList.get(0).
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.size() == 2);
+        assertTrue(
+            instanceConstraintViolationsList.get(0).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(0).
             constraintViolations.size() == 1);
-        assertTrue(instanceConstraintViolationsList.get(1).
+        assertTrue(
+            instanceConstraintViolationsList.get(1).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(1).
             constraintViolations.size() == 1);
         machineDAO.findUniqueByCode(m1.code);
         assertTrue(
@@ -232,19 +258,22 @@ public class ResourceServiceTest {
         MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(
-                ' ' + ct.getName() + ' ', " c1 ", // Blank spaces intentionally
-                                                  // added (OK).
-                Calendar.getInstance().getTime(), null));
+                ' ' + ct.getName().toUpperCase() +  // Upper case and blank
+                ' ', " C1 ",                        // spaces intentionally
+                                                    // added (OK).
+                getDate(2001, 1, 1), null));
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName(), "c2",
-                Calendar.getInstance().getTime(), null));
+                getDate(2001, 1, 1), null));
 
         /* Test. */
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             resourceService.addResources(createResourceListDTO(machineDTO)).
                 instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.isEmpty());
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.isEmpty());
 
         Machine machine = findUniqueMachineByCodeInitialized(machineDTO.code);
         assertTrue(machine.getCriterionSatisfactions().size() == 2);
@@ -269,7 +298,7 @@ public class ResourceServiceTest {
         MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName() , "c1",
-                null, Calendar.getInstance().getTime())); // Missing start date.
+                null, getDate(2001, 1, 1))); // Missing start date.
 
         /* Test. */
         assertOneConstraintViolation(
@@ -281,7 +310,7 @@ public class ResourceServiceTest {
 
     @Test
     @NotTransactional
-    public void testAddResourceWithCriterionSatisfactionsWithIncorrectType() {
+    public void testAddResourcesWithCriterionSatisfactionsWithIncorrectType() {
 
         /* Create two criterion types. */
         CriterionType machineCt = createCriterionType(ResourceEnum.MACHINE);
@@ -291,11 +320,11 @@ public class ResourceServiceTest {
         MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(workerCt.getName() , "c1",
-                Calendar.getInstance().getTime(), null)); // Incorrect type.
+                getDate(2001, 1, 1), null)); // Incorrect type.
         WorkerDTO workerDTO = new WorkerDTO(getUniqueName(), "surname", "nif");
         workerDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(machineCt.getName() , "c1",
-                Calendar.getInstance().getTime(), null)); // Incorrect type.
+                getDate(2001, 1, 1), null)); // Incorrect type.
 
         /* Test. */
         assertOneConstraintViolation(
@@ -311,53 +340,45 @@ public class ResourceServiceTest {
 
     @Test
     @NotTransactional
-    public void testAddResourceWithCriterionSatisfactionsWithIncorrectNames() {
+    public void testAddResourcesWithCriterionSatisfactionsWithIncorrectNames() {
 
         /* Create a criterion type. */
         CriterionType ct = createCriterionType();
 
         /* Create machines DTOs. */
-        MachineDTO m1 = new MachineDTO(getUniqueName(), "name", "desc");
+        MachineDTO m1 = new MachineDTO(getUniqueName(), "m1", "desc");
         m1.criterionSatisfactions.add(
             new CriterionSatisfactionDTO("", "X", // Missing criterion type.
-                Calendar.getInstance().getTime(), null));
-        MachineDTO m2 = new MachineDTO(getUniqueName(), "name", "desc");
+                getDate(2001, 1, 1), null));
+        MachineDTO m2 = new MachineDTO(getUniqueName(), "m2", "desc");
         m2.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName(), // Missing criterion.
-                null, Calendar.getInstance().getTime(), null));
-        MachineDTO m3 = new MachineDTO(getUniqueName(), "name", "desc");
+                null, getDate(2001, 1, 1), null));
+        MachineDTO m3 = new MachineDTO(getUniqueName(), "m3", "desc");
         m3.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(
                 ct.getName() + 'X', // Non-existent criterion type.
-                "c1", Calendar.getInstance().getTime(), null));
-        MachineDTO m4 = new MachineDTO(getUniqueName(), "name", "desc");
+                "c1", getDate(2001, 1, 1), null));
+        MachineDTO m4 = new MachineDTO(getUniqueName(), "m4", "desc");
         m4.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(
                  ct.getName(),
                  "c1" + 'X', // Criterion name is not of ct's type.
-                 Calendar.getInstance().getTime(), null));
+                 getDate(2001, 1, 1), null));
 
         /* Test. */
-        List<MachineDTO> machines = new ArrayList<MachineDTO>();
-        machines.add(m1);
-        machines.add(m2);
-        machines.add(m3);
-        machines.add(m4);
+        ResourceListDTO resourceDTOs = createResourceListDTO(m1, m2, m3, m4);
 
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            resourceService.addResources(new ResourceListDTO(machines)).
-                instanceConstraintViolationsList;
+        assertOneConstraintViolationPerInstance(
+            resourceService.addResources(resourceDTOs),
+            resourceDTOs.resources.size());
 
-        assertTrue(instanceConstraintViolationsList.size() == machines.size());
-
-        for (InstanceConstraintViolationsDTO i :
-            instanceConstraintViolationsList) {
-            assertTrue(i.constraintViolations.size() == 1);
-        }
-
-        for (MachineDTO m : machines) {
+        for (ResourceDTO r : resourceDTOs.resources) {
+            MachineDTO m = (MachineDTO) r;
             assertFalse(
-                machineDAO.existsMachineWithCodeInAnotherTransaction(m.code));
+                "Machine " + m.name + " not expected",
+                machineDAO.existsMachineWithCodeInAnotherTransaction(
+                    ((MachineDTO) r).code));
         }
 
     }
@@ -415,6 +436,183 @@ public class ResourceServiceTest {
             addResources(createResourceListDTO(machineDTO)));
         assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
             machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithCostAssignments() {
+
+        /* Create a CostCategory. */
+        CostCategory costCategory = createCostCategory();
+
+        /* Create resource DTOs. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+        machineDTO.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                ' ' + costCategory.getName().toUpperCase() + ' ',
+                getDate(2001, 1, 1), null));
+        machineDTO.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                costCategory.getName(),
+                getDate(2000, 1, 1), getDate(2000, 4, 1)));
+
+        /* Test. */
+        assertNoConstraintViolations(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertTrue(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourcesWithCostAssignmentWithIncorrectCategoryNames() {
+
+        /* Create a resource DTOs. */
+        MachineDTO m1 = new MachineDTO(getUniqueName(), "m1", "desc");
+        m1.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                null,  // Cost category not specified.
+                getDate(2000, 1, 1), null));
+
+        MachineDTO m2 = new MachineDTO(getUniqueName(), "m2", "desc");
+        m2.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                getUniqueName(),  // Non-existent cost category.
+                getDate(2000, 1, 1), null));
+
+        /* Test. */
+        ResourceListDTO resourceDTOs = createResourceListDTO(m1, m2);
+
+        assertOneConstraintViolationPerInstance(
+            resourceService.addResources(resourceDTOs),
+            resourceDTOs.resources.size());
+
+        for (ResourceDTO r : resourceDTOs.resources) {
+            MachineDTO m = (MachineDTO) r;
+            assertFalse(
+                "Machine " + m.name + " not expected",
+                machineDAO.existsMachineWithCodeInAnotherTransaction(m.code));
+        };
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithCostAssignmentWithoutStartDate() {
+
+        /* Create a CostCategory. */
+        CostCategory costCategory = createCostCategory();
+
+        /* Create a resource DTO. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+        machineDTO.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                costCategory.getName(), null, // Start date not specified.
+                getDate(2000, 1, 1)));
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithCostAssignmentWithNegativeInterval() {
+
+        /* Create a CostCategory. */
+        CostCategory costCategory = createCostCategory();
+
+        /* Create a resource DTO. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+        machineDTO.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                costCategory.getName(),
+                getDate(2000, 2, 1), getDate(2000, 1, 1)));
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourcesWithOverlappingInCostAssignments() {
+
+        /* Create a CostCategory. */
+        CostCategory costCategory = createCostCategory();
+
+        /*
+         * Create a resource DTOs. Each resource contains one cost assignment
+         * overlapping.
+         */
+        MachineDTO m1 = createMachineDTOWithTwoCostsAssignments(
+            "m1", costCategory.getName(),
+            getDate(2000, 1, 1), null,
+            getDate(2000, 2, 1), null);
+
+        MachineDTO m2 = createMachineDTOWithTwoCostsAssignments(
+            "m2", costCategory.getName(),
+            getDate(2000, 2, 1), null,
+            getDate(2000, 1, 1), getDate(2000, 3, 1));
+
+        MachineDTO m3 = createMachineDTOWithTwoCostsAssignments(
+            "m3", costCategory.getName(),
+            getDate(2000, 2, 1), getDate(2000, 4, 1),
+            getDate(2000, 3, 1), null);
+
+        MachineDTO m4 = createMachineDTOWithTwoCostsAssignments(
+            "m4", costCategory.getName(),
+            getDate(2000, 2, 1), getDate(2000, 5, 1),
+            getDate(2000, 1, 1), getDate(2000, 3, 1));
+
+        MachineDTO m5 = createMachineDTOWithTwoCostsAssignments(
+            "m5", costCategory.getName(),
+            getDate(2000, 2, 1), getDate(2000, 5, 1),
+            getDate(2000, 3, 1), getDate(2000, 4, 1));
+
+        MachineDTO m6 = createMachineDTOWithTwoCostsAssignments(
+            "m6", costCategory.getName(),
+            getDate(2000, 2, 1), getDate(2000, 5, 1),
+            getDate(2000, 4, 1), getDate(2000, 6, 1));
+
+        MachineDTO m7 = createMachineDTOWithTwoCostsAssignments(
+            "m7", costCategory.getName(),
+            getDate(2000, 2, 1), getDate(2000, 5, 1),
+            getDate(2000, 1, 1), getDate(2000, 2, 1));
+
+        MachineDTO m8 = createMachineDTOWithTwoCostsAssignments(
+            "m8", costCategory.getName(),
+            getDate(2000, 2, 1), getDate(2000, 5, 1),
+            getDate(2000, 5, 1), getDate(2000, 6, 1));
+
+        MachineDTO m9 = createMachineDTOWithTwoCostsAssignments(
+            "m9", costCategory.getName(),
+            getDate(2000, 2, 1), getDate(2000, 5, 1),
+            getDate(2000, 2, 1), getDate(2000, 5, 1));
+
+        /* Test. */
+        ResourceListDTO resourceDTOs = createResourceListDTO(
+            m1, m2, m3, m4, m5, m6, m7, m8, m9);
+
+        assertOneConstraintViolationPerInstance(
+            resourceService.addResources(resourceDTOs),
+            resourceDTOs.resources.size());
+
+        for (ResourceDTO r : resourceDTOs.resources) {
+            MachineDTO m = (MachineDTO) r;
+            assertFalse(
+                "Machine " + m.name + " not expected",
+                machineDAO.existsMachineWithCodeInAnotherTransaction(
+                    ((MachineDTO) r).code));
+        }
 
     }
 
@@ -501,7 +699,7 @@ public class ResourceServiceTest {
 
     }
 
-    public BaseCalendar getDefaultCalendar() {
+    private BaseCalendar getDefaultCalendar() {
 
         IOnTransaction<BaseCalendar> find = new IOnTransaction<BaseCalendar>() {
 
@@ -546,11 +744,51 @@ public class ResourceServiceTest {
 
     }
 
+    private CostCategory createCostCategory() {
+
+        IOnTransaction<CostCategory> create =
+            new IOnTransaction<CostCategory>() {
+
+            @Override
+            public CostCategory execute() {
+                CostCategory costCategory =
+                    CostCategory.create(getUniqueName());
+                costCategoryDAO.save(costCategory);
+                return costCategory;
+            }
+        };
+
+        return transactionService.runOnTransaction(create);
+
+    }
+
+    private MachineDTO createMachineDTOWithTwoCostsAssignments(
+        String machineName, String costCategoryName,
+        XMLGregorianCalendar startDate1, XMLGregorianCalendar endDate1,
+        XMLGregorianCalendar startDate2, XMLGregorianCalendar endDate2) {
+
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), machineName,
+            "desc");
+
+        machineDTO.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                costCategoryName, startDate1, endDate1));
+        machineDTO.resourcesCostCategoryAssignments.add(
+            new ResourcesCostCategoryAssignmentDTO(
+                costCategoryName, startDate2, endDate2));
+
+        return machineDTO;
+
+    }
+
     private void assertNoConstraintViolations(
         InstanceConstraintViolationsListDTO
         instanceConstraintViolationsListDTO) {
 
-        assertTrue(instanceConstraintViolationsListDTO.
+        assertTrue(
+            instanceConstraintViolationsListDTO.
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsListDTO.
             instanceConstraintViolationsList.size() == 0);
 
     }
@@ -563,9 +801,46 @@ public class ResourceServiceTest {
             instanceConstraintViolationsListDTO.
                 instanceConstraintViolationsList;
 
-         assertTrue(instanceConstraintViolationsList.size() == 1);
-         assertTrue(instanceConstraintViolationsList.get(0).
-             constraintViolations.size() == 1);
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.size() == 1);
+        assertTrue(
+            instanceConstraintViolationsList.get(0).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(0).
+            constraintViolations.size() == 1);
+
+    }
+
+    private void assertOneConstraintViolationPerInstance(
+        InstanceConstraintViolationsListDTO
+        instanceConstraintViolationsListDTO, int numberOfInstances) {
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            instanceConstraintViolationsListDTO.
+                instanceConstraintViolationsList;
+
+         assertTrue(
+             instanceConstraintViolationsList.toString(),
+             instanceConstraintViolationsList.size() == numberOfInstances);
+
+         for (InstanceConstraintViolationsDTO i :
+             instanceConstraintViolationsList) {
+             assertTrue(
+                 i.constraintViolations.toString(),
+                 i.constraintViolations.size() == 1);
+         }
+
+    }
+
+    private XMLGregorianCalendar getDate(int year, int month, int day) {
+
+        try {
+            return DatatypeFactory.newInstance().newXMLGregorianCalendarDate(
+                year, month, day, DatatypeConstants.FIELD_UNDEFINED);
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

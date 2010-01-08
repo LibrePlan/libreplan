@@ -22,7 +22,7 @@
 
   * Import resources:
 
-    - import-resources.sh resources-sample.xml
+    - import-resources.sh resources-sample-mini.xml (or resources-sample.xml)
       (authenticate with wswriter/wswriter)
 
     - Check the returned errors are consistent with the comments in

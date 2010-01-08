@@ -42,4 +42,10 @@ public abstract class ResourceDTO {
     public List<CriterionSatisfactionDTO> criterionSatisfactions =
         new ArrayList<CriterionSatisfactionDTO>();
 
+    @XmlElementWrapper(name="resources-cost-category-assignment-list")
+    @XmlElement(name="resources-cost-category-assignment")
+    public List<ResourcesCostCategoryAssignmentDTO>
+        resourcesCostCategoryAssignments =
+            new ArrayList<ResourcesCostCategoryAssignmentDTO>();
+
 }

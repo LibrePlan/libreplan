@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
+import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
@@ -36,6 +37,7 @@ import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
+import org.navalplanner.ws.resources.api.ResourcesCostCategoryAssignmentDTO;
 import org.navalplanner.ws.resources.api.WorkerDTO;
 
 /**
@@ -65,6 +67,8 @@ public class ResourceConverter {
         addCriterionSatisfactions(resource,
             resourceDTO.criterionSatisfactions);
         setResourceCalendar(resource, resourceDTO.calendarName);
+        addResourcesCostCategoryAssignments(resource,
+            resourceDTO.resourcesCostCategoryAssignments);
 
         return resource;
 
@@ -109,7 +113,7 @@ public class ResourceConverter {
             StringUtils.trim(criterionSatisfactionDTO.criterionName),
             resource,
             DateConverter.toDate(criterionSatisfactionDTO.startDate),
-            DateConverter.toDate(criterionSatisfactionDTO.finishDate));
+            DateConverter.toDate(criterionSatisfactionDTO.endDate));
 
     }
 
@@ -126,6 +130,33 @@ public class ResourceConverter {
                 _("there exist multiple calendars with name {0}",
                     calendarName));
         }
+
+    }
+
+    private static void addResourcesCostCategoryAssignments(
+        Resource resource, List<ResourcesCostCategoryAssignmentDTO>
+        resourcesCostCategoryAssignments)
+        throws CreateUnvalidatedException {
+
+        for (ResourcesCostCategoryAssignmentDTO assignmentDTO :
+            resourcesCostCategoryAssignments) {
+
+            ResourcesCostCategoryAssignment assignment = toEntity(assignmentDTO,
+                resource);
+            resource.addResourcesCostCategoryAssignment(assignment);
+
+        }
+
+    }
+
+    private static ResourcesCostCategoryAssignment toEntity(
+        ResourcesCostCategoryAssignmentDTO assignmentDTO, Resource resource)
+        throws CreateUnvalidatedException {
+
+        return ResourcesCostCategoryAssignment.createUnvalidated(
+            assignmentDTO.costCategoryName, resource,
+            DateConverter.toLocalDate(assignmentDTO.startDate),
+            DateConverter.toLocalDate(assignmentDTO.endDate));
 
     }
 

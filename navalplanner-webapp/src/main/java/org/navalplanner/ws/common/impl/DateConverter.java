@@ -20,13 +20,11 @@
 
 package org.navalplanner.ws.common.impl;
 
-import java.util.Calendar;
 import java.util.Date;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.joda.time.LocalDate;
 
 /**
  * A converter from <code>java.util.Date</code> to/from
@@ -37,53 +35,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class DateConverter {
 
     private DateConverter() {}
-
-    /**
-     * It converts a <code>Date</code> to a <code>XMLGregorianCalendar</code>
-     * representing a <code>xsd:date</code> XML type. <br/><br/>
-     *
-     * If the date passed as a parameter is <code>null</code>, it also returns
-     * <code>null</code>.
-     */
-    public final static XMLGregorianCalendar toXMLGregrorianCalendar(
-        Date date) {
-
-        if (date == null) {
-            return null;
-        }
-
-        Calendar dateAsCalendar = Calendar.getInstance();
-        dateAsCalendar.setTime(date);
-        XMLGregorianCalendar dateAsXMLGregorianCalendar = null;
-
-        try {
-            dateAsXMLGregorianCalendar =
-               DatatypeFactory.newInstance().newXMLGregorianCalendarDate(
-                   dateAsCalendar.get(Calendar.YEAR),
-                   convertMonthFieldFromCalendarToXMLGregorianCalendar(
-                           dateAsCalendar.get(Calendar.MONTH)),
-                   dateAsCalendar.get(Calendar.DAY_OF_MONTH),
-                   DatatypeConstants.FIELD_UNDEFINED);
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-
-        return dateAsXMLGregorianCalendar;
-
-    }
-
-    /**
-     * Converts from @{link Calendar} month field format to
-     * @{link XMLGregorianCalendar} format.
-     *
-     * It is needed the conversion because
-     * @{link XMLGregorianCalendar} months go from 1 to 12 while
-     * @{link Calendar} months go from 0 to 11
-     *
-     */
-    private final static int convertMonthFieldFromCalendarToXMLGregorianCalendar(int month) {
-        return month+1;
-    }
 
     /**
      * It converts a <code>XMLGregorianCalendar</code> representing a
@@ -98,6 +49,25 @@ public class DateConverter {
             return null;
         } else {
             return date.toGregorianCalendar().getTime();
+        }
+
+    }
+
+    /**
+     * It converts a <code>XMLGregorianCalendar</code> representing a
+     * <code>xsd:date</code> XML type to a Joda's <code>LocalDate</code>.
+     * <br/><br/>
+     *
+     * If the date passed as a parameter is <code>null</code>, it also returns
+     * <code>null</code>.
+     */
+    public final static LocalDate toLocalDate(XMLGregorianCalendar date) {
+
+        if (date == null) {
+            return null;
+        } else {
+            return new LocalDate(date.getYear(), date.getMonth(),
+                date.getDay());
         }
 
     }

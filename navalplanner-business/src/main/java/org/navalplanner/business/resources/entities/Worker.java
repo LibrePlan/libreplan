@@ -50,12 +50,11 @@ public class Worker extends Resource {
     public static Worker createUnvalidated(String firstName, String surname,
         String nif) {
 
-        Worker worker = new Worker();
+        Worker worker = create(new Worker());
 
         worker.firstName = firstName;
         worker.surname = surname;
         worker.nif = nif;
-        worker.setNewObject(true);
 
         return worker;
 
@@ -131,14 +130,16 @@ public class Worker extends Resource {
     @AssertTrue(message = "Worker with the same first name, surname and nif previously existed")
     public boolean checkConstraintUniqueFirstName() {
 
-        if (!firstLevelValidationsPassed()) {
-            return true;
-        }
-
+        /* Check if it makes sense to check the constraint .*/
         if (this instanceof VirtualWorker) {
             return true;
         }
 
+        if (!areFirstNameSurnameNifSpecified()) {
+            return true;
+        }
+
+        /* Check the constraint. */
         List<Worker> list = Registry.getWorkerDAO()
                 .findByFirstNameSecondNameAndNifAnotherTransaction(firstName,
                         surname, nif);
@@ -155,7 +156,7 @@ public class Worker extends Resource {
 
     }
 
-   private boolean firstLevelValidationsPassed() {
+   private boolean areFirstNameSurnameNifSpecified() {
 
        return !StringUtils.isBlank(firstName) &&
            !StringUtils.isBlank(surname) &&

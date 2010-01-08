@@ -20,6 +20,9 @@
 
 package org.navalplanner.ws.common.api;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
@@ -29,10 +32,13 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class ConstraintViolationDTO {
 
-    @XmlAttribute(name="field-name")
+    public final static String FIELD_NAME_ATTRIBUTE_NAME = "field-name";
+    public final static String MESSAGE_ATTRIBUTE_NAME = "message";
+
+    @XmlAttribute(name=FIELD_NAME_ATTRIBUTE_NAME)
     public String fieldName;
 
-    @XmlAttribute
+    @XmlAttribute(name=MESSAGE_ATTRIBUTE_NAME)
     public String message;
 
     public ConstraintViolationDTO() {}
@@ -40,6 +46,23 @@ public class ConstraintViolationDTO {
     public ConstraintViolationDTO(String fieldName, String message) {
         this.fieldName = fieldName;
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+
+        if (fieldName != null) {
+            printWriter.print(FIELD_NAME_ATTRIBUTE_NAME + " = " + fieldName +
+                " - ");
+        }
+        printWriter.println(MESSAGE_ATTRIBUTE_NAME + " = " + message);
+        printWriter.close();
+
+        return stringWriter.toString();
+
     }
 
 }

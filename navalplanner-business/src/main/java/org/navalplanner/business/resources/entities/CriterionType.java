@@ -23,6 +23,7 @@ package org.navalplanner.business.resources.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
@@ -318,6 +319,12 @@ public class CriterionType extends BaseEntity implements
     @AssertTrue(message="criterion type name is already being used")
     public boolean checkConstraintUniqueCriterionTypeName() {
 
+        /* Check if it makes sense to check the constraint .*/
+        if (!isNameSpecified()) {
+            return true;
+        }
+
+        /* Check the constraint. */
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
 
         if (isNewObject()) {
@@ -363,6 +370,10 @@ public class CriterionType extends BaseEntity implements
 
         return true;
 
+    }
+
+    private boolean isNameSpecified() {
+        return !StringUtils.isBlank(name);
     }
 
 }

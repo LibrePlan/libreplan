@@ -23,6 +23,7 @@ package org.navalplanner.business.common;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -107,7 +108,7 @@ public class Registry {
 
     @Autowired
     private IWorkerDAO workerDAO;
-    
+
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
 
@@ -119,6 +120,9 @@ public class Registry {
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
+
+    @Autowired
+    private ICostCategoryDAO costCategoryDAO;
 
     private Registry() {
     }
@@ -204,6 +208,10 @@ public class Registry {
 
     public static IHoursGroupDAO getHoursGroupDAO() {
         return getInstance().hoursGroupDAO;
+    }
+
+    public static ICostCategoryDAO getCostCategoryDAO() {
+        return getInstance().costCategoryDAO;
     }
 
 }

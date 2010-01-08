@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.navalplanner.ws.resources.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -25,17 +24,14 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * DTO for <code>CriterionSatisfaction</code> entity.
+ * DTO for <code>ResourcesCostCategoryAssignment</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class CriterionSatisfactionDTO {
+public class ResourcesCostCategoryAssignmentDTO {
 
-    @XmlAttribute(name="criterion-type-name")
-    public String criterionTypeName;
-
-    @XmlAttribute(name="criterion-name")
-    public String criterionName;
+    @XmlAttribute(name="cost-category-name")
+    public String costCategoryName;
 
     @XmlAttribute(name="start-date")
     @XmlSchemaType(name="date")
@@ -45,14 +41,12 @@ public class CriterionSatisfactionDTO {
     @XmlSchemaType(name="date")
     public XMLGregorianCalendar endDate;
 
-    public CriterionSatisfactionDTO() {}
+    public ResourcesCostCategoryAssignmentDTO() {}
 
-    public CriterionSatisfactionDTO(
-        String criterionTypeName, String criterionName,
+    public ResourcesCostCategoryAssignmentDTO(String costCategoryName,
         XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
 
-        this.criterionTypeName = criterionTypeName;
-        this.criterionName = criterionName;
+        this.costCategoryName = costCategoryName;
         this.startDate = startDate;
         this.endDate = endDate;
 

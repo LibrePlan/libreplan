@@ -28,6 +28,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -54,6 +56,21 @@ public class CostCategoryDAO extends GenericDAOHibernate<CostCategory, Long>
         List<CostCategory> list = new ArrayList<CostCategory>();
         list.addAll(c.list());
         return list;
+    }
+
+    @Override
+    public CostCategory findUniqueByName(String name) 
+    throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(CostCategory.class).
+        add(Restrictions.eq("name", name).ignoreCase());
+        CostCategory costCategory = (CostCategory) c.uniqueResult();
+
+        if (costCategory == null) {
+            throw new InstanceNotFoundException(name,
+                    CostCategory.class.getName());
+        } else {
+            return costCategory;
+        }
     }
 
     @Transactional(readOnly = true)

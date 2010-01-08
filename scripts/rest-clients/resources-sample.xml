@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
+<!--
+    See org.navalplanner.web.test.ws.resources.api.ResourceServiceTest for a
+    complete list of test cases.
+ -->
+
 <resource-list xmlns="http://rest.ws.navalplanner.org">
 
     <!--  *** Machines *** -->
@@ -17,16 +22,62 @@
                 criterion-type-name="WORK_RELATIONSHIP"
                 criterion-name="hiredResourceWorkingRelationship"
                 start-date="2009-01-01"
-                finish-date=""/>
+                end-date=""/>
         </criterion-satisfaction-list>
     </machine>
 
     <!--  Another machine is being imported with the same code. -->
     <machine code="m1" name="m3-name" description="m3-desc"/>
 
-    <!-- OK or not OK depending on the existence of "CalendarTest". -->
+    <!-- OK or not OK depending on the existence of "TestCalendar". -->
     <machine code="m4" name="m4-name" description="m4-desc"
-        calendar-name="CalendarTest"/>
+        calendar-name="TestCalendar"/>
+
+    <!-- [It assumes existence of "TestCostCategory"] OK. -->
+    <machine code="m5" name="m5-name" description="m5-desc">
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2001-01-01"/>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2000-01-01"
+                end-date="2000-04-01"/>
+        </resources-cost-category-assignment-list>
+    </machine>
+
+    <!-- [It assumes existence of "TestCostCategory"] Missing start date. -->
+    <machine code="m6" name="m6-name" description="m6-desc">
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                end-date="2000-01-01"/>
+        </resources-cost-category-assignment-list>
+    </machine>
+
+    <!-- [It assumes existence of "TestCostCategory"] Negative interval. -->
+    <machine code="m7" name="m7-name" description="m7-desc">
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2000-02-01"
+                end-date="2000-01-01"/>
+        </resources-cost-category-assignment-list>
+    </machine>
+
+    <!-- [It assumes existence of "TestCostCategory"] Overlapping intervals. -->
+    <machine code="m8" name="m8-name" description="m8-desc">
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2000-02-01"
+                end-date="2000-05-01"/>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2000-01-01"
+                end-date="2000-03-01"/>
+        </resources-cost-category-assignment-list>
+    </machine>
 
     <!--  *** Workers *** -->
 
@@ -37,12 +88,12 @@
                 criterion-type-name="WORK_RELATIONSHIP"
                 criterion-name="hiredResourceWorkingRelationship"
                 start-date="2009-01-01"
-                finish-date=""/>
+                end-date=""/>
             <criterion-satisfaction
                 criterion-type-name="LEAVE"
                 criterion-name="paternityLeave"
                 start-date="2009-12-24"
-                finish-date="2009-12-25"/>
+                end-date="2009-12-25"/>
         </criterion-satisfaction-list>
     </worker>
 
@@ -55,7 +106,7 @@
             <criterion-satisfaction
                 criterion-type-name="LEAVE"
                 criterion-name="paternityLeave"
-                finish-date="2009-12-25"/>
+                end-date="2009-12-25"/>
         </criterion-satisfaction-list>
     </worker>
 
@@ -66,7 +117,7 @@
                 criterion-type-name="WORK_RELATIONSHIP_XXX"
                 criterion-name="hiredResourceWorkingRelationship"
                 start-date="2009-01-01"
-                finish-date=""/>
+                end-date=""/>
         </criterion-satisfaction-list>
     </worker>
 
@@ -77,7 +128,7 @@
                 criterion-type-name="WORK_RELATIONSHIP"
                 criterion-name="hiredResourceWorkingRelationshipXXX"
                 start-date="2009-01-01"
-                finish-date=""/>
+                end-date=""/>
         </criterion-satisfaction-list>
     </worker>
 
@@ -87,7 +138,7 @@
             <criterion-satisfaction
                 criterion-type-name="WORK_RELATIONSHIP"
                 start-date="2009-01-01"
-                finish-date=""/>
+                end-date=""/>
         </criterion-satisfaction-list>
     </worker>
 
@@ -97,7 +148,7 @@
             <criterion-satisfaction
                 criterion-name="hiredResourceWorkingRelationship"
                 start-date="2009-01-01"
-                finish-date=""/>
+                end-date=""/>
         </criterion-satisfaction-list>
     </worker>
 
@@ -105,8 +156,34 @@
          and nif. -->
     <worker first-name="w1-firstName" surname="w1-surname" nif="w1-nif"/>
 
-    <!-- OK or not OK depending on the existence of "CalendarTest". -->
+    <!-- OK or not OK depending on the existence of "TestCalendar". -->
     <worker first-name="w8-firstName" surname="w8-surname" nif="w8-nif"
-        calendar-name="CalendarTest" />
+        calendar-name="TestCalendar" />
+
+    <!-- [It assumes existence of "TestCalendar" and "TestCostCategory"] OK -->
+    <worker first-name="w9-firstName" surname="w9-surname" nif="w9-nif"
+        calendar-name="TestCalendar">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="WORK_RELATIONSHIP"
+                criterion-name="hiredResourceWorkingRelationship"
+                start-date="2009-01-01"
+                end-date=""/>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2009-12-24"
+                end-date="2009-12-25"/>
+        </criterion-satisfaction-list>
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2001-01-01"/>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2000-01-01"
+                end-date="2000-04-01"/>
+        </resources-cost-category-assignment-list>
+    </worker>
 
 </resource-list>

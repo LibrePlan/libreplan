@@ -51,14 +51,6 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.DayAssignment;
 
-// FIXME: Alternatively, Resource can be modeled with the style:
-// Resource.getParent() & Resource.getChilds(). This way, Resource does not
-// depend on ResourceGroup. However, such an option allows combinations not
-// semantically correct (e.g. a simple resource, such as Worker, could be the
-// child another simple resource, general methods like getChilds() do not make
-// sense for simple entities, etc.). In consequence, I prefer the modeling
-// option shown below.
-
 /**
  * This class acts as the base class for all resources.
  * @author Fernando Bellas Permuy <fbellas@udc.es>
@@ -822,8 +814,26 @@ public abstract class Resource extends BaseEntity{
             assignment.setResource(null);
     }
 
-    @AssertFalse(message="Two assignments overlap in time")
-    public boolean checkAssignmentsOverlap() {
+    @AssertFalse(message="Some cost category assignments overlap in time")
+    public boolean checkConstraintAssignmentsOverlap() {
+
+        /*
+         * Check if time intervals in cost assignments are correct in isolation.
+         * If not, it does not make sense to check assignment overlapping.
+         */
+        for (ResourcesCostCategoryAssignment i :
+            getResourcesCostCategoryAssignments()) {
+
+            if (!(i.isInitDateSpecified() &&
+                  i.checkConstraintPositiveTimeInterval())) {
+                return false;
+            }
+
+        }
+
+        /*
+         * Check assignment overlapping.
+         */
         List<ResourcesCostCategoryAssignment> assignmentsList =
             new ArrayList<ResourcesCostCategoryAssignment>();
         assignmentsList.addAll(getResourcesCostCategoryAssignments());
@@ -832,11 +842,6 @@ public abstract class Resource extends BaseEntity{
             LocalDate endDate = assignmentsList.get(i).getEndDate();
             for(int j=i+1; j<assignmentsList.size(); j++) {
                 ResourcesCostCategoryAssignment listElement = assignmentsList.get(j);
-                if (initDate == null || listElement.getInitDate() == null) {
-                    //this is not exactly an overlapping but a
-                    //problem with missing compulsory fields
-                    return true;
-                }
                 if (endDate == null && listElement.getEndDate() == null) {
                     return true;
                 }
@@ -845,22 +850,25 @@ public abstract class Resource extends BaseEntity{
                     return true;
                 }
                 else if((endDate != null && listElement.getEndDate() != null) &&
-                        ((listElement.getEndDate().compareTo(initDate)>=0 &&
-                        listElement.getEndDate().compareTo(endDate)<=0) ||
-                        (listElement.getInitDate().compareTo(initDate)>=0 &&
-                                listElement.getInitDate().compareTo(endDate)<=0))) {
+                        ((listElement.getEndDate().compareTo(initDate)>=0 && //  (1) listElement.getEndDate() inside [initDate, endDate]
+                          listElement.getEndDate().compareTo(endDate)<=0) ||
+                         (listElement.getInitDate().compareTo(initDate)>=0 && // (2) listElement.getInitDate() inside [initDate, endDate]
+                          listElement.getInitDate().compareTo(endDate)<=0) ||
+                         (listElement.getInitDate().compareTo(initDate)<=0 && // (3) [listElement.getInitDate(), listElement.getEndDate()]
+                          listElement.getEndDate().compareTo(endDate)>=0))) { //     contains [initDate, endDate]
                     return true;
                 }
             }
         }
         return false;
+
     }
 
     public boolean isVirtual() {
         return false;
     }
 
-    @AssertTrue(message="there are criterion satisfactions referring to " +
+    @AssertTrue(message="there exist criterion satisfactions referring to " +
         "criterion types not applicable to this resource")
     public boolean checkConstraintCriterionSatisfactionsWithCorrectType() {
 

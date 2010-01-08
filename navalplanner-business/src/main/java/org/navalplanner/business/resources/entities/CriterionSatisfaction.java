@@ -116,8 +116,8 @@ public class CriterionSatisfaction extends BaseEntity {
 
         /* Create instance of CriterionSatisfaction. */
         CriterionSatisfaction criterionSatisfaction =
-            new CriterionSatisfaction();
-        criterionSatisfaction.setNewObject(true);
+            create(new CriterionSatisfaction());
+
         criterionSatisfaction.criterion = criterion;
         criterionSatisfaction.resource = resource;
         criterionSatisfaction.startDate = startDate;

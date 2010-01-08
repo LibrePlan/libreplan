@@ -20,6 +20,8 @@
 
 package org.navalplanner.ws.common.api;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,9 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class InstanceConstraintViolationsDTO {
 
-    @XmlAttribute(name="instance-id")
+    public final static String INSTANCE_ID_ATTRIBUTE_NAME = "instance-id";
+
+    @XmlAttribute(name=INSTANCE_ID_ATTRIBUTE_NAME)
     public String instanceId;
 
     @XmlElement(name="constraint-violation")
@@ -59,6 +63,25 @@ public class InstanceConstraintViolationsDTO {
 
         return new InstanceConstraintViolationsDTO(instanceId,
             constraintViolations);
+
+    }
+
+    @Override
+    public String toString() {
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+
+        printWriter.println("** " + INSTANCE_ID_ATTRIBUTE_NAME + " = " +
+            instanceId + " **");
+
+        for (ConstraintViolationDTO i : constraintViolations) {
+            printWriter.println(i);
+        }
+
+        printWriter.close();
+
+        return stringWriter.toString();
 
     }
 

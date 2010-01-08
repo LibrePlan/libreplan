@@ -23,13 +23,17 @@ package org.navalplanner.business.costcategories.daos;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public interface ICostCategoryDAO extends IGenericDAO<CostCategory, Long> {
 
     List<CostCategory> findActive();
+
+    CostCategory findUniqueByName(String name) throws InstanceNotFoundException;
 
 }
