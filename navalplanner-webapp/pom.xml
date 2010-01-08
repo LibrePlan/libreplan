@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -65,6 +66,77 @@
                       <version>3.7.0</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                  <execution>
+                  <id>user-doc-generation</id>
+                  <goals>
+                   <goal>run</goal>
+                  </goals>
+                 <phase>compile</phase>
+                 <inherited>false</inherited>
+                 <configuration>
+                  <tasks>
+                    <echo>Executing make html</echo>
+                    <exec executable="make" failifexecutionfails="false">
+                        <arg value="-C"/>
+                        <arg value="../doc/src/user/gl/"/>
+                        <arg value="html"/>
+                    </exec>
+                    <copy todir="src/main/webapp/help/gl" failonerror="false">
+                        <fileset dir="../doc/src/user/gl/html"/>
+                    </copy>
+                    <exec executable="make" failifexecutionfails="false">
+                        <arg value="-C"/>
+                        <arg value="../doc/src/user/es/"/>
+                        <arg value="html"/>
+                    </exec>
+                    <copy todir="src/main/webapp/help/es" failonerror="false">
+                        <fileset dir="../doc/src/user/es/html"/>
+                    </copy>
+                    <exec executable="make" failifexecutionfails="false">
+                        <arg value="-C"/>
+                        <arg value="../doc/src/user/en/"/>
+                        <arg value="html"/>
+                    </exec>
+                    <copy todir="src/main/webapp/help/en" failonerror="false">
+                        <fileset dir="../doc/src/user/en/html"/>
+                    </copy>
+                  </tasks>
+                 </configuration>
+                </execution>
+                  <execution>
+                  <id>user-doc-clean</id>
+                  <goals>
+                   <goal>run</goal>
+                  </goals>
+                 <phase>clean</phase>
+                 <inherited>false</inherited>
+                 <configuration>
+                  <tasks>
+                    <exec executable="make" failifexecutionfails="false">
+                        <arg value="-C"/>
+                        <arg value="../doc/src/user/gl/"/>
+                        <arg value="clean"/>
+                    </exec>
+                    <exec executable="make" failifexecutionfails="false">
+                        <arg value="-C"/>
+                        <arg value="../doc/src/user/es/"/>
+                        <arg value="clean"/>
+                    </exec>
+                    <exec executable="make" failifexecutionfails="false">
+                        <arg value="-C"/>
+                        <arg value="../doc/src/user/en/"/>
+                        <arg value="clean"/>
+                    </exec>
+                    <delete dir="src/main/webapp/help" failonerror="false" />
+                  </tasks>
+                 </configuration>
+                </execution>
+               </executions>
             </plugin>
         </plugins>
 
