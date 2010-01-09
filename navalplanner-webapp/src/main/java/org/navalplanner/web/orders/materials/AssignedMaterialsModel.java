@@ -83,6 +83,7 @@ public abstract class AssignedMaterialsModel<T, A> implements
     }
 
     protected void initializeMaterialCategory(MaterialCategory materialCategory) {
+        categoryDAO.reattach(materialCategory);
         materialCategory.getName();
         initializeMaterials(materialCategory.getMaterials());
         initializeMaterialCategories(materialCategory.getSubcategories());
