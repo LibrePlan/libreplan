@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -42,6 +44,8 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 
 public class HoursGroup extends BaseEntity implements Cloneable,
         ICriterionRequirable {
+
+    private static final Log LOG = LogFactory.getLog(HoursGroup.class);
 
     public static HoursGroup create(OrderLine parentOrderLine) {
         HoursGroup result = new HoursGroup(parentOrderLine);
@@ -281,8 +285,12 @@ public class HoursGroup extends BaseEntity implements Cloneable,
 
     @AssertTrue(message = "code is already being used")
     public boolean checkConstraintUniqueCode() {
+        if (code == null) {
+            LOG.warn("Hours group code is null. "
+                    + "Not checking unique code since it would fail");
+            return true;
+        }
         IHoursGroupDAO hoursGroupDAO = Registry.getHoursGroupDAO();
-
         if (isNewObject()) {
             return !hoursGroupDAO.existsByCodeAnotherTransaction(this);
         } else {

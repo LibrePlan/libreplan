@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.orders.daos;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -65,9 +66,8 @@ public class HoursGroupDAO extends GenericDAOHibernate<HoursGroup, Long>
 
     private HoursGroup findUniqueByCode(HoursGroup hoursGroup)
             throws InstanceNotFoundException {
-        if ((hoursGroup == null) || (hoursGroup.getCode() == null)) {
-            return null;
-        }
+        Validate.notNull(hoursGroup);
+        Validate.notNull(hoursGroup.getCode());
 
         Criteria c = getSession().createCriteria(HoursGroup.class);
         c.add(Restrictions.eq("code", hoursGroup.getCode()));
