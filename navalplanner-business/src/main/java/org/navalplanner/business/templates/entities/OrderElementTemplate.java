@@ -219,4 +219,6 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         }
         return result;
     }
+
+    public abstract boolean isLeaf();
 }

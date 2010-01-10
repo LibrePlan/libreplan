@@ -165,4 +165,9 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return result;
     }
 
+    @Override
+    public boolean isLeaf() {
+        return false;
+    }
+
 }

@@ -61,4 +61,9 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return new ArrayList<OrderElementTemplate>();
     }
 
+    @Override
+    public boolean isLeaf() {
+        return true;
+    }
+
 }
