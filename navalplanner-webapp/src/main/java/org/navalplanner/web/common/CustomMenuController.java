@@ -220,20 +220,20 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Manage criteria"),"/resources/criterions/criterions-V2.zul","02-criterios.html#id1"),
                 subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
                 subItem(_("Label types"), "/labels/labelTypes.zul","10-etiquetas.html"),
-                subItem(_("Materials"), "/materials/materials.zul", ""),
-                subItem(_("Manage cost categories"),"/costcategories/costCategory.zul","04-avances.html"),
-                subItem(_("Manage types of work hours"),"/costcategories/typeOfWorkHours.zul","04-avances.html"),
-                subItem(_("Configuration"), "/common/configuration.zul",""),
-                subItem(_("Quality forms"),"/qualityforms/qualityForms.zul",""),
-                subItem(_("Manage user profiles"), "/users/profiles.zul",""),
-                subItem(_("Manage user accounts"), "/users/users.zul",""),
+                subItem(_("Materials"), "/materials/materials.zul", "11-materiales.html#administraci-n-de-materiais"),
+                subItem(_("Manage cost categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
+                subItem(_("Manage types of work hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
+                subItem(_("Configuration"), "/common/configuration.zul","03-calendarios.html#calendario-por-defecto"),
+                subItem(_("Quality forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
+                subItem(_("Manage user profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles"),
+                subItem(_("Manage user accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
                 subItem(_("Manage external companies"), "/externalcompanies/externalcompanies.zul",""));
             }
         topItem(_("Reports"), "", "",
-            subItem(_("Hours worked per worker"),"/reports/hoursWorkedPerWorkerReport.zul", ""),
-            subItem(_("Completed estimated hours"),"/reports/completedEstimatedHoursPerTask.zul", ""),
-            subItem(_("Working progress per task"),"/reports/workingProgressPerTaskReport.zul", ""),
-            subItem(_("Order costs per resource"),"/reports/orderCostsPerResource.zul", ""));
+            subItem(_("Hours worked per worker"),"/reports/hoursWorkedPerWorkerReport.zul","15-informes.html"),
+            subItem(_("Completed estimated hours"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
+            subItem(_("Working progress per task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
+            subItem(_("Order costs per resource"),"/reports/orderCostsPerResource.zul", "15-informes.html"));
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
