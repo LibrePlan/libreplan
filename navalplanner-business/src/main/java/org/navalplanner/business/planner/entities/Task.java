@@ -32,6 +32,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -65,6 +66,9 @@ public class Task extends TaskElement {
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
     private TaskStartConstraint startConstraint = new TaskStartConstraint();
+
+    @Valid
+    private SubcontractedTaskData subcontractedTaskData;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -389,6 +393,14 @@ public class Task extends TaskElement {
 
     public List<AggregatedHoursGroup> getAggregatedByCriterions() {
         return getTaskSource().getAggregatedByCriterions();
+    }
+
+    public void setSubcontractedTaskData(SubcontractedTaskData subcontractedTaskData) {
+        this.subcontractedTaskData = subcontractedTaskData;
+    }
+
+    public SubcontractedTaskData getSubcontractedTaskData() {
+        return subcontractedTaskData;
     }
 
 }

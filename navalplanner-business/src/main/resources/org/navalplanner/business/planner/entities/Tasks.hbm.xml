@@ -51,6 +51,11 @@
                 <key column="TASK" />
                 <one-to-many class="ResourceAllocation" />
             </set>
+
+            <many-to-one name="subcontractedTaskData"
+                column="SUBCONTRATED_TASK_DATA_ID"
+                unique="true" cascade="all" />
+
         </joined-subclass>
 
         <joined-subclass name="TaskGroup">
@@ -83,4 +88,28 @@
         </property>
 
     </class>
+
+    <!-- SubcontractedTaskData -->
+    <class name="SubcontractedTaskData">
+        <id name="id" type="long" access="property">
+            <generator class="hilo"></generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <many-to-one name="externalCompany" class="org.navalplanner.business.externalcompanies.entities.ExternalCompany" />
+
+        <property name="subcontratationDate" />
+        <property name="subcontractCommunicationDate" />
+        <property name="workDescription" />
+        <property name="subcontractPrice" />
+        <property name="subcontractedCode" />
+
+        <property name="nodeWithoutChildrenExported" />
+        <property name="labelsExported" />
+        <property name="materialAssignmentsExported" />
+        <property name="hoursGroupsExported" />
+        <property name="criterionRequirementsExported" />
+
+    </class>
+
 </hibernate-mapping>
