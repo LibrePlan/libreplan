@@ -81,7 +81,7 @@
 
 </class>
 
-<class name="MaterialAssignmentTemplate" table="MATERIAL_ASSIGMENT">
+<class name="MaterialAssignmentTemplate" table="MATERIAL_ASSIGMENT_TEMPLATE">
     <id name="id" type="long" access="property">
         <generator class="hilo">
         <param name="max_lo">100</param>
