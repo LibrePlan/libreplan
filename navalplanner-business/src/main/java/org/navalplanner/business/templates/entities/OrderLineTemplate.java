@@ -36,7 +36,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
     }
 
     public static OrderLineTemplate createNew() {
-        return create(new OrderLine());
+        return createNew(new OrderLineTemplate());
     }
 
     @Override

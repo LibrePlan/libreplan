@@ -61,6 +61,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 fromBeginningToStart, fromBeginningToEnd);
     }
 
+    public static <T extends OrderElementTemplate> T createNew(T beingBuilt) {
+        return create(beingBuilt, new InfoComponent(), null, null);
+    }
+
     private static Set<MaterialAssignmentTemplate> copyMaterialAssignmentsFrom(OrderElementTemplate beingBuilt,
             Collection<? extends MaterialAssignment> assignments) {
         Set<MaterialAssignmentTemplate> result = new HashSet<MaterialAssignmentTemplate>();
