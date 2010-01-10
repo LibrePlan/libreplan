@@ -97,6 +97,10 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         materialsComponent.getController().openWindow(model.getTemplate());
     }
 
+    public boolean isTemplateTreeDisabled() {
+        return model.isTemplateTreeDisabled();
+    }
+
     private void show(Component window) {
         Util.reloadBindings(window);
         getVisibility().showOnly(window);

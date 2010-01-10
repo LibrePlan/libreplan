@@ -107,4 +107,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         return treeModel;
     }
 
+    @Override
+    public boolean isTemplateTreeDisabled() {
+        return template != null && template.isLeaf();
+    }
+
 }

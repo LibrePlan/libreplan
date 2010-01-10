@@ -25,7 +25,7 @@
     <tabbox>
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />
-            <tab label="${i18n:_('Template Tree')}" />
+            <tab label="${i18n:_('Template Tree')}" disabled="@{templateController.templateTreeDisabled}"/>
             <tab label="${i18n:_('Materials')}" />
         </tabs>
         <tabpanels>

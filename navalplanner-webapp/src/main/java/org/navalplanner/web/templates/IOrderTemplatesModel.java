@@ -42,4 +42,6 @@ public interface IOrderTemplatesModel {
     void initEdit(OrderElementTemplate template);
 
     EntitiesTree<OrderElementTemplate> getTemplatesTreeModel();
+
+    boolean isTemplateTreeDisabled();
 }
