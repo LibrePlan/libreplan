@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -58,6 +59,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void addMaterialAssignment(Material material) {
         MaterialAssignmentTemplate materialAssignmentTemplate = MaterialAssignmentTemplate
                 .create(material);
