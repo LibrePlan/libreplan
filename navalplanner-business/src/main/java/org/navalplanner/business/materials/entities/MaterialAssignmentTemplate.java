@@ -50,10 +50,12 @@ public class MaterialAssignmentTemplate extends BaseEntity implements
 
     }
 
-    public static MaterialAssignmentTemplate create(Material material) {
+    public static MaterialAssignmentTemplate create(
+            OrderElementTemplate template, Material material) {
         MaterialAssignmentTemplate result = create();
         result.setUnitPrice(material.getDefaultUnitPrice());
         result.setMaterial(material);
+        result.orderElementTemplate = template;
         return BaseEntity.create(result);
     }
 

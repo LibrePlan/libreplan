@@ -62,7 +62,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     @Transactional(readOnly = true)
     public void addMaterialAssignment(Material material) {
         MaterialAssignmentTemplate materialAssignmentTemplate = MaterialAssignmentTemplate
-                .create(material);
+                .create(template, material);
         addMaterialAssignment(materialAssignmentTemplate);
     }
 
