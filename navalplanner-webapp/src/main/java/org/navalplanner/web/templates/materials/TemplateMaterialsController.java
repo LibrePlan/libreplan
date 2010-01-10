@@ -21,12 +21,14 @@ package org.navalplanner.web.templates.materials;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.orders.materials.AssignedMaterialsController;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.TreeModel;
 
 /**
@@ -46,6 +48,8 @@ public class TemplateMaterialsController extends
 
     @Override
     protected void createAssignmentsBoxComponent(Component parent) {
+        Executions.createComponents("/templates/_materialAssignmentsBox.zul",
+                parent, Collections.emptyMap());
     }
 
     @Override

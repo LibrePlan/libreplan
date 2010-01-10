@@ -1,0 +1,44 @@
+<panel title="${i18n:_('Materials')}" border="normal">
+    <panelchildren>
+        <newdatasortablegrid id="gridMaterials"
+            fixedLayout="false"
+            model="@{assignedMaterialsController.assignedMaterials}">
+            <columns>
+                <newdatasortablecolumn label="${i18n:_('Code')}" />
+                <newdatasortablecolumn label="${i18n:_('Units')}" />
+                <newdatasortablecolumn label="${i18n:_('Unit type')}" />
+                <newdatasortablecolumn label="${i18n:_('Unit price')}" />
+                <newdatasortablecolumn label="${i18n:_('Total price')}" />
+                <newdatasortablecolumn label="${i18n:_('Category')}" />
+                <newdatasortablecolumn label="" />
+            </columns>
+            <rows>
+                <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}">
+                    <textbox value="@{assignedMaterial.material.code}"
+                        constraint="no empty:${i18n:_('cannot be null or empty')}"
+                        readonly="true" />
+                    <doublebox value="@{assignedMaterial.units}"
+                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
+                    <listbox mold="select" model="@{unitTypes}"
+                        selectedItem="@{assignedMaterial.material.unitType}" disabled="true" />
+                    <doublebox value="@{assignedMaterial.unitPrice}"
+                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
+                    <doublebox id="totalPrice" value="@{assignedMaterial.totalPrice}" disabled="${true}"/>
+                    <label value="@{assignedMaterial.material.category.name}" width="150px" />
+                    <hbox>
+                        <button sclass="icono"
+                            image="/common/img/ico_borrar1.png"
+                            hoverImage="/common/img/ico_borrar.png"
+                            tooltiptext="${i18n:_('Delete')}"
+                            onClick="assignedMaterialsController.showRemoveMaterialAssignmentDlg(self.parent.parent.value)">
+                        </button>
+                        <button label="${i18n:_('Split')}"
+                            tooltiptext="${i18n:_('Split assignment')}"
+                            onClick="assignedMaterialsController.showSplitMaterialAssignmentDlg(self.parent.parent.value)">
+                        </button>
+                    </hbox>
+                </row>
+            </rows>
+        </newdatasortablegrid>
+    </panelchildren>
+</panel>
