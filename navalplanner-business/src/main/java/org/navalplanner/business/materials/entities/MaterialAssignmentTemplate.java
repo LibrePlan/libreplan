@@ -54,7 +54,7 @@ public class MaterialAssignmentTemplate extends BaseEntity implements
         MaterialAssignmentTemplate result = create();
         result.setUnitPrice(material.getDefaultUnitPrice());
         result.setMaterial(material);
-        return result;
+        return BaseEntity.create(result);
     }
 
     public static MaterialAssignmentTemplate copyFrom(
@@ -62,7 +62,7 @@ public class MaterialAssignmentTemplate extends BaseEntity implements
         MaterialAssignmentTemplate result = new MaterialAssignmentTemplate();
         result.materialInfo = assignment.getMaterialInfo().copy();
         result.orderElementTemplate = destination;
-        return result;
+        return BaseEntity.create(result);
     }
 
     private MaterialInfo materialInfo = new MaterialInfo();
