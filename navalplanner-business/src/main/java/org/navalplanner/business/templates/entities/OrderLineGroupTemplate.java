@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.trees.ITreeParentNode;
@@ -147,6 +148,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
     }
 
     @Override
+    @Valid
     public List<OrderElementTemplate> getChildren() {
         return Collections.unmodifiableList(children);
     }
