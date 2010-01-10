@@ -102,6 +102,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
             Collection<MaterialAssignmentTemplate> materialAssignments) {
         for (MaterialAssignmentTemplate each : materialAssignments) {
             each.getUnits();
+            reattachMaterial(each.getMaterial());
             initializeMaterialCategory(each.getMaterial().getCategory());
         }
     }

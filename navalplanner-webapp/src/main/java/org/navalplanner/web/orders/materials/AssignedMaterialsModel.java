@@ -69,6 +69,10 @@ public abstract class AssignedMaterialsModel<T, A> implements
 
     protected abstract void assignAndReattach(T element);
 
+    protected void reattachMaterial(Material material) {
+        materialDAO.reattachUnmodifiedEntity(material);
+    }
+
     private void initializeMaterials(Collection<Material> materials) {
         for (Material each : materials) {
             initializeMaterial(each);

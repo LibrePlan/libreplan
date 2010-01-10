@@ -65,6 +65,7 @@ public class AssignedMaterialsToOrderElementModel extends
             Set<MaterialAssignment> materialAssignments) {
         for (MaterialAssignment each : materialAssignments) {
             each.getStatus();
+            reattachMaterial(each.getMaterial());
             initializeMaterialCategory(each.getMaterial().getCategory());
         }
     }
