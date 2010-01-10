@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -44,6 +46,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
 import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
+import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.navalplanner.web.tree.TreeComponent;
 import org.navalplanner.web.users.OrderAuthorizationController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,6 +116,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+
+    @Resource
+    private IOrderTemplatesControllerEntryPoints orderTemplates;
 
     private Window editWindow;
 
@@ -392,6 +398,10 @@ public class OrderCRUDController extends GenericForwardComposer {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public void createTemplate(Order order) {
+        orderTemplates.goToCreateTemplateFrom(order);
     }
 
     private Runnable onUp;

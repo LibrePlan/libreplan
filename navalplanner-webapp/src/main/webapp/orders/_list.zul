@@ -63,6 +63,12 @@
                         hoverImage="/common/img/ico_planificador.png"
                         tooltiptext="${i18n:_('See scheduling')}"
                         onClick="controller.schedule(self.parent.parent.value);" />
+
+                    <button sclass="icono"
+                        image="/common/img/ico_derived1.png"
+                        hoverImage="/common/img/ico_derived.png"
+                        tooltiptext="${i18n:_('Create Template')}"
+                        onClick="controller.createTemplate(self.parent.parent.value);" />
                 </hbox>
             </row>
         </rows>
