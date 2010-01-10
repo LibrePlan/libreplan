@@ -193,7 +193,7 @@ public class ExternalCompanyDAOTest {
         transactionService.runOnTransaction(createCompanyWithRepeatedNif);
     }
 
-    private ExternalCompany createValidExternalCompany() {
+    public static ExternalCompany createValidExternalCompany() {
         return ExternalCompany.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
     }

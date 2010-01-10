@@ -47,6 +47,8 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -58,11 +60,13 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.daos.TaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.test.externalcompanies.daos.ExternalCompanyDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -419,4 +423,39 @@ public class TaskElementDAOTest {
             }
         });
     }
+
+    @Autowired
+    private IExternalCompanyDAO externalCompanyDAO;
+
+    private ExternalCompany getExternalCompanySaved() {
+        ExternalCompany externalCompany = ExternalCompanyDAOTest
+                .createValidExternalCompany();
+        externalCompanyDAO.save(externalCompany);
+        externalCompanyDAO.flush();
+        sessionFactory.getCurrentSession().evict(externalCompany);
+
+        externalCompany.dontPoseAsTransientObjectAnymore();
+
+        return externalCompany;
+    }
+
+    @Test
+    public void testStoreSubcontractedTaskData()
+            throws InstanceNotFoundException {
+        Task task = createValidTask();
+
+        SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
+                .create("code");
+        subcontractedTaskData.setExternalCompany(getExternalCompanySaved());
+
+        task.setSubcontractedTaskData(subcontractedTaskData);
+        taskElementDAO.save(task);
+        taskElementDAO.flush();
+        sessionFactory.getCurrentSession().evict(task);
+
+        Task taskFound = (Task) taskElementDAO.find(task.getId());
+        assertNotNull(taskFound.getSubcontractedTaskData());
+    }
+
+
 }
