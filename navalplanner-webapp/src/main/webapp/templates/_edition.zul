@@ -19,11 +19,14 @@
 -->
 <?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
   class="org.navalplanner.web.templates.TemplatesTreeComponent"?>
+<?component name="listOrderElementMaterials" class="org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent"
+    macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <window id="${arg.top_id}">
     <tabbox>
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />
             <tab label="${i18n:_('Template Tree')}" />
+            <tab label="${i18n:_('Materials')}" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -58,6 +61,9 @@
             </tabpanel>
             <tabpanel>
                 <orderElementTree id="orderElementTree"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementMaterials id="listOrderElementMaterials"/>
             </tabpanel>
         </tabpanels>
     </tabbox>

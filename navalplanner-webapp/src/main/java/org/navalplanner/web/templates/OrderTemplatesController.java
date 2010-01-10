@@ -29,6 +29,7 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.navalplanner.web.tree.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -77,12 +78,23 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     @Override
     public void goToCreateTemplateFrom(OrderElement orderElement) {
         model.createTemplateFrom(orderElement);
-        show(getEditWindow());
+        showEditWindow();
     }
 
     public void goToEditForm(OrderElementTemplate template) {
         model.initEdit(template);
+        showEditWindow();
+    }
+
+    private void showEditWindow() {
+        bindMaterialsControllerWithCurrentTemplate();
         show(getEditWindow());
+    }
+
+    private void bindMaterialsControllerWithCurrentTemplate() {
+        MaterialAssignmentTemplateComponent materialsComponent = (MaterialAssignmentTemplateComponent) getEditWindow()
+                .getFellow("listOrderElementMaterials");
+        materialsComponent.getController().openWindow(model.getTemplate());
     }
 
     private void show(Component window) {
