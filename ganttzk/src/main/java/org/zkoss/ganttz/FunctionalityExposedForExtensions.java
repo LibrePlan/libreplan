@@ -365,4 +365,15 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         configuration.reloadCharts();
     }
 
+    public boolean isPrintEnabled() {
+        return configuration.isPrintEnabled();
+    }
+
+    public void print() {
+        if (!isPrintEnabled()) {
+            throw new UnsupportedOperationException("print is not supported");
+        }
+        configuration.print();
+    }
+
 }

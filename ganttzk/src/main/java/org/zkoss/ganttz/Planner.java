@@ -37,7 +37,6 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
-import org.zkoss.ganttz.print.CutyPrint;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
@@ -277,6 +276,8 @@ public class Planner extends HtmlMacroComponent  {
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, doubleClickCommand,
                 disabilityConfiguration);
+        Button button = (Button) getFellow("btnPrint");
+        button.setDisabled(!context.isPrintEnabled());
     }
 
     @SuppressWarnings("unchecked")
@@ -389,9 +390,9 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void print() {
-
-        // Pending to raise print configuration popup
-        CutyPrint.print();
+        // Pending to raise print configuration popup. Information retrieved
+        // should be passed as parameter to context print method
+        context.print();
     }
 
 }
