@@ -49,6 +49,8 @@ import org.zkoss.zk.ui.event.EventListener;
  */
 public class URLHandler<T> {
 
+    private static final String MANUALLY_SET_PARAMS = "PARAMS";
+
     private static final String FLAG_ATTRIBUTE = URLHandler.class.getName()
             + "_";
 
@@ -72,6 +74,11 @@ public class URLHandler<T> {
     private final String page;
 
     private final IConverterFactory converterFactory;
+
+    public static void setupEntryPointsForThisRequest(
+            HttpServletRequest request, Map<String, String> entryPoints) {
+        request.setAttribute(MANUALLY_SET_PARAMS, entryPoints);
+    }
 
     public URLHandler(IConverterFactory converterFactory,
             IExecutorRetriever executorRetriever,
@@ -181,9 +188,14 @@ public class URLHandler<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <S extends T> boolean applyIfMatches(S controller) {
-        String uri = getRequest().getRequestURI();
-        return applyIfMatches(controller, uri);
+        HttpServletRequest request = getRequest();
+        if (request.getAttribute(MANUALLY_SET_PARAMS) != null) {
+            return applyIfMatches(controller, (Map<String, String>) request
+                    .getAttribute(MANUALLY_SET_PARAMS));
+        }
+        return applyIfMatches(controller, request.getRequestURI());
     }
 
     private HttpServletRequest getRequest() {
@@ -197,9 +209,14 @@ public class URLHandler<T> {
         if (isFlagedInThisRequest()) {
             return false;
         }
-        flagAlreadyExecutedInThisRequest();
         String string = insertSemicolonIfNeeded(fragment);
         Map<String, String> matrixParams = MatrixParameters.extract(string);
+        return applyIfMatches(controller, matrixParams);
+    }
+
+    private <S> boolean applyIfMatches(S controller,
+            Map<String, String> matrixParams) {
+        flagAlreadyExecutedInThisRequest();
         Set<String> matrixParamsNames = matrixParams.keySet();
         for (Entry<String, EntryPointMetadata> entry : metadata.entrySet()) {
             EntryPointMetadata entryPointMetadata = entry.getValue();
