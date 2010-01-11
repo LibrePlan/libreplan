@@ -42,6 +42,10 @@ import org.zkoss.zk.ui.Component;
  */
 public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
+    public interface IReloadChartListener {
+        public void reloadChart();
+    }
+
     private static class NullCommand<T> implements ICommand<T> {
 
         @Override
@@ -117,6 +121,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private IDetailItemModificator secondLevelModificators = SeveralModificators
             .empty();
+
+    private List<IReloadChartListener> reloadChartListeners = new ArrayList<IReloadChartListener>();
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -270,6 +276,17 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             IDetailItemModificator... firstLevelModificators) {
         this.firstLevelModificators = SeveralModificators
                 .create(firstLevelModificators);
+    }
+
+    public void addReloadChartListener(IReloadChartListener reloadChartListener) {
+        Validate.notNull(reloadChartListener);
+        this.reloadChartListeners.add(reloadChartListener);
+    }
+
+    public void reloadCharts() {
+        for (IReloadChartListener each : this.reloadChartListeners) {
+            each.reloadChart();
+        }
     }
 
 }

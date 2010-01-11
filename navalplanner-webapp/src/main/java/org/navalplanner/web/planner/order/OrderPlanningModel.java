@@ -87,6 +87,7 @@ import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
@@ -221,11 +222,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Chart loadChart = setupChart(orderReloaded,
                 new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
                 planner.getTimeTracker());
-        refillLoadChartWhenNeeded(planner, saveCommand, loadChart);
+        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
+                loadChart);
         Chart earnedValueChart = setupChart(orderReloaded,
                 earnedValueChartFiller,
                 chartEarnedValueTimeplot, planner.getTimeTracker());
-        refillLoadChartWhenNeeded(planner, saveCommand, earnedValueChart);
+        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
+                earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
@@ -471,13 +474,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private void refillLoadChartWhenNeeded(Planner planner,
+    private void refillLoadChartWhenNeeded(
+            PlannerConfiguration<?> configuration, Planner planner,
             ISaveCommand saveCommand, final Chart loadChart) {
         planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart));
         saveCommand.addListener(fillChartOnSave(loadChart));
         taskElementAdapter.addListener(new IOnMoveListener() {
             @Override
             public void moved(TaskElement taskElement) {
+                loadChart.fillChart();
+            }
+        });
+        configuration.addReloadChartListener(new IReloadChartListener() {
+
+            @Override
+            public void reloadChart() {
                 loadChart.fillChart();
             }
         });
