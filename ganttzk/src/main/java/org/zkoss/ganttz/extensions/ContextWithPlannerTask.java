@@ -105,4 +105,9 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
         context.hideCriticalPath();
     }
 
+    @Override
+    public void reloadCharts() {
+        context.reloadCharts();
+    }
+
 }

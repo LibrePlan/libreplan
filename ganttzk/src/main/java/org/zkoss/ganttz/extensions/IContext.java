@@ -115,4 +115,6 @@ public interface IContext<T> {
      */
     void hideCriticalPath();
 
+    public void reloadCharts();
+
 }

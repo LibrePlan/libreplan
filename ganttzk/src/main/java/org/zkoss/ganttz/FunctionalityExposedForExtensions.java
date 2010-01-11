@@ -152,11 +152,13 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private final OneToOneMapper<T> mapper = new OneToOneMapper<T>();
     private final GanttDiagramGraph diagramGraph;
     private TimeTracker timeTracker;
+    private final PlannerConfiguration<T> configuration;
 
     public FunctionalityExposedForExtensions(Planner planner,
             PlannerConfiguration<T> configuration,
             GanttDiagramGraph diagramGraph) {
         this.planner = planner;
+        this.configuration = configuration;
         this.adapter = configuration.getAdapter();
         this.navigator = configuration.getNavigator();
         this.diagramGraph = diagramGraph;
@@ -356,6 +358,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         for (Task task : diagramGraph.getTasks()) {
             task.setInCriticalPath(false);
         }
+    }
+
+    @Override
+    public void reloadCharts() {
+        configuration.reloadCharts();
     }
 
 }

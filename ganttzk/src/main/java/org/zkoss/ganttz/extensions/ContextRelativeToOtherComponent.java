@@ -102,4 +102,9 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         context.hideCriticalPath();
     }
 
+    @Override
+    public void reloadCharts() {
+        context.reloadCharts();
+    }
+
 }
