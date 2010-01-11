@@ -87,8 +87,10 @@ import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
 import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.print.CutyPrint;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
@@ -201,6 +203,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(taskPropertiesController));
         configuration.setDoubleClickCommand(resourceAllocationCommand);
+        addPrintSupport(configuration, order);
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
@@ -230,6 +233,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+    }
+
+    private void addPrintSupport(
+            PlannerConfiguration<TaskElement> configuration, Order order) {
+        configuration.setPrintAction(new IPrintAction() {
+            @Override
+            public void doPrint() {
+                CutyPrint.print();
+            }
+        });
     }
 
     private IDeleteMilestoneCommand buildDeleteMilestoneCommand() {

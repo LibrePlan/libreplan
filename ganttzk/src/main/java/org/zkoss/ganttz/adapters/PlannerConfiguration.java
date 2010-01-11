@@ -42,6 +42,10 @@ import org.zkoss.zk.ui.Component;
  */
 public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
+    public interface IPrintAction {
+        public void doPrint();
+    }
+
     public interface IReloadChartListener {
         public void reloadChart();
     }
@@ -123,6 +127,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             .empty();
 
     private List<IReloadChartListener> reloadChartListeners = new ArrayList<IReloadChartListener>();
+
+    private IPrintAction printAction;
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -287,6 +293,21 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         for (IReloadChartListener each : this.reloadChartListeners) {
             each.reloadChart();
         }
+    }
+
+    public boolean isPrintEnabled() {
+        return printAction != null;
+    }
+
+    public void setPrintAction(IPrintAction printAction) {
+        this.printAction = printAction;
+    }
+
+    public void print() {
+        if (!isPrintEnabled()) {
+            throw new UnsupportedOperationException("print not supported");
+        }
+        printAction.doPrint();
     }
 
 }

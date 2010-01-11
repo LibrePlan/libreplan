@@ -75,7 +75,9 @@ import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
+import org.zkoss.ganttz.print.CutyPrint;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -181,6 +183,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             configuration.setDoubleClickCommand(doubleClickCommand);
         }
         addAdditionalCommands(additional, configuration);
+        addPrintSupport(configuration);
         disableSomeFeatures(configuration);
         planner.setConfiguration(configuration);
 
@@ -428,6 +431,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         for (ICommandOnTask<TaskElement> t : additional) {
             configuration.addCommandOnTask(t);
         }
+    }
+
+    private void addPrintSupport(PlannerConfiguration<TaskElement> configuration) {
+        configuration.setPrintAction(new IPrintAction() {
+            @Override
+            public void doPrint() {
+                CutyPrint.print();
+            }
+        });
     }
 
     private Chart setupChart(Timeplot chartComponent,
