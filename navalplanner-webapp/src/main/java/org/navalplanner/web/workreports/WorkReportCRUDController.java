@@ -153,7 +153,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDateLine;
 
-    private Textbox filterOrderElement;
+    private Bandbox bandboxFilterOrderElement;
+
+    private Listbox filterOrderElement;
 
     private Autocomplete filterHoursType;
 
@@ -574,7 +576,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         filterStartDateLine = (Datebox) window.getFellow("filterStartDateLine");
         filterFinishDateLine = (Datebox) window
                 .getFellow("filterFinishDateLine");
-        filterOrderElement = (Textbox) window.getFellow("filterOrderElement");
+        bandboxFilterOrderElement = (Bandbox) window
+                .getFellow("bandboxFilterOrderElement");
+        filterOrderElement = (Listbox) window.getFellow("filterOrderElement");
         filterHoursType = (Autocomplete) window.getFellow("filterHoursType");
         clearFilterDatesLines();
     }
@@ -1470,7 +1474,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         filterFinishDate.setValue(null);
     }
 
-    private List<OrderElement> getOrderElements() {
+    public List<OrderElement> getOrderElements() {
         return workReportModel.getOrderElements();
     }
 
@@ -1529,7 +1533,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public OrderElement getSelectedOrderElement() {
-        String code = filterOrderElement.getValue();
+        String code = this.bandboxFilterOrderElement.getValue();
         if ((code != null) && (!code.isEmpty())) {
             try {
                 return workReportModel.findOrderElement(code);
@@ -1560,7 +1564,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void clearFilterDatesLines() {
         filterResource.setValue(null);
-        filterOrderElement.setValue("");
+        bandboxFilterOrderElement.setValue("");
+        filterOrderElement.clearSelection();
         filterStartDateLine.setValue(null);
         filterFinishDateLine.setValue(null);
         filterHoursType.setValue(null);
@@ -1643,4 +1648,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
+    public void setFilterOrderElement(Event event) throws Exception {
+        Listbox listbox = (Listbox) event.getTarget();
+        OrderElement orderElement = (OrderElement) listbox.getSelectedItem()
+                .getValue();
+        bandboxFilterOrderElement.setValue(orderElement.getCode());
+        bandboxFilterOrderElement.setOpen(false);
+    }
 }

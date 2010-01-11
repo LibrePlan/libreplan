@@ -29,52 +29,72 @@
           <label value="${i18n:_('Resource :')}"/>
           <autocomplete id="filterResource" buttonVisible="true"
                finder="ResourceFinder"/>
+          <label value="${i18n:_('order element :')}"/>
+          <bandbox id="bandboxFilterOrderElement">
+            <bandpopup>
+                <listbox id="filterOrderElement" width="750px" fixedLayout="true"
+                    model="@{controller.orderElements}"
+                    onSelect="controller.setFilterOrderElement(event)">
+                        <listhead>
+                            <listheader label="${i18n:_('Order')}"/>
+                            <listheader label="${i18n:_('Order code')}"/>
+                            <listheader label="${i18n:_('Order element')}"/>
+                            <listheader label="${i18n:_('Order element code')}"/>
+                        </listhead>
+                        <listitem self="@{each='orderElement'}" value="@{orderElement}">
+                            <listcell label="@{orderElement.order.name}"/>
+                            <listcell label="@{orderElement.order.code}"/>
+                            <listcell label="@{orderElement.name}"/>
+                            <listcell label="@{orderElement.code}"/>
+                        </listitem>
+                </listbox>
+            </bandpopup>
+          </bandbox>
           <label value="${i18n:_('from')}"/>
           <datebox id="filterStartDateLine" constraint = "@{controller.checkConstraintStartDateLine}"/>
           <label value="${i18n:_('to')}"/>
           <datebox id="filterFinishDateLine" constraint = "@{controller.checkConstraintFinishDateLine}"/>
-          <label value="${i18n:_('order element :')}"/>
-          <textbox id="filterOrderElement"/>
           <label value="${i18n:_('hours type :')}"/>
           <autocomplete id="filterHoursType" buttonVisible="true"
-               finder="TypeOfWorkHoursFinder"/>
+               finder="TypeOfWorkHoursFinder" width="100px"/>
           <button label="${i18n:_('Filter')}" style="margin-top: -4px"
                 onClick="controller.onApplyFilterWorkReportLines(event)"/>
         </hbox>
         </div>
+
         <separator bar="false" spacing="5px" orient="horizontal"/>
         </panelchildren>
-    </panel>
-    <separator bar="false" spacing="20px" orient="horizontal"/>
-    <grid id="gridListQuery"  mold="paging" pageSize="10"
-        model="@{controller.queryWorkReportLines}"
-        onInitRender ="controller.sortQueryWorkReportLines();">
-        <columns sizable="true">
-            <column id="date" label="${i18n:_('Date')}" width="200px" align="center"
-                sort="auto(date)" sortDirection="ascending"/>
-            <column label="${i18n:_('Resource')}" width="200px" align="center"/>
-            <column label="${i18n:_('Order Element Code')}" width="200px" align="center"/>
-            <column label="${i18n:_('Start hour')}" width="80px" align="center"/>
-            <column label="${i18n:_('Finish hour')}" width="80px" align="center"/>
-            <column label="${i18n:_('Hours')}" width="80px" align="center"/>
-            <column label="${i18n:_('Hours type')}" width="150px" align="center"/>
-            <column label="${i18n:_('Work Report')}" width="80px" align="center"/>
-        </columns>
-        <rows>
-            <row self="@{each='queryWorkReportLine'}" value="@{queryWorkReportLine}">
-                <label value="@{queryWorkReportLine.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
-                <label value="@{queryWorkReportLine.resource.shortDescription}"/>
-                <label value="@{queryWorkReportLine.orderElement.code}" />
-                <label value="@{queryWorkReportLine.clockStart, converter='org.navalplanner.web.common.typeconverters.TimeConverter'}" />
-                <label value="@{queryWorkReportLine.clockFinish, converter='org.navalplanner.web.common.typeconverters.TimeConverter'}" />
-                <label value="@{queryWorkReportLine.numHours}" />
-                <label value="@{queryWorkReportLine.typeOfWorkHours.name}" />
-                <button sclass="icono" image="/common/img/ico_editar1.png"
-                    hoverImage="/common/img/ico_editar.png"
-                    tooltiptext="${i18n:_('Edit')}"
-                    onClick="controller.goToEditFormQuery(self.parent.value);">
-                </button>
-            </row>
-        </rows>
-    </grid>
+            </panel>
+            <separator bar="false" spacing="20px" orient="horizontal"/>
+            <grid id="gridListQuery"  mold="paging" pageSize="10"
+                model="@{controller.queryWorkReportLines}"
+                onInitRender ="controller.sortQueryWorkReportLines();">
+                <columns sizable="true">
+                <column id="date" label="${i18n:_('Date')}" width="200px" align="center"
+                    sort="auto(date)" sortDirection="ascending"/>
+                <column label="${i18n:_('Resource')}" width="200px" align="center"/>
+                <column label="${i18n:_('Order Element Code')}" width="200px" align="center"/>
+                <column label="${i18n:_('Start hour')}" width="80px" align="center"/>
+                <column label="${i18n:_('Finish hour')}" width="80px" align="center"/>
+                <column label="${i18n:_('Hours')}" width="80px" align="center"/>
+                <column label="${i18n:_('Hours type')}" width="150px" align="center"/>
+                <column label="${i18n:_('Work Report')}" width="80px" align="center"/>
+                </columns>
+                <rows>
+                <row self="@{each='queryWorkReportLine'}" value="@{queryWorkReportLine}">
+                    <label value="@{queryWorkReportLine.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                    <label value="@{queryWorkReportLine.resource.shortDescription}"/>
+                    <label value="@{queryWorkReportLine.orderElement.code}" />
+                    <label value="@{queryWorkReportLine.clockStart, converter='org.navalplanner.web.common.typeconverters.TimeConverter'}" />
+                    <label value="@{queryWorkReportLine.clockFinish, converter='org.navalplanner.web.common.typeconverters.TimeConverter'}" />
+                    <label value="@{queryWorkReportLine.numHours}" />
+                    <label value="@{queryWorkReportLine.typeOfWorkHours.name}" />
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}"
+                        onClick="controller.goToEditFormQuery(self.parent.value);">
+                    </button>
+                </row>
+                </rows>
+            </grid>
 </window>
