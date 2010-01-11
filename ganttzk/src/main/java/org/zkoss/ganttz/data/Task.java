@@ -23,9 +23,11 @@ package org.zkoss.ganttz.data;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
@@ -37,6 +39,12 @@ import org.zkoss.ganttz.util.ConstraintViolationNotificator;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class Task implements ITaskFundamentalProperties {
+
+    public interface IReloadComponentRequested {
+        public void reloadComponentRequested();
+    }
+
+    private List<IReloadComponentRequested> reloadRequestedListeners = new ArrayList<IReloadComponentRequested>();
 
     private PropertyChangeSupport fundamentalPropertiesListeners = new PropertyChangeSupport(
             this);
@@ -269,6 +277,23 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void addConstraintViolationListener(
             IConstraintViolationListener<Date> listener) {
         violationNotificator.addConstraintViolationListener(listener);
+    }
+
+    public void addReloadListener(
+            IReloadComponentRequested reloadComponentRequested) {
+        Validate.notNull(reloadComponentRequested);
+        this.reloadRequestedListeners.add(reloadComponentRequested);
+    }
+
+    public void removeReloadListener(
+            IReloadComponentRequested reloadComponentRequested) {
+        this.reloadRequestedListeners.remove(reloadComponentRequested);
+    }
+
+    public void reloadComponent() {
+        for (IReloadComponentRequested each : reloadRequestedListeners) {
+            each.reloadComponentRequested();
+        }
     }
 
 }

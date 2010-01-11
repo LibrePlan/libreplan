@@ -34,6 +34,7 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.data.Task.IReloadComponentRequested;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
@@ -175,6 +176,8 @@ public class TaskComponent extends Div implements AfterCompose {
         return asTaskComponent(task, taskList, true);
     }
 
+    private IReloadComponentRequested reloadComponentRequested;
+
     public TaskComponent(Task task,
             IDisabilityConfiguration disabilityConfiguration) {
         setHeight(HEIGHT_PER_TASK + "px");
@@ -192,6 +195,16 @@ public class TaskComponent extends Div implements AfterCompose {
             }
         };
         this.task.addConstraintViolationListener(taskViolationListener);
+        reloadComponentRequested = new IReloadComponentRequested() {
+
+            @Override
+            public void reloadComponentRequested() {
+                // TODO can't call to invalidate because the task was
+                // disappearing. Fix the problem and just invalidate this task
+                getParent().invalidate();
+            }
+        };
+        this.task.addReloadListener(reloadComponentRequested);
     }
 
     protected String calculateClass() {
@@ -441,6 +454,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     protected void remove() {
         this.detach();
+        task.removeReloadListener(reloadComponentRequested);
     }
 
     public boolean isTopLevel() {
