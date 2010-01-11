@@ -408,11 +408,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         planningControllerEntryPoints.goToOrderDetails(order);
-        orderAuthorizationController.setOrder(order);
     }
 
     public void initEdit(Order order) {
         orderModel.initEdit(order);
+        addEditWindowIfNeeded();
+        orderAuthorizationController.setOrder(order);
         showEditWindow(_("Edit order"));
     }
 
