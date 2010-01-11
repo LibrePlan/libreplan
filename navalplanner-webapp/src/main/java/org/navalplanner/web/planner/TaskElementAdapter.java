@@ -48,6 +48,7 @@ import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
@@ -56,6 +57,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
@@ -115,6 +117,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -445,21 +450,29 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     }
                 }
             } else {
-                List<Criterion> listCriterions = resourceAllocationDAO
-                        .findCriterionByResourceAllocation(each);
-                List<String> forCriterionRepresentations = new ArrayList<String>();
-                if (!listCriterions.isEmpty()) {
-                    for (Criterion r : listCriterions) {
-                        forCriterionRepresentations.add(r.getName());
-                    }
-                } else {
-                    forCriterionRepresentations.add((_("All workers")));
-                }
-                result.add("["
-                        + StringUtils.join(forCriterionRepresentations,
-                                ", ") + "]");
+                result.add(extractRepresentationForGeneric((GenericResourceAllocation) each));
             }
             return result;
+        }
+
+        private String extractRepresentationForGeneric(
+                GenericResourceAllocation generic) {
+            if (!generic.isNewObject()) {
+                resourceAllocationDAO.reattach(generic);
+            }
+            Set<Criterion> criterions = generic.getCriterions();
+            List<String> forCriterionRepresentations = new ArrayList<String>();
+            if (!criterions.isEmpty()) {
+                for (Criterion c : criterions) {
+                    criterionDAO.reattachUnmodifiedEntity(c);
+                    forCriterionRepresentations.add(c.getName());
+                }
+            } else {
+                forCriterionRepresentations.add((_("All workers")));
+            }
+            return "["
+                    + StringUtils.join(forCriterionRepresentations,
+                            ", ") + "]";
         }
 
         private String buildTooltipText() {
