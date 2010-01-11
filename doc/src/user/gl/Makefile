@@ -58,7 +58,7 @@ clean:
 	$Q $(RM) -r pdf/
 	$P clean html
 	$Q $(RM) -r html/
-
+	$Q $(RM) index.rst
 
 # Copy CSS file
 #
