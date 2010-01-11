@@ -236,11 +236,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void addPrintSupport(
-            PlannerConfiguration<TaskElement> configuration, Order order) {
+            PlannerConfiguration<TaskElement> configuration, final Order order) {
         configuration.setPrintAction(new IPrintAction() {
             @Override
             public void doPrint() {
-                CutyPrint.print();
+                CutyPrint.print(order);
             }
         });
     }
