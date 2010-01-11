@@ -36,7 +36,7 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.MessagesForUser;
@@ -49,6 +49,7 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Rest
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
@@ -181,15 +182,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * @param ganttTask
      * @param planningState
      */
-    public void showWindow(Task task, org.zkoss.ganttz.data.Task ganttTask,
+    public void showWindow(IContextWithPlannerTask<TaskElement> context,
+            org.navalplanner.business.planner.entities.Task task,
             PlanningState planningState) {
         try {
             if (formBinder != null) {
                 formBinder.detach();
             }
             window.setTitle(task.getName());
-            allocationRows = resourceAllocationModel.initAllocationsFor(
-                    task, ganttTask, planningState);
+            allocationRows = resourceAllocationModel.initAllocationsFor(task,
+                    context, planningState);
             formBinder = allocationRows
                     .createFormBinder(resourceAllocationModel);
             formBinder.setAssignedHoursComponent(assignedHoursComponent);

@@ -40,6 +40,7 @@ import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -56,6 +57,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * Model for UI operations related to {@link Task}
@@ -80,8 +82,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private Task task;
 
-    private org.zkoss.ganttz.data.Task ganttTask;
-
     @Autowired
     private IBaseCalendarDAO calendarDAO;
 
@@ -91,6 +91,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private PlanningState planningState;
 
     private AllocationRowsHandler allocationRowsHandler;
+
+    private IContextWithPlannerTask<TaskElement> context;
 
     @Override
     @Transactional(readOnly = true)
@@ -198,18 +200,21 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void applyAllocationResult(AllocationResult allocationResult) {
+        org.zkoss.ganttz.data.Task ganttTask = context.getTask();
         Date previousStartDate = ganttTask.getBeginDate();
         long previousLength = ganttTask.getLengthMilliseconds();
         allocationResult.applyTo(task);
         ganttTask.fireChangesForPreviousValues(previousStartDate,
                 previousLength);
+        context.reloadCharts();
     }
 
     @Override
     @Transactional(readOnly = true)
     public AllocationRowsHandler initAllocationsFor(Task task,
-            org.zkoss.ganttz.data.Task ganttTask, PlanningState planningState) {
-        this.ganttTask = ganttTask;
+            IContextWithPlannerTask<TaskElement> context,
+            PlanningState planningState) {
+        this.context = context;
         this.task = task;
         this.planningState = planningState;
         planningState.reassociateResourcesWithSession(resourceDAO);
