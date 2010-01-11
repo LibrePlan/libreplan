@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
@@ -423,41 +424,42 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private String buildResourcesText() {
-            StringBuilder result = new StringBuilder();
-            List<Resource> foundResources = new ArrayList<Resource>();
-            if (taskElement.getResourceAllocations() != null) {
-                for (ResourceAllocation each : taskElement.getResourceAllocations()) {
-
-                    if (each instanceof SpecificResourceAllocation) {
-                        List<Resource> list = each.getAssociatedResources();
-                        if (!list.isEmpty()) {
-                            for (Resource r : list) {
-                                if (!foundResources.contains(r)) {
-                                    result.append(r.getName()).append(", ");
-                                    foundResources.add(r);
-                                }
-                            }
-                        }
-                    } else {
-                        List<Criterion> listCriterions = resourceAllocationDAO
-                                .findCriterionByResourceAllocation(each);
-                        result.append("[");
-                        if (!listCriterions.isEmpty()) {
-                            for (Criterion r : listCriterions) {
-                                result.append(r.getName()).append(", ");
-                                }
-                        } else {
-                            result.append(_("All workers")).append(", ");
-                        }
-                        result.delete(result.length() - 2, result.length());
-                        result.append("], ");
-                        }
-                    }
-                if (result.length() > 1) {
-                    result.delete(result.length() - 2, result.length());
-                }
+            List<String> result = new ArrayList<String>();
+            Set<Resource> alreadyFoundResources = new HashSet<Resource>();
+            for (ResourceAllocation<?> each : taskElement
+                    .getResourceAllocations()) {
+                result.addAll(extractRepresentations(each,
+                        alreadyFoundResources));
             }
-            return result.toString();
+            return StringUtils.join(result, ", ");
+        }
+
+        private List<String> extractRepresentations(ResourceAllocation<?> each,
+                Set<Resource> alreadyFoundResources) {
+            List<String> result = new ArrayList<String>();
+            if (each instanceof SpecificResourceAllocation) {
+                for (Resource r : each.getAssociatedResources()) {
+                    if (!alreadyFoundResources.contains(r)) {
+                        result.add(r.getName());
+                        alreadyFoundResources.add(r);
+                    }
+                }
+            } else {
+                List<Criterion> listCriterions = resourceAllocationDAO
+                        .findCriterionByResourceAllocation(each);
+                List<String> forCriterionRepresentations = new ArrayList<String>();
+                if (!listCriterions.isEmpty()) {
+                    for (Criterion r : listCriterions) {
+                        forCriterionRepresentations.add(r.getName());
+                    }
+                } else {
+                    forCriterionRepresentations.add((_("All workers")));
+                }
+                result.add("["
+                        + StringUtils.join(forCriterionRepresentations,
+                                ", ") + "]");
+            }
+            return result;
         }
 
         private String buildTooltipText() {
