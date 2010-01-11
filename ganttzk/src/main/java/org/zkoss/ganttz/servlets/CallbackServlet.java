@@ -163,7 +163,8 @@ public class CallbackServlet extends HttpServlet {
     }
 
     private IServletRequestHandler handlerFor(String callbackId) {
-        return handlersCallbacks.get(callbackId).handler;
+        HandlerWithRegisterTime h = handlersCallbacks.get(callbackId);
+        return h != null ? h.handler : null;
     }
 
 }
