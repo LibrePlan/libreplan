@@ -154,17 +154,19 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private TimeTracker timeTracker;
 
     public FunctionalityExposedForExtensions(Planner planner,
-            IAdapterToTaskFundamentalProperties<T> adapter,
-            IStructureNavigator<T> navigator, GanttDiagramGraph diagramGraph,
-            IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
+            PlannerConfiguration<T> configuration,
+            GanttDiagramGraph diagramGraph) {
         this.planner = planner;
-        this.adapter = adapter;
-        this.navigator = navigator;
+        this.adapter = configuration.getAdapter();
+        this.navigator = configuration.getNavigator();
         this.diagramGraph = diagramGraph;
+        final IDetailItemModificator firstLevelModificators = configuration
+                .getFirstLevelModificators();
+        final IDetailItemModificator secondLevelModificators = configuration
+                .getSecondLevelModificators();
         this.timeTracker = new TimeTracker(new Interval(TimeTrackerState
                 .year(2009), TimeTrackerState.year(2011)),
-                firstLevelModificator, secondLevelModificator);
+                firstLevelModificators, secondLevelModificators);
     }
 
     /**
