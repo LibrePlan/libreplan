@@ -96,10 +96,28 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
                 + "LEFT OUTER JOIN wrl.resource resource "
                 + "WHERE resource.id = worker.id ";
 
+        // Set date range
+        if (startingDate != null && endingDate != null) {
+            strQuery += "AND wrl.date BETWEEN :startingDate AND :endingDate ";
+        }
+        if (startingDate != null && endingDate == null) {
+            strQuery += "AND wrl.date >= :startingDate ";
+        }
+        if (startingDate == null && endingDate != null) {
+            strQuery += "AND wrl.date <= :endingDate ";
+        }
+
         // Order by
         strQuery += "ORDER BY worker.id, wrl.date";
 
         Query query = getSession().createQuery(strQuery);
+        if (startingDate != null) {
+            query.setParameter("startingDate", startingDate);
+        }
+        if (endingDate != null) {
+            query.setParameter("endingDate", endingDate);
+        }
+
         List<OrderCostsPerResourceDTO> list = query.list();
 
         List<OrderCostsPerResourceDTO> filteredList = new ArrayList<OrderCostsPerResourceDTO>();

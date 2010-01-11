@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.reports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +35,9 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listbox;
@@ -121,6 +125,36 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
 
     private Date getEndingDate() {
         return endingDate.getValue();
+    }
+
+    public Constraint checkConstraintStartingDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date startDateLine = (Date) value;
+                if ((startDateLine != null) && (getEndingDate() != null)
+                        && (startDateLine.compareTo(getEndingDate()) > 0)) {
+                    throw new WrongValueException(comp,
+                            _("must be lower than finish date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintEndingDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date endingDate = (Date) value;
+                if ((endingDate != null) && (getStartingDate() != null)
+                        && (endingDate.compareTo(getStartingDate()) < 0)) {
+                    throw new WrongValueException(comp,
+                            _("must be greater than finish date"));
+                }
+            }
+        };
     }
 
 }

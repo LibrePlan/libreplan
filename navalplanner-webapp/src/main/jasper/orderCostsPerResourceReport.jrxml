@@ -242,7 +242,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="94" splitType="Stretch">
+		<band height="96" splitType="Stretch">
 			<staticText>
 				<reportElement style="Title" x="0" y="13" width="263" height="33"/>
 				<textElement verticalAlignment="Middle">
@@ -251,7 +251,7 @@
 				<text><![CDATA[Order report]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="SubTitle" x="34" y="46" width="240" height="22"/>
+				<reportElement style="SubTitle" x="23" y="46" width="240" height="29"/>
 				<textElement>
 					<font fontName="SansSerif"/>
 				</textElement>
@@ -261,6 +261,34 @@
 				<reportElement x="316" y="3" width="237" height="65"/>
 				<imageExpression class="java.lang.String"><![CDATA["logos/navalpro_logo.gif"]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="2" y="75" width="119" height="15">
+					<printWhenExpression><![CDATA[new java.lang.Boolean($P{startingDate} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Starting date:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="121" y="75" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$P{startingDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="221" y="75" width="95" height="15">
+					<printWhenExpression><![CDATA[new java.lang.Boolean($P{endingDate} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ending date:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="316" y="75" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$P{endingDate}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
