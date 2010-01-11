@@ -64,7 +64,7 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
      */
     public OrderElement findParent(OrderElement orderElement);
 
-    public void loadOrderAvoidingProxyFor(OrderElement orderElement);
+    public OrderElement loadOrderAvoidingProxyFor(OrderElement orderElement);
 
     /**
      * Returns the number of assigned hours for an {@link OrderElement}

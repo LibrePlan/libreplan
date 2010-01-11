@@ -103,7 +103,8 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     @Override
-    public void loadOrderAvoidingProxyFor(final OrderElement orderElement) {
+    public OrderElement loadOrderAvoidingProxyFor(
+            final OrderElement orderElement) {
         OrderElement order = transactionService
                 .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
 
@@ -118,7 +119,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
                 return result;
             }
         });
-        findExistingEntity(order.getId());
+        return (OrderElement) findExistingEntity(order.getId());
     }
 
     @Override
