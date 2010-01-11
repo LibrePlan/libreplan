@@ -101,8 +101,14 @@ public class ResourcesPerDay {
 
     public int asHoursGivenResourceWorkingDayOf(
             Integer resourceWorkingDayHours) {
-        return getAmount().multiply(new BigDecimal(resourceWorkingDayHours))
-                .setScale(0, RoundingMode.HALF_UP).intValue();
+        BigDecimal multiply = getAmount().multiply(
+                new BigDecimal(resourceWorkingDayHours));
+        if(multiply.compareTo(BigDecimal.ZERO)>0){
+            return Math.max(1, multiply.setScale(0, RoundingMode.HALF_UP)
+                    .intValue());
+        } else {
+            return 0;
+        }
     }
 
     @Override

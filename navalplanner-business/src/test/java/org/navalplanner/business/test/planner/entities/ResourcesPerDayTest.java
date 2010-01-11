@@ -129,6 +129,21 @@ public class ResourcesPerDayTest {
     }
 
     @Test
+    public void asHoursMustReturnOneIfAmountIsGreaterThanZero() {
+        ResourcesPerDay amount = ResourcesPerDay.amount(new BigDecimal(0.05));
+        int hours = amount
+                .asHoursGivenResourceWorkingDayOf(8);
+        assertThat(hours, equalTo(1));
+    }
+
+    @Test
+    public void ifTheAmountIsZeroMustReturnZero() {
+        ResourcesPerDay amount = ResourcesPerDay.amount(BigDecimal.ZERO);
+        int hours = amount.asHoursGivenResourceWorkingDayOf(8);
+        assertThat(hours, equalTo(0));
+    }
+
+    @Test
     public void isZeroIfHaveZeroValue() {
         BigDecimal[] examples = { new BigDecimal(0.0001), new BigDecimal(0),
                 new BigDecimal(00), new BigDecimal(0.00) };
