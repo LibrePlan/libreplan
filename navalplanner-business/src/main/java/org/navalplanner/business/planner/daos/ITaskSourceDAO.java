@@ -20,7 +20,9 @@
 package org.navalplanner.business.planner.daos;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -28,4 +30,11 @@ import org.navalplanner.business.orders.entities.TaskSource;
  */
 public interface ITaskSourceDAO extends IGenericDAO<TaskSource, Long> {
 
+    /**
+     * Returns the unique {@link taskElement} assigned to the current
+     * {@link OrderElement}
+     * @param
+     * @return {@link TaskElement}
+     */
+    TaskElement findUniqueByOrderElement(OrderElement orderElement);
 }

@@ -26,7 +26,10 @@ import java.util.Set;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.entities.Material;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.MaterialStatusEnum;
+import org.navalplanner.business.orders.entities.Order;
 
 /**
  * Interface IMaterialDAO
@@ -84,4 +87,12 @@ public interface IMaterialDAO extends IGenericDAO<Material, Long> {
      */
     Set<MaterialCategory> getAllSubcategories(MaterialCategory materialCategory);
 
+    /**
+     * Returns all @ MaterialAssignment} which match with the filters
+     * @param
+     * @return
+     */
+    List<MaterialAssignment> getFilterMaterial(MaterialStatusEnum filterStatus,
+            List<Order> orders, List<MaterialCategory> categories,
+            List<Material> materials);
 }

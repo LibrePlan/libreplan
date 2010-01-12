@@ -229,13 +229,20 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Manage user accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
                 subItem(_("Manage external companies"), "/externalcompanies/externalcompanies.zul",""));
             }
+
         topItem(_("Reports"), "", "",
             subItem(_("Hours worked per worker"),"/reports/hoursWorkedPerWorkerReport.zul","15-informes.html"),
             subItem(_("Completed estimated hours"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
             subItem(_("Working progress per task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
             subItem(_("Order costs per resource"),"/reports/orderCostsPerResource.zul", "15-informes.html"),
             subItem(_("Scheduling progress per order"),"/reports/schedulingProgressPerOrderReport.zul", "15-informes.html"),
-            subItem(_("Working arrangements per order"),"/reports/workingArrangementsPerOrderReport.zul", "15-informes.html"));
+ subItem(
+                        _("Working arrangements per order"),
+                        "/reports/workingArrangementsPerOrderReport.zul",
+                        "15-informes.html"), subItem(
+                        _("Time line materials per day"),
+                        "/reports/timeLineMaterialReport.zul",
+                        "15-informes.html"));
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
