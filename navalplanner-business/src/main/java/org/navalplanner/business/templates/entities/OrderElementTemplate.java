@@ -33,6 +33,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
 import org.navalplanner.business.orders.entities.InfoComponent;
@@ -113,6 +114,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private OrderLineGroupTemplate parent;
 
     private Set<MaterialAssignmentTemplate> materialAssignments = new HashSet<MaterialAssignmentTemplate>();
+
+    private Set<Label> labels = new HashSet<Label>();
 
     public OrderLineGroupTemplate getParent() {
         return parent;
@@ -221,4 +224,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     public abstract boolean isLeaf();
+
+    @Valid
+    public Set<Label> getLabels() {
+        return Collections.unmodifiableSet(labels);
+    }
 }

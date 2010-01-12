@@ -24,6 +24,11 @@
             <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignmentTemplate" />
         </set>
 
+        <set name="labels" table="ORDER_ELEMENT_TEMPLATE_LABEL" cascade="all">
+            <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
+            <many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label"/>
+        </set>
+
         <joined-subclass name="OrderLineGroupTemplate">
             <key column="GROUP_TEMPLATE_ID"></key>
             <list name="children" access="field" cascade="all">
