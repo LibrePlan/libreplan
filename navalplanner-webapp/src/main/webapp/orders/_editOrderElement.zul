@@ -21,7 +21,7 @@
 <?component name="orderElementDetails" inline="true" macroURI="_orderElementDetails.zul"?>
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
-<?component name="listOrderElementLabels" class="org.navalplanner.web.orders.labels.LabelsAssignmentComponent" macroURI="components/_listOrderElementLabels.zul"?>
+<?component name="listOrderElementLabels" class="org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent" macroURI="components/_listOrderElementLabels.zul"?>
 <?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
 <?component name="listOrderElementMaterials" class="org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent"
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>

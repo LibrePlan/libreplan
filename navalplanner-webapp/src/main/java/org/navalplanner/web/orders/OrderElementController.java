@@ -26,7 +26,7 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
-import org.navalplanner.web.orders.labels.LabelsAssignmentComponent;
+import org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
 import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.zkoss.zk.ui.Component;
@@ -62,7 +62,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
-    private LabelsAssignmentComponent orderElementLabels;
+    private LabelsAssignmentToOrderElementComponent orderElementLabels;
 
     private AssignedLabelsToOrderElementController assignedLabelsController;
 

@@ -44,7 +44,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
-import org.navalplanner.web.orders.labels.LabelsAssignmentComponent;
+import org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
 import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
@@ -220,7 +220,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void setupAssignedLabelsToOrderElementController(Component comp)
     throws Exception {
-        LabelsAssignmentComponent labelsAssignment = (LabelsAssignmentComponent) editWindow
+        LabelsAssignmentToOrderElementComponent labelsAssignment = (LabelsAssignmentToOrderElementComponent) editWindow
                 .getFellow("orderElementLabels");
         assignedLabelsController = labelsAssignment.getController();
     }

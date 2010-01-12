@@ -19,16 +19,18 @@
  */
 package org.navalplanner.web.orders.labels;
 
-import org.zkoss.zk.ui.HtmlMacroComponent;
-
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public abstract class LabelsAssignmentComponent extends HtmlMacroComponent {
+public class LabelsAssignmentToOrderElementComponent extends
+        LabelsAssignmentComponent {
 
     private AssignedLabelsToOrderElementController controller = new AssignedLabelsToOrderElementController();
 
-    public abstract AssignedLabelsController<?, ?> getController();
+    @Override
+    public AssignedLabelsToOrderElementController getController() {
+        return controller;
+    }
 
 }
