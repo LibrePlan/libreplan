@@ -58,6 +58,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 .getDeadline());
         beingBuilt.materialAssignments = copyMaterialAssignmentsFrom(beingBuilt, origin
                 .getMaterialAssignments());
+        beingBuilt.labels = new HashSet<Label>(origin.getLabels());
         return create(beingBuilt, infoComponentCopied,
                 fromBeginningToStart, fromBeginningToEnd);
     }
