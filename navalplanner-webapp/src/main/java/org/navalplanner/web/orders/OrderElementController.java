@@ -25,6 +25,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.orders.labels.LabelsAssignmentComponent;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
 import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.zkoss.zk.ui.Component;
@@ -60,7 +61,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
-    private Component orderElementLabels;
+    private LabelsAssignmentComponent orderElementLabels;
 
     private AssignedLabelsToOrderElementController assignedLabelsController;
 
@@ -104,8 +105,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     private void setupAssignedLabelsToOrderElementController(Component comp)
             throws Exception {
-        assignedLabelsController = (AssignedLabelsToOrderElementController)
-        orderElementLabels.getVariable("assignedLabelsController", true);
+        assignedLabelsController = orderElementLabels.getController();
     }
 
     private void setupAssignedCriterionRequirementToOrderElementController(

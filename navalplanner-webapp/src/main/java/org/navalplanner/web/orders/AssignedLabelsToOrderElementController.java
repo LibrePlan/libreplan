@@ -59,7 +59,6 @@ public class AssignedLabelsToOrderElementController extends
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("assignedLabelsController", this, true);
     }
 
     public void openWindow(IOrderElementModel orderElementModel) {

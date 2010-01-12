@@ -17,9 +17,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AssignedLabelsToOrderElementController" >
+<zk>
+<zscript><![CDATA[
+    assignedLabelsController = self.controller;
+]]>
+</zscript>
+<vbox apply="${assignedLabelsController}" >
     <!-- Indirect labels -->
     <vbox>
         <panel title="${i18n:_('Indirect labels')}" border="normal">
@@ -96,3 +99,4 @@
         </panel>
     </vbox>
 </vbox>
+</zk>
