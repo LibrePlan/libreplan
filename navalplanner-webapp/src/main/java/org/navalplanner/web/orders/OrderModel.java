@@ -65,6 +65,7 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.web.orders.labels.LabelsOnConversation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -111,8 +112,6 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
-    private Set<Label> cacheLabels = new HashSet<Label>();
-
     private Set<QualityForm> cacheQualityForms = new HashSet<QualityForm>();
 
     @Autowired
@@ -129,9 +128,16 @@ public class OrderModel implements IOrderModel {
 
     @Override
     public List<Label> getLabels() {
-        final List<Label> result = new ArrayList<Label>();
-        result.addAll(cacheLabels);
-        return result;
+        return getLabelsOnConversation().getLabels();
+    }
+
+    private LabelsOnConversation labelsOnConversation;
+
+    private LabelsOnConversation getLabelsOnConversation() {
+        if (labelsOnConversation == null) {
+            labelsOnConversation = new LabelsOnConversation(labelDAO);
+        }
+        return labelsOnConversation;
     }
 
     @Override
@@ -143,7 +149,7 @@ public class OrderModel implements IOrderModel {
 
     @Override
     public void addLabel(Label label) {
-        cacheLabels.add(label);
+        getLabelsOnConversation().addLabel(label);
     }
 
     @Override
@@ -187,12 +193,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void initializeCacheLabels() {
-        if (cacheLabels.isEmpty()) {
-            cacheLabels = new HashSet<Label>();
-            final List<Label> labels = labelDAO.getAll();
-            initializeLabels(labels);
-            cacheLabels.addAll(labels);
-        }
+        getLabelsOnConversation().initializeLabels();
     }
 
     private void initializeLabels(Collection<Label> labels) {
@@ -445,9 +446,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void reattachLabels() {
-        for (Label label : cacheLabels) {
-            labelDAO.reattach(label);
-        }
+        getLabelsOnConversation().reattachLabels();
     }
 
     private void reattachQualityForms() {
