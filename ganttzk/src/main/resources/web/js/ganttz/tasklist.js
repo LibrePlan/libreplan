@@ -423,17 +423,17 @@ zkTask.setClass = function(cmp, newclass) {
 	cmp.className = newclass;
 };
 
-zkTask.setAttr = function(cmp, nm, val) {
-
-	switch (nm) {
-
-	case "style.top":
-	case "style.width":
-	case "style.left": {
-		zkau.setAttr(cmp, nm, val);
-		return true;
-	}
-
+zkTask.setAttr = function(cmp, name, val) {
+	switch (name) {
+        case "resourcesText":{
+            var resourcesTextElement = YAHOO.util.Selector.query(
+                    '.task-resources .task-resources-inner', cmp, true);
+            resourcesTextElement.innerHTML = val;
+            return true;
+        }
+        default: {
+            return false;
+        }
 	}
 };
 
@@ -446,17 +446,6 @@ zkTask.next = function(elem) {
         elem = elem.nextSibling;
     } while (elem && elem.nodeType != 1);
     return elem;
-}
-
-
-zkTask.setAttr = function(cmp, name, value) {
-	// Obsolete as far as tasks will not show name inside
-	// if ("name" == name) {
-	// var span = YAHOO.util.Selector.query("span", cmp, true);
-	// span.innerHTML = value;
-	// return true;
-	// }
-	return false;
 }
 
 zkTask.addRelatedDependency = function(cmp, dependency) {

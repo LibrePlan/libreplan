@@ -40,11 +40,11 @@ import org.zkoss.ganttz.util.ConstraintViolationNotificator;
  */
 public abstract class Task implements ITaskFundamentalProperties {
 
-    public interface IReloadComponentRequested {
-        public void reloadComponentRequested();
+    public interface IReloadResourcesTextRequested {
+        public void reloadResourcesTextRequested();
     }
 
-    private List<IReloadComponentRequested> reloadRequestedListeners = new ArrayList<IReloadComponentRequested>();
+    private List<IReloadResourcesTextRequested> reloadRequestedListeners = new ArrayList<IReloadResourcesTextRequested>();
 
     private PropertyChangeSupport fundamentalPropertiesListeners = new PropertyChangeSupport(
             this);
@@ -280,19 +280,19 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void addReloadListener(
-            IReloadComponentRequested reloadComponentRequested) {
-        Validate.notNull(reloadComponentRequested);
-        this.reloadRequestedListeners.add(reloadComponentRequested);
+            IReloadResourcesTextRequested reloadResourcesTextRequested) {
+        Validate.notNull(reloadResourcesTextRequested);
+        this.reloadRequestedListeners.add(reloadResourcesTextRequested);
     }
 
     public void removeReloadListener(
-            IReloadComponentRequested reloadComponentRequested) {
-        this.reloadRequestedListeners.remove(reloadComponentRequested);
+            IReloadResourcesTextRequested reloadResourcesTextRequested) {
+        this.reloadRequestedListeners.remove(reloadResourcesTextRequested);
     }
 
-    public void reloadComponent() {
-        for (IReloadComponentRequested each : reloadRequestedListeners) {
-            each.reloadComponentRequested();
+    public void reloadResourcesText() {
+        for (IReloadResourcesTextRequested each : reloadRequestedListeners) {
+            each.reloadResourcesTextRequested();
         }
     }
 

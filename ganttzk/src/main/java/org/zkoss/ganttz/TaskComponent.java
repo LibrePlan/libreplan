@@ -34,7 +34,7 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
-import org.zkoss.ganttz.data.Task.IReloadComponentRequested;
+import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
@@ -176,7 +176,7 @@ public class TaskComponent extends Div implements AfterCompose {
         return asTaskComponent(task, taskList, true);
     }
 
-    private IReloadComponentRequested reloadComponentRequested;
+    private IReloadResourcesTextRequested reloadResourcesTextRequested;
 
     public TaskComponent(Task task,
             IDisabilityConfiguration disabilityConfiguration) {
@@ -195,16 +195,14 @@ public class TaskComponent extends Div implements AfterCompose {
             }
         };
         this.task.addConstraintViolationListener(taskViolationListener);
-        reloadComponentRequested = new IReloadComponentRequested() {
+        reloadResourcesTextRequested = new IReloadResourcesTextRequested() {
 
             @Override
-            public void reloadComponentRequested() {
-                // TODO can't call to invalidate because the task was
-                // disappearing. Fix the problem and just invalidate this task
-                getParent().invalidate();
+            public void reloadResourcesTextRequested() {
+                smartUpdate("resourcesText", getResourcesText());
             }
         };
-        this.task.addReloadListener(reloadComponentRequested);
+        this.task.addReloadListener(reloadResourcesTextRequested);
     }
 
     protected String calculateClass() {
@@ -454,7 +452,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     protected void remove() {
         this.detach();
-        task.removeReloadListener(reloadComponentRequested);
+        task.removeReloadListener(reloadResourcesTextRequested);
     }
 
     public boolean isTopLevel() {

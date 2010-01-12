@@ -206,7 +206,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         allocationResult.applyTo(task);
         ganttTask.fireChangesForPreviousValues(previousStartDate,
                 previousLength);
-        ganttTask.reloadComponent();
+        ganttTask.reloadResourcesText();
         context.reloadCharts();
     }
 
