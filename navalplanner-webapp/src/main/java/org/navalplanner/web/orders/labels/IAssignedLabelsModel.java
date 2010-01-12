@@ -17,21 +17,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.navalplanner.web.orders.labels;
 
-import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.web.orders.IOrderModel;
+import java.util.List;
+
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 
 /**
- * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ *
  */
-public interface IAssignedLabelsToOrderElementModel extends
-        IAssignedLabelsModel<OrderElement> {
-    /**
-     *
-     * @param orderModel
-     */
-    void setOrderModel(IOrderModel orderModel);
+public interface IAssignedLabelsModel<T> {
+
+    public abstract void init(T element);
+
+    public abstract void initializeLabel(Label label);
+
+    public abstract List<Label> getLabels();
+
+    public abstract List<Label> getInheritedLabels();
+
+    public abstract Label createLabel(String labelName, LabelType labelType);
+
+    public abstract void assignLabel(Label label);
+
+    public abstract void deleteLabel(Label label);
+
+    public abstract Label findLabelByNameAndType(String labelName,
+            LabelType labelType);
+
+    public abstract boolean isAssigned(Label label);
+
+    public abstract List<Label> getAllLabels();
 
 }
