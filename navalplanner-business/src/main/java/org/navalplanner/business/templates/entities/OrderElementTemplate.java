@@ -230,4 +230,13 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public Set<Label> getLabels() {
         return Collections.unmodifiableSet(labels);
     }
+
+    public void addLabel(Label label){
+        Validate.notNull(label);
+        this.labels.add(label);
+    }
+
+    public void removeLabel(Label label) {
+        this.labels.remove(label);
+    }
 }
