@@ -57,16 +57,6 @@ public class AssignedLabelsToOrderElementModel implements
     private IOrderModel orderModel;
 
     @Override
-    public OrderElement getOrderElement() {
-        return orderElement;
-    }
-
-    @Override
-    public void setOrderElement(OrderElement orderElement) {
-        this.orderElement = orderElement;
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public void init(OrderElement orderElement) {
         this.orderElement = orderElement;

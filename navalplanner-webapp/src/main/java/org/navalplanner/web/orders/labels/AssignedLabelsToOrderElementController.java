@@ -81,9 +81,8 @@ public class AssignedLabelsToOrderElementController extends
 
     IOrderElementModel orderElementModel;
 
-    public void setOrderElementModel(IOrderElementModel orderElementModel) {
+    private void setOrderElementModel(IOrderElementModel orderElementModel) {
         this.orderElementModel = orderElementModel;
-        setOrderElement(orderElementModel.getOrderElement());
         setOrderModel(orderElementModel.getOrderModel());
     }
 
@@ -95,12 +94,6 @@ public class AssignedLabelsToOrderElementController extends
 
     public OrderElement getOrderElement() {
         return orderElementModel.getOrderElement();
-    }
-
-    public void setOrderElement(OrderElement orderElement) {
-        if (assignedLabelsToOrderElementModel != null) {
-            assignedLabelsToOrderElementModel.setOrderElement(orderElement);
-        }
     }
 
     /**

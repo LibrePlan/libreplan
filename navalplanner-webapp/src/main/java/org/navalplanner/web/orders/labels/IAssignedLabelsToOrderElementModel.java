@@ -85,12 +85,6 @@ public interface IAssignedLabelsToOrderElementModel {
      */
     public List<Label> getLabels();
 
-    /**
-     *
-     * @return
-     */
-    OrderElement getOrderElement();
-
     void init(OrderElement orderElement);
 
     /**
@@ -100,13 +94,6 @@ public interface IAssignedLabelsToOrderElementModel {
      * @param label
      */
     boolean isAssigned(Label label);
-
-    /**
-     * Set {@link OrderElement}
-     *
-     * @param orderElement
-     */
-    void setOrderElement(OrderElement orderElement);
 
     /**
      *
