@@ -75,6 +75,8 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
         for (Order each: orders) {
             initializeTasks(each.getTaskElements());
             initializeOrderElements(each.getOrderElements());
+            initializaReportGlobalAdvanceAssignment(each
+                    .getReportGlobalAdvanceAssignment());
             initializeDirectAdvanceAssignments(each.getDirectAdvanceAssignments());
             initializeIndirectAdvanceAssignments(each.getIndirectAdvanceAssignments());
         }
@@ -129,6 +131,15 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
         }
     }
 
+    private void initializaReportGlobalAdvanceAssignment(
+            DirectAdvanceAssignment directAdvance) {
+        if (directAdvance != null) {
+            directAdvance.getAdvancePercentage();
+            initializaAdvanceMeasurements(directAdvance
+                    .getAdvanceMeasurements());
+        }
+    }
+
     private void initializaAdvanceType(AdvanceType advanceType) {
         advanceType.getUnitName();
     }
@@ -154,10 +165,12 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
             new ArrayList<SchedulingProgressPerOrderDTO>();
         for (Order each: orders) {
             // Filter by date
-            if (startingDate != null && startingDate.compareTo(each.getInitDate()) > 0) {
+            if ((startingDate != null) && (each.getInitDate() != null)
+                    && startingDate.compareTo(each.getInitDate()) > 0) {
                 continue;
             }
-            if (endingDate != null && endingDate.compareTo(each.getDeadline()) < 0) {
+            if ((endingDate != null) && (each.getDeadline() != null)
+                    && endingDate.compareTo(each.getDeadline()) < 0) {
                 continue;
             }
             // Add to list

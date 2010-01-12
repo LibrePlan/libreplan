@@ -54,19 +54,19 @@
 				<text><![CDATA[Scheduling progress per order]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="116" width="85" height="20"/>
+				<reportElement x="1" y="116" width="100" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Reference date:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="86" y="116" width="100" height="20"/>
+				<reportElement x="101" y="116" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{referenceDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="136" width="85" height="20">
+				<reportElement x="1" y="136" width="100" height="20">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{startingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -75,14 +75,14 @@
 				<text><![CDATA[Starting date:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="86" y="136" width="100" height="20">
+				<reportElement x="101" y="136" width="100" height="20">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{startingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{startingDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="186" y="136" width="85" height="20">
+				<reportElement x="201" y="136" width="85" height="20">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{endingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -91,33 +91,33 @@
 				<text><![CDATA[Ending date:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="271" y="136" width="100" height="20">
+				<reportElement x="286" y="136" width="100" height="20">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{endingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{endingDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="76" width="85" height="20"/>
+				<reportElement x="1" y="76" width="100" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Advance type:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="86" y="76" width="281" height="20"/>
+				<reportElement x="101" y="76" width="281" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{advanceType}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="96" width="85" height="20"/>
+				<reportElement x="1" y="96" width="100" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Orders:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="86" y="96" width="469" height="20"/>
+				<reportElement x="101" y="96" width="399" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{orderName}]]></textFieldExpression>
 			</textField>
@@ -522,7 +522,7 @@
 			<staticText>
 				<reportElement x="0" y="0" width="555" height="16">
 					<printWhenExpression><![CDATA[new java.lang.Boolean(
-    !$V{advanceTypeDoesNotApply}.equals(new java.lang.Integer(0)))    ]]></printWhenExpression>
+    !$V{advanceTypeDoesNotApply}.equals(new java.lang.Integer(0)))]]></printWhenExpression>
 				</reportElement>
 				<textElement/>
 				<text><![CDATA[* Selected advance type is not available for this order]]></text>
