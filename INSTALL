@@ -104,3 +104,24 @@ the selected page.
 
 [1] http://cutycapt.sourceforge.net/
 [2] http://www.xfree86.org/4.0.1/Xvfb.1.html
+
+User Documentation
+------------------
+
+User documentation is done in *Reestructured Text*. It is necessary to have installed
+the following packages:
+
+   * automake package in order to be able to execute "make".
+   * "python-docutils" package version 0.4 or higher.
+   * "texlive-latex-base" package in order to have "pdflatex" available.
+
+Compilation
+-----------
+
+The compilation is included in Maven build. If you execute "mvn install" documentation is generated.
+
+* For manual compilation, inside "doc/src/es", "doc/src/gl" or "doc/src/es"  directories:
+   make html
+   make pdf
+
+* Output is created in "doc/src/es/html" and "/doc/src/es/pdf" directories.
