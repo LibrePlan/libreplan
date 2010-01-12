@@ -18,13 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.orders;
+package org.navalplanner.web.orders.labels;
 
 import java.util.List;
 
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.web.orders.IOrderModel;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>

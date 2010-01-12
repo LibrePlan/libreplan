@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.orders;
+package org.navalplanner.web.orders.labels;
 
 import static org.navalplanner.web.I18nHelper._;
 
@@ -30,6 +30,8 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
+import org.navalplanner.web.orders.IOrderElementModel;
+import org.navalplanner.web.orders.IOrderModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;

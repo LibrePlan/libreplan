@@ -19,7 +19,6 @@
  */
 package org.navalplanner.web.orders.labels;
 
-import org.navalplanner.web.orders.AssignedLabelsToOrderElementController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
