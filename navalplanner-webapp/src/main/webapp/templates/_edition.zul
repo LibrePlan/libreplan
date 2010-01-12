@@ -21,11 +21,13 @@
   class="org.navalplanner.web.templates.TemplatesTreeComponent"?>
 <?component name="listOrderElementMaterials" class="org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent"
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
+<?component name="listOrderElementLabels" class="org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
 <window id="${arg.top_id}">
     <tabbox>
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />
             <tab label="${i18n:_('Template Tree')}" disabled="@{templateController.templateTreeDisabled}"/>
+            <tab label="${i18n:_('Labels')}" />
             <tab label="${i18n:_('Materials')}" />
         </tabs>
         <tabpanels>
@@ -61,6 +63,9 @@
             </tabpanel>
             <tabpanel>
                 <orderElementTree id="orderElementTree"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementLabels id="listOrderElementLabels"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementMaterials id="listOrderElementMaterials"/>

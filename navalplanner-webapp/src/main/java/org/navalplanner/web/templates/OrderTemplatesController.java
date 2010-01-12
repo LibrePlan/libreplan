@@ -29,6 +29,7 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.navalplanner.web.tree.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     private void showEditWindow() {
         bindMaterialsControllerWithCurrentTemplate();
+        bindLabelsControllerWithCurrentTemplate();
         show(getEditWindow());
     }
 
@@ -95,6 +97,12 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         MaterialAssignmentTemplateComponent materialsComponent = (MaterialAssignmentTemplateComponent) getEditWindow()
                 .getFellow("listOrderElementMaterials");
         materialsComponent.getController().openWindow(model.getTemplate());
+    }
+
+    private void bindLabelsControllerWithCurrentTemplate() {
+        LabelsAssignmentToTemplateComponent labelsComponent = (LabelsAssignmentToTemplateComponent) getEditWindow()
+                .getFellow("listOrderElementLabels");
+        labelsComponent.getController().openWindow(model);
     }
 
     public boolean isTemplateTreeDisabled() {
