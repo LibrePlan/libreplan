@@ -23,10 +23,13 @@ import java.util.List;
 
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.orders.labels.LabelsOnConversation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -48,11 +51,23 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     private IOrderElementTemplateDAO dao;
 
     @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
     private IAdHocTransactionService transaction;
 
     private OrderElementTemplate template;
 
     private TemplatesTree treeModel;
+
+    private LabelsOnConversation labelsOnConversation;
+
+    private LabelsOnConversation getLabelsOnConversation() {
+        if (labelsOnConversation == null) {
+            labelsOnConversation = new LabelsOnConversation(labelDAO);
+        }
+        return labelsOnConversation;
+    }
 
     @Override
     public List<OrderElementTemplate> getRootTemplates() {
@@ -99,6 +114,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Transactional(readOnly = true)
     public void initEdit(OrderElementTemplate template) {
         this.template = dao.findExistingEntity(template.getId());
+        getLabelsOnConversation().initializeLabels();
         treeModel = new TemplatesTree(this.template);
     }
 
@@ -110,6 +126,16 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Override
     public boolean isTemplateTreeDisabled() {
         return template != null && template.isLeaf();
+    }
+
+    @Override
+    public void addLabelToConversation(Label label) {
+        getLabelsOnConversation().addLabel(label);
+    }
+
+    @Override
+    public List<Label> getLabels() {
+        return getLabelsOnConversation().getLabels();
     }
 
 }

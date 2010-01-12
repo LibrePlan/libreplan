@@ -21,6 +21,7 @@ package org.navalplanner.web.templates;
 
 import java.util.List;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.tree.EntitiesTree;
@@ -44,4 +45,8 @@ public interface IOrderTemplatesModel {
     EntitiesTree<OrderElementTemplate> getTemplatesTreeModel();
 
     boolean isTemplateTreeDisabled();
+
+    public void addLabelToConversation(Label label);
+
+    List<Label> getLabels();
 }
