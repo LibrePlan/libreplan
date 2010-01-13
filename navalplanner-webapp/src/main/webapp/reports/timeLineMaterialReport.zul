@@ -55,16 +55,20 @@
                      <rows>
                          <row>
                              <label value="${i18n:_('Start date:')}" />
-                             <datebox id="startingDate" width="150px"/>
+                             <datebox id="startingDate" width="150px"
+                                value="@{controller.startingDate}"/>
                          </row>
                          <row>
                              <label value="${i18n:_('End date:')}" />
-                             <datebox id="endingDate" width="150px"/>
+                             <datebox id="endingDate" width="150px"
+                                value="@{controller.endingDate}"/>
                          </row>
                          <row>
                             <label value="${i18n:_('Status:')}" />
-                            <combobox id="cbStatus" buttonVisible="true" width="150px"
-                                model="@{controller.materialStatus}"/>
+                            <listbox id="listStatus" mold="select" rows="1"
+                                model="@{controller.materialStatus}" width="150px"
+                                selectedItem="@{controller.selectedStatus}">
+                            </listbox>
                          </row>
                      </rows>
                  </grid>

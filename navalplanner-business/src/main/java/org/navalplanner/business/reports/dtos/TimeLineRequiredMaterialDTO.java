@@ -21,9 +21,11 @@
 package org.navalplanner.business.reports.dtos;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.navalplanner.business.materials.entities.MaterialAssignment;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
@@ -31,7 +33,9 @@ import org.navalplanner.business.planner.entities.TaskElement;
  */
 public class TimeLineRequiredMaterialDTO{
 
-    private Date date;
+    private String date;
+
+    private Date initDate;
 
     private String status;
 
@@ -54,12 +58,13 @@ public class TimeLineRequiredMaterialDTO{
     private String task;
 
     public TimeLineRequiredMaterialDTO(Date date) {
-        this.date = date;
+        setDate(date);
     }
 
     public TimeLineRequiredMaterialDTO(MaterialAssignment materialAssignment,
-            TaskElement taskElement, Date requiredDate) {
-        this.date = requiredDate;
+            TaskElement taskElement, Date requiredDate, OrderElement order) {
+        setDate(requiredDate);
+        this.initDate = requiredDate;
         this.status = materialAssignment.getStatus().name();
         this.code = materialAssignment.getMaterial().getCode();
         this.category = materialAssignment.getMaterial().getCategory().getName();
@@ -69,7 +74,7 @@ public class TimeLineRequiredMaterialDTO{
         this.totalPrice = materialAssignment.getTotalPrice();
         this.estimatedAvailability = materialAssignment
                 .getEstimatedAvailability();
-        this.order = materialAssignment.getOrderElement().getName();
+        this.order = order.getCode() + " - " + order.getName();
         this.task = getTaskName(taskElement);
     }
 
@@ -84,12 +89,28 @@ public class TimeLineRequiredMaterialDTO{
         return null;
     }
 
-    public Date getDate() {
+    public Date getInitDate() {
+        return initDate;
+    }
+
+    public void setInitDate(Date initDate) {
+        this.initDate = initDate;
+    }
+
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    private void setDate(Date newDate) {
+        if (newDate != null) {
+            this.date = (new SimpleDateFormat("dd/MM/yyyy")).format(newDate);
+        } else {
+            this.date = null;
+        }
     }
 
     public String getStatus() {

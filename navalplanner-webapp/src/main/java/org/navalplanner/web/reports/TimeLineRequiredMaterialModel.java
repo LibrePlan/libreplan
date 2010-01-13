@@ -163,7 +163,7 @@ public class TimeLineRequiredMaterialModel implements
             // check if the dates match
             if(acceptDates(startDate,endDate)){
                 result.add(new TimeLineRequiredMaterialDTO(material, task,
-                        startDate));
+                        startDate, order));
             }
         }
         return result;
@@ -261,7 +261,7 @@ public class TimeLineRequiredMaterialModel implements
     private boolean isGreaterDate(TimeLineRequiredMaterialDTO dto,
             TimeLineRequiredMaterialDTO dtoToOrder) {
         if (dto != null) {
-            return dto.getDate().after(dtoToOrder.getDate());
+            return dto.getInitDate().after(dtoToOrder.getInitDate());
         }
         return true;
     }

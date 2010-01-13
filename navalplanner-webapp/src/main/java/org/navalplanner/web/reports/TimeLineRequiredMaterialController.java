@@ -38,9 +38,7 @@ import org.navalplanner.business.materials.entities.MaterialStatusEnum;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -70,6 +68,14 @@ public class TimeLineRequiredMaterialController extends
 
     private Combobox cbStatus;
 
+    private Listbox listStatus;
+
+    private Date filterStartingDate = getDefaultStartingDate();
+
+    private Date filterEndingDate = getDefaultEndingDate();
+
+    private String selectedStatus = getDefaultStatus();
+
     private Listbox lbOrders;
 
     List<MaterialCategory> filterCategories = new ArrayList<MaterialCategory>();
@@ -95,28 +101,43 @@ public class TimeLineRequiredMaterialController extends
     @Override
     protected JRDataSource getDataSource() {
         return timeLineRequiredMaterialModel.getTimeLineRequiredMaterial(
-                getStartingDate(), getEndingDate(), getSelectedStatus(),
+                getStartingDate(), getEndingDate(),
+                getCorrespondentStatus(selectedStatus),
                 getSelectedOrders(), getSelectedCategories(),
                 getSelectedMaterials());
     }
 
-    private Date getStartingDate() {
-        Date result = startingDate.getValue();
-        if (result == null) {
-            startingDate.setValue(new Date());
-        }
-        return startingDate.getValue();
+    public Date getStartingDate() {
+        return this.filterStartingDate;
     }
 
-    private Date getEndingDate() {
-        Date result = endingDate.getValue();
-        if (result == null) {
-            endingDate.setValue(getDefaultEndingDate());
+    public void setStartingDate(Date date) {
+        if (date == null) {
+            this.filterStartingDate = getDefaultStartingDate();
+            this.startingDate.setValue(filterStartingDate);
+        } else {
+            this.filterStartingDate = date;
         }
-        return endingDate.getValue();
     }
 
-    private Date getDefaultEndingDate(){
+    private Date getDefaultStartingDate() {
+        return new Date();
+    }
+
+    public Date getEndingDate() {
+        return this.filterEndingDate;
+    }
+
+    public void setEndingDate(Date date) {
+        if (date == null) {
+            this.filterEndingDate = getDefaultEndingDate();
+            this.endingDate.setValue(filterEndingDate);
+        } else {
+            this.filterEndingDate = date;
+        }
+    }
+
+    public Date getDefaultEndingDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getStartingDate());
         calendar.add(calendar.MONTH, 1);
@@ -127,18 +148,6 @@ public class TimeLineRequiredMaterialController extends
 
         calendar.set(year, month, date);
         return calendar.getTime();
-    }
-
-    private MaterialStatusEnum getSelectedStatus() {
-        final Comboitem item = cbStatus.getSelectedItem();
-        return (item != null) ? (MaterialStatusEnum) item.getValue() : null;
-    }
-
-    private String getSelectedStatusName() {
-        if (getSelectedStatus() != null) {
-            return getSelectedStatus().name();
-        }
-        return null;
     }
 
     private List<Order> getSelectedOrders() {
@@ -160,14 +169,44 @@ public class TimeLineRequiredMaterialController extends
     }
 
     public void showReport(ExtendedJasperreport jasperreport) {
-        if (lbOrders.getSelectedCount() <= 0) {
-            throw new WrongValueException(lbOrders, _("Please, select an order"));
-        }
         super.showReport(jasperreport);
     }
 
-    public MaterialStatusEnum[] getMaterialStatus() {
-        return MaterialStatusEnum.values();
+    public List<String> getMaterialStatus() {
+        List<String> status = new ArrayList<String>();
+        status.add(getDefaultStatus());
+        for (MaterialStatusEnum matStatus : MaterialStatusEnum.values()) {
+            status.add(matStatus.name());
+        }
+        return status;
+    }
+
+    public String getDefaultStatus() {
+        return _("All");
+    }
+
+    public String getSelectedStatus(){
+        return selectedStatus;
+    }
+
+    public void setSelectedStatus(String status) {
+        selectedStatus = status;
+    }
+
+    private MaterialStatusEnum getCorrespondentStatus(String status) {
+        for (MaterialStatusEnum matStatus : MaterialStatusEnum.values()) {
+            if (status.equals(matStatus.name())) {
+                return matStatus;
+            }
+        }
+        return null;
+    }
+
+    private String getSelectedStatusName() {
+        if (getSelectedStatus().equals(getDefaultStatus())) {
+            return null;
+        }
+        return selectedStatus;
     }
 
     /**
