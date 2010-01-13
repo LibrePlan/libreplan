@@ -1,14 +1,14 @@
 Usuarios
 ########
 
-.. _tarefas:
+.. _usuarios:
 .. contents::
 
 
 Administración de usuarios
 ==========================
 
-O sistema de usuarios de "Navalpro" permitirá xestionar perfiles, permisos e usuarios. Un usuario pertence a un perfil de usuario e por outro lado os perfiles poden ter unha serie de roles predefinidos para o acceso á aplicación. Os roles son os permisos definidos sobre "Navalpro". Exemplos de roles:
+O sistema de usuarios de "Navalpro" permite xestionar perfiles, permisos e usuarios. Un usuario pertence a un perfil de usuario e por outro lado os perfiles poden ter unha serie de roles predefinidos para o acceso á aplicación. Os roles son os permisos definidos sobre "Navalpro". Exemplos de roles:
 
 * Administración: Rol que os usuarios administradores deben ter asignados para poder realizar operacións de administración.
 * Lector de servizos web: Rol que os usuarios necesitan para poder consultar servizos web da aplicación.
@@ -21,7 +21,7 @@ Os usuarios pertencen a un ou varios perfiles ou directamente a un ou varios rol
 Para administrar usuarios é necesario realizar os seguintes pasos:
 
 * Acceder á operación de "Xestionar usuarios" do menú de "Administración".
-* A aplicación amosará un formulario co listado de usuarios.
+* A aplicación amosa un formulario co listado de usuarios.
 * Premer o botón de edición do usuario elixido ou premer no botón "Crear".
 * Amosase un formulario cos seguintes campos:
 
@@ -46,9 +46,9 @@ Administración de perfiles
 Para administrar os perfiles da aplicación é necesario dar os seguintes pasos:
 
 * Acceder á operación de "Xestionar perfiles de usuario" do menú de "Administración".
-* A aplicación amosará un listado de perfiles.
+* A aplicación amosa un listado de perfiles.
 * Premer o botón de edición do perfil elixido ou premer no botón "Crear".
-* A aplicación amosará un formulario cos seguintes campos:
+* A aplicación amosa un formulario cos seguintes campos:
 
    * Nome
    * Lista de roles (permisos) asociados ó perfil. Para engadir un rol asociado ó perfil deberase seleccionar un da lista de roles e premer en "Engadir".
@@ -58,5 +58,5 @@ Para administrar os perfiles da aplicación é necesario dar os seguintes pasos:
 
    Xestión de perfiles de usuarios
 
-* Premer en "Gardar" ou "Gardar e Continuar" e o sistema almacenará o perfil creado ou modificado.
+* Premer en "Gardar" ou "Gardar e Continuar" e o sistema almacena o perfil creado ou modificado.
 

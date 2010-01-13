@@ -8,7 +8,7 @@ Formularios de calidade
 Administración de formularios de calidade
 =========================================
 
-Os formularios de calidade son unha lista de preguntas ou frases que indiquen tarefas ou procesos que deben estar completados para que unha tarefa se poida dar por completada por parte da empresa usuaria. Estes formularios están formados polos seguintes campos:
+Os formularios de calidade son unha lista de preguntas ou frases que indican tarefas ou procesos que deben estar completados para que unha tarefa se poida dar por completada por parte da empresa usuaria. Estes formularios están formados polos seguintes campos:
 
 * Nome
 * Descrición

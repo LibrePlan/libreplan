@@ -1,21 +1,21 @@
-Planificación de tarefas
-########################
+Planificación de tareas
+#######################
 
 .. _planificacion:
 .. contents::
 
 
-Planificación de tarefas
+Planificación de tareas
 ========================
 
-A planificación en "Navalpro" é un proceso que se describe ó longo de todos os capítulos do documento de usuario, entre os cales destacan os capítulos de pedidos e asignación de recursos. Neste capítulo trataranse as operacións básicas de planificación, unha vez o pedido está correctamente configurado e á interacción cos diagramas de Gantt.
+La planificación en "Navalpro" es un proceso que se describe a lo largo de todos los capítulos del documento de usuario, entre los cuales destacan los capítulos de pedidos y de asignación de recursos. En este capítulo se tratan las operaciones básicas de planificación, una vez el pedido está correctamente configurado y la interacción con los diagramas de Gantt.
 
 .. figure:: images/planning-view.png
    :scale: 35
 
-   Vista de planificación de un traballo
+   Vista de planificación de un trabajo
 
-Tal e como sucede coa vista global de empresa, a vista de planificación dun proxecto divídese en varias perspectivas que se amosan en base á información que se está analizando do mesmo. As perspectivas dun proxecto concreto son:
+Tal y como sucede con la vista global de la empresa, la vista de planificación de un proyecto se divide en varias perspectivas que se muestran en base a la información que se está analizando del mismo. Las perspectivas de un proyecto concreto son:
 
 * Vista de planificación
 * Vista de carga de recursos
@@ -24,76 +24,75 @@ Tal e como sucede coa vista global de empresa, a vista de planificación dun pro
 
 Vista de planificación
 ----------------------
-A perspectiva de planificación combina tres vistas diferentes:
+La perspectiva de planificación combina tres vistas diferentes:
 
-* Planificación do proxecto. A planificación do proxecto visualizase na zona superior dereita da aplicación. Representase a planificación en diagramación de Gantt. E a vista na que se permite mover temporalmente as tarefas, asignar dependencias entre elas, definir fitos ou establecer restricións.
-* Vista de carga de recursos. A vista de carga de recursos é o gráfico inferior dereito no que se amosa a dispoñibilidade de recursos segundo as asignacións que se realizaron, contrastada coas asignacións realizadas a tarefas. A información que se amosa no gráfico é:
+* Planificación del proyecto. La planificación del proyecto se visualiza en la zona superior derecha de la aplicación. Se representa la planificación en diagramación de Gantt. Es la vista en la que se permite mover temporalmente las tareas, asignar dependencias entre ellas, definir hitos o establecer restricciones.
+* Vista de carga de recursos. La vista de carga de recursos es el gráfico inferior derecho en el que se muestra la disponibilidad de recursos según las asignacións que se realizaron, contrastada con las asignaciones realizadas a tareas. La información que se muestra en el gráfico es:
 
-   * Zona lila: Indica a carga de recursos por debaixo do 100% da súa capacidade.
-   * Zona verde: Indica a carga de recursos por debaixo do 100% derivado de que o recurso está planificado en outro proxecto.
-   * Zona laranxa: Indica a carga de recursos por enriba do seu 100% debido a o proxecto actual.
-   * Zona amarela: Indica a carga de recursos por enriba do seu 100% debido a outros proxectos.
+   * Zona violeta: Indica la carga de recursos por debajo del 100% de su capacidad.
+   * Zona verde: Indica la carga de recursos por debajo del 100% derivado de que el recurso está planificado en otro proyecto.
+   * Zona naranja: Indica la carga de recursos por encima de su 100% debido al proyecto actual.
+   * Zona amarilla: Indica la carga de recursos por encima de su 100% debido a otros proyectos.
 
-* Vista de gráfico e indicadores do valor gañado. Visible dende a pestana de "Valor Gañado". Gráfico que se xera en base á técnica do valor gañado e os indicadores calculados cada un dos días de traballo do proxecto. Os indicadores calculados son:
+* Vista de gráfico e indicadores do valor ganado. Visible desde la pestaña de "Valor Ganado". Gráfico que se genera en base a la técnica del valor ganado y os indicadores calculados cada uno de los días de trabajo del proyecto. Los indicadores calculados son:
 
-   * BCWS: función acumulativa no tempo do número de horas planificadas ata unha data. No inicio planificado da tarefa será 0 e o final será o total de horas planificadas. Coma toda gráfica acumulativa sempre será crecente. A función para unha tarefa terá a suma das asignacións de día ata o día de calculo. Esta función ten valores para tódolos momentos no tempo sempre que teñamos asignación de recursos.
-   * ACWP: función acumulativa no tempo das horas imputadas nos parte de traballo ata unha data. Esta función so terá valores iguais a 0 antes da data do primeiro parte de traballo da tarefa e irá incrementado o seu valor a medida que avanza o tempo e se incorporan horas de partes de traballo. Non terá valor despois da data do último parte de traballo.
-   * BCWP: función acumulativa no tempo que incorpora o valor resultante de multiplicar o avance das tarefas pola cantidade de traballo que se estimaba que levaría a tarefa. Esta función ten valores incrementales a medida que se incrementa o tempo e temos valores de avance que se van incrementando. O avance se multiplica polo total de horas estimadas de cada unha da tarefa. E o valor de BCWP é a suma destes valores para as tarefas que es está a calcular. Un avance se suma no instante de tempo no se configurou.
-   * CV: Variación en custo CV = BCWP - ACWP
-   * SV: schedule variance (desviación en planificación) SV = BCWP - BCWS
-   * BAC: total custo planificado BAC = max (BCWS)
-   * EAC: estimación de custo total actual EAC = (ACWP/ BCWP) * BAC
-   * VAC: desviación ó custo final VAC = BAC - EAC
-   * ETC: estimado do custo pendente ETC = EAC - ACWP
-   * CPI: índice de eficiencia de custo CPI = BCWP / ACWP
-   * SPI: índice de eficiencia da planificación SPI = BCWP / BCWS
+   * BCWS: función acumulativa en el tiempo del número de horas planificadas hasta una fecha. En el inicio planificado de la tarea será 0 y al final será el total de horas planificadas. Como toda gráfica acumulativa, esta siempre será creciente. La función para una tarea tendrá la suma de las asignaciones de día hasta el día de cálculo. Esta función tiene valores para todos los momentos en el tiempo siempre que tengamos asignación de recursos.
+   * ACWP: función acumulativa en el tiempo de las horas imputadas en los partes de trabajo hasta una fecha. Esta función solo tendrá valores iguales a 0 antes de la fecha del promer parte de trabajo de la tarea e irá incrementando su valor a medida que avanza el tiempo y se incorporen horas de partes de trabajo. No tendrá valor después de la fecha del último parte de trabajo.
+   * BCWP: función acumulativa en el tiempo que incorpora el valor resultante de multiplicar el avance de las tareas por la cantidad de trabajo que se estimaba que llevaría la tarea. Esta función tiene valores incrementales a medida que se incrementa el tiempo y tenemos valores de avance que se van incrementando. El avance se multiplica por el total de horas estimadas de cada una de las tareas. Y el valor de BCWP es la sume de estos valores para las tareas que es están calculando. Un avance se suma en el momento de tiempo que se configuró.
+   * CV: Variación en coste CV = BCWP - ACWP
+   * SV: Variación en planificación SV = BCWP - BCWS
+   * BAC: Total coste planificado BAC = max (BCWS)
+   * EAC: Estimación de coste total actual EAC = (ACWP/ BCWP) * BAC
+   * VAC: Desviación al coste final VAC = BAC - EAC
+   * ETC: Estimado del coste pendiente ETC = EAC - ACWP
+   * CPI: Índice de eficiencia de coste CPI = BCWP / ACWP
+   * SPI: Índice de eficiencia da planificación SPI = BCWP / BCWS
+
+Dentro de la planificación del proyecto el usuario puede realizar las siguientes operaciones:
+
+   * Asignar dependencias. Para realizar dicha operación es necesario pulsar con el botón derecho y elegir "Añadir dependencia", arrastrar el puntero del ratón para la tarea destinataria de la dependencia.
+
+      * Para cambiar el tipo de dependencia, pulsar con el botón derecho sobre la dependencia y elegir el tipo que se desea asignar.
+
+   * Crear nuevo hito. Pulsar sobre la tarea anterior al hitoque se desea añadir y seleccionar la operación "Añadir hito". Los hitos pueden ser movidos selecionando con el puntero sobre la tarea y arrastrando con el ratón el hito a la posición deseada.
+   * Mover tareas sin violar dependencias. Presionar con el ratón sobre el cuerpo de la tarea y sin soltar el ratón, arrastrar la tarea hacia la posición en la que se desea colocar. Si no se violan restricciones o dependencias el sistema actualiza las asignaciones de recursos diarias a la tarea y coloca la tarea en la fecha seleccionada.
+   * Asignar restricciones. Presionar sobre la tarea en cuestión y seleccionar la operación "Propiedades de la tarea". Aparecerá un *pop-up* con un campo modificable que es "Restricciones". Las restricciones pueden entrar en conflicto con las dependencias, por lo que será en cada pedido donde se indique si las dependencias tienen prioridad o no sobre las restricciones. Las que se pueden establecer son:
+
+      * *Tan pronto como sea posible*: Indica que la tarea debe comenzar tan pronto como sea posible.
+      * *No antes de*. Indica que la tarea no debe comenzar antes de una fecha.
+      * *Comenzar en fecha fija*. Indica que la tarea debe comenzar en fecha fija.
 
 
-Dentro da planificación do proxecto o usuario pode realizar as seguintes operacións:
+A mayores, dentro da perspectiva de planificación se ofrecen varias operaciones, que finalmente actuarán como opciones de visualización:
 
-   * Asignar dependencias. Para realizar dita operación é necesario premer co botón dereito e elixir "Engadir dependencia", arrastrar o punteiro do rato para a tarefa destinataria da dependencia.
-
-      * Para cambiar o tipo de dependencia, premer co botón dereito sobre a dependencia e elixir o tipo que se desexa asignar.
-
-   * Crear novo fito. Premer sobre a tarefa anterior ó fito que se desexa engadir e seleccionar a operación "Engadir fito". Os fitos poden ser movidos seleccionando co punteiro sobre a tarefa e arrastrando co rato o fito á posición desexada.
-   * Mover tarefas sen violar dependencias. Premer co rato sobre o corpo da tarefa e sen soltar o rato, arrastrar a tarefa cara a posición na que se desexa colocar. Se non se violan restricións ou dependencias o sistema actualiza as asignacións á tarefa e coloca a tarefa na data seleccionada.
-   * Asignar restricións. Premer sobre a tarefa en cuestión e seleccionar a operación "Propiedades da tarefa". Aparecerá un pop-up con un campo modificable que é "Restricións". As restricións poden entrar en conflito coas dependencias, polo que será en cada pedido onde se indique se as dependencias teñen prioridade ou non sobre as restricións. As que se poden establecer son:
-
-      * *Tan pronto como sexa posible*: Indica que a tarefa debe comezar tan pronto como sexa posible.
-      * *Non antes de*. Indica que a tarefa non debe comezar antes de unha data.
-      * *Comezar en data fixa*. Indica que a tarefa debe comezar en data fixa.
-
-
-A maiores, dentro a perspectiva de planificación ofrécense varias operacións, que finalmente actuarán como opcións de visualización:
-
-* Nivel de zoom: É posible seleccionar o nivel de zoom que lle interese ó usuario. Existen varios niveis de zoom: por ano, cuadrimestres, mensuais, semanais e diarios.
-* Filtros de procura: É posible filtrar tarefas en base a etiquetas ou criterios.
-* Camiño crítico. Utilizando o algoritmo de *Dijkstra* para cálculo de camiños en grafos implementouse o camiño crítico que se visualiza se se preme no botón "Camiño crítico" das opcións de visualización.
-* Amosar etiquetas: Permite amosar as etiquetas asignadas ás tarefas do proxecto en visualización e impresión.
-* Amosar recursos: Permite amosar os recursos asignados ás tarefas do proxecto en visualización e impresión.
-* Imprimir: Permite imprimir o diagrama de Gantt que se está visualizando no momento.
+* Nivel de zoom: Es posible seleccionar el nivel de zoom que le interese al usuario. Existen varios niveles de zoom: por año, cuatrimestres, mensuales, semanales y diarios.
+* Filtros de búsqueda: Es posible filtrar tareas en base a etiquetas o criterios.
+* Camino crítico. Utilizando el algoritmo de *Dijkstra* para cálculo de caminos en grafos se implementó el camino crítico que se visualiza si se presiona en el botón "Camino crítico" de las opciones de visualización.
+* Mostrar etiquetas: Permite mostrar las etiquetas asignadas a las tareas del proyecto en visualización e impresión.
+* Mostrar recursos: Permite mostrar los recursos asignados a las tareas del proyecto en visualización e impresión.
+* Imprimir: Permite imprimir el diagrama de Gantt que se está visualizando en el momento.
 
 Vista de carga de recursos
 --------------------------
-A vista de carga de recursos ofrece unha lista de recursos que contén unha lista de tarefas ou criterios que lle xeran carga de traballo. Cada tarefa ou criterio e amosado en modo diagrama de Gantt para dar visibilidade á data de comezo e final de dita carga. Segundo un recurso ten unha carga superior ou inferior ó 100% é amosada unha cor:
+La vista de carga de recursos ofrece una lista de recursos que contiene una lista de tareas o criterios que generan carga de trabajo. Cada tarea o criterio es mostrado en modo diagrama de Gantt para dar visibilidad a la fecha de comienzo y final de dicha carga. Según un recurso tiene una carga superior o inferior al 100% se muestra un color:
 
-* Cor verde: carga inferior ó 100%
-* Cor laranxa: carga do 100%
-* Cor vermella: carga superior ó 100%
+* Color verde: carga inferior al 100%
+* Color naranja: carga del 100%
+* Color roja: carga superior al 100%
 
 .. figure:: images/resource-load.png
    :scale: 35
 
    Vista de carga de recursos para un pedido concreto
 
-Se se coloca o rato sobre unha zona do diagrama de Gantt dun recurso amosarase o porcentaxe de carga do traballador nese momento dado.
+Si se coloca el ratón sobre una zona del diagrama de Gantt de un recurso se mostrará el porcentaje de carga del trabajador en ese momento dado.
 
 Vista de listado de pedidos
 ---------------------------
-A vista de listado de pedidos permite acceder á edición e borrado de pedidos e enténdese mellor co explicado co capítulo de "Pedidos".
+La vista de listado de pedidos permite acceder a la edición y borrado de pedidos. Ver el capítulo de "Pedidos".
 
 
 Vista de asignación avanzada
 ----------------------------
-A vista de asignación avanzada explícase en profundidade no capítulo de "Asignación de recursos".
+La vista de asignación avanzada se explica en profundidad en el capítulo de "Asignación de recursos".
 

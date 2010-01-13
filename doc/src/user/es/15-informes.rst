@@ -8,40 +8,40 @@ Informes
 Informes
 ========
 
-"Navalpro" está integrado con *JasperReports* para a xestión de informes o cal permite implantar diversos informes que analiza datos existentes na aplicación.
+"Navalpro" está integrado con *JasperReports* para la gestión de informes lo cual permite implantar diversos informes que analiza datos existentes en la aplicación.
 
-Os informes definidos son:
+Los informes definidos son:
 
-* Informe de pedidos. O que vai amosa o informe é unha fila por cada tarefa do pedido. Os campos que se amosan por cada tarefa son:
+* Informe de pedidos. Muestra una fila por cada tarea del pedido. Los campos que se muestran por cada tarea son:
 
    * Código
-   * Nome
-   * Data estimada inicio
-   * Data primeiro parte
-   * Data estimada fin
+   * Nombre
+   * Fecha estimada inicio
+   * Data primero parte
+   * Fecha estimada fin
    * Data último parte
    * Data *deadline* (se existe)
-   * Porcentaxe de Avance (o marcado como propaga).
-   * Estado actual: Finalizada, En Curso, Pendente, Bloqueada.
-   * Estado *deadline*: Superado, Non superado, En blanco (se non existe deadline).
+   * Porcentaje de Avance (el marcado como propaga).
+   * Estado actual: Finalizada, En Curso, Pendiente, Bloqueada.
+   * Estado *deadline*: Superado, No superado, En blanco (si no existe deadline).
 
-* Informe de partes de traballo. O informe amosa o resumo de horas traballadas segundo os partes de traballo.
-* Informe de horas traballadas por traballador ou grupo de traballadores. Informe que amosa o resumo por data e subtotal de horas traballadas por recurso existente na aplicación.
-* Informe de lista de avances dos proxectos. Informe que amosa unha fila por cada pedido filtrado de modo que se visualiza o avance dos distintos tipos de avances seleccionados.
-* Informe que lista as horas traballadas de un proxecto. Permite coñecer as:
+* Informe de partes de trabajo. El informe muestra el resumen de horas trabajadas según los partes de trabajo.
+* Informe de horas trabajadas por trabajador o grupo de trabajadores. Informe que muestra el resumen por fecha y subtotal de horas trabajadas por recurso existente en la aplicación.
+* Informe de lista de avances de los proyectos. Informe que muestra una fila por cada pedido filtrado de modo que se visualiza el avance de los distintos tipos de avances seleccionados.
+* Informe que lista las horas trabajadas de un proyecto. Permite conocer los siguientes parámetros:
 
    * Horas estimadas (HE)
-   * Horas planificadas totais (HP Total)
+   * Horas planificadas totales (HP Total)
    * Horas planificadas (HP)
-   * Horas reais (HR)
+   * Horas reales (HR)
    * Avance medido (AM)
    * Avance imputado (AI)
    * Avance planificado (AP)
-   * Desfase en Custo (CV)
+   * Desfase en Costo (CV)
    * Desfase en Planificación (SV)
-   * Ratio desfase en custo (CPI)
+   * Ratio desfase en costo (CPI)
    * Ratio desfase en planificación (SPI)
 
-* Informe de horas realizadas e imputadas por tipo de traballo.
+* Informe de horas realizadas e imputadas por tipo de trabajo.
 * Informe de horas realizadas e imputadas por etiquetas.
-* Informe de custos dos recursos asignados a tarefas en base ós tipos de horas.
+* Informe de costos de los recursos asignados la tareas en base a los tipos de horas.

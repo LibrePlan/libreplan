@@ -3,10 +3,10 @@ Pedidos e elementos de pedidos
 
 .. contents::
 
-Os pedidos son as entidades que describirán os traballos a realizar por parte dos usuarios que utilicen a aplicación.
-Cada pedido corresponderase cos proxectos que as empresas van a ofrecerlles ós seus clientes.
+Os pedidos son as entidades que describen os traballos a realizar por parte dos usuarios que utilicen a aplicación.
+Cada pedido correspóndese cos proxectos que as empresas van a ofrecerlles ós seus clientes.
 
-Un pedido está formado por unha ou varias liñas de pedido. Cada liña de pedido corresponderase coa estruturación que se desexe realizar sobre os traballos dentro dese pedido. As liñas de pedido organízanse de xeito xerárquico sen limitacións de profundidade. O feito de que as liñas de pedido se organicen de xeito xerárquico marcará o funcionamento de diversas características herdables, tal como as etiquetas.
+Un pedido está formado por unha ou varias liñas de pedido. Cada liña de pedido correspóndese coa estruturación que se desexe realizar sobre os traballos dentro dese pedido. As liñas de pedido organízanse de xeito xerárquico sen limitacións de profundidade. O feito de que as liñas de pedido se organicen de xeito xerárquico marca o funcionamento de diversas características herdables, tal como as etiquetas.
 
 Nas seguintes seccións describiranse as operacións que un usuario pode realizar cos pedidos e as liñas de pedidos.
 
@@ -24,9 +24,9 @@ Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa.
 * Descrición
 * Calendario asignado.
 * Autoxeneración de códigos. Campo para indicarlle ó sistema que autoxenere os códigos dos elementos de pedido e dos grupos de horas.
-* Preferencia entre dependencias e restricións. O usuario pode elixir dependencias ou restricións como prioritarios á hora de ser aplicados no caso en que entren en conflito.
+* Preferencia entre dependencias e restricións. O usuario pode elixir dependencias ou restricións como prioritarios á hora de ser aplicados cando entren en conflito.
 
-Sen embargo, o propio pedido está relacionado con outras entidades que finalmente o dotarán de unha maior riqueza:
+Sen embargo, o propio pedido está relacionado con outras entidades que finalmente o dotan de unha maior riqueza:
 
 * Horas asignadas ó pedido.
 * Avances imputados ó pedido.
@@ -101,7 +101,7 @@ Dende a edición de pedido é posible acceder ás seguintes pestanas:
 
    Criterios de pedido
 
-* Materiais. Pantalla na que se pode asignar o material dispoñible no sistema ó pedido. O material será seleccionable de entre as categorías de material que existen na aplicación. Os materiais son xestionados do seguinte modo:
+* Materiais. Pantalla na que se pode asignar o material dispoñible ó pedido. O material é seleccionable de entre as categorías de material que existen na aplicación. Os materiais son xestionados do seguinte modo:
 
    * O usuario selecciona a pestana que se amosa na zona inferior da pantalla chamada "Procura de materiais".
    * O usuario pode introducir un texto para a procura de materiais ou seleccionar as categorías para as que se desexa amosar materiais.
@@ -128,7 +128,7 @@ Dende a edición de pedido é posible acceder ás seguintes pestanas:
 Edición de elementos de pedido
 ===============================
 
-A edición de elementos de pedido realizarase dende a pestana de listado de elementos de pedido a partir da icona de edición. Se o usuario preme na icona de edición, o sistema amosa unha nova pantalla dende a que o usuario pode realizar o seguinte:
+A edición de elementos de pedido realizase dende a pestana de listado de elementos de pedido a partir da icona de edición. Se o usuario preme na icona de edición, o sistema amosa unha nova pantalla dende a que o usuario pode realizar o seguinte:
 
 * Editar a información do elemento de pedido.
 * Visualización de horas imputadas a elemento de pedido.
@@ -150,7 +150,7 @@ A edición de información de elemento de pedido inclúe a edición dos seguinte
 * Data de inicio do elemento de pedido.
 * Data estimada de fin do elemento de pedido.
 * Horas totais do elemento de pedido. Estas horas poden ser calculadas a partir dos grupos de horas engadidas ou introducidas directamente neste punto que se repartiran entre os grupos de horas, creando algún novo se as porcentaxes non coinciden coas porcentaxes iniciais.
-* **Grupos de horas**: É posible engadir un ou varios grupos de horas ó elemento de pedido. **O significado destes grupos de horas** é o establecemento dos requirimentos que se lle esixirán ós recursos que vaian a ser asignados para realizalas.
+* **Grupos de horas**: É posible engadir un ou varios grupos de horas ó elemento de pedido. **O significado destes grupos de horas** é o establecemento dos requirimentos que se lle esixen ós recursos que vaian a ser asignados para realizalas.
 * Criterios: É posible engadir criterios que se deben satisfacer para poder se asignado xenericamente para realizar dito elemento de pedido.
 
 .. figure:: images/order-element-edition.png
@@ -161,7 +161,7 @@ A edición de información de elemento de pedido inclúe a edición dos seguinte
 Visualización de horas imputadas a elementos de pedido
 ------------------------------------------------------
 
-A pestana de "Horas Navalpro" permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.
+A pestana de "Horas asignadas" permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.
 
 .. figure:: images/order-element-hours.png
    :scale: 50
@@ -170,7 +170,7 @@ A pestana de "Horas Navalpro" permite visualizar os partes de traballo asociados
 
 A pantalla está dividida en dúas partes:
 
-* Listado de partes de traballo: O usuario verá o listado de partes de traballo que están asociados ó elemento de pedido podendo comprobar a data e hora, recurso e número de horas adicadas á tarefa.
+* Listado de partes de traballo: O usuario ve o listado de partes de traballo que están asociados ó elemento de pedido podendo comprobar a data e hora, recurso e número de horas adicadas á tarefa.
 * Uso das horas presupostadas: O sistema calcula o total de horas adicadas á tarefa e as contrasta coas que estaban presupostadas.
 
 Xestión de avances dos elementos de pedido
@@ -181,21 +181,21 @@ A introdución de tipos de avances e xestión dos avances dos elementos de pedid
 Xestión de etiquetas do pedido
 ------------------------------
 
-As etiquetas, tal e como se describen no capítulo adicado ás mesmas, son entidades que permiten categorizar os elementos de pedido. Deste xeito, o usuario poderá agrupar información de planificación ou pedidos en base a elas.
+As etiquetas, tal e como se describen no capítulo adicado ás mesmas, son entidades que permiten categorizar os elementos de pedido. Deste xeito, o usuario pode agrupar información de planificación ou pedidos en base a elas.
 
-Un usuario pode asignar etiquetas directamente a un elemento de pedido ou ben a un ascendente na xerarquía dese elemento de pedido. A partir do momento no que se asignar unha etiqueta dun dos dous xeitos anteriores, tanto o elemento de pedido como a tarefa de planificación asociada estarán asociadas a dita etiqueta, sendo utilizadas para posteriores filtrados.
+Un usuario pode asignar etiquetas directamente a un elemento de pedido ou ben a un antecesor na xerarquía dese elemento de pedido. A partir do momento no que se asigna unha etiqueta dun dos dous xeitos anteriores, tanto o elemento de pedido como a tarefa de planificación asociada estan asociadas a dita etiqueta, sendo utilizadas para posteriores filtrados.
 
 .. figure:: images/order-element-tags.png
    :scale: 50
 
    Asignación de etiquetas para elementos de pedido
 
-Tal e como se pode ver na imaxe, dende a pestana de **etiquetas**, o usuario poderá realizar as seguintes operacións:
+Tal e como se pode ver na imaxe, dende a pestana de **etiquetas**, o usuario pode realizar as seguintes operacións:
 
-* Visualización das etiquetas que un elemento do pedido terá asociadas por herdanza dun elemento de pedido superior na xerarquía á que lle foi asignada directamente. A tarefa de planificación asociada a cada elemento de pedido terá as mesmas etiquetas asociadas.
+* Visualización das etiquetas que un elemento do pedido ten asociadas por herdanza dun elemento de pedido superior na xerarquía á que lle foi asignada directamente. A tarefa de planificación asociada a cada elemento de pedido ten as mesmas etiquetas asociadas.
 * Visualización das etiquetas que un elemento do pedido ten asociadas directamente a través do seguinte formulario de asignación de etiquetas inferior.
-* Asignar etiquetas existentes: Un usuario poderá asignar etiquetas existentes a partir da procura dunha entre as existentes no formulario inferior ó listado de etiquetas directas. Para buscar unha etiqueta chega con premer na icona coa lupa ou escribir o inicio da etiqueta na entrada de texto para que o sistema amose as opcións dispoñibles.
-* Crear e asignar etiquetas novas: Un usuario poderá crear novas etiquetas asociadas a un tipo de etiquetas existente dende dito formulario. Para realizar a operación é necesario que seleccione un tipo de etiqueta á que se asociará e se introduza o valor da etiqueta para o tipo seleccionado. Premendo en "Navalpro e Navalpro" o sistema xa a creará automáticamente e a asigna ó elemento de pedido.
+* Asignar etiquetas existentes: Un usuario pode asignar etiquetas a partir da procura dunha entre as existentes no formulario inferior ó listado de etiquetas directas. Para buscar unha etiqueta chega con premer na icona coa lupa ou escribir o inicio da etiqueta na entrada de texto para que o sistema amose as opcións dispoñibles.
+* Crear e asignar etiquetas novas: Un usuario pode crear novas etiquetas asociadas a un tipo de etiquetas existente dende dito formulario. Para realizar a operación é necesario que seleccione un tipo de etiqueta á que se asocia e se introduza o valor da etiqueta para o tipo seleccionado. Premendo en "Crear e asignar" o sistema xa a crea automáticamente e a asigna ó elemento de pedido.
 
 
 Xestionar os criterios esixidos polo elemento de pedido e os grupos de horas
@@ -208,7 +208,7 @@ Tanto un pedido como un elemento de pedido poden ter asignados os criterios que 
 
 A maiores do criterio esixido, é posible definir un ou varios grupos de horas que forman parte do elemento de pedido. Dependendo de se o elemento de pedido contén outros elementos de pedido como fillos ou é un nodo folla. No primeiro dos casos os datos de horas e grupos de horas son solo visualizables e no caso de nodos folla son editables. O funcionamento neste segundo caso é o seguinte:
 
-* Por defecto, o sistema crea un grupo de horas asociado ó elemento de pedido. Os datos modificables para un grupo de horas é:
+* Por defecto, o sistema crea un grupo de horas asociado ó elemento de pedido. Os datos modificables para un grupo de horas son:
 
    * Código do grupo de horas, se non é autoxenerado.
    * Tipo de criterio. O usuario pode elixir se desexa asignar un criterio de tipo máquina ou traballador.
@@ -240,7 +240,7 @@ O modo de traballar cos materiais é o seguinte:
 
 * O usuario selecciona a pestana de "Materiais" dun elemento de pedido.
 * O sistema amosa dúas subpestanas: "Materiais" e "Procura de materiais".
-* Se o elemento de pedido non tiña materiais asignados, a primeira pestana amosará un listado baleiro.
+* Se o elemento de pedido non tiña materiais asignados, a primeira pestana amosa un listado baleiro.
 * O usuario preme en "Procura de materiais" na zona inferior esquerda da ventana.
 * O sistema amosa o listado de categorías dispoñibles e os materiais asociados.
 
@@ -262,10 +262,10 @@ O modo de traballar cos materiais é o seguinte:
 
 * O usuario selecciona as unidades, estado e data dos materiais asignados.
 
-Para control posterior dos materiais é posible cambiar o estado dun grupo de unidades do material recibido. Para realizar esta operación o usuario debe:
+Para control posterior dos materiais é posible cambiar o estado dun grupo de unidades do material recibido. Esta operación realízase do seguinte modo:
 
-* Premer no botón "Dividir" que se amosa no listado de materiais á dereita de cada fila.
-* Seleccionar o número de unidades para os que desexa dividir a fila.
+* O usuario preme no botón "Dividir" que se amosa no listado de materiais á dereita de cada fila.
+* O usuario selecciona o número de unidades para os que desexa dividir a fila.
 * A aplicación amosa dúas filas co material dividido.
 * O usuario cambia o estado da fila de material que desexa.
 
@@ -297,5 +297,5 @@ Para xestionar os formulario de calidade:
 * O usuario preme no botón "Editar" do elemento de pedido.
 * A aplicación desprega as preguntas do formulario de calidade no listado inferior.
 * O usuario marca como acadadas as preguntas que son realizadas.
-   * Se o tipo de formulario de calidade é por porcentaxe, as preguntas serán contestadas por orde.
-   * Se o tipo de formulario de calidade é por elementos, as preguntas serán contestadas en calquera orde.
+   * Se o tipo de formulario de calidade é por porcentaxe, as preguntas son contestadas por orde.
+   * Se o tipo de formulario de calidade é por elementos, as preguntas son contestadas en calquera orde.

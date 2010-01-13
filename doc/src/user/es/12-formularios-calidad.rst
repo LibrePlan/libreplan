@@ -1,37 +1,37 @@
-Formularios de calidade
-#######################
+Formularios de calidad
+######################
 
-.. _calidade:
+.. _calidad:
 .. contents::
 
 
-Administración de formularios de calidade
+Administración de formularios de calidad
 =========================================
 
-Os formularios de calidade son unha lista de preguntas ou frases que indiquen tarefas ou procesos que deben estar completados para que unha tarefa se poida dar por completada por parte da empresa usuaria. Estes formularios están formados polos seguintes campos:
+Los formularios de calidad son una lista de preguntas o frases que indican tareas o procesos que deben estar completados para que una tarea se pueda dar por completada por parte de la empresa usuaria. Estos formularios están formados por los siguientes campos:
 
-* Nome
-* Descrición
-* Tipo de formulario de calidade. O tipo pode tomar dous valores:
+* Nombre
+* Descripción
+* Tipo de formulario de calidad. El tipo puede tomar dos valores:
 
-   * Por porcentaxe: Indica que as preguntas deben levar unha orde lóxica e que a contestación positiva das preguntas indica un avance respecto da tarefa. Por exemplo, que un proceso básico para unha tarefa implica que a tarefa está ó 15%. É necesario contestar unha pregunta previa para poder pasar á seguinte.
-   * Por item: Indica que as preguntas non teñen por que levar unha orde lóxica e en consecuencia poden ser contestadas segundo se desexe.
+   * Por porcentaje: Indica que las preguntas deben llevar un orden lógico y que la contestación positiva de las preguntas indica un avance respeto de la tarea. Por ejemplo, que un proceso básico para una tarea implica que la tarea está al 15%. Es necesario contestar una pregunta previa para poder pasar a la siguiente.
+   * Por item: Indica que las preguntas no tienen por que llevar un orden lógico y en consecuencia pueden ser contestadas según se desee.
 
-Para administrar estes formularios de calidade é necesario realizar os seguintes pasos:
+Para administrar estos formularios de calidad es necesario realizar los siguientes pasos:
 
-* Acceder no menú de "Administración" á operación "Formularios de calidade".
-* Premer en editar un existente ou no botón de "Crear".
-* A aplicación amosa un formulario con nome, descrición e tipo.
-* Seleccionar o tipo.
-* A aplicación amosa os campos permitidos para cada tipo:
+* Acceder en el menú de "Administración" a la operación "Formularios de calidad".
+* Presionar en editar uno existente o en el botón de "Crear".
+* La aplicación muestra un formulario con nombre, descripción y tipo.
+* Seleccionar el tipo.
+* La aplicación muestra los campos permitidos para cada tipo:
 
-   * Por porcentaxe: pregunta e porcentaxe.
+   * Por porcentaje: pregunta y porcentaje.
    * Por item: pregunta.
 
-* Premer en "Gardar" ou "Gardar e Continuar".
+* Presionar en "Guardar" o "Guardar y Continuar".
 
 .. figure:: images/quality.png
    :scale: 50
 
-   Pantalla de administración de materiais
+   Pantalla de administración de materiales
 

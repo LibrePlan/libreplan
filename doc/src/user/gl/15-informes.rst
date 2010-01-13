@@ -12,7 +12,7 @@ Informes
 
 Os informes definidos son:
 
-* Informe de pedidos. O que vai amosa o informe é unha fila por cada tarefa do pedido. Os campos que se amosan por cada tarefa son:
+* Informe de pedidos. Amosa unha fila por cada tarefa do pedido. Os campos que se amosan por cada tarefa son:
 
    * Código
    * Nome

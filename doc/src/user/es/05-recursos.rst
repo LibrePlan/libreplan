@@ -1,105 +1,102 @@
-Xestión de recursos
+Gestión de recursos
 ###################
 
 .. _recursos:
 .. contents::
 
-A aplicación xestiona dous tipos de recursos diferentes: recursos traballadores e recursos máquinas.
+La aplicación gestiona dos tipos de recursos diferentes: recursos trabajadores y recursos máquinas.
 
-Os recursos traballadores representan os traballadores das empresas. As características principais son:
+Los recursos trabajadores representan los trabajadores de las empresas. Las características principales son:
 
-* Satisfarán un ou varios criterios de tipo xenérico ou tipo traballador.
-* Son asignables específicamente a unha tarefa.
-* Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai o traballador.
-* Disporán de un calendario por defecto ou específico se así o decide o usuario.
+* Satisfacen uno o varios criterios de tipo genérico o tipo trabajador.
+* Son asignables específicamente a una tarea.
+* Son asignables como parte de la asignación genérica a una tarea que requiera un criterio de tipo recurso.
+* Dispondrán de un calendario por defecto o específico si así lo decide el usuario.
 
-Os recursos máquina representan as máquinas das empresas. As características principais son:
+Los recursos máquina representan las máquinas de las empresas. Las características principales son:
 
-* Satisfarán un ou varios criterios de tipo xenérico ou tipo máquina.
-* Son asignables específicamente a unha tarefa.
-* Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai a máquina.
-* Disporán de un calendario por defecto ou específico se así o decide o usuario.
-* Contará un unha pantalla de configuración na que se poderá establecer un valor *alfa* que represente a relación entre máquina e traballador.
+* Satisfacen uno o varios criterios de tipo genérico o tipo máquina.
+* Son asignables específicamente a una tarea.
+* Son asignables como parte de la asignación genérica a una tarea que requiera un criterio de tipo máquina.
+* Dispondrán de un calendario por defecto o específico si así lo decide el usuario.
+* Contará con una pantalla de configuración en la que se podrá establecer un valor *alfa* que represente la relación entre máquina y trabajador.
 
-  * O *alfa* representa canto tempo dun traballador é necesario para que a máquina funcione. Por exemplo, un alfa de 0.5 indica que de cada 8 horas de máquina son necesarias 4 de un traballador.
-  * É posible asignar un *alfa* de xeito específico a un traballador, é dicir, elíxese o traballador que estará ocupado esa porcentaxe do seu tempo coa máquina.
-  * Ou ben, é posible facer unha asignación xenérica en base a un criterio, de xeito que se asigna unha porcentaxe do uso a todos os criterios que satisfán ese criterio e teñen tempo dispoñible. O funcionamento da asignación xenérica será a mesma que a explicada para asignacións xenéricas a tarefas.
+  * El *alfa* representa cuanto tiempo de un trabajador es necesario para que la máquina funcione. Por ejemplo, un alfa de 0.5 indica que de cada 8 horas de máquina son necesarias 4 de un trabajador.
+  * Es posible asignar un *alfa* de manera específica a un trabajador, es decir, se elige el trabajador que estará ocupado ese porcentaje de su tiempo con la máquina.
+  * O bien, es posible hacer una asignación genérica en base a un criterio, de modo que se asigna un porcentaje del uso a todos los criterios que satisfacen ese criterio y tienen tiempo disponible. El funcionamiento de la asignación genérica es la misma que la explicada para asignaciones genéricas a tareas.
 
-O usuario poderá crear, editar e invalidar (nunca borrar definitivamente) traballadores da empresa dende a pestana de "Recursos". Dende dita pestana existen as seguintes operacións:
+El usuario puede crear, editar e invalidar (nunca borrar definitivamente) trabajadores de la empresa desde la pestaña de "Recursos". Desde dicha pestaña existen las siguientes operaciones:
 
-* Listado de traballadores: Os traballadores amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
-* Listado de máquinas: As máquinas amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
+* Listado de trabajadores: Los trabajadores se mostrarán listados y paginados, desde donde pueden gestionar sus datos.
+* Listado de máquinas: Las máquinas se mostrarán listados y paginados, desde donde pueden gestionar sus datos.
 
-Xestión de traballadores
+Gestión de trabajadores
 ========================
 
+La gestión de trabajadores se realiza desde la pestaña de "Recursos" y la operación de "Lista de trabajadores". Desde la lista de recursos es posible editar cada uno de los trabajadores presionando en el icono estándar de edición.
 
-A xestión de traballadores realizarase dende a pestana de "Recursos" e a operación de "Lista de traballadores". Dende a lista de recursos é posible editar cada un dos traballadores premendo na icona estándar de edición.
+Una vez en la edición de un recurso, el usuario puede acceder a las siguientes pestañas:
 
-Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestanas:
+1) Pestaña de datos de trabajador. Esta pestaña permite editar los datos básicos de identificación del trabajador.
 
-1) Pestana de datos de traballador. Esta pestana permitirá editar os datos básicos de identificación do traballador.
-
-   * Nome
-   * Apelidos
+   * Nombre
+   * Apellidos
    * DNI
 
 .. figure:: images/worker-personal-data.png
    :scale: 50
 
-   Edición de datos persoais de traballador
+   Edición de datos personales de trabajador
 
-2) Pestana de criterios. Dende este punto poderase configurar os criterios que un traballador satisfai. O usuario poderá asignar calquera valor de criterio de tipo traballador ou xenérico que así considere a un traballador. É importante, para que a aplicación sexa utilizada en todo o seu valor, que os traballadores satisfagan criterios. Para asignar criterios o usuario debe:
+2) Pestaña de criterios. Desde este punto se podrá configurar los criterios que un trabajador satisface. El usuario puede asignar cualquier valor de criterio de tipo trabajador o genérico que así considere a un trabajador. ES importante, para que la aplicación sea utilizada en todo su valor, que los trabajadores satisfagan criterios. Para asignar criterios el usuario debe:
 
-   i. Premer no botón "Engadir criterio".
+   i. Presionar en el botón "Añadir criterio".
 
-   ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
+   ii. Buscar el criterio que desea añadir y seleccionar lo que encaje con su búsqueda.
 
-   iii. Premer no botón de engadir.
+   iii. Presionar en el botón de añadir.
 
-   iv. Seleccionar data de inicio do criterio dende o momento que deba aplicarse.
+   iv. Seleccionar fecha de inicio del criterio desde el momento que se aplica.
 
-   v. Seleccionar a data de fin de aplicación do criterio ó recurso. Dita data non é obrigatoria indicando que o criterio é indefinido.
+   v. Seleccionar la fecha de fin de aplicación del criterio al recurso. Dicha fecha no es obligatoria indicando que el criterio es indefinido.
 
 .. figure:: images/worker-criterions.png
    :scale: 50
 
-   Asociación de criterios a traballador
+   Asociación de criterios a trabajador
 
-3)  Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para o recurso traballador. Cada traballador disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir dun existente.
+3)  Pestaña de calendario. Pestaña desde la que se puede configurar un calendario específico para el recurso trabajador. Cada trabajador dispone de un calendario por defecto asignado, sin embargo, es posible asignar un calendario específico para cada uno a partir de uno existente.
 
 .. figure:: images/worker-calendar.png
    :scale: 50
 
-   Pestana de calendario para un recurso
+   Pestaña de calendario para un recurso
 
-4)  Pestana de categoría de custo. Pestana dende a que se pode configurar a categoría de custo que satisfai un recurso nun período dado. Estes datos son utilizados para posteriormente calcular os custos asociados ó traballador nun proxecto.
+4)  Pestaña de categoría de coste. Pestaña desde la que se puede configurar la categoría de coste que satisface un recurso en un período dado. Estos datos son utilizados para posteriormente calcular los costes asociados al trabajador en un proyecto.
 
 .. figure:: images/worker-costcategory.png
    :scale: 50
 
-   Pestana de categoría de custo para recurso
+   Pestaña de categoría de coste para recurso
 
-A asignación de recursos explícase na sección de asignación de recursos.
+La asignación de recursos se explica en la sección de asignación de recursos.
 
-
-Xestión de máquinas
+Gestión de máquinas
 ===================
 
-As máquinas son recursos a todos os efectos, polo cal, tal e como sucede cos traballadores, as máquinas serán administrables e asignables a tarefas. A asignación de recursos tratarase na sección de asignación. Neste punto explicaranse as características específicas das máquinas.
+Las máquinas son recursos a todos los efectos, por lo cual, tal y como sucede con los trabajadores, las máquinas son administrables y asignables a tareas. La asignación de recursos se tratará en la sección de asignación. En este punto se explicarán las características específicas de las máquinas.
 
-As máquinas son administradas dende a entrada de menú "Recursos". En dita sección existe unha operación chamada "Listado de máquinas" que permitirá a visualización das máquinas que dispoñen nunha empresa. A partir deste listado poderase editar ou borrar unha máquina.
+Las máquinas son administradas desde la entrada de menú "Recursos". En dicha sección existe una operación llamada "Listado de máquinas" que permite la visualización de las máquinas que disponen en una empresa. A partir de este listado se podrá editar o borrar una máquina.
 
+En la edición de una máquina el sistema muestra una serie de pestañas desde las cuáles se permite administrar diferentes datos:
 
-Na edición dunha máquina o sistema amosará unha serie de pestanas dende as cales se permitirá administrar diferentes datos:
+1) Pestaña de datos de la máquina. Pestaña para la edición de datos identificativos de las máquinas. Los datos modificables en esta pestaña son:
 
-1) Pestana de datos da máquina. Pestana para a edición de datos identificativos das máquinas. Os datos modificables nesta pestana son:
+   i Nombre.
 
-   i Nome.
+   ii Código de la máquina.
 
-   ii Código da máquina.
-
-   iii Descrición da máquina.
+   iii Descripción de la máquina.
 
 
 .. figure:: images/machine-data.png
@@ -107,66 +104,65 @@ Na edición dunha máquina o sistema amosará unha serie de pestanas dende as ca
 
    Edición de datos de máquina
 
-2) Pestana de criterios. Tal e como se comentou na anterior sección de recursos traballadores, esta será a pestana na que se poden engadir criterios que satisfán as diversas máquinas do sistema. Os criterios que serán asignables ás máquinas serán os de criterios de tipo máquina ou xenéricos. Non se poderán asignar criterios de traballadores. Para asignar criterios o usuario deberá:
+2) Pestaña de criterios. Tal y como se comentó en la anterior sección de recursos trabajadores, esta es la pestaña en la que se pueden añadir criterios que satisfacen las diversas máquinas del sistema. Los criterios que son asignables a las máquinas son los de criterios de tipo máquina o genéricos. No se pueden asignar criterios de trabajadores. Para asignar criterios, el usuario debe:
 
-   i. Premer no botón "Engadir criterio".
+   i. Presionar en el botón "Añadir criterio".
 
-   ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
+   ii. Buscar el criterio que desea añadir y seleccionar lo que encaje con su búsqueda.
 
-   iii. Seleccionar data de inicio do criterio dende o momento que deba aplicarse.
+   iii. Seleccionar fecha de inicio del criterio desde el momento que deba aplicarse.
 
-   iv. Seleccionar a data de fin de aplicación do criterio ó recurso. Dita data non é obrigatoria indicando que o criterio é indefinido.
+   iv. Seleccionar la fecha de fin de aplicación del criterio al recurso. Dicha fecha no es obligatoria indicando que el criterio es indefinido.
 
-   v. Premer no botón de "Gardar e Continuar".
+   v. Presionar en el botón de "Guardar y Continuar".
 
 .. figure:: images/machine-criterions.png
    :scale: 50
 
    Asignación de criterios a máquinas
 
-3) Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para o recurso máquina. Cada traballador disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir dun existente.
+3) Pestaña de calendario. Pestaña desde la que se puede configurar un calendario específico para el recurso máquina. Cada trabajador dispone de un calendario por defecto asignado, sin embargo, es posible asignar un calendario específico para cada uno a partir de un existente.
 
 .. figure:: images/machine-calendar.png
    :scale: 50
 
    Asignación de calendario a máquina
 
-4) Pestana de configuración de máquinas: Dende esta pestana será posible configurar a relación das máquinas cos recursos traballadores existentes. Unha máquina disporá de un alfa que indicará a relación entre a máquina e os recursos implicados, tal e como xa se comentou, un alfa de 0.5 indicará que se consumirá traballo de 0.5 persoas para cada xornada completa de máquina. O sistema, a partir dun alfa, crea automaticamente asignacións á traballadores que estean dalgún xeito relacionado coa máquina unha vez se asigna unha máquina a unha tarefa. A forma de relacionar un traballador con unha máquina pódese facer de dous xeitos:
+4) Pestaña de configuración de máquinas: Desde esta pestaña es posible configurar la relación de las máquinas con los recursos trabajadores existentes. Una máquina dispone de un alfa que indica la relación entre la máquina y los recursos implicados, tal y como ya se comentó, un alfa de 0.5 indica que se consume trabajo de 0.5 personas para cada jornada completa de máquina. El sistema, a partir de un alfa, crea automáticamente asignaciones a los trabajadores que estén de alguna manera relacionados con la máquina una vez se asigna una máquina a una tarea. La forma de relacionar un trabajador con una máquina se puede hacer de dos maneras:
 
-   i Asignando especificamente un rango de datas nas que o traballador se desexa asignar a unha máquina. Será unha asignación específica de modo que o sistema asignará automaticamente horas ó traballador cando se planifique a máquina.
+   i Asignando específicamente un rango de fechas en las que el trabajador se desea asignar a una máquina. Es una asignación específica de modo que el sistema asigna automáticamente horas al trabajador cuando se planifique la máquina.
 
-   ii Asignando especificamente criterios que se desexa satisfagan os traballadores que sexan asignados ás máquinas. Deste xeito farase unha asignación xenérica ós traballadores que satisfán os criterios.
+   ii Asignando específicamente criterios que se desea satisfagan los trabajadores que sean asignados a las máquinas. De este modo se hará una asignación genérica a los trabajadores que satisfacen los criterios.
 
 .. figure:: images/machine-configuration.png
    :scale: 50
 
    Configuración de máquina
 
-5) Pestana de categoría de custo. Pestana dende a que se pode configurar a categoría de custo que satisfai unha máquina nun período dado. Estes datos son utilizados para posteriormente calcular os custos asociados ó traballador nun proxecto.
+5) Pestaña de categoría de coste. Pestaña desde la que se puede configurar la categoría de coste que satisface una máquina en un período dado. Estos datos son utilizados para posteriormente calcular los costes asociados al trabajador en un proyecto.
 
 .. figure:: images/machine-costcategory.png
    :scale: 50
 
-   Asignación de categoría de custo a máquina
+   Asignación de categoría de coste a máquina
 
-Grupos de traballadores virtuais
+Grupos de trabajadores virtuales
 ================================
 
-A aplicación permite a creación de recursos no sistema os cales non son traballadores reais, senón que son persoal simulado que permite aumentar a capacidade produtiva nun momento determinado segundo as configuracións que se definan do seu calendario.
+La aplicación permite la creación de recursos en el sistema, los cuales no son trabajadores reales, sino que son personal simulado  que permite aumentar la capacidad productiva en un momento determinado según las configuraciones que se definan de su calendario.
 
-Mediante os grupos de traballadores virtuais será posible comprobar como se vería afectada a planificación dos proxectos contratando e asignando persoal que satisfaga os criterios que se definan, axudando deste modo no proceso de toma de decisións
+Mediante los grupos de trabajadores virtuales es posible comprobar cómo se vería afectada la planificación de los proyectos, contratando y asignando personal que satisfaga los criterios que se definan, ayudando de este modo en el proceso de toma de decisiones.
 
-As pestanas das que consta o formulario de creación de grupos de traballadores virtuais son as mesmas que as que permiten configurar os traballadores, e dicir:
+Las pestañas de las que consta el formulario de creación de grupos de trabajadores virtuales son las mismas que las que permiten configurar los trabajadores, y decir:
 
-   * Datos xerais
+   * Datos generales
    * Criterios asignados
    * Calendarios
    * Horas asociadas
 
-A diferencia con respecto ós traballadores, e que nos grupos de traballadores virtuais especifícase un nome para o grupo e unha cantidade que se corresponderá co número de persoas reais que forman este grupo. Adicionalmente existe un campo de observacións no que se pode aportar información adicional como por exemplo para que proxecto estaría prevista a contratación do equivalente do grupo de recursos virtuais, etc.
+La diferencia con respeto a los trabajadores, es que en los grupos de trabajadores virtuales se especifica un nombre para el grupo y una cantidad que se corresponde con el número de personas reales que forman este grupo. Adicionalmente existe un campo de observaciones en el que se puede aportar información adicional como, por ejemplo, para que proyecto estaría prevista la contratación del equivalente del grupo de recursos virtuales, etc.
 
 .. figure:: images/virtual-resources.png
    :scale: 50
 
-   Recursos virtuais
-
+   Recursos virtuales

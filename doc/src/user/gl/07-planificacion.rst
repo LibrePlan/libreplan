@@ -8,7 +8,7 @@ Planificación de tarefas
 Planificación de tarefas
 ========================
 
-A planificación en "Navalpro" é un proceso que se describe ó longo de todos os capítulos do documento de usuario, entre os cales destacan os capítulos de pedidos e asignación de recursos. Neste capítulo trataranse as operacións básicas de planificación, unha vez o pedido está correctamente configurado e á interacción cos diagramas de Gantt.
+A planificación en "Navalpro" é un proceso que se describe ó longo de todos os capítulos do documento de usuario, entre os cales destacan os capítulos de pedidos e asignación de recursos. Neste capítulo trátanse as operacións básicas de planificación, unha vez o pedido está correctamente configurado e á interacción cos diagramas de Gantt.
 
 .. figure:: images/planning-view.png
    :scale: 35
@@ -36,18 +36,17 @@ A perspectiva de planificación combina tres vistas diferentes:
 
 * Vista de gráfico e indicadores do valor gañado. Visible dende a pestana de "Valor Gañado". Gráfico que se xera en base á técnica do valor gañado e os indicadores calculados cada un dos días de traballo do proxecto. Os indicadores calculados son:
 
-   * BCWS: función acumulativa no tempo do número de horas planificadas ata unha data. No inicio planificado da tarefa será 0 e o final será o total de horas planificadas. Coma toda gráfica acumulativa sempre será crecente. A función para unha tarefa terá a suma das asignacións de día ata o día de calculo. Esta función ten valores para tódolos momentos no tempo sempre que teñamos asignación de recursos.
+   * BCWS: función acumulativa no tempo do número de horas planificadas ata unha data. No inicio planificado da tarefa é 0 e o final é o total de horas planificadas. Coma toda gráfica acumulativa, esta sempre é crecente. A función para unha tarefa é a suma das asignacións de día ata o día de cálculo. Esta función ten valores para tódolos momentos no tempo sempre que teñamos asignación de recursos.
    * ACWP: función acumulativa no tempo das horas imputadas nos parte de traballo ata unha data. Esta función so terá valores iguais a 0 antes da data do primeiro parte de traballo da tarefa e irá incrementado o seu valor a medida que avanza o tempo e se incorporan horas de partes de traballo. Non terá valor despois da data do último parte de traballo.
-   * BCWP: función acumulativa no tempo que incorpora o valor resultante de multiplicar o avance das tarefas pola cantidade de traballo que se estimaba que levaría a tarefa. Esta función ten valores incrementales a medida que se incrementa o tempo e temos valores de avance que se van incrementando. O avance se multiplica polo total de horas estimadas de cada unha da tarefa. E o valor de BCWP é a suma destes valores para as tarefas que es está a calcular. Un avance se suma no instante de tempo no se configurou.
+   * BCWP: función acumulativa no tempo que incorpora o valor resultante de multiplicar o avance das tarefas pola cantidade de traballo que se estimaba que levaría a tarefa. Esta función ten valores incrementales a medida que se incrementa o tempo e temos valores de avance que se van incrementando. O avance se multiplica polo total de horas estimadas de cada unha das tarefas. E o valor de BCWP é a suma destes valores para as tarefas que es está a calcular. Un avance se suma no instante de tempo no que se configurou.
    * CV: Variación en custo CV = BCWP - ACWP
-   * SV: schedule variance (desviación en planificación) SV = BCWP - BCWS
-   * BAC: total custo planificado BAC = max (BCWS)
-   * EAC: estimación de custo total actual EAC = (ACWP/ BCWP) * BAC
-   * VAC: desviación ó custo final VAC = BAC - EAC
-   * ETC: estimado do custo pendente ETC = EAC - ACWP
-   * CPI: índice de eficiencia de custo CPI = BCWP / ACWP
-   * SPI: índice de eficiencia da planificación SPI = BCWP / BCWS
-
+   * SV: Desviación en planificación SV = BCWP - BCWS
+   * BAC: Total custo planificado BAC = max (BCWS)
+   * EAC: Estimación de custo total actual EAC = (ACWP/ BCWP) * BAC
+   * VAC: Desviación ó custo final VAC = BAC - EAC
+   * ETC: Estimado do custo pendente ETC = EAC - ACWP
+   * CPI: Índice de eficiencia de custo CPI = BCWP / ACWP
+   * SPI: Índice de eficiencia da planificación SPI = BCWP / BCWS
 
 Dentro da planificación do proxecto o usuario pode realizar as seguintes operacións:
 
@@ -64,7 +63,7 @@ Dentro da planificación do proxecto o usuario pode realizar as seguintes operac
       * *Comezar en data fixa*. Indica que a tarefa debe comezar en data fixa.
 
 
-A maiores, dentro a perspectiva de planificación ofrécense varias operacións, que finalmente actuarán como opcións de visualización:
+A maiores, dentro da perspectiva de planificación ofrécense varias operacións, que finalmente actuarán como opcións de visualización:
 
 * Nivel de zoom: É posible seleccionar o nivel de zoom que lle interese ó usuario. Existen varios niveis de zoom: por ano, cuadrimestres, mensuais, semanais e diarios.
 * Filtros de procura: É posible filtrar tarefas en base a etiquetas ou criterios.
@@ -75,7 +74,7 @@ A maiores, dentro a perspectiva de planificación ofrécense varias operacións,
 
 Vista de carga de recursos
 --------------------------
-A vista de carga de recursos ofrece unha lista de recursos que contén unha lista de tarefas ou criterios que lle xeran carga de traballo. Cada tarefa ou criterio e amosado en modo diagrama de Gantt para dar visibilidade á data de comezo e final de dita carga. Segundo un recurso ten unha carga superior ou inferior ó 100% é amosada unha cor:
+A vista de carga de recursos ofrece unha lista de recursos que contén unha lista de tarefas ou criterios que lle xeran carga de traballo. Cada tarefa ou criterio é amosado en modo diagrama de Gantt para dar visibilidade á data de comezo e final de dita carga. Segundo un recurso ten unha carga superior ou inferior ó 100% é amosada unha cor:
 
 * Cor verde: carga inferior ó 100%
 * Cor laranxa: carga do 100%
@@ -90,7 +89,7 @@ Se se coloca o rato sobre unha zona do diagrama de Gantt dun recurso amosarase o
 
 Vista de listado de pedidos
 ---------------------------
-A vista de listado de pedidos permite acceder á edición e borrado de pedidos e enténdese mellor co explicado co capítulo de "Pedidos".
+A vista de listado de pedidos permite acceder á edición e borrado de pedidos. Ver o capítulo de "Pedidos".
 
 
 Vista de asignación avanzada

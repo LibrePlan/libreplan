@@ -1,5 +1,5 @@
 Materiais
-##########
+#########
 .. _materiales:
 .. contents::
 
@@ -30,7 +30,7 @@ Para administrar materiais:
 * O usuario selecciona a categoría para a que desexa incluír materiais e preme no botón "Engadir" na zona dereita de "Materiais".
 * A aplicación engade unha nova fila baleira con campos para introducir os datos do material:
 
-   * Código: Código do tipo de material (pode ser o código externo).
+   * Código: Código do tipo de material (pode ser o código externo provinte dun ERP).
    * Descrición: Descrición do material.
    * Prezo da unidade: Prezo unitario de cada elemento de material.
    * Unidade: Unidade na que se desexa medir cada unidade de material.

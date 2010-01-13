@@ -3,40 +3,40 @@ Etiquetas
 
 .. contents::
 
-As etiquetas son entidades que se utilizan na aplicación para a organización conceptualmente de tarefas ou elementos de pedido.
+Las etiquetas son entidades que se utilizan en la aplicación para la organización conceptualmente de tareas o elementos de pedido.
 
-As etiquetas categorizanse segundo os tipos de etiquetas. Unha etiqueta só pertencerá a un tipo de etiqueta, sen embargo, nada impide crear tantas etiquetas similares que pertenzan a tipos de etiquetas diferentes.
+Las etiquetas se categorizan según los tipos de etiquetas. Una etiqueta sólo pertenece a un tipo de etiqueta, sin embargo, nada impide crear tantas etiquetas similares que pertenezcan a tipos de etiquetas diferentes.
 
 Tipos de etiquetas
 ==================
 
-Os tipos de etiquetas utilízanse para agrupar tipoloxías de etiquetas que os usuarios desexen xestionar na aplicación. Exemplos de tipos de etiquetas posibles:
+Los tipos de etiquetas se utilizan para agrupar tipologías de etiquetas que los usuarios deseen gestionar en la aplicación. Ejemplos de tipos de etiquetas posibles:
 
-i. Cliente: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base ó cliente que os solicitou.
-ii. Zona: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base á zona na que se realizan.
+i. Cliente: El usuario podría estar interesado en etiquetar las tareas, pedidos o elementos de pedido en base al cliente que los solicitó.
+ii. Zona: El usuario podría estar interesado en etiquetar las tareas, pedidos o elementos de pedido en base a la zona en la que se realizan.
 
-A administración de tipos de etiquetas xestionarase dende a opción de menú de "Administración". Será dende esta opción, dende a que o usuario poderá editar tipos de etiqueta, crear novos tipos de etiqueta ou engadir etiquetas a tipos de etiquetas. Dende dita operación poderá accederse ó listado de etiquetas.
+La administración de tipos de etiquetas se gestionará desde la opción de menú de "Administración". Es desde esta opción, desde la que el usuario puede editar tipos de etiqueta, crear nuevos tipos de etiqueta o añadir etiquetas a tipos de etiquetas. Desde dicha operación puede accederse al listado de etiquetas.
 
 .. figure:: images/tag-types-list.png
    :scale: 50
 
    Lista de tipos de etiquetas
 
-Dende o listado de tipos de etiquetas será posible:
+Desde el listado de tipos de etiquetas es posible:
 
-i. Crear novo tipo de etiquetas.
+i. Crear nuevo tipo de etiquetas.
 ii. Editar un tipo de etiquetas existente.
-iii. Borrar un tipo de etiquetas con todas as súas etiquetas.
+iii. Borrar un tipo de etiquetas con todas sus etiquetas.
 
-Tanto a edición como a creación de etiquetas comparten formulario. Dende dito formulario o usuario poderá, asignar un nome ó tipo de etiquetas, crear ou borrar etiquetas e almacenar os cambios. Para realizar isto:
+Tanto la edición como la creación de etiquetas comparten formulario. Desde dicho formulario el usuario puede asignar un nombre al tipo de etiquetas, crear o borrar etiquetas y almacenar los cambios. Para realizar esto:
 
-i. O usuario debería seleccionar unha etiqueta a editar ou premer no botón de creación de unha nova.
-ii. O sistema amosará un formulario con unha entrada de texto para o nome e un listado de entradas de texto coas etiquetas existentes e asignadas.
-iii. Se o usuario desexa engadir unha nova etiqueta debe premer no botón "Navalpro".
-iv. O sistema amosará unha nova fila ó listado con unha entrada de texto baleira que o usuario debe editar.
-v. O usuario introduce un nome para a etiqueta.
-vi. O sistema engade o nome ó listado.
-vii. O usuario preme en "Gardar" para gardar e saír ou "Gardar e Continuar" para gardar e continuar editando o formulario.
+i. El usuario debería seleccionar una etiqueta a editar o presionar en el botón de creación de una nueva.
+ii. El sistema muestra un formulario con una entrada de texto para el nombre y un listado de entradas de texto con las etiquetas existentes y asignadas.
+iii. Si el usuario desea añadir una nueva etiqueta debe presionar en el botón "Etiqueta nueva".
+iv. El sistema muestra una nueva fila al listado con una entrada de texto vacía que el usuario debe editar.
+v. El usuario introduce un nombre para la etiqueta.
+vi. El sistema añade el nombre al listado.
+vii. El usuario presiona en "Guardar" para guardar y salir o "Guardar y Continuar" para guardar y continuar editando el formulario.
 
 .. figure:: images/tag-types-edition.png
    :scale: 50
@@ -46,10 +46,11 @@ vii. O usuario preme en "Gardar" para gardar e saír ou "Gardar e Continuar" par
 Etiquetas
 =========
 
-As etiquetas son entidades que pertencen a un tipo de etiqueta. Estas entidades poden ser asignadas a elementos de pedido. O feito de asignar unha etiqueta a un elemento de pedido fará que todos os elementos descendentes dese elemento herden a etiqueta á que pertencen. O feito de contar con unha etiqueta asignada permitirá que eses elementos saian filtrados nos puntos nos que se ofrecerá a posibilidade de procura:
+Las etiquetas son entidades que pertenecen a un tipo de etiqueta. Estas entidades pueden ser asignadas a elementos de pedido. El hecho de asignar una etiqueta a un elemento de pedido hace que todos los elementos descendientes de dicho elemento hereden la etiqueta a la que pertenecen. El hecho de contar con una etiqueta asignada permite que esos elementos salgan filtrados en los puntos en los que se ofrece la posibilidad de búsqueda:
 
-i. Procura de tarefas no diagrama de Gantt.
-ii. Procura de elementos de pedido no listado de elementos de pedido.
+i. Búsqueda de tareas en el diagrama de Gantt.
+ii. Búsqueda de elementos de pedido en el listado de elementos de pedido.
 iii. Filtrados para informes.
 
-A asignación de etiquetas a elementos de pedido será cuberta no capítulo de pedidos.
+La asignación de etiquetas a elementos de pedido es cubierta en el capítulo de pedidos.
+

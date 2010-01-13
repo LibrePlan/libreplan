@@ -1,75 +1,74 @@
-Partes de traballo
-##################
+Partes de trabajo
+#################
 
 .. contents::
 
-Os partes de traballo permiten o seguimento das horas que dedican os recursos existentes ás tarefas ás que están planificados.
+Los partes de trabajo permiten el seguimiento de las horas que dedican los recursos existentes a las tareas en las que están planificados.
 
-A aplicación permite configurar novos formularios de introdución de horas dedicadas, especificando os campos que se desexa que figuren nestes modelos, así como incorporar os partes das tarefas que son realizadas polos traballadores e facer un seguimento dos mesmos.
+La aplicación permite configurar nuevos formularios de introducción de horas dedicadas, especificando los campos que se desea que figuren en estos modelos, así como incorporar los partes de las tareas que son realizadas por los trabajadores y hacer un seguimiento de los mismos.
 
-Antes de poder engadir entradas con dedicación dos recursos, será necesario especificar como mínimo un tipo de parte de traballo o cal define a estrutura que terán todas as filas que se engadan no mesmo. Poderán crearse tantos tipos de partes de traballo no sistema como sexa necesario.
+Antes de poder añadir entradas con dedicación de los recursos, es necesario especificar como mínimo un tipo de parte de trabajo que defina la estructura que tienen todas las filas que se añadan en él. Pueden crearse tantos tipos de partes de trabajo en el sistema como sea necesario.
 
-Tipos de partes de traballo
-===========================
+Tipos de partes de trabajo
+==========================
 
-Un parte de traballo constará dunha serie de campos comúns para todo o parte, e un conxunto de liñas de parte de traballo con valores específicos para os campos definidos en cada unha das filas. Por exemplo, o recurso e a tarefa son comúns para todos os partes, sen embargo, pode haber campos novos como "incidencias", que non se desexen en todos os tipos.
+Un parte de trabajo consta de una serie de campos comunes para todo el parte, y un conjunto de líneas de parte de trabajo con valores específicos para los campos definidos en cada una de las filas. Por ejemplo, el recurso y la tarea son comunes para todos los partes, sin embargo, puede haber campos nuevos como "incidencias", que no se deseen en todos los tipos.
 
-É posible configurar diferentes tipos de partes de traballo para que unha empresa diseñe os seus partes dependendo das necesidades para cada caso:
+Es posible configurar diferentes tipos de partes de trabajo para que una empresa diseñe sus partes dependiendo de las necesidades para cada caso:
 
 .. figure:: images/work-report-types.png
    :scale: 40
 
-   Tipos de partes de traballo
+   Tipos de partes de trabajo
 
-A administración dos tipos de partes de traballo permitirá configurar este tipo de características, así como engadir novos campos de texto ou de etiquetas opcionais. Dentro da primeira das pestanas da edición dos tipos de partes de traballo pódese configurar o tipo para os atributos obrigatorios (se son globais para todo o parte, ou se especifican a nivel de liña), e engadir novos campos opcionais.
+La administración de los tipos de partes de trabajo permite configurar este tipo de características, así como añadir nuevos campos de texto o de etiquetas opcionales. Dentro de la primera de las pestañas de edición de los tipos de partes de trabajo se puede configurar el tipo para los atributos obligatorios (si son globales para todo el parte, o se especifican a nivel de línea), y añadir nuevos campos opcionales.
 
-Os campos obrigatorios que deberán figurar en todos os partes de traballo son os seguintes:
+Los campos obligatorios que deben figurar en todos los partes de trabajo son los siguientes:
 
-* Nome e código: Campos identificativos do nome do tipo de parte de traballo e código do mesmo.
-* Data: Campo de data á que corresponde o parte
-* Recurso: Traballador ou máquina que figura no parte ou liña de parte de traballo.
-* Elemento de pedido: Código do elemento de pedido no que imputar as horas do traballo realizado
-* Xestión de horas: Determina a política de imputación de horas a levar a cabo, a cal pode ser:
-   * Por número de horas asignadas
-   * Por horas de comezo e fin
-   * Por número de horas e rango de comezo e fin (permite diverxencia e ten prioridade o número de horas)
+* Nombre y código: Campos identificativos del nombre del tipo de parte de trabajo y código del mismo.
+* Fecha: Campo de fecha a la que corresponde el parte.
+* Recurso: Trabajador o máquina que figura en el parte o línea de parte de trabajo.
+* Elemento de pedido: Código del elemento de pedido al que imputar las horas del trabajo realizado.
+* Gestión de horas: Determina la política de imputación de horas a llevar a cabo, la cual puede ser:
+   * Por número de horas asignadas.
+   * Por horas de comienzo y fin.
+   * Por número de horas y rango de comienzo y fin (permite divergencia y tiene prioridad el número de horas).
 
-Existe a posibilidade de engadir novos campos ós partes:
+Existe la posibilidad de añadir nuevos campos a los partes:
 
-* Tipo de etiqueta: É posible solicitar que se indique unha etiqueta do sistema á hora de encher o parte de traballo. Por exemplo, o tipo de etiqueta cliente se desexemos que en cada parte se introduza o cliente para o que se traballou.
-* Campos libres: Campos de tipo entrada de texto libre que se poden introducir no parte de traballo.
-
-.. figure:: images/work-report-type.png
-   :scale: 50
-
-   Creación de tipo de parte de traballo con campos personalizados
-
-
-Para os campos de data, recurso e elemento de pedido, poderá configurarse se figurarán na cabeceira do parte e polo tanto serán globais ó mesmo, ou se serán engadidos en cada unha das filas.
-
-Finalmente, poderán engadirse novos campos de texto adicionais ou etiquetas das existentes no sistema, tanto para a cabeceira dos partes de traballo como en cada unha das liñas, mediante os campos de Texto Complementario e Tipos de etiquetas, respectivamente. Na pestana de Xestión de campos adicionais e etiquetas, o usuario poderá configurar a orde na que introducir ditos elementos nos partes de traballo.
-
-Listado de partes de traballo
-=============================
-
-Unha vez configurados os formatos dos partes a incorporar ó sistema, pódese introducir os datos no formulario creado segundo a estrutura definida no tipo de parte de traballo correspondente. Para facelo, será necesario seguir os seguintes pasos:
-
-* Premer no botón 'Novo parte de traballo' asociado o tipo de parte que se desexe do listado de tipos de partes de traballo.
-* A aplicación amosará o parte construído a partir da configuración dada para o tipo. Ver seguinte imaxe.
+* Tipo de etiqueta: Es posible solicitar que se indique una etiqueta del sistema a la hora de rellenar el parte de trabajo. Por ejemplo, el tipo de etiqueta cliente si deseamos que en cada parte se introduzca el cliente para el cual se trabajó.
+* Campos libres: Campos de tipo entrada de texto libre que se pueden introducir en el parte de trabajo.
 
 .. figure:: images/work-report-type.png
    :scale: 50
 
-   Estrutura do parte de traballo a partir do tipo
+   Creación de tipo de parte de trabajo con campos personalizados
 
-* Seleccionar cada un dos campos que se amosa para o parte:
 
-   * Recurso: Se se elixiu a cabeceira, só se indicará o recurso unha vez. En caso contrario, para cada liña do parte será necesario elixir un recurso.
-   * Código da tarefa: Código da tarefa á que se está asignando o parte de traballo. Do mesmo xeito que o resto de campos, se o campo é de cabeceira introducirase o valor unha vez ou tantas veces como liñas do parte.
-   * Data: Data do parte ou de cada liña dependendo de se a configuración é por cabeceira ou liña.
-   * Número de horas. O número de horas de traballo do proxecto.
-   * Horas de inicio e fin. Horas de comezo e fin de traballo para calcular as horas de traballo definitivas. Este campo só aparece nos casos de políticas de imputación de horas de "Por horas de comezo e fin" e "Por número de horas e rango de comezo e fin".
-   * Tipo de horas: Permitirá elixir entre tipos de horas "Normais", "Extraordinarias", etc.
+Para los campos de fecha, recurso y elemento de pedido, pueden configurarse se figuran en la cabecera del parte y por lo tanto son globales al mismo, o si son añadidos en cada una de las filas.
 
-* Premer en "Gardar" ou "Gardar e Continuar".
+Finalmente, pueden añadirse nuevos campos de texto adicionales o etiquetas a las existentes en el sistema, tanto para la cabecera de los partes de trabajo como en cada una de las líneas, mediante los campos de "Texto Complementario" y "Tipos de Etiquetas", respectivamente. En la pestaña de "Gestión de campos adicionales y etiquetas", el usuario puede configurar el orden en la que introducir dichos elementos en los partes de trabajo.
 
+Listado de partes de trabajo
+============================
+
+Una vez configurados los formatos de los partes a incorporar al sistema, se pueden introducir los datos en el formulario creado según la estructura definida en el tipo de parte de trabajo correspondiente. Para hacerlo, es necesario seguir los siguientes pasos:
+
+* Presionar en el botón "Nuevo parte de trabajo" asociado el tipo de parte que se desee del listado de tipos de partes de trabajo.
+* La aplicación muestra el parte construído a partir de la configuración dada para el tipo. Ver siguiente imagen.
+
+.. figure:: images/work-report-type.png
+   :scale: 50
+
+   Estructura del parte de trabajo a partir del tipo
+
+* Seleccionar cada uno de los campos que se muestra para el parte:
+
+   * Recurso: Si se eligió la cabecera, sólo se indica el recurso una vez. En caso contrario, para cada línea del parte es necesario elegir un recurso.
+   * Código de la tarea: Código de la tarea a la que se está asignando el parte de trabajo. Al igual que el resto de campos, si el campo es de cabecera se introducirá el valor una vez o tantas veces como líneas del parte.
+   * Fecha: Fecha del parte o de cada línea dependiendo de se la configuración es por cabecera o línea.
+   * Número de horas. El número de horas de trabajo del proyecto.
+   * Horas de inicio y fin. Horas de comienzo y fin de trabajo para calcular las horas de trabajo definitivas. Este campo sólo aparece en los casos de políticas de imputación de horas de "Por horas de comienzo y fin" y "Por número de horas y rango de comienzo y fin".
+   * Tipo de horas: Permite elegir entre tipos de horas "Normales", "Extraordinarias", etc.
+
+* Presionar en "Guardar" o "Guardar y Continuar".
