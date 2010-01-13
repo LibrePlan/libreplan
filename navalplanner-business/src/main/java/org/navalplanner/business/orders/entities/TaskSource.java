@@ -93,6 +93,8 @@ public class TaskSource extends BaseEntity {
 
         @Override
         public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+            taskSource.getTask()
+                    .setName(taskSource.getOrderElement().getName());
             taskSourceDAO.save(taskSource);
             return taskSource.getTask();
         }
@@ -203,6 +205,7 @@ public class TaskSource extends BaseEntity {
                 List<TaskElement> children) {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
             taskGroup.setTaskChildrenTo(children);
+            taskGroup.setName(taskSource.getOrderElement().getName());
             taskSourceDAO.save(taskSource);
             return taskGroup;
         }
