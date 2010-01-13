@@ -28,6 +28,8 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
@@ -94,6 +96,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private IContextWithPlannerTask<TaskElement> context;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     @Override
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
@@ -146,17 +151,49 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void accept() {
-        stepsBeforeDoingAllocation();
-        applyAllocationResult(allocationRowsHandler.doAllocation());
+        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                stepsBeforeDoingAllocation();
+                applyAllocationResult(allocationRowsHandler.doAllocation());
+                return null;
+            }
+        });
+        askForReloads();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public void accept(AllocationResult modifiedAllocationResult) {
-        stepsBeforeDoingAllocation();
-        applyAllocationResult(modifiedAllocationResult);
+    public void accept(final AllocationResult modifiedAllocationResult) {
+        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                stepsBeforeDoingAllocation();
+                applyAllocationResult(modifiedAllocationResult);
+                return null;
+            }
+        });
+        askForReloads();
+    }
+
+    private void stepsBeforeDoingAllocation() {
+        reattachmentsBeforeDoingAllocation();
+        removeDeletedAllocations();
+    }
+
+    private void applyAllocationResult(AllocationResult allocationResult) {
+        org.zkoss.ganttz.data.Task ganttTask = context.getTask();
+        Date previousStartDate = ganttTask.getBeginDate();
+        long previousLength = ganttTask.getLengthMilliseconds();
+        allocationResult.applyTo(task);
+        ganttTask.fireChangesForPreviousValues(previousStartDate,
+                previousLength);
+    }
+
+    private void askForReloads() {
+        org.zkoss.ganttz.data.Task ganttTask = context.getTask();
+        ganttTask.reloadResourcesText();
+        context.reloadCharts();
     }
 
     @Override
@@ -173,11 +210,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         for (Resource each : resources) {
             reattachResource(each);
         }
-    }
-
-    private void stepsBeforeDoingAllocation() {
-        reattachmentsBeforeDoingAllocation();
-        removeDeletedAllocations();
     }
 
     private void reattachmentsBeforeDoingAllocation() {
@@ -197,17 +229,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         for (ResourceAllocation<?> resourceAllocation : allocationsRequestedToRemove) {
             task.removeResourceAllocation(resourceAllocation);
         }
-    }
-
-    private void applyAllocationResult(AllocationResult allocationResult) {
-        org.zkoss.ganttz.data.Task ganttTask = context.getTask();
-        Date previousStartDate = ganttTask.getBeginDate();
-        long previousLength = ganttTask.getLengthMilliseconds();
-        allocationResult.applyTo(task);
-        ganttTask.fireChangesForPreviousValues(previousStartDate,
-                previousLength);
-        ganttTask.reloadResourcesText();
-        context.reloadCharts();
     }
 
     @Override
