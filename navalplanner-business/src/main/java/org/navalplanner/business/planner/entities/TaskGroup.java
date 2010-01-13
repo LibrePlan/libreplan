@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -58,6 +59,11 @@ public class TaskGroup extends TaskElement {
 
     public void addTaskElement(TaskElement task) {
         addTaskElement(taskElements.size(), task);
+        Date newPossibleEndDate = task.getEndDate();
+        if (getEndDate() == null
+                || getEndDate().compareTo(newPossibleEndDate) < 0) {
+            setEndDate(newPossibleEndDate);
+        }
     }
 
     public void addTaskElement(Integer index, TaskElement task) {
