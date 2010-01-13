@@ -20,28 +20,16 @@
 
 package org.navalplanner.web.planner.order;
 
-import java.util.List;
-
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
-import org.navalplanner.web.planner.calendar.CalendarAllocationController;
-import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
-import org.zkoss.ganttz.Planner;
-import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * Contract for {@link SubcontractCommand}.
+ *
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IOrderPlanningModel {
+public interface ISubcontractCommand extends ICommandOnTask<TaskElement> {
 
-    void setConfigurationToPlanner(Planner planner, Order order,
-            ViewSwitcher viewSwitcher,
-            ResourceAllocationController resourceAllocationController,
-            TaskPropertiesController taskPropertiesController,
-            CalendarAllocationController calendarAllocationController,
-            SubcontractController subcontractController,
-            List<ICommand<TaskElement>> additional);
+    void setSubcontractController(SubcontractController subcontractController);
 
 }

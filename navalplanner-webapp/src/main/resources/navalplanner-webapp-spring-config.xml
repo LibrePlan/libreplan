@@ -31,6 +31,7 @@
       <lookup-method name="getCalendarAllocationCommand" bean="calendarAllocationCommand"/>
       <lookup-method name="getAddMilestoneCommand" bean="addMilestoneCommand"/>
       <lookup-method name="getDeleteMilestoneCommand" bean="deleteMilestoneCommand"/>
+      <lookup-method name="getSubcontractCommand" bean="subcontractCommand"/>
     </bean>
 
     <bean class="org.navalplanner.web.planner.company.CompanyPlanningModel" scope="prototype">

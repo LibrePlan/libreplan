@@ -75,6 +75,9 @@ public class OrderPlanningController implements Composer {
     @Autowired
     private CalendarAllocationController calendarAllocationController;
 
+    @Autowired
+    private SubcontractController subcontractController;
+
     private Order order;
 
     private List<ICommand<TaskElement>> additional = new ArrayList<ICommand<TaskElement>>();
@@ -120,7 +123,12 @@ public class OrderPlanningController implements Composer {
     private void updateConfiguration() {
         model.setConfigurationToPlanner(planner, order, viewSwitcher,
                 resourceAllocationController, taskPropertiesController,
-                calendarAllocationController, additional);
+                calendarAllocationController, subcontractController,
+                        additional);
+    }
+
+    public SubcontractController getSubcontractController() {
+        return subcontractController;
     }
 
 }

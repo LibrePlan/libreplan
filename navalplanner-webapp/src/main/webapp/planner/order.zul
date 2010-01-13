@@ -32,6 +32,7 @@
         calendarController = planningController.calendarAllocationController;
         switcher = planningController.viewSwitcher;
         allocationController.switcher = switcher;
+        subController = planningController.subcontractController;
     ]]>
     </zscript>
     <div>
@@ -225,5 +226,26 @@
         </vbox>
 
     </window>
+
+    <window id="subcontractWindow"
+        apply="${subController}"
+        title="${i18n:_('Subcontract')}" width="600px"
+        closable="true" visible="false">
+
+        <vbox>
+
+            <label value="${i18n:_('TODO')}" />
+
+            <hbox>
+                <button label="${i18n:_('Accept')}"
+                    onClick="subController.accept();" />
+                <button label="${i18n:_('Cancel')}"
+                    onClick="subController.cancel();" />
+            </hbox>
+
+        </vbox>
+
+    </window>
+
     </div>
 </zk>

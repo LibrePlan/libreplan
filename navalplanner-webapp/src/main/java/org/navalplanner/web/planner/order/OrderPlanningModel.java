@@ -183,6 +183,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             ResourceAllocationController resourceAllocationController,
             TaskPropertiesController taskPropertiesController,
             CalendarAllocationController calendarAllocationController,
+            SubcontractController subcontractController,
             List<ICommand<TaskElement>> additional) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled()) {
@@ -202,6 +203,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(taskPropertiesController));
+        configuration
+                .addCommandOnTask(buildSubcontractCommand(subcontractController));
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
         Tabbox chartComponent = new Tabbox();
@@ -975,5 +978,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
     }
+
+    private ISubcontractCommand buildSubcontractCommand(
+            SubcontractController subcontractController) {
+        ISubcontractCommand subcontractCommand = getSubcontractCommand();
+        subcontractCommand.setSubcontractController(subcontractController);
+        return subcontractCommand;
+    }
+
+    protected abstract ISubcontractCommand getSubcontractCommand();
 
 }
