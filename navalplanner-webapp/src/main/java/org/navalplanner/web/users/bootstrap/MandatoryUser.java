@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.users.bootstrap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,9 +35,8 @@ import org.navalplanner.business.users.entities.UserRole;
  */
 public enum MandatoryUser {
 
-    USER(Arrays.asList(UserRole.ROLE_BASIC_USER)),
-    ADMIN(Arrays.asList(UserRole.ROLE_BASIC_USER,
-        UserRole.ROLE_ADMINISTRATION)),
+    USER(new ArrayList<UserRole>()),
+    ADMIN(Arrays.asList(UserRole.ROLE_ADMINISTRATION)),
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)),
     WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER,
         UserRole.ROLE_WS_WRITER));

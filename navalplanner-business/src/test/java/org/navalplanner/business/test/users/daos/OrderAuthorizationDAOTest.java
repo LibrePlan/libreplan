@@ -102,7 +102,6 @@ public class OrderAuthorizationDAOTest {
 
     private Profile createValidProfile() {
         Set<UserRole> roles = new HashSet<UserRole>();
-        roles.add(UserRole.ROLE_BASIC_USER);
         return Profile.create(UUID.randomUUID().toString(), roles);
     }
 

@@ -60,7 +60,7 @@ public class DBUserDetailsService implements UserDetailsService {
         User user;
 
         try {
-            user = userDAO.findByLoginNameNotDisabled(loginName);
+            user = userDAO.findByLoginName(loginName);
         } catch (InstanceNotFoundException e) {
             throw new UsernameNotFoundException(_("User with login name " +
                 "'{0}': not found", loginName));
@@ -73,16 +73,10 @@ public class DBUserDetailsService implements UserDetailsService {
             allRoles.addAll(eachProfile.getRoles());
         }
 
-        if(allRoles.isEmpty()) {
-            //that user doesn't have any roles, so we forbid his login
-            throw new UsernameNotFoundException(_("User with login name " +
-                    "'{0}': access forbidden", loginName));
-        }
-
         return new org.springframework.security.userdetails.User(
             user.getLoginName(),
             user.getPassword(),
-            true, // enabled
+            !user.isDisabled(),
             true, // accountNonExpired
             true, // credentialsNonExpired
             true, // accountNonLocked

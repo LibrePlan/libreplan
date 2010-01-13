@@ -7,6 +7,11 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
+    <!--
+         NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
+         for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY.
+    -->
+
     <http auto-config="true" realm="Naval Planner Web Application" >
 
         <!-- Web services -->
@@ -21,13 +26,18 @@
         <intercept-url pattern="/callback/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/zkau/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/common/layout/login.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/**" access="ROLE_BASIC_USER" />
         <intercept-url pattern="/advance/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMINISTRATION"/>
         <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/labels/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/materials/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/costcategories/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMINISTRATION" />
-        <form-login login-page="/common/layout/login.zul" authentication-failure-url="/common/layout/login.zul?login_error=x"/>
+        <intercept-url pattern="/qualityforms/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/users/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/externalcompanies/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
+        <form-login login-page="/common/layout/login.zul" authentication-failure-url="/common/layout/login.zul?login_error=true"/>
 
     </http>
 

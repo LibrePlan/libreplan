@@ -81,11 +81,14 @@
         </n:tr>
     </n:table></n:td>
     <n:td width="450" height="165" valign="top">
-        <html if="${not empty param.login_error}">
-          <![CDATA[
-            <div class="login_ERROR">
-                ${i18n:_('Incorrect authentication')}
-            </div>
+        <html if="${param.login_error == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.DisabledException'}">
+            <![CDATA[
+                <div class="login_ERROR">${i18n:_('User disabled')}</div>
+            ]]>
+        </html>
+        <html if="${param.login_error == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.BadCredentialsException'}">
+            <![CDATA[
+               <div class="login_ERROR">${i18n:_('Incorrect authentication')}</div>
             ]]>
         </html>
     </n:td>
