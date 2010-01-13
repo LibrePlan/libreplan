@@ -27,17 +27,17 @@ public enum QualityFormType {
 
     BY_PERCENTAGE("By Percentage."), BY_ITEMS("By Items.");
 
-private String description;
+    private String description;
 
     private QualityFormType(String description) {
-this.description = description;
-}
+        this.description = description;
+    }
 
-public String toString() {
-return this.description;
-}
+    public String toString() {
+        return this.description;
+    }
 
     public static QualityFormType getDefault() {
         return BY_PERCENTAGE;
-}
+    }
 }
