@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -155,7 +156,10 @@ public class AdvancedAllocationTabCreator {
         private void reattachResources() {
             for (Resource each : associatedResources) {
                 resourceDAO.reattach(each);
-                BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+                ResourceCalendar calendar = each.getCalendar();
+                if (calendar != null) {
+                    BaseCalendarModel.forceLoadBaseCalendar(calendar);
+                }
                 loadDayAssignments(each.getAssignments());
             }
         }
