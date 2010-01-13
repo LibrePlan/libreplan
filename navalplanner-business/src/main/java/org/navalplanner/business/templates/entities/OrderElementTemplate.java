@@ -39,6 +39,7 @@ import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
 import org.navalplanner.business.orders.entities.InfoComponent;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.trees.ITreeNode;
 
 /**
@@ -117,6 +118,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private Set<MaterialAssignmentTemplate> materialAssignments = new HashSet<MaterialAssignmentTemplate>();
 
     private Set<Label> labels = new HashSet<Label>();
+
+    private Set<QualityForm> qualityForms = new HashSet<QualityForm>();
 
     public OrderLineGroupTemplate getParent() {
         return parent;
@@ -238,5 +241,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     public void removeLabel(Label label) {
         this.labels.remove(label);
+    }
+
+    public Set<QualityForm> getQualityForms() {
+        return Collections.unmodifiableSet(qualityForms);
     }
 }
