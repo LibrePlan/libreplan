@@ -60,6 +60,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         beingBuilt.materialAssignments = copyMaterialAssignmentsFrom(beingBuilt, origin
                 .getMaterialAssignments());
         beingBuilt.labels = new HashSet<Label>(origin.getLabels());
+        beingBuilt.qualityForms = origin.getQualityForms();
         return create(beingBuilt, infoComponentCopied,
                 fromBeginningToStart, fromBeginningToEnd);
     }

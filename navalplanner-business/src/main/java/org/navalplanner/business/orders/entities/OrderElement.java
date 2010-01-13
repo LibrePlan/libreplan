@@ -735,6 +735,14 @@ public abstract class OrderElement extends BaseEntity implements
         return Collections.unmodifiableSet(taskQualityForms);
     }
 
+    public Set<QualityForm> getQualityForms() {
+        Set<QualityForm> result = new HashSet<QualityForm>();
+        for (TaskQualityForm each : taskQualityForms) {
+            result.add(each.getQualityForm());
+        }
+        return result;
+    }
+
     public void setTaskQualityFormItems(Set<TaskQualityForm> taskQualityForms) {
         this.taskQualityForms = taskQualityForms;
     }
