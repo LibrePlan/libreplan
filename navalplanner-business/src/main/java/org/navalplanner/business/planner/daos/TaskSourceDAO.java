@@ -19,12 +19,8 @@
  */
 package org.navalplanner.business.planner.daos;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -37,24 +33,5 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class TaskSourceDAO extends GenericDAOHibernate<TaskSource, Long>
         implements ITaskSourceDAO {
-
-    public TaskElement findUniqueByOrderElement(OrderElement orderElement) {
-        String strQuery = "SELECT task " + "FROM TaskSource taskSource "
-                + "LEFT OUTER JOIN taskSource.task task "
-                + "LEFT OUTER JOIN taskSource.orderElement orderElement "
-                + "WHERE task IN (SELECT task FROM Task task) ";
-
-        if (orderElement != null) {
-            strQuery += "AND orderElement = :orderElement ";
-        }
-        try {
-            Query query = getSession().createQuery(strQuery);
-            query.setParameter("orderElement", orderElement);
-            query.setMaxResults(1);
-            return (TaskElement) query.uniqueResult();
-        } catch (HibernateException e) {
-            return null;
-        }
-    }
 
 }

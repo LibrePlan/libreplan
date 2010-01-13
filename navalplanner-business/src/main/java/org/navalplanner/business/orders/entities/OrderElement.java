@@ -233,7 +233,7 @@ public abstract class OrderElement extends BaseEntity implements
         return getSchedulingState().isSomewhatScheduled();
     }
 
-    private boolean isSchedulingPoint() {
+    public boolean isSchedulingPoint() {
         return getSchedulingState().getType() == Type.SCHEDULING_POINT;
     }
 

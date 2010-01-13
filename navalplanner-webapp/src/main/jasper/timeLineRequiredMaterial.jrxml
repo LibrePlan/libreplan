@@ -309,13 +309,25 @@
 				<reportElement x="505" y="1" width="1" height="72"/>
 			</line>
 			<line>
-				<reportElement x="580" y="1" width="1" height="72"/>
+				<reportElement x="580" y="0" width="1" height="73">
+					<printWhenExpression><![CDATA[$P{status} == null]]></printWhenExpression>
+				</reportElement>
 			</line>
 			<line>
-				<reportElement x="0" y="0" width="581" height="1"/>
+				<reportElement x="0" y="0" width="506" height="1"/>
 			</line>
 			<line>
-				<reportElement x="0" y="73" width="581" height="1"/>
+				<reportElement x="0" y="73" width="506" height="1"/>
+			</line>
+			<line>
+				<reportElement x="506" y="0" width="74" height="1">
+					<printWhenExpression><![CDATA[$P{status} == null]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="506" y="73" width="75" height="1">
+					<printWhenExpression><![CDATA[$P{status} == null]]></printWhenExpression>
+				</reportElement>
 			</line>
 		</band>
 	</detail>

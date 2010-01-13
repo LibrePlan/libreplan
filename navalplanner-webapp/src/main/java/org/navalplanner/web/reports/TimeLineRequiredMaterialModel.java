@@ -203,12 +203,11 @@ public class TimeLineRequiredMaterialModel implements
         OrderElement current = material.getOrderElement();
         OrderElement result = current;
         while (current != null) {
-            TaskElement task = taskSourceDAO.findUniqueByOrderElement(current);
-            if (task != null) {
-                return task;
+            if (current.isSchedulingPoint()) {
+                return current.getAssociatedTaskElement();
             }
             result = current;
-            current = orderElementDAO.findParent(current);
+            current = current.getParent();
         }
         return null;
     }
@@ -218,9 +217,11 @@ public class TimeLineRequiredMaterialModel implements
         Date lessDate = null;
         TaskElement resultTask = null;
         for (OrderElement child : current.getAllChildren()) {
-            TaskElement task = taskSourceDAO.findUniqueByOrderElement(child);
-            if (task != null) {
-                if ((lessDate == null) || (lessDate.after(task.getStartDate()))) {
+            if (child.isSchedulingPoint()) {
+                TaskElement task = child.getAssociatedTaskElement();
+                if ((task != null)
+                        && ((lessDate == null) || (lessDate.after(task
+                                .getStartDate())))) {
                     lessDate = task.getStartDate();
                     resultTask = task;
                 }
