@@ -28,6 +28,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
@@ -274,17 +275,41 @@ public class CriterionSatisfaction extends BaseEntity {
         }
     }
 
+    /*
+     * IMPORTANT: This method currently redefines BaseEntity::validate avoiding
+     * Hibernate Validator to run. This should be fixed in a future.
+     */
     public void validate(){
             Validate.notNull(resource);
             Validate.notNull(startDate);
             Validate.notNull(criterion);
-            Validate.isTrue(finishDate == null || finishDate.after(startDate));
-            Validate.isTrue(finishDate == null || startDate.equals(finishDate)
-                    || startDate.before(finishDate));
+            Validate.isTrue(checkConstraintPositiveTimeInterval());
     }
 
     public ResourceEnum getResourceType() {
         return criterion.getType().getResource();
+    }
+
+    @AssertTrue(message="criterion satisfaction with end date less than start " +
+        "date")
+    public boolean checkConstraintPositiveTimeInterval() {
+
+        /* Check if it makes sense to check the constraint .*/
+        if (!isStartDateSpecified()) {
+            return true;
+        }
+
+        /* Check the constraint. */
+        if (finishDate == null) {
+            return true;
+        }
+
+        return (finishDate.after(startDate) || startDate.equals(finishDate));
+
+    }
+
+    public boolean isStartDateSpecified() {
+        return startDate != null;
     }
 
 }

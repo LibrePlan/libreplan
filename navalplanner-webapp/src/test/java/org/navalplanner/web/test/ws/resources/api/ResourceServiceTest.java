@@ -291,7 +291,7 @@ public class ResourceServiceTest {
 
     @Test
     @NotTransactional
-    public void testAddResourceWithCriterionSatisfactionsWithoutStartDate() {
+    public void testAddResourceWithCriterionSatisfactionWithoutStartDate() {
 
         /* Create a criterion type. */
         CriterionType ct = createCriterionType();
@@ -301,6 +301,27 @@ public class ResourceServiceTest {
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName() , "c1",
                 null, getDate(2001, 1, 1))); // Missing start date.
+
+        /* Test. */
+        assertOneConstraintViolation(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithCriterionSatisfactionWithNegativeInterval() {
+
+        /* Create a criterion type. */
+        CriterionType ct = createCriterionType();
+
+        /* Create a machine DTO. */
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), "name", "desc");
+        machineDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(ct.getName() , "c1",
+                getDate(2000, 2, 1), getDate(2000, 1, 1)));
 
         /* Test. */
         assertOneConstraintViolation(
