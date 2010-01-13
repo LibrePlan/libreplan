@@ -412,7 +412,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private void createComponents() {
-        timeTracker = new TimeTracker(addYearMarginTointerval());
+        timeTracker = new TimeTracker(addYearMarginTointerval(), self);
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
                 timeTracker, "timeTracker");
         TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(

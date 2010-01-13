@@ -168,7 +168,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 .getSecondLevelModificators();
         this.timeTracker = new TimeTracker(new Interval(TimeTrackerState
                 .year(2009), TimeTrackerState.year(2011)),
-                firstLevelModificators, secondLevelModificators);
+                firstLevelModificators, secondLevelModificators, planner);
     }
 
     /**

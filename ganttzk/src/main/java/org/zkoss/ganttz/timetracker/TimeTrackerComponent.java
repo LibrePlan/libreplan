@@ -20,16 +20,12 @@
 
 package org.zkoss.ganttz.timetracker;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 import java.util.Collection;
 
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.Command;
 import org.zkoss.zk.au.ComponentCommand;
@@ -61,18 +57,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                LongOperationFeedback.execute(TimeTrackerComponent.this, new ILongOperation() {
-
-                    @Override
-                    public void doAction() throws Exception {
-                        recreate();
-                    }
-
-                    @Override
-                    public String getName() {
-                        return _("changing zoom");
-                    }
-                });
+                recreate();
             }
         };
         this.timeTracker.addZoomListener(zoomListener);

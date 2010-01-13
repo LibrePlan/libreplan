@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.timetracker;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
@@ -37,8 +39,11 @@ import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
+import org.zkoss.zk.ui.Component;
 
 public class TimeTracker {
 
@@ -59,19 +64,25 @@ public class TimeTracker {
 
     private final IDetailItemModificator secondLevelModificator;
 
-    public TimeTracker(Interval interval) {
-        this(interval, SeveralModificators.empty(), SeveralModificators.empty());
+    private final Component componentOnWhichGiveFeedback;
+
+    public TimeTracker(Interval interval, Component componentOnWhichGiveFeedback) {
+        this(interval, SeveralModificators.empty(),
+                SeveralModificators.empty(), componentOnWhichGiveFeedback);
     }
 
     public TimeTracker(Interval interval,
             IDetailItemModificator firstLevelModificator,
-            IDetailItemModificator secondLevelModificator) {
+            IDetailItemModificator secondLevelModificator,
+            Component componentOnWhichGiveFeedback) {
         Validate.notNull(interval);
         Validate.notNull(firstLevelModificator);
         Validate.notNull(secondLevelModificator);
+        Validate.notNull(componentOnWhichGiveFeedback);
         this.interval = interval;
         this.firstLevelModificator = firstLevelModificator;
         this.secondLevelModificator = secondLevelModificator;
+        this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
     }
 
     public ZoomLevel getDetailLevel() {
@@ -149,12 +160,28 @@ public class TimeTracker {
 
     public void zoomIncrease() {
         detailLevel = detailLevel.next();
-        invalidatingChangeHappened();
+        invalidatingChangeHappenedWithFeedback();
+    }
+
+    private void invalidatingChangeHappenedWithFeedback() {
+        LongOperationFeedback.execute(componentOnWhichGiveFeedback,
+                new ILongOperation() {
+
+                    @Override
+                    public void doAction() throws Exception {
+                        invalidatingChangeHappened();
+                    }
+
+                    @Override
+                    public String getName() {
+                        return _("changing zoom");
+                    }
+                });
     }
 
     public void setZoomLevel(ZoomLevel zoomLevel) {
         detailLevel = zoomLevel;
-        invalidatingChangeHappened();
+        invalidatingChangeHappenedWithFeedback();
     }
 
     private void invalidatingChangeHappened() {
@@ -164,7 +191,7 @@ public class TimeTracker {
 
     public void zoomDecrease() {
         detailLevel = detailLevel.previous();
-        invalidatingChangeHappened();
+        invalidatingChangeHappenedWithFeedback();
     }
 
     public void trackPosition(final Task task) {
