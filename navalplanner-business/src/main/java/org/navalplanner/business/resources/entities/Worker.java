@@ -128,12 +128,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "Worker with the same first name, surname and nif previously existed")
-    public boolean checkConstraintUniqueFirstName() {
-
-        /* Check if it makes sense to check the constraint .*/
-        if (this instanceof VirtualWorker) {
-            return true;
-        }
+    public boolean checkConstraintUniqueFirstNameSurnameNif() {
 
         if (!areFirstNameSurnameNifSpecified()) {
             return true;

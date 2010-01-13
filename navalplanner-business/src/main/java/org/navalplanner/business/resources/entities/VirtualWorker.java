@@ -30,6 +30,7 @@ import org.navalplanner.business.common.Registry;
  * This class models a VirtualWorker.
  *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class VirtualWorker extends Worker {
 
@@ -72,6 +73,11 @@ public class VirtualWorker extends Worker {
         this.observations = observations;
     }
 
+    @AssertTrue
+    @Override
+    public boolean checkConstraintUniqueFirstNameSurnameNif() {
+        return true;
+    }
 
     @AssertTrue(message = "Virtual worker group name must be unique")
     public boolean checkConstraintUniqueVirtualGroupName() {
