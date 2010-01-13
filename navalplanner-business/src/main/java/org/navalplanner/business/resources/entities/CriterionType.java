@@ -56,7 +56,7 @@ public class CriterionType extends BaseEntity implements
         Boolean allowSimultaneousCriterionsPerResource, Boolean enabled,
         ResourceEnum resource) {
 
-        CriterionType criterionType = new CriterionType();
+        CriterionType criterionType = create(new CriterionType());
 
         criterionType.name = name;
         criterionType.description = description;
@@ -65,7 +65,6 @@ public class CriterionType extends BaseEntity implements
             allowSimultaneousCriterionsPerResource;
         criterionType.enabled = enabled;
         criterionType.resource = resource;
-        criterionType.setNewObject(true);
 
         return criterionType;
 
@@ -306,10 +305,13 @@ public class CriterionType extends BaseEntity implements
         Set<String> criterionNames = new HashSet<String>();
 
         for (Criterion c : criterions) {
-            if (criterionNames.contains(c.getName())) {
-                return false;
+            if (!StringUtils.isBlank(c.getName())) {
+                if (criterionNames.contains(c.getName().toLowerCase())) {
+                    return false;
+                } else {
+                    criterionNames.add(c.getName().toLowerCase());
+                }
             }
-            criterionNames.add(c.getName());
         }
 
         return true;

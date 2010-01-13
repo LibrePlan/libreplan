@@ -84,7 +84,7 @@ public class CriterionServiceTest {
             ct1c2Criterions);
         CriterionDTO ct1c3 = new CriterionDTO("c3", true,
             new ArrayList<CriterionDTO>());
-        CriterionDTO ct1c4 = new CriterionDTO("c3", true,
+        CriterionDTO ct1c4 = new CriterionDTO(" C3 ", true,
             new ArrayList<CriterionDTO>()); // Repeated criterion name.
         List<CriterionDTO> ct1Criterions = new ArrayList<CriterionDTO>();
         ct1Criterions.add(ct1c1);
@@ -129,18 +129,12 @@ public class CriterionServiceTest {
         CriterionTypeDTO ct3 = new CriterionTypeDTO(ct3Name, "desc",
             true, true, true, ResourceEnumDTO.RESOURCE, ct3Criterions);
 
-        /* Build criterion type "ct4" (2 constraint violations). */
-        CriterionDTO ct4c1 = new CriterionDTO(null, true, // Missing criterion
-            new ArrayList<CriterionDTO>());               // name.
-        CriterionDTO ct4c2 = new CriterionDTO("c2", true,
-            new ArrayList<CriterionDTO>());
-        List<CriterionDTO> ct4Criterions = new ArrayList<CriterionDTO>();
-        ct4Criterions.add(ct4c1);
-        ct4Criterions.add(ct4c2);
-        CriterionTypeDTO ct4 =                       // Repeated criterion
-            new CriterionTypeDTO(ct3Name,            // type name (see previous
-            "desc", true, true, true,                // criterion type).
-            ResourceEnumDTO.RESOURCE, ct4Criterions);
+        /* Build criterion type "ct4" (1 constraint violation). */
+        CriterionTypeDTO ct4 =
+            new CriterionTypeDTO(              // Repeated criterion
+            ' ' + ct3Name.toUpperCase() + ' ', // type name.
+            "desc", true, true, true,
+            ResourceEnumDTO.RESOURCE, new ArrayList<CriterionDTO>());
 
         /* Criterion type list. */
         List<CriterionTypeDTO> criterionTypes =
@@ -155,13 +149,24 @@ public class CriterionServiceTest {
                 new CriterionTypeListDTO(criterionTypes)).
                     instanceConstraintViolationsList;
 
-        assertTrue(instanceConstraintViolationsList.size() == 3);
-        assertTrue(instanceConstraintViolationsList.get(0).
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.size() == 3);
+        assertTrue(
+            instanceConstraintViolationsList.get(0).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(0).
             constraintViolations.size() == 4);
-        assertTrue(instanceConstraintViolationsList.get(1).
+        assertTrue(
+            instanceConstraintViolationsList.get(1).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(1).
             constraintViolations.size() == 2);
-        assertTrue(instanceConstraintViolationsList.get(2).
-            constraintViolations.size() == 2);
+        assertTrue(
+            instanceConstraintViolationsList.get(2).
+            constraintViolations.toString(),
+            instanceConstraintViolationsList.get(2).
+            constraintViolations.size() == 1);
 
         /* Find criterion types. */
         List<CriterionTypeDTO> returnedCriterionTypes =
@@ -205,13 +210,17 @@ public class CriterionServiceTest {
             transactionService.runOnTransaction(
                 createCriterionType).
                     instanceConstraintViolationsList;
-        assertTrue(instanceConstraintViolationsList.size() == 0);
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.size() == 0);
 
         instanceConstraintViolationsList =
             transactionService.runOnTransaction(
                 createCriterionType).
                     instanceConstraintViolationsList;
-        assertTrue(instanceConstraintViolationsList.size() == 1);
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.size() == 1);
 
     }
 

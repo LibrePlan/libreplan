@@ -45,13 +45,12 @@ public class Criterion extends BaseEntity implements ICriterion {
     public static Criterion createUnvalidated(String name, CriterionType type,
         Criterion parent, boolean active) {
 
-        Criterion criterion = new Criterion();
+        Criterion criterion = create(new Criterion());
 
         criterion.name = name;
         criterion.type = type;
         criterion.parent = parent;
         criterion.active = active;
-        criterion.setNewObject(true);
 
         return criterion;
 

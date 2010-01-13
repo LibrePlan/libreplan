@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.ws.common.impl.ResourceEnumConverter;
@@ -101,7 +102,8 @@ public final class CriterionConverter {
         CriterionTypeDTO criterionTypeDTO) {
 
         CriterionType criterionType = CriterionType.createUnvalidated(
-            trim(criterionTypeDTO.name), trim(criterionTypeDTO.description),
+            StringUtils.trim(criterionTypeDTO.name),
+            StringUtils.trim(criterionTypeDTO.description),
             criterionTypeDTO.allowHierarchy,
             criterionTypeDTO.allowSimultaneousCriterionsPerResource,
             criterionTypeDTO.enabled,
@@ -136,15 +138,12 @@ public final class CriterionConverter {
         CriterionDTO childDTO, CriterionType criterionType,
         Criterion criterionParent) {
 
-        Criterion criterion = Criterion.createUnvalidated(trim(childDTO.name),
+        Criterion criterion = Criterion.createUnvalidated(
+            StringUtils.trim(childDTO.name),
             criterionType, criterionParent, childDTO.active);
 
         return criterion;
 
-    }
-
-    private static String trim(String s) {
-        return s == null ? null : s.trim();
     }
 
 }
