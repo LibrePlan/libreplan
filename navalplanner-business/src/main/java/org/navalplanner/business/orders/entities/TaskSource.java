@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
@@ -282,6 +283,7 @@ public class TaskSource extends BaseEntity {
         this.orderElement = orderElement;
     }
 
+    @Valid
     public TaskElement getTask() {
         return task;
     }

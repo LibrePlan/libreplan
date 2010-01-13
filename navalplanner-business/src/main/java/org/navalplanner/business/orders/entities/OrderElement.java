@@ -659,6 +659,7 @@ public abstract class OrderElement extends BaseEntity implements
         return schedulingStateType;
     }
 
+    @Valid
     public TaskSource getTaskSource() {
         return taskSource;
     }
