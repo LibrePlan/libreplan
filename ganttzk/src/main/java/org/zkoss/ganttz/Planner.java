@@ -50,10 +50,10 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.api.Button;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -144,6 +144,7 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
+
         if (ganttPanel == null) {
             return;
         }

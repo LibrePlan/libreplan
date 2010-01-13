@@ -20,6 +20,19 @@
         margin-left: -90px;
     }
 
+    body .main-area {
+        margin-left: -90px;
+    }
+
+    .toolbar-box {
+        display: none;
+        height: 0px !important;
+    }
+
+    .plannerlayout_center {
+        margin-top: -25px;
+    }
+
     /* Calculate dynamically */
     body {
         width: 2500px;
@@ -76,7 +89,6 @@
     .taskheaders-border {
         width: 300px;
     }
-
 
 .plannerlayout #watermark,
 .plannerlayout #watermark .timetracker_column_even {
@@ -1165,7 +1177,7 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     min-width: 30px;
 }
 
-
 .function {
     min-width: 90px;
 }
+

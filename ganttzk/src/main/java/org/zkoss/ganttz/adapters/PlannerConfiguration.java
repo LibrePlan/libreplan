@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.constraint.Constraint;
@@ -44,6 +45,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public interface IPrintAction {
         public void doPrint();
+
+        public void doPrint(Map<String, String> parameters);
     }
 
     public interface IReloadChartListener {
@@ -308,6 +311,13 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             throw new UnsupportedOperationException("print not supported");
         }
         printAction.doPrint();
+    }
+
+    public void print(Map<String, String> parameters) {
+        if (!isPrintEnabled()) {
+            throw new UnsupportedOperationException("print not supported");
+        }
+        printAction.doPrint(parameters);
     }
 
 }

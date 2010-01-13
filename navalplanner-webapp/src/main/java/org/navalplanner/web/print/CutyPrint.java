@@ -27,15 +27,24 @@ public class CutyPrint {
 
     private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
 
-    // Calculate dynamically width and delay parameters
-    private static final String CUTYCAPT_PARAMETERS = " --min-width=2500 --delay=1000 ";
-
-    public static void print() {
-        print("/planner/index.zul", Collections.<String, String> emptyMap());
+    public static void print(Order order) {
+        print("/planner/index.zul", entryPointForShowingOrder(order),
+                Collections.<String, String> emptyMap());
     }
 
-    public static void print(Order order) {
-        print("/planner/index.zul", entryPointForShowingOrder(order));
+    public static void print(Order order, Map<String, String> parameters) {
+        print("/planner/index.zul", entryPointForShowingOrder(order),
+                parameters);
+    }
+
+    public static void print() {
+        print("/planner/index.zul", Collections.<String, String> emptyMap(),
+                Collections.<String, String> emptyMap());
+    }
+
+    public static void print(Map<String, String> parameters) {
+        print("/planner/index.zul", Collections.<String, String> emptyMap(),
+                parameters);
     }
 
     private static Map<String, String> entryPointForShowingOrder(Order order) {
@@ -45,7 +54,8 @@ public class CutyPrint {
     }
 
     public static void print(final String forwardURL,
-            final Map<String, String> entryPointsMap) {
+            final Map<String, String> entryPointsMap,
+            Map<String, String> parameters) {
 
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
@@ -61,31 +71,53 @@ public class CutyPrint {
                         URLHandler.setupEntryPointsForThisRequest(request,
                                 entryPointsMap);
                         // Pending to forward and process additional parameters
-                        // as show labels or resources
+                        // as show labels, resources, zoom or expand all
                         request.getRequestDispatcher(forwardURL).forward(
                                 request, response);
                     }
                 });
 
-        String CUTYCAPT_URL = "--url=http://" + request.getLocalName() + ":"
-                + request.getLocalPort() + url;
-        String captureString = CUTYCAPT_COMMAND + CUTYCAPT_URL;
+        String extension = ".pdf";
+        if (((parameters.get("extension") != null) && !(parameters
+                .get("extension").equals("")))) {
+            extension = parameters.get("extension");
+        }
 
-        captureString += CUTYCAPT_PARAMETERS;
-
+        // Calculate application path and destination file relative route
         String absolutePath = request.getSession().getServletContext()
                 .getRealPath("/");
         String filename = "/print/"
                 + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
-                + ".pdf";
-        captureString += "--out=" + absolutePath + filename;
+                + extension;
+
+        // Generate capture string
+        String captureString = CUTYCAPT_COMMAND;
+
+        // Add capture destination callback URL
+        captureString += " --url=http://" + request.getLocalName() + ":"
+                + request.getLocalPort() + url;
+
+        // Static width and time delay parameters (FIX)
+        captureString += " --min-width=2600 --delay=1000 ";
+
+        // Relative user styles
+        captureString += "--user-styles=" + absolutePath
+                + "/planner/css/print.css";
+
+        // Destination complete absolute path
+        captureString += " --out=" + absolutePath + filename;
 
         try {
             // CutyCapt command execution
-            // If there is a not real X server environment, use framebuffer
             LOG.debug(captureString);
             Process print;
             Process server = null;
+
+            // Ensure cleanup of unfinished CutyCapt processes
+            Process clean = null;
+            clean = Runtime.getRuntime().exec("killall CutyCapt");
+
+            // If there is a not real X server environment then use Xvfb
             if ((System.getenv("DISPLAY") == null)
                     || (System.getenv("DISPLAY").equals(""))) {
                 String[] serverEnvironment = { "PATH=$PATH" };
@@ -104,7 +136,7 @@ public class CutyPrint {
                     server.destroy();
                 }
                 Executions.getCurrent().sendRedirect(filename, "_blank");
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 LOG.error(_("Could open generated PDF"), e);
             }
 
@@ -112,6 +144,5 @@ public class CutyPrint {
             LOG.error(_("Could not execute print command"), e);
         }
     }
-
 
 }

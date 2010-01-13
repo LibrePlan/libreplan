@@ -246,6 +246,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             public void doPrint() {
                 CutyPrint.print(order);
             }
+
+            @Override
+            public void doPrint(Map<String, String> parameters) {
+                CutyPrint.print(order, parameters);
+            }
+
         });
     }
 

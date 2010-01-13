@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,6 +50,13 @@ import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Window;
 
 public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
@@ -373,7 +382,41 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         if (!isPrintEnabled()) {
             throw new UnsupportedOperationException("print is not supported");
         }
-        configuration.print();
+
+        final Window printProperties = (Window) Executions.createComponents(
+                "/planner/print_configuration.zul", planner, null);
+
+        Button printButton = new Button(_("Print"));
+        printButton.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Radiogroup layout = (Radiogroup) printProperties
+                        .getFellow("print_layout");
+                HashMap<String, String> parameters = new HashMap<String, String>();
+                if (layout.getSelectedIndex() == 2) {
+                    parameters.put("extension", ".png");
+                }
+                configuration.print(parameters);
+            }
+        });
+        printButton.setParent(printProperties);
+
+        Button cancelPrint = new Button(_("Cancel"));
+        printButton.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                // get Print properties and params
+                printProperties.setVisible(false);
+            }
+        });
+        cancelPrint.setParent(printProperties);
+
+        try {
+            printProperties.doModal();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
