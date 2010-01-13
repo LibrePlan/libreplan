@@ -44,6 +44,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -170,6 +171,7 @@ public class TaskElementTest {
     @Test
     public void theDeadlineOfTheOrderElementIsCopied() {
         OrderLine orderLine = OrderLine.create();
+        addOrderTo(orderLine);
         LocalDate deadline = new LocalDate(2007, 4, 4);
         orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
@@ -198,6 +200,7 @@ public class TaskElementTest {
     @Test
     public void ifNoParentWithStartDateTheStartConstraintIsSoonAsPossible() {
         OrderLine orderLine = OrderLine.create();
+        addOrderTo(orderLine);
         LocalDate deadline = new LocalDate(2007, 4, 4);
         orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
@@ -206,11 +209,18 @@ public class TaskElementTest {
                 isOfType(StartConstraintType.AS_SOON_AS_POSSIBLE));
     }
 
+    private void addOrderTo(OrderElement orderElement) {
+        Order order = new Order();
+        order.setInitDate(new Date());
+        order.add(orderElement);
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void ifSomeParentHasInitDateTheStartConstraintIsNotEarlierThan() {
         Date initDate = asDate(new LocalDate(2005, 10, 5));
         OrderLineGroup group = OrderLineGroup.create();
+        addOrderTo(group);
         group.setInitDate(initDate);
         OrderLine orderLine = OrderLine.create();
         group.add(orderLine);

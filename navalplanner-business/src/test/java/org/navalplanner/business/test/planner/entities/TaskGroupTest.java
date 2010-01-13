@@ -25,10 +25,12 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Task;
@@ -81,7 +83,11 @@ public class TaskGroupTest {
     public static TaskGroup createValidTaskGroup() {
         HoursGroup hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
-        TaskSource taskSource = TaskSource.create(OrderLine.create(), Arrays
+        Order order = new Order();
+        order.setInitDate(new Date());
+        OrderLine orderLine = OrderLine.create();
+        order.add(orderLine);
+        TaskSource taskSource = TaskSource.create(orderLine, Arrays
                 .asList(hoursGroup));
         return TaskGroup.create(taskSource);
     }

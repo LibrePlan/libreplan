@@ -47,7 +47,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.calendars.BaseCalendarModel;
-import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
@@ -75,7 +74,6 @@ public class AdvancedAllocationTabCreator {
         private Set<Resource> associatedResources;
 
         public ResultReceiver(Order order, Task task) {
-            TaskElementAdapter.doTaskInitialization(order, task);
             this.calculatedValue = task.getCalculatedValue();
             this.allocationResult = AllocationResult.createCurrent(task);
             this.aggregate = this.allocationResult.getAggregate();

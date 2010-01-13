@@ -28,6 +28,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -92,7 +94,10 @@ public class ResourceAllocationDAOTest {
     }
 
     private OrderLine createValidOrderLine() {
+        Order order = new Order();
+        order.setInitDate(new Date());
         OrderLine orderLine = OrderLine.create();
+        order.add(orderLine);
         orderLine.setName(UUID.randomUUID().toString());
         orderLine.setCode(UUID.randomUUID().toString());
         orderElementDAO.save(orderLine);

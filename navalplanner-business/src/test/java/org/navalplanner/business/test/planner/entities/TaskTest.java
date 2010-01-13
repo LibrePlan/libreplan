@@ -29,10 +29,12 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -50,7 +52,11 @@ public class TaskTest {
     public TaskTest() {
         hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
-        TaskSource taskSource = TaskSource.create(OrderLine.create(), Arrays
+        Order order = new Order();
+        order.setInitDate(new Date());
+        OrderLine orderLine = OrderLine.create();
+        order.add(orderLine);
+        TaskSource taskSource = TaskSource.create(orderLine, Arrays
                 .asList(hoursGroup));
         task = Task.createTask(taskSource);
     }
@@ -74,7 +80,11 @@ public class TaskTest {
     public static Task createValidTask() {
         HoursGroup hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
-        TaskSource taskSource = TaskSource.create(OrderLine.create(), Arrays
+        OrderLine orderLine = OrderLine.create();
+        Order order = new Order();
+        order.setInitDate(new Date());
+        order.add(orderLine);
+        TaskSource taskSource = TaskSource.create(orderLine, Arrays
                 .asList(hoursGroup));
         return Task.createTask(taskSource);
     }
