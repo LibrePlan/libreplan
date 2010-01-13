@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.order;
 
+import static org.navalplanner.business.common.AdHocTransactionService.readOnlyProxy;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
@@ -495,19 +496,20 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             ISaveCommand saveCommand, final Chart loadChart) {
         planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart));
         saveCommand.addListener(fillChartOnSave(loadChart));
-        taskElementAdapter.addListener(new IOnMoveListener() {
-            @Override
-            public void moved(TaskElement taskElement) {
-                loadChart.fillChart();
-            }
-        });
-        configuration.addReloadChartListener(new IReloadChartListener() {
-
-            @Override
-            public void reloadChart() {
-                loadChart.fillChart();
-            }
-        });
+        taskElementAdapter.addListener(readOnlyProxy(transactionService,
+                IOnMoveListener.class, new IOnMoveListener() {
+                    @Override
+                    public void moved(TaskElement taskElement) {
+                        loadChart.fillChart();
+                    }
+                }));
+        configuration.addReloadChartListener(readOnlyProxy(transactionService,
+                IReloadChartListener.class, new IReloadChartListener() {
+                    @Override
+                    public void reloadChart() {
+                        loadChart.fillChart();
+                    }
+                }));
     }
 
     private void addAdditional(List<ICommand<TaskElement>> additional,
