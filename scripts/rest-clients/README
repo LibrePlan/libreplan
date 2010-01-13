@@ -6,6 +6,13 @@
 
 + When working with the local application:
 
+  * Get XML Schema for any service:
+
+    - get-xml-schema.sh <service-path>
+
+    Example:
+    - get-xml-schema.sh criteriontypes
+
   * [Optional] For clarity: remove "navaldev" database + reload Jetty.
 
   * Import criterion types:
@@ -42,21 +49,9 @@
     - update-order.sh order-update-sample.xml (authenticate with
       wswriter/wswriter)
 
-+ When working with the online demo:
++ When working with the online demo add "--prod" argument to every command.
+Example:
 
   * import-criterions-types.sh --prod criterion-types-sample.xml
     (authenticate with wswriter/wswriter)
 
-  * export-criterion-types.sh --prod (authenticate with wsreader/wsreader)
-
-  * import-resources.sh --prod resources-sample.xml
-    (authenticate with wswriter/wswriter)
-
-  * export-order-element.sh --prod ORDER-ELEMENT-CODE (authenticate with
-      wsreader/wsreader)
-
-  * import-order.sh --prod order-sample.xml (authenticate with
-    wswriter/wswriter)
-
-  * update-order.sh --prod order-update-sample.xml (authenticate with
-    wswriter/wswriter)
