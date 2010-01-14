@@ -28,12 +28,13 @@
 <zk>
     <zscript><![CDATA[
         planningController = arg.get("orderPlanningController");
-        propertiesController = planningController.taskPropertiesController;
-        allocationController = planningController.resourceAllocationController;
-        calendarController = planningController.calendarAllocationController;
         switcher = planningController.viewSwitcher;
+        calendarController = planningController.calendarAllocationController;
+        editController = planningController.editTaskController;
+        propertiesController = editController.taskPropertiesController;
+        allocationController = editController.resourceAllocationController;
         allocationController.switcher = switcher;
-        subController = planningController.subcontractController;
+        subController = editController.subcontractController;
     ]]>
     </zscript>
     <div>

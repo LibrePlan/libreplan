@@ -78,6 +78,7 @@ import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
+import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.navalplanner.web.print.CutyPrint;
@@ -188,10 +189,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(Planner planner, Order order,
             ViewSwitcher switcher,
-            ResourceAllocationController resourceAllocationController,
-            TaskPropertiesController taskPropertiesController,
+            EditTaskController editTaskController,
             CalendarAllocationController calendarAllocationController,
-            SubcontractController subcontractController,
             List<ICommand<TaskElement>> additional) {
         Order orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled()) {
@@ -203,16 +202,19 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         ISaveCommand saveCommand = buildSaveCommand();
         configuration.addGlobalCommand(saveCommand);
 
-        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(resourceAllocationController);
+        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController
+                .getResourceAllocationController());
         configuration.addCommandOnTask(resourceAllocationCommand);
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration.addCommandOnTask(buildDeleteMilestoneCommand());
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
-                .addCommandOnTask(buildTaskPropertiesCommand(taskPropertiesController));
+                .addCommandOnTask(buildTaskPropertiesCommand(editTaskController
+                        .getTaskPropertiesController()));
         configuration
-                .addCommandOnTask(buildSubcontractCommand(subcontractController));
+                .addCommandOnTask(buildSubcontractCommand(editTaskController
+                        .getSubcontractController()));
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
         Tabbox chartComponent = new Tabbox();

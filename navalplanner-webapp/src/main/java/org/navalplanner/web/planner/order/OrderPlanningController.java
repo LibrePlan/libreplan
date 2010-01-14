@@ -31,7 +31,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
-import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
+import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -54,21 +54,7 @@ public class OrderPlanningController implements Composer {
     @Autowired
     private ViewSwitcher viewSwitcher;
 
-    @Autowired
-    private ResourceAllocationController resourceAllocationController;
-
-    public ResourceAllocationController getResourceAllocationController() {
-        return resourceAllocationController;
-    }
-
     private Map<String, String[]> parameters;
-
-    @Autowired
-    private TaskPropertiesController taskPropertiesController;
-
-    public TaskPropertiesController getTaskPropertiesController() {
-        return taskPropertiesController;
-    }
 
     @Autowired
     private IOrderPlanningModel model;
@@ -79,7 +65,7 @@ public class OrderPlanningController implements Composer {
     private CalendarAllocationController calendarAllocationController;
 
     @Autowired
-    private SubcontractController subcontractController;
+    private EditTaskController editTaskController;
 
     private Order order;
 
@@ -135,13 +121,11 @@ public class OrderPlanningController implements Composer {
 
     private void updateConfiguration() {
         model.setConfigurationToPlanner(planner, order, viewSwitcher,
-                resourceAllocationController, taskPropertiesController,
-                calendarAllocationController, subcontractController,
-                        additional);
+                editTaskController, calendarAllocationController, additional);
     }
 
-    public SubcontractController getSubcontractController() {
-        return subcontractController;
+    public EditTaskController getEditTaskController() {
+        return editTaskController;
     }
 
     public void setURLParameters(Map<String, String[]> parameters) {
