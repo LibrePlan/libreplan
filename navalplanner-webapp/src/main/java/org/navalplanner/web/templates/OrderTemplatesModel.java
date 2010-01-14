@@ -108,6 +108,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
                 .findExistingEntity(orderElement.getId());
         template = reloaded.createTemplate();
         treeModel = new TemplatesTree(template);
+        getLabelsOnConversation().initializeLabels();
     }
 
     @Override
