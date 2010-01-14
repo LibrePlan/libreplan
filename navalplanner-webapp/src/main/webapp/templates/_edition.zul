@@ -22,6 +22,7 @@
 <?component name="listOrderElementMaterials" class="org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent"
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementLabels" class="org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
+<?component name="assignedQualityForms" class="org.navalplanner.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
 <window id="${arg.top_id}">
     <tabbox>
         <tabs>
@@ -29,6 +30,7 @@
             <tab label="${i18n:_('Template Tree')}" disabled="@{templateController.templateTreeDisabled}"/>
             <tab label="${i18n:_('Labels')}" />
             <tab label="${i18n:_('Materials')}" />
+            <tab label="${i18n:_('Quality Forms')}" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -69,6 +71,9 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementMaterials id="listOrderElementMaterials"/>
+            </tabpanel>
+            <tabpanel>
+                <assignedQualityForms id="assignedQualityForms"/>
             </tabpanel>
         </tabpanels>
     </tabbox>

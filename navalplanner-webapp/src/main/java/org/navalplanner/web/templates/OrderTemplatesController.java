@@ -31,6 +31,7 @@ import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
+import org.navalplanner.web.templates.quality.QualityFormAssignerComponent;
 import org.navalplanner.web.tree.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -90,6 +91,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private void showEditWindow() {
         bindMaterialsControllerWithCurrentTemplate();
         bindLabelsControllerWithCurrentTemplate();
+        bindQualityFormWithCurrentTemplate();
         show(getEditWindow());
     }
 
@@ -103,6 +105,12 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         LabelsAssignmentToTemplateComponent labelsComponent = (LabelsAssignmentToTemplateComponent) getEditWindow()
                 .getFellow("listOrderElementLabels");
         labelsComponent.getController().openWindow(model);
+    }
+
+    private void bindQualityFormWithCurrentTemplate() {
+        QualityFormAssignerComponent c = (QualityFormAssignerComponent) getEditWindow()
+                .getFellow("assignedQualityForms");
+        c.useModel(model);
     }
 
     public boolean isTemplateTreeDisabled() {
