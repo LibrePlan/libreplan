@@ -85,6 +85,15 @@ public class TimeTracker {
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
     }
 
+    public TimeTracker(Interval interval, ZoomLevel zoomLevel,
+            IDetailItemModificator firstLevelModificator,
+            IDetailItemModificator secondLevelModificator,
+            Component componentOnWhichGiveFeedback) {
+        this(interval, firstLevelModificator, secondLevelModificator,
+                componentOnWhichGiveFeedback);
+        detailLevel = zoomLevel;
+    }
+
     public ZoomLevel getDetailLevel() {
         return detailLevel;
     }

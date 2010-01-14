@@ -106,4 +106,17 @@ public enum ZoomLevel {
         return name;
     }
 
+    public static ZoomLevel getFromString(String zoomLevelParameter) {
+        ZoomLevel requiredZoomLevel = ZoomLevel.DETAIL_ONE;
+        if (zoomLevelParameter != null) {
+            for (ZoomLevel z : ZoomLevel.values()) {
+                if (zoomLevelParameter.equals(z.name)) {
+                    requiredZoomLevel = z;
+                }
+            }
+        }
+        return requiredZoomLevel;
+
+    }
+
 }

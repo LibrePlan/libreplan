@@ -22,6 +22,8 @@ package org.navalplanner.web.planner.tabs;
 import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
+import java.util.Map;
+
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -51,6 +53,7 @@ import org.zkoss.ganttz.extensions.TabProxy;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -112,9 +115,13 @@ public class MultipleTabsPlannerController implements Composer,
     private URLHandlerRegistry registry;
 
     private TabsConfiguration buildTabsConfiguration() {
+
+        Map<String, String[]> parameters = Executions.getCurrent()
+                .getParameterMap();
+
         planningTab = doFeedbackOn(PlanningTabCreator.create(mode,
                 companyPlanningController, orderPlanningController, orderDAO,
-                breadcrumbs));
+                breadcrumbs, parameters));
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
                 resourceLoadController, upCommand(),
                 resourceLoadControllerGlobal,

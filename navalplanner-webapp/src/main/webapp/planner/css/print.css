@@ -1,6 +1,35 @@
 
 /* Print CSS used for CutyCapt capture requests */
 
+    .mainmenu, .user-area, .help-link {
+        display: none;
+    }
+
+    body .perspectives-column {
+        display: none;
+    }
+
+    body .main-area {
+        margin-left: -90px;
+        margin-top: -28px;
+    }
+
+    .toolbar-box {
+        display: none;
+        height: 0px !important;
+    }
+
+
+    body .z-border-layout {
+        background-color: #FFFFFF;
+    }
+
+    .plannerlayout .leftpanelcontainer,
+    .plannerlayout .rightpanellayout .z-center-body {
+        overflow: hidden !important;
+    }
+
+
 body {
     width: 2600px;
 }
@@ -49,5 +78,4 @@ a.ruta, .toolbar-box {
     font-size: 18px;
     display: inline !important;
 }
-
 

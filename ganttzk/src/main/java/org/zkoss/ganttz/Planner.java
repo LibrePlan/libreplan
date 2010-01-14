@@ -87,6 +87,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isShowingCriticalPath = false;
 
+    private ZoomLevel initialZoomLevel = ZoomLevel.DETAIL_ONE;
+
     public Planner() {
         registerNeededScripts();
     }
@@ -394,6 +396,17 @@ public class Planner extends HtmlMacroComponent  {
         // Pending to raise print configuration popup. Information retrieved
         // should be passed as parameter to context print method
         context.print();
+    }
+
+    public ZoomLevel getZoomLevel() {
+        if (ganttPanel == null) {
+            return initialZoomLevel;
+        }
+        return ganttPanel.getTimeTracker().getDetailLevel();
+    }
+
+    public void setInitialZoomLevel(final ZoomLevel zoomLevel) {
+        this.initialZoomLevel = zoomLevel;
     }
 
 }

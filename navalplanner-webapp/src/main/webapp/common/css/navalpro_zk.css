@@ -18,19 +18,12 @@
 
     body .main-area {
         margin-left: -90px;
-    }
-
-    body .main-area {
-        margin-left: -90px;
+        margin-top: -28px;
     }
 
     .toolbar-box {
         display: none;
         height: 0px !important;
-    }
-
-    .plannerlayout_center {
-        margin-top: -25px;
     }
 
     /* Calculate dynamically */

@@ -171,13 +171,16 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         this.adapter = configuration.getAdapter();
         this.navigator = configuration.getNavigator();
         this.diagramGraph = diagramGraph;
+
         final IDetailItemModificator firstLevelModificators = configuration
                 .getFirstLevelModificators();
         final IDetailItemModificator secondLevelModificators = configuration
                 .getSecondLevelModificators();
+
         this.timeTracker = new TimeTracker(new Interval(TimeTrackerState
-                .year(2009), TimeTrackerState.year(2011)),
-                firstLevelModificators, secondLevelModificators, planner);
+                .year(2009), TimeTrackerState.year(2011)), planner
+                .getZoomLevel(), firstLevelModificators,
+                secondLevelModificators, planner);
     }
 
     /**
@@ -396,6 +399,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 if (layout.getSelectedIndex() == 2) {
                     parameters.put("extension", ".png");
                 }
+                parameters.put("zoom", planner.getZoomLevel().toString());
                 configuration.print(parameters);
             }
         });

@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.company;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.util.Composer;
@@ -55,6 +57,8 @@ public class CompanyPlanningController implements Composer{
 
     private ICommandOnTask<TaskElement> doubleClickCommand;
 
+    private Map<String, String[]> parameters;
+
     public CompanyPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
     }
@@ -67,6 +71,14 @@ public class CompanyPlanningController implements Composer{
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         planner = (Planner) comp;
+        String zoomLevelParameter = null;
+        if ((parameters.get("zoom") != null) && !(parameters.isEmpty())) {
+            zoomLevelParameter = parameters.get("zoom")[0];
+        }
+        planner
+                .setInitialZoomLevel(ZoomLevel
+                        .getFromString(zoomLevelParameter));
+
     }
 
     public void setConfigurationForPlanner() {
@@ -84,6 +96,10 @@ public class CompanyPlanningController implements Composer{
     public void setDoubleClickCommand(
             ICommandOnTask<TaskElement> doubleClickCommand) {
         this.doubleClickCommand = doubleClickCommand;
+    }
+
+    public void setURLParameters(Map<String, String[]> parameters) {
+        this.parameters = parameters;
     }
 
 }

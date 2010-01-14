@@ -63,24 +63,30 @@ public class PlanningTabCreator {
 
     private final IOrderDAO orderDAO;
 
+    private final Map<String, String[]> parameters;
+
     public static ITab create(Mode mode,
             CompanyPlanningController companyPlanningController,
             OrderPlanningController orderPlanningController,
             IOrderDAO orderDAO,
-            Component breadcrumbs) {
+ Component breadcrumbs,
+            Map<String, String[]> parameters) {
         return new PlanningTabCreator(mode, companyPlanningController,
-                orderPlanningController, breadcrumbs, orderDAO).create();
+                orderPlanningController, breadcrumbs, orderDAO, parameters)
+                .create();
     }
 
     private PlanningTabCreator(Mode mode,
             CompanyPlanningController companyPlanningController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs, IOrderDAO orderDAO) {
+            Component breadcrumbs, IOrderDAO orderDAO,
+            Map<String, String[]> parameters) {
         this.mode = mode;
         this.companyPlanningController = companyPlanningController;
         this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
         this.orderDAO = orderDAO;
+        this.parameters = parameters;
     }
 
     private ITab create() {
@@ -133,6 +139,7 @@ public class PlanningTabCreator {
                 args
                         .put("companyPlanningController",
                                 companyPlanningController);
+                companyPlanningController.setURLParameters(parameters);
                 return Executions.createComponents("/planner/_company.zul",
                         parent, args);
             }
