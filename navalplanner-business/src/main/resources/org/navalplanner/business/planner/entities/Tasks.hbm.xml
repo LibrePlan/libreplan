@@ -54,7 +54,7 @@
 
             <many-to-one name="subcontractedTaskData"
                 column="SUBCONTRATED_TASK_DATA_ID"
-                unique="true" cascade="all" />
+                unique="true" cascade="all" lazy="false" />
 
         </joined-subclass>
 

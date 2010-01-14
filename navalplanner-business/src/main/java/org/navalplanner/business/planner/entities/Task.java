@@ -412,4 +412,11 @@ public class Task extends TaskElement {
         return subcontractedTaskData;
     }
 
+    public void removeAllResourceAllocations() {
+        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            removeResourceAllocation(resourceAllocation);
+        }
+    }
+
 }

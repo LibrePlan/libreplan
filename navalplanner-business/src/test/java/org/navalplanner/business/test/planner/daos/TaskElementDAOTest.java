@@ -445,7 +445,7 @@ public class TaskElementDAOTest {
         Task task = createValidTask();
 
         SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
-                .create("code");
+                .create();
         subcontractedTaskData.setExternalCompany(getExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);

@@ -27,6 +27,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -56,10 +57,12 @@ public class SubcontractCommand implements ISubcontractCommand {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             final TaskElement task) {
         if (isApplicableTo(task)) {
-            subcontractController.showWindow((Task) task, context.getTask());
+            subcontractController.showWindow(context, (Task) task, context
+                    .getTask());
         }
     }
 

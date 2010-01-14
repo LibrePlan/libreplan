@@ -20,12 +20,27 @@
 
 package org.navalplanner.web.planner.order;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.util.Date;
+import java.util.List;
+
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 /**
@@ -39,14 +54,28 @@ public class SubcontractController extends GenericForwardComposer {
 
     private Window window;
 
+    private ISubcontractModel subcontractModel;
+
+    private Component messagesContainer;
+
+    private IMessagesForUser messagesForUser;
+
+    private IContextWithPlannerTask<TaskElement> context;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         window = (Window) comp;
+        messagesForUser = new MessagesForUser(messagesContainer);
     }
 
-    public void showWindow(Task task, org.zkoss.ganttz.data.Task task2) {
+    public void showWindow(IContextWithPlannerTask<TaskElement> context,
+            Task task, org.zkoss.ganttz.data.Task ganttTask) {
+        this.context = context;
+
         try {
+            subcontractModel.init(task, ganttTask);
+            Util.reloadBindings(window);
             window.doModal();
         } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
@@ -56,11 +85,61 @@ public class SubcontractController extends GenericForwardComposer {
     }
 
     public void accept() {
-        window.setVisible(false);
+        try {
+            int status = Messagebox.YES;
+            if (subcontractModel.hasResourceAllocations()) {
+                try {
+                    status = Messagebox
+                            .show(
+                                    _("As you are subcontracting this task, all the resource allocations related with this task will be removed.")
+                                            + _("Are you sure?"),
+                                    _("Confirm"), Messagebox.YES
+                                            | Messagebox.NO,
+                                    Messagebox.QUESTION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (status == Messagebox.YES) {
+                subcontractModel.confirm();
+                context.reloadCharts();
+                window.setVisible(false);
+            }
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
     }
 
     public void cancel() {
+        subcontractModel.cancel();
         window.setVisible(false);
+    }
+
+    public List<ExternalCompany> getSubcontractorExternalCompanies() {
+        return subcontractModel.getSubcontractorExternalCompanies();
+    }
+
+    public SubcontractedTaskData getSubcontractedTaskData() {
+        return subcontractModel.getSubcontractedTaskData();
+    }
+
+    public void setExternalCompany(Comboitem comboitem) {
+        if (comboitem != null && comboitem.getValue() != null) {
+            ExternalCompany externalCompany = (ExternalCompany) comboitem
+                    .getValue();
+            subcontractModel.setExternalCompany(externalCompany);
+        } else {
+            subcontractModel.setExternalCompany(null);
+        }
+    }
+
+    public Date getEndDate() {
+        return subcontractModel.getEndDate();
+    }
+
+    public void setEndDate(Date endDate) {
+        subcontractModel.setEndDate(endDate);
     }
 
 }

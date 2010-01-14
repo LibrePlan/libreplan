@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.externalcompanies.daos;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -110,6 +112,14 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
     public ExternalCompany findUniqueByNifInAnotherTransaction(String nif)
             throws InstanceNotFoundException {
         return findUniqueByNif(nif);
+    }
+
+    @Override
+    public List<ExternalCompany> findSubcontractor() {
+        Criteria c = getSession().createCriteria(ExternalCompany.class);
+        c.add(Restrictions.eq("subcontractor", true));
+
+        return c.list();
     }
 
 }

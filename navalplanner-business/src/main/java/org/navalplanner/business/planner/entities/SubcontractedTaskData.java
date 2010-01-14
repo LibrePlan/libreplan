@@ -23,7 +23,6 @@ package org.navalplanner.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -35,11 +34,32 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
  */
 public class SubcontractedTaskData extends BaseEntity {
 
-    public static SubcontractedTaskData create(String subcontractedCode) {
-        SubcontractedTaskData subcontractedTaskData = new SubcontractedTaskData(
-                subcontractedCode);
+    public static SubcontractedTaskData create() {
+        SubcontractedTaskData subcontractedTaskData = new SubcontractedTaskData();
         subcontractedTaskData.subcontratationDate = new Date();
         return create(subcontractedTaskData);
+    }
+
+    public static SubcontractedTaskData createFrom(
+            SubcontractedTaskData subcontractedTaskData) {
+        if (subcontractedTaskData == null) {
+            return null;
+        }
+
+        SubcontractedTaskData result = new SubcontractedTaskData();
+        result.externalCompany = subcontractedTaskData.externalCompany;
+        result.subcontratationDate = subcontractedTaskData.subcontratationDate;
+        result.subcontractCommunicationDate = subcontractedTaskData.subcontractCommunicationDate;
+        result.workDescription = subcontractedTaskData.workDescription;
+        result.subcontractPrice = subcontractedTaskData.subcontractPrice;
+        result.subcontractedCode = subcontractedTaskData.subcontractedCode;
+        result.nodeWithoutChildrenExported = subcontractedTaskData.nodeWithoutChildrenExported;
+        result.labelsExported = subcontractedTaskData.labelsExported;
+        result.materialAssignmentsExported = subcontractedTaskData.materialAssignmentsExported;
+        result.hoursGroupsExported = subcontractedTaskData.hoursGroupsExported;
+        result.criterionRequirementsExported = subcontractedTaskData.criterionRequirementsExported;
+
+        return create(result);
     }
 
     private ExternalCompany externalCompany;
@@ -64,10 +84,6 @@ public class SubcontractedTaskData extends BaseEntity {
      * Constructor for hibernate. Do not use!
      */
     public SubcontractedTaskData() {
-    }
-
-    private SubcontractedTaskData(String subcontractedCode) {
-        this.subcontractedCode = subcontractedCode;
     }
 
     @NotNull(message = "external company not specified")
@@ -104,9 +120,12 @@ public class SubcontractedTaskData extends BaseEntity {
         this.subcontractPrice = subcontractPrice;
     }
 
-    @NotEmpty(message = "subcontracted code not specified")
     public String getSubcontractedCode() {
         return subcontractedCode;
+    }
+
+    public void setSubcontractedCode(String subcontractedCode) {
+        this.subcontractedCode = subcontractedCode;
     }
 
     public boolean isNodeWithoutChildrenExported() {
@@ -185,6 +204,20 @@ public class SubcontractedTaskData extends BaseEntity {
     @NotNull(message = "subcontratation date not specified")
     public Date getSubcontratationDate() {
         return subcontratationDate;
+    }
+
+    public void applyChanges(SubcontractedTaskData subcontratedTask) {
+        this.externalCompany = subcontratedTask.externalCompany;
+        this.subcontratationDate = subcontratedTask.subcontratationDate;
+        this.subcontractCommunicationDate = subcontratedTask.subcontractCommunicationDate;
+        this.workDescription = subcontratedTask.workDescription;
+        this.subcontractPrice = subcontratedTask.subcontractPrice;
+        this.subcontractedCode = subcontratedTask.subcontractedCode;
+        this.nodeWithoutChildrenExported = subcontratedTask.nodeWithoutChildrenExported;
+        this.labelsExported = subcontratedTask.labelsExported;
+        this.materialAssignmentsExported = subcontratedTask.materialAssignmentsExported;
+        this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
+        this.criterionRequirementsExported = subcontratedTask.criterionRequirementsExported;
     }
 
 }

@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.externalcompanies.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -48,5 +50,7 @@ public interface IExternalCompanyDAO extends IGenericDAO<ExternalCompany, Long> 
 
     ExternalCompany findUniqueByNifInAnotherTransaction(String nif)
         throws InstanceNotFoundException;
+
+    List<ExternalCompany> findSubcontractor();
 
 }

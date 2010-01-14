@@ -751,6 +751,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Clients.evalJavaScript(javascript);
 
             resetMinimumAndMaximumValueForChart();
+            resetMaps();
 
             List<DayAssignment> orderDayAssignments = order.getDayAssignments();
             SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(orderDayAssignments);
@@ -807,6 +808,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             chart.setWidth(size + "px");
             chart.setHeight("150px");
+        }
+
+        private void resetMaps() {
+            mapOrderLoad.clear();
+            mapOrderOverload.clear();
+            mapMaxCapacity.clear();
+            mapOtherLoad.clear();
+            mapOtherOverload.clear();
         }
 
         private void convertAsNeededByZoomMaps() {

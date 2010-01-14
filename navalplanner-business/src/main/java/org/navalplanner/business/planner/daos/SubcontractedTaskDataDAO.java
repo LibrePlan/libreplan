@@ -21,10 +21,13 @@
 package org.navalplanner.business.planner.daos;
 
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for the {@link SubcontractedTaskDataDAO} entity.
@@ -36,5 +39,20 @@ import org.springframework.stereotype.Repository;
 public class SubcontractedTaskDataDAO extends
         GenericDAOHibernate<SubcontractedTaskData, Long> implements
         ISubcontractedTaskDataDAO {
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsInAnohterTransaction(Long id) {
+        if (id == null) {
+            return false;
+        }
+
+        try {
+            SubcontractedTaskData found = find(id);
+            return (found != null) && (found.getId().equals(id));
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
 
 }

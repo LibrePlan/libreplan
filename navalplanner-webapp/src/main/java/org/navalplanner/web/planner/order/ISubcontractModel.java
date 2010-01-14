@@ -18,19 +18,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.web.planner.order;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import java.util.Date;
+import java.util.List;
+
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
+import org.navalplanner.business.planner.entities.Task;
 
 /**
- * DAO interface for the {@link SubcontractedTaskDataDAO} entity.
+ * Contract for {@link SubcontractModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ISubcontractedTaskDataDAO extends
-        IGenericDAO<SubcontractedTaskData, Long> {
+public interface ISubcontractModel {
 
-    boolean existsInAnohterTransaction(Long id);
+    /*
+     * Non conversational steps
+     */
+    List<ExternalCompany> getSubcontractorExternalCompanies();
+
+    /*
+     * Initial conversation steps
+     */
+    void init(Task task, org.zkoss.ganttz.data.Task ganttTask);
+
+    /*
+     * Intermediate conversation steps
+     */
+    SubcontractedTaskData getSubcontractedTaskData();
+
+    void setExternalCompany(ExternalCompany externalCompany);
+
+    boolean hasResourceAllocations();
+
+    Date getEndDate();
+    void setEndDate(Date endDate);
+
+    /*
+     * Final conversation steps
+     */
+    void confirm() throws ValidationException;
+    void cancel();
 
 }
