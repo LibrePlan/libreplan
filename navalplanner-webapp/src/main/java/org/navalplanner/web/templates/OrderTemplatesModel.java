@@ -134,7 +134,17 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public void initEdit(OrderElementTemplate template) {
         initializeAcompanyingObjectsOnConversation();
         this.template = dao.findExistingEntity(template.getId());
+        loadQualityForms(this.template);
         treeModel = new TemplatesTree(this.template);
+    }
+
+    private void loadQualityForms(OrderElementTemplate template) {
+        for (QualityForm each : template.getQualityForms()) {
+            each.getName();
+        }
+        for (OrderElementTemplate each : template.getChildrenTemplates()) {
+            loadQualityForms(each);
+        }
     }
 
     private void initializeAcompanyingObjectsOnConversation() {

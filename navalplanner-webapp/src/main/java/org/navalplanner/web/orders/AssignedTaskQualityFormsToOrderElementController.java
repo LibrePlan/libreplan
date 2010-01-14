@@ -140,17 +140,38 @@ public class AssignedTaskQualityFormsToOrderElementController extends
      * quality form list
      */
     public void onAssignTaskQualityForm() {
-        QualityForm qualityForm = (QualityForm) bdQualityForms
+        BandboxSearch qualityFormFinder = bdQualityForms;
+        QualityForm qualityForm = retrieveQualityFormFrom(qualityFormFinder,
+                new ICheckQualityFormAssigned() {
+
+                    @Override
+                    public boolean isAssigned(QualityForm qualityForm) {
+                        return AssignedTaskQualityFormsToOrderElementController.this
+                                .isAssigned(qualityForm);
+                    }
+                });
+        assignQualityForm(qualityForm);
+    }
+
+    public interface ICheckQualityFormAssigned {
+        public boolean isAssigned(QualityForm qualityForm);
+    }
+
+    public static QualityForm retrieveQualityFormFrom(
+            BandboxSearch qualityFormFinder,
+            ICheckQualityFormAssigned checkQualityFormAssigned) {
+        QualityForm qualityForm = (QualityForm) qualityFormFinder
                 .getSelectedElement();
         if (qualityForm == null) {
-            throw new WrongValueException(bdQualityForms,
+            throw new WrongValueException(qualityFormFinder,
                     _("please, select a quality form"));
         }
-        if (isAssigned(qualityForm)) {
-            throw new WrongValueException(bdQualityForms, _("already assigned"));
+        if (checkQualityFormAssigned.isAssigned(qualityForm)) {
+            throw new WrongValueException(qualityFormFinder,
+                    _("already assigned"));
         }
-        assignQualityForm(qualityForm);
-        bdQualityForms.clear();
+        qualityFormFinder.clear();
+        return qualityForm;
     }
 
     public void clear() {

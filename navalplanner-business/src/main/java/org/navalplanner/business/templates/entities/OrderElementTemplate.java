@@ -247,4 +247,12 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public Set<QualityForm> getQualityForms() {
         return Collections.unmodifiableSet(qualityForms);
     }
+
+    public void addQualityForm(QualityForm qualityForm) {
+        qualityForms.add(qualityForm);
+    }
+
+    public void removeQualityForm(QualityForm qualityForm) {
+        qualityForms.remove(qualityForm);
+    }
 }
