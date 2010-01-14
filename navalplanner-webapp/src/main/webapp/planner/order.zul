@@ -28,6 +28,7 @@
 <zk>
     <zscript><![CDATA[
         planningController = arg.get("orderPlanningController");
+        propertiesController = planningController.taskPropertiesController;
         allocationController = planningController.resourceAllocationController;
         calendarController = planningController.calendarAllocationController;
         switcher = planningController.viewSwitcher;
@@ -42,48 +43,50 @@
     </div>
 
     <window id="taskPropertiesWindow"
-        apply="${planningController.taskPropertiesController}" closable="true"
+        apply="${propertiesController}" closable="true"
         title="${i18n:_('Task properties')}" width="650px" visible="false"
         border="normal">
 
         <grid>
             <rows>
                 <row>
-                    ${i18n:_('Name')}
-                    <textbox id="name" />
+                    <label value="${i18n:_('Name')}" />
+                    <textbox id="name" value="@{propertiesController.ganttTask.name}" />
                 </row>
                 <row>
-                    ${i18n:_('Start')}
-                    <datebox id="startDateBox" compact="true" disabled="${true}"/>
+                    <label value="${i18n:_('Start')}" />
+                    <datebox id="startDateBox" disabled="true"
+                        value="@{propertiesController.ganttTask.beginDate}" />
                 </row>
                 <row>
-                    ${i18n:_('End')}
-                    <datebox id="endDateBox" compact="true" disabled="${true}"/>
+                    <label value="${i18n:_('End')}" />
+                    <datebox id="endDateBox" disabled="true"
+                        value="@{propertiesController.endDate}" />
                 </row>
                 <row>
-                    ${i18n:_('Notes')}
-                    <textbox id="notes" />
+                    <label value="${i18n:_('Notes')}" />
+                    <textbox id="notes" value="@{propertiesController.ganttTask.notes}" />
                 </row>
                 <row>
-                    Hours
-                    <intbox id="hours" disabled="${true}" />
+                    <label value="${i18n:_('Hours')}" />
+                    <intbox id="hours" disabled="true" />
                 </row>
                 <row id="durationRow">
-                    Duration (days)
-                    <intbox id="duration" disabled="${true}"/>
+                    <label value="${i18n:_('Duration (days)')}" />
+                    <intbox id="duration" disabled="true"/>
                 </row>
                 <row id="startConstraint">
-                    ${i18n:_('Constraint')}
+                    <label value="${i18n:_('Constraint')}" />
                     <vbox>
                         <combobox id="startConstraintTypes">
                         </combobox>
-                        <datebox id="startConstraintDate" compact="true"
-                            constraint ="no empty"/>
+                        <datebox id="startConstraintDate" constraint ="no empty"/>
                     </vbox>
                 </row>
             </rows>
         </grid>
-        <button id="ok" label="${i18n:_('Accept')}" />
+        <button id="ok" label="${i18n:_('Accept')}"
+            onClick="propertiesController.accept();" />
     </window>
 
     <window id="resourceAllocationWindow"

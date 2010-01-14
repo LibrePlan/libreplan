@@ -25,7 +25,6 @@ import java.util.Date;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
@@ -37,7 +36,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     }
 
-    private Window popUp;
+    private Window window;
 
     private Task currentTask;
 
@@ -52,13 +51,13 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        popUp = (Window) comp;
+        window = (Window) comp;
     }
 
     public void showEditFormFor(Component openRelativeTo, Task task) {
         this.currentTask = task;
         try {
-            popUp.setMode("modal");
+            window.setMode("modal");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -74,35 +73,22 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         notes.setValue(currentTask.getNotes());
     }
 
-    public void onChange$name(Event event) {
-        currentTask.setName(name.getValue());
+    public Date getEndDate() {
+        if (currentTask == null) {
+            return null;
+        }
+        return currentTask.getEndDate();
     }
 
-    public void onChange$startDateBox(Event event) {
-        currentTask.setBeginDate(startDateBox.getValue());
-    }
-
-    public void onChange$endDateBox(Event event) {
-        currentTask.setLengthMilliseconds(endDateBox.getValue().getTime()
-                - currentTask.getBeginDate().getTime());
-    }
-
-    public void onChange$notes(Event event) {
-        currentTask.setNotes(notes.getValue());
-    }
-
-    public void onClick$ok(Event event) {
-        if (okPressed()) {
-            popUp.setVisible(false);
+    public void setEndDate(Date endDate) {
+        if (currentTask != null) {
+            currentTask.setLengthMilliseconds(endDate.getTime()
+                    - currentTask.getBeginDate().getTime());
         }
     }
 
-    /**
-     * hook for executing actions when ok is pressed.
-     * @return <code>true</code> only if can exit the popup
-     */
-    protected boolean okPressed() {
-        return true;
+    public void accept() {
+        window.setVisible(false);
     }
 
 }

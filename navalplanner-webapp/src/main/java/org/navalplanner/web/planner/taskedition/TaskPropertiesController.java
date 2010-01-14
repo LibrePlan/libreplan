@@ -27,6 +27,7 @@ import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskEditFormComposer;
@@ -41,6 +42,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.api.Combobox;
 import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Row;
+import org.zkoss.zul.api.Window;
 
 /**
  * Controller for edit {@link Task} popup.
@@ -136,14 +138,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
      * Controller from the Gantt to manage common fields on edit {@link Task}
      * popup.
      */
-    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer() {
-        protected boolean okPressed() {
-            return !(currentTaskElement instanceof Task)
-                    || saveConstraintChanges();
-        };
-    };
+    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
 
     private TaskElement currentTaskElement;
+
+    private Window window;
 
     private Intbox hours;
 
@@ -175,6 +174,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
             hideStartConstraintRow();
         }
         hours.setValue(currentTaskElement.getWorkHours());
+        Util.reloadBindings(window);
     }
 
     private void hideStartConstraintRow() {
@@ -242,6 +242,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        window = (Window) comp;
         taskEditFormComposer.doAfterCompose(comp);
         WebStartConstraintType.appendItems(startConstraintTypes);
         startConstraintTypes.addEventListener(Events.ON_SELECT,
@@ -255,4 +256,37 @@ public class TaskPropertiesController extends GenericForwardComposer {
                     }
                 });
     }
+
+    public TaskElement getTaskElement() {
+        return currentTaskElement;
+    }
+
+    public org.zkoss.ganttz.data.Task getGanttTask() {
+        if (currentContext == null) {
+            return null;
+        }
+        return currentContext.getTask();
+    }
+
+    public void accept() {
+        boolean ok = true;
+        if (currentTaskElement instanceof Task) {
+            ok = saveConstraintChanges();
+        }
+        if (ok) {
+            taskEditFormComposer.accept();
+        }
+    }
+
+    public Date getEndDate() {
+        if (taskEditFormComposer == null) {
+            return null;
+        }
+        return taskEditFormComposer.getEndDate();
+    }
+
+    public void setEndDate(Date endDate) {
+        taskEditFormComposer.setEndDate(endDate);
+    }
+
 }
