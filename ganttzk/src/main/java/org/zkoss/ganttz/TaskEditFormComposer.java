@@ -27,15 +27,12 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Window;
 
 public class TaskEditFormComposer extends GenericForwardComposer {
 
     public TaskEditFormComposer() {
 
     }
-
-    private Window window;
 
     private Task currentTask;
     private TaskDTO taskDTO;
@@ -51,17 +48,11 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        window = (Window) comp;
     }
 
     public void showEditFormFor(Component openRelativeTo, Task task) {
         this.currentTask = task;
         this.taskDTO = toDTO(task);
-        try {
-            window.setMode("modal");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         updateComponentValuesForTask(taskDTO);
     }
 
@@ -75,11 +66,9 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     public void accept() {
         copyFromDTO(taskDTO, currentTask);
-        window.setVisible(false);
     }
 
     public void cancel() {
-        window.setVisible(false);
         currentTask = null;
         taskDTO = null;
     }

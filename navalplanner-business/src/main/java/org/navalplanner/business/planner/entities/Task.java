@@ -420,4 +420,8 @@ public class Task extends TaskElement {
         }
     }
 
+    public boolean isSubcontracted() {
+        return (subcontractedTaskData != null);
+    }
+
 }

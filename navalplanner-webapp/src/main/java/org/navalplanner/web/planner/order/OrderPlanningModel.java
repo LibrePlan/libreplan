@@ -80,7 +80,6 @@ import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
-import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.navalplanner.web.print.CutyPrint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -210,11 +209,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
-                .addCommandOnTask(buildTaskPropertiesCommand(editTaskController
-                        .getTaskPropertiesController()));
+                .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
         configuration
-                .addCommandOnTask(buildSubcontractCommand(editTaskController
-                        .getSubcontractController()));
+                .addCommandOnTask(buildSubcontractCommand(editTaskController));
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
         Tabbox chartComponent = new Tabbox();
@@ -550,10 +547,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private ITaskPropertiesCommand buildTaskPropertiesCommand(
-            TaskPropertiesController taskPropertiesController) {
+            EditTaskController editTaskController) {
         ITaskPropertiesCommand taskPropertiesCommand = getTaskPropertiesCommand();
         taskPropertiesCommand
-                .setTaskPropertiesController(taskPropertiesController);
+                .setEditTaskController(editTaskController);
         return taskPropertiesCommand;
     }
 
@@ -1031,9 +1028,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private ISubcontractCommand buildSubcontractCommand(
-            SubcontractController subcontractController) {
+            EditTaskController editTaskController) {
         ISubcontractCommand subcontractCommand = getSubcontractCommand();
-        subcontractCommand.setSubcontractController(subcontractController);
+        subcontractCommand.setEditTaskController(editTaskController);
         return subcontractCommand;
     }
 

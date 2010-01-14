@@ -23,7 +23,6 @@ package org.navalplanner.web.planner.order;
 import java.util.Date;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -63,9 +62,6 @@ public class SubcontractModel implements ISubcontractModel {
     @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
-    @Autowired
-    private IConfigurationDAO configurationDAO;
-
     @Override
     @Transactional(readOnly = true)
     public void init(Task task, org.zkoss.ganttz.data.Task ganttTask) {
@@ -77,8 +73,6 @@ public class SubcontractModel implements ISubcontractModel {
 
         SubcontractedTaskData subcontractedTaskData = task
                 .getSubcontractedTaskData();
-        forceLoadSubcontractedTaskData(subcontractedTaskData);
-
         this.currentSubcontractedTaskData = subcontractedTaskData;
 
         if (subcontractedTaskData == null) {
@@ -86,14 +80,6 @@ public class SubcontractModel implements ISubcontractModel {
         } else {
             this.subcontractedTaskData = SubcontractedTaskData
                     .createFrom(subcontractedTaskData);
-        }
-    }
-
-    private void forceLoadSubcontractedTaskData(
-            SubcontractedTaskData subcontractedTaskData) {
-        if (subcontractedTaskData != null) {
-            subcontractedTaskDataDAO.reattach(subcontractedTaskData);
-            subcontractedTaskData.getWorkDescription();
         }
     }
 
@@ -105,16 +91,24 @@ public class SubcontractModel implements ISubcontractModel {
     @Override
     @Transactional(readOnly = true)
     public void confirm() throws ValidationException {
-        subcontractedTaskDataDAO.save(subcontractedTaskData);
+        if (task != null) {
+            if (subcontractedTaskData == null) {
+                task.setSubcontractedTaskData(null);
+            } else {
+                subcontractedTaskDataDAO.save(subcontractedTaskData);
 
-        if (currentSubcontractedTaskData == null) {
-            task.setSubcontractedTaskData(subcontractedTaskData);
-        } else {
-            currentSubcontractedTaskData.applyChanges(subcontractedTaskData);
+                if (currentSubcontractedTaskData == null) {
+                    task.setSubcontractedTaskData(subcontractedTaskData);
+                } else {
+                    currentSubcontractedTaskData
+                            .applyChanges(subcontractedTaskData);
+                }
+
+                task.removeAllResourceAllocations();
+            }
+
+            recalculateTaskLength();
         }
-
-        task.removeAllResourceAllocations();
-        recalculateTaskLength();
     }
 
     private void recalculateTaskLength() {
@@ -166,6 +160,11 @@ public class SubcontractModel implements ISubcontractModel {
     @Override
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    @Override
+    public void removeSubcontractedTaskData() {
+        subcontractedTaskData = null;
     }
 
 }

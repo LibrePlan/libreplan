@@ -354,4 +354,9 @@ public abstract class TaskElement extends BaseEntity {
         return dayAssignments;
     }
 
+    public boolean isSubcontracted() {
+        // Just Task could be subcontracted
+        return false;
+    }
+
 }

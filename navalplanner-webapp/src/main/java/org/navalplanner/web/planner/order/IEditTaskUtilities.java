@@ -21,16 +21,14 @@
 package org.navalplanner.web.planner.order;
 
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
-import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
- * Contract for {@link SubcontractCommand}.
+ * Contract for {@link EditTaskUtilities}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ISubcontractCommand extends ICommandOnTask<TaskElement> {
+public interface IEditTaskUtilities {
 
-    void setEditTaskController(EditTaskController editTaskController);
+    void reattach(TaskElement taskElement);
 
 }

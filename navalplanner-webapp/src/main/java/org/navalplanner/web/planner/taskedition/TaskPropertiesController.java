@@ -40,10 +40,11 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Combobox;
 import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Row;
-import org.zkoss.zul.api.Window;
+import org.zkoss.zul.api.Tabpanel;
 
 /**
  * Controller for edit {@link Task} popup.
@@ -143,7 +144,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private TaskElement currentTaskElement;
 
-    private Window window;
+    private Tabpanel tabpanel;
 
     private Intbox hours;
 
@@ -156,6 +157,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private Row startConstraint;
 
     private IContextWithPlannerTask<TaskElement> currentContext;
+
+    private Row subcontract;
+
+    private Checkbox subcontractCheckbox;
 
     public void showEditFormFor(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
@@ -170,12 +175,23 @@ public class TaskPropertiesController extends GenericForwardComposer {
             Task task = (Task) currentTaskElement;
             showDurationRow(task);
             showStartConstraintRow(task);
+            showSubcontractRow(task);
         } else {
             hideDurationRow();
             hideStartConstraintRow();
+            hideSubcontractRow();
         }
         hours.setValue(currentTaskElement.getWorkHours());
-        Util.reloadBindings(window);
+        Util.reloadBindings(tabpanel);
+    }
+
+    private void hideSubcontractRow() {
+        subcontract.setVisible(false);
+    }
+
+    private void showSubcontractRow(Task task) {
+        subcontractCheckbox.setChecked(task.getSubcontractedTaskData() != null);
+        subcontract.setVisible(true);
     }
 
     private void hideStartConstraintRow() {
@@ -247,7 +263,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        window = (Window) comp;
+        tabpanel = (Tabpanel) comp;
         taskEditFormComposer.doAfterCompose(comp);
         WebStartConstraintType.appendItems(startConstraintTypes);
         startConstraintTypes.addEventListener(Events.ON_SELECT,

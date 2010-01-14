@@ -56,6 +56,7 @@ public interface ISubcontractModel {
 
     Date getEndDate();
     void setEndDate(Date endDate);
+    void removeSubcontractedTaskData();
 
     /*
      * Final conversation steps

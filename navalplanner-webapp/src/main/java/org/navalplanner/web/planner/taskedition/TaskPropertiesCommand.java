@@ -22,15 +22,12 @@ package org.navalplanner.web.planner.taskedition;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.daos.ITaskSourceDAO;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.IEditTaskUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -42,31 +39,17 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TaskPropertiesCommand implements ITaskPropertiesCommand {
 
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
+    private EditTaskController editTaskController;
 
     @Autowired
-    private ITaskSourceDAO taskSourceDAO;
-
-    private TaskPropertiesController taskPropertiesController;
+    private IEditTaskUtilities editTaskUtilities;
 
     @Override
-    @Transactional(readOnly = true)
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
-        if (taskElement.getTaskSource() != null) {
-            taskSourceDAO.reattach(taskElement.getTaskSource());
-        }
-        taskElementDAO.reattach(taskElement);
-        if (taskElement instanceof Task) {
-            forceLoadHoursGroup((Task) taskElement);
-        }
+        editTaskUtilities.reattach(taskElement);
 
-        taskPropertiesController.showEditFormFor(context, taskElement);
-    }
-
-    private void forceLoadHoursGroup(Task task) {
-        task.getHoursGroup();
+        editTaskController.showEditFormTaskProperties(context, taskElement);
     }
 
     @Override
@@ -75,9 +58,9 @@ public class TaskPropertiesCommand implements ITaskPropertiesCommand {
     }
 
     @Override
-    public void setTaskPropertiesController(
-            TaskPropertiesController taskPropertiesController) {
-        this.taskPropertiesController = taskPropertiesController;
+    public void setEditTaskController(
+            EditTaskController editTaskController) {
+        this.editTaskController = editTaskController;
     }
 
     @Override

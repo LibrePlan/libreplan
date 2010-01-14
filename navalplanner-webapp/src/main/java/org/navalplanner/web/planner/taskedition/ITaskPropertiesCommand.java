@@ -30,7 +30,6 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface ITaskPropertiesCommand extends ICommandOnTask<TaskElement> {
 
-    void setTaskPropertiesController(
-            TaskPropertiesController taskPropertiesController);
+    void setEditTaskController(EditTaskController editTaskController);
 
 }

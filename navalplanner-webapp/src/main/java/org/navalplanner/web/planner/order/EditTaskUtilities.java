@@ -20,61 +20,56 @@
 
 package org.navalplanner.web.planner.order;
 
-import static org.navalplanner.web.I18nHelper._;
-
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
- * Command to subcontract a {@link TaskElement} as XML.
+ * Common functions to make needed reattachments for edit a {@link TaskElement}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class SubcontractCommand implements ISubcontractCommand {
-
-    private EditTaskController editTaskController;
+public class EditTaskUtilities implements IEditTaskUtilities {
 
     @Autowired
-    private IEditTaskUtilities editTaskUtilities;
+    private ITaskSourceDAO taskSourceDAO;
 
-    @Override
-    public String getName() {
-        return _("Subcontract");
-    }
-
-    @Override
-    public String getIcon() {
-        return null;
-    }
-
-    @Override
-    public boolean isApplicableTo(TaskElement task) {
-        return (task instanceof Task);
-    }
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
 
     @Override
     @Transactional(readOnly = true)
-    public void doAction(IContextWithPlannerTask<TaskElement> context,
-            final TaskElement task) {
-        editTaskUtilities.reattach(task);
+    public void reattach(TaskElement taskElement) {
+        if (taskElement.getTaskSource() != null) {
+            taskSourceDAO.reattach(taskElement.getTaskSource());
+        }
 
-        if (isApplicableTo(task)) {
-            editTaskController.showEditFormSubcontract(context, task);
+        taskElementDAO.reattach(taskElement);
+        if (taskElement instanceof Task) {
+            forceLoadHoursGroup((Task) taskElement);
+            if (taskElement.isSubcontracted()) {
+                forceLoadExternalCompany(((Task) taskElement)
+                        .getSubcontractedTaskData());
+            }
         }
     }
 
-    @Override
-    public void setEditTaskController(EditTaskController editTaskController) {
-        this.editTaskController = editTaskController;
+    private void forceLoadHoursGroup(Task task) {
+        task.getHoursGroup();
+    }
+
+    private void forceLoadExternalCompany(
+            SubcontractedTaskData subcontractedTaskData) {
+        subcontractedTaskData.getExternalCompany().getName();
     }
 
 }
