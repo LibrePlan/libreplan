@@ -195,7 +195,6 @@ public class CriterionsModel implements ICriterionsModel {
             reloaded
                     .addSatisfaction(new CriterionWithItsType(criterionType, criterion));
             resourceDAO.save(reloaded);
-            reloaded.checkNotOverlaps();
         }
     }
 
@@ -207,7 +206,6 @@ public class CriterionsModel implements ICriterionsModel {
             reloaded.finish(new CriterionWithItsType(criterionType,
                     criterion));
             resourceDAO.save(reloaded);
-            reloaded.checkNotOverlaps();
         }
     }
 

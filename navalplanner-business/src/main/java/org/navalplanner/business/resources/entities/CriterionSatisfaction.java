@@ -275,17 +275,6 @@ public class CriterionSatisfaction extends BaseEntity {
         }
     }
 
-    /*
-     * IMPORTANT: This method currently redefines BaseEntity::validate avoiding
-     * Hibernate Validator to run. This should be fixed in a future.
-     */
-    public void validate(){
-            Validate.notNull(resource);
-            Validate.notNull(startDate);
-            Validate.notNull(criterion);
-            Validate.isTrue(checkConstraintPositiveTimeInterval());
-    }
-
     public ResourceEnum getResourceType() {
         return criterion.getType().getResource();
     }

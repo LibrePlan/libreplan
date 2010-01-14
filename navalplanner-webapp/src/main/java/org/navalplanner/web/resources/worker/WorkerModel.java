@@ -115,7 +115,6 @@ public class WorkerModel implements IWorkerModel {
             assignedCriterionsModel.confirm();
         }
         resourceDAO.save(worker);
-        worker.checkNotOverlaps();
         worker = null;
         localizationsAssigner = null;
     }

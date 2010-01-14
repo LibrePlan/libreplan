@@ -263,7 +263,7 @@ public class ResourceServiceTest {
                 ' ' + ct.getName().toUpperCase() +  // Upper case and blank
                 ' ', " C1 ",                        // spaces intentionally
                                                     // added (OK).
-                getDate(2001, 1, 1), null));
+                getDate(2001, 1, 1), getDate(2001, 2, 1)));
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(ct.getName(), "c2",
                 getDate(2001, 1, 1), null));
@@ -328,6 +328,73 @@ public class ResourceServiceTest {
             resourceService.addResources(createResourceListDTO(machineDTO)));
         assertFalse(machineDAO.existsMachineWithCodeInAnotherTransaction(
             machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithOverlappingCriterionSatisfactionsAllowed() {
+
+        /* Create a criterion type. */
+        CriterionType ct = createCriterionType();
+
+        /*
+         * Create a machine DTO. OK, because
+         * ct.isAllowSimultaneousCriterionsPerResource() is true.
+         */
+        MachineDTO machineDTO = createMachineDTOWithTwoCriterionSatisfactions(
+            "machine", ct.getName(),
+            "c1", getDate(2000, 1, 1), getDate(2000, 2, 1),
+            "c2", getDate(2000, 1, 15), getDate(2000, 2, 1));
+
+        /* Test. */
+        assertNoConstraintViolations(
+            resourceService.addResources(createResourceListDTO(machineDTO)));
+        assertTrue(machineDAO.existsMachineWithCodeInAnotherTransaction(
+            machineDTO.code));
+
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddResourceWithOverlappingCriterionSatisfactions() {
+
+        /* Create criterion types. */
+        CriterionType ct1 = createCriterionType();
+        CriterionType ct2 = createCriterionType(ResourceEnum.RESOURCE, false);
+
+        /*
+         * Create resource DTOs. Each resource contains one criterion
+         * satisfaction overlapping.
+         *
+         */
+        MachineDTO m1 = createMachineDTOWithTwoCriterionSatisfactions(
+            "m1", ct1.getName(), // Interval overlapping in "c1".
+            "c1", getDate(2000, 1, 1), getDate(2000, 2, 1),
+            "c1", getDate(2000, 1, 15), getDate(2000, 2, 1));
+
+        MachineDTO m2 = createMachineDTOWithTwoCriterionSatisfactions(
+            "m2", ct2.getName(), // Overlapping because "ct2" does not allow
+                                 // simultaneous criterion satisfactions in
+                                 // intervals that overlap.
+            "c1", getDate(2000, 1, 1), getDate(2000, 2, 1),
+            "c2", getDate(2000, 1, 15), getDate(2000, 2, 1));
+
+        /* Test. */
+        ResourceListDTO resourceDTOs = createResourceListDTO(
+            m1, m2);
+
+        assertOneConstraintViolationPerInstance(
+            resourceService.addResources(resourceDTOs),
+            resourceDTOs.resources.size());
+
+        for (ResourceDTO r : resourceDTOs.resources) {
+            MachineDTO m = (MachineDTO) r;
+            assertFalse(
+                "Machine " + m.name + " not expected",
+                machineDAO.existsMachineWithCodeInAnotherTransaction(
+                    ((MachineDTO) r).code));
+        }
 
     }
 
@@ -640,10 +707,15 @@ public class ResourceServiceTest {
     }
 
     private CriterionType createCriterionType() {
-        return createCriterionType(ResourceEnum.RESOURCE);
+        return createCriterionType(ResourceEnum.RESOURCE, true);
     }
 
     private CriterionType createCriterionType(final ResourceEnum resourceType) {
+        return createCriterionType(resourceType, true);
+    }
+
+    private CriterionType createCriterionType(final ResourceEnum resourceType,
+        final boolean allowSimultaneousCriterionsPerResource) {
 
         IOnTransaction<CriterionType> createCriterionType =
             new IOnTransaction<CriterionType>() {
@@ -653,6 +725,8 @@ public class ResourceServiceTest {
 
                 CriterionType ct = CriterionType.create(getUniqueName(),
                     "desc");
+                ct.setAllowSimultaneousCriterionsPerResource(
+                    allowSimultaneousCriterionsPerResource);
                 ct.setResource(resourceType);
                 Criterion c1 = Criterion.create("c1", ct);
                 Criterion c2 = Criterion.create("c2", ct);
@@ -782,6 +856,28 @@ public class ResourceServiceTest {
         };
 
         return transactionService.runOnTransaction(create);
+
+    }
+
+
+    private MachineDTO createMachineDTOWithTwoCriterionSatisfactions(
+        String machineName, String criterionTypeName,
+        String criterionName1, XMLGregorianCalendar startDate1,
+        XMLGregorianCalendar endDate1,
+        String criterionName2, XMLGregorianCalendar startDate2,
+        XMLGregorianCalendar endDate2) {
+
+        MachineDTO machineDTO = new MachineDTO(getUniqueName(), machineName,
+            "desc");
+
+        machineDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(criterionTypeName, criterionName1,
+                startDate1, endDate1));
+        machineDTO.criterionSatisfactions.add(
+            new CriterionSatisfactionDTO(criterionTypeName, criterionName2,
+                startDate2, endDate2));
+
+        return machineDTO;
 
     }
 

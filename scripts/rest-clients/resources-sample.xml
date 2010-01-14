@@ -186,7 +186,7 @@
         </resources-cost-category-assignment-list>
     </worker>
 
-    <!--  Missing start date in criterion satisfaction. -->
+    <!--  Negative interval. -->
     <worker first-name="w10-firstName" surname="w10-surname" nif="w10-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
@@ -194,6 +194,58 @@
                 criterion-name="paternityLeave"
                 start-date="2000-02-01"
                 end-date="2000-01-01"/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!-- Criterion satisfaction overlapping in "LEAVE :: paternityLeave". -->
+    <worker first-name="w11-firstName" surname="w11-surname" nif="w11-nif">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2000-01-01"
+                end-date="2000-02-01"/>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2000-01-15"
+                end-date="2000-02-01"/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!-- Criterion satisfaction overlapping (LEAVE does not allow
+         simultaneous criterion satisfactions in intervals that overlap). -->
+    <worker first-name="w12-firstName" surname="w12-surname" nif="w12-nif">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2000-01-01"
+                end-date="2000-02-01"/>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="medicalLeave"
+                start-date="2000-01-15"
+                end-date="2000-02-01"/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!-- [It assumes existence of "TestLocationGroupCriterion" and
+         "TestLocationGroupCriterion2"] OK
+         (LOCATION_GROUP allows simultaneous criterion satisfactions in
+         intervals that overlap). -->
+    <worker first-name="w13-firstName" surname="w13-surname" nif="w13-nif">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                criterion-type-name="LOCATION_GROUP"
+                criterion-name="TestLocationGroupCriterion"
+                start-date="2000-01-01"
+                end-date="2000-02-01"/>
+            <criterion-satisfaction
+                criterion-type-name="LOCATION_GROUP"
+                criterion-name="TestLocationGroupCriterion2"
+                start-date="2000-01-15"
+                end-date="2000-02-01"/>
         </criterion-satisfaction-list>
     </worker>
 

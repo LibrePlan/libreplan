@@ -570,6 +570,9 @@ public abstract class Resource extends BaseEntity{
         return criterionSatisfactions.contains(satisfaction);
     }
 
+    /**
+     * @throws IllegalArgumentException in case of overlapping
+     */
     public void checkNotOverlaps() {
         checkNotOverlaps(getRelatedTypes());
     }
@@ -582,36 +585,62 @@ public abstract class Resource extends BaseEntity{
         return types;
     }
 
+    /**
+     * @throws IllegalArgumentException in case of overlapping
+     */
     private void checkNotOverlaps(List<CriterionType> types) {
         for (CriterionType criterionType : types) {
-            if (!criterionType.isAllowSimultaneousCriterionsPerResource()) {
-                List<CriterionSatisfaction> satisfactions = query().from(
-                        criterionType).result();
-                ListIterator<CriterionSatisfaction> listIterator = satisfactions
-                        .listIterator();
-                while (listIterator.hasNext()) {
-                    CriterionSatisfaction current = listIterator.next();
-                    CriterionSatisfaction previous = getPrevious(listIterator);
-                    CriterionSatisfaction next = getNext(listIterator);
-                    if (previous != null) {
-                        checkNotOverlaps(previous, current);
-                    }
-                    if (next != null) {
-                        checkNotOverlaps(current, next);
-                    }
+            List<CriterionSatisfaction> satisfactions = query().from(
+                    criterionType).result();
+            ListIterator<CriterionSatisfaction> listIterator = satisfactions
+                    .listIterator();
+            while (listIterator.hasNext()) {
+                CriterionSatisfaction current = listIterator.next();
+                CriterionSatisfaction previous = getPrevious(listIterator);
+                CriterionSatisfaction next = getNext(listIterator);
+                if (previous != null) {
+                    checkNotOverlaps(previous, current);
+                }
+                if (next != null) {
+                    checkNotOverlaps(current, next);
                 }
             }
-
         }
-
     }
 
+    /**
+     * IMPORTANT: <code>before</code> and <code>after</code> must refer to the
+     * same <code>CriterionType</code>
+     *
+     * @throws IllegalArgumentException in case of overlapping
+     */
     private void checkNotOverlaps(CriterionSatisfaction before,
             CriterionSatisfaction after) {
-        if (!before.goesBeforeWithoutOverlapping(after)) {
+
+        CriterionType criterionType = before.getCriterion().getType();
+
+        /*
+         * If criterion satisfactions refer to the same Criterion, they must not
+         * overlap (regardless of its CriterionType allows simultaneous
+         * criterion satisfactions per resource).
+         */
+        if (before.getCriterion().equals(after.getCriterion()) &&
+            !before.goesBeforeWithoutOverlapping(after)) {
+                throw new IllegalArgumentException(createOverlapsMessage(before,
+                        after));
+         }
+
+        /*
+         * If CriterionType does not allow simultaneous criterion satisfactions
+         * per resource, criterion satisfactions must not overlap (regardless
+         * of they refer to different Criterion objects).
+         */
+        if (!criterionType.isAllowSimultaneousCriterionsPerResource() &&
+            !before.goesBeforeWithoutOverlapping(after)) {
             throw new IllegalArgumentException(createOverlapsMessage(before,
                     after));
         }
+
     }
 
     private String createOverlapsMessage(CriterionSatisfaction before,
@@ -814,8 +843,38 @@ public abstract class Resource extends BaseEntity{
             assignment.setResource(null);
     }
 
+    @AssertTrue(message="Some criterion satisfactions overlap in time")
+    public boolean checkConstraintCriterionSatisfactionsOverlapping() {
+
+        /*
+         * Check if time intervals in criterion satisfactions are correct in
+         * isolation. If not, it does not make sense to check criterion
+         * satisfaction overlapping.
+         */
+        for (CriterionSatisfaction i : getCriterionSatisfactions()) {
+
+            if (!(i.isStartDateSpecified() &&
+                  i.checkConstraintPositiveTimeInterval())) {
+                return true;
+            }
+
+        }
+
+        /*
+         * Check assignment overlapping.
+         */
+        try {
+            checkNotOverlaps();
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+
+        return true;
+
+    }
+
     @AssertFalse(message="Some cost category assignments overlap in time")
-    public boolean checkConstraintAssignmentsOverlap() {
+    public boolean checkConstraintAssignmentsOverlapping() {
 
         /*
          * Check if time intervals in cost assignments are correct in isolation.
