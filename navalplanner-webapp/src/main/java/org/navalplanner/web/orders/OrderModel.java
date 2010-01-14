@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +58,6 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
-import org.navalplanner.business.qualityforms.entities.QualityFormItem;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -112,8 +110,6 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
-    private Set<QualityForm> cacheQualityForms = new HashSet<QualityForm>();
-
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
@@ -133,6 +129,7 @@ public class OrderModel implements IOrderModel {
 
     private LabelsOnConversation labelsOnConversation;
 
+
     private LabelsOnConversation getLabelsOnConversation() {
         if (labelsOnConversation == null) {
             labelsOnConversation = new LabelsOnConversation(labelDAO);
@@ -140,11 +137,19 @@ public class OrderModel implements IOrderModel {
         return labelsOnConversation;
     }
 
+    private QualityFormsOnConversation qualityFormsOnConversation;
+
+    private QualityFormsOnConversation getQualityFormsOnConversation() {
+        if (qualityFormsOnConversation == null) {
+            qualityFormsOnConversation = new QualityFormsOnConversation(
+                    qualityFormDAO);
+        }
+        return qualityFormsOnConversation;
+    }
+
     @Override
     public List<QualityForm> getQualityForms() {
-        final List<QualityForm> result = new ArrayList<QualityForm>();
-        result.addAll(cacheQualityForms);
-        return result;
+        return getQualityFormsOnConversation().getQualityForms();
     }
 
     @Override
@@ -183,7 +188,7 @@ public class OrderModel implements IOrderModel {
     public void initEdit(Order order) {
         Validate.notNull(order);
         initializeCacheLabels();
-        initializeCacheQualityForms();
+        getQualityFormsOnConversation().initialize();
         loadCriterions();
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
@@ -205,30 +210,6 @@ public class OrderModel implements IOrderModel {
     private void initializeLabel(Label label) {
         label.getName();
         label.getType().getName();
-    }
-
-    private void initializeCacheQualityForms() {
-        if (cacheQualityForms.isEmpty()) {
-            cacheQualityForms = new HashSet<QualityForm>();
-            final List<QualityForm> qualityForms = qualityFormDAO.getAll();
-            initializeQualityForms(qualityForms);
-            cacheQualityForms.addAll(qualityForms);
-        }
-    }
-
-    private void initializeQualityForms(Collection<QualityForm> qualityForms) {
-        for (QualityForm qualityForm : qualityForms) {
-            initializeQualityForm(qualityForm);
-        }
-    }
-
-    private void initializeQualityForm(QualityForm qualityForm) {
-        qualityForm.getName();
-        qualityForm.getQualityFormType();
-        for (QualityFormItem qualityFormItem : qualityForm
-                .getQualityFormItems()) {
-            qualityFormItem.getName();
-        }
     }
 
     private static void forceLoadCriterionRequirements(OrderElement orderElement) {
@@ -290,7 +271,7 @@ public class OrderModel implements IOrderModel {
     public void prepareForCreate() throws ConcurrentModificationException {
         loadCriterions();
         initializeCacheLabels();
-        initializeCacheQualityForms();
+        getQualityFormsOnConversation().initialize();
         this.order = Order.create();
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
         this.order.setInitDate(new Date());
@@ -447,12 +428,6 @@ public class OrderModel implements IOrderModel {
 
     private void reattachLabels() {
         getLabelsOnConversation().reattachLabels();
-    }
-
-    private void reattachQualityForms() {
-        for (QualityForm qualityForm : cacheQualityForms) {
-            qualityFormDAO.reattach(qualityForm);
-        }
     }
 
     private void reattachOrderElement(OrderElement orderElement) {
