@@ -42,6 +42,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.reports.dtos.SchedulingProgressPerOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,8 +175,10 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
                 continue;
             }
             // Add to list
+            final List<Task> tasks = getTasks(each);
             schedulingProgressPerOrderList
-                    .add(new SchedulingProgressPerOrderDTO(each, advanceType, referenceDate));
+                    .add(new SchedulingProgressPerOrderDTO(each, tasks,
+                            advanceType, referenceDate));
         }
         return new JRBeanCollectionDataSource(schedulingProgressPerOrderList);
     }
@@ -188,4 +191,18 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
         return result;
     }
 
+    @Transactional(readOnly = true)
+    private List<Task> getTasks(Order order) {
+        orderDAO.reattachUnmodifiedEntity(order);
+        List<Task> result = new ArrayList<Task>();
+
+        final List<TaskElement> taskElements = order
+                .getAllChildrenAssociatedTaskElements();
+        for (TaskElement each : taskElements) {
+            if (each instanceof Task) {
+                result.add((Task) each);
+            }
+        }
+        return result;
+    }
 }

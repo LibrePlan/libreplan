@@ -113,7 +113,9 @@ public class Order extends OrderLineGroup {
     public List<TaskElement> getAssociatedTasks() {
         ArrayList<TaskElement> result = new ArrayList<TaskElement>();
         TaskGroup taskGroup = getAssociatedTaskElement();
-        result.addAll(taskGroup.getChildren());
+        if (taskGroup != null) {
+            result.addAll(taskGroup.getChildren());
+        }
         return result;
     }
 

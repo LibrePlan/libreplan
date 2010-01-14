@@ -23,8 +23,15 @@
 	<field name="ratioCostDifference" class="java.math.BigDecimal"/>
 	<field name="ratioPlanningDifference" class="java.math.BigDecimal"/>
 	<field name="advanceTypeDoesNotApply" class="java.lang.Boolean"/>
+	<field name="appliedSpreadAdvanceType" class="java.lang.Boolean"/>
 	<variable name="advanceTypeDoesNotApply" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[($F{advanceTypeDoesNotApply}.equals(java.lang.Boolean.TRUE)) ?
+    new java.lang.Integer(1) :
+    new java.lang.Integer(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new java.lang.Integer(0)]]></initialValueExpression>
+	</variable>
+	<variable name="appliedSpreadAdvanceType" class="java.lang.Integer">
+		<variableExpression><![CDATA[($F{appliedSpreadAdvanceType}.equals(java.lang.Boolean.TRUE)) ?
     new java.lang.Integer(1) :
     new java.lang.Integer(0)]]></variableExpression>
 		<initialValueExpression><![CDATA[new java.lang.Integer(0)]]></initialValueExpression>
@@ -130,7 +137,7 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="115" splitType="Stretch">
+		<band height="169" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement x="165" y="21" width="106" height="15"/>
 				<box>
@@ -487,6 +494,20 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[*]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="1" y="117" width="360" height="16">
+					<printWhenExpression><![CDATA[($F{advanceTypeDoesNotApply}.equals(java.lang.Boolean.TRUE))]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<text><![CDATA[* Selected advance type is not available for this order.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="133" width="359" height="16">
+					<printWhenExpression><![CDATA[($F{appliedSpreadAdvanceType}.equals(java.lang.Boolean.TRUE))]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<text><![CDATA[Using the spread advance type.]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>
@@ -518,16 +539,7 @@
 		</band>
 	</pageFooter>
 	<lastPageFooter>
-		<band height="18">
-			<staticText>
-				<reportElement x="0" y="0" width="555" height="16">
-					<printWhenExpression><![CDATA[new java.lang.Boolean(
-    !$V{advanceTypeDoesNotApply}.equals(new java.lang.Integer(0)))]]></printWhenExpression>
-				</reportElement>
-				<textElement/>
-				<text><![CDATA[* Selected advance type is not available for this order]]></text>
-			</staticText>
-		</band>
+		<band height="18"/>
 	</lastPageFooter>
 	<summary>
 		<band splitType="Stretch"/>

@@ -22,7 +22,6 @@ package org.navalplanner.business.reports.dtos;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -33,7 +32,6 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
@@ -74,40 +72,35 @@ public class SchedulingProgressPerOrderDTO {
 
     private Boolean advanceTypeDoesNotApply = Boolean.FALSE;
 
+    private Boolean appliedSpreadAdvanceType = Boolean.FALSE;
+
     private SchedulingProgressPerOrderDTO() {
         workReportLineDAO = Registry.getWorkReportLineDAO();
         orderDAO = Registry.getOrderDAO();
     }
 
-    public SchedulingProgressPerOrderDTO(Order order, AdvanceType advanceType, LocalDate date) {
+    public SchedulingProgressPerOrderDTO(Order order, final List<Task> tasks,
+            AdvanceType advanceType, LocalDate date) {
         this();
         this.orderName = order.getName();
 
         // Get average progress
-        if (advanceType != null) {
-            averageProgress = order.getAdvancePercentage(advanceType, date);
-        } else {
-            final DirectAdvanceAssignment directAdvanceAssignment = order.getReportGlobalAdvanceAssignment();
-            averageProgress = (directAdvanceAssignment != null) ? directAdvanceAssignment.getAdvancePercentage(date) : null;
-        }
-
+        averageProgress = getFilterAdvanceTypePercentage(order, advanceType,
+                date);
         if (averageProgress == null) {
             advanceTypeDoesNotApply = true;
+            appliedSpreadAdvanceType = false;
             averageProgress = new BigDecimal(0);
         }
 
         // Fill DTO
 
-        // Total hours calculations
-        final List<Task> tasks = orderDAO.getTasksByOrder(order);
-
-            getTasks(order);
         this.estimatedHours = getHoursSpecifiedAtOrder(tasks);
         this.totalPlannedHours = calculatePlannedHours(tasks, null);
 
         // Hours on time calculations
         this.partialPlannedHours = calculatePlannedHours(tasks, date);
-        this.realHours = calculateRealHours(tasks, date);
+        this.realHours = calculateRealHours(order, date);
 
         // Progress calculations
         this.imputedProgress = (totalPlannedHours != 0) ? new Double(realHours
@@ -128,17 +121,23 @@ public class SchedulingProgressPerOrderDTO {
                 averageProgress, plannedProgress);
     }
 
-    private List<Task> getTasks(Order order) {
-        List<Task> result = new ArrayList<Task>();
-
-        final List<TaskElement> taskElements = order
-                .getAllChildrenAssociatedTaskElements();
-        for (TaskElement each : taskElements) {
-            if (each instanceof Task) {
-                result.add((Task) each);
+    private BigDecimal getFilterAdvanceTypePercentage(Order order,
+            AdvanceType type, LocalDate date) {
+        final BigDecimal result;
+        if (type != null) {
+            result = order.getAdvancePercentage(type, date);
+            if (result != null) {
+                return result;
             }
         }
-        return result;
+        if (type != null) {
+            advanceTypeDoesNotApply = true;
+            appliedSpreadAdvanceType = true;
+        }
+        final DirectAdvanceAssignment directAdvanceAssignment = order
+                .getReportGlobalAdvanceAssignment();
+        return (directAdvanceAssignment != null) ? directAdvanceAssignment
+                    .getAdvancePercentage(date) : null;
     }
 
     private Integer getHoursSpecifiedAtOrder(List<Task> tasks) {
@@ -175,20 +174,12 @@ public class SchedulingProgressPerOrderDTO {
         return result;
     }
 
-    public Integer calculateRealHours(List<Task> tasks, LocalDate date) {
-        Integer result = new Integer(0);
-
-        for (Task each: tasks) {
-            result += calculateRealHours(each, date);
-        }
-        return result;
-    }
-
-    public Integer calculateRealHours(Task task, LocalDate date) {
+    public Integer calculateRealHours(Order order, LocalDate date) {
         Integer result = new Integer(0);
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
-                .findByOrderElementAndChildren(task.getOrderElement());
+                .findByOrderElementAndChildren(order);
+
         if (workReportLines.isEmpty()) {
             return result;
         }
@@ -282,4 +273,7 @@ public class SchedulingProgressPerOrderDTO {
         return advanceTypeDoesNotApply;
     }
 
+    public Boolean getAppliedSpreadAdvanceType() {
+        return appliedSpreadAdvanceType;
+    }
 }

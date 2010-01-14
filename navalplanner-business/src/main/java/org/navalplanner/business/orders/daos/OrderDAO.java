@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.hibernate.Query;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -35,8 +36,8 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
-import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
