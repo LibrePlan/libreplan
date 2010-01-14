@@ -22,7 +22,6 @@ package org.zkoss.ganttz;
 
 import java.util.Date;
 
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -39,6 +38,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     private Window window;
 
     private Task currentTask;
+    private TaskDTO taskDTO;
 
     private Textbox name;
 
@@ -56,39 +56,68 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     public void showEditFormFor(Component openRelativeTo, Task task) {
         this.currentTask = task;
+        this.taskDTO = toDTO(task);
         try {
             window.setMode("modal");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        updateComponentValuesForTask(currentTask);
+        updateComponentValuesForTask(taskDTO);
     }
 
     private void updateComponentValuesForTask(
-            ITaskFundamentalProperties currentTask) {
-        name.setValue(currentTask.getName());
-        startDateBox.setValue(currentTask.getBeginDate());
-        endDateBox.setValue(new Date(currentTask.getBeginDate().getTime()
-                + currentTask.getLengthMilliseconds()));
-        notes.setValue(currentTask.getNotes());
-    }
-
-    public Date getEndDate() {
-        if (currentTask == null) {
-            return null;
-        }
-        return currentTask.getEndDate();
-    }
-
-    public void setEndDate(Date endDate) {
-        if (currentTask != null) {
-            currentTask.setLengthMilliseconds(endDate.getTime()
-                    - currentTask.getBeginDate().getTime());
-        }
+            TaskDTO taskDTO) {
+        name.setValue(taskDTO.name);
+        startDateBox.setValue(taskDTO.beginDate);
+        endDateBox.setValue(taskDTO.endDate);
+        notes.setValue(taskDTO.notes);
     }
 
     public void accept() {
+        copyFromDTO(taskDTO, currentTask);
         window.setVisible(false);
+    }
+
+    public void cancel() {
+        window.setVisible(false);
+        currentTask = null;
+        taskDTO = null;
+    }
+
+    /**
+     * DTO to manage edition before changes are accepted.
+     *
+     * @author Manuel Rego Casasnovas <mrego@igalia.com>
+     */
+    public class TaskDTO {
+        public String name;
+        public Date beginDate;
+        public Date endDate;
+        public String notes;
+    }
+
+    private TaskDTO toDTO(Task task) {
+        TaskDTO result = new TaskDTO();
+
+        result.name = task.getName();
+        result.beginDate = task.getBeginDate();
+        result.endDate = new Date(task.getBeginDate().getTime()
+                + task.getLengthMilliseconds());
+        result.notes = task.getNotes();
+
+        return result;
+    }
+
+    private void copyFromDTO(TaskDTO taskDTO, Task currentTask) {
+        currentTask.setName(taskDTO.name);
+        currentTask.setBeginDate(taskDTO.beginDate);
+        currentTask.setLengthMilliseconds(taskDTO.endDate.getTime()
+                - taskDTO.beginDate.getTime());
+        currentTask.setNotes(taskDTO.notes);
+    }
+
+    public TaskDTO getTaskDTO() {
+        return this.taskDTO;
     }
 
 }

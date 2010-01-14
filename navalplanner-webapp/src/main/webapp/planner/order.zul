@@ -51,21 +51,21 @@
             <rows>
                 <row>
                     <label value="${i18n:_('Name')}" />
-                    <textbox id="name" value="@{propertiesController.ganttTask.name}" />
+                    <textbox id="name" value="@{propertiesController.ganttTaskDTO.name}" />
                 </row>
                 <row>
                     <label value="${i18n:_('Start')}" />
                     <datebox id="startDateBox" disabled="true"
-                        value="@{propertiesController.ganttTask.beginDate}" />
+                        value="@{propertiesController.ganttTaskDTO.beginDate}" />
                 </row>
                 <row>
                     <label value="${i18n:_('End')}" />
                     <datebox id="endDateBox" disabled="true"
-                        value="@{propertiesController.endDate}" />
+                        value="@{propertiesController.ganttTaskDTO.endDate}" />
                 </row>
                 <row>
                     <label value="${i18n:_('Notes')}" />
-                    <textbox id="notes" value="@{propertiesController.ganttTask.notes}" />
+                    <textbox id="notes" value="@{propertiesController.ganttTaskDTO.notes}" />
                 </row>
                 <row>
                     <label value="${i18n:_('Hours')}" />
@@ -85,8 +85,12 @@
                 </row>
             </rows>
         </grid>
-        <button id="ok" label="${i18n:_('Accept')}"
-            onClick="propertiesController.accept();" />
+        <hbox>
+            <button id="ok" label="${i18n:_('Accept')}"
+                onClick="propertiesController.accept();" />
+            <button id="cancel" label="${i18n:_('Cancel')}"
+                onClick="propertiesController.cancel();" />
+        </hbox>
     </window>
 
     <window id="resourceAllocationWindow"

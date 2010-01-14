@@ -31,6 +31,7 @@ import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskEditFormComposer;
+import org.zkoss.ganttz.TaskEditFormComposer.TaskDTO;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -257,15 +258,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 });
     }
 
-    public TaskElement getTaskElement() {
-        return currentTaskElement;
-    }
-
-    public org.zkoss.ganttz.data.Task getGanttTask() {
-        if (currentContext == null) {
+    public TaskDTO getGanttTaskDTO() {
+        if (taskEditFormComposer == null) {
             return null;
         }
-        return currentContext.getTask();
+        return taskEditFormComposer.getTaskDTO();
     }
 
     public void accept() {
@@ -278,15 +275,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         }
     }
 
-    public Date getEndDate() {
-        if (taskEditFormComposer == null) {
-            return null;
-        }
-        return taskEditFormComposer.getEndDate();
-    }
-
-    public void setEndDate(Date endDate) {
-        taskEditFormComposer.setEndDate(endDate);
+    public void cancel() {
+        taskEditFormComposer.cancel();
     }
 
 }
