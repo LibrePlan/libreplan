@@ -20,9 +20,11 @@
 package org.navalplanner.web.templates;
 
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.tree.EntitiesTree;
 
@@ -49,4 +51,6 @@ public interface IOrderTemplatesModel {
     public void addLabelToConversation(Label label);
 
     List<Label> getLabels();
+
+    Set<QualityForm> getAllQualityForms();
 }

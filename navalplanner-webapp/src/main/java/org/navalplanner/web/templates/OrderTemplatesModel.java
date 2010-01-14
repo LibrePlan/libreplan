@@ -19,7 +19,9 @@
  */
 package org.navalplanner.web.templates;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -27,8 +29,11 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
+import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.orders.QualityFormsOnConversation;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -54,6 +59,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     private ILabelDAO labelDAO;
 
     @Autowired
+    private IQualityFormDAO qualityFormDAO;
+
+    @Autowired
     private IAdHocTransactionService transaction;
 
     private OrderElementTemplate template;
@@ -67,6 +75,16 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
             labelsOnConversation = new LabelsOnConversation(labelDAO);
         }
         return labelsOnConversation;
+    }
+
+    private QualityFormsOnConversation qualityFormsOnConversation;
+
+    private QualityFormsOnConversation getQualityFormsOnConversation() {
+        if (qualityFormsOnConversation == null) {
+            qualityFormsOnConversation = new QualityFormsOnConversation(
+                    qualityFormDAO);
+        }
+        return qualityFormsOnConversation;
     }
 
     @Override
@@ -103,20 +121,25 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Override
     @Transactional(readOnly = true)
     public void createTemplateFrom(OrderElement orderElement) {
+        initializeAcompanyingObjectsOnConversation();
         orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
         OrderElement reloaded = orderElementDAO
                 .findExistingEntity(orderElement.getId());
         template = reloaded.createTemplate();
         treeModel = new TemplatesTree(template);
-        getLabelsOnConversation().initializeLabels();
     }
 
     @Override
     @Transactional(readOnly = true)
     public void initEdit(OrderElementTemplate template) {
+        initializeAcompanyingObjectsOnConversation();
         this.template = dao.findExistingEntity(template.getId());
-        getLabelsOnConversation().initializeLabels();
         treeModel = new TemplatesTree(this.template);
+    }
+
+    private void initializeAcompanyingObjectsOnConversation() {
+        getLabelsOnConversation().initializeLabels();
+        getQualityFormsOnConversation().initialize();
     }
 
     @Override
@@ -137,6 +160,12 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Override
     public List<Label> getLabels() {
         return getLabelsOnConversation().getLabels();
+    }
+
+    @Override
+    public Set<QualityForm> getAllQualityForms() {
+        return new HashSet<QualityForm>(getQualityFormsOnConversation()
+                .getQualityForms());
     }
 
 }
