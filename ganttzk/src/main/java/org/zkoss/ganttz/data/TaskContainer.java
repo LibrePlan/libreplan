@@ -37,8 +37,10 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class TaskContainer extends Task {
 
-    public TaskContainer(ITaskFundamentalProperties fundamentalProperties) {
+    public TaskContainer(ITaskFundamentalProperties fundamentalProperties,
+            boolean expanded) {
         super(fundamentalProperties);
+        this.expanded = expanded;
     }
 
     public interface IExpandListener {

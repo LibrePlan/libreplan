@@ -206,7 +206,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 result = new TaskLeaf(adapted);
             }
         } else {
-            TaskContainer container = new TaskContainer(adapted);
+            TaskContainer container = new TaskContainer(adapted, planner
+                    .areContainersExpandedByDefault());
             for (T child : navigator.getChildren(data)) {
                 container.add(extractTask(null, accumulatedDependencies, child,
                         container));

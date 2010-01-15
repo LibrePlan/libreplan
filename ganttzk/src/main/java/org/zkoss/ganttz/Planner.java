@@ -348,6 +348,8 @@ public class Planner extends HtmlMacroComponent  {
         }
     };
 
+    private boolean containersExpandedByDefault = false;
+
     public void showCriticalPath() {
         Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
         if (disabilityConfiguration.isCriticalPathEnabled()) {
@@ -407,6 +409,15 @@ public class Planner extends HtmlMacroComponent  {
 
     public void setInitialZoomLevel(final ZoomLevel zoomLevel) {
         this.initialZoomLevel = zoomLevel;
+    }
+
+    public boolean areContainersExpandedByDefault() {
+        return containersExpandedByDefault;
+    }
+
+    public void setAreContainersExpandedByDefault(
+            boolean containersExpandedByDefault) {
+        this.containersExpandedByDefault = containersExpandedByDefault;
     }
 
 }
