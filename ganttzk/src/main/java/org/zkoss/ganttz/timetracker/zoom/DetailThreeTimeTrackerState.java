@@ -20,10 +20,13 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
+import java.util.Date;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.util.Locales;
 
 /**
@@ -32,6 +35,8 @@ import org.zkoss.util.Locales;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
+
+    private static final int NUMBER_OF_MONTHS_MINIMUM = 20;
 
     DetailThreeTimeTrackerState(IDetailItemModificator firstLevelModificator,
             IDetailItemModificator secondLevelModificator) {
@@ -103,5 +108,29 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
                         getYearWithSemesterString(dateTime));
             }
         };
+    }
+
+    @Override
+    protected Interval calculateIntervalWithMinimum(Interval candidateInterval) {
+        Interval resultInterval;
+        LocalDate startDate = LocalDate.fromDateFields(candidateInterval.getStart());
+        LocalDate endDate = LocalDate.fromDateFields(candidateInterval.getFinish());
+        Months numberOfMonths =
+            Months.monthsBetween(startDate.toDateTimeAtCurrentTime(),
+                endDate.toDateTimeAtCurrentTime());
+
+        if (numberOfMonths.getMonths() < this.NUMBER_OF_MONTHS_MINIMUM) {
+            LocalDate endIntervalDate = LocalDate.fromDateFields(candidateInterval.
+                    getStart()).
+                    toDateMidnight().
+                    plusMonths(this.NUMBER_OF_MONTHS_MINIMUM).toLocalDate();
+            LocalDate roundedEndIntervalDate = roundToNextYear(endIntervalDate);
+            resultInterval = new Interval(candidateInterval.getStart(),
+                    roundedEndIntervalDate.toDateMidnight().toDate());
+        } else {
+            resultInterval = candidateInterval;
+        }
+
+        return resultInterval;
     }
 }

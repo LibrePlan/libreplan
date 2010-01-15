@@ -20,11 +20,13 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
+import org.jfree.data.time.Month;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Weeks;
+import org.zkoss.ganttz.util.Interval;
 
 /**
  * Zoom level for months and years and weeks in the second level
@@ -32,6 +34,8 @@ import org.joda.time.Weeks;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
+
+    private static final int NUMBER_OF_WEEKS_MINIMUM = 40;
 
     DetailFourTimeTrackerState(IDetailItemModificator firstLevelModificator,
             IDetailItemModificator secondLevelModificator) {
@@ -89,4 +93,29 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
         return down ? date.withDayOfMonth(1) : date.plusMonths(1)
                 .withDayOfMonth(1);
     }
+
+    @Override
+    protected Interval calculateIntervalWithMinimum(Interval candidateInterval) {
+        Interval resultInterval;
+        LocalDate startDate = LocalDate.fromDateFields(candidateInterval.getStart());
+        LocalDate endDate = LocalDate.fromDateFields(candidateInterval.getFinish());
+        Weeks numberOfWeeks = Weeks.weeksBetween(startDate.toDateTimeAtCurrentTime(),
+                endDate.toDateTimeAtCurrentTime());
+
+        if (numberOfWeeks.getWeeks() < this.NUMBER_OF_WEEKS_MINIMUM) {
+            LocalDate endIntervalDate = LocalDate.fromDateFields(candidateInterval.
+                    getStart()).
+                    toDateMidnight().
+                    plusWeeks(this.NUMBER_OF_WEEKS_MINIMUM).toLocalDate();
+            LocalDate roundedEndIntervalDate = roundToNextYear(endIntervalDate);
+
+            resultInterval = new Interval(candidateInterval.getStart(),
+                    roundedEndIntervalDate.toDateMidnight().toDate());
+        } else {
+            resultInterval = candidateInterval;
+        }
+
+        return resultInterval;
+    }
+
 }

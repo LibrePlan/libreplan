@@ -28,6 +28,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadablePeriod;
+import org.joda.time.Weeks;
 import org.zkoss.ganttz.util.Interval;
 
 /**
@@ -38,6 +39,7 @@ import org.zkoss.ganttz.util.Interval;
 public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
 
+    private static final int NUMBER_OF_DAYS_MINIMUM = 50;
     public static final int FIRST_LEVEL_SIZE = 140;
 
     public static final int SECOND_LEVEL_SIZE = 20;
@@ -116,6 +118,29 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
             }
         }
         return result;
+    }
+
+    @Override
+    protected Interval calculateIntervalWithMinimum(Interval candidateInterval) {
+        Interval resultInterval;
+        LocalDate startDate = LocalDate.fromDateFields(candidateInterval.getStart());
+        LocalDate endDate = LocalDate.fromDateFields(candidateInterval.getFinish());
+        Days numberOfDays = Days.daysBetween(startDate.toDateTimeAtCurrentTime(),
+                endDate.toDateTimeAtCurrentTime());
+
+        if (numberOfDays.getDays() < this.NUMBER_OF_DAYS_MINIMUM) {
+            LocalDate endIntervalDate = LocalDate.fromDateFields(candidateInterval.
+                    getStart()).
+                    toDateMidnight().
+                    plusWeeks(this.NUMBER_OF_DAYS_MINIMUM).toLocalDate();
+            LocalDate roundedEndIntervalDate = roundToNextYear(endIntervalDate);
+            resultInterval = new Interval(candidateInterval.getStart(),
+                    roundedEndIntervalDate.toDateMidnight().toDate());
+        } else {
+            resultInterval = candidateInterval;
+        }
+
+        return resultInterval;
     }
 
 }

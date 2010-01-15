@@ -66,6 +66,8 @@ public class TimeTracker {
 
     private final Component componentOnWhichGiveFeedback;
 
+    private boolean registeredFirstTask = false;
+
     public TimeTracker(Interval interval, Component componentOnWhichGiveFeedback) {
         this(interval, SeveralModificators.empty(),
                 SeveralModificators.empty(), componentOnWhichGiveFeedback);
@@ -216,21 +218,31 @@ public class TimeTracker {
     }
 
     private void updateIntervalIfNeeded(Task task) {
-        Date newStart = interval.getStart();
-        Date newFinish = interval.getFinish();
-        boolean changed = false;
-        if (interval.getStart().compareTo(startMinusOneYear(task)) > 0) {
-            newStart = startMinusOneYear(task);
-            changed = true;
-        }
-        if (interval.getFinish()
-                .compareTo(endPlusOneYear(task)) < 0) {
-            newFinish = endPlusOneYear(task);
-            changed = true;
-        }
-        if (changed) {
-            interval = new Interval(newStart, newFinish);
+        if (registeredFirstTask == false) {
+            registeredFirstTask = true;
+            interval = new Interval(startMinusTwoWeeks(task),
+                    endPlusOneMonth(task));
             invalidatingChangeHappened();
+        } else {
+            Date newStart = interval.getStart();
+            Date newFinish = interval.getFinish();
+
+            boolean changed = false;
+            if (interval.getStart().compareTo(startMinusTwoWeeks(task)) > 0) {
+                newStart = startMinusTwoWeeks(task);
+                changed = true;
+            }
+
+            if (interval.getFinish()
+                    .compareTo(endPlusOneMonth(task)) < 0) {
+                newFinish = endPlusOneMonth(task);
+                changed = true;
+            }
+
+            if (changed) {
+                interval = new Interval(newStart, newFinish);
+                invalidatingChangeHappened();
+            }
         }
     }
 
@@ -243,4 +255,11 @@ public class TimeTracker {
                 .toDateMidnight().toDate();
     }
 
+    private Date endPlusOneMonth(Task task) {
+        return new LocalDate(task.getEndDate()).plusMonths(1).toDateMidnight().toDate();
+    }
+
+    private Date startMinusTwoWeeks(Task task) {
+        return new LocalDate(task.getBeginDate()).minusWeeks(2).toDateMidnight().toDate();
+    }
 }

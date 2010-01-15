@@ -21,12 +21,14 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
@@ -176,9 +178,15 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         final IDetailItemModificator secondLevelModificators = configuration
                 .getSecondLevelModificators();
 
-        this.timeTracker = new TimeTracker(new Interval(TimeTrackerState
-                .year(2009), TimeTrackerState.year(2011)), planner
-                .getZoomLevel(), firstLevelModificators,
+        Calendar calendarRightNow = Calendar.getInstance();
+        LocalDate localDateRightNow = LocalDate.fromCalendarFields(calendarRightNow);
+        LocalDate initDate = localDateRightNow.minusYears(1);
+        LocalDate endDate = localDateRightNow.plusYears(5);
+
+        this.timeTracker = new TimeTracker(new Interval(
+                TimeTrackerState.year(initDate.getYear()),
+                TimeTrackerState.year(endDate.getYear())),
+                planner.getZoomLevel(), firstLevelModificators,
                 secondLevelModificators, planner);
     }
 

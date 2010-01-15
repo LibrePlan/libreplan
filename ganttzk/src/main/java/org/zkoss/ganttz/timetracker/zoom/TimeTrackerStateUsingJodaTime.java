@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.jfree.data.time.Month;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadablePeriod;
@@ -87,11 +88,23 @@ public abstract class TimeTrackerStateUsingJodaTime extends TimeTrackerState {
 
     protected abstract LocalDate round(LocalDate date, boolean down);
 
+    protected abstract Interval calculateIntervalWithMinimum(Interval candidateInterval);
+
     @Override
     public Interval getRealIntervalFor(Interval testInterval) {
         LocalDate start = round(asLocalDate(testInterval.getStart()), true);
-        LocalDate finish = round(asLocalDate(testInterval.getFinish()), false);
-        return new Interval(start.toDateTimeAtStartOfDay().toDate(), finish
+        LocalDate finish = roundToNextYear(asLocalDate(testInterval.getFinish()));
+
+        Interval candidateInterval = new Interval(start.toDateTimeAtStartOfDay().toDate(), finish
                 .toDateTimeAtStartOfDay().toDate());
+
+        Interval resultInterval = calculateIntervalWithMinimum(candidateInterval);
+        return resultInterval;
+    }
+
+    protected LocalDate roundToNextYear(LocalDate date) {
+        LocalDate dateNextYear = date.withYear(date.getYear()+1).
+            withMonthOfYear(Month.JANUARY).withDayOfMonth(1);
+        return dateNextYear;
     }
 }
