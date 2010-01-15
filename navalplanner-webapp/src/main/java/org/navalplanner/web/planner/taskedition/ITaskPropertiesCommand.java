@@ -21,6 +21,7 @@
 package org.navalplanner.web.planner.taskedition;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
@@ -30,6 +31,7 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface ITaskPropertiesCommand extends ICommandOnTask<TaskElement> {
 
-    void setEditTaskController(EditTaskController editTaskController);
+    void initialize(EditTaskController editTaskController,
+            PlanningState planningState);
 
 }

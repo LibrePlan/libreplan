@@ -24,7 +24,10 @@ import static org.navalplanner.web.I18nHelper._;
 
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.IEditTaskUtilities;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.taskedition.EditTaskController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -39,8 +42,11 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ResourceAllocationCommand implements IResourceAllocationCommand {
 
-    private ResourceAllocationController resourceAllocationController;
+    private EditTaskController editTaskController;
     private PlanningState planningState;
+
+    @Autowired
+    private IEditTaskUtilities editTaskUtilities;
 
     public ResourceAllocationCommand() {
     }
@@ -48,9 +54,11 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     @Override
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
+        editTaskUtilities.reattach(task);
+
         if (isApplicableTo(task)) {
-            this.resourceAllocationController.showWindow(context, (Task) task,
-                    planningState);
+            this.editTaskController.showEditFormResourceAllocation(context,
+                    (Task) task, planningState);
         }
     }
 
@@ -61,9 +69,9 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
 
     @Override
     public void initialize(
-            ResourceAllocationController resourceAllocationController,
+            EditTaskController editTaskController,
             PlanningState planningState) {
-        this.resourceAllocationController = resourceAllocationController;
+        this.editTaskController = editTaskController;
         this.planningState = planningState;
     }
 

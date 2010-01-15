@@ -67,7 +67,6 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
@@ -201,8 +200,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         ISaveCommand saveCommand = buildSaveCommand();
         configuration.addGlobalCommand(saveCommand);
 
-        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController
-                .getResourceAllocationController());
+        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
         configuration.addCommandOnTask(resourceAllocationCommand);
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration.addCommandOnTask(buildDeleteMilestoneCommand());
@@ -549,8 +547,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private ITaskPropertiesCommand buildTaskPropertiesCommand(
             EditTaskController editTaskController) {
         ITaskPropertiesCommand taskPropertiesCommand = getTaskPropertiesCommand();
-        taskPropertiesCommand
-                .setEditTaskController(editTaskController);
+        taskPropertiesCommand.initialize(editTaskController,
+                planningState);
         return taskPropertiesCommand;
     }
 
@@ -561,9 +559,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private IResourceAllocationCommand buildResourceAllocationCommand(
-            ResourceAllocationController resourceAllocationController) {
+            EditTaskController editTaskController) {
         IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
-        resourceAllocationCommand.initialize(resourceAllocationController,
+        resourceAllocationCommand.initialize(editTaskController,
                 planningState);
         return resourceAllocationCommand;
     }
@@ -1030,7 +1028,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private ISubcontractCommand buildSubcontractCommand(
             EditTaskController editTaskController) {
         ISubcontractCommand subcontractCommand = getSubcontractCommand();
-        subcontractCommand.setEditTaskController(editTaskController);
+        subcontractCommand.initialize(editTaskController,
+                planningState);
         return subcontractCommand;
     }
 

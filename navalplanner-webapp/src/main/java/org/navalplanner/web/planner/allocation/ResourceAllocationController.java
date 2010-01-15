@@ -30,22 +30,16 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
-import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.NewAllocationSelector;
-import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
-import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
-import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -56,7 +50,6 @@ import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -77,7 +70,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.api.Window;
 
 /**
  * Controller for {@link ResourceAllocation} view.
@@ -99,13 +91,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private ResourceAllocationRenderer resourceAllocationRenderer = new ResourceAllocationRenderer();
 
-    private Component messagesContainer;
-
-    private IMessagesForUser messagesForUser;
-
     private Grid allocationsGrid;
-
-    private Window window;
 
     private FormBinder formBinder;
 
@@ -146,8 +132,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        this.window = (Window) comp;
-        messagesForUser = new MessagesForUser(messagesContainer);
         allResourcesPerDay = new Decimalbox();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
@@ -182,14 +166,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
      * @param ganttTask
      * @param planningState
      */
-    public void showWindow(IContextWithPlannerTask<TaskElement> context,
+    public void init(IContextWithPlannerTask<TaskElement> context,
             org.navalplanner.business.planner.entities.Task task,
-            PlanningState planningState) {
+            PlanningState planningState, IMessagesForUser messagesForUser) {
         try {
             if (formBinder != null) {
                 formBinder.detach();
             }
-            window.setTitle(task.getName());
             allocationRows = resourceAllocationModel.initAllocationsFor(task,
                     context, planningState);
             formBinder = allocationRows
@@ -211,7 +194,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     resourceAllocationModel.getHoursAggregatedByCriterions()));
             orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
             newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
-            showWindow();
         } catch (WrongValueException e) {
             LOG.error("there was a WrongValueException initializing window", e);
             throw e;
@@ -280,17 +262,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                         hoursCellRenderer, Arrays.asList(HoursRendererColumn.values()));
     }
 
-    private void showWindow() {
-        Util.reloadBindings(window);
-        try {
-            window.doModal();
-        } catch (SuspendNotAllowedException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Pick resources selected from {@link NewAllocationSelector} and add them to
      * resource allocation list
@@ -315,53 +286,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void onCloseSelectWorkers() {
         tbResourceAllocation.setSelected(true);
         newAllocationSelector.clearAll();
-    }
-
-    private final class AdvanceAllocationResultReceiver implements
-            IAdvanceAllocationResultReceiver {
-
-        private final AllocationResult allocation;
-
-        private AdvanceAllocationResultReceiver(AllocationResult allocation) {
-            this.allocation = allocation;
-        }
-
-        @Override
-        public void cancel() {
-            showWindow();
-        }
-
-        @Override
-        public void accepted(AggregateOfResourceAllocations aggregate) {
-            resourceAllocationModel.accept(allocation);
-        }
-
-        @Override
-        public Restriction createRestriction() {
-            return Restriction.build(new IRestrictionSource() {
-
-                @Override
-                public int getTotalHours() {
-                    return allocation.getAggregate().getTotalHours();
-                }
-
-                @Override
-                public LocalDate getStart() {
-                    return allocation.getStart();
-                }
-
-                @Override
-                public LocalDate getEnd() {
-                    return getStart()
-                            .plusDays(allocation.getDaysDuration());
-                }
-
-                @Override
-                public CalculatedValue getCalculatedValue() {
-                    return allocation.getCalculatedValue();
-                }
-            });
-        }
     }
 
     public enum CalculationTypeRadio {
@@ -546,14 +470,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void cancel() {
-        close();
-        resourceAllocationModel.cancel();
-    }
-
-
-    private void close() {
-        window.setVisible(false);
         clear();
+        resourceAllocationModel.cancel();
     }
 
     private void clear() {
@@ -563,23 +481,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public void accept() {
         resourceAllocationModel.accept();
-        close();
-    }
-
-    public void goToAdvancedAllocation() {
-        AllocationResult allocationResult = formBinder.getLastAllocation();
-        if (allocationResult.getAggregate().isEmpty()) {
-            formBinder.doApply();
-            allocationResult = formBinder.getLastAllocation();
-        }
-        switcher.goToAdvancedAllocation(allocationResult,
-                createResultReceiver(allocationResult));
-        window.setVisible(false);
-    }
-
-    private IAdvanceAllocationResultReceiver createResultReceiver(
-            final AllocationResult allocation) {
-        return new AdvanceAllocationResultReceiver(allocation);
+        clear();
     }
 
     private class ResourceAllocationRenderer implements RowRenderer {
@@ -650,4 +552,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public void setSwitcher(ViewSwitcher switcher) {
         this.switcher = switcher;
     }
+
+    public FormBinder getFormBinder() {
+        return formBinder;
+    }
+
+    public void accept(AllocationResult allocation) {
+        resourceAllocationModel.accept(allocation);
+    }
+
 }

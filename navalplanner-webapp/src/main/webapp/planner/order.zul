@@ -44,7 +44,7 @@
     </div>
 
     <window id="editTaskWindow" apply="${editController}" border="normal"
-        title="${i18n:_('Task properties')}" width="650px" visible="false">
+        width="650px" visible="false">
 
         <vbox id="messagesContainer" />
 
@@ -52,9 +52,9 @@
             <tabs>
                 <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}" />
                 <tab id="resourceAllocationTab" label="${i18n:_('Resource allocation')}"
-                    visible="@{editController.isNotSubcontracted}" />
+                    visible="@{editController.isNotSubcontractedAndIsTask}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}"
-                    visible="@{editController.isSubcontracted}" />
+                    visible="@{editController.isSubcontractedAndIsTask}" />
             </tabs>
             <tabpanels>
                 <tabpanel id="taskPropertiesTabpanel">
@@ -94,7 +94,7 @@
                                 <datebox id="startConstraintDate" constraint ="no empty"/>
                             </vbox>
                         </row>
-                        <row id="subcontract">
+                        <row id="subcontract" visible="@{editController.isTask}">
                             <label value="${i18n:_('Subcontract')}" />
                             <checkbox id="subcontractCheckbox" label="${i18n:_('Is subcontracted')}"
                                 onCheck="editController.subcontract(self.checked);" />
@@ -102,7 +102,111 @@
                     </rows>
                 </grid>
                 </tabpanel>
-                <tabpanel id="resourceAllocationTabpanel">TODO</tabpanel>
+                <tabpanel id="resourceAllocationTabpanel">
+                <tabbox mold="accordion">
+                    <tabs>
+                        <tab id="tbResourceAllocation" label="${i18n:_('Resource allocation')}" image="common/img/collapse.gif" />
+                        <tab id="workerSearchTab" label="${i18n:_('Resources search')}" image="common/img/collapse.gif"/>
+                    </tabs>
+                    <tabpanels>
+                        <tabpanel>
+                            <groupbox mold="3d" closable="false">
+                                <caption label="${i18n:_('Order Element Information')}:" />
+                                <grid id="orderElementHoursGrid">
+                                    <columns>
+                                          <column  width="200px" label="${i18n:_('Criteria')}"/>
+                                          <column  width="200px" label="${i18n:_('Type')}"/>
+                                          <column label="${i18n:_('Hours')}" />
+                                    </columns>
+                                </grid>
+                                <grid>
+                                      <columns>
+                                          <column width="200px" />
+                                          <column width="200px" />
+                                          <column />
+                                      </columns>
+                                      <rows>
+                                        <row>
+                                            <label  />
+                                            <label value="${i18n:_('Total Estimated hours')}:" />
+                                            <intbox value="@{allocationController.orderHours}" disabled="${true}" />
+                                        </row>
+                                      </rows>
+                                </grid>
+                            </groupbox>
+                            <groupbox mold="3d" style="margin-top: 5px" closable="false">
+                                <caption label="${i18n:_('Task information')}:" />
+                                <grid>
+                                    <columns>
+                                        <column width="200px" />
+                                        <column />
+                                    </columns>
+                                    <rows>
+                                        <row>
+                                            <label value="${i18n:_('Start')}" />
+                                            <datebox id="taskStartDateBox" />
+                                        </row>
+                                        <row>
+                                            <label value="${i18n:_('End')}" />
+                                            <datebox id="taskEndDate" />
+                                        </row>
+                                     </rows>
+                                </grid>
+                            </groupbox>
+                            <groupbox mold="3d" style="margin-top: 5px" closable="false">
+                                <caption label="${i18n:_('Calculation type')}:" />
+                                <radiogroup id="calculationTypeSelector"
+                                    onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
+                                    <grid id="calculationTypesGrid">
+                                        <columns>
+                                          <column />
+                                        </columns>
+                                    </grid>
+                                </radiogroup>
+                                <hbox>
+                                    <checkbox id="recommendedAllocationCheckbox" label="${i18n:_('Recommended Allocation')}"/>
+                                </hbox>
+                            </groupbox>
+
+                            <groupbox mold="3d" style="margin-top: 5px" sclass="assignedresources" closable="false">
+                                <caption label="${i18n:_('Allocations')}" />
+                                <grid id="allocationsGrid"
+                                    model="@{allocationController.resourceAllocations}"
+                                    rowRenderer="@{allocationController.resourceAllocationRenderer}"
+                                    style="margin-bottom: 5px" fixedLayout="true">
+                                    <columns>
+                                        <column />
+                                        <column label="${i18n:_('Name')}" />
+                                        <column
+                                            label="${i18n:_('Hours')}" />
+                                        <column
+                                            label="${i18n:_('Resources Per Day')}" />
+                                        <column
+                                            label="${i18n:_('Operations')}" />
+                                    </columns>
+                                </grid>
+                            </groupbox>
+                        </tabpanel>
+
+                        <!-- Worker search -->
+                        <tabpanel>
+                            <newAllocationSelector id="newAllocationSelector"/>
+                            <!--  Select worker -->
+                            <hbox>
+                                <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />
+                                <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()" />
+                            </hbox>
+                        </tabpanel>
+                    </tabpanels>
+                </tabbox>
+
+                <!-- Control buttons -->
+                <hbox>
+                    <button label="${i18n:_('Apply tab changes')}" id="applyButton" sclass="global-action" />
+                    <button label="${i18n:_('Go to advanced Allocation')}"
+                        onClick="editController.goToAdvancedAllocation();" sclass="global-action" />
+                </hbox>
+                </tabpanel>
                 <tabpanel id="subcontractTabpanel">
                     <grid>
                     <rows>
@@ -169,122 +273,6 @@
             <button id="cancel" label="${i18n:_('Cancel')}"
                 onClick="editController.cancel();" />
         </hbox>
-    </window>
-
-    <window id="resourceAllocationWindow"
-        apply="${allocationController}" closable="true"
-        title="${i18n:_('Resource allocation')}" width="650px" visible="false"
-        border="normal">
-
-    <tabbox mold="accordion">
-        <tabs>
-            <tab id="tbResourceAllocation" label="${i18n:_('Resource allocation')}" image="common/img/collapse.gif" />
-            <tab id="workerSearchTab" label="${i18n:_('Resources search')}" image="common/img/collapse.gif"/>
-        </tabs>
-        <tabpanels>
-            <tabpanel>
-                <groupbox mold="3d" closable="false">
-                    <caption label="${i18n:_('Order Element Information')}:" />
-                    <grid id="orderElementHoursGrid">
-                        <columns>
-                              <column  width="200px" label="${i18n:_('Criteria')}"/>
-                              <column  width="200px" label="${i18n:_('Type')}"/>
-                              <column label="${i18n:_('Hours')}" />
-                        </columns>
-                    </grid>
-                    <grid>
-                          <columns>
-                              <column width="200px" />
-                              <column width="200px" />
-                              <column />
-                          </columns>
-                          <rows>
-                            <row>
-                                <label  />
-                                <label value="${i18n:_('Total Estimated hours')}:" />
-                                <intbox value="@{allocationController.orderHours}" disabled="${true}" />
-                            </row>
-                          </rows>
-                    </grid>
-                </groupbox>
-                <groupbox mold="3d" style="margin-top: 5px" closable="false">
-                    <caption label="${i18n:_('Task information')}:" />
-                    <grid>
-                        <columns>
-                            <column width="200px" />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <label value="${i18n:_('Start')}" />
-                                <datebox id="taskStartDateBox" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('End')}" />
-                                <datebox id="taskEndDate" />
-                            </row>
-                         </rows>
-                    </grid>
-                </groupbox>
-                <groupbox mold="3d" style="margin-top: 5px" closable="false">
-                    <caption label="${i18n:_('Calculation type')}:" />
-                    <radiogroup id="calculationTypeSelector"
-                        onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
-                        <grid id="calculationTypesGrid">
-                            <columns>
-                              <column />
-                            </columns>
-                        </grid>
-                    </radiogroup>
-                    <hbox>
-                        <checkbox id="recommendedAllocationCheckbox" label="${i18n:_('Recommended Allocation')}"/>
-                    </hbox>
-                </groupbox>
-
-                <vbox id="messagesContainer"></vbox>
-
-                <groupbox mold="3d" style="margin-top: 5px" sclass="assignedresources" closable="false">
-                    <caption label="${i18n:_('Allocations')}" />
-                    <grid id="allocationsGrid"
-                        model="@{allocationController.resourceAllocations}"
-                        rowRenderer="@{allocationController.resourceAllocationRenderer}"
-                        style="margin-bottom: 5px" fixedLayout="true">
-                        <columns>
-                            <column />
-                            <column label="${i18n:_('Name')}" />
-                            <column
-                                label="${i18n:_('Hours')}" />
-                            <column
-                                label="${i18n:_('Resources Per Day')}" />
-                            <column
-                                label="${i18n:_('Operations')}" />
-                        </columns>
-                    </grid>
-                </groupbox>
-            </tabpanel>
-
-            <!-- Worker search -->
-            <tabpanel>
-                <newAllocationSelector id="newAllocationSelector"/>
-                <!--  Select worker -->
-                <hbox>
-                    <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />
-                    <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()" />
-                </hbox>
-            </tabpanel>
-        </tabpanels>
-    </tabbox>
-
-    <!-- Control buttons -->
-    <hbox>
-        <button label="${i18n:_('Accept')}"
-            onClick="allocationController.accept()" sclass="save-button global-action" />
-        <button label="${i18n:_('Apply')}" id="applyButton" sclass="global-action" />
-        <button label="${i18n:_('Cancel')}"
-            onClick="allocationController.cancel()" sclass="cancel-button global-action" />
-        <button label="${i18n:_('Advanced Allocation')}"
-            onClick="allocationController.goToAdvancedAllocation();" sclass="global-action" />
-    </hbox>
     </window>
 
     <window id="calendarAllocationWindow"

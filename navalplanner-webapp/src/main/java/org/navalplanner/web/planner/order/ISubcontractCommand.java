@@ -31,6 +31,7 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface ISubcontractCommand extends ICommandOnTask<TaskElement> {
 
-    void setEditTaskController(EditTaskController editTaskController);
+    void initialize(EditTaskController editTaskController,
+            PlanningState planningState);
 
 }

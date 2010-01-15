@@ -64,7 +64,7 @@ import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.impl.api.InputElement;
 
-class FormBinder {
+public class FormBinder {
 
     private Intbox allHoursInput;
 
@@ -349,7 +349,7 @@ class FormBinder {
         return list;
     }
 
-    void doApply() {
+    public void doApply() {
         lastAllocation = resourceAllocationModel
                 .onAllocationContext(new IResourceAllocationContext<AllocationResult>() {
 

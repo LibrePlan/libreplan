@@ -42,6 +42,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 public class SubcontractCommand implements ISubcontractCommand {
 
     private EditTaskController editTaskController;
+    private PlanningState planningState;
 
     @Autowired
     private IEditTaskUtilities editTaskUtilities;
@@ -68,13 +69,16 @@ public class SubcontractCommand implements ISubcontractCommand {
         editTaskUtilities.reattach(task);
 
         if (isApplicableTo(task)) {
-            editTaskController.showEditFormSubcontract(context, task);
+            editTaskController.showEditFormSubcontract(context, task,
+                    planningState);
         }
     }
 
     @Override
-    public void setEditTaskController(EditTaskController editTaskController) {
+    public void initialize(EditTaskController editTaskController,
+            PlanningState planningState) {
         this.editTaskController = editTaskController;
+        this.planningState = planningState;
     }
 
 }

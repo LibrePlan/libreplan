@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.IEditTaskUtilities;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -40,6 +41,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 public class TaskPropertiesCommand implements ITaskPropertiesCommand {
 
     private EditTaskController editTaskController;
+    private PlanningState planningState;
 
     @Autowired
     private IEditTaskUtilities editTaskUtilities;
@@ -49,7 +51,8 @@ public class TaskPropertiesCommand implements ITaskPropertiesCommand {
             TaskElement taskElement) {
         editTaskUtilities.reattach(taskElement);
 
-        editTaskController.showEditFormTaskProperties(context, taskElement);
+        editTaskController.showEditFormTaskProperties(context, taskElement,
+                planningState);
     }
 
     @Override
@@ -58,9 +61,10 @@ public class TaskPropertiesCommand implements ITaskPropertiesCommand {
     }
 
     @Override
-    public void setEditTaskController(
-            EditTaskController editTaskController) {
+    public void initialize(EditTaskController editTaskController,
+            PlanningState planningState) {
         this.editTaskController = editTaskController;
+        this.planningState = planningState;
     }
 
     @Override

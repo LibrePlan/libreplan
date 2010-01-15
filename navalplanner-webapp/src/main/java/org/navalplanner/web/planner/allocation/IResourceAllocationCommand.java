@@ -22,6 +22,7 @@ package org.navalplanner.web.planner.allocation;
 
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
@@ -31,7 +32,7 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface IResourceAllocationCommand extends ICommandOnTask<TaskElement> {
 
-    void initialize(ResourceAllocationController resourceAllocationController,
+    void initialize(EditTaskController editTaskController,
             PlanningState state);
 
 }
