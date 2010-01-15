@@ -93,10 +93,27 @@ public class TaskSource extends BaseEntity {
 
         @Override
         public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
-            taskSource.getTask()
-                    .setName(taskSource.getOrderElement().getName());
+            updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
             taskSourceDAO.save(taskSource);
             return taskSource.getTask();
+        }
+
+    }
+
+    /**
+     * This method updates the task with a name and a start date. The start date
+     * and end date should never be null, unless it's legacy data
+     * @param task
+     * @param orderElement
+     */
+    private static void updateTaskWithOrderElement(TaskElement task,
+            OrderElement orderElement) {
+        task.setName(orderElement.getName());
+        if (task.getStartDate() == null) {
+            task.setStartDate(orderElement.getOrder().getInitDate());
+        }
+        if (task.getEndDate() == null) {
+            task.initializeEndDateIfDoesntExist();
         }
     }
 
@@ -205,7 +222,7 @@ public class TaskSource extends BaseEntity {
                 List<TaskElement> children) {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
             taskGroup.setTaskChildrenTo(children);
-            taskGroup.setName(taskSource.getOrderElement().getName());
+            updateTaskWithOrderElement(taskGroup, taskSource.getOrderElement());
             taskSourceDAO.save(taskSource);
             return taskGroup;
         }
