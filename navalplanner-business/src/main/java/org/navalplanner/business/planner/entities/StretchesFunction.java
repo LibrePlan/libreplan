@@ -91,13 +91,50 @@ public class StretchesFunction extends AssignmentFunction {
             return hasNoEnd() ? allocationEnd : end;
         }
 
-        public void apply(ResourceAllocation<?> resourceAllocation,
+        private void apply(ResourceAllocation<?> resourceAllocation,
                 LocalDate allocationStart, LocalDate allocationEnd,
-                int totalHours) {
+                int intervalHours) {
             resourceAllocation.withPreviousAssociatedResources()
                               .onInterval(getStartFor(allocationStart),
                                       getEndFor(allocationEnd))
-                              .allocateHours(getHoursFor(totalHours));
+                    .allocateHours(intervalHours);
+        }
+
+        public static void apply(ResourceAllocation<?> allocation,
+                List<Interval> intervalsDefinedByStreches,
+                LocalDate allocationStart, LocalDate allocationEnd,
+                int totalHours) {
+            if (intervalsDefinedByStreches.isEmpty()) {
+                return;
+            }
+            int[] hoursPerInterval = getHoursPerInterval(
+                    intervalsDefinedByStreches, totalHours);
+            int remainder = totalHours - sum(hoursPerInterval);
+            hoursPerInterval[0] += remainder;
+            int i = 0;
+            for (Interval interval : intervalsDefinedByStreches) {
+                interval.apply(allocation, allocationStart, allocationEnd,
+                        hoursPerInterval[i++]);
+            }
+
+        }
+
+        private static int[] getHoursPerInterval(
+                List<Interval> intervalsDefinedByStreches, int totalHours) {
+            int[] hoursPerInterval = new int[intervalsDefinedByStreches.size()];
+            int i = 0;
+            for (Interval each : intervalsDefinedByStreches) {
+                hoursPerInterval[i++] = each.getHoursFor(totalHours);
+            }
+            return hoursPerInterval;
+        }
+
+        private static int sum(int[] hoursPerInterval) {
+            int result = 0;
+            for (int each : hoursPerInterval) {
+                result += each;
+            }
+            return result;
         }
 
     }
@@ -207,9 +244,8 @@ public class StretchesFunction extends AssignmentFunction {
         int totalHours = resourceAllocation.getAssignedHours();
         LocalDate start = resourceAllocation.getStartDate();
         LocalDate end = resourceAllocation.getEndDate();
-        for (Interval each : intervalsDefinedByStreches) {
-            each.apply(resourceAllocation, start, end, totalHours);
-        }
+        Interval.apply(resourceAllocation, intervalsDefinedByStreches, start,
+                end, totalHours);
     }
 
     public List<Interval> getIntervalsDefinedByStreches() {
