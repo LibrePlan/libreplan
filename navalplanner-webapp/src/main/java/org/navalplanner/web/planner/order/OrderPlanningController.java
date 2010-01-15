@@ -128,7 +128,8 @@ public class OrderPlanningController implements Composer {
         planner
                 .setInitialZoomLevel(ZoomLevel
                         .getFromString(zoomLevelParameter));
-
+        planner.setAreContainersExpandedByDefault(Planner
+                .guessContainersExpandedByDefault(parameters));
         updateConfiguration();
     }
 

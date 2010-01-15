@@ -25,7 +25,10 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -65,6 +68,23 @@ public class Planner extends HtmlMacroComponent  {
     private static IScriptsRegister getScriptsRegister() {
         return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
                 .retrieve();
+    }
+
+    public static boolean guessContainersExpandedByDefault(
+            Map<String, String[]> queryURLParameters) {
+        String[] values = queryURLParameters.get("expanded");
+        if (values == null) {
+            return false;
+        }
+        return toLowercaseSet(values).contains("all");
+    }
+
+    private static Set<String> toLowercaseSet(String[] values) {
+        Set<String> result = new HashSet<String>();
+        for (String each : values) {
+            result.add(each.toLowerCase());
+        }
+        return result;
     }
 
     private GanttDiagramGraph diagramGraph;
