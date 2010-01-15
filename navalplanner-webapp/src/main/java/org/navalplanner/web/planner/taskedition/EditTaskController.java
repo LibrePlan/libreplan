@@ -98,9 +98,9 @@ public class EditTaskController extends GenericForwardComposer {
         this.taskElement = taskElement;
         this.context = context;
 
-        taskPropertiesController.showEditFormFor(context, taskElement);
+        taskPropertiesController.init(context, taskElement);
         if (taskElement.isSubcontracted()) {
-            subcontractController.showWindow((Task) taskElement, context);
+            subcontractController.init((Task) taskElement, context);
         }
 
         try {
@@ -156,7 +156,7 @@ public class EditTaskController extends GenericForwardComposer {
             if (subcontract) {
                 resourceAllocationTab.setVisible(false);
                 subcontractTab.setVisible(true);
-                subcontractController.showWindow((Task) taskElement, context);
+                subcontractController.init((Task) taskElement, context);
             } else {
                 subcontractTab.setVisible(false);
                 resourceAllocationTab.setVisible(true);

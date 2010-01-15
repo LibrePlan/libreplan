@@ -61,7 +61,7 @@ public class SubcontractController extends GenericForwardComposer {
         tabpanel = (Tabpanel) comp;
     }
 
-    public void showWindow(Task task,
+    public void init(Task task,
             IContextWithPlannerTask<TaskElement> context) {
         this.context = context;
         subcontractModel.init(task, context.getTask());

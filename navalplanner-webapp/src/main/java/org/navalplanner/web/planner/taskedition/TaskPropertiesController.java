@@ -162,11 +162,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private Checkbox subcontractCheckbox;
 
-    public void showEditFormFor(IContextWithPlannerTask<TaskElement> context,
+    public void init(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
         this.currentContext = context;
         this.currentTaskElement = taskElement;
-        taskEditFormComposer.showEditFormFor(context.getRelativeTo(), context.getTask());
+        taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         updateComponentValuesForTask();
     }
 

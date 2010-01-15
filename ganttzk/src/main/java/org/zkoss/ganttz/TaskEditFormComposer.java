@@ -50,7 +50,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         super.doAfterCompose(comp);
     }
 
-    public void showEditFormFor(Component openRelativeTo, Task task) {
+    public void init(Component openRelativeTo, Task task) {
         this.currentTask = task;
         this.taskDTO = toDTO(task);
         updateComponentValuesForTask(taskDTO);
