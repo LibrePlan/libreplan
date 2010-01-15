@@ -59,15 +59,16 @@ public class Task extends TaskElement {
         OrderElement orderElement = taskSource.getOrderElement();
         orderElement.applyStartConstraintIfNeededTo(task);
         Task result = create(task, taskSource);
-        initializeEndDate(taskSource, result);
+        result.initializeEndDate();
         return result;
     }
 
-    private static void initializeEndDate(TaskSource taskSource, Task task) {
-        Integer workHours = task.getWorkHours();
-        long endDateTime = task.getStartDate().getTime()
+    @Override
+    protected void initializeEndDate() {
+        Integer workHours = getWorkHours();
+        long endDateTime = getStartDate().getTime()
                 + (workHours * 3600l * 1000);
-        task.setEndDate(new Date(endDateTime));
+        setEndDate(new Date(endDateTime));
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;

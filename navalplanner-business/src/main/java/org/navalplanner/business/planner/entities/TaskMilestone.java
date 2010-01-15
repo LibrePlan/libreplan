@@ -106,4 +106,9 @@ public class TaskMilestone extends TaskElement {
     protected void moveAllocations() {
         // do nothing
     }
+
+    @Override
+    protected void initializeEndDate() {
+        // do nothing
+    }
 }

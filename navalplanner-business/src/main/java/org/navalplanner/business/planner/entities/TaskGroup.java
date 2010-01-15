@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -120,5 +121,20 @@ public class TaskGroup extends TaskElement {
                 listIterator.remove();
             } while (listIterator.hasNext());
         }
+    }
+
+    @Override
+    protected void initializeEndDate() {
+        List<Date> endDates = getEndDates(getChildren());
+        setEndDate(Collections.max(endDates));
+    }
+
+    private List<Date> getEndDates(Collection<? extends TaskElement> children) {
+        List<Date> result = new ArrayList<Date>();
+        for (TaskElement each : children) {
+            Validate.notNull(each.getEndDate());
+            result.add(each.getEndDate());
+        }
+        return result;
     }
 }

@@ -78,6 +78,14 @@ public abstract class TaskElement extends BaseEntity {
 
     private TaskSource taskSource;
 
+    public void initializeEndDateIfDoesntExist() {
+        if (getEndDate() == null) {
+            initializeEndDate();
+        }
+    }
+
+    protected abstract void initializeEndDate();
+
     public Integer getWorkHours() {
         if (taskSource == null) {
             return 0;
