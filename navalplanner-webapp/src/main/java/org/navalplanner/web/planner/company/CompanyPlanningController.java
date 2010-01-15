@@ -72,7 +72,8 @@ public class CompanyPlanningController implements Composer{
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         planner = (Planner) comp;
         String zoomLevelParameter = null;
-        if ((parameters.get("zoom") != null) && !(parameters.isEmpty())) {
+        if ((parameters != null) && (parameters.get("zoom") != null)
+                && !(parameters.isEmpty())) {
             zoomLevelParameter = parameters.get("zoom")[0];
         }
         planner

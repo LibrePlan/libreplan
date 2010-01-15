@@ -170,6 +170,7 @@ public class PlanningTabCreator {
                 orderPlanningController.setOrder(mode.getOrder());
                 arguments.put("orderPlanningController",
                         orderPlanningController);
+                orderPlanningController.setURLParameters(parameters);
                 org.zkoss.zk.ui.Component result = Executions.createComponents(
                         "/planner/order.zul", parent, arguments);
                 Util.createBindingsFor(result);

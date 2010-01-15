@@ -141,7 +141,7 @@ public class MultipleTabsPlannerController implements Composer,
                         getTabsRegistry().show(ordersTab);
                     }
 
-                });
+                }, parameters);
         final State<Void> typeChanged = typeChangedState();
         ITab advancedAllocation = doFeedbackOn(AdvancedAllocationTabCreator.create(mode,
                 transactionService, orderDAO, taskElementDAO, resourceDAO,

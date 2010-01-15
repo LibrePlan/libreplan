@@ -19,6 +19,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.ganttz.servlets.CallbackServlet;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.Executions;
 
 public class CutyPrint {
@@ -102,7 +103,12 @@ public class CutyPrint {
         }
 
         // Static width and time delay parameters (FIX)
-        captureString += " --min-width=2600 --delay=1000 ";
+        captureString += " --min-width="
+                + getCanvasWidth(ZoomLevel
+                        .getFromString(parameters.get("zoom")));
+
+        // Static width and time delay parameters (FIX)
+        captureString += " --delay=1000 ";
 
         // Relative user styles
         captureString += "--user-styles=" + absolutePath
@@ -147,6 +153,12 @@ public class CutyPrint {
         } catch (IOException e) {
             LOG.error(_("Could not execute print command"), e);
         }
+    }
+
+    private static int getCanvasWidth(ZoomLevel z) {
+        // Calculate based on real planner width
+        int value = 2600;
+        return value;
     }
 
 }

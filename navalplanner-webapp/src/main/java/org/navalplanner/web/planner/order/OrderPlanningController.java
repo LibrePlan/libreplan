@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.order;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
@@ -38,6 +39,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.util.Composer;
@@ -59,6 +61,7 @@ public class OrderPlanningController implements Composer {
         return resourceAllocationController;
     }
 
+    private Map<String, String[]> parameters;
 
     @Autowired
     private TaskPropertiesController taskPropertiesController;
@@ -117,6 +120,15 @@ public class OrderPlanningController implements Composer {
             throw new IllegalStateException("an order should have been set");
         }
         this.planner = (Planner) comp;
+        String zoomLevelParameter = null;
+        if ((parameters != null) && (parameters.get("zoom") != null)
+                && !(parameters.isEmpty())) {
+            zoomLevelParameter = parameters.get("zoom")[0];
+        }
+        planner
+                .setInitialZoomLevel(ZoomLevel
+                        .getFromString(zoomLevelParameter));
+
         updateConfiguration();
     }
 
@@ -129,6 +141,10 @@ public class OrderPlanningController implements Composer {
 
     public SubcontractController getSubcontractController() {
         return subcontractController;
+    }
+
+    public void setURLParameters(Map<String, String[]> parameters) {
+        this.parameters = parameters;
     }
 
 }

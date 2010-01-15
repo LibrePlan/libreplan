@@ -45,11 +45,14 @@ public class OrdersTabCreator {
 
     private static final String ORDER_ORDERS_VIEW = _("Order Details");
 
+    private final Map<String, String[]> parameters;
+
     public static ITab create(Mode mode,
             OrderCRUDController orderCRUDController, Component breadcrumbs,
-            IOrderPlanningGate orderPlanningGate) {
+            IOrderPlanningGate orderPlanningGate,
+            Map<String, String[]> parameters) {
         return new OrdersTabCreator(mode, orderCRUDController, breadcrumbs,
-                orderPlanningGate)
+                orderPlanningGate, parameters)
                 .build();
     }
 
@@ -83,11 +86,13 @@ public class OrdersTabCreator {
 
     private OrdersTabCreator(Mode mode,
             OrderCRUDController orderCRUDController, Component breadcrumbs,
-            IOrderPlanningGate orderPlanningGate) {
+            IOrderPlanningGate orderPlanningGate,
+            Map<String, String[]> parameters) {
         this.mode = mode;
         this.orderCRUDController = orderCRUDController;
         this.breadcrumbs = breadcrumbs;
         this.orderPlanningGate = orderPlanningGate;
+        this.parameters = parameters;
     }
 
     private ITab build() {
