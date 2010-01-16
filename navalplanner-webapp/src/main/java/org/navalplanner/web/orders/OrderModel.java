@@ -123,6 +123,7 @@ public class OrderModel implements IOrderModel {
     private IOrderSequenceDAO orderSequenceDAO;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Label> getLabels() {
         return getLabelsOnConversation().getLabels();
     }

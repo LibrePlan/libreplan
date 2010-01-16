@@ -180,6 +180,7 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
         return false;
     }
 
+    @Transactional(readOnly = true)
     public List<Label> getAllLabels() {
         return getLabelsOnConversation();
     }
