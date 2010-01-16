@@ -779,16 +779,17 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     private boolean checkConstraintLabelNotRepeatedInTheSameBranch(
-            HashSet<Label> labels) {
+            HashSet<Label> parentLabels) {
+        HashSet<Label> withThisLabels = new HashSet<Label>(parentLabels);
         for (Label label : getLabels()) {
-            if (containsLabel(labels, label)) {
+            if (containsLabel(withThisLabels, label)) {
                 return false;
             }
-            labels.add(label);
+            withThisLabels.add(label);
         }
-
         for (OrderElement child : getChildren()) {
-            if (!child.checkConstraintLabelNotRepeatedInTheSameBranch(labels)) {
+            if (!child
+                    .checkConstraintLabelNotRepeatedInTheSameBranch(withThisLabels)) {
                 return false;
             }
         }
