@@ -98,8 +98,12 @@ public class CutyPrint {
         captureString += " --url=http://" + request.getLocalName() + ":"
                 + request.getLocalPort() + url;
 
-        if ((parameters != null) && (parameters.get("zoom") != null)) {
-            captureString += "?zoom=" + parameters.get("zoom");
+        if (parameters != null) {
+            captureString += "?";
+            for (String key : parameters.keySet()) {
+                captureString += key + "=" + parameters.get(key) + "&";
+            }
+            captureString.substring(0, captureString.length() - 1);
         }
 
         // Static width and time delay parameters (FIX)

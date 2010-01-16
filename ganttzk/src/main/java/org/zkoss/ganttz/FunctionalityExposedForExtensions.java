@@ -55,6 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Window;
 
@@ -382,6 +383,21 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         return configuration.isPrintEnabled();
     }
 
+    private HashMap<String, String> buildParameters(Component parent) {
+        HashMap<String, String> parameters = new HashMap<String, String>();
+
+        Radiogroup layout = (Radiogroup) parent.getFellow("print_layout");
+        Checkbox expanded = (Checkbox) parent.getFellow("print_expanded");
+        if (layout.getSelectedIndex() == 2) {
+            parameters.put("extension", ".png");
+        }
+        if (expanded.isChecked() == true) {
+            parameters.put("expanded", "all");
+        }
+        parameters.put("zoom", planner.getZoomLevel().toString());
+        return parameters;
+    }
+
     public void print() {
         if (!isPrintEnabled()) {
             throw new UnsupportedOperationException("print is not supported");
@@ -394,14 +410,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         printButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                Radiogroup layout = (Radiogroup) printProperties
-                        .getFellow("print_layout");
-                HashMap<String, String> parameters = new HashMap<String, String>();
-                if (layout.getSelectedIndex() == 2) {
-                    parameters.put("extension", ".png");
-                }
-                parameters.put("zoom", planner.getZoomLevel().toString());
-                configuration.print(parameters);
+                configuration.print(buildParameters(printProperties));
             }
         });
         printButton.setParent(printProperties);

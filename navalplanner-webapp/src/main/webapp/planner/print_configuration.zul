@@ -68,7 +68,7 @@
                     <checkbox id="print_resources"
                         label="${i18n:_('Show all resource assignments')}" />
                     <checkbox id="print_expanded"
-                        label="${i18n:_('Show expanded tree')}" visible="false" />
+                        label="${i18n:_('Show expanded tree')}" />
                     <checkbox id="print_shrinked"
                         label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" />
                 </vbox>
