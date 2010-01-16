@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7), libqt4-dev
 
 Package: cutycapt
 Architecture: any
-Depends: libqt4-webkit
+Depends: libqt4-webkit libqt4-svg
 Description: Captures web pages to files in different formats.
  CutyCapt is a small cross-platform command-line utility to capture
  WebKit's rendering of a web page into a variety of vector and bitmap
