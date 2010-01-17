@@ -29,6 +29,7 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.navalplanner.web.templates.quality.QualityFormAssignerComponent;
@@ -89,10 +90,17 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     }
 
     private void showEditWindow() {
+        bindAdvancesComponentWithCurrentTemplate();
         bindMaterialsControllerWithCurrentTemplate();
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
         show(getEditWindow());
+    }
+
+    private void bindAdvancesComponentWithCurrentTemplate() {
+        AdvancesAssignmentComponent c = (AdvancesAssignmentComponent) getEditWindow()
+                .getFellow("advancesAssignment");
+        c.useModel(model);
     }
 
     private void bindMaterialsControllerWithCurrentTemplate() {

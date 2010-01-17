@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -135,6 +136,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         initializeAcompanyingObjectsOnConversation();
         this.template = dao.findExistingEntity(template.getId());
         loadQualityForms(this.template);
+        loadAdvanceAssignments(this.template);
         treeModel = new TemplatesTree(this.template);
     }
 
@@ -144,6 +146,14 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         }
         for (OrderElementTemplate each : template.getChildrenTemplates()) {
             loadQualityForms(each);
+        }
+    }
+
+    private void loadAdvanceAssignments(OrderElementTemplate template) {
+        for (AdvanceAssignmentTemplate each : template
+                .getAdvanceAssignmentTemplates()) {
+            each.getMaxValue();
+            each.getAdvanceType().getUnitName();
         }
     }
 
