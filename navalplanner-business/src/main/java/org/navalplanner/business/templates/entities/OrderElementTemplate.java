@@ -65,7 +65,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         beingBuilt.qualityForms = origin.getQualityForms();
         beingBuilt.advanceAssignmentTemplates = copyDirectAdvanceAssignments(
                 beingBuilt, origin.getDirectAdvanceAssignments());
-        return create(beingBuilt, infoComponentCopied, fromBeginningToStart, fromBeginningToEnd);
+        beingBuilt.infoComponent = infoComponentCopied;
+        assignDates(beingBuilt, fromBeginningToStart, fromBeginningToEnd);
+        return create(beingBuilt);
     }
 
     private static Set<AdvanceAssignmentTemplate> copyDirectAdvanceAssignments(
@@ -79,7 +81,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     public static <T extends OrderElementTemplate> T createNew(T beingBuilt) {
-        return create(beingBuilt, new InfoComponent(), null, null);
+        beingBuilt.infoComponent = new InfoComponent();
+        assignDates(beingBuilt, null, null);
+        return create(beingBuilt);
     }
 
     private static Set<MaterialAssignmentTemplate> copyMaterialAssignmentsFrom(OrderElementTemplate beingBuilt,
@@ -91,15 +95,12 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return result;
     }
 
-    private static <T extends OrderElementTemplate> T create(T beingBuilt,
-            InfoComponent infoComponentCopied, Days fromBeginningToStart,
-            Days fromBeginningToEnd) {
+    private static void assignDates(OrderElementTemplate beingBuilt,
+            Days fromBeginningToStart, Days fromBeginningToEnd) {
         Validate.isTrue(isNullOrPositive(fromBeginningToStart));
         Validate.isTrue(isNullOrPositive(fromBeginningToEnd));
-        beingBuilt.infoComponent = infoComponentCopied;
         beingBuilt.startAsDaysFromBeginning = daysToInteger(fromBeginningToStart);
         beingBuilt.deadlineAsDaysFromBeginning = daysToInteger(fromBeginningToEnd);
-        return create(beingBuilt);
     }
 
     private static Days daysBetween(Date start, Date end) {
