@@ -6,68 +6,6 @@
  * to integrate the custom appearance of the web application.
  */
 
-@media print {
-
-    .mainmenu, .user-area, .help-link {
-        display: none;
-    }
-
-    body .perspectives-column {
-        display: none;
-    }
-
-    body .main-area {
-        margin-left: -90px;
-        margin-top: -28px;
-    }
-
-    .toolbar-box {
-        display: none;
-        height: 0px !important;
-    }
-
-    /* Calculate dynamically */
-    body {
-        width: 2500px;
-    }
-
-    body .z-border-layout {
-        background-color: #FFFFFF;
-    }
-
-    .plannerlayout .leftpanelcontainer,
-    .plannerlayout .rightpanellayout .z-center-body {
-        overflow: hidden !important;
-    }
-
-    body {
-        width: 2500px;
-    }
-
-    /* ----- Height dependent styles ----- */
-    body div.scheduling-graphics {
-        height:0px !important;
-        display: none;
-    }
-
-    /* Dynamically set heights */
-    body div.main-layout {
-        height: 1800px !important;
-    }
-
-    body div.plannerlayout {
-        height: 1790px !important;
-    }
-
-    body div#timetracker {
-        height: 1730px !important;
-    }
-
-    body div#scroll_container {
-        height: 1710px !important;
-    }
-
-} /* --- End print media ----*/
 
 
     /* ----- Predefined Height dependent styles ----- */

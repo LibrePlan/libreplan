@@ -1,8 +1,7 @@
 
 /* Print CSS used for CutyCapt capture requests */
-
-    .mainmenu, .user-area, .help-link {
-        display: none;
+    body .mainmenu, body .user-area, body .help-link {
+        display: none !important;
     }
 
     body .perspectives-column {
@@ -79,3 +78,167 @@ a.ruta, .toolbar-box {
     display: inline !important;
 }
 
+
+@media screen {
+
+    body .mainmenu, body .user-area, body .help-link {
+        display: none !important;
+    }
+
+    body .perspectives-column {
+        display: none;
+    }
+
+    body .main-area {
+        margin-left: -90px;
+        margin-top: -28px;
+    }
+
+    .toolbar-box {
+        display: none;
+        height: 0px !important;
+    }
+
+
+    body .z-border-layout {
+        background-color: #FFFFFF;
+    }
+
+    .plannerlayout .leftpanelcontainer,
+    .plannerlayout .rightpanellayout .z-center-body {
+        overflow: hidden !important;
+    }
+
+
+body {
+    width: 2600px;
+}
+
+/* ----- Height dependent styles ----- */
+body div.scheduling-graphics {
+    height: 0px !important;
+    display: none;
+}
+
+/* Dynamically set heights */
+body div.main-layout {
+    height: 1800px !important;
+}
+
+body div.plannerlayout {
+    height: 1790px !important;
+}
+
+body div#timetracker {
+    height: 1730px !important;
+}
+
+body div#scroll_container {
+    height: 1710px !important;
+}
+
+/* Hide possible Javascript execution exceptions */
+#zk_err_1 {
+    display: none;
+}
+
+/* Hide more stuff */
+a.ruta, .toolbar-box {
+    display: none;
+}
+
+/* Hack for hiding breadcrumbs part in printed diagrams */
+.ruta tr td,
+.ruta tr td+td,
+.ruta tr td+td+td {
+    display:none;
+}
+
+.ruta tr td+td+td+td+td+td {
+    font-size: 18px;
+    display: inline !important;
+}
+
+}
+
+@media print {
+
+    body .mainmenu, body .user-area, body .help-link {
+        display: none !important;
+    }
+
+    body .perspectives-column {
+        display: none;
+    }
+
+    body .main-area {
+        margin-left: -90px;
+        margin-top: -28px;
+    }
+
+    .toolbar-box {
+        display: none;
+        height: 0px !important;
+    }
+
+
+    body .z-border-layout {
+        background-color: #FFFFFF;
+    }
+
+    .plannerlayout .leftpanelcontainer,
+    .plannerlayout .rightpanellayout .z-center-body {
+        overflow: hidden !important;
+    }
+
+
+body {
+    width: 2600px;
+}
+
+/* ----- Height dependent styles ----- */
+body div.scheduling-graphics {
+    height: 0px !important;
+    display: none;
+}
+
+/* Dynamically set heights */
+body div.main-layout {
+    height: 1800px !important;
+}
+
+body div.plannerlayout {
+    height: 1790px !important;
+}
+
+body div#timetracker {
+    height: 1730px !important;
+}
+
+body div#scroll_container {
+    height: 1710px !important;
+}
+
+/* Hide possible Javascript execution exceptions */
+#zk_err_1 {
+    display: none;
+}
+
+/* Hide more stuff */
+a.ruta, .toolbar-box {
+    display: none;
+}
+
+/* Hack for hiding breadcrumbs part in printed diagrams */
+.ruta tr td,
+.ruta tr td+td,
+.ruta tr td+td+td {
+    display:none;
+}
+
+.ruta tr td+td+td+td+td+td {
+    font-size: 18px;
+    display: inline !important;
+}
+
+}

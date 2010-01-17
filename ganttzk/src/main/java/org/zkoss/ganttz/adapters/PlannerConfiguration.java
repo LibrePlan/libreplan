@@ -23,10 +23,12 @@ package org.zkoss.ganttz.adapters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
 import org.zkoss.ganttz.extensions.ICommand;
@@ -47,6 +49,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         public void doPrint();
 
         public void doPrint(Map<String, String> parameters);
+
+        public void doPrint(HashMap<String, String> parameters, Planner planner);
     }
 
     public interface IReloadChartListener {
@@ -318,6 +322,13 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             throw new UnsupportedOperationException("print not supported");
         }
         printAction.doPrint(parameters);
+    }
+
+    public void print(HashMap<String, String> parameters, Planner planner) {
+        if (!isPrintEnabled()) {
+            throw new UnsupportedOperationException("print not supported");
+        }
+        printAction.doPrint(parameters, planner);
     }
 
 }

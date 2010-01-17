@@ -445,6 +445,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 CutyPrint.print(parameters);
             }
 
+            @Override
+            public void doPrint(HashMap<String, String> parameters,
+                    Planner planner) {
+                CutyPrint.print(parameters, planner);
+            }
+
         });
     }
 

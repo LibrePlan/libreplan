@@ -410,7 +410,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         printButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                configuration.print(buildParameters(printProperties));
+                configuration.print(buildParameters(printProperties),planner);
             }
         });
         printButton.setParent(printProperties);

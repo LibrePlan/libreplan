@@ -36,7 +36,9 @@ import org.zkoss.ganttz.util.Interval;
 public abstract class TimeTrackerState {
 
     protected static final long MILLSECONDS_IN_DAY = 1000 * 60 * 60 * 24;
-    protected static final int NUMBER_OF_ITEMS_MINIMUM = 10;
+
+    // Pending to calculate interval dinamically
+    protected static final int NUMBER_OF_ITEMS_MINIMUM = 4;
 
     private final IDetailItemModificator firstLevelModificator;
 

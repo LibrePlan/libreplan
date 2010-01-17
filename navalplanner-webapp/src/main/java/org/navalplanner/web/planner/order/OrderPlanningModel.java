@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -250,6 +251,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             @Override
             public void doPrint(Map<String, String> parameters) {
                 CutyPrint.print(order, parameters);
+            }
+
+            @Override
+            public void doPrint(HashMap<String, String> parameters,
+                    Planner planner) {
+                CutyPrint.print(order, parameters, planner);
+
             }
 
         });
