@@ -71,4 +71,20 @@
     <property name="value" scale="2" access="field" />
     <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field" />
 </class>
+
+<class name="AdvanceAssignmentTemplate">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+
+    <version name="version" access="property" type="long" />
+
+    <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
+    <many-to-one name="template" class="org.navalplanner.business.templates.entities.OrderElementTemplate" column="ORDER_ELEMENT_TEMPLATE_ID"/>
+    <property name="reportGlobalAdvance" access="field"/>
+    <property name="maxValue" access="field" scale="2"/>
+
+</class>
 </hibernate-mapping>
