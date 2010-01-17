@@ -388,11 +388,19 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
         Radiogroup layout = (Radiogroup) parent.getFellow("print_layout");
         Checkbox expanded = (Checkbox) parent.getFellow("print_expanded");
+        Checkbox resources = (Checkbox) parent.getFellow("print_resources");
+        Checkbox labels = (Checkbox) parent.getFellow("print_labels");
         if (layout.getSelectedIndex() == 2) {
             parameters.put("extension", ".png");
         }
         if (expanded.isChecked() == true) {
             parameters.put("expanded", "all");
+        }
+        if (labels.isChecked() == true) {
+            parameters.put("labels", "all");
+        }
+        if (resources.isChecked() == true) {
+            parameters.put("resources", "all");
         }
         parameters.put("zoom", planner.getZoomLevel().toString());
         return parameters;

@@ -146,7 +146,8 @@ public class CutyPrint {
         captureString += " --delay=1000 ";
 
         String generatedCSSFile = createCSSFile(absolutePath
-                + "/planner/css/printlabels.css", plannerWidth);
+                + "/planner/css/print.css", plannerWidth, parameters
+                .get("labels"), parameters.get("resources"));
 
         // Relative user styles
         captureString += "--user-styles=" + generatedCSSFile;
@@ -155,7 +156,6 @@ public class CutyPrint {
         captureString += " --out=" + absolutePath + filename;
 
         try {
-
             // CutyCapt command execution
             LOG.debug(captureString);
 
@@ -193,7 +193,8 @@ public class CutyPrint {
         }
     }
 
-    private static String createCSSFile(String srFile, int width) {
+    private static String createCSSFile(String srFile, int width,
+            String labels, String resources) {
         File generatedCSS = null;
         try {
             generatedCSS = File.createTempFile("print", ".css");
@@ -209,8 +210,14 @@ public class CutyPrint {
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-            String body = "body { width: " + width + "px; } \n";
-            out.write(body.getBytes());
+            String includeCSSLines = "body { width: " + width + "px; } \n";
+            if ((labels != null) && (labels.equals("all"))) {
+                includeCSSLines = ".task-labels { display: inline !important;} ";
+            }
+            if ((resources != null) && (resources.equals("all"))) {
+                includeCSSLines = ".task-resources { display: inline !important;} ";
+            }
+            out.write(includeCSSLines.getBytes());
             in.close();
             out.close();
             LOG.debug(_("Generated CSS:") + generatedCSS.getAbsolutePath());

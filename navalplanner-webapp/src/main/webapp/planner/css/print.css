@@ -1,72 +1,58 @@
+/****
+   Base stylesheet used for printing, to which
+   height, with and label parameters had to be added
+   as CutyCapt does not allow to use @import directive
+*******/
 
-/* Print CSS used for CutyCapt capture requests */
-    body .mainmenu, body .user-area, body .help-link {
-        display: none !important;
-    }
-
-    body .perspectives-column {
-        display: none;
-    }
-
-    body .main-area {
-        margin-left: -90px;
-        margin-top: -28px;
-    }
-
-    .toolbar-box {
-        display: none;
-        height: 0px !important;
-    }
-
-
-    body .z-border-layout {
-        background-color: #FFFFFF;
-    }
-
-    .plannerlayout .leftpanelcontainer,
-    .plannerlayout .rightpanellayout .z-center-body {
-        overflow: hidden !important;
-    }
-
-
-body {
-    width: 2600px;
-}
-
-/* ----- Height dependent styles ----- */
+/* ------ Hide non printable elements ------ */
 body div.scheduling-graphics {
     height: 0px !important;
-    display: none;
+    display: none !important;
 }
 
-/* Dynamically set heights */
-body div.main-layout {
-    height: 1800px !important;
+body .perspectives-column {
+    display: none !important;
 }
 
-body div.plannerlayout {
-    height: 1790px !important;
+body .mainmenu, body .user-area, body .help-link {
+    display: none !important;
 }
 
-body div#timetracker {
-    height: 1730px !important;
+body .footer {
+    display: none !important;
 }
 
-body div#scroll_container {
-    height: 1710px !important;
+/* ------ Remove scrolls  ------ */
+.leftpanelcontainer {
+    overflow: hidden !important;
 }
 
-/* Hide possible Javascript execution exceptions */
+.rightpanellayout .z-center-body {
+    overflow: hidden !important;
+}
+
+#ganttpanel_scroller_x, #ganttpanel_scroller_y {
+    overflow: hidden !important;
+}
+
+.main-area, .orderslayout-area, .orderelements-tab, #timetrackedtable,
+.plannerlayout .taskspanelgap #timetracker, .leftpanelcontainer {
+    overflow: hidden !important;
+}
+
+/* ------ Reposition main-area  ------ */
+body .main-area {
+    margin-left: 0;
+    margin-top: -32px;
+}
+
+/* ------ Hide possible Javascript execution exceptions  ------ */
 #zk_err_1 {
     display: none;
 }
 
-/* Hide more stuff */
-a.ruta, .toolbar-box {
-    display: none;
-}
-
 /* Hack for hiding breadcrumbs part in printed diagrams */
+a.ruta,
 .ruta tr td,
 .ruta tr td+td,
 .ruta tr td+td+td {
@@ -74,171 +60,26 @@ a.ruta, .toolbar-box {
 }
 
 .ruta tr td+td+td+td+td+td {
-    font-size: 18px;
+    font-size: 20px;
     display: inline !important;
 }
 
+/* ------ Dynamically set heights ------ */
 
-@media screen {
-
-    body .mainmenu, body .user-area, body .help-link {
-        display: none !important;
-    }
-
-    body .perspectives-column {
-        display: none;
-    }
-
-    body .main-area {
-        margin-left: -90px;
-        margin-top: -28px;
-    }
-
-    .toolbar-box {
-        display: none;
-        height: 0px !important;
-    }
-
-
-    body .z-border-layout {
-        background-color: #FFFFFF;
-    }
-
-    .plannerlayout .leftpanelcontainer,
-    .plannerlayout .rightpanellayout .z-center-body {
-        overflow: hidden !important;
-    }
-
-
-body {
-    width: 2600px;
-}
-
-/* ----- Height dependent styles ----- */
-body div.scheduling-graphics {
-    height: 0px !important;
-    display: none;
-}
-
-/* Dynamically set heights */
 body div.main-layout {
-    height: 1800px !important;
+    height: 1200px !important;
 }
 
 body div.plannerlayout {
-    height: 1790px !important;
+    height: 1190px !important;
 }
 
 body div#timetracker {
-    height: 1730px !important;
+    height: 1130px !important;
 }
 
 body div#scroll_container {
-    height: 1710px !important;
+    height: 1110px !important;
 }
 
-/* Hide possible Javascript execution exceptions */
-#zk_err_1 {
-    display: none;
-}
-
-/* Hide more stuff */
-a.ruta, .toolbar-box {
-    display: none;
-}
-
-/* Hack for hiding breadcrumbs part in printed diagrams */
-.ruta tr td,
-.ruta tr td+td,
-.ruta tr td+td+td {
-    display:none;
-}
-
-.ruta tr td+td+td+td+td+td {
-    font-size: 18px;
-    display: inline !important;
-}
-
-}
-
-@media print {
-
-    body .mainmenu, body .user-area, body .help-link {
-        display: none !important;
-    }
-
-    body .perspectives-column {
-        display: none;
-    }
-
-    body .main-area {
-        margin-left: -90px;
-        margin-top: -28px;
-    }
-
-    .toolbar-box {
-        display: none;
-        height: 0px !important;
-    }
-
-
-    body .z-border-layout {
-        background-color: #FFFFFF;
-    }
-
-    .plannerlayout .leftpanelcontainer,
-    .plannerlayout .rightpanellayout .z-center-body {
-        overflow: hidden !important;
-    }
-
-
-body {
-    width: 2600px;
-}
-
-/* ----- Height dependent styles ----- */
-body div.scheduling-graphics {
-    height: 0px !important;
-    display: none;
-}
-
-/* Dynamically set heights */
-body div.main-layout {
-    height: 1800px !important;
-}
-
-body div.plannerlayout {
-    height: 1790px !important;
-}
-
-body div#timetracker {
-    height: 1730px !important;
-}
-
-body div#scroll_container {
-    height: 1710px !important;
-}
-
-/* Hide possible Javascript execution exceptions */
-#zk_err_1 {
-    display: none;
-}
-
-/* Hide more stuff */
-a.ruta, .toolbar-box {
-    display: none;
-}
-
-/* Hack for hiding breadcrumbs part in printed diagrams */
-.ruta tr td,
-.ruta tr td+td,
-.ruta tr td+td+td {
-    display:none;
-}
-
-.ruta tr td+td+td+td+td+td {
-    font-size: 18px;
-    display: inline !important;
-}
-
-}
+/* ------ Calculated body width added via CutyPrint CSS generator ------ */
