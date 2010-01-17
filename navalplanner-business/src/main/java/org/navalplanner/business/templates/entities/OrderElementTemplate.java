@@ -195,6 +195,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         result.setStartAsDaysFromBeginning(getStartAsDaysFromBeginning());
     }
 
+    @Valid
     public Set<MaterialAssignmentTemplate> getMaterialAssignments() {
         return Collections.unmodifiableSet(materialAssignments);
     }
