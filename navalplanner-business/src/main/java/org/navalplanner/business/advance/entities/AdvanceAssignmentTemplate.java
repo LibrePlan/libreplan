@@ -32,7 +32,17 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  */
 public class AdvanceAssignmentTemplate extends BaseEntity {
 
-    public static AdvanceAssignmentTemplate create(OrderElementTemplate template) {
+    public static AdvanceAssignmentTemplate convert(
+            OrderElementTemplate beingBuilt, DirectAdvanceAssignment each) {
+        AdvanceAssignmentTemplate result = create(beingBuilt);
+        result.setReportGlobalAdvance(each.getReportGlobalAdvance());
+        result.setMaxValue(each.getMaxValue());
+        result.setAdvanceType(each.getAdvanceType());
+        return result;
+    }
+
+    private static AdvanceAssignmentTemplate create(
+            OrderElementTemplate template) {
         return create(new AdvanceAssignmentTemplate(template));
     }
 

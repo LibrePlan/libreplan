@@ -33,6 +33,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
@@ -62,8 +63,19 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 .getMaterialAssignments());
         beingBuilt.labels = new HashSet<Label>(origin.getLabels());
         beingBuilt.qualityForms = origin.getQualityForms();
-        return create(beingBuilt, infoComponentCopied,
-                fromBeginningToStart, fromBeginningToEnd);
+        beingBuilt.advanceAssignmentTemplates = copyDirectAdvanceAssignments(
+                beingBuilt, origin.getDirectAdvanceAssignments());
+        return create(beingBuilt, infoComponentCopied, fromBeginningToStart, fromBeginningToEnd);
+    }
+
+    private static Set<AdvanceAssignmentTemplate> copyDirectAdvanceAssignments(
+            OrderElementTemplate beingBuilt,
+            Set<DirectAdvanceAssignment> directAdvanceAssignments) {
+        Set<AdvanceAssignmentTemplate> result = new HashSet<AdvanceAssignmentTemplate>();
+        for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+            result.add(AdvanceAssignmentTemplate.convert(beingBuilt, each));
+        }
+        return result;
     }
 
     public static <T extends OrderElementTemplate> T createNew(T beingBuilt) {
