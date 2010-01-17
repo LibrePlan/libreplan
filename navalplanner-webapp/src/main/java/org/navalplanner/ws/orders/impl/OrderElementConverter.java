@@ -436,8 +436,10 @@ public final class OrderElementConverter {
 
         MaterialAssignment materialAssignment = MaterialAssignment
                 .create(material);
-        materialAssignment.setUnits(materialAssignmentDTO.units);
-        materialAssignment.setUnitPrice(materialAssignmentDTO.unitPrice);
+        materialAssignment
+                .setUnitsWithoutNullCheck(materialAssignmentDTO.units);
+        materialAssignment
+                .setUnitPriceWithoutNullCheck(materialAssignmentDTO.unitPrice);
         materialAssignment
                 .setEstimatedAvailability(materialAssignmentDTO.estimatedAvailability);
         return materialAssignment;

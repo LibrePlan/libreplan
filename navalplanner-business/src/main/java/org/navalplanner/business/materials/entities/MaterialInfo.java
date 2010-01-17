@@ -50,6 +50,10 @@ public class MaterialInfo {
     }
 
     public void setUnits(Double units) {
+        this.units = units != null ? units : 0;
+    }
+
+    public void setUnitsWithoutNullCheck(Double units) {
         this.units = units;
     }
 
@@ -59,6 +63,10 @@ public class MaterialInfo {
     }
 
     public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice != null ? unitPrice : BigDecimal.ZERO;
+    }
+
+    public void setUnitPriceWithoutNullCheck(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 

@@ -91,12 +91,20 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
         getMaterialInfo().setUnits(units);
     }
 
+    public void setUnitsWithoutNullCheck(Double units) {
+        this.materialInfo.setUnitsWithoutNullCheck(units);
+    }
+
     public BigDecimal getUnitPrice() {
         return getMaterialInfo().getUnitPrice();
     }
 
     public void setUnitPrice(BigDecimal unitPrice) {
         getMaterialInfo().setUnitPrice(unitPrice);
+    }
+
+    public void setUnitPriceWithoutNullCheck(BigDecimal unitPrice) {
+        this.materialInfo.setUnitPriceWithoutNullCheck(unitPrice);
     }
 
     public BigDecimal getTotalPrice() {
