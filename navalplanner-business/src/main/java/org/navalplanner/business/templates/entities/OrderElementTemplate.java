@@ -32,6 +32,7 @@ import org.hibernate.validator.Min;
 import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
@@ -121,6 +122,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private Set<Label> labels = new HashSet<Label>();
 
     private Set<QualityForm> qualityForms = new HashSet<QualityForm>();
+
+    private Set<AdvanceAssignmentTemplate> advanceAssignmentTemplates = new HashSet<AdvanceAssignmentTemplate>();
 
     public OrderLineGroupTemplate getParent() {
         return parent;
@@ -255,5 +258,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     public void removeQualityForm(QualityForm qualityForm) {
         qualityForms.remove(qualityForm);
+    }
+
+    @Valid
+    public Set<AdvanceAssignmentTemplate> getAdvanceAssignmentTemplates() {
+        return Collections.unmodifiableSet(advanceAssignmentTemplates);
     }
 }

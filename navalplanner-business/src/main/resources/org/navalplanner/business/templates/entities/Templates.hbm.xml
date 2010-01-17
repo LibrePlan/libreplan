@@ -34,6 +34,11 @@
             <many-to-many column="QUALITY_FORM_ID" class="org.navalplanner.business.qualityforms.entities.QualityForm"/>
         </set>
 
+        <set name="advanceAssignmentTemplates" cascade="all-delete-orphan" inverse="true">
+            <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
+            <one-to-many class="org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate" />
+        </set>
+
         <joined-subclass name="OrderLineGroupTemplate">
             <key column="GROUP_TEMPLATE_ID"></key>
             <list name="children" access="field" cascade="all">
