@@ -20,8 +20,6 @@
 
 package org.zkoss.ganttz;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -414,24 +412,15 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         final Window printProperties = (Window) Executions.createComponents(
                 "/planner/print_configuration.zul", planner, null);
 
-        Button printButton = new Button(_("Print"));
+        Button printButton = (Button) printProperties.getFellow("printButton");
         printButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
+                printProperties.detach();
                 configuration.print(buildParameters(printProperties),planner);
             }
         });
         printButton.setParent(printProperties);
-
-        Button cancelPrint = new Button(_("Cancel"));
-        printButton.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                // get Print properties and params
-                printProperties.setVisible(false);
-            }
-        });
-        cancelPrint.setParent(printProperties);
 
         try {
             printProperties.doModal();

@@ -66,20 +66,19 @@ a.ruta,
 
 /* ------ Dynamically set heights ------ */
 
-body div.main-layout {
-    height: 1200px !important;
-}
-
-body div.plannerlayout {
-    height: 1190px !important;
-}
-
-body div#timetracker {
-    height: 1130px !important;
-}
 
 body div#scroll_container {
     height: 1110px !important;
 }
+body div#timetracker {
+    height: 1130px !important;
+}
+body div.plannerlayout {
+    height: 1190px !important;
+}
+body div.main-layout {
+    height: 1200px !important;
+}
+
 
 /* ------ Calculated body width added via CutyPrint CSS generator ------ */

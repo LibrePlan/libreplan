@@ -23,7 +23,7 @@
 <zk>
 
     <window border="normal" title="${i18n:_('Print configuration')}"
-        closable="true">
+        closable="true" id="printConfigurationWindow">
         <panel title="${i18n:_('Select print page properties')}"
             border="normal" style="margin-bottom:10px;">
             <panelchildren>
@@ -74,6 +74,8 @@
                 </vbox>
             </panelchildren>
         </panel>
+        <button id="printButton" label="${i18n:_('Print')}" sclass="save-button global-action"></button>
+        <button id="cancelPrintButton" label="${i18n:_('Cancel')}" sclass="cancel-button global-action" onClick="printConfigurationWindow.detach()"/>
     </window>
 
 </zk>
