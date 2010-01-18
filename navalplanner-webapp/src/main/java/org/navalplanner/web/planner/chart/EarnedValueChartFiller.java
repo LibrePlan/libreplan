@@ -204,7 +204,9 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
                 .get(EarnedValueType.EAC);
 
         for (LocalDate day : bac.keySet()) {
-            vac.put(day, bac.get(day).subtract(eac.get(day)));
+            if (eac.get(day) != null) {
+                vac.put(day, bac.get(day).subtract(eac.get(day)));
+            }
         }
 
         indicators.put(EarnedValueType.VAC, vac);
