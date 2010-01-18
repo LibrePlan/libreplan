@@ -157,7 +157,7 @@ public class CutyPrint {
 
         try {
             // CutyCapt command execution
-            LOG.debug(captureString);
+            LOG.warn(captureString);
 
             Process print;
             Process server = null;
@@ -210,17 +210,16 @@ public class CutyPrint {
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-            String includeCSSLines = "body { width: " + width + "px; } \n";
+            String includeCSSLines = " body { width: " + width + "px; } \n";
             if ((labels != null) && (labels.equals("all"))) {
-                includeCSSLines = ".task-labels { display: inline !important;} ";
+                includeCSSLines += " .task-labels { display: inline !important;} \n";
             }
             if ((resources != null) && (resources.equals("all"))) {
-                includeCSSLines = ".task-resources { display: inline !important;} ";
+                includeCSSLines += " .task-resources { display: inline !important;} \n";
             }
             out.write(includeCSSLines.getBytes());
             in.close();
             out.close();
-            LOG.debug(_("Generated CSS:") + generatedCSS.getAbsolutePath());
         } catch (FileNotFoundException ex) {
             LOG.error(ex.getMessage() + _(" in the specified directory."));
             System.exit(0);
