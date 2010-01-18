@@ -97,8 +97,7 @@ public abstract class TimeTrackerStateUsingJodaTime extends TimeTrackerState {
 
     private Interval calculateForAtLeastMinimum(Interval atLeastMinimum) {
         LocalDate start = round(asLocalDate(atLeastMinimum.getStart()), true);
-        LocalDate finish = roundToNextYear(asLocalDate(atLeastMinimum
-                .getFinish()));
+        LocalDate finish = round(asLocalDate(atLeastMinimum.getFinish()), false);
         Interval result = new Interval(start.toDateTimeAtStartOfDay().toDate(),
                 finish
                 .toDateTimeAtStartOfDay().toDate());
