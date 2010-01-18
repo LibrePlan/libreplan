@@ -133,7 +133,7 @@ public class TaskList extends XulElement implements AfterCompose {
         if (taskComponent instanceof TaskContainerComponent) {
             TaskContainerComponent container = (TaskContainerComponent) taskComponent;
             if (container.isExpanded()) {
-                container.open();
+                container.open(relocate);
             }
         }
 

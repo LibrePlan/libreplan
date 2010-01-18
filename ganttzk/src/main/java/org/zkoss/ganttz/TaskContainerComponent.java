@@ -114,20 +114,25 @@ public class TaskContainerComponent extends TaskComponent implements
         if (isExpanded()) {
             TaskComponent previous = insertionPosition == 0 ? this
                     : subtaskComponents.get(insertionPosition - 1);
-            addAllAt(previous, taskComponents);
+            addAllAt(previous, taskComponents, true);
         }
     }
 
     public void open() {
-        Component previous = this;
-        List<TaskComponent> toAdd = getCurrentComponents();
-        addAllAt(previous, toAdd);
+        open(true);
     }
 
-    private void addAllAt(Component previous, List<TaskComponent> toAdd) {
+    public void open(boolean recolocate) {
+        Component previous = this;
+        List<TaskComponent> toAdd = getCurrentComponents();
+        addAllAt(previous, toAdd, recolocate);
+    }
+
+    private void addAllAt(Component previous, List<TaskComponent> toAdd,
+            boolean recolate) {
         for (TaskComponent subtaskComponent : toAdd) {
             taskList.addTaskComponent(previous.getNextSibling(),
-                    subtaskComponent, true);
+                    subtaskComponent, recolate);
             previous = subtaskComponent;
         }
     }
