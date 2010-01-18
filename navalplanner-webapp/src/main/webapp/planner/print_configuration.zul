@@ -47,7 +47,7 @@
                         <radio label="${i18n:_('A1')}" disabled="true" />
                     </radiogroup>
                 </groupbox>
-                <groupbox>
+                <groupbox visible="false">
                     <caption label="${i18n:_('Zoom level')}" />
                     <radiogroup id="print_zoom_level"
                         onCheck="choice.value = self.selectedItem.label">
@@ -64,13 +64,13 @@
             border="normal" style="margin-bottom:10px;">
             <panelchildren>
                 <vbox>
-                    <checkbox id="print_labels" label="${i18n:_('Show all labels')}" />
+                    <checkbox id="print_labels" label="${i18n:_('Show all labels')}" checked="true" />
                     <checkbox id="print_resources"
-                        label="${i18n:_('Show all resource assignments')}" />
+                        label="${i18n:_('Show all resource assignments')}" checked="true"  />
                     <checkbox id="print_expanded"
-                        label="${i18n:_('Show expanded tree')}" />
+                        label="${i18n:_('Expand all taskgroups')}" checked="true"  />
                     <checkbox id="print_shrinked"
-                        label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" />
+                        label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
                 </vbox>
             </panelchildren>
         </panel>
