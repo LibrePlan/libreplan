@@ -11,13 +11,27 @@ grant all privileges on database navaldev to naval;
 \q
 ------------------------------------------------------------------
 
-IMPORTANTE a instalación supon a instalación sobre unha ubuntu jaunty.
+----------------- Instalación de dependencias necesarias para o sistema de impresión
+
+IMPORTANTE a instalación supon a instalación sobre unha ubuntu karmic i386
+
+Instalamos o soporte de webkit para instalar CutyCapt e xvfb
+
+$ sudo apt-get install libqt4-webkit libqt4-svg xvfb
+
+Descargamos a utilidade CutyCapt
+
+$ wget http://naval.igalia.com/downloads/cutycapt_20100108_i386.deb
+
+Instalamos CutyCapt
+
+$ sudo dpkg -i cutycapt_20100108_i386.deb
 
 ------------------ Instalando Tomcat e a aplicación --------------
 
 $ sudo apt-get install openjdk-6-jre tomcat6 libpg-java
 
-en /etc/tomcat6/conf/context.xml incluimos o código o elemento XML Resource
+en /etc/tomcat6/context.xml incluimos o código o elemento XML Resource
 para permitir o acceso a base de datos
 
 ---------------------- context.xml -----------------------------
@@ -33,18 +47,14 @@ para permitir o acceso a base de datos
     </Context>
 ---------------------- ---------------------------------------
 
-incluimos a seguintes directivas en /etc/tomcat6/policy.d/04webapps.policy
+incluimos a seguintes directivas en un nuevo fichero /etc/tomcat6/policy.d/51navalplan.policy
 
--------------------------- 04webapps.policy-----------------------
+-------------------------- 51navalplan.policy-----------------------
 
    grant codeBase "file:/var/lib/tomcat6/webapps/navalplanner-webapp/-" {
        permission java.security.AllPermission;
    };
 
-   grant {
-    permission java.net.SocketPermission "127.0.0.1:5432","resolve,connect";
-    permission java.net.SocketPermission "localhost:5432","resolve,connect";
-   };
 
 ------------------------------------------------------------------
 
@@ -70,6 +80,7 @@ $ sudo chown tomcat6.tomcat6 navalplanner-webapp.war
 Reiniciamos o tomcat para que recolla todas as modificacións da configuración:
 
 $ sudo /etc/init.d/tomcat6 restart
+
 
 Neste intre a aplicación debería estar accesible en : http://localhost:8080/navalplanner-webapp/
 
