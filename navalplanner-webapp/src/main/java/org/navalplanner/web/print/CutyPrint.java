@@ -34,8 +34,10 @@ public class CutyPrint {
 
     private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
 
-    // Fixed taskdetails width padding left
+    // Taskdetails left padding
     private static int TASKDETAILS_WIDTH = 310;
+    private static int TASK_HEIGHT = 24;
+    private static int PRINT_VERTICAL_PADDING = 50;
 
     public static void print(Order order) {
         print("/planner/index.zul", entryPointForShowingOrder(order),
@@ -102,6 +104,7 @@ public class CutyPrint {
                 + extension;
 
         int plannerWidth = 0;
+
         if ((planner != null) && (planner.getTimeTracker() != null)) {
             plannerWidth = planner.getTimeTracker().getHorizontalSize()
                     + TASKDETAILS_WIDTH;
@@ -146,7 +149,7 @@ public class CutyPrint {
         captureString += " --delay=1000 ";
 
         String generatedCSSFile = createCSSFile(absolutePath
-                + "/planner/css/print.css", plannerWidth, parameters
+                + "/planner/css/print.css", plannerWidth, planner, parameters
                 .get("labels"), parameters.get("resources"));
 
         // Relative user styles
@@ -154,6 +157,7 @@ public class CutyPrint {
 
         // Destination complete absolute path
         captureString += " --out=" + absolutePath + filename;
+
 
         try {
             // CutyCapt command execution
@@ -193,8 +197,23 @@ public class CutyPrint {
         }
     }
 
+    private static String heightCSS(int tasksNumber) {
+
+        int height = (tasksNumber * TASK_HEIGHT) + PRINT_VERTICAL_PADDING;
+        String heightCSS = "";
+        heightCSS += " body div#scroll_container { height: " + height
+                + "px !important;} \n"; /* 1110 */
+        heightCSS += " body div#timetracker { height: " + (height + 20)
+                + "px !important; } \n";
+        heightCSS += " body div.plannerlayout { height: " + (height + 80)
+                + "px !important; } \n";
+        heightCSS += " body div.main-layout { height: " + (height + 90)
+                + "px !important; } \n";
+        return heightCSS;
+    }
+
     private static String createCSSFile(String srFile, int width,
-            String labels, String resources) {
+            Planner planner, String labels, String resources) {
         File generatedCSS = null;
         try {
             generatedCSS = File.createTempFile("print", ".css");
@@ -217,9 +236,12 @@ public class CutyPrint {
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";
             }
+            includeCSSLines += heightCSS(planner.getTaskNumber());
+
             out.write(includeCSSLines.getBytes());
             in.close();
             out.close();
+
         } catch (FileNotFoundException ex) {
             LOG.error(ex.getMessage() + _(" in the specified directory."));
             System.exit(0);

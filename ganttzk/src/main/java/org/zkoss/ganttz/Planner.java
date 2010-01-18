@@ -121,6 +121,10 @@ public class Planner extends HtmlMacroComponent  {
         return ComponentsFinder.findComponentsOfType(TaskList.class, children).get(0);
     }
 
+    public int getTaskNumber() {
+        return getTaskList().getTasksNumber();
+    }
+
     public String getContextPath() {
         return Executions.getCurrent().getContextPath();
     }

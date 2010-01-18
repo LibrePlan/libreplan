@@ -256,7 +256,7 @@ public class TaskList extends XulElement implements AfterCompose {
         return result;
     }
 
-    private int getTasksNumber() {
+    public int getTasksNumber() {
         return getTaskComponents().size();
     }
 
