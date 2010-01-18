@@ -50,13 +50,16 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ICostCalculator;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -138,6 +141,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
@@ -626,6 +632,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         TaskGroup taskElement = orderReloaded
                 .getAssociatedTaskElement();
         final List<Resource> allResources = resourceDAO.list(Resource.class);
+        criterionDAO.list(Criterion.class);
         forceLoadOfChildren(Arrays.asList(taskElement));
         planningState = new PlanningState(taskElement, orderReloaded
                 .getAssociatedTasks(), allResources);
@@ -644,10 +651,26 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void forceLoadOfChildren(Collection<? extends TaskElement> initial) {
         for (TaskElement each : initial) {
             forceLoadOfResourceAllocationsResources(each);
+            forceLoadOfCriterions(each);
             if (each instanceof TaskGroup) {
                 findChildrenWithQueryToAvoidProxies((TaskGroup) each);
                 List<TaskElement> children = each.getChildren();
                 forceLoadOfChildren(children);
+            }
+        }
+    }
+
+    /**
+     * Forcing the load of all criterions so there are no different criterion
+     * instances for the same criteiron at database
+     */
+    private void forceLoadOfCriterions(TaskElement taskElement) {
+        List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
+                GenericResourceAllocation.class, taskElement
+                        .getResourceAllocations());
+        for (GenericResourceAllocation each : generic) {
+            for (Criterion eachCriterion : each.getCriterions()) {
+                eachCriterion.getName();
             }
         }
     }
