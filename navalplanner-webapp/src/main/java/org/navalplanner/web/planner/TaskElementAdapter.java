@@ -36,6 +36,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -81,6 +83,8 @@ import org.zkoss.ganttz.data.constraint.DateConstraint;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TaskElementAdapter implements ITaskElementAdapter {
+
+    private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
     private Order order;
 
@@ -355,17 +359,22 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public String getResourcesText() {
-            return transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<String>() {
+            try {
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<String>() {
 
-                        @Override
-                        public String execute() {
-                            orderElementDAO
-                                    .reattachUnmodifiedEntity(taskElement
-                                            .getOrderElement());
-                            return buildResourcesText();
-                        }
-                    });
+                            @Override
+                            public String execute() {
+                                orderElementDAO
+                                        .reattachUnmodifiedEntity(taskElement
+                                                .getOrderElement());
+                                return buildResourcesText();
+                            }
+                        });
+            } catch (Exception e) {
+                LOG.error("error calculating resources text", e);
+                return "";
+            }
         }
 
 
