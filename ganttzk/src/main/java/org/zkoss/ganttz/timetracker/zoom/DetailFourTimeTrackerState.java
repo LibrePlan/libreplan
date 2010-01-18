@@ -20,13 +20,12 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
-import org.jfree.data.time.Month;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Weeks;
-import org.zkoss.ganttz.util.Interval;
 
 /**
  * Zoom level for months and years and weeks in the second level
@@ -95,27 +94,8 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     }
 
     @Override
-    protected Interval calculateIntervalWithMinimum(Interval candidateInterval) {
-        Interval resultInterval;
-        LocalDate startDate = LocalDate.fromDateFields(candidateInterval.getStart());
-        LocalDate endDate = LocalDate.fromDateFields(candidateInterval.getFinish());
-        Weeks numberOfWeeks = Weeks.weeksBetween(startDate.toDateTimeAtCurrentTime(),
-                endDate.toDateTimeAtCurrentTime());
-
-        if (numberOfWeeks.getWeeks() < this.NUMBER_OF_WEEKS_MINIMUM) {
-            LocalDate endIntervalDate = LocalDate.fromDateFields(candidateInterval.
-                    getStart()).
-                    toDateMidnight().
-                    plusWeeks(this.NUMBER_OF_WEEKS_MINIMUM).toLocalDate();
-            LocalDate roundedEndIntervalDate = roundToNextYear(endIntervalDate);
-
-            resultInterval = new Interval(candidateInterval.getStart(),
-                    roundedEndIntervalDate.toDateMidnight().toDate());
-        } else {
-            resultInterval = candidateInterval;
-        }
-
-        return resultInterval;
+    protected Days getMinimumPeriod() {
+        return Days.days(7 * NUMBER_OF_WEEKS_MINIMUM);
     }
 
 }

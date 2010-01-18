@@ -20,13 +20,11 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
-import java.util.Date;
-
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
-import org.zkoss.ganttz.util.Interval;
 import org.zkoss.util.Locales;
 
 /**
@@ -111,26 +109,8 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     }
 
     @Override
-    protected Interval calculateIntervalWithMinimum(Interval candidateInterval) {
-        Interval resultInterval;
-        LocalDate startDate = LocalDate.fromDateFields(candidateInterval.getStart());
-        LocalDate endDate = LocalDate.fromDateFields(candidateInterval.getFinish());
-        Months numberOfMonths =
-            Months.monthsBetween(startDate.toDateTimeAtCurrentTime(),
-                endDate.toDateTimeAtCurrentTime());
-
-        if (numberOfMonths.getMonths() < this.NUMBER_OF_MONTHS_MINIMUM) {
-            LocalDate endIntervalDate = LocalDate.fromDateFields(candidateInterval.
-                    getStart()).
-                    toDateMidnight().
-                    plusMonths(this.NUMBER_OF_MONTHS_MINIMUM).toLocalDate();
-            LocalDate roundedEndIntervalDate = roundToNextYear(endIntervalDate);
-            resultInterval = new Interval(candidateInterval.getStart(),
-                    roundedEndIntervalDate.toDateMidnight().toDate());
-        } else {
-            resultInterval = candidateInterval;
-        }
-
-        return resultInterval;
+    protected Days getMinimumPeriod() {
+        return Days.days(NUMBER_OF_MONTHS_MINIMUM * 31);
     }
+
 }
