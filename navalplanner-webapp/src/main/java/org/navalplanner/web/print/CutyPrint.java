@@ -36,7 +36,7 @@ public class CutyPrint {
 
     // Taskdetails left padding
     private static int TASKDETAILS_WIDTH = 310;
-    private static int TASK_HEIGHT = 24;
+    private static int TASK_HEIGHT = 25;
     private static int PRINT_VERTICAL_PADDING = 50;
 
     public static void print(Order order) {
