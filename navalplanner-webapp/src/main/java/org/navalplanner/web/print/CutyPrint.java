@@ -37,7 +37,7 @@ public class CutyPrint {
     // Taskdetails left padding
     private static int TASKDETAILS_WIDTH = 310;
     private static int TASK_HEIGHT = 25;
-    private static int PRINT_VERTICAL_PADDING = 50;
+    private static int PRINT_VERTICAL_PADDING = 1500;
 
     public static void print(Order order) {
         print("/planner/index.zul", entryPointForShowingOrder(order),
@@ -146,7 +146,7 @@ public class CutyPrint {
         captureString += " --min-width=" + plannerWidth;
 
         // Static width and time delay parameters (FIX)
-        captureString += " --delay=1000 ";
+        captureString += " --delay=3000 ";
 
         String generatedCSSFile = createCSSFile(absolutePath
                 + "/planner/css/print.css", plannerWidth, planner, parameters
