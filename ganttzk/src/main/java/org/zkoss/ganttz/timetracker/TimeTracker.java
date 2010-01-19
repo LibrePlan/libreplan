@@ -246,15 +246,6 @@ public class TimeTracker {
         }
     }
 
-    private Date endPlusOneYear(Task task) {
-        return new LocalDate(task.getEndDate()).plusYears(1).toDateMidnight().toDate();
-    }
-
-    private Date startMinusOneYear(Task task) {
-        return new LocalDate(task.getBeginDate()).minusYears(1)
-                .toDateMidnight().toDate();
-    }
-
     private Date endPlusOneMonth(Task task) {
         return new LocalDate(task.getEndDate()).plusMonths(1).toDateMidnight().toDate();
     }
