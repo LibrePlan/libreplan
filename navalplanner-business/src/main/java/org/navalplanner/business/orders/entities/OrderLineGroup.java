@@ -683,7 +683,8 @@ public class OrderLineGroup extends OrderElement implements
             indirectAdvanceAssignments.add(indirectAdvanceAssignment);
         }
         if (parent != null) {
-            parent.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
+            parent.addIndirectAdvanceAssignment(indirectAdvanceAssignment
+                    .createNewFor(parent));
         }
     }
 

@@ -43,6 +43,18 @@ public class IndirectAdvanceAssignment extends AdvanceAssignment {
         return advanceAssignment;
     }
 
+    public IndirectAdvanceAssignment createNewFor(OrderLineGroup parent) {
+        IndirectAdvanceAssignment result = new IndirectAdvanceAssignment();
+        result.setAdvanceType(getAdvanceType());
+        result.setOrderElement(parent);
+        result.setReportGlobalAdvance(noOtherGlobalReportingAdvance(parent));
+        return create(result);
+    }
+
+    private boolean noOtherGlobalReportingAdvance(OrderLineGroup parent) {
+        return parent.getReportGlobalAdvanceAssignment() == null;
+    }
+
     public IndirectAdvanceAssignment() {
         super();
     }
