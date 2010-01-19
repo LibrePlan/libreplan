@@ -45,8 +45,7 @@ public abstract class TaskElement extends BaseEntity {
             TaskSource taskSource) {
         taskElement.taskSource = taskSource;
         Date orderElementDeadline = taskSource.getOrderElement().getDeadline();
-        taskElement.setDeadline(orderElementDeadline == null ? null
-                : new LocalDate(orderElementDeadline));
+        taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.setStartDate(taskElement.getOrderElement().getOrder()
                 .getInitDate());
@@ -85,6 +84,11 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     protected abstract void initializeEndDate();
+
+    public void updateDeadlineFromOrderElement() {
+        Date newDeadline = this.taskSource.getOrderElement().getDeadline();
+        setDeadline(newDeadline == null ? null : new LocalDate(newDeadline));
+    }
 
     public Integer getWorkHours() {
         if (taskSource == null) {

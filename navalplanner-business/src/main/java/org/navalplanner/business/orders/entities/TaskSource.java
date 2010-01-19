@@ -115,6 +115,7 @@ public class TaskSource extends BaseEntity {
         if (task.getEndDate() == null) {
             task.initializeEndDateIfDoesntExist();
         }
+        task.updateDeadlineFromOrderElement();
     }
 
     static class TaskGroupMustBeReplacedByTask extends
