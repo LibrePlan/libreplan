@@ -39,7 +39,6 @@ import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
-import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
@@ -417,13 +416,8 @@ public abstract class OrderElement extends BaseEntity implements
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
         if (this.getParent() != null) {
-            IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
-                    .create();
-            indirectAdvanceAssignment.setAdvanceType(newAdvanceAssignment
-                    .getAdvanceType());
-            indirectAdvanceAssignment.setOrderElement(this.getParent());
-
-            this.getParent().addIndirectAdvanceAssignment(indirectAdvanceAssignment);
+            this.getParent().addIndirectAdvanceAssignment(
+                    newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
         }
     }
 

@@ -22,6 +22,7 @@ package org.navalplanner.business.advance.entities;
 
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 
 public abstract class AdvanceAssignment extends BaseEntity {
 
@@ -61,6 +62,18 @@ public abstract class AdvanceAssignment extends BaseEntity {
 
     public AdvanceType getAdvanceType() {
         return this.advanceType;
+    }
+
+    public IndirectAdvanceAssignment createIndirectAdvanceFor(OrderLineGroup parent) {
+        IndirectAdvanceAssignment result = new IndirectAdvanceAssignment();
+        result.setAdvanceType(getAdvanceType());
+        result.setOrderElement(parent);
+        result.setReportGlobalAdvance(noOtherGlobalReportingAdvance(parent));
+        return create(result);
+    }
+
+    private boolean noOtherGlobalReportingAdvance(OrderLineGroup parent) {
+        return parent.getReportGlobalAdvanceAssignment() == null;
     }
 
 }

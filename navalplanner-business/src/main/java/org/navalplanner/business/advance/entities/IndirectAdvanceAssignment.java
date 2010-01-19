@@ -43,7 +43,7 @@ public class IndirectAdvanceAssignment extends AdvanceAssignment {
         return advanceAssignment;
     }
 
-    public IndirectAdvanceAssignment createNewFor(OrderLineGroup parent) {
+    public IndirectAdvanceAssignment createIndirectAdvanceFor(OrderLineGroup parent) {
         IndirectAdvanceAssignment result = new IndirectAdvanceAssignment();
         result.setAdvanceType(getAdvanceType());
         result.setOrderElement(parent);
