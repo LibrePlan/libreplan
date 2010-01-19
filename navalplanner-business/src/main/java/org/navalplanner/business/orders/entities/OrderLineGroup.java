@@ -673,6 +673,7 @@ public class OrderLineGroup extends OrderElement implements
         return result;
     }
 
+    @Override
     public Set<IndirectAdvanceAssignment> getIndirectAdvanceAssignments() {
         return Collections.unmodifiableSet(indirectAdvanceAssignments);
     }

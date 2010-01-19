@@ -24,6 +24,7 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.templates.entities.OrderLineTemplate;
@@ -540,6 +542,11 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLineTemplate createTemplate() {
         return OrderLineTemplate.create(this);
+    }
+
+    @Override
+    public Set<IndirectAdvanceAssignment> getIndirectAdvanceAssignments() {
+        return Collections.emptySet();
     }
 
 }

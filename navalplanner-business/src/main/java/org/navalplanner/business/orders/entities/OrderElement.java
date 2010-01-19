@@ -39,6 +39,7 @@ import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.BaseEntity;
@@ -496,6 +497,8 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     public abstract BigDecimal getAdvancePercentage(LocalDate date);
+
+    public abstract Set<IndirectAdvanceAssignment> getIndirectAdvanceAssignments();
 
     public List<OrderElement> getAllChildren() {
         List<OrderElement> children = getChildren();
