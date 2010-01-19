@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -218,6 +219,19 @@ public class SubcontractedTaskData extends BaseEntity {
         this.materialAssignmentsExported = subcontratedTask.materialAssignmentsExported;
         this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
         this.criterionRequirementsExported = subcontratedTask.criterionRequirementsExported;
+    }
+
+    @AssertTrue(message = "external company should be subcontractor")
+    public boolean checkConstraintExternalCompanyIsSubcontractor() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
+        return externalCompany.isSubcontractor();
+    }
+
+    private boolean firstLevelValidationsPassed() {
+        return (externalCompany != null) && (subcontratationDate != null);
     }
 
 }

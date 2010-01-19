@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.externalcompanies.entities;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
@@ -175,4 +176,16 @@ public class ExternalCompany extends BaseEntity {
             }
         }
     }
+
+    @AssertTrue(message = "interaction fields are empty and company is marked as interact with applications")
+    public boolean checkConstraintInteractionFieldsNotEmptyIfNeeded() {
+        if (!interactsWithApplications) {
+            return true;
+        }
+
+        return !StringUtils.isEmpty(appURI)
+                && !StringUtils.isEmpty(ourCompanyLogin)
+                && !StringUtils.isEmpty(ourCompanyPassword);
+    }
+
 }

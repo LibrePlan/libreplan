@@ -427,9 +427,11 @@ public class TaskElementDAOTest {
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
-    private ExternalCompany getExternalCompanySaved() {
+    private ExternalCompany getSubcontractorExternalCompanySaved() {
         ExternalCompany externalCompany = ExternalCompanyDAOTest
                 .createValidExternalCompany();
+        externalCompany.setSubcontractor(true);
+
         externalCompanyDAO.save(externalCompany);
         externalCompanyDAO.flush();
         sessionFactory.getCurrentSession().evict(externalCompany);
@@ -446,7 +448,7 @@ public class TaskElementDAOTest {
 
         SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
                 .create();
-        subcontractedTaskData.setExternalCompany(getExternalCompanySaved());
+        subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);
         taskElementDAO.save(task);
