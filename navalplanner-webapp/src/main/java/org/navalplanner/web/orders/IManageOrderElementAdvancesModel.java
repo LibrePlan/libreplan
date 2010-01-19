@@ -94,4 +94,6 @@ public interface IManageOrderElementAdvancesModel {
 
     public XYModel getChartData(Set<AdvanceAssignment> selectedAdvances);
 
+    public void refreshChangesFromOrderElement();
+
 }

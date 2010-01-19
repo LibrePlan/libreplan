@@ -135,6 +135,16 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
+    public void refreshChangesFromOrderElement() {
+        for (IndirectAdvanceAssignment each : orderElement
+                .getIndirectAdvanceAssignments()) {
+            if (!listAdvanceAssignments.contains(each)) {
+                listAdvanceAssignments.add(each);
+            }
+        }
+    }
+
+    @Override
     public void prepareEditAdvanceMeasurements(AdvanceAssignment assignment) {
         if (assignment instanceof IndirectAdvanceAssignment) {
             this.advanceAssignment = ((OrderLineGroup) this.orderElement)

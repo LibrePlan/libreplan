@@ -917,4 +917,8 @@ public class ManageOrderElementAdvancesController extends
         return removeButton;
     }
 
+    public void refreshChangesFromOrderElement() {
+        manageOrderElementAdvancesModel.refreshChangesFromOrderElement();
+    }
+
 }

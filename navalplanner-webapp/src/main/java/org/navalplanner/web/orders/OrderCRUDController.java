@@ -41,8 +41,10 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.common.OnTabSelection;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.OnTabSelection.IOnSelectingTab;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
@@ -126,8 +128,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Window listWindow;
 
-    private Tabbox tabboxOrder;
-
     private Tab selectedTab;
 
     private OnlyOneVisible cachedOnlyOneVisible;
@@ -169,6 +169,16 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.reloadBindings(editWindow);
         Util.createBindingsFor(editOrderElement);
         Util.reloadBindings(editOrderElement);
+        final Tabbox tabBox = (Tabbox) editWindow.getFellow("tabboxOrder");
+        Component tabAdvances = editWindow.getFellow("tabAdvances");
+        OnTabSelection.createFor(tabBox).onSelectingTab(tabAdvances,
+                new IOnSelectingTab() {
+                    @Override
+                    public void tabSelected() {
+                        manageOrderElementAdvancesController.refreshChangesFromOrderElement();
+                        Util.reloadBindings(tabBox.getSelectedPanel());
+                    }
+                });
     }
 
     private void setupEditControllers() throws Exception {
