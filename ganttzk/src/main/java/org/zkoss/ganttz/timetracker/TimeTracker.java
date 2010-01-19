@@ -246,8 +246,19 @@ public class TimeTracker {
         }
     }
 
+    private Date max(Date date1, Date date2) {
+        if (date1 == null) {
+            return date2;
+        }
+        if (date2 == null) {
+            return date1;
+        }
+        return date1.compareTo(date2) > 0 ? date1 : date2;
+    }
+
     private Date endPlusOneMonth(Task task) {
-        return new LocalDate(task.getEndDate()).plusMonths(1).toDateMidnight().toDate();
+        Date taskEnd = max(task.getEndDate(), task.getDeadline());
+        return new LocalDate(taskEnd).plusMonths(1).toDateMidnight().toDate();
     }
 
     private Date startMinusTwoWeeks(Task task) {
