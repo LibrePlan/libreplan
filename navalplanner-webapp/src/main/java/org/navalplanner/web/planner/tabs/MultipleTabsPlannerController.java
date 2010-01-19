@@ -116,8 +116,7 @@ public class MultipleTabsPlannerController implements Composer,
 
     private TabsConfiguration buildTabsConfiguration() {
 
-        Map<String, String[]> parameters = Executions.getCurrent()
-                .getParameterMap();
+        Map<String, String[]> parameters = getURLQueryParametersMap();
 
         planningTab = doFeedbackOn(PlanningTabCreator.create(mode,
                 companyPlanningController, orderPlanningController, orderDAO,
@@ -151,6 +150,11 @@ public class MultipleTabsPlannerController implements Composer,
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(ordersTab, typeChanged))
             .add(visibleOnlyAtOrderMode(advancedAllocation));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, String[]> getURLQueryParametersMap() {
+        return Executions.getCurrent().getParameterMap();
     }
 
     private ITab doFeedbackOn(ITab tab) {
