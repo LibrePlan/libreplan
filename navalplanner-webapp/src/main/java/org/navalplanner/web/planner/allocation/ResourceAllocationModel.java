@@ -28,6 +28,8 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.ProportionalDistributor;
@@ -346,6 +348,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
         if (resource.getCalendar() != null) {
             calendarDAO.reattachUnmodifiedEntity(resource.getCalendar());
+            loadCalendar(resource.getCalendar());
         }
         for (DayAssignment dayAssignment : resource.getAssignments()) {
             Hibernate.initialize(dayAssignment);
@@ -353,6 +356,17 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         if (resource instanceof Machine) {
             loadMachine((Machine) resource);
         }
+    }
+
+    private void loadCalendar(BaseCalendar baseCalendar) {
+        for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
+            calendarData.getHoursPerDay().size();
+            if (calendarData.getParent() != null) {
+                loadCalendar(calendarData.getParent());
+            }
+        }
+        baseCalendar.getExceptions().size();
+        baseCalendar.getCalendarAvailabilities().size();
     }
 
     private void reattachCriterionSatisfactions(
