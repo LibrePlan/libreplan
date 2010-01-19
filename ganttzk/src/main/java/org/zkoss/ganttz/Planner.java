@@ -25,10 +25,12 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -68,6 +70,20 @@ public class Planner extends HtmlMacroComponent  {
     private static IScriptsRegister getScriptsRegister() {
         return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
                 .retrieve();
+    }
+
+    public static boolean guessContainersExpandedByDefaultGivenPrintParameters(
+            Map<String, String> printParameters) {
+        return guessContainersExpandedByDefault(convertToURLParameters(printParameters));
+    }
+
+    private static Map<String, String[]> convertToURLParameters(
+            Map<String, String> printParameters) {
+        Map<String, String[]> result = new HashMap<String, String[]>();
+        for (Entry<String, String> each : printParameters.entrySet()) {
+            result.put(each.getKey(), new String[] { each.getValue() });
+        }
+        return result;
     }
 
     public static boolean guessContainersExpandedByDefault(
@@ -123,6 +139,10 @@ public class Planner extends HtmlMacroComponent  {
 
     public int getTaskNumber() {
         return getTaskList().getTasksNumber();
+    }
+
+    public int getAllTasksNumber() {
+        return diagramGraph.getTasks().size();
     }
 
     public String getContextPath() {

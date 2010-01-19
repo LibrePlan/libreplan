@@ -37,7 +37,7 @@ public class CutyPrint {
     // Taskdetails left padding
     private static int TASKDETAILS_WIDTH = 310;
     private static int TASK_HEIGHT = 25;
-    private static int PRINT_VERTICAL_PADDING = 1500;
+    private static int PRINT_VERTICAL_PADDING = 50;
 
     public static void print(Order order) {
         print("/planner/index.zul", entryPointForShowingOrder(order),
@@ -148,9 +148,14 @@ public class CutyPrint {
         // Static width and time delay parameters (FIX)
         captureString += " --delay=3000 ";
 
-        String generatedCSSFile = createCSSFile(absolutePath
-                + "/planner/css/print.css", plannerWidth, planner, parameters
-                .get("labels"), parameters.get("resources"));
+        String generatedCSSFile = createCSSFile(
+                absolutePath + "/planner/css/print.css",
+                plannerWidth,
+                planner,
+                parameters.get("labels"),
+                parameters.get("resources"),
+                Planner
+                        .guessContainersExpandedByDefaultGivenPrintParameters(parameters));
 
         // Relative user styles
         captureString += "--user-styles=" + generatedCSSFile;
@@ -198,7 +203,6 @@ public class CutyPrint {
     }
 
     private static String heightCSS(int tasksNumber) {
-
         int height = (tasksNumber * TASK_HEIGHT) + PRINT_VERTICAL_PADDING;
         String heightCSS = "";
         heightCSS += " body div#scroll_container { height: " + height
@@ -213,7 +217,7 @@ public class CutyPrint {
     }
 
     private static String createCSSFile(String srFile, int width,
-            Planner planner, String labels, String resources) {
+            Planner planner, String labels, String resources, boolean expanded) {
         File generatedCSS = null;
         try {
             generatedCSS = File.createTempFile("print", ".css");
@@ -236,7 +240,8 @@ public class CutyPrint {
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";
             }
-            includeCSSLines += heightCSS(planner.getTaskNumber());
+            includeCSSLines += heightCSS(expanded ? planner.getAllTasksNumber()
+                    : planner.getTaskNumber());
 
             out.write(includeCSSLines.getBytes());
             in.close();
