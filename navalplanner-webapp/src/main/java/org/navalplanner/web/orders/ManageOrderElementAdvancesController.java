@@ -685,7 +685,8 @@ public class ManageOrderElementAdvancesController extends
                 } else {
                     directAdvanceAssignment = (DirectAdvanceAssignment) advance;
                 }
-                if (directAdvanceAssignment.getMaxValue() == null) {
+                if (directAdvanceAssignment != null
+                        && directAdvanceAssignment.getMaxValue() == null) {
                     return false;
                 }
             }
