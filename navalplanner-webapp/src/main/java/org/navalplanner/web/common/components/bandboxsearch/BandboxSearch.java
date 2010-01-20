@@ -234,4 +234,8 @@ public class BandboxSearch extends HtmlMacroComponent {
         listbox.addEventListener(event, listener);
     }
 
+    public void foucusOnInput() {
+        bandbox.setFocus(true);
+    }
+
 }
