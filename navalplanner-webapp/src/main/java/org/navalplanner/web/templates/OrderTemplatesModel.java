@@ -155,6 +155,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
             each.getMaxValue();
             each.getAdvanceType().getUnitName();
         }
+        for (OrderElementTemplate each : template.getChildrenTemplates()) {
+            loadAdvanceAssignments(each);
+        }
     }
 
     private void initializeAcompanyingObjectsOnConversation() {
