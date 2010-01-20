@@ -171,15 +171,23 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
     }
 
     protected <T extends OrderLineGroup> T setupGroupParts(T group) {
+        T parent = setupElementParts(group);
         for (OrderElementTemplate each : children) {
-            group.add(each.createElement());
+            each.createElement(parent);
         }
-        return setupElementParts(group);
+        return parent;
     }
 
     @Override
     public OrderLineGroup createElement() {
         return setupGroupParts(OrderLineGroup.create());
+    }
+
+    @Override
+    public OrderElement createElement(OrderLineGroup parent) {
+        OrderLineGroup result = OrderLineGroup.create();
+        parent.add(result);
+        return setupGroupParts(result);
     }
 
 }

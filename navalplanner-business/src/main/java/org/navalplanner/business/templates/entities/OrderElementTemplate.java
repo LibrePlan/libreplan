@@ -32,6 +32,7 @@ import org.hibernate.validator.Min;
 import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.BaseEntity;
@@ -41,6 +42,7 @@ import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
 import org.navalplanner.business.orders.entities.InfoComponent;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.trees.ITreeNode;
 
@@ -126,10 +128,26 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         orderElement.setCode(getCode());
         orderElement.setName(getName());
         orderElement.setDescription(getDescription());
+        Date orderInitDate = orderElement.getOrder().getInitDate();
+        if (getStartAsDaysFromBeginning() != null) {
+            orderElement.setInitDate(plusDays(orderInitDate,
+                    getStartAsDaysFromBeginning()));
+        }
+        if (getDeadlineAsDaysFromBeginning() != null) {
+            orderElement.setDeadline(plusDays(orderInitDate,
+                    getDeadlineAsDaysFromBeginning()));
+        }
         return orderElement;
     }
 
+    private Date plusDays(Date date, Integer days) {
+        LocalDate localDate = new LocalDate(date);
+        return localDate.plusDays(days).toDateTimeAtStartOfDay().toDate();
+    }
+
     public abstract OrderElement createElement();
+
+    public abstract OrderElement createElement(OrderLineGroup parent);
 
     private InfoComponent infoComponent;
 

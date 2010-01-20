@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -69,6 +71,13 @@ public class OrderLineTemplate extends OrderElementTemplate {
     @Override
     public OrderLine createElement() {
         return setupElementParts(OrderLine.create());
+    }
+
+    @Override
+    public OrderElement createElement(OrderLineGroup parent) {
+        OrderLine line = OrderLine.create();
+        parent.add(line);
+        return setupElementParts(line);
     }
 
 }

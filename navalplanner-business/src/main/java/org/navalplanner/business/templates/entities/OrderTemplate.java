@@ -19,9 +19,14 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import java.util.Date;
+
 import org.hibernate.validator.NotNull;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -38,8 +43,19 @@ public class OrderTemplate extends OrderLineGroupTemplate {
     @NotNull(message = "order calendar not specified")
     private BaseCalendar calendar;
 
+    @Override
+    public OrderElement createElement(OrderLineGroup parent) {
+        throw new UnsupportedOperationException();
+    }
+
     public Order createElement() {
-        return setupGroupParts(Order.create());
+        Order order = Order.create();
+        order.setInitDate(today());
+        return setupGroupParts(order);
+    }
+
+    private Date today() {
+        return new LocalDate().toDateTimeAtStartOfDay().toDate();
     }
 
 }
