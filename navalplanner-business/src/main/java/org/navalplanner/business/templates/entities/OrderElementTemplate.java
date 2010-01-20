@@ -128,6 +128,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         setupInfoComponent(orderElement);
         setupDates(orderElement);
         setupMaterialAssignments(orderElement);
+        setupLabels(orderElement);
         return orderElement;
     }
 
@@ -158,6 +159,12 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         for (MaterialAssignmentTemplate each : materialAssignments) {
             orderElement.addMaterialAssignment(each
                     .createAssignment(orderElement));
+        }
+    }
+
+    private void setupLabels(OrderElement orderElement) {
+        for (Label each : getLabels()) {
+            orderElement.addLabel(each);
         }
     }
 
