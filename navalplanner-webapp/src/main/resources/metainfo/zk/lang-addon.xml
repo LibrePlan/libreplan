@@ -70,4 +70,10 @@
             </property>
     </component>
 
+    <component>
+        <component-name>templateFinderPopup</component-name>
+        <component-class>org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup</component-class>
+        <macro-uri>/common/components/templateFinder.zul</macro-uri>
+    </component>
+
 </language-addon>
