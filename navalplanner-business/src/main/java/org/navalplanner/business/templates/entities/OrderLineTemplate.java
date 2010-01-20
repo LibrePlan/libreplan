@@ -36,12 +36,16 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 public class OrderLineTemplate extends OrderElementTemplate {
 
     public static OrderLineTemplate create(OrderLine orderLine) {
-        return create(new OrderLineTemplate(), orderLine);
+        OrderLineTemplate beingBuilt = new OrderLineTemplate();
+        beingBuilt.workHours = orderLine.getWorkHours();
+        return create(beingBuilt, orderLine);
     }
 
     public static OrderLineTemplate createNew() {
         return createNew(new OrderLineTemplate());
     }
+
+    private Integer workHours;
 
     @Override
     public List<OrderElementTemplate> getChildrenTemplates() {
@@ -72,12 +76,14 @@ public class OrderLineTemplate extends OrderElementTemplate {
 
     @Override
     public OrderLine createElement() {
-        return setupElementParts(OrderLine.create());
+        return setupElementParts(OrderLine
+                .createOrderLineWithUnfixedPercentage(getWorkHours()));
     }
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
-        OrderLine line = OrderLine.create();
+        OrderLine line = OrderLine
+                .createOrderLineWithUnfixedPercentage(getWorkHours());
         parent.add(line);
         return setupElementParts(line);
     }
@@ -85,6 +91,13 @@ public class OrderLineTemplate extends OrderElementTemplate {
     @Override
     public String getType() {
         return _("Line");
+    }
+
+    public int getWorkHours() {
+        if (workHours == null) {
+            return 0;
+        }
+        return workHours;
     }
 
 }

@@ -56,6 +56,7 @@
 
         <joined-subclass name="OrderLineTemplate">
             <key column="ORDER_LINE_TEMPLATE_ID"></key>
+            <property name="workHours" />
         </joined-subclass>
     </class>
 
