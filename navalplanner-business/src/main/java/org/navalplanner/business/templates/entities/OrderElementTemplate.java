@@ -125,9 +125,18 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
+        setupInfoComponent(orderElement);
+        setupDates(orderElement);
+        return orderElement;
+    }
+
+    private void setupInfoComponent(OrderElement orderElement) {
         orderElement.setCode(getCode());
         orderElement.setName(getName());
         orderElement.setDescription(getDescription());
+    }
+
+    private <T> void setupDates(OrderElement orderElement) {
         Date orderInitDate = orderElement.getOrder().getInitDate();
         if (getStartAsDaysFromBeginning() != null) {
             orderElement.setInitDate(plusDays(orderInitDate,
@@ -137,7 +146,6 @@ public abstract class OrderElementTemplate extends BaseEntity implements
             orderElement.setDeadline(plusDays(orderInitDate,
                     getDeadlineAsDaysFromBeginning()));
         }
-        return orderElement;
     }
 
     private Date plusDays(Date date, Integer days) {
