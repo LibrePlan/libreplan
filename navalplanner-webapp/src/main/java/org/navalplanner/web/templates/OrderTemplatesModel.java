@@ -127,17 +127,23 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         OrderElement reloaded = orderElementDAO
                 .findExistingEntity(orderElement.getId());
         template = reloaded.createTemplate();
+        loadAssociatedData(template);
         treeModel = new TemplatesTree(template);
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public void initEdit(OrderElementTemplate template) {
         initializeAcompanyingObjectsOnConversation();
         this.template = dao.findExistingEntity(template.getId());
-        loadQualityForms(this.template);
-        loadAdvanceAssignments(this.template);
+        loadAssociatedData(template);
         treeModel = new TemplatesTree(this.template);
+    }
+
+    private void loadAssociatedData(OrderElementTemplate template) {
+        loadAdvanceAssignments(template);
+        loadQualityForms(template);
     }
 
     private void loadQualityForms(OrderElementTemplate template) {

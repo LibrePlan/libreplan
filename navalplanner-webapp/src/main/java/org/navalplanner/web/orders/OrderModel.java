@@ -298,6 +298,7 @@ public class OrderModel implements IOrderModel {
         loadNeededDataForConversation();
         this.order = createOrderFrom((OrderTemplate) templateDAO
                 .findExistingEntity(template.getId()));
+        forceLoadAdvanceAssignmentsAndMeasurements(this.order);
         initializeOrder();
     }
 
