@@ -57,7 +57,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         Order order = origin.getOrder();
         Days fromBeginningToStart = daysBetween(order.getInitDate(), origin
                 .getInitDate());
-        Days fromBeginningToEnd = daysBetween(order.getDeadline(), origin
+        Days fromBeginningToEnd = daysBetween(order.getInitDate(), origin
                 .getDeadline());
         beingBuilt.materialAssignments = copyMaterialAssignmentsFrom(beingBuilt, origin
                 .getMaterialAssignments());
