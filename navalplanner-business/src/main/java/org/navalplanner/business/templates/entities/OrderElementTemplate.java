@@ -122,6 +122,15 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return days != null ? days.getDays() : null;
     }
 
+    protected <T extends OrderElement> T setupElementParts(T orderElement) {
+        orderElement.setCode(getCode());
+        orderElement.setName(getName());
+        orderElement.setDescription(getDescription());
+        return orderElement;
+    }
+
+    public abstract OrderElement createElement();
+
     private InfoComponent infoComponent;
 
     private Integer startAsDaysFromBeginning;

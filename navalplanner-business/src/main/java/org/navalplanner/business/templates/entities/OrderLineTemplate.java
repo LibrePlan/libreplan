@@ -66,4 +66,9 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return true;
     }
 
+    @Override
+    public OrderLine createElement() {
+        return setupElementParts(OrderLine.create());
+    }
+
 }

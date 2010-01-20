@@ -170,4 +170,13 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return false;
     }
 
+    protected <T extends OrderLineGroup> T setupGroupParts(T group) {
+        return setupElementParts(group);
+    }
+
+    @Override
+    public OrderLineGroup createElement() {
+        return setupGroupParts(OrderLineGroup.create());
+    }
+
 }

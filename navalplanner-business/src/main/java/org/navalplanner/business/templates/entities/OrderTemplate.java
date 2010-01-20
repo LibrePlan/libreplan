@@ -38,4 +38,8 @@ public class OrderTemplate extends OrderLineGroupTemplate {
     @NotNull(message = "order calendar not specified")
     private BaseCalendar calendar;
 
+    public Order createElement() {
+        return setupGroupParts(Order.create());
+    }
+
 }
