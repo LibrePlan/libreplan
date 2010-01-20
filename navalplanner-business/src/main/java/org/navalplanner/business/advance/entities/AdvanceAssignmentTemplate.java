@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
@@ -94,6 +95,15 @@ public class AdvanceAssignmentTemplate extends BaseEntity {
 
     public void setReportGlobalAdvance(boolean reportGlobalAdvance) {
         this.reportGlobalAdvance = reportGlobalAdvance;
+    }
+
+    public DirectAdvanceAssignment createAdvanceAssignment(
+            OrderElement orderElement) {
+        DirectAdvanceAssignment result = DirectAdvanceAssignment.create(
+                reportGlobalAdvance, maxValue);
+        result.setOrderElement(orderElement);
+        result.setAdvanceType(advanceType);
+        return result;
     }
 
 }

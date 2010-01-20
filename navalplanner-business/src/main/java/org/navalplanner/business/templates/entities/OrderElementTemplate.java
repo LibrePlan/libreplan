@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
@@ -52,6 +54,9 @@ import org.navalplanner.business.trees.ITreeNode;
  */
 public abstract class OrderElementTemplate extends BaseEntity implements
         ITreeNode<OrderElementTemplate> {
+
+    private static final Log LOG = LogFactory
+            .getLog(OrderElementTemplate.class);
 
     public static <T extends OrderElementTemplate> T create(T beingBuilt,
             OrderElement origin) {
@@ -130,6 +135,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         setupMaterialAssignments(orderElement);
         setupLabels(orderElement);
         setupQualityForms(orderElement);
+        setupAdvances(orderElement);
         return orderElement;
     }
 
@@ -172,6 +178,18 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private void setupQualityForms(OrderElement orderElement) {
         for (QualityForm each : qualityForms) {
             orderElement.addTaskQualityForm(each);
+        }
+    }
+
+    private void setupAdvances(OrderElement orderElement) {
+        for (AdvanceAssignmentTemplate each : advanceAssignmentTemplates) {
+            try {
+                orderElement.addAdvanceAssignment(each
+                        .createAdvanceAssignment(orderElement));
+            } catch (Exception e) {
+                String errorMessage = "error adding advance assignment to newly instantiated orderElement. Ignoring it";
+                LOG.warn(errorMessage, e);
+            }
         }
     }
 
