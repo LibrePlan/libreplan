@@ -101,6 +101,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    private Date currentStartDate;
+
     @Override
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
@@ -149,7 +151,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public void cancel() {
+        task.setStartDate(currentStartDate);
         allocationRowsHandler = null;
+        currentStartDate = null;
     }
 
     @Override
@@ -240,6 +244,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             PlanningState planningState) {
         this.context = context;
         this.task = task;
+        this.currentStartDate = task.getStartDate();
         this.planningState = planningState;
         planningState.reassociateResourcesWithSession(resourceDAO);
         taskElementDAO.reattach(this.task);
