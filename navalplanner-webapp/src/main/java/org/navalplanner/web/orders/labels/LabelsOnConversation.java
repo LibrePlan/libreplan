@@ -44,22 +44,24 @@ public class LabelsOnConversation {
     }
 
     public List<Label> getLabels() {
-        if (labels == null) {
-            initializeLabels();
-        }
+        loadLabelsIfDontExist();
         return new ArrayList<Label>(labels);
     }
 
     public void addLabel(Label label) {
-        initializeLabels();
+        loadLabelsIfDontExist();
         Validate.notNull(label);
         labels.add(label);
     }
 
-    public void initializeLabels() {
+    private void loadLabelsIfDontExist() {
         if (this.labels != null) {
             return;
         }
+        initializeLabels();
+    }
+
+    public void initializeLabels() {
         final List<Label> labels = labelDAO.getAll();
         initializeLabels(labels);
         this.labels = new HashSet<Label>(labels);
@@ -77,7 +79,7 @@ public class LabelsOnConversation {
     }
 
     public void reattachLabels() {
-        initializeLabels();
+        loadLabelsIfDontExist();
         for (Label each : labels) {
             labelDAO.reattach(each);
         }
