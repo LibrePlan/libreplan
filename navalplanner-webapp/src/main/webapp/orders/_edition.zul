@@ -30,6 +30,7 @@
 <?component name="listOrderElementAuthorizations" inline="true" macroURI="_listOrderElementAuthorizations.zul"?>
 
 <window id="${arg.top_id}">
+
     <tabbox id="tabboxOrder">
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" />

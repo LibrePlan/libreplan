@@ -38,6 +38,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -45,6 +46,8 @@ import org.navalplanner.web.common.OnTabSelection;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.OnTabSelection.IOnSelectingTab;
+import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
+import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
@@ -120,6 +123,24 @@ public class OrderCRUDController extends GenericForwardComposer {
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+
+    private TemplateFinderPopup templateFinderPopup;
+
+    public void createOrderFromTemplate() {
+        Component fromTemplateButton = listWindow
+                .getFellow("create_from_template_button");
+        templateFinderPopup.openForOrderCreation(fromTemplateButton,
+                "after_start", new IOnResult<OrderTemplate>() {
+
+                    @Override
+                    public void found(OrderTemplate template) {
+                        orderModel.prepareCreationFrom(template);
+                        showEditWindow(_("Create order from Template"));
+                        orderAuthorizationController
+                                .setOrder((Order) orderModel.getOrder());
+                    }
+                });
+    }
 
     @Resource
     private IOrderTemplatesControllerEntryPoints orderTemplates;

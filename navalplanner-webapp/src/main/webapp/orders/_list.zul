@@ -75,4 +75,6 @@
     </grid>
     <button id="show_create_form" label="${i18n:_('Create')}"
          onClick="controller.goToCreateForm()" sclass="create-button global-action" />
+    <button id="create_from_template_button" label="${i18n:_('Create From Template')}" onClick="controller.createOrderFromTemplate()"
+        sclass="global-action"/>
 </window>
