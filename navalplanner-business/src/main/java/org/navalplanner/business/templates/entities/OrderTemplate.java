@@ -53,6 +53,7 @@ public class OrderTemplate extends OrderLineGroupTemplate {
     public Order createElement() {
         Order order = Order.create();
         order.setInitDate(today());
+        order.setCalendar(calendar);
         return setupGroupParts(order);
     }
 
