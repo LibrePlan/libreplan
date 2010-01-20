@@ -352,7 +352,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         resourceDAO.reattach(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
         if (resource.getCalendar() != null) {
-            calendarDAO.reattachUnmodifiedEntity(resource.getCalendar());
             loadCalendar(resource.getCalendar());
         }
         for (DayAssignment dayAssignment : resource.getAssignments()) {
@@ -364,6 +363,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void loadCalendar(BaseCalendar baseCalendar) {
+        calendarDAO.reattachUnmodifiedEntity(baseCalendar);
         for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
             calendarData.getHoursPerDay().size();
             if (calendarData.getParent() != null) {
