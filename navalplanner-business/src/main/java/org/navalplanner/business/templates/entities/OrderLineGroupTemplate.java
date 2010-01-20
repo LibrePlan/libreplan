@@ -171,6 +171,9 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
     }
 
     protected <T extends OrderLineGroup> T setupGroupParts(T group) {
+        for (OrderElementTemplate each : children) {
+            group.add(each.createElement());
+        }
         return setupElementParts(group);
     }
 
