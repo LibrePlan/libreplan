@@ -22,6 +22,7 @@ package org.navalplanner.business.materials.entities;
 import java.math.BigDecimal;
 
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
@@ -117,6 +118,10 @@ public class MaterialAssignmentTemplate extends BaseEntity implements
     @Override
     public int compareTo(MaterialAssignmentTemplate o) {
         return getMaterial().compareTo(o.getMaterial());
+    }
+
+    public MaterialAssignment createAssignment(OrderElement element) {
+        return MaterialAssignment.createFrom(materialInfo, element);
     }
 
 }

@@ -127,6 +127,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
         setupInfoComponent(orderElement);
         setupDates(orderElement);
+        setupMaterialAssignments(orderElement);
         return orderElement;
     }
 
@@ -151,6 +152,13 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private Date plusDays(Date date, Integer days) {
         LocalDate localDate = new LocalDate(date);
         return localDate.plusDays(days).toDateTimeAtStartOfDay().toDate();
+    }
+
+    private void setupMaterialAssignments(OrderElement orderElement) {
+        for (MaterialAssignmentTemplate each : materialAssignments) {
+            orderElement.addMaterialAssignment(each
+                    .createAssignment(orderElement));
+        }
     }
 
     public abstract OrderElement createElement();

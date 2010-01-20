@@ -67,6 +67,14 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
         return result;
     }
 
+    public static MaterialAssignment createFrom(MaterialInfo materialInfo,
+            OrderElement element) {
+        MaterialAssignment result = create();
+        result.materialInfo = materialInfo.copy();
+        result.orderElement = element;
+        return result;
+    }
+
     @Valid
     public MaterialInfo getMaterialInfo() {
         if (materialInfo == null) {
