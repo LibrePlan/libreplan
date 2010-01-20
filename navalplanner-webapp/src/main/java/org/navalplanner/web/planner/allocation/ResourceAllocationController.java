@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -70,6 +71,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.api.Tabpanel;
 
 /**
  * Controller for {@link ResourceAllocation} view.
@@ -119,6 +121,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Tab workerSearchTab;
 
+    private Tabpanel tabpanel;
+
     public static void registerNeededScripts() {
         getScriptsRegister()
                 .register(ScriptsRequiredByAdvancedAllocation.class);
@@ -132,6 +136,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        tabpanel = (Tabpanel) comp;
         allResourcesPerDay = new Decimalbox();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
@@ -559,6 +564,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public void accept(AllocationResult allocation) {
         resourceAllocationModel.accept(allocation);
+    }
+
+    public void setStartDate(Date date) {
+        resourceAllocationModel.setStartDate(date);
+        formBinder.setStartDate(date);
     }
 
 }

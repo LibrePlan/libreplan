@@ -590,4 +590,9 @@ public class FormBinder {
         return sum;
     }
 
+    public void setStartDate(Date date) {
+        taskStartDateBox.setValue(date);
+        doApply();
+    }
+
 }

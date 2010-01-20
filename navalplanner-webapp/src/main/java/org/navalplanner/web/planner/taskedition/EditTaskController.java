@@ -22,6 +22,8 @@ package org.navalplanner.web.planner.taskedition;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Date;
+
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
@@ -292,6 +294,20 @@ public class EditTaskController extends GenericForwardComposer {
 
     public boolean isTask() {
         return (taskElement instanceof Task);
+    }
+
+    public Date getStartConstraintDate() {
+        if ((taskElement == null) || (!isTask())) {
+            return null;
+        }
+
+        return ((Task) taskElement).getStartConstraint().getConstraintDate();
+    }
+
+    public void setStartConstraintDate(Date date) {
+        if ((taskElement != null) && (isTask())) {
+            resourceAllocationController.setStartDate(date);
+        }
     }
 
 }

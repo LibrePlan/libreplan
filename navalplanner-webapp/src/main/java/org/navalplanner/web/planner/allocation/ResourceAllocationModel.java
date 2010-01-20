@@ -403,4 +403,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         return AggregatedHoursGroup.sum(task.getAggregatedByCriterions());
     }
 
+    @Override
+    public void setStartDate(Date date) {
+        if (task != null) {
+            task.setStartDate(date);
+        }
+    }
+
 }

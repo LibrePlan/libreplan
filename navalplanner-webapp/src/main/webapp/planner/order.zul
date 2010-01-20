@@ -91,7 +91,8 @@
                             <vbox>
                                 <combobox id="startConstraintTypes">
                                 </combobox>
-                                <datebox id="startConstraintDate" constraint ="no empty"/>
+                                <datebox id="startConstraintDate" constraint ="no empty"
+                                    value="@{editController.startConstraintDate}" />
                             </vbox>
                         </row>
                         <row id="subcontract" visible="@{editController.isTask}">

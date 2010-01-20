@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.ProportionalDistributor;
@@ -71,5 +72,7 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
             IResourceAllocationContext<T> resourceAllocationContext);
 
     ProportionalDistributor addDefaultAllocations();
+
+    void setStartDate(Date date);
 
 }

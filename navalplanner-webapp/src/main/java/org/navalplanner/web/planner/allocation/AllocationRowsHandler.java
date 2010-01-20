@@ -147,7 +147,8 @@ public class AllocationRowsHandler {
                 && !currentRows.isEmpty() && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
-        if (formBinder.getAllocationEnd().isBefore(
+        if (calculatedValue != CalculatedValue.END_DATE
+                && formBinder.getAllocationEnd().isBefore(
                 new LocalDate(task.getStartDate()))) {
             formBinder.markEndDateMustBeAfterStartDate();
         }
