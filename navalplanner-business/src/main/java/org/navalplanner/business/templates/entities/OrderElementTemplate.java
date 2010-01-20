@@ -229,6 +229,11 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return infoComponent;
     }
 
+    /**
+     * @return a description of the type or template this object is
+     */
+    public abstract String getType();
+
     public abstract List<OrderElementTemplate> getChildrenTemplates();
 
     @Min(0)

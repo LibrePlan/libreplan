@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.validator.Valid;
+import org.navalplanner.business.i18n.I18nHelper;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.trees.ITreeParentNode;
@@ -188,6 +189,11 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         OrderLineGroup result = OrderLineGroup.create();
         parent.add(result);
         return setupGroupParts(result);
+    }
+
+    @Override
+    public String getType() {
+        return I18nHelper._("Group");
     }
 
 }

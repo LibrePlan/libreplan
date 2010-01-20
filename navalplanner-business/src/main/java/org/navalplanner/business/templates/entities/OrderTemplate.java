@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.Date;
 
 import org.hibernate.validator.NotNull;
@@ -56,6 +58,11 @@ public class OrderTemplate extends OrderLineGroupTemplate {
 
     private Date today() {
         return new LocalDate().toDateTimeAtStartOfDay().toDate();
+    }
+
+    @Override
+    public String getType() {
+        return _("Order");
     }
 
 }

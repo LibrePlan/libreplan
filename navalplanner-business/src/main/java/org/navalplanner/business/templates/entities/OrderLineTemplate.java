@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.templates.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,6 +80,11 @@ public class OrderLineTemplate extends OrderElementTemplate {
         OrderLine line = OrderLine.create();
         parent.add(line);
         return setupElementParts(line);
+    }
+
+    @Override
+    public String getType() {
+        return _("Line");
     }
 
 }
