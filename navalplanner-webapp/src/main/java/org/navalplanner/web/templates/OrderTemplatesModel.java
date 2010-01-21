@@ -137,7 +137,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public void initEdit(OrderElementTemplate template) {
         initializeAcompanyingObjectsOnConversation();
         this.template = dao.findExistingEntity(template.getId());
-        loadAssociatedData(template);
+        loadAssociatedData(this.template);
         treeModel = new TemplatesTree(this.template);
     }
 
