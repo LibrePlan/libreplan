@@ -25,8 +25,16 @@
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?component name="schedulingStateToggler" class="org.navalplanner.web.orders.SchedulingStateToggler" macroURI="/common/components/schedulingStateToggler.zul"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
-<?component name="edition" inline="true" macroURI="_edition.zul"?>
+<?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
+  class="org.navalplanner.web.templates.TemplatesTreeComponent"?>
+<?component name="listOrderElementMaterials" class="org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent"
+    macroURI="/orders/components/_listOrderElementMaterials.zul"?>
+<?component name="listOrderElementLabels" class="org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
+<?component name="assignedQualityForms" class="org.navalplanner.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
+<?component name="advancesAssignment" class="org.navalplanner.web.templates.advances.AdvancesAssignmentComponent" macroURI="/templates/_advances.zul"?>
+
 <zk>
     <zscript><![CDATA[
         templateController = orderTemplatesController;
@@ -35,6 +43,72 @@
     <div self="@{define(content)}" apply="${templateController}">
         <vbox id="messagesContainer" />
         <list top_id="listWindow" />
-        <edition top_id="editWindow" />
+        <window id="editWindow">
+            <tabbox>
+                <tabs>
+                    <tab id="tabGeneralData" label="${i18n:_('General data')}" />
+                    <tab label="${i18n:_('Template Tree')}" disabled="@{templateController.templateTreeDisabled}"/>
+                    <tab label="${i18n:_('Advances')}" />
+                    <tab label="${i18n:_('Labels')}" />
+                    <tab label="${i18n:_('Materials')}" />
+                    <tab label="${i18n:_('Quality Forms')}" />
+                </tabs>
+                <tabpanels>
+                    <tabpanel>
+                        <grid fixedLayout="true">
+                            <columns>
+                                <column width="200px" />
+                                <column  />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Name')}" />
+                                    <textbox value="@{templateController.template.name}" width="500px"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Code')}" />
+                                    <hbox>
+                                        <textbox value="@{templateController.template.code}" width="250px" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Days from Beginning to Start')}" />
+                                    <intbox
+                                        value="@{templateController.template.startAsDaysFromBeginning}" constraint="no negative"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Days from Beginning to Deadline')}" />
+                                    <intbox
+                                        value="@{templateController.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </tabpanel>
+                    <tabpanel>
+                        <orderElementTree id="orderElementTree"/>
+                    </tabpanel>
+                    <tabpanel>
+                        <advancesAssignment id="advancesAssignment" />
+                    </tabpanel>
+                    <tabpanel>
+                        <listOrderElementLabels id="listOrderElementLabels"/>
+                    </tabpanel>
+                    <tabpanel>
+                        <listOrderElementMaterials id="listOrderElementMaterials"/>
+                    </tabpanel>
+                    <tabpanel>
+                        <assignedQualityForms id="assignedQualityForms"/>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+            <hbox>
+                <button label="${i18n:_('Save')}" onClick="templateController.saveAndExit()"
+                    sclass="save-button global-action" />
+                <button label="${i18n:_('Save &amp; Continue')}" onClick="templateController.saveAndContinue()"
+                    sclass="saveandcontinue-button global-action" />
+                <button label="${i18n:_('Cancel')}" onClick="templateController.cancel()"
+                    sclass="cancel-button global-action" />
+            </hbox>
+    </window>
     </div>
 </zk>
