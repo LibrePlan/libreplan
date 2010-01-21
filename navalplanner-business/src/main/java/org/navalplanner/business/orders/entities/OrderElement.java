@@ -152,8 +152,7 @@ public abstract class OrderElement extends BaseEntity implements
         if (thereIsNoTaskSource()) {
             taskSource = TaskSource.createForGroup(this);
             return TaskSource
-                    .mustAddGroup(taskSource,
-                    childrenSynchronizations);
+                    .mustAddGroup(taskSource, childrenSynchronizations);
         } else {
             return taskSource.modifyGroup(childrenSynchronizations);
         }
