@@ -318,6 +318,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             for (Column each : columns) {
                 each.doCell(this, item, currentElement);
             }
+            item.setTooltiptext(createTooltipText(currentElement));
         }
 
         private void applySnapshot(final Treeitem item) {
@@ -572,5 +573,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected abstract boolean isPredicateApplied();
+
+    protected abstract String createTooltipText(T currentElement);
 
 }

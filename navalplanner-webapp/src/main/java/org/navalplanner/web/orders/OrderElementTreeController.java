@@ -22,6 +22,7 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +30,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.SchedulingState;
+import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
+import org.navalplanner.business.orders.entities.SchedulingState.Type;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
@@ -463,6 +468,39 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private void selectDefaultTab() {
         tabGeneralData.setSelected(true);
+    }
+
+    @Override
+    protected String createTooltipText(OrderElement elem) {
+        StringBuilder tooltipText = new StringBuilder();
+        tooltipText.append(elem.getName() + ". ");
+        if ((elem.getDescription() != null)
+                && (!elem.getDescription().equals(""))) {
+            tooltipText.append(elem.getDescription());
+            tooltipText.append(". ");
+        }
+        if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
+            tooltipText.append(_(" Labels:"));
+            tooltipText.append(StringUtils.join(getLabels(), ","));
+            tooltipText.append(".");
+        }
+        if ((elem.getCriterionRequirements() != null)
+                && (!elem.getCriterionRequirements().isEmpty())) {
+            ArrayList<String> criterionNames = new ArrayList<String>();
+            for(CriterionRequirement each:elem.getCriterionRequirements()) {
+                criterionNames.add(each.getCriterion().getName());
+            }
+            tooltipText.append(_(" Criteria:"));
+            tooltipText.append(StringUtils.join(criterionNames, ","));
+            tooltipText.append(".");
+        }
+        // To calculate other unit advances implement
+        // getOtherAdvancesPercentage()
+        tooltipText.append(_(" Advance:") + elem.getAdvancePercentage());
+        tooltipText.append(".");
+
+        // tooltipText.append(elem.getAdvancePercentage());
+        return tooltipText.toString();
     }
 
 }

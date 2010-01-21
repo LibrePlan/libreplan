@@ -19,6 +19,9 @@
  */
 package org.navalplanner.web.templates;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
@@ -186,5 +189,23 @@ public class TemplatesTreeController extends
     protected boolean isPredicateApplied() {
         return false;
     }
+
+    @Override
+    protected String createTooltipText(OrderElementTemplate elem) {
+            StringBuilder tooltipText = new StringBuilder();
+            tooltipText.append(elem.getName() + ". ");
+            if ((elem.getDescription() != null)
+                    && (!elem.getDescription().equals(""))) {
+                tooltipText.append(elem.getDescription());
+                tooltipText.append(". ");
+            }
+            if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
+                tooltipText.append(_(" Labels:"));
+            tooltipText.append(StringUtils.join(elem.getLabels(), ","));
+                tooltipText.append(".");
+            }
+        // There are no CriterionRequirement or advances in templates
+            return tooltipText.toString();
+        }
 
 }

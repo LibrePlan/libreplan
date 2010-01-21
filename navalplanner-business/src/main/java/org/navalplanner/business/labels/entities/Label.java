@@ -100,4 +100,8 @@ public class Label extends BaseEntity {
         return false;
     }
 
+    public String toString() {
+        return name;
+    }
+
 }
