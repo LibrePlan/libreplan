@@ -468,7 +468,9 @@ public class OrderModel implements IOrderModel {
         // Iterate through orderElements from order
         List<OrderElement> orderElements = new ArrayList<OrderElement>();
         for (OrderElement orderElement : order.getOrderElements()) {
-            reattachOrderElement(orderElement);
+            if (!orderElement.isNewObject()) {
+                reattachOrderElement(orderElement);
+            }
             reattachLabels();
             initializeLabels(orderElement.getLabels());
 

@@ -51,7 +51,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
@@ -70,8 +69,6 @@ import org.zkoss.zul.Vbox;
 public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Vbox filter;
-
-    private Combobox cbFilterType;
 
     private BandboxSearch bdFilter;
 
@@ -154,8 +151,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        Executions.createComponents("/orders/_orderElementTreeFilter.zul",
+        Component filterComponent = Executions.createComponents(
+                "/orders/_orderElementTreeFilter.zul",
                 filter, new HashMap<String, String>());
+        filterComponent.setVariable("treeController", this, true);
+        bdFilter = (BandboxSearch) filterComponent.getFellow("bdFilter");
     }
 
     public class OrderElementTreeitemRenderer extends Renderer {
@@ -400,46 +400,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         return predicate != null;
     }
 
-    private final String SHOW_ALL = _("Show all");
-
-    /**
-     * Show all order elements in current order
-     * @param event
-     */
-    public void onShowAll(Event event) {
-        final String selectedOption = ((Combobox) event.getTarget()).getValue();
-        if (SHOW_ALL.equals(selectedOption)) {
-            // Delete predicate and set back to original tree model
-            if (predicate != null) {
-                bdFilter.clear();
-                predicate = null;
-                Util.reloadBindings(tree);
-            }
-            bdFilter.setDisabled(true);
-        } else {
-            bdFilter.setDisabled(false);
-        }
-    }
-
-    private final String FILTER_BY_LABEL = _("Filter by Label");
-
     /**
      * Apply filter to order elements in current order
      * @param event
      */
     public void onApplyFilter(Event event) {
-        final String selectedOption = cbFilterType.getValue();
-        // Filter order elements by label
-        if (FILTER_BY_LABEL.equals(selectedOption)) {
             org.navalplanner.business.labels.entities.Label label = getSelectedLabel();
             if (label == null) {
-                label = org.navalplanner.business.labels.entities.Label
-                        .create("");
+            label = org.navalplanner.business.labels.entities.Label.create("");
             }
             // Create predicate and filter order elements by predicate
             predicate = new LabelOrderElementPredicate(label);
             filterByPredicate();
-        }
     }
 
     private org.navalplanner.business.labels.entities.Label getSelectedLabel() {
@@ -458,9 +430,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
      */
     public void clear() {
         selectDefaultTab();
-        cbFilterType.setSelectedIndex(0); // Select show all option
-        bdFilter.setDisabled(true); // Disable when show all option is selected
-        bdFilter.clear();
+        // bdFilter.clear();
         predicate = null;
     }
 
