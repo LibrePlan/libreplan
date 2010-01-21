@@ -240,7 +240,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         return !isItemSelected();
     }
 
-    protected Button btnNew, btnDown, btnUp, btnUnindent, btnIndent, btnDelete;
+    protected Button btnNew;
 
     private List<Column> columns;
 
@@ -250,13 +250,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     private void resetControlButtons() {
-        final boolean disabled = tree.getSelectedItem() == null;
         btnNew.setDisabled(isNewButtonDisabled());
-        btnIndent.setDisabled(disabled);
-        btnUnindent.setDisabled(disabled);
-        btnUp.setDisabled(disabled);
-        btnDown.setDisabled(disabled);
-        btnDelete.setDisabled(disabled);
     }
 
     protected abstract boolean isNewButtonDisabled();
@@ -559,17 +553,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             resetControlButtons();
             return;
         }
-        boolean disabledLevel1 = isNewButtonDisabled()
-                && isFirstLevelElement(item);
-        boolean disabledLevel2 = isNewButtonDisabled()
-                && (isFirstLevelElement(item) || isSecondLevelElement(item));
-
         btnNew.setDisabled(false);
-        btnDown.setDisabled(disabledLevel1);
-        btnUp.setDisabled(disabledLevel1);
-        btnUnindent.setDisabled(disabledLevel2);
-        btnIndent.setDisabled(disabledLevel1);
-        btnDelete.setDisabled(false);
     }
 
     protected abstract boolean isPredicateApplied();

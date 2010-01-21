@@ -25,25 +25,14 @@
 
 <vbox>
     <vbox>
-        <hbox>
+        <hbox >
             <button id="btnNew" label="${treeComponent.addElementLabel}"
                 onClick="treeController.addElement();" />
             <button label="${i18n:_('Create Template')}"
                 onClick="treeController.createTemplate();"
                 visible="${treeComponent.createTemplateEnabled}"/>
-            <button id="btnDown" label="${i18n:_('Down')}"
-                onClick="treeController.down();" />
-            <button id="btnUp" label="${i18n:_('Up')}"
-                onClick="treeController.up();" />
-            <button id="btnUnindent" label="${i18n:_('Unindent')}"
-                onClick="treeController.unindent();" />
-            <button id="btnIndent" label="${i18n:_('Indent')}"
-                onClick="treeController.indent();" />
-            <button id="btnDelete" label="${treeComponent.removeElementLabel}"
-                onClick="treeController.removeElement();" />
         </hbox>
-    </vbox>
-    <vbox id="filter">
+        <vbox id="filter" />
     </vbox>
     <vbox>
         <tree id="tree" width="1050" multiple="true" droppable="true"
