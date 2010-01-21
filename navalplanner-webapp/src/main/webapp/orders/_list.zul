@@ -20,56 +20,20 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Orders list')}">
     <grid id="listing" model="@{controller.orders}" mold="paging"
-        pageSize="10" fixedLayout="true">
+        pageSize="10" fixedLayout="true"
+        rowRenderer= "@{controller.ordersRowRender}">
         <columns>
-            <column label="${i18n:_('Name')}" sort="auto(name)" />
-            <column label="${i18n:_('Code')}" sort="auto(code)" />
-            <column label="${i18n:_('Starting date')}"
-                sort="auto(initDate)" />
-            <column label="${i18n:_('Deadline')}"
-                sort="auto(deadline)" />
-            <column label="${i18n:_('Responsible')}"
-                sort="auto(responsible)" />
-            <column label="${i18n:_('Description')}"
-                sort="auto(description)" />
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_('Name')}" align="center" sort="auto(name)"/>
+            <column label="${i18n:_('Code')}" align="center" sort="auto(code)"/>
+            <column label="${i18n:_('Starting date')}" align="center" sort="auto(initDate)"/>
+            <column label="${i18n:_('Deadline')}" align="center" sort="auto(deadline)" />
+            <column label="${i18n:_('Customer')}" align="center" sort="auto(customer)" />
+            <column label="${i18n:_('Customer reference')}" align="center"/>
+            <column label="${i18n:_('Total Budget')}" align="center"/>
+            <column label="${i18n:_('Total Hours')}" align="center"/>
+            <column label="${i18n:_('State')}" align="center"/>
+            <column label="${i18n:_('Operations')}" align="center"/>
         </columns>
-        <rows>
-            <row self="@{each='order'}" value="@{order}" onClick="controller.goToEditForm(self.value);">
-                <label value="@{order.name}" />
-                <label value="@{order.code}" />
-                <label value="@{order.initDate, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
-                <label value="@{order.deadline, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
-                <label value="@{order.responsible}" />
-                <label value="@{order.description}" />
-                <hbox>
-                    <button sclass="icono"
-                        image="/common/img/ico_editar1.png"
-                        hoverImage="/common/img/ico_editar.png"
-                        tooltiptext="${i18n:_('Edit')}"
-                        onClick="controller.goToEditForm(self.parent.parent.value);">
-                    </button>
-
-                    <button sclass="icono"
-                        image="/common/img/ico_borrar1.png"
-                        hoverImage="/common/img/ico_borrar.png"
-                        tooltiptext="${i18n:_('Delete')}"
-                        onClick="controller.confirmRemove(self.parent.parent.value)" />
-
-                    <button sclass="icono"
-                        image="/common/img/ico_planificador1.png"
-                        hoverImage="/common/img/ico_planificador.png"
-                        tooltiptext="${i18n:_('See scheduling')}"
-                        onClick="controller.schedule(self.parent.parent.value);" />
-
-                    <button sclass="icono"
-                        image="/common/img/ico_derived1.png"
-                        hoverImage="/common/img/ico_derived.png"
-                        tooltiptext="${i18n:_('Create Template')}"
-                        onClick="controller.createTemplate(self.parent.parent.value);" />
-                </hbox>
-            </row>
-        </rows>
     </grid>
     <button id="show_create_form" label="${i18n:_('Create')}"
          onClick="controller.goToCreateForm()" sclass="create-button global-action" />

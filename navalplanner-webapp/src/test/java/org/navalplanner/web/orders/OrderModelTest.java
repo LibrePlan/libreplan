@@ -49,6 +49,8 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -121,6 +123,9 @@ public class OrderModelTest {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    @Autowired
+    private IExternalCompanyDAO externalCompanyDAO;
+
     private Criterion criterion;
 
     private Session getSession() {
@@ -139,6 +144,13 @@ public class OrderModelTest {
         return order;
     }
 
+    private ExternalCompany createValidExternalCompany() {
+        ExternalCompany externalCompany = ExternalCompany.create(UUID
+                .randomUUID().toString(), UUID.randomUUID().toString());
+        externalCompanyDAO.save(externalCompany);
+        return externalCompany;
+    }
+
     @Test
     @Rollback(false)
     public void testNotRollback() {
@@ -150,6 +162,7 @@ public class OrderModelTest {
     @Test
     public void testCreation() throws ValidationException {
         Order order = createValidOrder();
+        order.setCustomer(createValidExternalCompany());
         orderModel.setOrder(order);
         orderModel.save();
         assertTrue(orderDAO.exists(order.getId()));
@@ -162,7 +175,7 @@ public class OrderModelTest {
         order.setName("name");
         order.setCode("code");
         order.setInitDate(new Date());
-
+        order.setCustomer(createValidExternalCompany());
         orderModel.save();
         assertTrue(orderDAO.exists(order.getId()));
     }
@@ -171,6 +184,7 @@ public class OrderModelTest {
     public void testListing() throws Exception {
         List<Order> list = orderModel.getOrders();
         Order order = createValidOrder();
+        order.setCustomer(createValidExternalCompany());
         orderModel.setOrder(order);
         orderModel.save();
         assertThat(orderModel.getOrders().size(), equalTo(list.size() + 1));

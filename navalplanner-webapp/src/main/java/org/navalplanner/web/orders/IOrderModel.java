@@ -109,4 +109,6 @@ public interface IOrderModel {
     List<ExternalCompany> getExternalCompaniesAreClient();
 
     void setExternalCompany(ExternalCompany externalCompany);
+
+    public String gettooltipText(Order order);
 }

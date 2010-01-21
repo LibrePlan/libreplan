@@ -23,7 +23,9 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,12 +66,19 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.api.Window;
@@ -162,6 +171,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private BaseCalendarsComboitemRenderer baseCalendarsComboitemRenderer = new BaseCalendarsComboitemRenderer();
 
+    private OrdersRowRenderer ordersRowRenderer = new OrdersRowRenderer();
+
+    private Popup popup;
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -572,4 +584,138 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.setExternalCompany((ExternalCompany) object);
     }
 
+    public OrdersRowRenderer getOrdersRowRender() {
+        return ordersRowRenderer;
+    }
+
+    public class OrdersRowRenderer implements RowRenderer {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+
+            final Order order = (Order) data;
+            row.setValue(order);
+
+            appendLabel(row, order.getName());
+            appendLabel(row, order.getCode());
+            appendDate(row, order.getInitDate());
+            appendDate(row, order.getDeadline());
+            appendCustomer(row, order.getCustomer());
+            appendLabel(row, order.getCustomerReference());
+            appendObject(row, order.getTotalBudget());
+            appendObject(row, order.getTotalHours());
+            appendObject(row, order.getState());
+            appendOperations(row, order);
+
+            row.setTooltiptext(getTooltipText(order));
+            row.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToEditForm(order);
+                }
+            });
+        }
+    }
+
+    private void appendObject(final Row row, Object object) {
+        String text = new String("");
+        if (object != null) {
+            text = object.toString();
+        }
+        appendLabel(row, text);
+    }
+
+    private void appendCustomer(final Row row, ExternalCompany externalCompany) {
+        String customerName = new String("");
+        if (externalCompany != null) {
+            customerName = externalCompany.getName();
+        }
+        appendLabel(row, customerName);
+    }
+
+    private void appendLabel(final Row row, String value) {
+        Label label = new Label(value);
+        row.appendChild(label);
+    }
+
+    private void appendDate(final Row row, Date date) {
+        String labelDate = new String("");
+        if (date != null) {
+            labelDate = new SimpleDateFormat("dd/MM/yyyy").format(date);
+        }
+        appendLabel(row, labelDate);
+    }
+
+    private void appendOperations(final Row row,final Order order){
+        Hbox hbox = new Hbox();
+        appendButtonEdit(hbox,order);
+        appendButtonDelete(hbox, order);
+        appendButtonPlan(hbox, order);
+        appendButtonDerived(hbox, order);
+        row.appendChild(hbox);
+    }
+
+    private void appendButtonEdit(final Hbox hbox, final Order order) {
+        Button buttonEdit = new Button();
+        buttonEdit.setSclass("icono");
+        buttonEdit.setImage("/common/img/ico_editar1.png");
+        buttonEdit.setHoverImage("/common/img/ico_editar.png");
+        buttonEdit.setTooltiptext(_("Edit"));
+        buttonEdit.addEventListener("onClick",new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                goToEditForm(order);
+            }
+        });
+        hbox.appendChild(buttonEdit);
+    }
+
+    private void appendButtonDelete(final Hbox hbox, final Order order) {
+        Button buttonDelete = new Button();
+        buttonDelete.setSclass("icono");
+        buttonDelete.setImage("/common/img/ico_borrar1.png");
+        buttonDelete.setHoverImage("/common/img/ico_borrar.png");
+        buttonDelete.setTooltiptext(_("Delete"));
+        buttonDelete.addEventListener("onClick",new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                confirmRemove(order);
+            }
+        });
+        hbox.appendChild(buttonDelete);
+    }
+
+    private void appendButtonPlan(final Hbox hbox, final Order order) {
+        Button buttonPlan = new Button();
+        buttonPlan.setSclass("icono");
+        buttonPlan.setImage("/common/img/ico_planificador1.png");
+        buttonPlan.setHoverImage("/common/img/ico_planificador.png");
+        buttonPlan.setTooltiptext(_("See scheduling"));
+        buttonPlan.addEventListener("onClick",new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                schedule(order);
+            }
+        });
+        hbox.appendChild(buttonPlan);
+    }
+
+    private void appendButtonDerived(final Hbox hbox, final Order order) {
+        Button buttonDerived = new Button();
+        buttonDerived.setSclass("icono");
+        buttonDerived.setImage("/common/img/ico_derived1.png");
+        buttonDerived.setHoverImage("/common/img/ico_derived.png");
+        buttonDerived.setTooltiptext(_("Create Template"));
+        buttonDerived.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                createTemplate(order);
+            }
+        });
+        hbox.appendChild(buttonDerived);
+    }
+
+    public String getTooltipText(final Order order) {
+        return orderModel.gettooltipText(order);
+    }
 }

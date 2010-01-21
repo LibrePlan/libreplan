@@ -22,6 +22,7 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -173,17 +174,22 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        return initializeOrders(orderDAO.getOrders());
+        final List<Order> list = orderDAO.getOrders();
+        initializeOrders(list);
+        return list;
 
     }
 
-    private List<Order> initializeOrders(List<Order> list) {
+    private void initializeOrders(List<Order> list) {
         for (Order order : list) {
             if (order.getCustomer() != null) {
                 order.getCustomer().getName();
             }
+            order.getAdvancePercentage();
+            for (Label label : order.getLabels()) {
+                label.getName();
+            }
         }
-        return list;
     }
 
     private void loadCriterions() {
@@ -583,4 +589,60 @@ public class OrderModel implements IOrderModel {
             order.setCustomer(externalCompany);
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String gettooltipText(Order order) {
+        orderDAO.reattachUnmodifiedEntity(order);
+        StringBuilder result = new StringBuilder();
+        result.append(_("Advance") + ": ").append(getEstimatedAdvance(order)).append("% , ");
+        result.append(_("Hours invested") + ": ").append(
+                getHoursAdvancePercentage(order)).append("% \n");
+
+        if (!getDescription(order).equals("")) {
+            result.append(" , " + _("Description" + ": ")
+                    + getDescription(order)
+                    + "\n");
+        }
+
+        String labels = buildLabelsText(order);
+        if (!labels.equals("")) {
+            result.append(" , " + _("Labels") + ": " + labels);
+        }
+        return result.toString();
+    }
+
+    private String getDescription(Order order) {
+        if (order.getDescription() != null) {
+            return order.getDescription();
+        }
+        return "";
+    }
+
+    private BigDecimal getEstimatedAdvance(Order order) {
+        return order.getAdvancePercentage().multiply(new BigDecimal(100));
+    }
+
+    private BigDecimal getHoursAdvancePercentage(Order order) {
+        BigDecimal result;
+        if (order != null) {
+            result = orderElementDAO.getHoursAdvancePercentage(order);
+        } else {
+            result = new BigDecimal(0);
+        }
+        return result.multiply(new BigDecimal(100));
+    }
+
+    private String buildLabelsText(Order order) {
+        StringBuilder result = new StringBuilder();
+        Set<Label> labels = order.getLabels();
+        if (!labels.isEmpty()) {
+            for (Label label : labels) {
+                result.append(label.getName()).append(",");
+            }
+            result.delete(result.length() - 1, result.length());
+        }
+        return result.toString();
+    }
+
 }
