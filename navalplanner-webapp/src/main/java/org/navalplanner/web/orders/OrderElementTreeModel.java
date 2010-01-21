@@ -72,4 +72,13 @@ public class OrderElementTreeModel extends EntitiesTree<OrderElement> {
         newOrderElement.setName(_("New order element"));
         return newOrderElement;
     }
+
+    @Override
+    protected OrderElement createNewElement(String name, int hours) {
+        OrderLine newOrderElement = OrderLine
+                .createOrderLineWithUnfixedPercentage(hours);
+        newOrderElement.setName(name);
+        return newOrderElement;
+    }
+
 }

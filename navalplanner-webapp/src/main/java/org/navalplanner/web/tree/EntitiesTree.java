@@ -75,15 +75,28 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         addElementAtImpl(tree.getRoot());
     }
 
-    protected abstract T createNewElement();
+    public void addElement(String name, int hours) {
+        addElementAtImpl(tree.getRoot(), name, hours);
+    }
 
     public void addElementAt(T node) {
         addElementAtImpl(node);
     }
 
+    public void addElementAt(T node, String name, int hours) {
+        addElementAtImpl(node, name, hours);
+    }
+
+    protected abstract T createNewElement();
+
+    protected abstract T createNewElement(String name, int hours);
+
     private void addElementAtImpl(T parent) {
         addOrderElementAt(parent, createNewElement());
+    }
 
+    private void addElementAtImpl(T parent, String name, int hours) {
+        addOrderElementAt(parent, createNewElement(name, hours));
     }
 
     private void addToTree(ITreeNode<T> parentNode, ITreeNode<T> elementToAdd) {

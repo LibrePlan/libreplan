@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.RendererCtrl;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -167,7 +168,31 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             LOG.warn("exception ocurred adding element", e);
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
+
     }
+
+    public void addElement(Component cmp) {
+        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
+        Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
+        // Parse hours
+        try {
+            if (tree.getSelectedCount() == 1) {
+                getModel().addElementAt(getSelectedNode(), name.getValue(),
+                        hours.getValue());
+            } else {
+                getModel().addElement(name.getValue(), hours.getValue());
+            }
+            filterByPredicateIfAny();
+        } catch (IllegalStateException e) {
+            LOG.warn("exception ocurred adding element", e);
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+        }
+        name.setValue("");
+        hours.setValue(0);
+        name.focus();
+    }
+
 
     protected abstract void filterByPredicateIfAny();
 
