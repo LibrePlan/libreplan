@@ -80,8 +80,8 @@ public abstract class TreeComponent extends HtmlMacroComponent {
             renderer.addCodeCell(currentElement);
         }
     };
-    protected final Column nameAndDescriptionColumn = new Column(
-            _("Name and description"), "name") {
+    protected final Column nameAndDescriptionColumn = new Column(_("Name"),
+            "name") {
 
         @Override
         public <T extends ITreeNode<T>> void doCell(
