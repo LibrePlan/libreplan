@@ -131,6 +131,19 @@ public class SchedulingState {
         public void typeChanged(Type newType);
     }
 
+    public static SchedulingState createSchedulingState(Type initialType,
+            List<SchedulingState> childrenStates,
+            ITypeChangedListener typeListener) {
+        SchedulingState result = new SchedulingState(initialType,
+                childrenStates);
+        Type newType = result.getType();
+        if (newType != initialType) {
+            typeListener.typeChanged(newType);
+        }
+        result.addTypeChangeListener(typeListener);
+        return result;
+    }
+
     private Type type = Type.NO_SCHEDULED;
     private SchedulingState parent;
 
