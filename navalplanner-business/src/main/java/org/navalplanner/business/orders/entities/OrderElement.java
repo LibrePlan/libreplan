@@ -114,9 +114,8 @@ public abstract class OrderElement extends BaseEntity implements
 
     private SchedulingState createSchedulingState() {
         List<SchedulingState> childrenStates = getChildrenStates();
-        SchedulingState result = childrenStates.isEmpty() ? new SchedulingState(
-                getSchedulingStateType())
-                : new SchedulingState(schedulingStateType, childrenStates);
+        SchedulingState result = new SchedulingState(getSchedulingStateType(),
+                childrenStates);
         schedulingStateType = result.getType();
         result.addTypeChangeListener(new ITypeChangedListener() {
             @Override
