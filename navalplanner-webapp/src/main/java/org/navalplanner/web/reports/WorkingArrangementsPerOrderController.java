@@ -99,11 +99,7 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
 
         // Task status
         final TaskStatusEnum taskStatus = getSelectedTaskStatus();
-        if (TaskStatusEnum.ALL.equals(taskStatus)) {
-            result.put("taskStatus", _("All"));
-        } else {
-            result.put("taskStatus", taskStatus.toString());
-        }
+        result.put("taskStatus", taskStatus.toString());
 
         return result;
     }

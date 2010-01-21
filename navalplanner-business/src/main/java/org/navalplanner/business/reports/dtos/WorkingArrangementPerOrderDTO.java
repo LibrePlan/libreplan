@@ -81,8 +81,8 @@ public class WorkingArrangementPerOrderDTO {
         final OrderElement order = task.getOrderElement();
         this.orderCode = order.getCode();
         this.orderName = order.getName();
-        this.estimatedStartingDate = order.getInitDate();
-        this.estimatedEndingDate = order.getDeadline();
+        this.estimatedStartingDate = task.getStartDate();
+        this.estimatedEndingDate = task.getEndDate();
 
         // Calculate date for first and last work reports
         final List<WorkReportLine> workReportLines = workReportLineDAO
@@ -97,9 +97,9 @@ public class WorkingArrangementPerOrderDTO {
         }
 
         this.deadline = order.getDeadline();
-        this.measuredProgress = order.getAdvancePercentage();
+        this.measuredProgress = getAdvanceSpread(order);
         this.status = (taskStatus != null) ? taskStatus.toString() : "";
-        this.overrun = (new Date()).compareTo(this.deadline) > 0;
+        this.overrun = calculateOverrun();
         this.hasDependencies = hasDependencies;
     }
 
@@ -214,4 +214,18 @@ public class WorkingArrangementPerOrderDTO {
         return hasDependencies;
     }
 
+    private BigDecimal getAdvanceSpread(OrderElement order) {
+        BigDecimal advance = order.getAdvancePercentage();
+        if (advance != null) {
+            return advance;
+        }
+        return BigDecimal.ZERO;
+    }
+
+    private boolean calculateOverrun() {
+        if (this.deadline != null) {
+            return (new Date()).compareTo(this.deadline) > 0;
+        }
+        return false;
+    }
 }

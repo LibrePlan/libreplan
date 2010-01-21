@@ -97,7 +97,6 @@ public class WorkingArrangementsPerOrderModel implements
         final List<Task> tasks = orderDAO.getTasksByOrder(order);
         for (Task each : tasks) {
             final Task task = (Task) each;
-
             // If taskStatus is ALL, add task and calculate its real status
             if (TaskStatusEnum.ALL.equals(taskStatus)) {
                 workingArrangementPerOrderList
@@ -132,7 +131,8 @@ public class WorkingArrangementsPerOrderModel implements
         List<WorkingArrangementPerOrderDTO> result = new ArrayList<WorkingArrangementPerOrderDTO>();
 
         // Add current task
-        final Set<Dependency> dependencies = task.getDependenciesWithThisOrigin();
+        final Set<Dependency> dependencies = task
+                .getDependenciesWithThisDestination();
         result.add(new WorkingArrangementPerOrderDTO(task, taskStatus,
                 showDependencies && !dependencies.isEmpty()));
 
@@ -140,7 +140,7 @@ public class WorkingArrangementsPerOrderModel implements
         if (showDependencies) {
             taskDAO.reattach(task);
             for (Dependency each : dependencies) {
-                final OrderElement orderElement = each.getDestination()
+                final OrderElement orderElement = each.getOrigin()
                         .getOrderElement();
                 DependencyWorkingArrangementDTO dependencyDTO = new DependencyWorkingArrangementDTO(
                         orderElement.getName(), orderElement.getCode(), each
@@ -178,25 +178,26 @@ public class WorkingArrangementsPerOrderModel implements
 
     private boolean matchTaskStatusFinished(Task task) {
         final OrderElement order = task.getOrderElement();
-        final BigDecimal measuredProgress = order.getAdvancePercentage();
-
+        BigDecimal measuredProgress = order.getAdvancePercentage();
         return isFinished(measuredProgress);
     }
 
     private boolean isFinished(BigDecimal measuredProgress) {
-        return measuredProgress.equals(new BigDecimal(1));
+        measuredProgress = (measuredProgress.multiply(new BigDecimal(100)))
+                .setScale(0, BigDecimal.ROUND_UP);
+        return measuredProgress.equals(new BigDecimal(100));
     }
 
     private boolean matchTaskStatusInProgress(Task task) {
         final OrderElement order = task.getOrderElement();
         final BigDecimal measuredProgress = order.getAdvancePercentage();
-
         return isInProgress(measuredProgress)
-                && hasAtLeastOneWorkReportLine(order);
+                || (hasNotYetStarted(measuredProgress) && hasAtLeastOneWorkReportLine(order));
     }
 
     private boolean isInProgress(BigDecimal measuredProgress) {
-        return measuredProgress.compareTo(new BigDecimal(1)) < 0;
+        return ((measuredProgress.compareTo(new BigDecimal(1)) < 0) && (measuredProgress
+                .compareTo(new BigDecimal(0)) > 0));
     }
 
     private boolean hasAtLeastOneWorkReportLine(OrderElement order) {
@@ -214,7 +215,7 @@ public class WorkingArrangementsPerOrderModel implements
 
         return hasNotYetStarted(measuredProgress)
                 && hasNotWorkReports(order)
-                && allDependentTasksAreFinished(task);
+                && (!isBlockedByDepedendantTasks(task));
     }
 
     private boolean hasNotWorkReports(OrderElement order) {
@@ -222,22 +223,8 @@ public class WorkingArrangementsPerOrderModel implements
     }
 
     private boolean hasNotYetStarted(BigDecimal measuredProgress) {
-        return measuredProgress.equals(new BigDecimal(0));
-    }
-
-    private boolean allDependentTasksAreFinished(Task task) {
-        taskDAO.reattach(task);
-
-        final Set<Dependency> dependencies = task.getDependenciesWithThisOrigin();
-        for (Dependency each: dependencies) {
-            final TaskElement taskElement = each.getDestination();
-            final BigDecimal measuredProgress = taskElement.getOrderElement()
-                    .getAdvancePercentage();
-            if (isInProgress(measuredProgress)) {
-                return false;
-            }
-        }
-        return true;
+        return measuredProgress.setScale(2).equals(
+                new BigDecimal(0).setScale(2));
     }
 
     private boolean matchTaskStatusBlocked(Task task) {
@@ -250,18 +237,22 @@ public class WorkingArrangementsPerOrderModel implements
     }
 
     private boolean isBlockedByDepedendantTasks(Task task) {
-        boolean result = true;
-
         taskDAO.reattach(task);
-        final Set<Dependency> dependencies = task.getDependenciesWithThisOrigin();
+        final Set<Dependency> dependencies = task
+                .getDependenciesWithThisDestination();
+        if (dependencies.isEmpty()) {
+            return false;
+        }
+
+        boolean result = true;
         for (Dependency each: dependencies) {
-            final TaskElement taskElement = each.getDestination();
+            final TaskElement taskElement = each.getOrigin();
             final BigDecimal measuredProgress = taskElement.getOrderElement()
                 .getAdvancePercentage();
 
             final Type dependencyType = each.getType();
             if (Type.END_START.equals(dependencyType)) {
-                result &= isInProgress(measuredProgress);
+                result &= (!isFinished(measuredProgress));
             }
             if (Type.START_START.equals(dependencyType)) {
                 result &= hasNotYetStarted(measuredProgress);

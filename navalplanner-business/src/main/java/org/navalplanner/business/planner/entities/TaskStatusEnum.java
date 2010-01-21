@@ -23,7 +23,7 @@ package org.navalplanner.business.planner.entities;
 import static org.navalplanner.business.i18n.I18nHelper._;
 
 public enum TaskStatusEnum {
-    ALL(_(" ")),
+    ALL(_("All")),
     FINISHED(_("Finished")),
     IN_PROGRESS(_("In progress")),
     PENDING(_("Pending")),

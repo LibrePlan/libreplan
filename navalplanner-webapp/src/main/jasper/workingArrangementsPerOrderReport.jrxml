@@ -331,9 +331,11 @@
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="13">
+			<band height="27">
 				<line>
-					<reportElement x="2" y="8" width="553" height="1"/>
+					<reportElement x="2" y="8" width="553" height="1">
+						<printWhenExpression><![CDATA[new java.lang.Boolean($F{hasDependencies}.equals(java.lang.Boolean.TRUE))]]></printWhenExpression>
+					</reportElement>
 				</line>
 			</band>
 		</groupFooter>
