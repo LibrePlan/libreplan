@@ -61,7 +61,6 @@ public class TaskComponent extends Div implements AfterCompose {
     private static final Log LOG = LogFactory.getLog(TaskComponent.class);
 
     private static final int HEIGHT_PER_TASK = 10;
-    private static final String STANDARD_TASK_COLOR = "#007bbe";
 
     private static Pattern pixelsSpecificationPattern = Pattern
             .compile("\\s*(\\d+)px\\s*;?\\s*");
@@ -183,7 +182,12 @@ public class TaskComponent extends Div implements AfterCompose {
         setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssignment");
         this.task = task;
-        setColor(STANDARD_TASK_COLOR);
+        if (task.isSubcontracted()) {
+            setClass("box subcontracted-task");
+        } else {
+            setClass("box standard-task");
+        }
+
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
         taskViolationListener = new IConstraintViolationListener<Date>() {
@@ -206,7 +210,12 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     protected String calculateClass() {
-        String classText = "box";
+        String classText;
+        if (getSclass().equals("null")) {
+            classText = "box";
+        } else {
+            classText = getSclass();
+        }
         if (task.isInCriticalPath()) {
             classText += " critical";
         }

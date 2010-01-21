@@ -296,4 +296,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         }
     }
 
+    public boolean isSubcontracted() {
+        return fundamentalProperties.isSubcontracted();
+    }
+
 }

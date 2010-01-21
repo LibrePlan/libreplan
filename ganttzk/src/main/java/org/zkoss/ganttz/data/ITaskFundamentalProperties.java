@@ -76,4 +76,6 @@ public interface ITaskFundamentalProperties {
 
     public void moveTo(Date date);
 
+    public boolean isSubcontracted();
+
 }

@@ -526,6 +526,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return deadline.toDateTimeAtStartOfDay().toDate();
         }
 
+        @Override
+        public boolean isSubcontracted() {
+            return taskElement.isSubcontracted();
+        }
+
     }
 
     @Override

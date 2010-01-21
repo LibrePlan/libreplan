@@ -138,6 +138,14 @@ min-width:200px;
     margin-top: -3px;
 }
 
+.standard-task {
+    background-color: #007bbe;
+}
+
+.subcontracted-task {
+    background-color: #AA80D5;
+}
+
 /* -------------- Dependencies -------------- */
 #listdependencies {
     position: relative;

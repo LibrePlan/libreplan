@@ -163,4 +163,8 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return null;
     }
 
+    public boolean isSubcontracted() {
+        return false;
+    }
+
 }
