@@ -72,11 +72,6 @@ public abstract class OrderElement extends BaseEntity implements
 
     private Date deadline;
 
-    private Boolean mandatoryInit = false;
-
-    private Boolean mandatoryEnd = false;
-
-
     @Valid
     protected Set<DirectAdvanceAssignment> directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>();
 
@@ -288,22 +283,6 @@ public abstract class OrderElement extends BaseEntity implements
 
     public void setDeadline(Date deadline) {
         this.deadline = deadline;
-    }
-
-    public void setMandatoryInit(Boolean mandatoryInit) {
-        this.mandatoryInit = mandatoryInit;
-    }
-
-    public Boolean isMandatoryInit() {
-        return mandatoryInit;
-    }
-
-    public void setMandatoryEnd(Boolean mandatoryEnd) {
-        this.mandatoryEnd = mandatoryEnd;
-    }
-
-    public Boolean isMandatoryEnd() {
-        return mandatoryEnd;
     }
 
     public void setDescription(String description) {

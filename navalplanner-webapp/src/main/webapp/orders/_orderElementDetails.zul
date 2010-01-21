@@ -25,9 +25,6 @@
                 <hbox>
                     <datebox id="initDate"
                         value="@{detailsController.orderElement.initDate}" />
-                    <checkbox id="mandatoryInit"
-                        checked="@{detailsController.orderElement.mandatoryInit}" />
-                    <label value="${i18n:_('Mandatory')}" />
                 </hbox>
             </row>
             <row>
@@ -35,9 +32,6 @@
                 <hbox>
                     <datebox id="deadline"
                         value="@{detailsController.orderElement.deadline}" />
-                    <checkbox id="mandatoryEnd"
-                        checked="@{detailsController.orderElement.mandatoryEnd}" />
-                    <label value="${i18n:_('Mandatory')}" />
                 </hbox>
             </row>
             <row>

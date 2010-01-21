@@ -15,9 +15,6 @@
         </component>
         <property name="initDate" access="field" />
         <property name="deadline" access="field" />
-        <property name="mandatoryInit" access="field" />
-        <property name="mandatoryEnd" access="field" />
-
         <property name="schedulingStateType" access="field" >
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.orders.entities.SchedulingState$Type</param>
