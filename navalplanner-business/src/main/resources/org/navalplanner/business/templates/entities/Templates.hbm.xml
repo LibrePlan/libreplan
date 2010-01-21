@@ -17,6 +17,12 @@
         <property name="startAsDaysFromBeginning" />
         <property name="deadlineAsDaysFromBeginning" />
 
+        <property name="schedulingStateType" access="field" >
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.orders.entities.SchedulingState$Type</param>
+            </type>
+        </property>
+
         <many-to-one name="parent" access="field" class="org.navalplanner.business.templates.entities.OrderLineGroupTemplate"/>
 
         <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">

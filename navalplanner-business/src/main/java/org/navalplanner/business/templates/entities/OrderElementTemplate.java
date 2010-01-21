@@ -45,6 +45,7 @@ import org.navalplanner.business.orders.entities.InfoComponent;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.trees.ITreeNode;
 
@@ -196,6 +197,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public abstract OrderElement createElement();
 
     public abstract OrderElement createElement(OrderLineGroup parent);
+
+    private SchedulingState.Type schedulingStateType;
 
     private InfoComponent infoComponent;
 
