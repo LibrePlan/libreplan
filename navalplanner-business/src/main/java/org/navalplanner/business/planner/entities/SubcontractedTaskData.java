@@ -58,7 +58,6 @@ public class SubcontractedTaskData extends BaseEntity {
         result.labelsExported = subcontractedTaskData.labelsExported;
         result.materialAssignmentsExported = subcontractedTaskData.materialAssignmentsExported;
         result.hoursGroupsExported = subcontractedTaskData.hoursGroupsExported;
-        result.criterionRequirementsExported = subcontractedTaskData.criterionRequirementsExported;
 
         return create(result);
     }
@@ -79,7 +78,6 @@ public class SubcontractedTaskData extends BaseEntity {
     private Boolean labelsExported;
     private Boolean materialAssignmentsExported;
     private Boolean hoursGroupsExported;
-    private Boolean criterionRequirementsExported;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -187,21 +185,6 @@ public class SubcontractedTaskData extends BaseEntity {
         this.hoursGroupsExported = hoursGroupsExported;
     }
 
-    public Boolean isCriterionRequirementsExported() {
-        if (criterionRequirementsExported == null) {
-            return false;
-        }
-        return criterionRequirementsExported;
-    }
-
-    public void setCriterionRequirementsExported(
-            Boolean criterionRequirementsExported) {
-        if (criterionRequirementsExported == null) {
-            criterionRequirementsExported = false;
-        }
-        this.criterionRequirementsExported = criterionRequirementsExported;
-    }
-
     @NotNull(message = "subcontratation date not specified")
     public Date getSubcontratationDate() {
         return subcontratationDate;
@@ -218,7 +201,6 @@ public class SubcontractedTaskData extends BaseEntity {
         this.labelsExported = subcontratedTask.labelsExported;
         this.materialAssignmentsExported = subcontratedTask.materialAssignmentsExported;
         this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
-        this.criterionRequirementsExported = subcontratedTask.criterionRequirementsExported;
     }
 
     @AssertTrue(message = "external company should be subcontractor")

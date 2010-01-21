@@ -259,8 +259,6 @@
                                     checked="@{subController.subcontractedTaskData.materialAssignmentsExported}" />
                                 <checkbox label="${i18n:_('Hours groups')}"
                                     checked="@{subController.subcontractedTaskData.hoursGroupsExported}" />
-                                <checkbox label="${i18n:_('Criterion requirements')}"
-                                    checked="@{subController.subcontractedTaskData.criterionRequirementsExported}" />
                             </vbox>
                         </row>
                     </rows>

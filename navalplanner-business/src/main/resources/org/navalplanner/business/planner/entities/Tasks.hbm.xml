@@ -108,7 +108,6 @@
         <property name="labelsExported" />
         <property name="materialAssignmentsExported" />
         <property name="hoursGroupsExported" />
-        <property name="criterionRequirementsExported" />
 
     </class>
 
