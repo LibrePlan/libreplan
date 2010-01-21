@@ -75,7 +75,7 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
 
         for (Order each: orders) {
             initializeTasks(each.getTaskElements());
-            initializeOrderElements(each.getOrderElements());
+            initializeOrderElements(each.getAllOrderElements());
             initializaReportGlobalAdvanceAssignment(each
                     .getReportGlobalAdvanceAssignment());
             initializeDirectAdvanceAssignments(each.getDirectAdvanceAssignments());
@@ -191,11 +191,8 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
         return result;
     }
 
-    @Transactional(readOnly = true)
     private List<Task> getTasks(Order order) {
-        orderDAO.reattachUnmodifiedEntity(order);
         List<Task> result = new ArrayList<Task>();
-
         final List<TaskElement> taskElements = order
                 .getAllChildrenAssociatedTaskElements();
         for (TaskElement each : taskElements) {
