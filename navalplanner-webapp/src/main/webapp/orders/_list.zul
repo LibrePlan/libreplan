@@ -30,7 +30,6 @@
                 sort="auto(deadline)" />
             <column label="${i18n:_('Responsible')}"
                 sort="auto(responsible)" />
-            <column label="${i18n:_('Customer')}" sort="auto(customer)" />
             <column label="${i18n:_('Description')}"
                 sort="auto(description)" />
             <column label="${i18n:_('Operations')}" />
@@ -42,7 +41,6 @@
                 <label value="@{order.initDate, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                 <label value="@{order.deadline, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                 <label value="@{order.responsible}" />
-                <label value="@{order.customer}" />
                 <label value="@{order.description}" />
                 <hbox>
                     <button sclass="icono"

@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.orders.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Set;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -45,6 +47,11 @@ public class Order extends OrderLineGroup {
         Order order = new Order();
         order.setNewObject(true);
 
+        order.setWorkBudget(new BigDecimal(0).setScale(2));
+        order.setMaterialsBudget(new BigDecimal(0).setScale(2));
+        order.setTotalBudget(new BigDecimal(0).setScale(2));
+        order.setTotalHours(new Integer(0));
+        order.setState(OrderStatusEnum.getDefault());
         OrderLineGroup.setupOrderLineGroup(order);
 
         return order;
@@ -60,7 +67,6 @@ public class Order extends OrderLineGroup {
     private String responsible;
 
     // TODO turn into a many to one relationship when Customer entity is defined
-    private String customer;
 
     private Boolean dependenciesConstraintsHavePriority;
 
@@ -71,20 +77,92 @@ public class Order extends OrderLineGroup {
 
     private Integer lastOrderElementSequenceCode = 0;
 
+    private BigDecimal workBudget;
+
+    private BigDecimal materialsBudget;
+
+    private BigDecimal totalBudget;
+
+    private Integer totalHours;
+
+    private OrderStatusEnum state;
+
+    private ExternalCompany customer;
+
+    private String customerReference;
+
+    private String externalCode;
+
+    public BigDecimal getWorkBudget() {
+        return workBudget;
+    }
+
+    public void setWorkBudget(BigDecimal workBudget) {
+        this.workBudget = workBudget;
+    }
+
+    public BigDecimal getMaterialsBudget() {
+        return materialsBudget;
+    }
+
+    public void setMaterialsBudget(BigDecimal materialsBudget) {
+        this.materialsBudget = materialsBudget;
+    }
+
+    public BigDecimal getTotalBudget() {
+        return totalBudget;
+    }
+
+    public void setTotalBudget(BigDecimal totalBudget) {
+        this.totalBudget = totalBudget;
+    }
+
+    public Integer getTotalHours() {
+        return totalHours;
+    }
+
+    public void setTotalHours(Integer totalHours) {
+        this.totalHours = totalHours;
+    }
+
+    public OrderStatusEnum getState() {
+        return state;
+    }
+
+    public void setState(OrderStatusEnum state) {
+        this.state = state;
+    }
+
+    public String getCustomerReference() {
+        return this.customerReference;
+    }
+
+    public void setCustomerReference(String customerReference) {
+        this.customerReference = customerReference;
+    }
+
+    public String getExternalCode() {
+        return this.externalCode;
+    }
+
+    public void setExternalCode(String externalCode) {
+        this.externalCode = externalCode;
+    }
+
+    public ExternalCompany getCustomer() {
+        return this.customer;
+    }
+
+    public void setCustomer(ExternalCompany customer) {
+        this.customer = customer;
+    }
+
     public String getResponsible() {
         return responsible;
     }
 
     public void setResponsible(String responsible) {
         this.responsible = responsible;
-    }
-
-    public String getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(String customer) {
-        this.customer = customer;
     }
 
     public boolean isDeadlineBeforeStart() {

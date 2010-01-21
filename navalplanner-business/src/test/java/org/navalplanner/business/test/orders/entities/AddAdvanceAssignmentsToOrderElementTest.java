@@ -109,7 +109,6 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     private Order createValidOrder() {
         Order order = Order.create();
         order.setDescription("description");
-        order.setCustomer("blabla");
         order.setInitDate(CriterionSatisfactionDAOTest.year(2000));
         order.setName("name");
         order.setResponsible("responsible");

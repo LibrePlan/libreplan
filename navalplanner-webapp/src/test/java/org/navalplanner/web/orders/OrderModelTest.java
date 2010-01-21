@@ -130,7 +130,6 @@ public class OrderModelTest {
     private Order createValidOrder() {
         Order order = Order.create();
         order.setDescription("description");
-        order.setCustomer("blabla");
         order.setInitDate(year(2000));
         order.setName("name");
         order.setResponsible("responsible");

@@ -53,4 +53,7 @@ public interface IExternalCompanyDAO extends IGenericDAO<ExternalCompany, Long> 
 
     List<ExternalCompany> findSubcontractor();
 
+    List<ExternalCompany> getAll();
+
+    List<ExternalCompany> getExternalCompaniesAreClient();
 }

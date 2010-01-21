@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -105,4 +106,7 @@ public interface IOrderModel {
 
     void prepareCreationFrom(OrderTemplate template);
 
+    List<ExternalCompany> getExternalCompaniesAreClient();
+
+    void setExternalCompany(ExternalCompany externalCompany);
 }

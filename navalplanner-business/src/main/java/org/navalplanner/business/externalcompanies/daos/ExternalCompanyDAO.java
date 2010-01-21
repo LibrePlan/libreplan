@@ -122,4 +122,16 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         return c.list();
     }
 
+    public List<ExternalCompany> getAll() {
+        return list(ExternalCompany.class);
+    }
+
+    @Override
+    public List<ExternalCompany> getExternalCompaniesAreClient() {
+        Criteria c = getSession().createCriteria(ExternalCompany.class);
+        c.add(Restrictions.eq("client", true));
+
+        return c.list();
+
+    }
 }

@@ -57,6 +57,10 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     private IBandboxFinder finder;
 
+    private String widthBandbox;
+
+    private String widthListbox;
+
     private List<? extends BaseEntity> model;
 
     public void afterCompose() {
@@ -101,6 +105,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         });
 
         addHeaders();
+        updateWidth();
     }
 
     private void clearSelectedElement() {
@@ -111,6 +116,8 @@ public class BandboxSearch extends HtmlMacroComponent {
         bandbox.setVariable("selectedElement", obj, true);
         if (obj != null) {
             bandbox.setValue(finder.objectToString(obj));
+        } else {
+            bandbox.setValue("");
         }
     }
 
@@ -234,8 +241,31 @@ public class BandboxSearch extends HtmlMacroComponent {
         listbox.addEventListener(event, listener);
     }
 
+
     public void foucusOnInput() {
         bandbox.setFocus(true);
     }
 
+    public String getWidthBandbox() {
+        return widthBandbox;
+    }
+
+    public void setWidthBandbox(String widthBandbox) {
+        this.widthBandbox = widthBandbox;
+    }
+
+    public String getWidthListbox() {
+        return widthListbox;
+    }
+
+    public void setWidthListbox(String widthListbox) {
+        this.widthListbox = widthListbox;
+    }
+
+    private void updateWidth() {
+        if ((widthBandbox != null) && (!widthBandbox.isEmpty())) {
+            this.bandbox.setWidth(widthBandbox);
+            this.listbox.setWidth(widthListbox);
+        }
+    }
 }

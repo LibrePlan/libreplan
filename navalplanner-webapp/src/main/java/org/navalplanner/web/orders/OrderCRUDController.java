@@ -22,6 +22,7 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
@@ -33,11 +34,12 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -46,6 +48,7 @@ import org.navalplanner.web.common.OnTabSelection;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.OnTabSelection.IOnSelectingTab;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
@@ -150,6 +153,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Window listWindow;
 
     private Tab selectedTab;
+
+    private BandboxSearch bdExternalCompanies;
 
     private OnlyOneVisible cachedOnlyOneVisible;
 
@@ -307,8 +312,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         return cachedOnlyOneVisible;
     }
 
-    public OrderLineGroup getOrder() {
-        return orderModel.getOrder();
+    public Order getOrder() {
+        return (Order) orderModel.getOrder();
     }
 
     public void saveAndContinue() {
@@ -343,6 +348,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             return false;
         }
         try {
+            setSelectedExternalCompany();
             orderModel.save();
             orderAuthorizationController.save();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
@@ -535,6 +541,35 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
         Util.reloadBindings(editWindow);
+    }
+
+    public OrderStatusEnum[] getOrderStatus() {
+        return OrderStatusEnum.values();
+    }
+
+    public void calculateTotalBudget(BigDecimal workBudget,
+            BigDecimal materialsBudget, Label txtTotalBudget) {
+        BigDecimal sum = new BigDecimal(0);
+        if ((workBudget != null) && (materialsBudget != null)) {
+            sum = workBudget.add(materialsBudget);
+        } else if (workBudget != null) {
+            sum = workBudget;
+        } else if (materialsBudget != null) {
+            sum = materialsBudget;
+        }
+        txtTotalBudget.setValue(sum.toString());
+        txtTotalBudget.invalidate();
+    }
+
+    public List<ExternalCompany> getExternalCompaniesAreClient() {
+        return orderModel.getExternalCompaniesAreClient();
+    }
+
+    private void setSelectedExternalCompany() {
+        this.bdExternalCompanies = (BandboxSearch) editWindow
+                .getFellow("bdExternalCompanies");
+        final Object object = this.bdExternalCompanies.getSelectedElement();
+        orderModel.setExternalCompany((ExternalCompany) object);
     }
 
 }
