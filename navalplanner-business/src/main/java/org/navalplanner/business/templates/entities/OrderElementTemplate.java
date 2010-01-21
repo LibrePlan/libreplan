@@ -77,6 +77,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         beingBuilt.advanceAssignmentTemplates = copyDirectAdvanceAssignments(
                 beingBuilt, origin.getDirectAdvanceAssignments());
         beingBuilt.infoComponent = infoComponentCopied;
+        beingBuilt.schedulingStateType = origin.getSchedulingStateType();
         assignDates(beingBuilt, fromBeginningToStart, fromBeginningToEnd);
         return create(beingBuilt);
     }
