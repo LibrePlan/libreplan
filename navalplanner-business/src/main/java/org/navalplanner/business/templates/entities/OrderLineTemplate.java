@@ -76,14 +76,14 @@ public class OrderLineTemplate extends OrderElementTemplate {
 
     @Override
     public OrderLine createElement() {
-        return setupElementParts(OrderLine
-                .createOrderLineWithUnfixedPercentage(getWorkHours()));
+        return setupElementParts(setupSchedulingStateType(OrderLine
+                .createOrderLineWithUnfixedPercentage(getWorkHours())));
     }
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
-        OrderLine line = OrderLine
-                .createOrderLineWithUnfixedPercentage(getWorkHours());
+        OrderLine line = setupSchedulingStateType(OrderLine
+                .createOrderLineWithUnfixedPercentage(getWorkHours()));
         parent.add(line);
         return setupElementParts(line);
     }

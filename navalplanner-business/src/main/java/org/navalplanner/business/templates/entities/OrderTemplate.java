@@ -54,7 +54,7 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         Order order = Order.create();
         order.setInitDate(today());
         order.setCalendar(calendar);
-        return setupGroupParts(order);
+        return setupGroupParts(setupSchedulingStateType(order));
     }
 
     private Date today() {

@@ -144,6 +144,11 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return orderElement;
     }
 
+    protected <T extends OrderElement> T setupSchedulingStateType(T orderElement) {
+        orderElement.initializeType(schedulingStateType);
+        return orderElement;
+    }
+
     private void setupInfoComponent(OrderElement orderElement) {
         orderElement.setCode(getCode());
         orderElement.setName(getName());

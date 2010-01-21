@@ -224,6 +224,16 @@ public abstract class OrderElement extends BaseEntity implements
         return getSchedulingState().isSomewhatScheduled();
     }
 
+    public void initializeType(SchedulingState.Type type) {
+        if (!isNewObject()) {
+            throw new IllegalStateException();
+        }
+        if (schedulingStateType != Type.NO_SCHEDULED) {
+            throw new IllegalStateException("already initialized");
+        }
+        schedulingStateType = type;
+    }
+
     public boolean isSchedulingPoint() {
         return getSchedulingState().getType() == Type.SCHEDULING_POINT;
     }
