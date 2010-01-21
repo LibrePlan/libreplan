@@ -19,9 +19,7 @@
  */
 package org.navalplanner.web.templates;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
@@ -38,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -69,7 +66,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     private OnlyOneVisible getVisibility() {
         if (cachedOnlyOneVisible == null) {
-            cachedOnlyOneVisible = new OnlyOneVisible(listWindow);
+            cachedOnlyOneVisible = new OnlyOneVisible(listWindow, editWindow);
         }
         return cachedOnlyOneVisible;
     }
@@ -94,29 +91,29 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         bindMaterialsControllerWithCurrentTemplate();
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
-        show(getEditWindow());
+        show(editWindow);
     }
 
     private void bindAdvancesComponentWithCurrentTemplate() {
-        AdvancesAssignmentComponent c = (AdvancesAssignmentComponent) getEditWindow()
+        AdvancesAssignmentComponent c = (AdvancesAssignmentComponent) editWindow
                 .getFellow("advancesAssignment");
         c.useModel(model);
     }
 
     private void bindMaterialsControllerWithCurrentTemplate() {
-        MaterialAssignmentTemplateComponent materialsComponent = (MaterialAssignmentTemplateComponent) getEditWindow()
+        MaterialAssignmentTemplateComponent materialsComponent = (MaterialAssignmentTemplateComponent) editWindow
                 .getFellow("listOrderElementMaterials");
         materialsComponent.getController().openWindow(model.getTemplate());
     }
 
     private void bindLabelsControllerWithCurrentTemplate() {
-        LabelsAssignmentToTemplateComponent labelsComponent = (LabelsAssignmentToTemplateComponent) getEditWindow()
+        LabelsAssignmentToTemplateComponent labelsComponent = (LabelsAssignmentToTemplateComponent) editWindow
                 .getFellow("listOrderElementLabels");
         labelsComponent.getController().openWindow(model);
     }
 
     private void bindQualityFormWithCurrentTemplate() {
-        QualityFormAssignerComponent c = (QualityFormAssignerComponent) getEditWindow()
+        QualityFormAssignerComponent c = (QualityFormAssignerComponent) editWindow
                 .getFellow("assignedQualityForms");
         c.useModel(model);
     }
@@ -128,19 +125,6 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private void show(Component window) {
         Util.reloadBindings(window);
         getVisibility().showOnly(window);
-    }
-
-    private Component getEditWindow() {
-        if (editWindow == null) {
-            editWindow = (Window) Executions.createComponents(
-                    "/templates/_edition.zul", self, topId("editWindow"));
-            TreeComponent treeComponent = (TreeComponent) editWindow
-                    .getFellow("orderElementTree");
-            treeComponent.useController(new TemplatesTreeController(model));
-            Util.createBindingsFor(editWindow);
-            Util.reloadBindings(editWindow);
-        }
-        return editWindow;
     }
 
     public void saveAndExit() {
@@ -156,16 +140,12 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         model.confirmSave();
     }
 
-    private Map<String, Object> topId(String value) {
-        Map<String, Object> arguments = new HashMap<String, Object>();
-        arguments.put("top_id", value);
-        return arguments;
-    }
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         getVisibility().showOnly(listWindow);
+        TreeComponent treeComponent = (TreeComponent) editWindow.getFellow("orderElementTree");
+        treeComponent.useController(new TemplatesTreeController(model));
         final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
         handler.registerListener(this, page);
