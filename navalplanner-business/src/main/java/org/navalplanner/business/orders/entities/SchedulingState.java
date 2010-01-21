@@ -162,9 +162,19 @@ public class SchedulingState {
     }
 
     public void add(SchedulingState child) {
-        child.parent = this;
         children.add(child);
+        child.changingParentTo(this);
         setType(calculateTypeFromChildren());
+    }
+
+    private void changingParentTo(SchedulingState parent) {
+        this.parent = parent;
+        if (parent.getType().belongsToSchedulingPoint()) {
+            setTypeWithoutNotifyingParent(Type.SCHEDULED_SUBELEMENT);
+            for (SchedulingState each : getDescendants()) {
+                each.setTypeWithoutNotifyingParent(Type.SCHEDULED_SUBELEMENT);
+            }
+        }
     }
 
     public SchedulingState getParent() {

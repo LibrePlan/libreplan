@@ -314,6 +314,28 @@ public class SchedulingStateTest {
         assertThat(root, hasType(Type.NO_SCHEDULED));
     }
 
+    @Test
+    public void addingAChildToASchedulingPointMakesItAScheduledSubelementAndAllItsDescendants() {
+        childA.schedule();
+        SchedulingState newChild = new SchedulingState();
+        SchedulingState grandChild = new SchedulingState();
+        newChild.add(grandChild);
+        childA.add(newChild);
+        assertThat(newChild, hasType(Type.SCHEDULED_SUBELEMENT));
+        assertThat(grandChild, hasType(Type.SCHEDULED_SUBELEMENT));
+    }
+
+    @Test
+    public void addingAChildToAScheduledSubelementMakesItAScheduledSubelementAndAllItsDescendants() {
+        childA.schedule();
+        SchedulingState newChild = new SchedulingState();
+        SchedulingState grandChild = new SchedulingState();
+        newChild.add(grandChild);
+        grandChildA1.add(newChild);
+        assertThat(newChild, hasType(Type.SCHEDULED_SUBELEMENT));
+        assertThat(grandChild, hasType(Type.SCHEDULED_SUBELEMENT));
+    }
+
     abstract static class SchedulingStateMatcher extends
             BaseMatcher<SchedulingState> {
         @Override
