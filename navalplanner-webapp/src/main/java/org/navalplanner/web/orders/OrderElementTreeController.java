@@ -33,8 +33,6 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.SchedulingState;
-import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
-import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
@@ -56,7 +54,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 
@@ -207,41 +204,19 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             addCell(cssClass, taskNumber, textBox);
         }
 
-        private String getDecorationFromState(SchedulingState state) {
-            String cssclass = "not-scheduled";
-            if (state.isCompletelyScheduled()) {
-                cssclass = "completely-scheduled";
-            } else if (state.isPartiallyScheduled()) {
-                cssclass = "partially-scheduled";
-            }
-            return cssclass;
+        @Override
+        protected SchedulingState getSchedulingStateFrom(
+                OrderElement currentElement) {
+            return currentElement.getSchedulingState();
         }
 
-        void addSchedulingStateCell(final OrderElement currentOrderElement) {
-            SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(currentOrderElement
-                    .getSchedulingState());
-            final Treecell cell = addCell(
-                    getDecorationFromState(currentOrderElement
-                            .getSchedulingState()), schedulingStateToggler);
-            cell.addEventListener("onDoubleClick", new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    IOrderElementModel model = orderModel
-                            .getOrderElementModel(currentOrderElement);
-                    orderElementController.openWindow(model);
-                }
-            });
-            currentOrderElement.getSchedulingState().addTypeChangeListener(
-                    new ITypeChangedListener() {
 
-                        @Override
-                        public void typeChanged(Type newType) {
-                            cell
-                                    .setSclass(getDecorationFromState(currentOrderElement
-                                            .getSchedulingState()));
-                        }
-                    });
-            schedulingStateToggler.afterCompose();
+        @Override
+        protected void onDoubleClickForSchedulingStateCell(
+                final OrderElement currentOrderElement) {
+            IOrderElementModel model = orderModel
+                    .getOrderElementModel(currentOrderElement);
+            orderElementController.openWindow(model);
         }
 
         protected void addCodeCell(final OrderElement orderElement) {

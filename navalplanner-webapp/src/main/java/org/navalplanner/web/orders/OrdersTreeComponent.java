@@ -63,16 +63,7 @@ public class OrdersTreeComponent extends TreeComponent {
 
     public List<Column> getColumns() {
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new OrdersTreeColumn(_("Scheduling state"),
-                "scheduling_state") {
-
-            @Override
-            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-                    OrderElement currentElement) {
-                treeRenderer.addSchedulingStateCell(currentElement);
-            }
-
-        });
+        columns.add(schedulingStateColumn);
         columns.add(codeColumn);
         columns.add(new OrdersTreeColumn(_("Hours"), "hours",
                 _("Total order element hours")) {

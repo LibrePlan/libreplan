@@ -20,6 +20,7 @@
 package org.navalplanner.web.templates;
 
 import org.hibernate.validator.ClassValidator;
+import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
@@ -139,6 +140,18 @@ public class TemplatesTreeController extends
                 }
             });
             addCell(intbox);
+        }
+
+        @Override
+        protected void onDoubleClickForSchedulingStateCell(
+                OrderElementTemplate currentElement) {
+            // do nothing
+        }
+
+        @Override
+        protected SchedulingState getSchedulingStateFrom(
+                OrderElementTemplate currentElement) {
+            return currentElement.getSchedulingState();
         }
 
     }

@@ -30,11 +30,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.orders.entities.SchedulingState;
+import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
+import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.orders.SchedulingStateToggler;
 import org.navalplanner.web.tree.TreeComponent.Column;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -364,12 +368,52 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             });
         }
 
+        public void addSchedulingStateCell(final T currentElement) {
+            final SchedulingState schedulingState = getSchedulingStateFrom(currentElement);
+            SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(
+                    schedulingState);
+            final Treecell cell = addCell(
+                    getDecorationFromState(getSchedulingStateFrom(currentElement)),
+                    schedulingStateToggler);
+            cell.addEventListener("onDoubleClick", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    onDoubleClickForSchedulingStateCell(currentElement);
+                }
+            });
+            schedulingState.addTypeChangeListener(
+                    new ITypeChangedListener() {
+
+                        @Override
+                        public void typeChanged(Type newType) {
+                            cell.setSclass(getDecorationFromState(schedulingState));
+                        }
+                    });
+            schedulingStateToggler.afterCompose();
+        }
+
+        protected abstract SchedulingState getSchedulingStateFrom(
+                T currentElement);
+
+        private String getDecorationFromState(SchedulingState state) {
+            String cssclass = "not-scheduled";
+            if (state.isCompletelyScheduled()) {
+                cssclass = "completely-scheduled";
+            } else if (state.isPartiallyScheduled()) {
+                cssclass = "partially-scheduled";
+            }
+            return cssclass;
+        }
+
         protected abstract void addCodeCell(final T element);
 
         protected abstract void addDescriptionCell(final T element);
 
         protected abstract void addOperationsCell(final Treeitem item,
                 final T currentElement);
+
+        protected abstract void onDoubleClickForSchedulingStateCell(
+                T currentElement);
 
         protected Button createUpButton(final Treeitem item,
                 final T currentElement) {

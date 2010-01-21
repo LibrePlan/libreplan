@@ -83,6 +83,7 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
+        result.add(schedulingStateColumn);
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
         result.add(new TemplatesTreeColumn(

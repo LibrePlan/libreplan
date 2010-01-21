@@ -101,6 +101,18 @@ public abstract class TreeComponent extends HtmlMacroComponent {
         }
     };
 
+    protected final Column schedulingStateColumn = new Column(
+            _("Scheduling state"), "scheduling_state") {
+
+        @Override
+        public <T extends ITreeNode<T>> void doCell(
+                TreeController<T>.Renderer renderer,
+                Treeitem item, T currentElement) {
+            renderer.addSchedulingStateCell(currentElement);
+        }
+
+    };
+
     public abstract List<Column> getColumns();
 
     public void clear() {
