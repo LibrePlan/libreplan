@@ -20,6 +20,7 @@
 package org.navalplanner.business.templates.entities;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -46,6 +47,8 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingState;
+import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
+import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.trees.ITreeNode;
 
@@ -215,6 +218,37 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private Set<QualityForm> qualityForms = new HashSet<QualityForm>();
 
     private Set<AdvanceAssignmentTemplate> advanceAssignmentTemplates = new HashSet<AdvanceAssignmentTemplate>();
+
+    private SchedulingState schedulingState;
+
+    public SchedulingState getSchedulingState() {
+        if (schedulingState == null) {
+            schedulingState = SchedulingState.createSchedulingState(
+                    getSchedulingStateType(),
+                    getChildrenStates(), new ITypeChangedListener() {
+                        @Override
+                        public void typeChanged(Type newType) {
+                            schedulingStateType = newType;
+                        }
+                    });
+        }
+        return schedulingState;
+    }
+
+    private List<SchedulingState> getChildrenStates() {
+        List<SchedulingState> result = new ArrayList<SchedulingState>();
+        for (OrderElementTemplate each : getChildren()) {
+            result.add(each.getSchedulingState());
+        }
+        return result;
+    }
+
+    public SchedulingState.Type getSchedulingStateType() {
+        if (schedulingStateType == null) {
+            schedulingStateType = Type.NO_SCHEDULED;
+        }
+        return schedulingStateType;
+    }
 
     public OrderLineGroupTemplate getParent() {
         return parent;
