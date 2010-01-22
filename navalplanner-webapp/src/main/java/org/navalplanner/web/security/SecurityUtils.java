@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.security;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.navalplanner.business.users.entities.UserRole;
 import org.zkoss.zk.ui.Executions;
 
@@ -27,6 +29,7 @@ import org.zkoss.zk.ui.Executions;
  * Utility methods for security tasks.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public final class SecurityUtils {
 
@@ -34,6 +37,12 @@ public final class SecurityUtils {
 
     public final static boolean isUserInRole(UserRole role) {
         return Executions.getCurrent().isUserInRole(role.name());
+    }
+
+    public final static String getSessionUserLoginName() {
+        HttpServletRequest request = (HttpServletRequest)Executions
+            .getCurrent().getNativeRequest();
+        return request.getUserPrincipal().getName();
     }
 
 }

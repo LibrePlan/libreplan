@@ -67,7 +67,14 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderTemplate;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.OrderAuthorizationType;
+import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -79,6 +86,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -134,6 +142,12 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IOrderSequenceDAO orderSequenceDAO;
 
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
+
     @Override
     @Transactional(readOnly = true)
     public List<Label> getLabels() {
@@ -173,10 +187,36 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        final List<Order> list = orderDAO.getOrders();
-        initializeOrders(list);
-        return list;
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_ORDERS) ||
+            SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            final List<Order> list = orderDAO.getOrders();
+            initializeOrders(list);
+            return list;
+        }
+        else {
+            List<Order> orders = new ArrayList<Order>();
+            User user;
+            try {
+                user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+            }
+            catch(InstanceNotFoundException e) {
+                //this case shouldn't happen, because it would mean that there isn't a logged user
+                //anyway, if it happenned we return an empty list
+                return orders;
+            }
+            List<OrderAuthorization> authorizations = orderAuthorizationDAO.listByUserAndItsProfiles(user);
+            for(OrderAuthorization authorization : authorizations) {
+                if (authorization.getAuthorizationType() == OrderAuthorizationType.READ_AUTHORIZATION ||
+                    authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
 
+                    Order order = authorization.getOrder();
+                    order.getName(); //this lines forces the load of the basic attributes of the order
+                    orders.add(order);
+                }
+            }
+            initializeOrders(orders);
+            return orders;
+        }
     }
 
     private void initializeOrders(List<Order> list) {

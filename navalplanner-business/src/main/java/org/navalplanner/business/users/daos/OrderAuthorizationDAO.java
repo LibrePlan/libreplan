@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.users.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -27,6 +28,8 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.Profile;
+import org.navalplanner.business.users.entities.User;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -43,5 +46,29 @@ public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorizatio
         Criteria c = getSession().createCriteria(OrderAuthorization.class);
         c.add(Restrictions.eq("order", order));
         return c.list();
+    }
+
+    @Override
+    public List<OrderAuthorization> listByUser(User user) {
+        Criteria c = getSession().createCriteria(OrderAuthorization.class);
+        c.add(Restrictions.eq("user", user));
+        return c.list();
+    }
+
+    @Override
+    public List<OrderAuthorization> listByProfile(Profile profile) {
+        Criteria c = getSession().createCriteria(OrderAuthorization.class);
+        c.add(Restrictions.eq("profile", profile));
+        return c.list();
+    }
+
+    @Override
+    public List<OrderAuthorization> listByUserAndItsProfiles(User user) {
+        List<OrderAuthorization> list = new ArrayList<OrderAuthorization>();
+        list.addAll(listByUser(user));
+        for(Profile profile : user.getProfiles()) {
+            list.addAll(listByProfile(profile));
+        }
+        return list;
     }
 }

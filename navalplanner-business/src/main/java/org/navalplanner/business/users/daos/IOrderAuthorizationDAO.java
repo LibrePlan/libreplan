@@ -25,6 +25,8 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.Profile;
+import org.navalplanner.business.users.entities.User;
 
 /**
  * DAO interface for the {@link OrderAuthorization} entity.
@@ -40,5 +42,30 @@ public interface IOrderAuthorizationDAO extends IGenericDAO<OrderAuthorization, 
      * @return list of {@link OrderAuthorization} objects
      */
     List<OrderAuthorization> listByOrder(Order order);
+
+    /**
+     * Retrieves the list of {@link OrderAuthorization} objects related with
+     * the specified {@link User} object.
+     * @param user {@link User} object
+     * @return list of {@link OrderAuthorization} objects
+     */
+    List<OrderAuthorization> listByUser(User user);
+
+    /**
+     * Retrieves the list of {@link OrderAuthorization} objects related with
+     * the specified {@link Profile} object.
+     * @param profile {@link Profile} object
+     * @return list of {@link OrderAuthorization} objects
+     */
+    List<OrderAuthorization> listByProfile(Profile profile);
+
+    /**
+     * Retrieves the list of {@link OrderAuthorization} objects related with
+     * the specified {@link User} object or with the {@link Profile} objects
+     * contained by the user.
+     * @param user {@link User} object
+     * @return list of {@link OrderAuthorization} objects
+     */
+    List<OrderAuthorization> listByUserAndItsProfiles(User user);
 
 }
