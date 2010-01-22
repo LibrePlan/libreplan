@@ -20,9 +20,10 @@
 
 package org.navalplanner.ws.subcontract.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -118,11 +119,14 @@ public class SubcontractServiceREST implements ISubcontractService {
                     orderElementDTO, ConfigurationOrderElementConverter
                             .noAdvanceMeasurements());
 
-            if (!(orderElement instanceof Order)) {
-                orderElement = wrapInOrder(orderElement);
+            Order order;
+            if (orderElement instanceof Order) {
+                order = (Order) orderElement;
+            } else {
+                order = wrapInOrder(orderElement);
             }
 
-            orderElement.moveCodeToExternalCode();
+            order.moveCodeToExternalCode();
             String code = orderSequenceDAO.getNextOrderCode();
             if (code == null) {
                 return getErrorMessage(
@@ -130,11 +134,18 @@ public class SubcontractServiceREST implements ISubcontractService {
                         "unable to generate the code for the new order, please try again later");
             }
 
-            orderElement.setCode(code);
-            generateCodes((Order) orderElement);
+            order.setCode(code);
+            generateCodes(order);
 
-            orderElement.validate();
-            orderElementDAO.save(orderElement);
+            if (subcontractedTaskDataDTO.workDescription != null) {
+                order.setName(subcontractedTaskDataDTO.workDescription);
+            }
+            order.setCustomer(externalCompany);
+            order.setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
+            order.setWorkBudget(subcontractedTaskDataDTO.subcontractPrice);
+
+            order.validate();
+            orderElementDAO.save(order);
         } catch (ValidationException e) {
             instanceConstraintViolationsDTO = ConstraintViolationConverter
                     .toDTO(Util.generateInstanceId(1, orderElementDTO.code), e
@@ -165,8 +176,8 @@ public class SubcontractServiceREST implements ISubcontractService {
         Order order = Order.create();
         order.add(orderElement);
 
-        order.setName("Order from client");
-        order.setInitDate(new Date());
+        order.setName(_("Order from client"));
+        order.setInitDate(orderElement.getInitDate());
         order.setCalendar(getDefaultCalendar());
 
         return order;
