@@ -29,6 +29,7 @@ import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -171,6 +172,13 @@ public class SubcontractServiceTest {
         subcontractedTaskDataDTO.orderElementDTO = orderElementDTO;
         subcontractedTaskDataDTO.externalCompanyNif = externalCompany.getNif();
 
+        String orderName = "Work description";
+        String orderCustomerReference = "client-reference-code";
+        BigDecimal orderBudget = new BigDecimal(1000).setScale(2);
+        subcontractedTaskDataDTO.workDescription = orderName;
+        subcontractedTaskDataDTO.subcontractedCode = orderCustomerReference;
+        subcontractedTaskDataDTO.subcontractPrice = orderBudget;
+
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = subcontractService
                 .subcontract(subcontractedTaskDataDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
@@ -181,6 +189,12 @@ public class SubcontractServiceTest {
         assertNotNull(order.getCode());
         assertNull(order.getExternalCode());
         assertThat(order.getWorkHours(), equalTo(0));
+        assertThat(order.getCustomer().getId(),
+                equalTo(externalCompany.getId()));
+        assertThat(order.getName(), equalTo(orderName));
+        assertThat(order.getCustomerReference(),
+                equalTo(orderCustomerReference));
+        assertThat(order.getTotalBudget(), equalTo(orderBudget));
 
         List<OrderElement> children = order.getChildren();
         assertThat(children.size(), equalTo(1));
