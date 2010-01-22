@@ -30,7 +30,6 @@ import org.zkoss.zul.TreeModel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public abstract class EntitiesTree<T extends ITreeNode<T>> {
 
@@ -106,8 +105,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
 
     private void addToTree(ITreeNode<T> parentNode, int position,
             ITreeNode<T> elementToAdd) {
-        List<T> children = Collections
-                        .singletonList(elementToAdd.getThis());
+        List<T> children = Collections.singletonList(elementToAdd.getThis());
         tree.add(parentNode.getThis(), position, children);
         addChildren(tree, children);
     }
@@ -161,8 +159,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         if (position == 0) {
             return;
         }
-        T destination = getChildren(parentOfSelected)
-                .get(position - 1);
+        T destination = getChildren(parentOfSelected).get(position - 1);
         move(nodeToIndent, destination, getChildren(destination).size());
     }
 
@@ -193,8 +190,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         move(toBeMoved, tree.getRoot(), 0);
     }
 
-    private void move(T toBeMoved, T destination,
-            int position) {
+    private void move(T toBeMoved, T destination, int position) {
         if (getChildren(destination).contains(toBeMoved)) {
             return;// it's already moved
         }
