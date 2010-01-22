@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 
 import org.navalplanner.business.orders.entities.HoursGroup;
-import org.navalplanner.ws.common.api.ResourceEnumDTO;
 
 /**
  * DTO for {@link HoursGroup} entity.

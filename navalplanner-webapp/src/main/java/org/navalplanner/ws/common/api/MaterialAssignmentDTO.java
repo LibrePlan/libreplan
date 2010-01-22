@@ -18,31 +18,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 
-import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
 
 /**
- * DTO for {@link IndirectCriterionRequirement} entity.
+ * DTO for {@link MaterialAssignment} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "indirect-criterion-requirement")
-public class IndirectCriterionRequirementDTO extends CriterionRequirementDTO {
+public class MaterialAssignmentDTO {
 
-    @XmlAttribute(name = "is-valid")
-    public boolean isValid = true;
+    @XmlAttribute(name = "material-code")
+    public String materialCode;
 
-    public IndirectCriterionRequirementDTO() {
+    @XmlAttribute
+    public Double units;
+
+    @XmlAttribute(name = "unit-price")
+    public BigDecimal unitPrice;
+
+    @XmlAttribute(name = "estimated-availability")
+    public Date estimatedAvailability;
+
+    public MaterialAssignmentDTO() {
     }
 
-    public IndirectCriterionRequirementDTO(String name, String type,
-            boolean isValid) {
-        super(name, type);
-        this.isValid = isValid;
+    public MaterialAssignmentDTO(String materialCode, Double units,
+            BigDecimal unitPrice, Date estimatedAvailability) {
+        this.materialCode = materialCode;
+        this.units = units;
+        this.unitPrice = unitPrice;
+        this.estimatedAvailability = estimatedAvailability;
     }
 
 }

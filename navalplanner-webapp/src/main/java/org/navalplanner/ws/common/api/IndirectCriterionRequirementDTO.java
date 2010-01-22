@@ -18,33 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 
 /**
- * DTO for {@link Label} entity.
+ * DTO for {@link IndirectCriterionRequirement} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "label")
-public class LabelDTO {
+@XmlRootElement(name = "indirect-criterion-requirement")
+public class IndirectCriterionRequirementDTO extends CriterionRequirementDTO {
 
-    @XmlAttribute
-    public String name;
+    @XmlAttribute(name = "is-valid")
+    public boolean isValid = true;
 
-    @XmlAttribute
-    public String type;
-
-    public LabelDTO() {
+    public IndirectCriterionRequirementDTO() {
     }
 
-    public LabelDTO(String name, String type) {
-        this.name = name;
-        this.type = type;
+    public IndirectCriterionRequirementDTO(String name, String type,
+            boolean isValid) {
+        super(name, type);
+        this.isValid = isValid;
     }
 
 }

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.impl;
+package org.navalplanner.ws.common.impl;
 
 import static org.navalplanner.web.I18nHelper._;
 
@@ -56,20 +56,19 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
+import org.navalplanner.ws.common.api.CriterionRequirementDTO;
+import org.navalplanner.ws.common.api.DirectCriterionRequirementDTO;
+import org.navalplanner.ws.common.api.HoursGroupDTO;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
+import org.navalplanner.ws.common.api.IndirectCriterionRequirementDTO;
+import org.navalplanner.ws.common.api.LabelDTO;
+import org.navalplanner.ws.common.api.MaterialAssignmentDTO;
+import org.navalplanner.ws.common.api.OrderDTO;
+import org.navalplanner.ws.common.api.OrderElementDTO;
+import org.navalplanner.ws.common.api.OrderLineDTO;
+import org.navalplanner.ws.common.api.OrderLineGroupDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
-import org.navalplanner.ws.common.impl.ResourceEnumConverter;
-import org.navalplanner.ws.orders.api.AdvanceMeasurementDTO;
-import org.navalplanner.ws.orders.api.CriterionRequirementDTO;
-import org.navalplanner.ws.orders.api.DirectCriterionRequirementDTO;
-import org.navalplanner.ws.orders.api.HoursGroupDTO;
-import org.navalplanner.ws.orders.api.IndirectCriterionRequirementDTO;
-import org.navalplanner.ws.orders.api.LabelDTO;
-import org.navalplanner.ws.orders.api.MaterialAssignmentDTO;
-import org.navalplanner.ws.orders.api.OrderDTO;
-import org.navalplanner.ws.orders.api.OrderElementDTO;
-import org.navalplanner.ws.orders.api.OrderLineDTO;
-import org.navalplanner.ws.orders.api.OrderLineGroupDTO;
 
 /**
  * Converter from/to {@link OrderElement} entities to/from DTOs.

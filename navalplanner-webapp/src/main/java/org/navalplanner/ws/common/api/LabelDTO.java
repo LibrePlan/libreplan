@@ -18,34 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
-
-import java.math.BigDecimal;
-import java.util.Date;
+package org.navalplanner.ws.common.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.labels.entities.Label;
 
 /**
- * DTO for {@link AdvanceMeasurement} entity.
+ * DTO for {@link Label} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class AdvanceMeasurementDTO {
+@XmlRootElement(name = "label")
+public class LabelDTO {
 
     @XmlAttribute
-    public Date date;
+    public String name;
 
     @XmlAttribute
-    public BigDecimal value;
+    public String type;
 
-    public AdvanceMeasurementDTO() {
+    public LabelDTO() {
     }
 
-    public AdvanceMeasurementDTO(Date date, BigDecimal value) {
-        this.date = date;
-        this.value = value;
+    public LabelDTO(String name, String type) {
+        this.name = name;
+        this.type = type;
     }
 
 }

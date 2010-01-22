@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
 
 import java.util.Date;
 import java.util.HashSet;

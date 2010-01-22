@@ -18,47 +18,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderLine;
 
 /**
- * DTO for {@link Order} entity.
+ * DTO for {@link OrderLine} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "order")
-public class OrderDTO extends OrderLineGroupDTO {
+@XmlRootElement(name = "order-line")
+public class OrderLineDTO extends OrderElementDTO {
 
-    @XmlAttribute(name = "dependencies-constraints-have-priority")
-    public Boolean dependenciesConstraintsHavePriority;
+    @XmlElementWrapper(name = "hours-groups")
+    @XmlElement(name = "hours-group")
+    public Set<HoursGroupDTO> hoursGroups = new HashSet<HoursGroupDTO>();
 
-    @XmlAttribute(name = "calendar-name")
-    public String calendarName;
-
-    public OrderDTO() {
+    public OrderLineDTO() {
         super();
     }
 
-    public OrderDTO(String name, String code, Date initDate, Date deadline,
+    public OrderLineDTO(String name, String code, Date initDate, Date deadline,
             String description, Set<LabelDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
             Set<AdvanceMeasurementDTO> advanceMeasurements,
             Set<CriterionRequirementDTO> criterionRequirements,
-            List<OrderElementDTO> children,
-            Boolean dependenciesConstraintsHavePriority, String calendarName) {
+            Set<HoursGroupDTO> hoursGroups) {
         super(name, code, initDate, deadline, description, labels,
-                materialAssignments, advanceMeasurements,
-                criterionRequirements, children);
-        this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
-        this.calendarName = calendarName;
+                materialAssignments, advanceMeasurements, criterionRequirements);
+        this.hoursGroups = hoursGroups;
     }
 
 }

@@ -18,43 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
-import org.navalplanner.business.materials.entities.MaterialAssignment;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 
 /**
- * DTO for {@link MaterialAssignment} entity.
+ * DTO for {@link DirectCriterionRequirement} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class MaterialAssignmentDTO {
+@XmlRootElement(name = "direct-criterion-requirement")
+public class DirectCriterionRequirementDTO extends CriterionRequirementDTO {
 
-    @XmlAttribute(name = "material-code")
-    public String materialCode;
-
-    @XmlAttribute
-    public Double units;
-
-    @XmlAttribute(name = "unit-price")
-    public BigDecimal unitPrice;
-
-    @XmlAttribute(name = "estimated-availability")
-    public Date estimatedAvailability;
-
-    public MaterialAssignmentDTO() {
+    public DirectCriterionRequirementDTO() {
     }
 
-    public MaterialAssignmentDTO(String materialCode, Double units,
-            BigDecimal unitPrice, Date estimatedAvailability) {
-        this.materialCode = materialCode;
-        this.units = units;
-        this.unitPrice = unitPrice;
-        this.estimatedAvailability = estimatedAvailability;
+    public DirectCriterionRequirementDTO(String name, String type) {
+        super(name, type);
     }
 
 }

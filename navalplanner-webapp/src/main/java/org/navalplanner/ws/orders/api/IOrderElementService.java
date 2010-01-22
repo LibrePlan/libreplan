@@ -24,6 +24,8 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.api.OrderDTO;
+import org.navalplanner.ws.common.api.OrderElementDTO;
 
 /**
  * Service for managing {@link OrderElement} entities.

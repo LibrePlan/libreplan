@@ -18,25 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
 
 /**
- * DTO for {@link DirectCriterionRequirement} entity.
+ * DTO for {@link CriterionRequirement} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "direct-criterion-requirement")
-public class DirectCriterionRequirementDTO extends CriterionRequirementDTO {
+@XmlRootElement(name = "criterion-requirement")
+public class CriterionRequirementDTO {
 
-    public DirectCriterionRequirementDTO() {
+    @XmlAttribute
+    public String name;
+
+    @XmlAttribute
+    public String type;
+
+    public CriterionRequirementDTO() {
     }
 
-    public DirectCriterionRequirementDTO(String name, String type) {
-        super(name, type);
+    public CriterionRequirementDTO(String name, String type) {
+        this.name = name;
+        this.type = type;
     }
 
 }

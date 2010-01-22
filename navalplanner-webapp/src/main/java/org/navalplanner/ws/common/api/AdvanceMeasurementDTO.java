@@ -18,33 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.orders.api;
+package org.navalplanner.ws.common.api;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 
-import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 
 /**
- * DTO for {@link CriterionRequirement} entity.
+ * DTO for {@link AdvanceMeasurement} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "criterion-requirement")
-public class CriterionRequirementDTO {
+public class AdvanceMeasurementDTO {
 
     @XmlAttribute
-    public String name;
+    public Date date;
 
     @XmlAttribute
-    public String type;
+    public BigDecimal value;
 
-    public CriterionRequirementDTO() {
+    public AdvanceMeasurementDTO() {
     }
 
-    public CriterionRequirementDTO(String name, String type) {
-        this.name = name;
-        this.type = type;
+    public AdvanceMeasurementDTO(Date date, BigDecimal value) {
+        this.date = date;
+        this.value = value;
     }
 
 }
