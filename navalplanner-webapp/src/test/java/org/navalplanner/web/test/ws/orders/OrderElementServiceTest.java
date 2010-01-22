@@ -245,36 +245,8 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: code, name. Check constraints:
-        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
-        assertThat(constraintViolations.size(), equalTo(3));
-
-        assertThat(orderDAO.getOrders().size(), equalTo(previous));
-    }
-
-    @Test
-    public void orderWithOrderLineWithoutHoursGroup() {
-        int previous = orderDAO.getOrders().size();
-
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
-        orderDTO.initDate = new Date();
-
-        OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.name = "Order line";
-        orderLineDTO.code = "order-line-code";
-        orderDTO.children.add(orderLineDTO);
-
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrder(orderDTO).instanceConstraintViolationsList;
-        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
-
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Check constraints:
-        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
-        assertThat(constraintViolations.size(), equalTo(1));
+        // Mandatory fields: code, name.
+        assertThat(constraintViolations.size(), equalTo(2));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
