@@ -237,6 +237,16 @@ public abstract class OrderElement extends BaseEntity implements
         schedulingStateType = type;
     }
 
+    public void initializeTemplate(OrderElementTemplate template) {
+        if (!isNewObject()) {
+            throw new IllegalStateException();
+        }
+        if (this.template != null) {
+            throw new IllegalStateException("already initialized");
+        }
+        this.template = template;
+    }
+
     public boolean isSchedulingPoint() {
         return getSchedulingState().getType() == Type.SCHEDULING_POINT;
     }
