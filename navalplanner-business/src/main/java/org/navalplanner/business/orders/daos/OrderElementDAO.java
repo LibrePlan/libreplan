@@ -32,6 +32,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -61,6 +62,9 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -103,7 +107,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     @Override
-    public OrderElement loadOrderAvoidingProxyFor(
+    public Order loadOrderAvoidingProxyFor(
             final OrderElement orderElement) {
         OrderElement order = transactionService
                 .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
@@ -119,7 +123,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
                 return result;
             }
         });
-        return (OrderElement) findExistingEntity(order.getId());
+        return orderDAO.findExistingEntity(order.getId());
     }
 
     @Override

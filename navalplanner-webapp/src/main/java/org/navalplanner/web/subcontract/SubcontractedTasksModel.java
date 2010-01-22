@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -181,9 +182,13 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
     private OrderElementDTO getOrderElement(
             SubcontractedTaskData subcontractedTaskData) {
-        OrderElement orderElement = orderElementDAO
-                .loadOrderAvoidingProxyFor(subcontractedTaskData.getTask()
-                        .getOrderElement());
+        OrderElement orderElement;
+        try {
+            orderElement = orderElementDAO.find(subcontractedTaskData.getTask()
+                    .getOrderElement().getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         if (subcontractedTaskData.isNodeWithoutChildrenExported()) {
             orderElement = orderElement.calculateOrderLineForSubcontract();

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -64,7 +65,7 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
      */
     public OrderElement findParent(OrderElement orderElement);
 
-    public OrderElement loadOrderAvoidingProxyFor(OrderElement orderElement);
+    public Order loadOrderAvoidingProxyFor(OrderElement orderElement);
 
     /**
      * Returns the number of assigned hours for an {@link OrderElement}
