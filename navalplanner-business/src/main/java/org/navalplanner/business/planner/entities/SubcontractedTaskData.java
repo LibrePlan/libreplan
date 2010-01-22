@@ -82,6 +82,8 @@ public class SubcontractedTaskData extends BaseEntity {
     private Boolean materialAssignmentsExported;
     private Boolean hoursGroupsExported;
 
+    private SubcontractState state = SubcontractState.PENDING;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -226,6 +228,15 @@ public class SubcontractedTaskData extends BaseEntity {
 
     private boolean firstLevelValidationsPassed() {
         return (externalCompany != null) && (subcontratationDate != null);
+    }
+
+    public void setState(SubcontractState state) {
+        this.state = state;
+    }
+
+    @NotNull(message = "state not specified")
+    public SubcontractState getState() {
+        return state;
     }
 
 }

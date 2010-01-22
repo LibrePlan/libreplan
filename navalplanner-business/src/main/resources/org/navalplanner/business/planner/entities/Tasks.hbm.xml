@@ -112,6 +112,12 @@
         <property name="materialAssignmentsExported" />
         <property name="hoursGroupsExported" />
 
+        <property name="state" >
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.planner.entities.SubcontractState</param>
+            </type>
+        </property>
+
     </class>
 
 </hibernate-mapping>
