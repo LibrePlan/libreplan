@@ -27,8 +27,9 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.i18n.I18nHelper;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.SchedulingState;
+import org.navalplanner.business.orders.entities.TreeNodeOnListWithSchedulingState;
 import org.navalplanner.business.trees.ITreeParentNode;
-import org.navalplanner.business.trees.TreeNodeOnList;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -38,18 +39,10 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         ITreeParentNode<OrderElementTemplate> {
 
     private final class ChildrenManipulator extends
-            TreeNodeOnList<OrderElementTemplate> {
+            TreeNodeOnListWithSchedulingState<OrderElementTemplate> {
 
         ChildrenManipulator(List<OrderElementTemplate> templates) {
             super(templates);
-        }
-
-        @Override
-        protected void onChildAdded(OrderElementTemplate newChild) {
-        }
-
-        @Override
-        protected void onChildRemoved(OrderElementTemplate previousChild) {
         }
 
         @Override
@@ -75,6 +68,17 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         @Override
         public OrderElementTemplate toLeaf() {
             return OrderLineGroupTemplate.this.toLeaf();
+        }
+
+        @Override
+        protected SchedulingState getSchedulingStateFrom(
+                OrderElementTemplate node) {
+            return node.getSchedulingState();
+        }
+
+        @Override
+        protected void updateWithNewChild(SchedulingState newChildState) {
+            getThis().getSchedulingState().add(newChildState);
         }
 
     }
