@@ -56,6 +56,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
+import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.daos.TaskElementDAO;
@@ -113,6 +114,9 @@ public class TaskElementDAOTest {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
     private HoursGroup associatedHoursGroup;
 
@@ -447,16 +451,21 @@ public class TaskElementDAOTest {
         Task task = createValidTask();
 
         SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
-                .create();
+                .create(task);
         subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);
         taskElementDAO.save(task);
         taskElementDAO.flush();
         sessionFactory.getCurrentSession().evict(task);
+        sessionFactory.getCurrentSession().evict(subcontractedTaskData);
 
         Task taskFound = (Task) taskElementDAO.find(task.getId());
         assertNotNull(taskFound.getSubcontractedTaskData());
+
+        SubcontractedTaskData subcontractedTaskDataFound = subcontractedTaskDataDAO
+                .find(subcontractedTaskData.getId());
+        assertNotNull(subcontractedTaskDataFound.getTask());
     }
 
 

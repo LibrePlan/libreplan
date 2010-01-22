@@ -35,8 +35,8 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
  */
 public class SubcontractedTaskData extends BaseEntity {
 
-    public static SubcontractedTaskData create() {
-        SubcontractedTaskData subcontractedTaskData = new SubcontractedTaskData();
+    public static SubcontractedTaskData create(Task task) {
+        SubcontractedTaskData subcontractedTaskData = new SubcontractedTaskData(task);
         subcontractedTaskData.subcontratationDate = new Date();
         return create(subcontractedTaskData);
     }
@@ -48,6 +48,7 @@ public class SubcontractedTaskData extends BaseEntity {
         }
 
         SubcontractedTaskData result = new SubcontractedTaskData();
+        result.task = subcontractedTaskData.getTask();
         result.externalCompany = subcontractedTaskData.externalCompany;
         result.subcontratationDate = subcontractedTaskData.subcontratationDate;
         result.subcontractCommunicationDate = subcontractedTaskData.subcontractCommunicationDate;
@@ -61,6 +62,8 @@ public class SubcontractedTaskData extends BaseEntity {
 
         return create(result);
     }
+
+    private Task task;
 
     private ExternalCompany externalCompany;
 
@@ -83,6 +86,15 @@ public class SubcontractedTaskData extends BaseEntity {
      * Constructor for hibernate. Do not use!
      */
     public SubcontractedTaskData() {
+    }
+
+    private SubcontractedTaskData(Task task) {
+        this.task = task;
+    }
+
+    @NotNull(message = "task not specified")
+    public Task getTask() {
+        return task;
     }
 
     @NotNull(message = "external company not specified")

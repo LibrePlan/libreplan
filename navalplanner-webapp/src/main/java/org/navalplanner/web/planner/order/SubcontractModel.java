@@ -76,7 +76,7 @@ public class SubcontractModel implements ISubcontractModel {
         this.currentSubcontractedTaskData = subcontractedTaskData;
 
         if (subcontractedTaskData == null) {
-            this.subcontractedTaskData = SubcontractedTaskData.create();
+            this.subcontractedTaskData = SubcontractedTaskData.create(task);
         } else {
             this.subcontractedTaskData = SubcontractedTaskData
                     .createFrom(subcontractedTaskData);
