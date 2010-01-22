@@ -11,12 +11,14 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -45,6 +47,9 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     @Override
     public List<OrderAuthorizationType> addProfileOrderAuthorization(
@@ -128,29 +133,48 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initSetOrder(Order order) {
+    public void initCreate(Order order) {
         this.order = order;
+        initializeLists();
+        //add write authorization for current user
+        try {
+            User user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+            UserOrderAuthorization orderAuthorization =
+                createUserOrderAuthorization(order, user);
+            orderAuthorization.setAuthorizationType(OrderAuthorizationType.WRITE_AUTHORIZATION);
+            userOrderAuthorizationList.add(orderAuthorization);
+        }
+        catch(InstanceNotFoundException e) {
+            //this case shouldn't happen, because it would mean that there isn't a logged user
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(Order order) {
+        this.order = order;
+        initializeLists();
+        //Retrieve the OrderAuthorizations associated with this order
+        for(OrderAuthorization authorization : dao.listByOrder(order)) {
+            forceLoadEntities(authorization);
+            if(authorization instanceof UserOrderAuthorization) {
+                userOrderAuthorizationList.add(
+                        (UserOrderAuthorization) authorization);
+            }
+            if(authorization instanceof ProfileOrderAuthorization) {
+                profileOrderAuthorizationList.add(
+                        (ProfileOrderAuthorization) authorization);
+            }
+        }
+    }
+
+    private void initializeLists() {
         profileOrderAuthorizationList =
             new ArrayList<ProfileOrderAuthorization>();
         userOrderAuthorizationList =
             new ArrayList<UserOrderAuthorization>();
         orderAuthorizationRemovalList =
             new ArrayList<OrderAuthorization>();
-
-        if(!order.isNewObject()) {
-            //Retrieve the OrderAuthorizations associated with this order
-            for(OrderAuthorization authorization : dao.listByOrder(order)) {
-                forceLoadEntities(authorization);
-                if(authorization instanceof UserOrderAuthorization) {
-                    userOrderAuthorizationList.add(
-                            (UserOrderAuthorization) authorization);
-                }
-                if(authorization instanceof ProfileOrderAuthorization) {
-                    profileOrderAuthorizationList.add(
-                            (ProfileOrderAuthorization) authorization);
-                }
-            }
-        }
     }
 
     private void forceLoadEntities(OrderAuthorization authorization) {

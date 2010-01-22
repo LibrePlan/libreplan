@@ -32,6 +32,7 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
@@ -60,8 +61,14 @@ public class OrderAuthorizationController extends GenericForwardComposer{
         this.window = comp;
     }
 
-    public void setOrder(Order order) {
-        orderAuthorizationModel.initSetOrder(order);
+    public void initCreate(Order order) {
+        orderAuthorizationModel.initCreate(order);
+        checkCreationPermissions();
+        Util.reloadBindings(window);
+    }
+
+    public void initEdit(Order order) {
+        orderAuthorizationModel.initEdit(order);
         Util.reloadBindings(window);
     }
 
@@ -126,5 +133,20 @@ public class OrderAuthorizationController extends GenericForwardComposer{
 
     public void setMessagesForUserComponent(IMessagesForUser component) {
         messagesForUser = component;
+    }
+
+    /**
+     * Checks the creation permissions of the current user and enables/disables
+     * the save buttons accordingly.
+     */
+    private void checkCreationPermissions() {
+        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            ((Button)window.getFellowIfAny("save")).setDisabled(false);
+            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(false);
+        }
+        else {
+            ((Button)window.getFellowIfAny("save")).setDisabled(true);
+            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(true);
+        }
     }
 }

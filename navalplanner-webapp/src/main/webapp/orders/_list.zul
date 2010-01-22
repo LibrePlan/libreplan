@@ -35,8 +35,8 @@
             <column label="${i18n:_('Operations')}" align="center"/>
         </columns>
     </grid>
-    <button id="show_create_form" label="${i18n:_('Create')}"
+    <button id="show_create_form" label="${i18n:_('Create')}" disabled="true"
          onClick="controller.goToCreateForm()" sclass="create-button global-action" />
     <button id="create_from_template_button" label="${i18n:_('Create From Template')}" onClick="controller.createOrderFromTemplate()"
-        sclass="global-action"/>
+        disabled="true" sclass="global-action"/>
 </window>

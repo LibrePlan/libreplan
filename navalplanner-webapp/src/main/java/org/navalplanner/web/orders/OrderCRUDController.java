@@ -42,6 +42,8 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -57,6 +59,7 @@ import org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponen
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
 import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
+import org.navalplanner.web.security.SecurityUtils;
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.navalplanner.web.tree.TreeComponent;
 import org.navalplanner.web.users.OrderAuthorizationController;
@@ -148,7 +151,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                         orderModel.prepareCreationFrom(template);
                         showEditWindow(_("Create order from Template"));
                         orderAuthorizationController
-                                .setOrder((Order) orderModel.getOrder());
+                                .initCreate((Order) orderModel.getOrder());
                     }
                 });
     }
@@ -178,6 +181,11 @@ public class OrderCRUDController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
+
+        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            ((Button)listWindow.getFellowIfAny("show_create_form")).setDisabled(false);
+            ((Button)listWindow.getFellowIfAny("create_from_template_button")).setDisabled(false);
+        }
     }
 
     private void addEditWindowIfNeeded() {
@@ -333,7 +341,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (couldSave) {
             selectTab(getCurrentTab().getId());
             orderModel.initEdit((Order) orderModel.getOrder());
-            orderAuthorizationController.setOrder((Order) orderModel.getOrder());
+            orderAuthorizationController.initEdit((Order) orderModel.getOrder());
             initializeTabs();
             showWindow(editWindow);
         }
@@ -463,7 +471,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void initEdit(Order order) {
         orderModel.initEdit(order);
         addEditWindowIfNeeded();
-        orderAuthorizationController.setOrder(order);
+        orderAuthorizationController.initEdit(order);
         showEditWindow(_("Edit order"));
     }
 
@@ -497,7 +505,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         try {
             orderModel.prepareForCreate();
             showEditWindow(_("Create order"));
-            orderAuthorizationController.setOrder((Order) orderModel.getOrder());
+            orderAuthorizationController.initCreate((Order) orderModel.getOrder());
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }

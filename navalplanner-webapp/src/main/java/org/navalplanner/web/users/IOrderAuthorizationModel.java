@@ -17,7 +17,9 @@ import org.navalplanner.business.users.entities.UserOrderAuthorization;
  */
 public interface IOrderAuthorizationModel {
 
-    void initSetOrder(Order order);
+    void initCreate(Order order);
+
+    void initEdit(Order order);
 
     void confirmSave();
 
