@@ -222,6 +222,13 @@ public class OrderModel implements IOrderModel {
         forceLoadAdvanceAssignmentsAndMeasurements(this.order);
         forceLoadCriterionRequirements(this.order);
         forceLoadCalendar(this.getCalendar());
+        forceLoadCustomer(this.order.getCustomer());
+    }
+
+    private void forceLoadCustomer(ExternalCompany customer) {
+        if (customer != null) {
+            customer.getName();
+        }
     }
 
     private void loadNeededDataForConversation() {
