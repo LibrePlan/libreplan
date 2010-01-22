@@ -53,7 +53,6 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -378,37 +377,7 @@ public class OrderModel implements IOrderModel {
         OrderSequence orderSequence = orderSequenceDAO.getActiveOrderSequence();
         int numberOfDigits = orderSequence.getNumberOfDigits();
 
-        for (OrderElement orderElement : order.getAllOrderElements()) {
-            if ((orderElement.getCode() == null)
-                    || (orderElement.getCode().isEmpty())
-                    || (!orderElement.getCode().startsWith(order.getCode()))) {
-                order.incrementLastOrderElementSequenceCode();
-                String orderElementCode = OrderSequence
-                        .formatValue(numberOfDigits, order
-                                .getLastOrderElementSequenceCode());
-                orderElement.setCode(order.getCode()
-                        + OrderSequence.CODE_SEPARATOR + orderElementCode);
-            }
-
-            if (orderElement instanceof OrderLine) {
-                for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-                    if ((hoursGroup.getCode() == null)
-                            || (hoursGroup.getCode().isEmpty())
-                            || (!hoursGroup.getCode().startsWith(
-                                    orderElement.getCode()))) {
-                        ((OrderLine) orderElement)
-                                .incrementLastHoursGroupSequenceCode();
-                        String hoursGroupCode = OrderSequence.formatValue(
-                                numberOfDigits, ((OrderLine) orderElement)
-                                        .getLastHoursGroupSequenceCode());
-                        hoursGroup
-                                .setCode(orderElement.getCode()
-                                        + OrderSequence.CODE_SEPARATOR
-                                        + hoursGroupCode);
-                    }
-                }
-            }
-        }
+        order.generateOrderElementCodes(numberOfDigits);
     }
 
     private void reattachCurrentTaskSources() {

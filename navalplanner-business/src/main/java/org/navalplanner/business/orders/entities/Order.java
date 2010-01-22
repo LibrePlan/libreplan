@@ -29,6 +29,7 @@ import java.util.Set;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.entities.OrderSequence;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
@@ -323,6 +324,39 @@ public class Order extends OrderLineGroup {
     @Override
     public OrderTemplate createTemplate() {
         return OrderTemplate.create(this);
+    }
+
+    public void generateOrderElementCodes(int numberOfDigits) {
+        for (OrderElement orderElement : this.getAllOrderElements()) {
+            if ((orderElement.getCode() == null)
+                    || (orderElement.getCode().isEmpty())
+                    || (!orderElement.getCode().startsWith(this.getCode()))) {
+                this.incrementLastOrderElementSequenceCode();
+                String orderElementCode = OrderSequence.formatValue(
+                        numberOfDigits, this.getLastOrderElementSequenceCode());
+                orderElement.setCode(this.getCode()
+                        + OrderSequence.CODE_SEPARATOR + orderElementCode);
+            }
+
+            if (orderElement instanceof OrderLine) {
+                for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+                    if ((hoursGroup.getCode() == null)
+                            || (hoursGroup.getCode().isEmpty())
+                            || (!hoursGroup.getCode().startsWith(
+                                    orderElement.getCode()))) {
+                        ((OrderLine) orderElement)
+                                .incrementLastHoursGroupSequenceCode();
+                        String hoursGroupCode = OrderSequence.formatValue(
+                                numberOfDigits, ((OrderLine) orderElement)
+                                        .getLastHoursGroupSequenceCode());
+                        hoursGroup
+                                .setCode(orderElement.getCode()
+                                        + OrderSequence.CODE_SEPARATOR
+                                        + hoursGroupCode);
+                    }
+                }
+            }
+        }
     }
 
 }

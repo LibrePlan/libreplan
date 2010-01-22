@@ -941,4 +941,13 @@ public abstract class OrderElement extends BaseEntity implements
         return externalCode;
     }
 
+    public void moveCodeToExternalCode() {
+        setExternalCode(getCode());
+        setCode(null);
+
+        for (OrderElement child : getChildren()) {
+            child.moveCodeToExternalCode();
+        }
+    }
+
 }

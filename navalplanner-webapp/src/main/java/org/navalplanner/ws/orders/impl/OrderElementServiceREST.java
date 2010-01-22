@@ -87,8 +87,7 @@ public class OrderElementServiceREST implements IOrderElementService {
             OrderElement orderElement = OrderElementConverter.toEntity(
                     orderDTO, ConfigurationOrderElementConverter
                             .all());
-            // FIXME change all() for noAdvanceMeasurements() when
-            // subcontractors service exists
+
             orderElement.validate();
             orderElementDAO.save(orderElement);
         } catch (ValidationException e) {
@@ -125,8 +124,6 @@ public class OrderElementServiceREST implements IOrderElementService {
         try {
             OrderElementConverter.update((Order) orderElement, orderDTO,
                     ConfigurationOrderElementConverter.all());
-            // FIXME change all() for noAdvanceMeasurements() when
-            // subcontractors service exists
             orderElement.validate();
             orderElementDAO.save(orderElement);
         } catch (ValidationException e) {

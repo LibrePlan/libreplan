@@ -324,14 +324,18 @@ public final class OrderElementConverter {
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
-            orderElement = OrderLine.create();
+            if ((configuration.isHoursGroups())
+                    && (!((OrderLineDTO) orderElementDTO).hoursGroups.isEmpty())) {
+                orderElement = OrderLine.create();
 
-            if (configuration.isHoursGroups()) {
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
                     HoursGroup hoursGroup = toEntity(hoursGroupDTO,
                             configuration);
                     ((OrderLine) orderElement).addHoursGroup(hoursGroup);
                 }
+            } else {
+                orderElement = OrderLine
+                        .createOrderLineWithUnfixedPercentage(0);
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
             List<OrderElement> children = new ArrayList<OrderElement>();
