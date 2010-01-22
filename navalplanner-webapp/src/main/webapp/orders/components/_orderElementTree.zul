@@ -35,6 +35,9 @@
             <button label="${i18n:_('Create Template')}"
                 onClick="treeController.createTemplate();"
                 visible="${treeComponent.createTemplateEnabled}"/>
+            <button label="${i18n:_('Create From Template')}"
+                onClick="treeController.createFromTemplate();"
+                visible="${treeComponent.createFromTemplateEnabled}"/>
         </hbox>
     </vbox>
     <vbox>

@@ -143,8 +143,11 @@ public abstract class TreeComponent extends HtmlMacroComponent {
         return true;
     }
 
+    public boolean isCreateFromTemplateEnabled() {
+        return false;
+    }
+
     public String getRemoveElementLabel() {
         return _("Delete order element");
     }
-
 }
