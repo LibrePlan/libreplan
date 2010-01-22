@@ -21,6 +21,8 @@ package org.navalplanner.web.subcontract;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -108,6 +110,14 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             }
 
             return object.toString();
+        }
+
+        private String toString(Date date) {
+            if (date == null) {
+                return "";
+            }
+
+            return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
         }
 
         private void appendLabel(Row row, String label) {
