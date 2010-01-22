@@ -67,7 +67,8 @@
                         </row>
                          <row>
                             <label value="${i18n:_('External code')}" />
-                            <textbox value="@{controller.order.externalCode}" width="500px"/>
+                            <textbox value="@{controller.order.externalCode}"
+                                width="250px" disabled="true"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Starting date')}" />
