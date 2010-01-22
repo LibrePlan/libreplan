@@ -194,8 +194,18 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
             orderElement = orderElement.calculateOrderLineForSubcontract();
         }
 
-        return OrderElementConverter.toDTO(orderElement,
+        OrderElementDTO orderElementDTO = OrderElementConverter.toDTO(
+                orderElement,
                 getConfiguration(subcontractedTaskData));
+        overrideDateInformationForRootNode(orderElementDTO,
+                subcontractedTaskData.getTask());
+        return orderElementDTO;
+    }
+
+    private void overrideDateInformationForRootNode(
+            OrderElementDTO orderElementDTO, Task task) {
+        orderElementDTO.initDate = task.getStartDate();
+        orderElementDTO.deadline = task.getEndDate();
     }
 
     private ConfigurationOrderElementConverter getConfiguration(
