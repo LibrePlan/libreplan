@@ -22,6 +22,7 @@ package org.navalplanner.web.reports;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -95,12 +96,14 @@ public class WorkingArrangementsPerOrderModel implements
             new ArrayList<WorkingArrangementPerOrderDTO>();
 
         final List<Task> tasks = orderDAO.getTasksByOrder(order);
+        final Date deadLineOrder = order.getDeadline();
         for (Task each : tasks) {
             final Task task = (Task) each;
             // If taskStatus is ALL, add task and calculate its real status
             if (TaskStatusEnum.ALL.equals(taskStatus)) {
                 workingArrangementPerOrderList
-                        .addAll(createWorkingArrangementPerOrderDTOs(task,
+                        .addAll(createWorkingArrangementPerOrderDTOs(
+                                deadLineOrder, task,
                                 calculateTaskStatus(task), showDependencies));
                 continue;
             }
@@ -108,8 +111,9 @@ public class WorkingArrangementsPerOrderModel implements
             // Only add task if matches selected taskStatus
             if (matchTaskStatus(task, taskStatus)) {
                 workingArrangementPerOrderList
-                        .addAll(createWorkingArrangementPerOrderDTOs(task,
-                                taskStatus, showDependencies));
+                        .addAll(createWorkingArrangementPerOrderDTOs(
+                                deadLineOrder, task, taskStatus,
+                                showDependencies));
             }
         }
         return new JRBeanCollectionDataSource(workingArrangementPerOrderList);
@@ -126,6 +130,7 @@ public class WorkingArrangementsPerOrderModel implements
      */
     @Transactional(readOnly = true)
     private List<WorkingArrangementPerOrderDTO> createWorkingArrangementPerOrderDTOs(
+            Date deadLineOrder,
             Task task, TaskStatusEnum taskStatus, boolean showDependencies) {
 
         List<WorkingArrangementPerOrderDTO> result = new ArrayList<WorkingArrangementPerOrderDTO>();
@@ -133,8 +138,8 @@ public class WorkingArrangementsPerOrderModel implements
         // Add current task
         final Set<Dependency> dependencies = task
                 .getDependenciesWithThisDestination();
-        result.add(new WorkingArrangementPerOrderDTO(task, taskStatus,
-                showDependencies && !dependencies.isEmpty()));
+        result.add(new WorkingArrangementPerOrderDTO(deadLineOrder, task,
+                taskStatus, showDependencies && !dependencies.isEmpty()));
 
         // Add dependencies
         if (showDependencies) {

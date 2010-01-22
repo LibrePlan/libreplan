@@ -74,19 +74,20 @@ public class WorkingArrangementPerOrderDTO {
         workReportLineDAO = Registry.getWorkReportLineDAO();
     }
 
-    public WorkingArrangementPerOrderDTO(Task task, TaskStatusEnum taskStatus,
+    public WorkingArrangementPerOrderDTO(Date deadLineOrder, Task task,
+            TaskStatusEnum taskStatus,
             Boolean hasDependencies) {
         this();
 
-        final OrderElement order = task.getOrderElement();
-        this.orderCode = order.getCode();
-        this.orderName = order.getName();
+        final OrderElement orderElement = task.getOrderElement();
+        this.orderCode = orderElement.getCode();
+        this.orderName = orderElement.getName();
         this.estimatedStartingDate = task.getStartDate();
         this.estimatedEndingDate = task.getEndDate();
 
         // Calculate date for first and last work reports
         final List<WorkReportLine> workReportLines = workReportLineDAO
-                .findByOrderElementAndChildren(order, true);
+                .findByOrderElementAndChildren(orderElement, true);
         if (!workReportLines.isEmpty()) {
             final WorkReportLine firstWorkReportLine = workReportLines.get(0);
             this.firstWorkReportDate = firstWorkReportLine.getDate();
@@ -96,17 +97,23 @@ public class WorkingArrangementPerOrderDTO {
             this.lastWorkReportDate = lastWorkReportLine.getDate();
         }
 
-        this.deadline = order.getDeadline();
-        this.measuredProgress = getAdvanceSpread(order);
+        if (orderElement.getDeadline() == null) {
+            this.deadline = deadLineOrder;
+        } else {
+            this.deadline = orderElement.getDeadline();
+        }
+
+        this.measuredProgress = getAdvanceSpread(orderElement);
         this.status = (taskStatus != null) ? taskStatus.toString() : "";
         this.overrun = calculateOverrun();
         this.hasDependencies = hasDependencies;
     }
 
-    public WorkingArrangementPerOrderDTO(Task task, TaskStatusEnum taskStatus,
+    public WorkingArrangementPerOrderDTO(Task task,
+            TaskStatusEnum taskStatus,
             DependencyWorkingArrangementDTO dependencyDTO) {
 
-        this(task, taskStatus, true);
+        this(null, task, taskStatus, true);
 
         this.dependencyName = dependencyDTO.getName();
         this.dependencyCode = dependencyDTO.getCode();
