@@ -51,6 +51,8 @@
 
         <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="orderElement"/>
 
+        <many-to-one name="template" access="field" cascade="none" class="org.navalplanner.business.templates.entities.OrderElementTemplate"/>
+
         <property name="externalCode" access="field" />
 
         <joined-subclass name="OrderLineGroup">

@@ -100,6 +100,12 @@ public abstract class OrderElement extends BaseEntity implements
 
     private TaskSource taskSource;
 
+    private OrderElementTemplate template;
+
+    public OrderElementTemplate getTemplate() {
+        return template;
+    }
+
     private String externalCode;
 
     public SchedulingState getSchedulingState() {
