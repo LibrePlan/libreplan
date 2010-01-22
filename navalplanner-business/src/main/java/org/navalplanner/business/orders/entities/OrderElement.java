@@ -100,6 +100,8 @@ public abstract class OrderElement extends BaseEntity implements
 
     private TaskSource taskSource;
 
+    private String externalCode;
+
     public SchedulingState getSchedulingState() {
         if (schedulingState == null) {
             schedulingState = SchedulingState.createSchedulingState(
@@ -929,6 +931,14 @@ public abstract class OrderElement extends BaseEntity implements
     @Override
     public OrderElement getThis() {
         return this;
+    }
+
+    public void setExternalCode(String externalCode) {
+        this.externalCode = externalCode;
+    }
+
+    public String getExternalCode() {
+        return externalCode;
     }
 
 }

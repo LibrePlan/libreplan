@@ -51,6 +51,8 @@
 
         <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="orderElement"/>
 
+        <property name="externalCode" access="field" />
+
         <joined-subclass name="OrderLineGroup">
             <key column="ORDERELEMENTID"></key>
             <list name="children" access="field" cascade="all">
