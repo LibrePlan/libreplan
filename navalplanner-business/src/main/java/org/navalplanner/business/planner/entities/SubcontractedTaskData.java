@@ -239,4 +239,9 @@ public class SubcontractedTaskData extends BaseEntity {
         return state;
     }
 
+    public boolean isSendable() {
+        return state.isSendable()
+                && externalCompany.getInteractsWithApplications();
+    }
+
 }

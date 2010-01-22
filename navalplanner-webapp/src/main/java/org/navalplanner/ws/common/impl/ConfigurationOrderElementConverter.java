@@ -28,6 +28,14 @@ package org.navalplanner.ws.common.impl;
  */
 public class ConfigurationOrderElementConverter {
 
+    public static ConfigurationOrderElementConverter create(boolean labels,
+            boolean materialAssignments, boolean advanceMeasurements,
+            boolean hoursGroups, boolean criterionRequirements) {
+        return new ConfigurationOrderElementConverter(labels,
+                materialAssignments, advanceMeasurements, hoursGroups,
+                criterionRequirements);
+    }
+
     public static ConfigurationOrderElementConverter all() {
         return new ConfigurationOrderElementConverter(true, true, true, true,
                 true);

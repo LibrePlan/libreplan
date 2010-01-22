@@ -17,24 +17,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.web.subcontract;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
+import org.navalplanner.web.subcontract.exceptions.ConnectionProblemsException;
+import org.navalplanner.web.subcontract.exceptions.UnrecoverableErrorServiceException;
 
 /**
- * DAO interface for the {@link SubcontractedTaskDataDAO} entity.
+ * Contract for {@link SubcontractedTasksModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ISubcontractedTaskDataDAO extends
-        IGenericDAO<SubcontractedTaskData, Long> {
+public interface ISubcontractedTasksModel {
 
-    boolean existsInAnohterTransaction(Long id);
+    List<SubcontractedTaskData> getSubcontractedTasks();
 
-    List<SubcontractedTaskData> getAll();
+    String getOrderCode(SubcontractedTaskData subcontractedTaskData);
+
+    void sendToSubcontractor(SubcontractedTaskData subcontractedTaskData)
+            throws ValidationException, ConnectionProblemsException,
+            UnrecoverableErrorServiceException;
 
 }

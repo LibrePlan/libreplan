@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
@@ -53,6 +55,11 @@ public class SubcontractedTaskDataDAO extends
         } catch (InstanceNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    public List<SubcontractedTaskData> getAll() {
+        return list(SubcontractedTaskData.class);
     }
 
 }

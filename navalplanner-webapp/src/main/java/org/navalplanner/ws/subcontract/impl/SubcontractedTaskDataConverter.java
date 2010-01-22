@@ -18,23 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.ws.subcontract.impl;
 
-import java.util.List;
-
-import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
+import org.navalplanner.ws.common.api.OrderElementDTO;
+import org.navalplanner.ws.subcontract.api.SubcontractedTaskDataDTO;
 
 /**
- * DAO interface for the {@link SubcontractedTaskDataDAO} entity.
+ * Converter from/to {@link SubcontractedTaskData} entities to/from DTOs.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ISubcontractedTaskDataDAO extends
-        IGenericDAO<SubcontractedTaskData, Long> {
+public final class SubcontractedTaskDataConverter {
 
-    boolean existsInAnohterTransaction(Long id);
+    private SubcontractedTaskDataConverter() {
+    }
 
-    List<SubcontractedTaskData> getAll();
+    public final static SubcontractedTaskDataDTO toDTO(String companyCode,
+            SubcontractedTaskData subcontractedTaskData,
+            OrderElementDTO orderElementDTO) {
+        return new SubcontractedTaskDataDTO(companyCode, subcontractedTaskData
+                .getWorkDescription(), subcontractedTaskData
+                .getSubcontractPrice(), subcontractedTaskData
+                .getSubcontractedCode(), orderElementDTO);
+    }
 
 }

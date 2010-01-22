@@ -23,6 +23,9 @@ package org.navalplanner.ws.common.impl;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.apache.cxf.common.util.Base64Utility;
+import org.apache.cxf.jaxrs.client.WebClient;
+
 /**
  * Utilities class related with web service.
  *
@@ -45,6 +48,18 @@ public class Util {
         StringWriter stringWriter = new StringWriter();
         e.printStackTrace(new PrintWriter(stringWriter));
         return stringWriter.toString();
+    }
+
+    public static String getAuthorizationHeader(String username, String password) {
+        String authorization = Base64Utility.encode((username + ":" + password)
+                .getBytes());
+        return "Basic " + authorization;
+    }
+
+    public static void addAuthorizationHeader(WebClient client, String login,
+            String password) {
+        String authorizationHeader = getAuthorizationHeader(login, password);
+        client.header("Authorization", authorizationHeader);
     }
 
 }
