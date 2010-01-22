@@ -120,12 +120,12 @@
                                 <label value="${i18n:_('Work')}" />
                                 <decimalbox id="boxWorkBudget" width="150px" scale = "2"
                                     value="@{controller.order.workBudget}"
-                                    onChange="controller.calculateTotalBudget(self.value,boxMaterialsBudget.value,txtTotalBudget)"/>
+                                    onChange="controller.reloadTotalBudget(txtTotalBudget)" />
                                 <separator bar="false" spacing="15px" orient="vertical"/>
                                 <label value="${i18n:_('Materials')}" />
                                 <decimalbox id="boxMaterialsBudget" width="150px" scale="2"
                                     value="@{controller.order.materialsBudget}"
-                                    onChange="controller.calculateTotalBudget(boxWorkBudget.value,self.value,txtTotalBudget)"/>
+                                    onChange="controller.reloadTotalBudget(txtTotalBudget)" />
                                 <separator bar="false" spacing="15px" orient="vertical"/>
                                 <label value="${i18n:_(' Total :')}" />
                                 <label id="txtTotalBudget" value="@{controller.order.totalBudget}"/>

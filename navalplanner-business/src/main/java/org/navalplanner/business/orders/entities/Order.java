@@ -47,11 +47,6 @@ public class Order extends OrderLineGroup {
         Order order = new Order();
         order.setNewObject(true);
 
-        order.setWorkBudget(new BigDecimal(0).setScale(2));
-        order.setMaterialsBudget(new BigDecimal(0).setScale(2));
-        order.setTotalBudget(new BigDecimal(0).setScale(2));
-        order.setTotalHours(new Integer(0));
-        order.setState(OrderStatusEnum.getDefault());
         OrderLineGroup.setupOrderLineGroup(order);
 
         return order;
@@ -77,15 +72,13 @@ public class Order extends OrderLineGroup {
 
     private Integer lastOrderElementSequenceCode = 0;
 
-    private BigDecimal workBudget;
+    private BigDecimal workBudget = BigDecimal.ZERO.setScale(2);
 
-    private BigDecimal materialsBudget;
+    private BigDecimal materialsBudget = BigDecimal.ZERO.setScale(2);
 
-    private BigDecimal totalBudget;
+    private Integer totalHours = 0;
 
-    private Integer totalHours;
-
-    private OrderStatusEnum state;
+    private OrderStatusEnum state = OrderStatusEnum.getDefault();
 
     private ExternalCompany customer;
 
@@ -94,27 +87,35 @@ public class Order extends OrderLineGroup {
     private String externalCode;
 
     public BigDecimal getWorkBudget() {
+        if (workBudget == null) {
+            return BigDecimal.ZERO;
+        }
         return workBudget;
     }
 
     public void setWorkBudget(BigDecimal workBudget) {
+        if (workBudget == null) {
+            workBudget = BigDecimal.ZERO.setScale(2);
+        }
         this.workBudget = workBudget;
     }
 
     public BigDecimal getMaterialsBudget() {
+        if (materialsBudget == null) {
+            return BigDecimal.ZERO;
+        }
         return materialsBudget;
     }
 
     public void setMaterialsBudget(BigDecimal materialsBudget) {
+        if (materialsBudget == null) {
+            materialsBudget = BigDecimal.ZERO.setScale(2);
+        }
         this.materialsBudget = materialsBudget;
     }
 
     public BigDecimal getTotalBudget() {
-        return totalBudget;
-    }
-
-    public void setTotalBudget(BigDecimal totalBudget) {
-        this.totalBudget = totalBudget;
+        return getWorkBudget().add(getMaterialsBudget());
     }
 
     public Integer getTotalHours() {

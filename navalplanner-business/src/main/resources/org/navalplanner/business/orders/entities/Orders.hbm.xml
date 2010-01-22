@@ -73,7 +73,6 @@
 
                 <property name="workBudget" access="field" />
                 <property name="materialsBudget" access="field" />
-                <property name="totalBudget" access="field" />
                 <property name="totalHours" access="field" />
                 <property name="customerReference" access="field" />
                 <property name="externalCode" access="field" />

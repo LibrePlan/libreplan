@@ -22,7 +22,6 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
@@ -559,20 +558,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         return OrderStatusEnum.values();
     }
 
-    public void calculateTotalBudget(BigDecimal workBudget,
-            BigDecimal materialsBudget, Label txtTotalBudget) {
-        BigDecimal sum = new BigDecimal(0);
-        if ((workBudget != null) && (materialsBudget != null)) {
-            sum = workBudget.add(materialsBudget);
-        } else if (workBudget != null) {
-            sum = workBudget;
-        } else if (materialsBudget != null) {
-            sum = materialsBudget;
-        }
-        txtTotalBudget.setValue(sum.toString());
-        txtTotalBudget.invalidate();
-    }
-
     public List<ExternalCompany> getExternalCompaniesAreClient() {
         return orderModel.getExternalCompaniesAreClient();
     }
@@ -718,4 +703,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     public String getTooltipText(final Order order) {
         return orderModel.gettooltipText(order);
     }
+
+    public void reloadTotalBudget(Label txtTotalBudget) {
+        Util.reloadBindings(txtTotalBudget);
+    }
+
 }
