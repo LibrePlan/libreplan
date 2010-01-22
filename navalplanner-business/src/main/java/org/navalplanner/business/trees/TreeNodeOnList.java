@@ -22,6 +22,8 @@ package org.navalplanner.business.trees;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+
 /**
  * Implementation of {@link ITreeParentNode} that mutates a list <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -37,9 +39,14 @@ public abstract class TreeNodeOnList<T extends ITreeNode<T>> implements
 
     @Override
     public void add(T newChild) {
+        checkNotContained(newChild);
         setParentIfRequired(newChild);
         children.add(newChild);
         onChildAdded(newChild);
+    }
+
+    private void checkNotContained(T newChild) {
+        Validate.isTrue(!children.contains(newChild));
     }
 
     protected abstract void setParentIfRequired(T newChild);
@@ -82,6 +89,7 @@ public abstract class TreeNodeOnList<T extends ITreeNode<T>> implements
 
     @Override
     public void add(int position, T newChild) {
+        checkNotContained(newChild);
         setParentIfRequired(newChild);
         children.add(position, newChild);
         onChildAdded(newChild);
