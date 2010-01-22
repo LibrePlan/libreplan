@@ -70,6 +70,10 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         return tree;
     }
 
+    public T getRoot() {
+        return tree.getRoot();
+    }
+
     public void addElement() {
         addElementAtImpl(tree.getRoot());
     }
@@ -180,6 +184,47 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         T destination = tree.getParent(parent);
         move(nodeToUnindent, destination, getChildren(destination).indexOf(
                 parent) + 1);
+    }
+
+    private class WithPosition {
+        int position;
+        T element;
+
+        private WithPosition(int position, T element) {
+            this.position = position;
+            this.element = element;
+        }
+    }
+
+    public void addNewlyAddedChildrenOf(ITreeParentNode<T> parent) {
+        List<T> treeChildren = getTreeChildren(parent);
+        List<T> currentChildren = parent.getChildren();
+        if (!currentChildren.containsAll(treeChildren)) {
+            throw new IllegalStateException(
+                    "some children were removed. Can't add new tree children");
+        }
+        int i = 0;
+        List<WithPosition> addings = new ArrayList<WithPosition>();
+        for (T each : currentChildren) {
+            if (!treeChildren.contains(each)) {
+                addings.add(new WithPosition(i, each));
+            }
+            i++;
+        }
+        for (WithPosition each : addings) {
+            tree.add(parent.getThis(), each.position, Collections
+                    .singletonList(each.element));
+            addChildren(tree, Collections.singletonList(each.element));
+        }
+    }
+
+    private List<T> getTreeChildren(ITreeParentNode<T> parent) {
+        List<T> result = new ArrayList<T>();
+        int childCount = tree.getChildCount(parent);
+        for (int i = 0; i < childCount; i++) {
+            result.add(tree.getChild(parent, i));
+        }
+        return result;
     }
 
     public void move(T toBeMoved, T destination) {

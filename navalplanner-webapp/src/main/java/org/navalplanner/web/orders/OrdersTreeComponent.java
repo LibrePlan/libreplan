@@ -98,4 +98,8 @@ public class OrdersTreeComponent extends TreeComponent {
         return columns;
     }
 
+    @Override
+    public boolean isCreateFromTemplateEnabled() {
+        return true;
+    }
 }

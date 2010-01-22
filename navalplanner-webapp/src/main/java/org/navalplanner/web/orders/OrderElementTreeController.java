@@ -34,14 +34,16 @@ import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingState;
-import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
-import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
+import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
+import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.navalplanner.web.tree.TreeController;
 import org.zkoss.zk.ui.Component;
@@ -110,6 +112,19 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
+    public void createFromTemplate() {
+        templateFinderPopup.openForSubElemenetCreation(tree, "after_pointer",
+                new IOnResult<OrderElementTemplate>() {
+                    @Override
+                    public void found(OrderElementTemplate template) {
+                        OrderLineGroup parent = (OrderLineGroup) getModel()
+                                .getRoot();
+                        orderModel.createFrom(parent, template);
+                        getModel().addNewlyAddedChildrenOf(parent);
+                    }
+                });
+    }
+
     private void createTemplate(OrderElement selectedNode) {
         if (!selectedNode.isNewObject()) {
             orderTemplates.goToCreateTemplateFrom(selectedNode);
@@ -156,6 +171,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 filter, new HashMap<String, String>());
         filterComponent.setVariable("treeController", this, true);
         bdFilter = (BandboxSearch) filterComponent.getFellow("bdFilter");
+        templateFinderPopup = (TemplateFinderPopup) comp
+                .getFellow("templateFinderPopupAtTree");
     }
 
     public class OrderElementTreeitemRenderer extends Renderer {
@@ -435,6 +452,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     Tab tabGeneralData;
+
+    private TemplateFinderPopup templateFinderPopup;
 
     private void selectDefaultTab() {
         tabGeneralData.setSelected(true);

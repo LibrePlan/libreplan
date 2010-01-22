@@ -34,6 +34,7 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 
 /**
@@ -106,9 +107,12 @@ public interface IOrderModel {
 
     void prepareCreationFrom(OrderTemplate template);
 
+    OrderElement createFrom(OrderLineGroup parent, OrderElementTemplate template);
+
     List<ExternalCompany> getExternalCompaniesAreClient();
 
     void setExternalCompany(ExternalCompany externalCompany);
 
     public String gettooltipText(Order order);
+
 }
