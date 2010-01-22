@@ -45,6 +45,7 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
 import org.navalplanner.ws.common.api.OrderLineDTO;
@@ -188,6 +189,8 @@ public class SubcontractServiceTest {
         Order order = orderDAO.getOrders().get(previous);
         assertNotNull(order.getCode());
         assertNull(order.getExternalCode());
+        assertThat(order.getState(),
+                equalTo(OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER));
         assertThat(order.getWorkHours(), equalTo(0));
         assertThat(order.getCustomer().getId(),
                 equalTo(externalCompany.getId()));

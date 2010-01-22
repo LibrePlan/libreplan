@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 
 /**
  * @author Susana Montes Pedreiera <smotnes@wirelessgalicia.com>
@@ -27,8 +29,9 @@ package org.navalplanner.business.orders.entities;
 
 public enum OrderStatusEnum {
 
-    OFFERED("OFFERED"), ACCEPTED("ACCEPTED"), STARTED("STARTED"), FINISHED(
-            "FINISHED"), CANCELLED("CANCELLED");
+    OFFERED(_("OFFERED")), ACCEPTED(_("ACCEPTED")), STARTED(_("STARTED")), FINISHED(
+            _("FINISHED")), CANCELLED(_("CANCELLED")), SUBCONTRACTED_PENDING_ORDER(
+            _("SUBCONTRACTED PENDING ORDER"));
 
     private String description;
 

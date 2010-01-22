@@ -43,6 +43,7 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
@@ -136,6 +137,8 @@ public class SubcontractServiceREST implements ISubcontractService {
 
             order.setCode(code);
             generateCodes(order);
+
+            order.setState(OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER);
 
             if (subcontractedTaskDataDTO.workDescription != null) {
                 order.setName(subcontractedTaskDataDTO.workDescription);
