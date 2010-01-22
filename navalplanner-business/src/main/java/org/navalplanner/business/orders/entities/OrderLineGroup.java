@@ -48,14 +48,13 @@ import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
 import org.navalplanner.business.trees.ITreeParentNode;
-import org.navalplanner.business.trees.TreeNodeOnList;
 
 
 public class OrderLineGroup extends OrderElement implements
         ITreeParentNode<OrderElement> {
 
     private final class ChildrenManipulator extends
-            TreeNodeOnList<OrderElement> {
+            TreeNodeOnListWithSchedulingState<OrderElement> {
 
         private final OrderLineGroup parent;
 
@@ -66,34 +65,22 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         @Override
-        protected void onChildAdded(OrderElement newChild) {
-            if (parent != null) {
-                SchedulingState schedulingState = newChild
-                        .getSchedulingState();
-                removeSchedulingStateFromParent(newChild);
-                parent.getSchedulingState().add(schedulingState);
-            }
-        }
-
-        @Override
-        protected void onChildRemoved(OrderElement previousChild) {
-            removeSchedulingStateFromParent(previousChild);
-        }
-
-        private void removeSchedulingStateFromParent(
-                OrderElement previousChild) {
-            SchedulingState schedulingState = previousChild
-                    .getSchedulingState();
-            if (!schedulingState.isRoot()) {
-                schedulingState.getParent().removeChild(schedulingState);
-            }
-        }
-
-        @Override
         protected void setParentIfRequired(OrderElement newChild) {
             if (parent != null) {
                 newChild.setParent(parent);
             }
+        }
+
+        @Override
+        protected void updateWithNewChild(SchedulingState newChildState) {
+            if (parent != null) {
+                parent.getSchedulingState().add(newChildState);
+            }
+        }
+
+        @Override
+        protected SchedulingState getSchedulingStateFrom(OrderElement node) {
+            return node.getSchedulingState();
         }
 
         @Override
