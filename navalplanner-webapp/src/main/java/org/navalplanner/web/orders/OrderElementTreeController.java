@@ -119,8 +119,16 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     public void found(OrderElementTemplate template) {
                         OrderLineGroup parent = (OrderLineGroup) getModel()
                                 .getRoot();
-                        orderModel.createFrom(parent, template);
+                        OrderElement created = orderModel.createFrom(parent,
+                                template);
                         getModel().addNewlyAddedChildrenOf(parent);
+                        if (!created.getChildren().isEmpty()) {
+                            // due to a bug of zk Tree, the children of a newly
+                            // added element are not shown. Forcing reload.
+                            // See comments at
+                            // org.zkoss.ganttz.LeftTasksTree.DeferredFiller
+                            Util.reloadBindings(tree);
+                        }
                     }
                 });
     }

@@ -233,7 +233,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     /**
      * This class is a workaround for an issue with zk {@link Tree}. Once the
-     * tree is created, a node with more children can't be added. Only the top
+     * tree is created, adding a node with children is troublesome. Only the top
      * element is added to the tree, although the element has children. The Tree
      * discards the adding event for the children because the parent says it's
      * not loaded. This is the condition that is not satisfied:<br />
