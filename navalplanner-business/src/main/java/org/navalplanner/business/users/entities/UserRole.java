@@ -31,7 +31,10 @@ public enum UserRole {
 
     ROLE_ADMINISTRATION(_("Administration")),
     ROLE_WS_READER(_("Web service reader")),
-    ROLE_WS_WRITER(_("Web service writer"));
+    ROLE_WS_WRITER(_("Web service writer")),
+    ROLE_READ_ALL_ORDERS(_("All orders read allowed")),
+    ROLE_EDIT_ALL_ORDERS(_("All orders edition allowed")),
+    ROLE_CREATE_ORDER(_("Order creation allowed"));
 
     private final String displayName;
 

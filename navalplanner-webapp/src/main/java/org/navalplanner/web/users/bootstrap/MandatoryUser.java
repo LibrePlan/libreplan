@@ -36,7 +36,10 @@ import org.navalplanner.business.users.entities.UserRole;
 public enum MandatoryUser {
 
     USER(new ArrayList<UserRole>()),
-    ADMIN(Arrays.asList(UserRole.ROLE_ADMINISTRATION)),
+    ADMIN(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+        UserRole.ROLE_READ_ALL_ORDERS,
+        UserRole.ROLE_EDIT_ALL_ORDERS,
+        UserRole.ROLE_CREATE_ORDER)),
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)),
     WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER,
         UserRole.ROLE_WS_WRITER));
