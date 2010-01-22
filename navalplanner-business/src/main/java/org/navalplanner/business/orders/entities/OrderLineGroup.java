@@ -56,26 +56,20 @@ public class OrderLineGroup extends OrderElement implements
     private final class ChildrenManipulator extends
             TreeNodeOnListWithSchedulingState<OrderElement> {
 
-        private final OrderLineGroup parent;
 
         private ChildrenManipulator(OrderLineGroup parent,
                 List<OrderElement> children) {
             super(children);
-            this.parent = parent;
         }
 
         @Override
         protected void setParentIfRequired(OrderElement newChild) {
-            if (parent != null) {
-                newChild.setParent(parent);
-            }
+            newChild.setParent(getThis());
         }
 
         @Override
         protected void updateWithNewChild(SchedulingState newChildState) {
-            if (parent != null) {
-                parent.getSchedulingState().add(newChildState);
-            }
+            getThis().getSchedulingState().add(newChildState);
         }
 
         @Override
@@ -85,7 +79,7 @@ public class OrderLineGroup extends OrderElement implements
 
         @Override
         public ITreeParentNode<OrderElement> getParent() {
-            return OrderLineGroup.this.getParent();
+            return getThis().getParent();
         }
 
         @Override
@@ -95,11 +89,11 @@ public class OrderLineGroup extends OrderElement implements
 
         @Override
         public OrderElement toLeaf() {
-            return OrderLineGroup.this.toLeaf();
+            return getThis().toLeaf();
         }
 
         @Override
-        public OrderElement getThis() {
+        public OrderLineGroup getThis() {
             return OrderLineGroup.this;
         }
     }
