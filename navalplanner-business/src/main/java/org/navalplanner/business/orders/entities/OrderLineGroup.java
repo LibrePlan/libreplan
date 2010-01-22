@@ -44,6 +44,7 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
 import org.navalplanner.business.trees.ITreeParentNode;
@@ -795,6 +796,36 @@ public class OrderLineGroup extends OrderElement implements
     @Override
     public OrderLineGroup getThis() {
         return this;
+    }
+
+    @Override
+    public OrderLine calculateOrderLineForSubcontract() {
+        OrderLine orderLine = OrderLine.create();
+
+        orderLine.setCode(getCode());
+        orderLine.setName(getName());
+        orderLine.setDescription(getDescription());
+
+        orderLine.setInitDate(getInitDate());
+        orderLine.setDeadline(getDeadline());
+
+        // HoursGroups from all its child nodes
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            orderLine.addHoursGroup(hoursGroup);
+        }
+
+        // CriterionRequirements from this node
+        orderLine.setCriterionRequirements(getCriterionRequirements());
+
+        // Labels from this node
+        orderLine.setLabels(getLabels());
+
+        // MaterialAssignments from this node and all its child nodes
+        for (MaterialAssignment materialAssignment : getMaterialAssignments()) {
+            orderLine.addMaterialAssignment(materialAssignment);
+        }
+
+        return orderLine;
     }
 
 }

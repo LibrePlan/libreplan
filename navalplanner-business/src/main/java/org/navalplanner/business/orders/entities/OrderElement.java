@@ -950,4 +950,18 @@ public abstract class OrderElement extends BaseEntity implements
         }
     }
 
+    public abstract OrderLine calculateOrderLineForSubcontract();
+
+    public Set<MaterialAssignment> getAllMaterialAssignments() {
+        Set<MaterialAssignment> result = new HashSet<MaterialAssignment>();
+
+        result.addAll(getMaterialAssignments());
+
+        for (OrderElement orderElement : getChildren()) {
+            result.addAll(orderElement.getAllMaterialAssignments());
+        }
+
+        return result;
+    }
+
 }

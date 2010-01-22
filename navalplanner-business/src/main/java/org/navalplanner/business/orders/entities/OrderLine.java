@@ -549,4 +549,9 @@ public class OrderLine extends OrderElement {
         return Collections.emptySet();
     }
 
+    @Override
+    public OrderLine calculateOrderLineForSubcontract() {
+        return this;
+    }
+
 }
