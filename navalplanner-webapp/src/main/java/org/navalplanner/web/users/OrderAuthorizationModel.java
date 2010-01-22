@@ -18,6 +18,7 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -199,6 +200,31 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         }
         if(!orderAuthorization.isNewObject()) {
             orderAuthorizationRemovalList.add(orderAuthorization);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean userCanWrite(String loginName) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return true;
+        }
+        else {
+            User user;
+            try {
+                user = userDAO.findByLoginName(loginName);
+            }
+            catch(InstanceNotFoundException e) {
+                return false;
+            }
+            List<OrderAuthorization> authorizations = dao.listByUserAndItsProfiles(user);
+            for(OrderAuthorization authorization : authorizations) {
+                if (authorization.getOrder().getId().equals(order.getId()) &&
+                    authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
+                        return true;
+                }
+            }
+            return false;
         }
     }
 

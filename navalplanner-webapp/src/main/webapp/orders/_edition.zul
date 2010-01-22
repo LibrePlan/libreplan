@@ -172,9 +172,9 @@
     </tabbox>
     <hbox>
         <button label="${i18n:_('Save')}" onClick="controller.saveAndExit()"
-            sclass="save-button global-action" />
+            sclass="save-button global-action" disabled="true" id="save" />
         <button label="${i18n:_('Save &amp; Continue')}" onClick="controller.saveAndContinue()"
-            sclass="saveandcontinue-button global-action" />
+            sclass="saveandcontinue-button global-action" disabled="true" id="save_and_continue" />
         <button label="${i18n:_('Cancel')}" onClick="controller.cancel()"
             sclass="cancel-button global-action" />
     </hbox>

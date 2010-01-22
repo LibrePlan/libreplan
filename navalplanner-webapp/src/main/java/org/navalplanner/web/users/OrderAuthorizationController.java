@@ -36,9 +36,11 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.security.SecurityUtils;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.api.Button;
 
 /**
  * Controller for CRUD actions over an {@link OrderAuthorization}
@@ -69,6 +71,7 @@ public class OrderAuthorizationController extends GenericForwardComposer{
 
     public void initEdit(Order order) {
         orderAuthorizationModel.initEdit(order);
+        checkWritePermissions();
         Util.reloadBindings(window);
     }
 
@@ -141,6 +144,21 @@ public class OrderAuthorizationController extends GenericForwardComposer{
      */
     private void checkCreationPermissions() {
         if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            ((Button)window.getFellowIfAny("save")).setDisabled(false);
+            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(false);
+        }
+        else {
+            ((Button)window.getFellowIfAny("save")).setDisabled(true);
+            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(true);
+        }
+    }
+
+    /**
+     * Checks the write permissions of the current user on this Order and enables/disables
+     * the save buttons accordingly.
+     */
+    private void checkWritePermissions() {
+        if(orderAuthorizationModel.userCanWrite(SecurityUtils.getSessionUserLoginName())) {
             ((Button)window.getFellowIfAny("save")).setDisabled(false);
             ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(false);
         }
