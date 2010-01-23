@@ -25,6 +25,7 @@ import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.navalplanner.web.templates.quality.QualityFormAssignerComponent;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -87,28 +88,34 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         Util.reloadBindings(editTemplateWindow);
     }
 
+    private <T extends Component> T find(String id, Class<T> type) {
+        return type.cast(editTemplateWindow.getFellow(id));
+    }
+
     private void bindAdvancesAssignment(OrderElementTemplate template) {
-        AdvancesAssignmentComponent component = (AdvancesAssignmentComponent) editTemplateWindow
-                .getFellow("advancesAssignment");
+        AdvancesAssignmentComponent component = find(
+                "advancesAssignment", AdvancesAssignmentComponent.class);
         component.useModel(model, template);
     }
 
     private void bindOrderElementLabels(OrderElementTemplate template) {
-        LabelsAssignmentToTemplateComponent component = (LabelsAssignmentToTemplateComponent) editTemplateWindow
-                .getFellow("listOrderElementLabels");
+        LabelsAssignmentToTemplateComponent component = find(
+                "listOrderElementLabels",
+                LabelsAssignmentToTemplateComponent.class);
         component.getController().setTemplate(template);
         component.getController().openWindow(model);
     }
 
     private void bindOrderElementMaterials(OrderElementTemplate template) {
-        MaterialAssignmentTemplateComponent component = (MaterialAssignmentTemplateComponent) editTemplateWindow
-                .getFellow("listOrderElementMaterials");
+        MaterialAssignmentTemplateComponent component = find(
+                "listOrderElementMaterials",
+                MaterialAssignmentTemplateComponent.class);
         component.getController().openWindow(template);
     }
 
     private void bindAssignedQualityForms(OrderElementTemplate template) {
-        QualityFormAssignerComponent c = (QualityFormAssignerComponent) editTemplateWindow
-                .getFellow("assignedQualityForms");
+        QualityFormAssignerComponent c = find("assignedQualityForms",
+                QualityFormAssignerComponent.class);
         c.useModel(model, template);
     }
 

@@ -97,27 +97,34 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         show(editWindow);
     }
 
+    private <T extends Component> T findAtEditWindow(String id, Class<T> type) {
+        return type.cast(editWindow.getFellow(id));
+    }
+
     private void bindAdvancesComponentWithCurrentTemplate() {
-        AdvancesAssignmentComponent c = (AdvancesAssignmentComponent) editWindow
-                .getFellow("advancesAssignment");
+        AdvancesAssignmentComponent c = findAtEditWindow("advancesAssignment",
+                AdvancesAssignmentComponent.class);
         c.useModel(model);
     }
 
     private void bindMaterialsControllerWithCurrentTemplate() {
-        MaterialAssignmentTemplateComponent materialsComponent = (MaterialAssignmentTemplateComponent) editWindow
-                .getFellow("listOrderElementMaterials");
-        materialsComponent.getController().openWindow(model.getTemplate());
+        MaterialAssignmentTemplateComponent c = findAtEditWindow(
+                "listOrderElementMaterials",
+                MaterialAssignmentTemplateComponent.class);
+        c.getController().openWindow(model.getTemplate());
     }
 
     private void bindLabelsControllerWithCurrentTemplate() {
-        LabelsAssignmentToTemplateComponent labelsComponent = (LabelsAssignmentToTemplateComponent) editWindow
-                .getFellow("listOrderElementLabels");
-        labelsComponent.getController().openWindow(model);
+        LabelsAssignmentToTemplateComponent c = findAtEditWindow(
+                "listOrderElementLabels",
+                LabelsAssignmentToTemplateComponent.class);
+        c.getController().openWindow(model);
     }
 
     private void bindQualityFormWithCurrentTemplate() {
-        QualityFormAssignerComponent c = (QualityFormAssignerComponent) editWindow
-                .getFellow("assignedQualityForms");
+        QualityFormAssignerComponent c = findAtEditWindow(
+                "assignedQualityForms",
+                QualityFormAssignerComponent.class);
         c.useModel(model);
     }
 
