@@ -60,6 +60,8 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     @Autowired
     private IURLHandlerRegistry handlerRegistry;
 
+    private EditTemplateWindowController editTemplateController;
+
     public List<OrderElementTemplate> getTemplates() {
         return model.getRootTemplates();
     }
@@ -91,6 +93,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         bindMaterialsControllerWithCurrentTemplate();
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
+        bindEditTemplateWindowWithController();
         show(editWindow);
     }
 
@@ -116,6 +119,13 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         QualityFormAssignerComponent c = (QualityFormAssignerComponent) editWindow
                 .getFellow("assignedQualityForms");
         c.useModel(model);
+    }
+
+    private void bindEditTemplateWindowWithController() {
+        Window editTemplateWindow = (Window) editWindow
+                .getFellow("editTemplateWindow");
+        editTemplateController = EditTemplateWindowController.bindTo(model,
+                editTemplateWindow);
     }
 
     public boolean isTemplateTreeDisabled() {

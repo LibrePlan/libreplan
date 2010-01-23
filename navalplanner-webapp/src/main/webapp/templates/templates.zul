@@ -34,6 +34,7 @@
 <?component name="listOrderElementLabels" class="org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
 <?component name="assignedQualityForms" class="org.navalplanner.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
 <?component name="advancesAssignment" class="org.navalplanner.web.templates.advances.AdvancesAssignmentComponent" macroURI="/templates/_advances.zul"?>
+<?component name="editTemplateWindow" macroURI="_editTemplateWindow.zul" inline="true"?>
 
 <zk>
     <zscript><![CDATA[
@@ -44,6 +45,7 @@
         <vbox id="messagesContainer" />
         <list top_id="listWindow" />
         <window id="editWindow">
+            <editTemplateWindow />
             <tabbox>
                 <tabs>
                     <tab id="tabGeneralData" label="${i18n:_('General data')}" />
