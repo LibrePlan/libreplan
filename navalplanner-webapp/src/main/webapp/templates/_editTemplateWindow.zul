@@ -17,14 +17,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<?component name="advancesAssignment" class="org.navalplanner.web.templates.advances.AdvancesAssignmentComponent" macroURI="/templates/_advances.zul"?>
 
 <window id="editTemplateWindow" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
     closable="false" visible="false">
 <tabbox height="620px" id="tabboxOrderElement">
     <tabs>
+        <tab label="${i18n:_('Advances')}" />
     </tabs>
     <tabpanels>
+        <tabpanel>
+            <advancesAssignment id="advancesAssignment" />
+        </tabpanel>
     </tabpanels>
 </tabbox>
 <hbox>

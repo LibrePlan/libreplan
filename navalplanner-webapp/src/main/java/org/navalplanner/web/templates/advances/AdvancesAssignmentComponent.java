@@ -86,8 +86,13 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
     };
 
     public void useModel(IOrderTemplatesModel model) {
-        template = model.getTemplate();
+        useModel(model, model.getTemplate());
+    }
+
+    public void useModel(IOrderTemplatesModel model,
+            OrderElementTemplate template) {
         this.model = model;
+        this.template = template;
     }
 
     public List<AdvanceAssignmentTemplate> getAdvanceAssignments() {

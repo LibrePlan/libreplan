@@ -20,6 +20,8 @@
 package org.navalplanner.web.templates;
 
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.common.Util;
+import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -75,6 +77,14 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        bindAdvancesAssignment(template);
+        Util.reloadBindings(editTemplateWindow);
+    }
+
+    private void bindAdvancesAssignment(OrderElementTemplate template) {
+        AdvancesAssignmentComponent component = (AdvancesAssignmentComponent) editTemplateWindow
+                .getFellow("advancesAssignment");
+        component.useModel(model, template);
     }
 
     public void onClick$backButton() {
