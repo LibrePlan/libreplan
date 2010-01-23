@@ -30,6 +30,9 @@ import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.tree.EntitiesTree;
 import org.navalplanner.web.tree.TreeController;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
@@ -60,11 +63,26 @@ public class TemplatesTreeController extends
         @Override
         protected void addOperationsCell(Treeitem item,
                 OrderElementTemplate currentElement) {
-            addCell(createUpButton(item, currentElement),
+            addCell(createEditButton(currentElement),
+                    createUpButton(item, currentElement),
                     createDownButton(item, currentElement),
                     createUnindentButton(item, currentElement),
                     createIndentButton(item, currentElement),
                     createRemoveButton(currentElement));
+        }
+
+        private Button createEditButton(
+                final OrderElementTemplate currentTemplate) {
+            Button result = createButton("/common/img/ico_editar1.png",
+                    _("Edit"), "/common/img/ico_editar.png", "icono",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            orderTemplatesController
+                                    .showEditionFor(currentTemplate);
+                        }
+                    });
+            return result;
         }
 
         @Override
@@ -160,10 +178,13 @@ public class TemplatesTreeController extends
     }
 
     private final IOrderTemplatesModel model;
+    private final OrderTemplatesController orderTemplatesController;
 
-    public TemplatesTreeController(IOrderTemplatesModel model) {
+    public TemplatesTreeController(IOrderTemplatesModel model,
+            OrderTemplatesController orderTemplatesController) {
         super(OrderElementTemplate.class);
         this.model = model;
+        this.orderTemplatesController = orderTemplatesController;
     }
 
     @Override

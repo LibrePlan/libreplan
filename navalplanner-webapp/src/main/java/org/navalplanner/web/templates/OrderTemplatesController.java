@@ -137,6 +137,10 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         getVisibility().showOnly(window);
     }
 
+    public void showEditionFor(OrderElementTemplate template) {
+        editTemplateController.open(template);
+    }
+
     public void saveAndExit() {
         model.confirmSave();
         show(listWindow);
@@ -155,7 +159,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         super.doAfterCompose(comp);
         getVisibility().showOnly(listWindow);
         TreeComponent treeComponent = (TreeComponent) editWindow.getFellow("orderElementTree");
-        treeComponent.useController(new TemplatesTreeController(model));
+        treeComponent.useController(new TemplatesTreeController(model, this));
         final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
         handler.registerListener(this, page);
