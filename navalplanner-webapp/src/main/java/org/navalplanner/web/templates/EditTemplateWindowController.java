@@ -22,6 +22,7 @@ package org.navalplanner.web.templates;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
+import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -78,6 +79,7 @@ public class EditTemplateWindowController extends GenericForwardComposer {
             throw new RuntimeException(e);
         }
         bindAdvancesAssignment(template);
+        bindOrderElementLabels(template);
         Util.reloadBindings(editTemplateWindow);
     }
 
@@ -85,6 +87,13 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         AdvancesAssignmentComponent component = (AdvancesAssignmentComponent) editTemplateWindow
                 .getFellow("advancesAssignment");
         component.useModel(model, template);
+    }
+
+    private void bindOrderElementLabels(OrderElementTemplate template) {
+        LabelsAssignmentToTemplateComponent component = (LabelsAssignmentToTemplateComponent) editTemplateWindow
+                .getFellow("listOrderElementLabels");
+        component.getController().setTemplate(template);
+        component.getController().openWindow(model);
     }
 
     public void onClick$backButton() {

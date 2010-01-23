@@ -34,8 +34,13 @@ public class AssignedLabelsToTemplateController extends
 
     private IOrderTemplatesModel templatesModel;
 
+    private OrderElementTemplate template;
+
     @Override
     protected OrderElementTemplate getElement() {
+        if (template != null) {
+            return template;
+        }
         return templatesModel.getTemplate();
     }
 
@@ -48,6 +53,10 @@ public class AssignedLabelsToTemplateController extends
     protected void setOuterModel(IOrderTemplatesModel templatesModel) {
         this.templatesModel = templatesModel;
         this.assignedLabelsToTemplateModel.setTemplatesModel(templatesModel);
+    }
+
+    public void setTemplate(OrderElementTemplate template) {
+        this.template = template;
     }
 
 
