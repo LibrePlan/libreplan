@@ -28,7 +28,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -41,22 +41,20 @@ import org.springframework.stereotype.Component;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @Component
-public class CriterionType extends BaseEntity implements
+public class CriterionType extends IntegrationEntity implements
         ICriterionType<Criterion> {
 
     public static CriterionType create() {
-        CriterionType criterionType = new CriterionType();
-        criterionType.setNewObject(true);
-        return criterionType;
+        return create(new CriterionType());
     }
 
 
-    public static CriterionType createUnvalidated(String name,
+    public static CriterionType createUnvalidated(String code, String name,
         String description, Boolean allowHierarchy,
         Boolean allowSimultaneousCriterionsPerResource, Boolean enabled,
         ResourceEnum resource) {
 
-        CriterionType criterionType = create(new CriterionType());
+        CriterionType criterionType = create(new CriterionType(), code);
 
         criterionType.name = name;
         criterionType.description = description;
@@ -71,21 +69,18 @@ public class CriterionType extends BaseEntity implements
     }
 
     public static CriterionType create(String name,String description) {
-        CriterionType criterionType = new CriterionType(name,description);
-        criterionType.setNewObject(true);
-        return criterionType;
+        return create(new CriterionType(name,description));
     }
 
     public static CriterionType create(String name,String description,
             boolean allowHierarchy,boolean allowSimultaneousCriterionsPerResource,
             boolean enabled,ResourceEnum resource) {
-        CriterionType criterionType = new CriterionType(name,description, allowHierarchy,
-                allowSimultaneousCriterionsPerResource,enabled,resource);
-        criterionType.setNewObject(true);
-        return criterionType;
+
+        return create(new CriterionType(name,description, allowHierarchy,
+            allowSimultaneousCriterionsPerResource,enabled,resource));
+
     }
 
-    @NotEmpty(message="criterion type name not specified")
     private String name;
 
     private String description;
@@ -98,7 +93,6 @@ public class CriterionType extends BaseEntity implements
 
     private ResourceEnum resource = ResourceEnum.getDefault();
 
-    @Valid
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
     private int numCriterions;
@@ -146,6 +140,7 @@ public class CriterionType extends BaseEntity implements
     }
 
     @Override
+    @NotEmpty(message="criterion type name not specified")
     public String getName() {
         return name;
     }
@@ -154,6 +149,7 @@ public class CriterionType extends BaseEntity implements
         this.name = name;
     }
 
+    @Valid
     public Set<Criterion> getCriterions() {
         return criterions;
     }
@@ -376,6 +372,12 @@ public class CriterionType extends BaseEntity implements
 
     private boolean isNameSpecified() {
         return !StringUtils.isBlank(name);
+    }
+
+
+    @Override
+    protected ICriterionTypeDAO getIntegrationEntityDAO() {
+        return Registry.getCriterionTypeDAO();
     }
 
 }

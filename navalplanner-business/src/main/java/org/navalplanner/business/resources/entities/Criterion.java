@@ -32,20 +32,22 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 
 /**
  * A criterion stored in the database <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class Criterion extends BaseEntity implements ICriterion {
+public class Criterion extends IntegrationEntity implements ICriterion {
 
-    public static Criterion createUnvalidated(String name, CriterionType type,
-        Criterion parent, boolean active) {
+    public static Criterion createUnvalidated(String code, String name,
+        CriterionType type, Criterion parent, boolean active) {
 
-        Criterion criterion = create(new Criterion());
+        Criterion criterion = create(new Criterion(), code);
 
         criterion.name = name;
         criterion.type = type;
@@ -57,26 +59,19 @@ public class Criterion extends BaseEntity implements ICriterion {
     }
 
     public static Criterion create(CriterionType type) {
-        Criterion criterion = new Criterion(type);
-        criterion.setNewObject(true);
-        return criterion;
+        return create(new Criterion(type));
     }
 
     public static Criterion create(String name, CriterionType type) {
-        Criterion criterion = new Criterion(name, type);
-        criterion.setNewObject(true);
-        return criterion;
+        return create(new Criterion(name, type));
     }
 
-    @NotEmpty(message="criterion name not specified")
     private String name;
 
-    @NotNull(message="criterion type not specified")
     private CriterionType type;
 
     private Criterion parent = null;
 
-    @Valid
     private Set<Criterion> children =  new HashSet<Criterion>();
 
     private boolean active = true;
@@ -127,6 +122,7 @@ public class Criterion extends BaseEntity implements ICriterion {
                 Interval.range(start, end)).result().isEmpty();
     }
 
+    @NotEmpty(message="criterion name not specified")
     public String getName() {
         return name;
     }
@@ -135,6 +131,7 @@ public class Criterion extends BaseEntity implements ICriterion {
         this.name = name;
     }
 
+    @NotNull(message="criterion type not specified")
     public CriterionType getType() {
         return type;
     }
@@ -163,6 +160,7 @@ public class Criterion extends BaseEntity implements ICriterion {
         this.parent = parent;
     }
 
+    @Valid
     public Set<Criterion> getChildren() {
         return children;
     }
@@ -212,5 +210,10 @@ public class Criterion extends BaseEntity implements ICriterion {
             CriterionRequirement criterionRequirement) {
         criterionRequirement.setCriterion(this);
         this.criterionRequirements.add(criterionRequirement);
+    }
+
+    @Override
+    protected ICriterionDAO getIntegrationEntityDAO() {
+        return Registry.getCriterionDAO();
     }
 }

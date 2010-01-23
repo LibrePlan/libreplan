@@ -23,7 +23,7 @@ package org.navalplanner.business.resources.daos;
 import java.util.Collection;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -33,7 +33,8 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface ICriterionTypeDAO extends IGenericDAO<CriterionType, Long> {
+public interface ICriterionTypeDAO
+    extends IIntegrationEntityDAO<CriterionType> {
 
     CriterionType findUniqueByName(String name)
             throws InstanceNotFoundException;

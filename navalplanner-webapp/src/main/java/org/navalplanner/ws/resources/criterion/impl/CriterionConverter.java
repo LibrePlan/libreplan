@@ -70,6 +70,7 @@ public final class CriterionConverter {
         }
 
         return new CriterionTypeDTO(
+            criterionType.getCode(),
             criterionType.getName(),
             criterionType.getDescription(),
             criterionType.allowHierarchy(),
@@ -93,8 +94,8 @@ public final class CriterionConverter {
             childrenDTOs = null;
         }
 
-        return new CriterionDTO(criterion.getName(), criterion.isActive(),
-            childrenDTOs);
+        return new CriterionDTO(criterion.getCode(), criterion.getName(),
+            criterion.isActive(), childrenDTOs);
 
     }
 
@@ -102,6 +103,7 @@ public final class CriterionConverter {
         CriterionTypeDTO criterionTypeDTO) {
 
         CriterionType criterionType = CriterionType.createUnvalidated(
+            StringUtils.trim(criterionTypeDTO.code),
             StringUtils.trim(criterionTypeDTO.name),
             StringUtils.trim(criterionTypeDTO.description),
             criterionTypeDTO.allowHierarchy,
@@ -139,6 +141,7 @@ public final class CriterionConverter {
         Criterion criterionParent) {
 
         Criterion criterion = Criterion.createUnvalidated(
+            StringUtils.trim(childDTO.code),
             StringUtils.trim(childDTO.name),
             criterionType, criterionParent, childDTO.active);
 

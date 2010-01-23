@@ -22,7 +22,7 @@ package org.navalplanner.business.resources.daos;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
@@ -33,8 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface ICriterionDAO extends IGenericDAO<Criterion, Long> {
+public interface ICriterionDAO extends IIntegrationEntityDAO<Criterion> {
 
     public void removeByNameAndType(Criterion criterion);
 

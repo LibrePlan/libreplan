@@ -79,6 +79,10 @@ public class GenericDAOHibernate<E extends BaseEntity,
         return sessionFactory.getCurrentSession();
     }
 
+    public Class<E> getEntityClass() {
+        return entityClass;
+    }
+
     /**
      * It's necessary to save and validate later.
      *

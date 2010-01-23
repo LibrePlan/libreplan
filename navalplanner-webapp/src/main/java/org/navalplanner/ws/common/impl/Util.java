@@ -25,14 +25,28 @@ import java.io.StringWriter;
 
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTOId;
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
  * Utilities class related with web service.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class Util {
 
+    public static InstanceConstraintViolationsDTOId
+        generateInstanceConstraintViolationsDTOId(Long numItem,
+             IntegrationEntityDTO integrationEntityDTO) {
+
+        return new InstanceConstraintViolationsDTOId(numItem,
+            integrationEntityDTO.code,
+            integrationEntityDTO.getEntityType());
+
+    }
+
+    @Deprecated
     public static String generateInstanceId(int instanceNumber,
             String instanceIdentifier) {
         String instanceId = instanceNumber + "";

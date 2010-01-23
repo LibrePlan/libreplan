@@ -26,6 +26,7 @@ import java.util.List;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTOId;
 
 /**
  * Converter for constraint violations.
@@ -58,7 +59,24 @@ public class ConstraintViolationConverter {
 
     }
 
+    @Deprecated
     public final static InstanceConstraintViolationsDTO toDTO(String instanceId,
+        InvalidValue[] invalidValues) {
+
+        List<ConstraintViolationDTO> constraintViolationDTOs =
+            new ArrayList<ConstraintViolationDTO>();
+
+        for (InvalidValue i : invalidValues) {
+            constraintViolationDTOs.add(toDTO(i));
+        }
+
+        return new InstanceConstraintViolationsDTO(instanceId,
+            constraintViolationDTOs);
+
+    }
+
+    public final static InstanceConstraintViolationsDTO toDTO(
+        InstanceConstraintViolationsDTOId instanceId,
         InvalidValue[] invalidValues) {
 
         List<ConstraintViolationDTO> constraintViolationDTOs =

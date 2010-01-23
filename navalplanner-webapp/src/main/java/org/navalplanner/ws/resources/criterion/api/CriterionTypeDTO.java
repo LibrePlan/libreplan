@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
 
 /**
@@ -34,7 +35,9 @@ import org.navalplanner.ws.common.api.ResourceEnumDTO;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class CriterionTypeDTO {
+public class CriterionTypeDTO extends IntegrationEntityDTO {
+
+    public final static String ENTITY_TYPE = "criterion-type";
 
     @XmlAttribute
     public String name;
@@ -60,11 +63,12 @@ public class CriterionTypeDTO {
 
     public CriterionTypeDTO() {}
 
-    public CriterionTypeDTO(String name, String description,
+    public CriterionTypeDTO(String code, String name, String description,
         boolean allowHierarchy, boolean allowSimultaneousCriterionsPerResource,
         boolean enabled, ResourceEnumDTO resource,
         List<CriterionDTO> criterions) {
 
+        super(code);
         this.name = name;
         this.description = description;
         this.allowHierarchy = allowHierarchy;
@@ -74,6 +78,27 @@ public class CriterionTypeDTO {
         this.resource = resource;
         this.criterions = criterions;
 
+    }
+
+    /**
+     * This constructor automatically generates a unique code. It is intended
+     * to facilitate the implementation of test cases that add new instances
+     * (such instances will have a unique code).
+     */
+    public CriterionTypeDTO(String name, String description,
+        boolean allowHierarchy, boolean allowSimultaneousCriterionsPerResource,
+        boolean enabled, ResourceEnumDTO resource,
+        List<CriterionDTO> criterions) {
+
+        this(generateCode(), name, description, allowHierarchy,
+            allowSimultaneousCriterionsPerResource, enabled, resource,
+            criterions);
+
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
     }
 
 }

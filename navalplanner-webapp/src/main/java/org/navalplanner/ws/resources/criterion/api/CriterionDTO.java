@@ -27,12 +27,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
+
 /**
  * DTO for <code>Criterion</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class CriterionDTO {
+public class CriterionDTO extends IntegrationEntityDTO {
+
+    public final static String ENTITY_TYPE = "criterion";
 
     @XmlAttribute
     public String name;
@@ -46,13 +50,31 @@ public class CriterionDTO {
 
     public CriterionDTO() {}
 
-    public CriterionDTO(String name, boolean active,
+    public CriterionDTO(String code, String name, boolean active,
         List<CriterionDTO> children) {
 
+        super(code);
         this.name = name;
         this.active = active;
         this.children = children;
 
+    }
+
+    /**
+     * This constructor automatically generates a unique code. It is intended
+     * to facilitate the implementation of test cases that add new instances
+     * (such instances will have a unique code).
+     */
+    public CriterionDTO(String name, boolean active,
+        List<CriterionDTO> children) {
+
+        this(generateCode(), name, active, children);
+
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
     }
 
 }

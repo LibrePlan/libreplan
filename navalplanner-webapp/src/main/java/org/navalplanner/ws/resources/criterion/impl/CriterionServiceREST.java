@@ -76,7 +76,7 @@ public class CriterionServiceREST implements ICriterionService {
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             new ArrayList<InstanceConstraintViolationsDTO>();
-        int instanceNumber = 1;
+        Long numItem = new Long(1);
         Set<String> criterionTypeNames = new HashSet<String>();
 
         /* Process criterion types. */
@@ -98,8 +98,8 @@ public class CriterionServiceREST implements ICriterionService {
 
                 instanceConstraintViolationsDTO =
                     InstanceConstraintViolationsDTO.create(
-                        Util.generateInstanceId(instanceNumber,
-                            criterionTypeDTO.name),
+                        Util.generateInstanceConstraintViolationsDTOId(numItem,
+                            criterionTypeDTO),
                         _("criterion type name is used by another criterion " +
                             "type being imported"));
 
@@ -138,8 +138,8 @@ public class CriterionServiceREST implements ICriterionService {
                 } catch (ValidationException e) {
                     instanceConstraintViolationsDTO =
                         ConstraintViolationConverter.toDTO(
-                            Util.generateInstanceId(instanceNumber,
-                                criterionTypeDTO.name),
+                            Util.generateInstanceConstraintViolationsDTOId(
+                                numItem, criterionTypeDTO),
                             e.getInvalidValues());
                 }
 
@@ -151,7 +151,7 @@ public class CriterionServiceREST implements ICriterionService {
                     instanceConstraintViolationsDTO);
             }
 
-            instanceNumber++;
+            numItem++;
 
         }
 

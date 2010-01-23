@@ -39,6 +39,8 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public interface IGenericDAO <E, PK extends Serializable>{
 
+    public Class<E> getEntityClass();
+
     /**
      * It inserts the object passed as a parameter in the ORM session, planning
      * it for updating (even though it is not modified before or after the call
