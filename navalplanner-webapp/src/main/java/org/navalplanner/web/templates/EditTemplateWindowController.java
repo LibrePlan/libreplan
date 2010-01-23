@@ -24,6 +24,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
+import org.navalplanner.web.templates.quality.QualityFormAssignerComponent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -82,6 +83,7 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         bindAdvancesAssignment(template);
         bindOrderElementLabels(template);
         bindOrderElementMaterials(template);
+        bindAssignedQualityForms(template);
         Util.reloadBindings(editTemplateWindow);
     }
 
@@ -102,6 +104,12 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         MaterialAssignmentTemplateComponent component = (MaterialAssignmentTemplateComponent) editTemplateWindow
                 .getFellow("listOrderElementMaterials");
         component.getController().openWindow(template);
+    }
+
+    private void bindAssignedQualityForms(OrderElementTemplate template) {
+        QualityFormAssignerComponent c = (QualityFormAssignerComponent) editTemplateWindow
+                .getFellow("assignedQualityForms");
+        c.useModel(model, template);
     }
 
     public void onClick$backButton() {

@@ -21,6 +21,7 @@
 <?component name="listOrderElementLabels" class="org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
 <?component name="listOrderElementMaterials" class="org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent"
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
+<?component name="assignedQualityForms" class="org.navalplanner.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
 <window id="editTemplateWindow" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
     closable="false" visible="false">
@@ -29,6 +30,7 @@
         <tab label="${i18n:_('Advances')}" />
         <tab label="${i18n:_('Labels')}" />
         <tab label="${i18n:_('Materials')}" />
+        <tab label="${i18n:_('Quality Forms')}" />
     </tabs>
     <tabpanels>
         <tabpanel>
@@ -39,6 +41,9 @@
         </tabpanel>
         <tabpanel>
             <listOrderElementMaterials id="listOrderElementMaterials"/>
+        </tabpanel>
+        <tabpanel>
+            <assignedQualityForms id="assignedQualityForms"/>
         </tabpanel>
     </tabpanels>
 </tabbox>
