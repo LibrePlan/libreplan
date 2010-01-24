@@ -42,7 +42,6 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -51,7 +50,9 @@ import org.navalplanner.web.common.OnTabSelection;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.OnTabSelection.IOnSelectingTab;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
+import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
@@ -68,21 +69,27 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -141,6 +148,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private TemplateFinderPopup templateFinderPopup;
 
     public void createOrderFromTemplate() {
+        showOrderElementFilter();
         Component fromTemplateButton = listWindow
                 .getFellow("create_from_template_button");
         templateFinderPopup.openForOrderCreation(fromTemplateButton,
@@ -165,6 +173,20 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Tab selectedTab;
 
+    private Grid listing;
+
+    private Vbox orderFilter;
+
+    private Vbox filter;
+
+    private Datebox filterStartDate;
+
+    private Datebox filterFinishDate;
+
+    private BandboxMultipleSearch bdFilters;
+
+    private Checkbox checkIncludeOrderElements;
+
     private BandboxSearch bdExternalCompanies;
 
     private OnlyOneVisible cachedOnlyOneVisible;
@@ -175,7 +197,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private OrdersRowRenderer ordersRowRenderer = new OrdersRowRenderer();
 
-    private Popup popup;
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -186,6 +207,20 @@ public class OrderCRUDController extends GenericForwardComposer {
             ((Button)listWindow.getFellowIfAny("show_create_form")).setDisabled(false);
             ((Button)listWindow.getFellowIfAny("create_from_template_button")).setDisabled(false);
         }
+
+        // Configuration of the order filter
+        Component filterComponent = Executions.createComponents(
+                "/orders/_orderFilter.zul", orderFilter,
+                new HashMap<String, String>());
+        filterComponent.setVariable("controller", this, true);
+        filterStartDate = (Datebox) filterComponent
+                .getFellow("filterStartDate");
+        filterFinishDate = (Datebox) filterComponent
+                .getFellow("filterFinishDate");
+        bdFilters = (BandboxMultipleSearch) filterComponent
+                .getFellow("bdFilters");
+        checkIncludeOrderElements = (Checkbox) filterComponent
+                .getFellow("checkIncludeOrderElements");
     }
 
     private void addEditWindowIfNeeded() {
@@ -397,7 +432,15 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void goToList() {
+        loadComponents();
         showWindow(listWindow);
+    }
+
+    private void loadComponents() {
+        // load the components of the order list
+        listing = (Grid) listWindow.getFellow("listing");
+        showOrderFilter();
+        clearFilterDates();
     }
 
     public void reloadHoursGroupOrder() {
@@ -465,6 +508,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Runnable onUp;
 
     public void goToEditForm(Order order) {
+        showOrderElementFilter();
         planningControllerEntryPoints.goToOrderDetails(order);
     }
 
@@ -503,6 +547,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToCreateForm() {
         try {
+            showOrderElementFilter();
             orderModel.prepareForCreate();
             showEditWindow(_("Create order"));
             orderAuthorizationController.initCreate((Order) orderModel.getOrder());
@@ -716,4 +761,90 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.reloadBindings(txtTotalBudget);
     }
 
+    /**
+     * Operations to filter the orders by multiple filters
+     */
+
+    public Constraint checkConstraintFinishDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date finishDate = (Date) value;
+                if ((finishDate != null)
+                        && (filterStartDate.getValue() != null)
+                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
+                    filterFinishDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be greater than start date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date startDate = (Date) value;
+                if ((startDate != null)
+                        && (filterFinishDate.getValue() != null)
+                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
+                    filterStartDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be lower than finish date"));
+                }
+            }
+        };
+    }
+
+    public void onApplyFilter() {
+        OrderPredicate predicate = createPredicate();
+        if (predicate != null) {
+            filterByPredicate(predicate);
+        } else {
+            showAllOrders();
+        }
+    }
+
+    private OrderPredicate createPredicate() {
+        List<FilterPair> listFilters = (List<FilterPair>) bdFilters
+                .getSelectedElements();
+        Date startDate = filterStartDate.getValue();
+        Date finishDate = filterFinishDate.getValue();
+        Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
+
+        if (listFilters.isEmpty() && startDate == null && finishDate == null) {
+            return null;
+        }
+        return new OrderPredicate(listFilters, startDate, finishDate,
+                includeOrderElements);
+    }
+
+    private void filterByPredicate(OrderPredicate predicate) {
+        List<Order> filterOrders = orderModel.getFilterOrders(predicate);
+        listing.setModel(new SimpleListModel(filterOrders.toArray()));
+        listing.invalidate();
+    }
+
+    private void clearFilterDates() {
+        filterStartDate.setValue(null);
+        filterFinishDate.setValue(null);
+    }
+
+    public void showAllOrders() {
+        listing.setModel(new SimpleListModel(orderModel.getOrders().toArray()));
+        listing.invalidate();
+    }
+
+    private void showOrderFilter() {
+        orderFilter.setVisible(true);
+        filter.setVisible(false);
+    }
+
+    private void showOrderElementFilter() {
+        orderFilter.setVisible(false);
+        filter.setVisible(true);
+    }
 }

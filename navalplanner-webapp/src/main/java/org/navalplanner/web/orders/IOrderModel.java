@@ -115,4 +115,6 @@ public interface IOrderModel {
 
     public String gettooltipText(Order order);
 
+    List<Order> getFilterOrders(OrderPredicate predicate);
+
 }

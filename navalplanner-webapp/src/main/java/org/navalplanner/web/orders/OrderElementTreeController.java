@@ -41,6 +41,7 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
@@ -53,6 +54,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
@@ -72,7 +74,17 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Vbox filter;
 
+    private Vbox orderFilter;
+
     private BandboxSearch bdFilter;
+
+    private Datebox filterStartDate;
+
+    private Datebox filterFinishDate;
+
+    private BandboxMultipleSearch bdFilters;
+
+    private Checkbox checkIncludeOrderElements;
 
     private OrderElementTreeitemRenderer renderer = new OrderElementTreeitemRenderer();
 
@@ -174,6 +186,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+
+        // Configuration of the order elements filter
+        orderFilter.setVisible(false);
+        filter.setVisible(true);
         Component filterComponent = Executions.createComponents(
                 "/orders/_orderElementTreeFilter.zul",
                 filter, new HashMap<String, String>());
@@ -455,7 +471,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
      */
     public void clear() {
         selectDefaultTab();
-        // bdFilter.clear();
+        bdFilter.clear();
         predicate = null;
     }
 

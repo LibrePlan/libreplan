@@ -36,6 +36,12 @@
     </component>
 
     <component>
+        <component-name>bandboxMultipleSearch</component-name>
+        <component-class>org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch</component-class>
+        <macro-uri>/common/components/bandbox_search.zul</macro-uri>
+    </component>
+
+    <component>
         <component-name>newdatasortablecolumn</component-name>
         <component-class>org.navalplanner.web.common.components.NewDataSortableColumn</component-class>
         <extends>column</extends>

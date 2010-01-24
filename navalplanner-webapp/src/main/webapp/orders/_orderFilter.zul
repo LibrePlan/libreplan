@@ -1,0 +1,14 @@
+<hbox align="center" style="margin-left:240px;">
+    <!-- Filter by -->
+    <label>Filter order:</label>
+    <bandboxMultipleSearch id="bdFilters" widthBandbox="285px" widthListbox="300px"
+        finder="MultipleFiltersFinder"/>
+    <label value="${i18n:_('from')}"/>
+    <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
+    <label value="${i18n:_('to')}"/>
+    <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
+    <label value="${i18n:_('include order elements')}"/>
+    <checkbox id="checkIncludeOrderElements"/>
+    <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+        onClick="controller.onApplyFilter()"/>
+</hbox>

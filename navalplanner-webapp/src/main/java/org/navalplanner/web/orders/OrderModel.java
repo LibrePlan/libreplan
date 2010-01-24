@@ -149,6 +149,9 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IUserDAO userDAO;
 
+    private List<Order> orderList = new ArrayList<Order>();
+
+
     @Override
     @Transactional(readOnly = true)
     public List<Label> getLabels() {
@@ -689,6 +692,23 @@ public class OrderModel implements IOrderModel {
             result.delete(result.length() - 1, result.length());
         }
         return result.toString();
+    }
+
+    /*
+     * Operation to filter the order list
+     */
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> getFilterOrders(OrderPredicate predicate) {
+        List<Order> filterOrderList = new ArrayList<Order>();
+        for (Order order : orderList) {
+            orderDAO.reattachUnmodifiedEntity(order);
+            if (predicate.accepts(order)) {
+                filterOrderList.add(order);
+            }
+        }
+        return filterOrderList;
     }
 
 }

@@ -20,23 +20,21 @@
 
 package org.navalplanner.web.common.components.bandboxsearch;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.finders.IBandboxFinder;
+import org.navalplanner.web.common.components.finders.IMultipleFiltersFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -48,8 +46,12 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Listbox;
 
+/**
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+
 @SuppressWarnings("serial")
-public class BandboxSearch extends HtmlMacroComponent {
+public class BandboxMultipleSearch extends HtmlMacroComponent {
 
     private Listbox listbox;
 
@@ -57,94 +59,121 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     private Bandbox bandbox;
 
-    private IBandboxFinder finder;
-
-    private static Map<String, Object> mapMatching = new HashMap<String, Object>();
-
     private String widthBandbox;
 
     private String widthListbox;
 
-    private List<? extends BaseEntity> model;
+    private IMultipleFiltersFinder multipleFiltersFinder;
+
+    private List selectedFilters = new ArrayList();
+
+    private String selectedFiltersText = new String("");
 
     public void afterCompose() {
         super.afterCompose();
         listbox = (Listbox) getFellowIfAny("listbox");
-        if (model != null) {
-            setModel(new SimpleListModel(model));
-        } else {
-            listbox.setModel(finder.getModel());
-        }
-        listbox.setItemRenderer(finder.getItemRenderer());
-
         listhead = (Listhead) listbox.getFellowIfAny("listhead");
         bandbox = (Bandbox) getFellowIfAny("bandbox");
 
-        /**
-         * Search for matching elements while typing on bandbox
-         */
-        bandbox.addEventListener("onChanging", new EventListener() {
+        if (multipleFiltersFinder != null) {
+            multipleFiltersFinder.init();
+            listbox.setModel(new SimpleListModel(multipleFiltersFinder
+                .getMatching("")));
+            listbox.setItemRenderer(multipleFiltersFinder.getItemRenderer());
+            addHeaders();
 
-            @Override
-            public void onEvent(Event event) throws Exception {
-                clearSelectedElement();
-                final String inputText = ((InputEvent) event).getValue();
-                listbox.setModel(getSubModel(inputText));
-                listbox.invalidate();
-            }
-        });
+            /**
+             * Search for matching elements while typing on bandbox
+             */
+            bandbox.addEventListener("onChanging", new EventListener() {
 
-        /**
-         * Pick element from list when selecting
-         */
-        listbox.addEventListener("onSelect", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    final String inputText = ((InputEvent) event).getValue();
+                    if ((inputText == null) || (inputText.isEmpty())) {
+                        clear();
+                    } else {
+                        String newFilterText = getNewFilterText(inputText);
+                        if ((newFilterText != null)
+                                && (newFilterText.length() > 2)) {
+                            listbox.setModel(getSubModel(newFilterText));
+                            listbox.invalidate();
+                        } else {
+                            clearListbox();
+                        }
+                    }
+                }
+            });
 
-            @Override
-            public void onEvent(Event event) throws Exception {
-                final Object object = getSelectedItem().getValue();
-                bandbox.setValue(finder.objectToString(object));
-                setSelectedElement(object);
-                bandbox.close();
-            }
-        });
+            /**
+             * Pick element from list when selecting
+             */
+            listbox.addEventListener("onSelect", new EventListener() {
 
-        addHeaders();
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    final Object object = getSelectedItem().getValue();
+                    addSelectedElement(object);
+                    bandbox.close();
+                    clearListbox();
+                }
+            });
+        }
+
         updateWidth();
     }
 
-    private void clearSelectedElement() {
-        setSelectedElement(null);
+    private String getNewFilterText(String inputText){
+        String newFilterText = new String("");
+        String[] filtersText = inputText.split(",");
+        newFilterText = getLastText(filtersText);
+        newFilterText = newFilterText.replace(" ", "");
+        newFilterText = newFilterText.trim();
+        return newFilterText;
     }
 
-    public void setSelectedElement(Object obj) {
-        bandbox.setVariable("selectedElement", obj, true);
-        if (obj != null) {
-            bandbox.setValue(finder.objectToString(obj));
+    private String getLastText(String[] texts) {
+        Integer last = texts.length - 1;
+        if (texts.length > 0) {
+            return texts[last];
         } else {
-            bandbox.setValue("");
+            return "";
         }
     }
 
-    public Object getSelectedElement() {
-        return bandbox.getVariable("selectedElement", true);
+    private void clearSelectedElement() {
+        bandbox.setValue("");
+        selectedFiltersText = "";
+        selectedFilters.clear();
+    }
+
+    public void addSelectedElement(Object obj) {
+        if (obj != null) {
+            selectedFiltersText = selectedFiltersText
+                    .concat(multipleFiltersFinder.objectToString(obj));
+            bandbox.setValue(selectedFiltersText);
+            selectedFilters.add(obj);
+        }
+    }
+
+    public List getSelectedElements() {
+        if (this.multipleFiltersFinder != null) {
+            if (!multipleFiltersFinder.isValidFormatText(selectedFilters,
+                    bandbox.getValue())) {
+                throw new WrongValueException(bandbox,
+                        _("format filters are not valid"));
+            }
+        }
+        return selectedFilters;
     }
 
     /**
      * Find {@link Label} which name or type start with prefix
-     *
      * @param inputText
      */
     @SuppressWarnings("unchecked")
     private ListModel getSubModel(String inputText) {
-        List result = new ArrayList();
-
-        final ListModel finderModel = finder.getModel();
-        for (int i = 0; i < finderModel.getSize(); i++) {
-            Object obj = finderModel.getElementAt(i);
-            if (finder.entryMatchesText(obj, inputText)) {
-                result.add(obj);
-            }
-        }
+        List result = multipleFiltersFinder.getMatching(inputText);
         return new SimpleListModel(result);
     }
 
@@ -154,7 +183,7 @@ public class BandboxSearch extends HtmlMacroComponent {
     @SuppressWarnings("unchecked")
     public void addHeaders() {
         clearHeaderIfNecessary();
-        final String[] headers = finder.getHeaders();
+        final String[] headers = multipleFiltersFinder.getHeaders();
         for (int i = 0; i < headers.length; i++) {
             listhead.getChildren().add(new Listheader(headers[i]));
         }
@@ -170,66 +199,43 @@ public class BandboxSearch extends HtmlMacroComponent {
         return (Listitem) listbox.getSelectedItems().iterator().next();
     }
 
-    public String getFinder() {
-        return finder.getClass().toString();
-    }
-
-    public void setFinder(String classname) {
-        finder = (IBandboxFinder) getBean(StringUtils.uncapitalize(classname));
-    }
-
-    public List<? extends BaseEntity> getModel() {
-        return model;
-    }
-
-    public void setModel(List<? extends BaseEntity> model) {
-        this.model = model;
-        setModel(new SimpleListModel(model));
-    }
-
-    private void setModel(ListModel model) {
-        finder.setModel(model);
-        listbox.setModel(model);
-    }
-
     public void setDisabled(boolean disabled) {
         bandbox.setDisabled(disabled);
     }
 
-    private Object getBean(String classname) {
+    private Object getBean(String beanName) {
         HttpServletRequest servletRequest = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         ServletContext servletContext = servletRequest.getSession()
                 .getServletContext();
         WebApplicationContext webApplicationContext = WebApplicationContextUtils
                 .getWebApplicationContext(servletContext);
-        return webApplicationContext.getBean(classname);
+        return webApplicationContext.getBean(beanName);
+    }
+
+    public String getFinder() {
+        return multipleFiltersFinder.getClass().toString();
+    }
+
+    public void setFinder(String classname) {
+        multipleFiltersFinder = (IMultipleFiltersFinder) getBean(StringUtils
+                .uncapitalize(classname));
     }
 
     /**
-     * Clears {@link Bandbox}
-     *
-     * Fills bandbox list model, clear bandbox textbox, and set selected label
-     * to null
-     *
+     * Clears {@link Bandbox} Fills bandbox list model, clear bandbox textbox,
+     * and set selected label to null
      * @param bandbox
      */
     public void clear() {
-        listbox.setModel(finder.getModel());
-        bandbox.setValue("");
+        clearListbox();
         clearSelectedElement();
     }
 
-    /**
-     * Adds a new element to list of elements
-     *
-     * @param obj
-     */
-    public void addElement(Object obj) {
-        List<Object> list = asList(finder.getModel());
-        list.add(obj);
-        setModel(new SimpleListModel(list));
-        Util.reloadBindings(listbox);
+    private void clearListbox() {
+        List<Object> list = new ArrayList<Object>();
+        listbox.setModel(new SimpleListModel(list));
+        listbox.invalidate();
     }
 
     public List<Object> asList(ListModel model) {
@@ -240,14 +246,8 @@ public class BandboxSearch extends HtmlMacroComponent {
         return result;
     }
 
-    public void setListboxEventListener(String event,
-            EventListener listener) {
+    public void setListboxEventListener(String event, EventListener listener) {
         listbox.addEventListener(event, listener);
-    }
-
-
-    public void foucusOnInput() {
-        bandbox.setFocus(true);
     }
 
     public String getWidthBandbox() {
