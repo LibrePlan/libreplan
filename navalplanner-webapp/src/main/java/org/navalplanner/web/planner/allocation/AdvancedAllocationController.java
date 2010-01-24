@@ -808,66 +808,133 @@ class Row {
                         ResourceAllocation<?> resourceAllocation = getAllocation();
                         AssignmentFunction assignmentFunction = resourceAllocation
                                 .getAssignmentFunction();
-                        Class<?> selectedAssignmentFunction = (Class<?>) assignmentFunctionsCombo
+                        IAssignmentFunctionConfiguration choosen = (IAssignmentFunctionConfiguration) assignmentFunctionsCombo
                                 .getSelectedItem().getValue();
-                        boolean modifyAssignmentFunction = false;
-
-                        if (assignmentFunction != null) {
-                            if (selectedAssignmentFunction == null
-                                    || !assignmentFunction.getClass().equals(
-                                            selectedAssignmentFunction)) {
-                                int status = Messagebox
-                                        .show(
-                                                _("You are going to change the assignment function. Are you sure?"),
-                                                _("Confirm change"),
-                                                Messagebox.YES | Messagebox.NO,
-                                                Messagebox.QUESTION);
-                                if (Messagebox.YES == status) {
-                                    modifyAssignmentFunction = true;
-                                }
-                            }
+                        boolean hasChanged = !choosen
+                                .isTargetedTo(assignmentFunction);
+                        boolean noPreviousAllocation = assignmentFunction == null;
+                        if (hasChanged
+                                && (noPreviousAllocation || isChangeConfirmed())) {
+                            choosen
+                                    .applyDefaultFunction(resourceAllocation);
                         }
+                    }
 
-                        if (assignmentFunction == null || modifyAssignmentFunction) {
-                            if (selectedAssignmentFunction == null) {
-                                resourceAllocation.setAssignmentFunction(null);
-                            } else if (selectedAssignmentFunction
-                                    .equals(StretchesFunction.class)) {
-                                StretchesFunction stretchesFunction = StretchesFunctionModel
-                                        .createDefaultStretchesFunction(resourceAllocation
-                                                .getTask().getEndDate());
-                                resourceAllocation
-                                        .setAssignmentFunction(stretchesFunction);
-                            }
-                        }
+                    private boolean isChangeConfirmed()
+                            throws InterruptedException {
+                        int status = Messagebox
+                                .show(
+                                        _("You are going to change the assignment function. Are you sure?"),
+                                        _("Confirm change"), Messagebox.YES
+                                                | Messagebox.NO,
+                                        Messagebox.QUESTION);
+                        return Messagebox.YES == status;
                     }
                 });
     }
 
+    public interface IAssignmentFunctionConfiguration {
+
+        public boolean isTargetedTo(AssignmentFunction function);
+
+        public void applyDefaultFunction(
+                ResourceAllocation<?> resourceAllocation);
+
+        public String getName();
+
+        public void goToConfigure();
+
+    }
+
+    private IAssignmentFunctionConfiguration none = new IAssignmentFunctionConfiguration() {
+
+        @Override
+        public void goToConfigure() {
+            try {
+                Messagebox.show(
+                        _("You need to select some function to configure"),
+                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public String getName() {
+            return _("None");
+        }
+
+        @Override
+        public boolean isTargetedTo(AssignmentFunction function) {
+            return function == null;
+        }
+
+        @Override
+        public void applyDefaultFunction(
+                ResourceAllocation<?> resourceAllocation) {
+            resourceAllocation.setAssignmentFunction(null);
+        }
+    };
+
+    private IAssignmentFunctionConfiguration strechesFunction = new IAssignmentFunctionConfiguration() {
+
+        @Override
+        public void goToConfigure() {
+            StretchesFunctionController stretchesFunctionController = new StretchesFunctionController();
+
+            HashMap<String, Object> args = new HashMap<String, Object>();
+            args
+                    .put("stretchesFunctionController",
+                            stretchesFunctionController);
+            Window window = (Window) Executions.createComponents(
+                    "/planner/stretches_function.zul", allHoursInput
+                            .getParent(), args);
+            Util.createBindingsFor(window);
+
+            stretchesFunctionController.setResourceAllocation(getAllocation());
+            stretchesFunctionController.showWindow();
+            getAllocation().setAssignmentFunction(
+                    stretchesFunctionController.getAssignmentFunction());
+            reloadHoursSameRowForDetailItems();
+            reloadAllHours();
+            fireCellChanged();
+        }
+
+        public String getName() {
+            return _("Streches");
+        }
+
+        @Override
+        public boolean isTargetedTo(AssignmentFunction function) {
+            return function instanceof StretchesFunction;
+        }
+
+        @Override
+        public void applyDefaultFunction(
+                ResourceAllocation<?> resourceAllocation) {
+            StretchesFunction stretchesFunction = StretchesFunctionModel
+                    .createDefaultStretchesFunction(resourceAllocation
+                            .getTask().getEndDate());
+            resourceAllocation.setAssignmentFunction(stretchesFunction);
+        }
+    };
+
+    private IAssignmentFunctionConfiguration[] functions = { none,
+            strechesFunction };
+
     private Combobox getAssignmentFunctionsCombo() {
         AssignmentFunction assignmentFunction = getAllocation()
                 .getAssignmentFunction();
-
-        Combobox combobox = new Combobox();
-
-        Comboitem comboitem = new Comboitem(_("None"));
-        comboitem.setValue(null);
-        combobox.appendChild(comboitem);
-        if (assignmentFunction == null) {
-            combobox.setSelectedItem(comboitem);
+        Combobox result = new Combobox();
+        for (IAssignmentFunctionConfiguration each : functions) {
+            Comboitem comboitem = new Comboitem(each.getName());
+            comboitem.setValue(each);
+            result.appendChild(comboitem);
+            if (each.isTargetedTo(assignmentFunction)) {
+                result.setSelectedItem(comboitem);
+            }
         }
-
-        comboitem = new Comboitem(_("Stretches"));
-        comboitem.setValue(StretchesFunction.class);
-        combobox.appendChild(comboitem);
-
-        if (assignmentFunction != null
-                && assignmentFunction.getClass()
-                        .equals(StretchesFunction.class)) {
-            combobox.setSelectedItem(comboitem);
-        }
-
-        return combobox;
+        return result;
     }
 
     private Button getAssignmentFunctionsConfigureButton(
@@ -878,49 +945,11 @@ class Row {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                Class assignmentFunction = (Class) assignmentFunctionsCombo
+                IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsCombo
                         .getSelectedItem().getValue();
-                if (assignmentFunction == null) {
-                    Messagebox
-                            .show(
-                                    _("You need to select some function to configure"),
-                                    _("Warning"), Messagebox.OK,
-                                    Messagebox.EXCLAMATION);
-                } else {
-                    if (assignmentFunction.equals(StretchesFunction.class)) {
-                        goToStretchesFunctionConfiguration();
-                    } else {
-                        Messagebox.show(_("Unknown assignment function: ",
-                                assignmentFunction.getName()), _("Error"),
-                                Messagebox.OK, Messagebox.ERROR);
-                    }
-                }
+                configuration.goToConfigure();
             }
-
-            private void goToStretchesFunctionConfiguration()
-                    throws Exception {
-                StretchesFunctionController stretchesFunctionController = new StretchesFunctionController();
-
-                HashMap<String, Object> args = new HashMap<String, Object>();
-                args.put("stretchesFunctionController",
-                        stretchesFunctionController);
-                Window window = (Window) Executions.createComponents(
-                        "/planner/stretches_function.zul", allHoursInput
-                                .getParent(), args);
-                Util.createBindingsFor(window);
-
-                stretchesFunctionController
-                        .setResourceAllocation(getAllocation());
-                stretchesFunctionController.showWindow();
-                getAllocation().setAssignmentFunction(
-                        stretchesFunctionController.getAssignmentFunction());
-                reloadHoursSameRowForDetailItems();
-                reloadAllHours();
-                fireCellChanged();
-            }
-
         });
-
         return button;
     }
 
