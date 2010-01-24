@@ -190,6 +190,8 @@ public class StretchesFunction extends AssignmentFunction {
     public StretchesFunction copy() {
         StretchesFunction result = StretchesFunction.create();
         result.resetToStrechesFrom(this);
+        result.type = type;
+        result.desiredType = desiredType;
         return result;
     }
 
