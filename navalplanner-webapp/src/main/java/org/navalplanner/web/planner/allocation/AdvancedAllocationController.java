@@ -44,14 +44,11 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.Util;
-import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController;
-import org.navalplanner.web.planner.allocation.streches.StretchesFunctionModel;
+import org.navalplanner.web.planner.allocation.streches.StrechesFunctionConfiguration;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -65,7 +62,6 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -84,7 +80,6 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Column;
-import org.zkoss.zul.api.Window;
 
 public class AdvancedAllocationController extends GenericForwardComposer {
 
@@ -656,6 +651,8 @@ interface CellChangedListener {
 
 class Row {
 
+
+
     static Row createRow(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
@@ -835,19 +832,6 @@ class Row {
                 });
     }
 
-    public interface IAssignmentFunctionConfiguration {
-
-        public boolean isTargetedTo(AssignmentFunction function);
-
-        public void applyDefaultFunction(
-                ResourceAllocation<?> resourceAllocation);
-
-        public String getName();
-
-        public void goToConfigure();
-
-    }
-
     private IAssignmentFunctionConfiguration none = new IAssignmentFunctionConfiguration() {
 
         @Override
@@ -878,46 +862,23 @@ class Row {
         }
     };
 
-    private IAssignmentFunctionConfiguration strechesFunction = new IAssignmentFunctionConfiguration() {
+    private IAssignmentFunctionConfiguration strechesFunction = new StrechesFunctionConfiguration() {
 
         @Override
-        public void goToConfigure() {
-            StretchesFunctionController stretchesFunctionController = new StretchesFunctionController();
-
-            HashMap<String, Object> args = new HashMap<String, Object>();
-            args
-                    .put("stretchesFunctionController",
-                            stretchesFunctionController);
-            Window window = (Window) Executions.createComponents(
-                    "/planner/stretches_function.zul", allHoursInput
-                            .getParent(), args);
-            Util.createBindingsFor(window);
-
-            stretchesFunctionController.setResourceAllocation(getAllocation());
-            stretchesFunctionController.showWindow();
-            getAllocation().setAssignmentFunction(
-                    stretchesFunctionController.getAssignmentFunction());
+        protected void assignmentFunctionChanged() {
             reloadHoursSameRowForDetailItems();
             reloadAllHours();
             fireCellChanged();
         }
 
-        public String getName() {
-            return _("Streches");
+        @Override
+        protected ResourceAllocation<?> getAllocation() {
+            return Row.this.getAllocation();
         }
 
         @Override
-        public boolean isTargetedTo(AssignmentFunction function) {
-            return function instanceof StretchesFunction;
-        }
-
-        @Override
-        public void applyDefaultFunction(
-                ResourceAllocation<?> resourceAllocation) {
-            StretchesFunction stretchesFunction = StretchesFunctionModel
-                    .createDefaultStretchesFunction(resourceAllocation
-                            .getTask().getEndDate());
-            resourceAllocation.setAssignmentFunction(stretchesFunction);
+        protected Component getParentOnWhichOpenWindow() {
+            return allHoursInput.getParent();
         }
     };
 
