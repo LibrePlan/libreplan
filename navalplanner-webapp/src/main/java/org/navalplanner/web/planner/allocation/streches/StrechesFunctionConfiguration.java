@@ -43,6 +43,7 @@ public abstract class StrechesFunctionConfiguration implements
     public void goToConfigure() {
         StretchesFunctionController stretchesFunctionController = new StretchesFunctionController();
         stretchesFunctionController.setTitle(getTitle());
+        stretchesFunctionController.setChartsEnabled(getChartsEnabled());
         HashMap<String, Object> args = new HashMap<String, Object>();
         args.put("stretchesFunctionController", stretchesFunctionController);
         Window window = (Window) Executions.createComponents(
@@ -56,6 +57,8 @@ public abstract class StrechesFunctionConfiguration implements
                 stretchesFunctionController.getAssignmentFunction());
         assignmentFunctionChanged();
     }
+
+    protected abstract boolean getChartsEnabled();
 
     protected abstract String getTitle();
 

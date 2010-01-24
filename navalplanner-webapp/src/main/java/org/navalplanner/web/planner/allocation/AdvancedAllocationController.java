@@ -885,6 +885,11 @@ class Row {
         protected String getTitle() {
             return _("Streches list");
         }
+
+        @Override
+        protected boolean getChartsEnabled() {
+            return true;
+        }
     };
 
     private IAssignmentFunctionConfiguration[] functions = { none,

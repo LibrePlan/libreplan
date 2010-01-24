@@ -65,6 +65,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
     private String title;
 
+    private boolean chartsEnabled = true;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -343,6 +345,14 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isChartsEnabled() {
+        return chartsEnabled;
+    }
+
+    public void setChartsEnabled(boolean chartsEnabled) {
+        this.chartsEnabled = chartsEnabled;
     }
 
 }

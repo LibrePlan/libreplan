@@ -58,7 +58,7 @@
 
     </vbox>
 
-    <vbox id="charts">
+    <vbox id="charts" visible="@{stretchesFunctionController.chartsEnabled}">
         <chart id="dedicationChart" title="${i18n:_('Dedication chart')}"
             type="time_series" threeD="false"
             model="@{stretchesFunctionController.getDedicationChartData}"
