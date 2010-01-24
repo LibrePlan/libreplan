@@ -177,12 +177,19 @@ public class StretchesFunctionTest {
         assertTrue(stretchesFunction.getIntervalsDefinedByStreches().isEmpty());
     }
 
-    @Test
-    public void oneStrechImpliesTwoIntervals() {
+    @Test(expected = IllegalStateException.class)
+    public void theLastStrechMustHaveAllTheLoad() {
         givenStretchesFunction();
-        givenStretchAsChild(new LocalDate().plusMonths(1), new BigDecimal(0.5));
+        givenStretchAsChild(new LocalDate().plusMonths(1), new BigDecimal(0.6));
+        stretchesFunction.getIntervalsDefinedByStreches();
+    }
+
+    @Test
+    public void oneStrechImpliesOneInterval() {
+        givenStretchesFunction();
+        givenStretchAsChild(new LocalDate().plusMonths(1), new BigDecimal(1));
         assertThat(stretchesFunction.getIntervalsDefinedByStreches().size(),
-                equalTo(2));
+                equalTo(1));
     }
 
     @Test
@@ -191,6 +198,7 @@ public class StretchesFunctionTest {
         LocalDate strechDate = new LocalDate().plusMonths(1);
         BigDecimal amountOfWorkProportion = new BigDecimal(0.5).setScale(2);
         givenStretchAsChild(strechDate, amountOfWorkProportion);
+        givenStretchAsChild(new LocalDate().plusMonths(2), new BigDecimal(1.0));
         Interval firstInterval = stretchesFunction
                 .getIntervalsDefinedByStreches().get(0);
         assertThat(firstInterval.getEnd(), equalTo(strechDate));
@@ -204,33 +212,35 @@ public class StretchesFunctionTest {
         givenStretchesFunction();
         LocalDate strechDate = new LocalDate().plusMonths(1);
         givenStretchAsChild(strechDate, new BigDecimal(0.5));
+        givenStretchAsChild(strechDate.plusDays(20), new BigDecimal(1));
         Interval lastInterval = stretchesFunction
                 .getIntervalsDefinedByStreches().get(1);
         assertThat(lastInterval.getStart(), equalTo(strechDate));
     }
 
     @Test
-    public void aIntervalInTheMiddleHasStartAndEnd() {
+    public void aIntervalInTheMiddleHasStart() {
         givenStretchesFunction();
         LocalDate start = new LocalDate().plusMonths(1);
         givenStretchAsChild(start, new BigDecimal(0.5));
         LocalDate middleEnd = start.plusMonths(2);
         givenStretchAsChild(middleEnd, new BigDecimal(0.6));
+        givenStretchAsChild(middleEnd.plusDays(10), new BigDecimal(1));
         Interval middle = stretchesFunction.getIntervalsDefinedByStreches().get(
                 1);
         assertFalse(middle.hasNoStart());
-        assertFalse(middle.hasNoEnd());
         assertThat(middle.getStart(), equalTo(start));
         assertThat(middle.getEnd(), equalTo(middleEnd));
     }
 
     @Test
-    public void eachIntervalAccumulatesAllTheLoads() {
+    public void eachIntervalHasTheCorrespondingLoadForThatInterval() {
         givenStretchesFunction();
         LocalDate start = new LocalDate().plusMonths(1);
         givenStretchAsChild(start, new BigDecimal(0.5));
         LocalDate middleEnd = start.plusMonths(2);
         givenStretchAsChild(middleEnd, new BigDecimal(0.8));
+        givenStretchAsChild(middleEnd.plusDays(10), new BigDecimal(1));
         Interval first = stretchesFunction.getIntervalsDefinedByStreches().get(
                 0);
         Interval middle = stretchesFunction.getIntervalsDefinedByStreches()
@@ -246,20 +256,6 @@ public class StretchesFunctionTest {
     }
 
     @Test
-    public void theLastIntervalHasTheRemainingLoad() {
-        givenStretchesFunction();
-        LocalDate start = new LocalDate().plusMonths(1);
-        givenStretchAsChild(start, new BigDecimal(0.3));
-        givenStretchAsChild(start.plusMonths(2), new BigDecimal(0.5));
-        givenStretchAsChild(start.plusMonths(3), new BigDecimal(0.7));
-        Interval lastInterval = stretchesFunction
-                .getIntervalsDefinedByStreches().get(3);
-        BigDecimal expectedRemaining = new BigDecimal(0.3).setScale(2,
-                RoundingMode.HALF_UP);
-        assertThat(lastInterval.getLoadProportion(), equalTo(expectedRemaining));
-    }
-
-    @Test
     public void ifTheIntervalStartIsNullReturnsThePassedStartDate() {
         LocalDate end = new LocalDate().plusMonths(1);
         Interval interval = new Interval(new BigDecimal(0.3), null, end);
@@ -267,18 +263,17 @@ public class StretchesFunctionTest {
         assertThat(interval.getStartFor(now), equalTo(now));
     }
 
-    @Test
-    public void ifTheIntervalEndIsNullReturnsThePassedStartDate() {
+    @Test(expected = IllegalArgumentException.class)
+    public void endDateCannotBeNull() {
         LocalDate start = new LocalDate().plusMonths(1);
-        Interval interval = new Interval(new BigDecimal(0.3), start, null);
-        LocalDate now = new LocalDate();
-        assertThat(interval.getEndFor(now), equalTo(now));
+        new Interval(new BigDecimal(0.3), start, null);
     }
 
     @Test
     public void ifTheIntervalStartIsNotNullReturnsItsStartDate() {
         LocalDate start = new LocalDate().plusMonths(1);
-        Interval interval = new Interval(new BigDecimal(0.3), start, null);
+        Interval interval = new Interval(new BigDecimal(0.3), start, start
+                .plusDays(20));
         assertThat(interval.getStartFor(new LocalDate()), equalTo(start));
     }
 
@@ -287,7 +282,7 @@ public class StretchesFunctionTest {
         LocalDate start = new LocalDate().plusMonths(1);
         LocalDate end = new LocalDate().plusMonths(2);
         Interval interval = new Interval(new BigDecimal(0.3), start, end);
-        assertThat(interval.getEndFor(new LocalDate()), equalTo(end));
+        assertThat(interval.getEnd(), equalTo(end));
     }
 
 }

@@ -92,7 +92,7 @@ public class StretchesFunction extends AssignmentFunction {
                 LocalDate end) {
             Validate.notNull(loadProportion);
             Validate.isTrue(loadProportion.signum() >= 0);
-            Validate.isTrue(start != null || end != null);
+            Validate.notNull(end);
             this.loadProportion = loadProportion.setScale(2,
                     RoundingMode.HALF_UP);
             this.start = start;
@@ -115,10 +115,6 @@ public class StretchesFunction extends AssignmentFunction {
             return start;
         }
 
-        public boolean hasNoEnd() {
-            return end == null;
-        }
-
         public int getHoursFor(int totalHours) {
             return loadProportion.multiply(new BigDecimal(totalHours))
                     .intValue();
@@ -128,16 +124,12 @@ public class StretchesFunction extends AssignmentFunction {
             return hasNoStart() ? allocationStart : start;
         }
 
-        public LocalDate getEndFor(LocalDate allocationEnd) {
-            return hasNoEnd() ? allocationEnd : end;
-        }
-
         private void apply(ResourceAllocation<?> resourceAllocation,
                 LocalDate startInclusive, LocalDate endExclusive,
                 int intervalHours) {
             resourceAllocation.withPreviousAssociatedResources()
                     .onInterval(getStartFor(startInclusive),
-                                getEndFor(endExclusive))
+                                getEnd())
                     .allocateHours(intervalHours);
         }
 
@@ -340,13 +332,15 @@ public class StretchesFunction extends AssignmentFunction {
             previous = strechDate;
         }
         BigDecimal left = calculateLeftFor(sumOfProportions);
-        result.add(new Interval(left, previous, null));
+        if (!left.equals(BigDecimal.ZERO)) {
+            throw new IllegalStateException("the streches must sum the 100%");
+        }
         return result;
     }
 
     private BigDecimal calculateLeftFor(BigDecimal sumOfProportions) {
         BigDecimal left = BigDecimal.ONE.subtract(sumOfProportions);
-        left = left.signum() < 0 ? BigDecimal.ZERO : left;
+        left = left.signum() <= 0 ? BigDecimal.ZERO : left;
         return left;
     }
 
