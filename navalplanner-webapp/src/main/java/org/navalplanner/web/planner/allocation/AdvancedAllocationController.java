@@ -50,6 +50,8 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController;
+import org.navalplanner.web.planner.allocation.streches.StretchesFunctionModel;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner.allocation;
+package org.navalplanner.web.planner.allocation.streches;
 
 import java.math.BigDecimal;
 import java.util.Date;
