@@ -418,7 +418,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             hoursEachDay[i++]));
                 }
             }
-            return assignmentsCreated;
+            return onlyNonZeroHours(assignmentsCreated);
+        }
+
+        private List<T> onlyNonZeroHours(List<T> assignmentsCreated) {
+            List<T> result = new ArrayList<T>();
+            for (T each : assignmentsCreated) {
+                if (each.getHours() > 0) {
+                    result.add(each);
+                }
+            }
+            return result;
         }
 
         private int[] hoursDistribution(List<LocalDate> days, int hoursToSum) {
