@@ -39,6 +39,10 @@ import org.joda.time.LocalDate;
  */
 public class StretchesFunction extends AssignmentFunction {
 
+    public enum Type {
+        DEFAULT;
+    }
+
     public static class Interval {
 
         private LocalDate start;
@@ -151,6 +155,9 @@ public class StretchesFunction extends AssignmentFunction {
 
     private List<Stretch> stretches = new ArrayList<Stretch>();
 
+    private Type type;
+
+
     public void setStretches(List<Stretch> stretches) {
         this.stretches = stretches;
     }
@@ -168,6 +175,10 @@ public class StretchesFunction extends AssignmentFunction {
     public List<Stretch> getStretches() {
         sortStretches();
         return Collections.unmodifiableList(stretches);
+    }
+
+    public Type getType() {
+        return type == null ? Type.DEFAULT : type;
     }
 
     public void addStretch(Stretch stretch) {

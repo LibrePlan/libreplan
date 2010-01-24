@@ -111,8 +111,12 @@
                     <property name="amountWorkPercentage" not-null="true" />
                 </composite-element>
             </list>
+            <property name="type">
+		      <type name="org.hibernate.type.EnumType">
+		        <param name="enumClass">org.navalplanner.business.planner.entities.StretchesFunction$Type</param>
+		      </type>
+		    </property>
         </joined-subclass>
-
     </class>
 
     <class name="DerivedAllocation">
