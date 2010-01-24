@@ -82,9 +82,14 @@ public class StretchesFunctionController extends GenericForwardComposer {
         reloadStretchesListAndCharts();
     }
 
-    public void showWindow() throws SuspendNotAllowedException,
-            InterruptedException {
-        window.doModal();
+    public void showWindow() {
+        try {
+            window.doModal();
+        } catch (SuspendNotAllowedException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void confirm() throws InterruptedException {
