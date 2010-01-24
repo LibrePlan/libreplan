@@ -50,7 +50,19 @@ public class StretchesFunction extends AssignmentFunction {
                         startInclusive, endExclusive, totalHours);
 
             }
+        },
+        INTERPOLATED {
+            @Override
+            public void apply(ResourceAllocation<?> allocation,
+                    List<Interval> intervalsDefinedByStreches,
+                    LocalDate startInclusive, LocalDate endExclusive,
+                    int totalHours) {
+                // by now doing the same than default
+                DEFAULT.apply(allocation, intervalsDefinedByStreches,
+                        startInclusive, endExclusive, totalHours);
+            }
         };
+
 
         public void applyTo(ResourceAllocation<?> resourceAllocation,
                 StretchesFunction stretchesFunction) {
