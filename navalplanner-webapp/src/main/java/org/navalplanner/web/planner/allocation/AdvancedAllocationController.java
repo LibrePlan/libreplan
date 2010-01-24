@@ -45,6 +45,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -862,8 +863,8 @@ class Row {
         }
     };
 
-    private IAssignmentFunctionConfiguration strechesFunction = new StrechesFunctionConfiguration() {
-
+    private abstract class CommonStrechesConfiguration extends
+            StrechesFunctionConfiguration {
         @Override
         protected void assignmentFunctionChanged() {
             reloadHoursSameRowForDetailItems();
@@ -880,6 +881,9 @@ class Row {
         protected Component getParentOnWhichOpenWindow() {
             return allHoursInput.getParent();
         }
+    }
+
+    private IAssignmentFunctionConfiguration defaultStrechesFunction = new CommonStrechesConfiguration() {
 
         @Override
         protected String getTitle() {
@@ -890,10 +894,43 @@ class Row {
         protected boolean getChartsEnabled() {
             return true;
         }
+
+        @Override
+        protected Type getType() {
+            return Type.DEFAULT;
+        }
+
+        @Override
+        public String getName() {
+            return _("Streches");
+        }
+    };
+
+    private IAssignmentFunctionConfiguration strechesWithInterpolation = new CommonStrechesConfiguration() {
+
+        @Override
+        protected String getTitle() {
+            return _("Streches with Interpolation");
+        }
+
+        @Override
+        protected boolean getChartsEnabled() {
+            return false;
+        }
+
+        @Override
+        protected Type getType() {
+            return Type.INTERPOLATED;
+        }
+
+        @Override
+        public String getName() {
+            return _("Interpolation");
+        }
     };
 
     private IAssignmentFunctionConfiguration[] functions = { none,
-            strechesFunction };
+            defaultStrechesFunction, strechesWithInterpolation };
 
     private Combobox getAssignmentFunctionsCombo() {
         AssignmentFunction assignmentFunction = getAllocation()

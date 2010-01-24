@@ -19,13 +19,12 @@
  */
 package org.navalplanner.web.planner.allocation.streches;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.HashMap;
 
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.StretchesFunction;
+import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.IAssignmentFunctionConfiguration;
 import org.zkoss.zk.ui.Component;
@@ -50,13 +49,14 @@ public abstract class StrechesFunctionConfiguration implements
                 "/planner/stretches_function.zul",
                 getParentOnWhichOpenWindow(), args);
         Util.createBindingsFor(window);
-
         stretchesFunctionController.setResourceAllocation(getAllocation());
         stretchesFunctionController.showWindow();
         getAllocation().setAssignmentFunction(
                 stretchesFunctionController.getAssignmentFunction());
         assignmentFunctionChanged();
     }
+
+    protected abstract Type getType();
 
     protected abstract boolean getChartsEnabled();
 
@@ -68,9 +68,7 @@ public abstract class StrechesFunctionConfiguration implements
 
     protected abstract Component getParentOnWhichOpenWindow();
 
-    public String getName() {
-        return _("Streches");
-    }
+    public abstract String getName();
 
     @Override
     public boolean isTargetedTo(AssignmentFunction function) {
@@ -81,7 +79,7 @@ public abstract class StrechesFunctionConfiguration implements
     public void applyDefaultFunction(ResourceAllocation<?> resourceAllocation) {
         StretchesFunction stretchesFunction = StretchesFunctionModel
                 .createDefaultStretchesFunction(resourceAllocation.getTask()
-                        .getEndDate());
+                        .getEndDate(), getType());
         resourceAllocation.setAssignmentFunction(stretchesFunction);
     }
 

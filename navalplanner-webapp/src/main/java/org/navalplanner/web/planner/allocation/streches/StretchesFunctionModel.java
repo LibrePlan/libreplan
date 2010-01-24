@@ -38,6 +38,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -53,9 +54,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class StretchesFunctionModel implements IStretchesFunctionModel {
 
-    public static StretchesFunction createDefaultStretchesFunction(Date endDate) {
+    public static StretchesFunction createDefaultStretchesFunction(
+            Date endDate, Type type) {
         StretchesFunction stretchesFunction = StretchesFunction.create();
-
+        stretchesFunction.changeTypeTo(type);
         Stretch stretch = new Stretch();
         stretch.setDate(new LocalDate(endDate));
         stretch.setLengthPercentage(BigDecimal.ONE);
