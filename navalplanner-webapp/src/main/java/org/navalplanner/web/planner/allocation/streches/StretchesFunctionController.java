@@ -63,6 +63,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
     private StretchesRenderer stretchesRenderer = new StretchesRenderer();
 
+    private String title;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -333,6 +335,14 @@ public class StretchesFunctionController extends GenericForwardComposer {
         }
 
         return xymodel;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

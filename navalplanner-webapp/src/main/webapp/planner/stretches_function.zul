@@ -33,7 +33,7 @@
 <hbox>
     <vbox>
 
-        <panel title="${i18n:_('Stretches list')}">
+        <panel title="@{stretchesFunctionController.title}">
 
         <panelchildren>
 

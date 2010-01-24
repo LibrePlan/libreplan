@@ -42,7 +42,7 @@ public abstract class StrechesFunctionConfiguration implements
     @Override
     public void goToConfigure() {
         StretchesFunctionController stretchesFunctionController = new StretchesFunctionController();
-
+        stretchesFunctionController.setTitle(getTitle());
         HashMap<String, Object> args = new HashMap<String, Object>();
         args.put("stretchesFunctionController", stretchesFunctionController);
         Window window = (Window) Executions.createComponents(
@@ -56,6 +56,8 @@ public abstract class StrechesFunctionConfiguration implements
                 stretchesFunctionController.getAssignmentFunction());
         assignmentFunctionChanged();
     }
+
+    protected abstract String getTitle();
 
     protected abstract ResourceAllocation<?> getAllocation();
 

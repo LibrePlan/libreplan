@@ -880,6 +880,11 @@ class Row {
         protected Component getParentOnWhichOpenWindow() {
             return allHoursInput.getParent();
         }
+
+        @Override
+        protected String getTitle() {
+            return _("Streches list");
+        }
     };
 
     private IAssignmentFunctionConfiguration[] functions = { none,
