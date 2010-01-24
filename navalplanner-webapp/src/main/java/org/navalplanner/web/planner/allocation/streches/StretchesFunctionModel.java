@@ -91,7 +91,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         if (stretchesFunction != null) {
             assignmentFunctionDAO.reattach(stretchesFunction);
             this.originalStretchesFunction = stretchesFunction;
-            this.stretchesFunction = copy(stretchesFunction);
+            this.stretchesFunction = stretchesFunction.copy();
 
             this.task = task;
             forceLoadTask();
@@ -104,25 +104,6 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         taskElementDAO.reattach(task);
         task.getHoursSpecifiedAtOrder();
         task.getCalendar();
-    }
-
-    private static StretchesFunction copy(StretchesFunction stretchesFunction) {
-        StretchesFunction copy = StretchesFunction.create();
-        copyStretches(stretchesFunction, copy);
-        return copy;
-    }
-
-    private static void copyStretches(StretchesFunction original,
-            StretchesFunction copy) {
-        copy.removeAllStretches();
-        for (Stretch stretch : original.getStretches()) {
-            Stretch newStretch = new Stretch();
-            newStretch.setDate(stretch.getDate());
-            newStretch.setLengthPercentage(stretch.getLengthPercentage());
-            newStretch.setAmountWorkPercentage(stretch
-                    .getAmountWorkPercentage());
-            copy.addStretch(newStretch);
-        }
     }
 
     @Override
@@ -152,7 +133,8 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             }
 
             if (originalStretchesFunction != null) {
-                copyStretches(stretchesFunction, originalStretchesFunction);
+                originalStretchesFunction
+                        .resetToStrechesFrom(stretchesFunction);
                 stretchesFunction = originalStretchesFunction;
             }
         }

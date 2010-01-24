@@ -187,6 +187,24 @@ public class StretchesFunction extends AssignmentFunction {
      */
     private Type desiredType;
 
+    public StretchesFunction copy() {
+        StretchesFunction result = StretchesFunction.create();
+        result.resetToStrechesFrom(this);
+        return result;
+    }
+
+    public void resetToStrechesFrom(StretchesFunction from) {
+        this.removeAllStretches();
+        for (Stretch each : from.getStretches()) {
+            Stretch newStretch = new Stretch();
+            newStretch.setDate(each.getDate());
+            newStretch.setLengthPercentage(each.getLengthPercentage());
+            newStretch.setAmountWorkPercentage(each
+                    .getAmountWorkPercentage());
+            this.addStretch(newStretch);
+        }
+    }
+
     public void setStretches(List<Stretch> stretches) {
         this.stretches = stretches;
     }
