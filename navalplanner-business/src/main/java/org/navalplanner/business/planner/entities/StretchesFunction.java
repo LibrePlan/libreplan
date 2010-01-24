@@ -40,7 +40,32 @@ import org.joda.time.LocalDate;
 public class StretchesFunction extends AssignmentFunction {
 
     public enum Type {
-        DEFAULT;
+        DEFAULT {
+            @Override
+            public void apply(ResourceAllocation<?> allocation,
+                    List<Interval> intervalsDefinedByStreches,
+                    LocalDate startInclusive, LocalDate endExclusive,
+                    int totalHours) {
+                Interval.apply(allocation, intervalsDefinedByStreches,
+                        startInclusive, endExclusive, totalHours);
+
+            }
+        };
+
+        public void applyTo(ResourceAllocation<?> resourceAllocation,
+                StretchesFunction stretchesFunction) {
+            List<Interval> intervalsDefinedByStreches = stretchesFunction
+                    .getIntervalsDefinedByStreches();
+            int totalHours = resourceAllocation.getAssignedHours();
+            LocalDate start = resourceAllocation.getStartDate();
+            LocalDate end = resourceAllocation.getEndDate();
+            apply(resourceAllocation, intervalsDefinedByStreches, start, end,
+                    totalHours);
+        }
+
+        protected abstract void apply(ResourceAllocation<?> allocation,
+                List<Interval> intervalsDefinedByStreches,
+                LocalDate startInclusive, LocalDate endExclusive, int totalHours);
     }
 
     public static class Interval {
@@ -96,11 +121,11 @@ public class StretchesFunction extends AssignmentFunction {
         }
 
         private void apply(ResourceAllocation<?> resourceAllocation,
-                LocalDate allocationStart, LocalDate allocationEnd,
+                LocalDate startInclusive, LocalDate endExclusive,
                 int intervalHours) {
             resourceAllocation.withPreviousAssociatedResources()
-                              .onInterval(getStartFor(allocationStart),
-                                      getEndFor(allocationEnd))
+                    .onInterval(getStartFor(startInclusive),
+                                getEndFor(endExclusive))
                     .allocateHours(intervalHours);
         }
 
@@ -157,6 +182,10 @@ public class StretchesFunction extends AssignmentFunction {
 
     private Type type;
 
+    /**
+     * This is a transient field. Not stored
+     */
+    private Type desiredType;
 
     public void setStretches(List<Stretch> stretches) {
         this.stretches = stretches;
@@ -179,6 +208,14 @@ public class StretchesFunction extends AssignmentFunction {
 
     public Type getType() {
         return type == null ? Type.DEFAULT : type;
+    }
+
+    private Type getDesiredType() {
+        return desiredType == null ? getType() : desiredType;
+    }
+
+    public void changeTypeTo(Type type) {
+        desiredType = type;
     }
 
     public void addStretch(Stretch stretch) {
@@ -251,12 +288,8 @@ public class StretchesFunction extends AssignmentFunction {
         if (!resourceAllocation.hasAssignments()) {
             return;
         }
-        List<Interval> intervalsDefinedByStreches = getIntervalsDefinedByStreches();
-        int totalHours = resourceAllocation.getAssignedHours();
-        LocalDate start = resourceAllocation.getStartDate();
-        LocalDate end = resourceAllocation.getEndDate();
-        Interval.apply(resourceAllocation, intervalsDefinedByStreches, start,
-                end, totalHours);
+        getDesiredType().applyTo(resourceAllocation, this);
+        type = getDesiredType();
     }
 
     public List<Interval> getIntervalsDefinedByStreches() {
