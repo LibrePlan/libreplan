@@ -546,6 +546,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
+    private void setWithoutApply(AssignmentFunction assignmentFunction) {
+        this.assignmentFunction = assignmentFunction;
+    }
+
     public int getAssignedHours() {
         return DayAssignment.sum(getAssignments());
     }
@@ -653,7 +657,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
-        setAssignmentFunction(modifications.getAssignmentFunction());
+        setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(modifications.getDerivedAllocations());
     }
 
