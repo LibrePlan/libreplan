@@ -69,10 +69,8 @@ public class StretchesFunction extends AssignmentFunction {
                 double[] y = Interval.getHoursPointsFor(totalHours,
                         intervalsDefinedByStreches);
                 assert y.length == 1 + intervalsDefinedByStreches.size();
-                UnivariateRealFunction accumulatingFunction = new SplineInterpolator()
-                        .interpolate(x, y);
-                int[] hoursForEachDay = extractHoursShouldAssignForEachDay(
-                        accumulatingFunction, startInclusive, endExclusive);
+                int[] hoursForEachDay = hoursForEachDayUsingSplines(x, y,
+                        startInclusive, endExclusive);
                 int[] reallyAssigned = getReallyAssigned(allocation,
                         startInclusive, hoursForEachDay);
                 // Because of calendars, really assigned hours can be less than
@@ -81,29 +79,6 @@ public class StretchesFunction extends AssignmentFunction {
                 distributeRemainder(allocation, startInclusive, totalHours,
                         reallyAssigned);
 
-            }
-
-            private int[] extractHoursShouldAssignForEachDay(
-                    UnivariateRealFunction accumulatedFunction,
-                    LocalDate startInclusive, LocalDate endExclusive) {
-                int[] result = new int[Days.daysBetween(startInclusive,
-                        endExclusive).getDays()];
-                int previous = 0;
-                for (int i = 0; i < result.length; i++) {
-                    int accumulated = evaluate(accumulatedFunction, i);
-                    result[i] = accumulated - previous;
-                    previous = accumulated;
-                }
-                return result;
-            }
-
-            private int evaluate(UnivariateRealFunction accumulatedFunction,
-                    int x) {
-                try {
-                    return (int) accumulatedFunction.value(x);
-                } catch (FunctionEvaluationException e) {
-                    throw new RuntimeException(e);
-                }
             }
 
             private int[] getReallyAssigned(ResourceAllocation<?> allocation,
@@ -149,6 +124,38 @@ public class StretchesFunction extends AssignmentFunction {
                 return remainderDistributor.distribute(remainder);
             }
         };
+
+        public static int[] hoursForEachDayUsingSplines(double[] x, double[] y,
+                LocalDate startInclusive, LocalDate endExclusive) {
+            UnivariateRealFunction accumulatingFunction = new SplineInterpolator()
+                    .interpolate(x, y);
+            int[] hoursForEachDay = extractHoursShouldAssignForEachDay(
+                    accumulatingFunction, startInclusive, endExclusive);
+            return hoursForEachDay;
+        }
+
+        private static int[] extractHoursShouldAssignForEachDay(
+                UnivariateRealFunction accumulatedFunction,
+                LocalDate startInclusive, LocalDate endExclusive) {
+            int[] result = new int[Days.daysBetween(startInclusive,
+                    endExclusive).getDays()];
+            int previous = 0;
+            for (int i = 0; i < result.length; i++) {
+                int accumulated = evaluate(accumulatedFunction, i);
+                result[i] = accumulated - previous;
+                previous = accumulated;
+            }
+            return result;
+        }
+
+        private static int evaluate(UnivariateRealFunction accumulatedFunction,
+                int x) {
+            try {
+                return (int) accumulatedFunction.value(x);
+            } catch (FunctionEvaluationException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
 
         public void applyTo(ResourceAllocation<?> resourceAllocation,
