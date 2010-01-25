@@ -63,6 +63,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -396,7 +397,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         @Override
         protected void addOperationsCell(final Treeitem item,
                 final OrderElement currentOrderElement) {
-            addCell(createEditButton(currentOrderElement),
+            addCell(createEditButton(currentOrderElement, item),
                     createTemplateButton(currentOrderElement),
                     createUpButton(item,currentOrderElement),
                     createDownButton(item,currentOrderElement),
@@ -405,12 +406,14 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     createRemoveButton(currentOrderElement));
         }
 
-        private Button createEditButton(final OrderElement currentOrderElement) {
+        private Button createEditButton(final OrderElement currentOrderElement,
+                final Treeitem item) {
             Button editbutton = createButton("/common/img/ico_editar1.png",
                     _("Edit"), "/common/img/ico_editar.png", "icono",
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
+                            markModifiedTreeitem((Treerow) item.getFirstChild());
                             IOrderElementModel model = orderModel
                                     .getOrderElementModel(currentOrderElement);
                             orderElementController.openWindow(model);

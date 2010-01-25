@@ -608,19 +608,23 @@ div.z-grid {
     height:25px;
 }
 .orderTree .operations {
-    min-width:150px;
+    min-width:160px;
 }
 .orderTree .name {
-    min-width:100px;
+    min-width:120px;
 }
 .orderTree .hours {
-    min-width:50px;
+    min-width:40px;
 }
 .orderTree .code {
-    min-width:90px;
+    min-width:100px;
 }
 .orderTree .scheduling_state {
-    min-width:250px;
+    min-width:160px;
+}
+.orderTree .estimated-init,
+.orderTree .deadline {
+    width: 100px;
 }
 
 .orderTree .tasknumber {
@@ -825,21 +829,25 @@ div.z-listbox-pgi-b {
 .orderTree .partially-scheduled span,
 .orderTree .completely-scheduled span {
     float:left;
-    padding-right:2px;
 }
 
-.orderTree .not-scheduled span.z-label,
-.orderTree .partially-scheduled span.z-label,
-.orderTree .completely-scheduled span.z-label {
+.orderTree .not-scheduled span.scheduling-state,
+.orderTree .partially-scheduled span.scheduling-state,
+.orderTree .completely-scheduled span.scheduling-state {
     -moz-border-radius-bottomleft: 6px;
     -moz-border-radius-bottomright: 1px;
     -moz-border-radius-topleft: 1px;
     -moz-border-radius-topright: 6px;
     border: 1px solid #888888;
     color: #888888;
-    margin: 1px 6px;
-    padding: 2px 5px;
     font-weight: bold;
+    margin: 4px 3px 2px 0;
+    padding: 1px 5px;
+}
+
+
+.scheduling-state {
+    cursor: move;
 }
 
 .orderTree .not-scheduled,
@@ -856,12 +864,10 @@ div.z-listbox-pgi-b {
     background-color: #bee5a9;
 }
 
-span.z-dottree-ico {
-    min-height:22px;
-}
-
+span.z-dottree-tee-open,
+span.z-dottree-tee-close,
 span.z-dottree-line {
-    min-height:28px;
+    min-height: 28px;
 }
 
 
@@ -1118,4 +1124,3 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 .function {
     min-width: 90px;
 }
-

@@ -343,7 +343,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
                 .getVariable("assignedTaskQualityFormsController", true);
     }
-    
+
     private OrderAuthorizationController orderAuthorizationController;
 
     private void setupOrderAuthorizationController(
@@ -702,6 +702,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         buttonEdit.addEventListener("onClick",new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
+                hbox.appendChild(new Label("aaa"));
                 goToEditForm(order);
             }
         });

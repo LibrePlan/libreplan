@@ -398,6 +398,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             cell.addEventListener("onDoubleClick", new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
+
+                    markModifiedTreeitem((Treerow) cell.getParent());
                     onDoubleClickForSchedulingStateCell(currentElement);
                 }
             });
@@ -584,5 +586,16 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     protected abstract boolean isPredicateApplied();
 
     protected abstract String createTooltipText(T currentElement);
+
+    protected void markModifiedTreeitem(Treerow item) {
+        Treecell tc = (Treecell) item.getFirstChild();
+        // Check if marked label has been previously added
+        if (!(tc.getLastChild() instanceof org.zkoss.zul.Label)) {
+            org.zkoss.zul.Label modifiedMark = new org.zkoss.zul.Label("*");
+            modifiedMark.setTooltiptext(_("Modified"));
+            modifiedMark.setSclass("modified-mark");
+            tc.appendChild(modifiedMark);
+        }
+    }
 
 }
