@@ -31,6 +31,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 
 
 
@@ -45,7 +46,7 @@ public interface IStretchesFunctionModel {
      * Initial conversation steps
      */
 
-    void init(StretchesFunction stretchesFunction, Task task);
+    void init(StretchesFunction stretchesFunction, Task task, Type type);
 
     /*
      * Intermediate conversation steps

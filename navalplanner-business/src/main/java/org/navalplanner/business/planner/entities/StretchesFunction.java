@@ -352,7 +352,7 @@ public class StretchesFunction extends AssignmentFunction {
         return type == null ? Type.DEFAULT : type;
     }
 
-    private Type getDesiredType() {
+    public Type getDesiredType() {
         return desiredType == null ? getType() : desiredType;
     }
 
@@ -460,6 +460,10 @@ public class StretchesFunction extends AssignmentFunction {
         BigDecimal left = BigDecimal.ONE.subtract(sumOfProportions);
         left = left.signum() <= 0 ? BigDecimal.ZERO : left;
         return left;
+    }
+
+    public boolean ifInterpolatedMustHaveAtLeastTwoStreches() {
+        return getDesiredType() != Type.INTERPOLATED || stretches.size() >= 2;
     }
 
 }

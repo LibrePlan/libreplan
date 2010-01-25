@@ -38,7 +38,6 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -54,16 +53,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class StretchesFunctionModel implements IStretchesFunctionModel {
 
-    public static StretchesFunction createDefaultStretchesFunction(
-            Date endDate, Type type) {
+    public static StretchesFunction createDefaultStretchesFunction(Date endDate) {
         StretchesFunction stretchesFunction = StretchesFunction.create();
-        stretchesFunction.changeTypeTo(type);
         Stretch stretch = new Stretch();
         stretch.setDate(new LocalDate(endDate));
         stretch.setLengthPercentage(BigDecimal.ONE);
         stretch.setAmountWorkPercentage(BigDecimal.ONE);
         stretchesFunction.addStretch(stretch);
-
         return stretchesFunction;
     }
 
@@ -89,12 +85,15 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void init(StretchesFunction stretchesFunction, Task task) {
+    public void init(
+            StretchesFunction stretchesFunction,
+            Task task,
+            org.navalplanner.business.planner.entities.StretchesFunction.Type type) {
         if (stretchesFunction != null) {
             assignmentFunctionDAO.reattach(stretchesFunction);
             this.originalStretchesFunction = stretchesFunction;
             this.stretchesFunction = stretchesFunction.copy();
-
+            this.stretchesFunction.changeTypeTo(type);
             this.task = task;
             forceLoadTask();
             this.taskEndDate = task.getEndDate();
@@ -133,10 +132,16 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                         _("Last stretch should have one hundred percent for "
                                 + "length and amount of work percentage"));
             }
+            if (!stretchesFunction.ifInterpolatedMustHaveAtLeastTwoStreches()) {
+                throw new ValidationException(
+                        _("For interpolation at least two streches needed"));
+            }
 
             if (originalStretchesFunction != null) {
                 originalStretchesFunction
                         .resetToStrechesFrom(stretchesFunction);
+                originalStretchesFunction.changeTypeTo(stretchesFunction
+                                .getDesiredType());
                 stretchesFunction = originalStretchesFunction;
             }
         }

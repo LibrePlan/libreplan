@@ -49,7 +49,9 @@ public abstract class StrechesFunctionConfiguration implements
                 "/planner/stretches_function.zul",
                 getParentOnWhichOpenWindow(), args);
         Util.createBindingsFor(window);
-        stretchesFunctionController.setResourceAllocation(getAllocation());
+        ResourceAllocation<?> allocation = getAllocation();
+        stretchesFunctionController
+                .setResourceAllocation(allocation, getType());
         stretchesFunctionController.showWindow();
         getAllocation().setAssignmentFunction(
                 stretchesFunctionController.getAssignmentFunction());
@@ -83,7 +85,7 @@ public abstract class StrechesFunctionConfiguration implements
     public void applyDefaultFunction(ResourceAllocation<?> resourceAllocation) {
         StretchesFunction stretchesFunction = StretchesFunctionModel
                 .createDefaultStretchesFunction(resourceAllocation.getTask()
-                        .getEndDate(), getType());
+                        .getEndDate());
         resourceAllocation.setAssignmentFunction(stretchesFunction);
     }
 
