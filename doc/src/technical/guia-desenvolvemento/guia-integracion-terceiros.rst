@@ -1,9 +1,11 @@
+
 NavalPlan: Guía de integración
-==============================
+##############################
 
 A guía de integración de NavalPlan detalla as posibilidades existentes para a integración entre aplicacións co software NavalPlan.
 
 As funcionalidades de integración da ferramenta para a Xestión da Producción permitirán a compartición de datos entre as distintas ferramentas existentes en cada empresa. NavalPlan define unha serie de formatos de intercambio de información empregando a sintaxe XML. A descrición das interfaces e formatos de intercambio son totalmente abertos e está dispoñible a súa implementación para incorporar novas posibilidades de integración se fose necesario.
+
 
 Visión Global
 =============
@@ -301,6 +303,7 @@ Xa que para os servizos web de NavalPlan van estar dispoñibles os XML Schema do
 
 Tamén se implementará a través de CXF unha validación do XML entrante no corpo das mensaxes HTTP de invocación dos servizos web por parte dos clientes. Por tanto, se validará se o XML contra o esquema XML e se non é correcto mandarase unha mensaxe de resposta HTTP con código de estado 400 e corpo baleiro.
 
+
 Fluxos de integración
 =====================
 
@@ -339,7 +342,7 @@ Postcondicións
        * se un material cambia de categoría modificarase a categoría a que pertence o material.
 
 Clases involucradas en NavalPlan
- .. image:: materials.png
+ .. image:: images/materials.png
     :width: 300
     :alt: Diagrama de Clases do dominio de Materiais en NavalPlan
 
@@ -411,7 +414,7 @@ Postcondicións
        * os seus campos propios serán actualizados coa nova información.
 
 Clases involucradas en NavalPlan
- .. image:: labels.png
+ .. image:: images/labels.png
     :width: 200
     :alt: Diagrama de Clases do dominio de Etiquetas en NavalPlan
 
@@ -475,7 +478,7 @@ Postcondicións
        * se un criterio non aparece nunha nova importación non se realizará ningún cambio xa que non se realizan borrados. So se realizan actualizacións e marcados coma non activados.
 
 Clases involucradas en NavalPlan
- .. image:: criterions.png
+ .. image:: images/criterions.png
     :width: 350
     :alt: Diagrama de Clases do dominio de Criterios en NavalPlan
 
@@ -564,7 +567,7 @@ Postcondicións
     *  As instancias que existían previamente no sistema verán actualizada a súa información.
 
 Clases involucradas en NavalPlan
- .. image:: typeofworkhours.png
+ .. image:: images/typeofworkhours.png
     :width: 150
     :alt: Diagrama de Clases do dominio de Tipos de Horas en NavalPlan
 
@@ -610,7 +613,7 @@ Postcondicións
     *  As instancias que xa existían previamente no sistema verán actualizada a súa información.
 
 Clases involucradas en NavalPlan
- .. image:: costcategories.png
+ .. image:: images/costcategories.png
     :width: 150
     :alt: Diagrama de Clases do dominio de Categorías de Coste en NavalPlan
 
@@ -673,7 +676,7 @@ Postcondicións
        * as relacións con novos criterios e categorías de custo serán incorporadas. Nunca se borrarán categorías nin criterios se non son incorporados na aplicación xa que poden ter sido dados de alta a través da interface web de NavalPlan. En caso de incoherencia nunca se borrará a información de NavalPlan e reportarase a existencia de inconsistencias para que sexan emendadas.
 
 Clases involucradas en NavalPlan
- .. image:: resources.png
+ .. image:: images/resources.png
     :width: 350
     :alt: Diagrama de Clases do dominio de Recursos en NavalPlan
 
@@ -800,7 +803,7 @@ Postcondicións
     *  Os partes xa existentes verán actualizada a súa información.
 
 Clases involucradas en NavalPlan
- .. image:: workreports.png
+ .. image:: images/workreports.png
     :width: 400
     :alt: Diagrama de Clases do dominio de Partes de Traballo en NavalPlan
 
@@ -838,9 +841,9 @@ Exemplo de ficheiro de importación:
        <label-list>
         <label code="e1-02" value="normal" type="prioridade"/>
        </label-list>
-       <text-field-list> 
+       <text-field-list>
         <text-field name="incidence" value="none"/>
-       </text-field-list> 
+       </text-field-list>
       </workreportline>
     </work-report-line-list>
    </work-report>
@@ -880,7 +883,7 @@ Postcondicións
       * Actualizarase a información dos elementos do pedido.
 
 Clases involucradas en NavalPlan
- .. image:: orders.png
+ .. image:: images/orders.png
     :width: 350
     :alt: Diagrama de Clases do dominio de Pedidos en NavalPlan
 
@@ -896,7 +899,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  <order-lists xmlns="http://rest.ws.navalplanner.org"> 
+  <order-lists xmlns="http://rest.ws.navalplanner.org">
    <order code="ORDER-1" name="Order" init-date="2010-01-01" deadline="2010-05-30">
     <label-list>
      <label code="10" name="low" type="priority" />
@@ -918,7 +921,7 @@ Exemplo de ficheiro de importación
       <criterion-requirements>
        <indirect-criterion-requirement code="10" is-valid="true"/>
        <indirect-criterion-requirement code="20" is-valid="true"/>
-      </criterion-requirements> 
+      </criterion-requirements>
       <children>
        <order-line code="ORDER-1-OE-1-1" name="Order element 1.1">
         <criterion-requirements>
@@ -1002,7 +1005,7 @@ Postcondicións
     *  Se a consulta é particular, obtense únicamente o número de horas traballadas por ese recurso.
 
 Clases involucradas en NavalPlan
- .. image:: workedhours.png
+ .. image:: images/workedhours.png
     :width: 150
     :alt: Diagrama de Clases do dominio de Recursos en NavalPlan
 
@@ -1065,7 +1068,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-   <subcontracted-task-data xmlns="http://rest.ws.navalplanner.org" work-description="Pedido de 100 puertas" 
+   <subcontracted-task-data xmlns="http://rest.ws.navalplanner.org" work-description="Pedido de 100 puertas"
     subcontracted-code="REFERENCE-CODE-1" subcontracted-price="152200.03" external-company-nif="B15323232">
     <materials>
      <material code="MAT-1" material-reference="MATERIAL-1" name="Tuercas 2x20" descripcion="Tuercas moi resistentes"  unit-price="10.5"/>
@@ -1139,7 +1142,7 @@ Exemplo de ficheiro de importación de avances.
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-   <subcontracted-task-data xmlns="http://rest.ws.navalplanner.org" work-description="Pedido de 100 puertas" 
+   <subcontracted-task-data xmlns="http://rest.ws.navalplanner.org" work-description="Pedido de 100 puertas"
     subcontracted-code="REFERENCE-CODE-1" subcontracted-price="152200.03" external-company-nif="B15323232">
    <children>
     <order-line-group code="ORDER-1-OE-1" name="Order element 1" description="Descripcion">

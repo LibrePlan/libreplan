@@ -1,0 +1,18 @@
+#
+# First word:
+#   Identifier of the section to include. It cannot contain spaces. For
+#   a section named “foo”, a file “foo/foo.rst” must exist.
+#
+# Rest of the line:
+#   Free form text for specifying who is in charge. It will be passed to
+#   docutils as-is, so you can add markup if needed.
+#
+#
+
+
+guia-arquitectura		Javier Morán		(jmoran@igalia.com)
+guia-desenvolvemento-git        José María Casanova	(jmcasanova@igalia.com)
+guia-desenvolvemento            Fernando Bellas 	(fbellas@udc.es)
+guia-integracion-terceiros      José María Casanova  	(jmcasanova@igalia.com)
+guia-instalacion		José María Casanova	(jmcasanova@igalia.com)
+guia-desenvolvemento-caso-uso	Javier Morán		(jmoran@igalia.com)
