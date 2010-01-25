@@ -30,6 +30,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
@@ -38,6 +39,8 @@ import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentFo
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
@@ -66,6 +69,9 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
+    @Autowired
+    private IExternalCompanyDAO externalCompanyDAO;
+
     private InstanceConstraintViolationsListDTO getErrorMessage(String code,
             String message) {
         // FIXME review errors returned
@@ -83,6 +89,27 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
 
         InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
+
+        if (StringUtils
+                .isEmpty(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif)) {
+            return getErrorMessage("", "external company nif not specified");
+        }
+
+        ExternalCompany externalCompany;
+        try {
+            externalCompany = externalCompanyDAO
+                    .findUniqueByNif(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif);
+        } catch (InstanceNotFoundException e1) {
+            return getErrorMessage(
+                    orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif,
+                    "external company not found");
+        }
+
+        if (!externalCompany.isSubcontractor()) {
+            return getErrorMessage(
+                    orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif,
+                    "external company is not registered as subcontractor");
+        }
 
         List<OrderElementWithAdvanceMeasurementsDTO> orderElements = orderElementWithAdvanceMeasurementsListDTO.orderElements;
         for (OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO : orderElements) {

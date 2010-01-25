@@ -23,6 +23,7 @@ package org.navalplanner.ws.subcontract.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -36,14 +37,18 @@ import org.navalplanner.business.orders.entities.OrderElement;
 @XmlRootElement(name = "order-element-list")
 public class OrderElementWithAdvanceMeasurementsListDTO {
 
+    @XmlAttribute(name = "external-company-nif")
+    public String externalCompanyNif;
+
     @XmlElement(name = "order-element")
     public List<OrderElementWithAdvanceMeasurementsDTO> orderElements = new ArrayList<OrderElementWithAdvanceMeasurementsDTO>();
 
     public OrderElementWithAdvanceMeasurementsListDTO() {
     }
 
-    public OrderElementWithAdvanceMeasurementsListDTO(
+    public OrderElementWithAdvanceMeasurementsListDTO(String externalCompanyNif,
             List<OrderElementWithAdvanceMeasurementsDTO> orderElements) {
+        this.externalCompanyNif = externalCompanyNif;
         this.orderElements = orderElements;
     }
 

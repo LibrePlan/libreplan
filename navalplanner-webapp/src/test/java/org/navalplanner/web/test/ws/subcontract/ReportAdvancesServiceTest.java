@@ -38,6 +38,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +47,8 @@ import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -92,6 +95,26 @@ public class ReportAdvancesServiceTest {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    @Autowired
+    private IExternalCompanyDAO externalCompanyDAO;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private ExternalCompany getSubcontractorExternalCompanySaved(String name,
+            String nif) {
+        ExternalCompany externalCompany = ExternalCompany.create(name, nif);
+        externalCompany.setSubcontractor(true);
+
+        externalCompanyDAO.save(externalCompany);
+        externalCompanyDAO.flush();
+        sessionFactory.getCurrentSession().evict(externalCompany);
+
+        externalCompany.dontPoseAsTransientObjectAnymore();
+
+        return externalCompany;
+    }
+
     @Test
     public void validAdvancesReport() {
         Order order = givenValidOrderAlreadyStored();
@@ -135,7 +158,11 @@ public class ReportAdvancesServiceTest {
         advanceMeasurementDTOs.add(new AdvanceMeasurementDTO(date, value));
         orderElementWithAdvanceMeasurementsDTO.advanceMeasurements = advanceMeasurementDTOs;
 
-        return new OrderElementWithAdvanceMeasurementsListDTO(Arrays
+        ExternalCompany externalCompany = getSubcontractorExternalCompanySaved(
+                "Company", "company-nif");
+
+        return new OrderElementWithAdvanceMeasurementsListDTO(externalCompany
+                .getNif(), Arrays
                 .asList(orderElementWithAdvanceMeasurementsDTO));
     }
 

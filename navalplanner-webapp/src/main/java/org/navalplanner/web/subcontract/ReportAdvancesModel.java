@@ -39,6 +39,7 @@ import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -75,6 +76,9 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     @Autowired
     private IAdvanceAssignmentDAO advanceAssignmentDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -260,8 +264,12 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
             }
         }
 
-        return new OrderElementWithAdvanceMeasurementsListDTO(
+        return new OrderElementWithAdvanceMeasurementsListDTO(getCompanyCode(),
                 orderElementWithAdvanceMeasurementsDTOs);
+    }
+
+    private String getCompanyCode() {
+        return configurationDAO.getConfiguration().getCompanyCode();
     }
 
 }
