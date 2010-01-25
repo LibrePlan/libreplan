@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.entities;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -294,6 +295,26 @@ public class StretchesFunction extends AssignmentFunction {
         return (StretchesFunction) create(new StretchesFunction());
     }
 
+    public static List<Interval> intervalsFor(
+            Collection<? extends Stretch> streches) {
+        ArrayList<Interval> result = new ArrayList<Interval>();
+        LocalDate previous = null;
+        BigDecimal sumOfProportions = new BigDecimal(0);
+        for (Stretch each : streches) {
+            LocalDate strechDate = each.getDate();
+            result.add(new Interval(each.getAmountWorkPercentage().subtract(
+                    sumOfProportions), previous,
+                    strechDate));
+            sumOfProportions = each.getAmountWorkPercentage();
+            previous = strechDate;
+        }
+        return result;
+    }
+
+    private static <T> T last(List<? extends T> list) {
+        return list.get(list.size() - 1);
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -438,17 +459,9 @@ public class StretchesFunction extends AssignmentFunction {
         if (stretches.isEmpty()) {
             return Collections.emptyList();
         }
-        ArrayList<Interval> result = new ArrayList<Interval>();
-        LocalDate previous = null;
-        BigDecimal sumOfProportions = new BigDecimal(0);
-        for (Stretch each : stretches) {
-            LocalDate strechDate = each.getDate();
-            result.add(new Interval(each.getAmountWorkPercentage().subtract(
-                    sumOfProportions), previous,
-                    strechDate));
-            sumOfProportions = each.getAmountWorkPercentage();
-            previous = strechDate;
-        }
+        List<Interval> result = intervalsFor(stretches);
+        BigDecimal sumOfProportions = stretches.isEmpty() ? BigDecimal.ZERO
+                : last(stretches).getAmountWorkPercentage();
         BigDecimal left = calculateLeftFor(sumOfProportions);
         if (!left.equals(BigDecimal.ZERO)) {
             throw new IllegalStateException("the streches must sum the 100%");
