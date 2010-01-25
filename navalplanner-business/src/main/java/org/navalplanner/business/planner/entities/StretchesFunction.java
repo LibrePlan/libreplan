@@ -29,9 +29,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.math.FunctionEvaluationException;
+import org.apache.commons.math.analysis.SplineInterpolator;
+import org.apache.commons.math.analysis.UnivariateRealFunction;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.ProportionalDistributor;
 
 /**
  * Assignment function by stretches.
@@ -57,9 +62,90 @@ public class StretchesFunction extends AssignmentFunction {
                     List<Interval> intervalsDefinedByStreches,
                     LocalDate startInclusive, LocalDate endExclusive,
                     int totalHours) {
-                // by now doing the same than default
-                DEFAULT.apply(allocation, intervalsDefinedByStreches,
-                        startInclusive, endExclusive, totalHours);
+                double[] x = Interval.getDayPointsFor(startInclusive,
+                        intervalsDefinedByStreches);
+                assert x.length == 1 + intervalsDefinedByStreches.size();
+                double[] y = Interval.getHoursPointsFor(totalHours,
+                        intervalsDefinedByStreches);
+                assert y.length == 1 + intervalsDefinedByStreches.size();
+                UnivariateRealFunction accumulatingFunction = new SplineInterpolator()
+                        .interpolate(x, y);
+                int[] hoursForEachDay = extractHoursShouldAssignForEachDay(
+                        accumulatingFunction, startInclusive, endExclusive);
+                int[] reallyAssigned = getReallyAssigned(allocation,
+                        startInclusive, hoursForEachDay);
+                // Because of calendars, really assigned hours can be less than
+                // the hours for each day specified by the interpolation. The
+                // remainder must be distributed.
+                distributeRemainder(allocation, startInclusive, totalHours,
+                        reallyAssigned);
+
+            }
+
+            private int[] extractHoursShouldAssignForEachDay(
+                    UnivariateRealFunction accumulatedFunction,
+                    LocalDate startInclusive, LocalDate endExclusive) {
+                int[] result = new int[Days.daysBetween(startInclusive,
+                        endExclusive).getDays()];
+                int previous = 0;
+                for (int i = 0; i < result.length; i++) {
+                    int accumulated = evaluate(accumulatedFunction, i);
+                    result[i] = accumulated - previous;
+                    previous = accumulated;
+                }
+                return result;
+            }
+
+            private int evaluate(UnivariateRealFunction accumulatedFunction,
+                    int x) {
+                try {
+                    return (int) accumulatedFunction.value(x);
+                } catch (FunctionEvaluationException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private int[] getReallyAssigned(ResourceAllocation<?> allocation,
+                    LocalDate startInclusive, int[] hoursForEachDay) {
+                int[] reallyAssigned = new int[hoursForEachDay.length];
+                for (int i = 0; i < hoursForEachDay.length; i++) {
+                    LocalDate day = startInclusive.plusDays(i);
+                    LocalDate nextDay = day.plusDays(1);
+                    allocation.withPreviousAssociatedResources()
+                            .onInterval(day, nextDay)
+                            .allocateHours(hoursForEachDay[i]);
+                    reallyAssigned[i] = allocation.getAssignedHours(day,
+                            nextDay);
+                }
+                return reallyAssigned;
+            }
+
+            private void distributeRemainder(ResourceAllocation<?> allocation,
+                    LocalDate startInclusive, int totalHours,
+                    int[] reallyAssigned) {
+                final int remainder = totalHours - sum(reallyAssigned);
+                if (remainder == 0) {
+                    return;
+                }
+                int[] perDay = distributeRemainder(reallyAssigned, remainder);
+                for (int i = 0; i < perDay.length; i++) {
+                    if (perDay[i] == 0) {
+                        continue;
+                    }
+                    final int newHours = perDay[i] + reallyAssigned[i];
+                    LocalDate day = startInclusive.plusDays(i);
+                    LocalDate nextDay = day.plusDays(1);
+                    allocation.withPreviousAssociatedResources()
+                            .onInterval(day, nextDay)
+                            .allocateHours(newHours);
+                }
+            }
+
+            private int[] distributeRemainder(int[] hoursForEachDay,
+                    int remainder) {
+                ProportionalDistributor remainderDistributor = ProportionalDistributor
+                        .create(hoursForEachDay);
+                return remainderDistributor.distribute(remainder);
             }
         };
 
@@ -97,6 +183,30 @@ public class StretchesFunction extends AssignmentFunction {
                     RoundingMode.HALF_UP);
             this.start = start;
             this.end = end;
+        }
+
+        public static double[] getHoursPointsFor(int totalHours,
+                List<Interval> intervalsDefinedByStreches) {
+            double[] result = new double[intervalsDefinedByStreches.size() + 1];
+            int i = 1;
+            result[0] = 0;
+            int accumulated = 0;
+            for (Interval each : intervalsDefinedByStreches) {
+                accumulated += each.getHoursFor(totalHours);
+                result[i++] = accumulated;
+            }
+            return result;
+        }
+
+        public static double[] getDayPointsFor(LocalDate start,
+                List<Interval> intervalsDefinedByStreches) {
+            double[] result = new double[intervalsDefinedByStreches.size() + 1];
+            result[0] = 0;
+            int i = 1;
+            for (Interval each : intervalsDefinedByStreches) {
+                result[i++] = Days.daysBetween(start, each.getEnd()).getDays();
+            }
+            return result;
         }
 
         public LocalDate getEnd() {
@@ -170,6 +280,14 @@ public class StretchesFunction extends AssignmentFunction {
             return result;
         }
 
+    }
+
+    private static int sum(int[] array) {
+        int result = 0;
+        for (int each : array) {
+            result += each;
+        }
+        return result;
     }
 
     public static StretchesFunction create() {
