@@ -27,6 +27,8 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.planner.entities.Stretch;
+import org.navalplanner.business.planner.entities.StretchesFunction;
+import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController.IGraphicGenerator;
 import org.zkoss.zul.SimpleXYModel;
@@ -158,20 +160,84 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         @Override
         public boolean areChartsEnabled(IStretchesFunctionModel model) {
-            return false;
+            return canComputeChartFrom(model.getStretches(), model
+                    .getTaskStartDate());
         }
 
         @Override
         protected XYModel getAccumulatedHoursChartData(List<Stretch> stretches,
                 LocalDate startDate, BigDecimal taskHours) {
-            return new SimpleXYModel();
+            if (!canComputeChartFrom(stretches, startDate)) {
+                return new SimpleXYModel();
+            }
+            int[] hoursForEachDayUsingSplines = hoursForEachDayInterpolatedUsingSplines(
+                    stretches, startDate, taskHours);
+            return createModelFrom(startDate,
+                    accumulatedFrom(hoursForEachDayUsingSplines));
         }
 
         @Override
         protected XYModel getDedicationChart(List<Stretch> stretches,
                 LocalDate startDate, BigDecimal totalHours,
                 BaseCalendar taskCalendar) {
-            return new SimpleXYModel();
+            if (!canComputeChartFrom(stretches, startDate)) {
+                return new SimpleXYModel();
+            }
+            int[] dataForChart = hoursForEachDayInterpolatedUsingSplines(
+                    stretches, startDate, totalHours);
+            return createModelFrom(startDate, dataForChart);
+        }
+
+        private boolean canComputeChartFrom(List<Stretch> stretches,
+                LocalDate start) {
+            return stretches.size() >= 2
+                    && theFirstIntervalIsPosteriorToFirstDay(stretches, start);
+        }
+
+        private boolean theFirstIntervalIsPosteriorToFirstDay(
+                List<Stretch> stretches, LocalDate start) {
+            List<Interval> intervals = StretchesFunction
+                    .intervalsFor(stretches);
+            Interval first = intervals.get(0);
+            return first.getEnd().compareTo(start) > 0;
+        }
+
+        private int[] hoursForEachDayInterpolatedUsingSplines(
+                List<Stretch> stretches, LocalDate startDate,
+                BigDecimal taskHours) {
+            List<Interval> intervals = StretchesFunction
+                    .intervalsFor(stretches);
+            double[] dayPoints = Interval.getDayPointsFor(startDate, intervals);
+            double[] hourPoints = Interval.getHoursPointsFor(taskHours
+                    .intValue(), intervals);
+            final Stretch lastStretch = stretches.get(stretches.size() - 1);
+            return StretchesFunction.Type.hoursForEachDayUsingSplines(
+                    dayPoints, hourPoints, startDate, lastStretch.getDate());
+        }
+
+        private int[] accumulatedFrom(int[] hoursForEachDayUsingSplines) {
+            int[] result = new int[hoursForEachDayUsingSplines.length];
+            int accumulated = 0;
+            for (int i = 0; i < hoursForEachDayUsingSplines.length; i++) {
+                accumulated += hoursForEachDayUsingSplines[i];
+                result[i] = accumulated;
+            }
+            return result;
+        }
+
+        private XYModel createModelFrom(LocalDate startDate,
+                int[] hoursForEachDay) {
+            SimpleXYModel result = new SimpleXYModel();
+            for (int i = 0; i < hoursForEachDay.length; i++) {
+                result.addValue("series",
+                        asMilliseconds(startDate.plusDays(i)),
+                        hoursForEachDay[i]);
+            }
+            return result;
+        }
+
+        private long asMilliseconds(LocalDate day) {
+            return day.toDateTimeAtStartOfDay().getMillis();
         }
     }
 
