@@ -25,6 +25,8 @@ import java.util.Set;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.subcontract.exceptions.ConnectionProblemsException;
+import org.navalplanner.web.subcontract.exceptions.UnrecoverableErrorServiceException;
 
 
 /**
@@ -44,5 +46,9 @@ public interface IReportAdvancesModel {
 
     boolean isAnyAdvanceMeasurementNotReported(
             Set<DirectAdvanceAssignment> allDirectAdvanceAssignments);
+
+    void sendAdvanceMeasurements(Order order)
+            throws UnrecoverableErrorServiceException,
+            ConnectionProblemsException;
 
 }

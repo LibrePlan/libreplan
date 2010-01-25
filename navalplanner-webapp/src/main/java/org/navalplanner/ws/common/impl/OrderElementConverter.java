@@ -700,4 +700,11 @@ public final class OrderElementConverter {
         return advanceMeasurement;
     }
 
+    public static AdvanceMeasurementDTO toDTO(
+            AdvanceMeasurement advanceMeasurement) {
+        return new AdvanceMeasurementDTO(advanceMeasurement.getDate()
+                .toDateTimeAtStartOfDay().toDate(), advanceMeasurement
+                .getValue());
+    }
+
 }

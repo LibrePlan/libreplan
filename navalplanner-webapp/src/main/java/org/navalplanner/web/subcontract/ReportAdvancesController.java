@@ -30,8 +30,11 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.subcontract.exceptions.ConnectionProblemsException;
+import org.navalplanner.web.subcontract.exceptions.UnrecoverableErrorServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -152,7 +155,13 @@ public class ReportAdvancesController extends GenericForwardComposer {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     try {
-                        // TODO reportAdvancesModel.sendAdvances(order);
+                        reportAdvancesModel.sendAdvanceMeasurements(order);
+                    } catch (UnrecoverableErrorServiceException e) {
+                        messagesForUser
+                                .showMessage(Level.ERROR, e.getMessage());
+                    } catch (ConnectionProblemsException e) {
+                        messagesForUser
+                                .showMessage(Level.ERROR, e.getMessage());
                     } catch (ValidationException e) {
                         messagesForUser.showInvalidValues(e);
                     }

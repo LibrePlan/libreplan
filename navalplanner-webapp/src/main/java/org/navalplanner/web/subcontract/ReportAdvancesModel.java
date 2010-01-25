@@ -19,22 +19,40 @@
  */
 package org.navalplanner.web.subcontract;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.WebApplicationException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.web.subcontract.exceptions.ConnectionProblemsException;
+import org.navalplanner.web.subcontract.exceptions.UnrecoverableErrorServiceException;
+import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
+import org.navalplanner.ws.common.api.ConstraintViolationDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.impl.OrderElementConverter;
+import org.navalplanner.ws.common.impl.Util;
+import org.navalplanner.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
+import org.navalplanner.ws.subcontract.api.OrderElementWithAdvanceMeasurementsListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -162,6 +180,88 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         }
 
         return false;
+    }
+
+    @Override
+    @Transactional(rollbackFor = { ConnectionProblemsException.class,
+            UnrecoverableErrorServiceException.class })
+    public void sendAdvanceMeasurements(Order order)
+            throws UnrecoverableErrorServiceException,
+            ConnectionProblemsException {
+        orderElementDAO.save(order);
+
+        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
+        ExternalCompany externalCompany = order.getCustomer();
+
+        WebClient client = WebClient.create(externalCompany.getAppURI());
+
+        client.path("ws/rest/reportadvances");
+
+        Util.addAuthorizationHeader(client, externalCompany
+                .getOurCompanyLogin(), externalCompany.getOurCompanyPassword());
+
+        try {
+            InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = client
+                    .post(orderElementWithAdvanceMeasurementsListDTO,
+                            InstanceConstraintViolationsListDTO.class);
+
+            List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = instanceConstraintViolationsListDTO.instanceConstraintViolationsList;
+            if ((instanceConstraintViolationsList != null)
+                    && (!instanceConstraintViolationsList.isEmpty())) {
+                String message = "";
+
+                for (ConstraintViolationDTO constraintViolationDTO : instanceConstraintViolationsList
+                        .get(0).constraintViolations) {
+                    message += constraintViolationDTO.toString() + "\n";
+                }
+
+                throw new UnrecoverableErrorServiceException(message);
+            }
+        } catch (WebApplicationException e) {
+            LOG.error("Problems connecting with client web service", e);
+
+            String message = _("Problems connecting with client web service");
+            if (e.getMessage() != null) {
+                message += ". " + _("Error: {0}", e.getMessage());
+            }
+
+            throw new ConnectionProblemsException(message, e);
+        }
+    }
+
+    private OrderElementWithAdvanceMeasurementsListDTO getOrderElementWithAdvanceMeasurementsListDTO(
+            Order order) {
+        List<OrderElementWithAdvanceMeasurementsDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsDTO>();
+
+        Set<DirectAdvanceAssignment> directAdvanceAssignments = order
+                .getAllDirectAdvanceAssignments(PredefinedAdvancedTypes.SUBCONTRACTOR
+                        .getType());
+
+        for (DirectAdvanceAssignment advanceAssignment : directAdvanceAssignments) {
+            Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
+
+            for (AdvanceMeasurement advanceMeasurement : advanceAssignment
+                    .getAdvanceMeasurements()) {
+                if (advanceMeasurement.getCommunicationDate() == null) {
+                    AdvanceMeasurementDTO advanceMeasurementDTO = OrderElementConverter
+                            .toDTO(advanceMeasurement);
+                    advanceMeasurement.updateCommunicationDate(new Date());
+                    advanceMeasurementDTOs.add(advanceMeasurementDTO);
+                }
+
+            }
+
+            if (!advanceMeasurementDTOs.isEmpty()) {
+                OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsDTO(
+                        advanceAssignment.getOrderElement().getExternalCode(),
+                        advanceMeasurementDTOs);
+                orderElementWithAdvanceMeasurementsDTOs
+                        .add(orderElementWithAdvanceMeasurementsDTO);
+            }
+        }
+
+        return new OrderElementWithAdvanceMeasurementsListDTO(
+                orderElementWithAdvanceMeasurementsDTOs);
     }
 
 }
