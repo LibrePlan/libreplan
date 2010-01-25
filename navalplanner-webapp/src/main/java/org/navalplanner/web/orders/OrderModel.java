@@ -233,6 +233,7 @@ public class OrderModel implements IOrderModel {
                 label.getName();
             }
         }
+        this.orderList = list;
     }
 
     private void loadCriterions() {

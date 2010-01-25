@@ -2,7 +2,7 @@
     <!-- Filter by -->
     <label>Filter order:</label>
     <bandboxMultipleSearch id="bdFilters" widthBandbox="285px" widthListbox="300px"
-        finder="MultipleFiltersFinder"/>
+        finder="multipleFiltersFinder"/>
     <label value="${i18n:_('from')}"/>
     <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
     <label value="${i18n:_('to')}"/>

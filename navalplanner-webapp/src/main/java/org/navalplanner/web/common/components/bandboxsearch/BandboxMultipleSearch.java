@@ -76,7 +76,6 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         bandbox = (Bandbox) getFellowIfAny("bandbox");
 
         if (multipleFiltersFinder != null) {
-            multipleFiltersFinder.init();
             listbox.setModel(new SimpleListModel(multipleFiltersFinder
                 .getMatching("")));
             listbox.setItemRenderer(multipleFiltersFinder.getItemRenderer());

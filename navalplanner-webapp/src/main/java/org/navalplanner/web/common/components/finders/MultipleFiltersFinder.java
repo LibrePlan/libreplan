@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -42,9 +44,6 @@ import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -58,8 +57,7 @@ import org.zkoss.zul.ListitemRenderer;
  * filter by order code or customer reference.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-@Service
-@Scope(BeanDefinition.SCOPE_SINGLETON)
+
 public class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     @Autowired
@@ -79,6 +77,9 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IAdHocTransactionService adHocTransactionService;
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
@@ -102,11 +103,18 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     @Transactional(readOnly = true)
     public void init() {
-        loadLabels();
-        loadCriterions();
-        loadExternalCompanies();
-        loadOrdersStatusEnums();
-        loadOrderCodesAndCustomerReferences();
+        adHocTransactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+            @Override
+                    public Void execute() {
+                        loadLabels();
+                        loadCriterions();
+                        loadExternalCompanies();
+                        loadOrdersStatusEnums();
+                        loadOrderCodesAndCustomerReferences();
+                        return null;
+                    }
+                });
     }
 
     private void loadCriterions() {
@@ -289,6 +297,10 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
     }
 
     public boolean isValidFormatText(List filterValues, String value) {
+        if (filterValues.isEmpty()) {
+            return true;
+        }
+
         String[] values = value.split(",");
         if (values.length != filterValues.size() + 1) {
             return false;
