@@ -72,7 +72,11 @@ public abstract class StrechesFunctionConfiguration implements
 
     @Override
     public boolean isTargetedTo(AssignmentFunction function) {
-        return function instanceof StretchesFunction;
+        if (!(function instanceof StretchesFunction)) {
+            return false;
+        }
+        StretchesFunction s = (StretchesFunction) function;
+        return s.getType() == getType();
     }
 
     @Override
