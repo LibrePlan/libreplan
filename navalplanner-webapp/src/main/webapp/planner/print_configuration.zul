@@ -31,9 +31,9 @@
                     <caption label="${i18n:_('Print layout')}" />
                     <radiogroup id="print_layout"
                         onCheck="choice.value = self.selectedItem.label">
-                        <radio label="${i18n:_('Portrait')}"
+                        <radio label="${i18n:_('PDF')}"
                             selected="true" />
-                        <radio label="${i18n:_('Landscape')}" disabled="true" />
+                        <radio label="${i18n:_('Landscape')}" disabled="true" visible="false" />
                         <radio label="${i18n:_('Single image')}" />
                     </radiogroup>
                 </groupbox>
