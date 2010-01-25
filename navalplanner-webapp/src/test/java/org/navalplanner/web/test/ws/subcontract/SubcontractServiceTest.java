@@ -40,6 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -92,6 +93,9 @@ public class SubcontractServiceTest {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private OrderLineDTO givenBasicOrderLineDTO(String orderLineCode) {
         OrderLineDTO orderLineDTO = new OrderLineDTO();
