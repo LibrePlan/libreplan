@@ -21,6 +21,7 @@
 package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
@@ -47,6 +48,8 @@ public class AdvanceMeasurement extends BaseEntity {
 
     private AdvanceAssignment advanceAssignment;
 
+    private Date communicationDate;
+
     public AdvanceMeasurement() {
     }
 
@@ -60,6 +63,7 @@ public class AdvanceMeasurement extends BaseEntity {
 
     public void setDate(LocalDate date) {
         this.date = date;
+        resetCommunicationDate();
     }
 
     @NotNull(message = "date not specified")
@@ -72,6 +76,7 @@ public class AdvanceMeasurement extends BaseEntity {
         if (value != null) {
             this.value.setScale(2);
         }
+        resetCommunicationDate();
     }
 
     @NotNull(message = "value not specified")
@@ -86,6 +91,26 @@ public class AdvanceMeasurement extends BaseEntity {
     @NotNull(message = "advance assignment not specified")
     public AdvanceAssignment getAdvanceAssignment() {
         return this.advanceAssignment;
+    }
+
+    public Date getCommunicationDate() {
+        return communicationDate;
+    }
+
+    /**
+     * Just set the communication date if it was <code>null</code>. Otherwise
+     * keep the old value stored.
+     *
+     * @param communicationDate
+     */
+    public void updateCommunicationDate(Date communicationDate) {
+        if ((this.communicationDate == null) && (communicationDate != null)) {
+            this.communicationDate = communicationDate;
+        }
+    }
+
+    private void resetCommunicationDate() {
+        communicationDate = null;
     }
 
 }

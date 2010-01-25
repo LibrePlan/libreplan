@@ -70,6 +70,7 @@
     <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
     <property name="value" scale="2" access="field" />
     <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field" />
+    <property name="communicationDate" access="field" />
 </class>
 
 <class name="AdvanceAssignmentTemplate">
