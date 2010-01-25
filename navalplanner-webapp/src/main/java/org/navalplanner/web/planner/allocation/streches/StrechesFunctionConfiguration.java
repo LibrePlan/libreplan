@@ -27,6 +27,7 @@ import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.IAssignmentFunctionConfiguration;
+import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController.IGraphicGenerator;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.api.Window;
@@ -40,9 +41,9 @@ public abstract class StrechesFunctionConfiguration implements
 
     @Override
     public void goToConfigure() {
-        StretchesFunctionController stretchesFunctionController = new StretchesFunctionController();
+        StretchesFunctionController stretchesFunctionController = new StretchesFunctionController(
+                getGraphicsGenerators());
         stretchesFunctionController.setTitle(getTitle());
-        stretchesFunctionController.setChartsEnabled(getChartsEnabled());
         HashMap<String, Object> args = new HashMap<String, Object>();
         args.put("stretchesFunctionController", stretchesFunctionController);
         Window window = (Window) Executions.createComponents(
@@ -56,6 +57,10 @@ public abstract class StrechesFunctionConfiguration implements
         getAllocation().setAssignmentFunction(
                 stretchesFunctionController.getAssignmentFunction());
         assignmentFunctionChanged();
+    }
+
+    private IGraphicGenerator getGraphicsGenerators() {
+        return GraphicForStreches.forType(getType());
     }
 
     protected abstract Type getType();

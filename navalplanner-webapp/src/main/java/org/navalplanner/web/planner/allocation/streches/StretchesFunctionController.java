@@ -27,9 +27,7 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -52,12 +50,22 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.SimpleXYModel;
 import org.zkoss.zul.XYModel;
 import org.zkoss.zul.api.Window;
 
 public class StretchesFunctionController extends GenericForwardComposer {
 
+    public interface IGraphicGenerator {
+
+        public boolean areChartsEnabled(IStretchesFunctionModel model);
+
+        XYModel getDedicationChart(
+                IStretchesFunctionModel stretchesFunctionModel);
+
+        XYModel getAccumulatedHoursChartData(
+                IStretchesFunctionModel stretchesFunctionModel);
+
+    }
     private Window window;
 
     private IStretchesFunctionModel stretchesFunctionModel;
@@ -66,7 +74,12 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
     private String title;
 
-    private boolean chartsEnabled = true;
+    private final IGraphicGenerator graphicGenerator;
+
+    public StretchesFunctionController(IGraphicGenerator graphicGenerator) {
+        Validate.notNull(graphicGenerator);
+        this.graphicGenerator = graphicGenerator;
+    }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -262,83 +275,12 @@ public class StretchesFunctionController extends GenericForwardComposer {
     }
 
     public XYModel getDedicationChartData() {
-        XYModel xymodel = new SimpleXYModel();
-
-        List<Stretch> stretches = stretchesFunctionModel.getStretches();
-        if (stretches.isEmpty()) {
-            return xymodel;
-        }
-
-        String title = "hours";
-
-        LocalDate previousDate = stretchesFunctionModel.getTaskStartDate();
-        BigDecimal previousPercentage = BigDecimal.ZERO;
-
-        BigDecimal taskHours = new BigDecimal(stretchesFunctionModel
-                .getTaskHours());
-        BaseCalendar calendar = stretchesFunctionModel.getTaskCalendar();
-
-        xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
-                .getMillis(), 0);
-
-        for (Stretch stretch : stretches) {
-            BigDecimal amountWork = stretch.getAmountWorkPercentage().subtract(
-                    previousPercentage).multiply(taskHours);
-            Integer days = Days.daysBetween(previousDate, stretch.getDate())
-                    .getDays();
-
-            if (calendar != null) {
-                days -= calendar.getNonWorkableDays(previousDate, stretch
-                        .getDate()).size();
-            }
-
-            BigDecimal hoursPerDay = BigDecimal.ZERO;
-            if (days > 0) {
-                hoursPerDay = amountWork.divide(new BigDecimal(days),
-                        RoundingMode.DOWN);
-            }
-
-            xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
-                    .getMillis() + 1, hoursPerDay);
-            xymodel.addValue(title, stretch.getDate().toDateTimeAtStartOfDay()
-                    .getMillis(), hoursPerDay);
-
-            previousDate = stretch.getDate();
-            previousPercentage = stretch.getAmountWorkPercentage();
-        }
-
-        xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
-                .getMillis() + 1, 0);
-
-        return xymodel;
+        return graphicGenerator.getDedicationChart(stretchesFunctionModel);
     }
 
     public XYModel getAccumulatedHoursChartData() {
-        XYModel xymodel = new SimpleXYModel();
-
-        List<Stretch> stretches = stretchesFunctionModel.getStretches();
-        if (stretches.isEmpty()) {
-            return xymodel;
-        }
-
-        String title = "percentage";
-
-        LocalDate startDate = stretchesFunctionModel.getTaskStartDate();
-        xymodel.addValue(title, startDate.toDateTimeAtStartOfDay().getMillis(),
-                0);
-
-        BigDecimal taskHours = new BigDecimal(stretchesFunctionModel
-                .getTaskHours());
-
-        for (Stretch stretch : stretches) {
-            BigDecimal amountWork = stretch.getAmountWorkPercentage().multiply(
-                    taskHours);
-
-            xymodel.addValue(title, stretch.getDate().toDateTimeAtStartOfDay()
-                    .getMillis(), amountWork);
-        }
-
-        return xymodel;
+        return graphicGenerator
+                .getAccumulatedHoursChartData(stretchesFunctionModel);
     }
 
     public String getTitle() {
@@ -350,11 +292,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
     }
 
     public boolean isChartsEnabled() {
-        return chartsEnabled;
-    }
-
-    public void setChartsEnabled(boolean chartsEnabled) {
-        this.chartsEnabled = chartsEnabled;
+        return graphicGenerator.areChartsEnabled(stretchesFunctionModel);
     }
 
 }
