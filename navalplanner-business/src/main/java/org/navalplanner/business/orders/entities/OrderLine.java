@@ -429,7 +429,7 @@ public class OrderLine extends OrderElement {
         return BigDecimal.ZERO;
     }
 
-    protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
+    public Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
             AdvanceType advanceType) {
         Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {

@@ -263,11 +263,7 @@ public class ManageOrderElementAdvancesController extends
                 .getPossibleAdvanceTypes(advance);
         for(AdvanceType advanceType : listAdvanceType){
             if (!advanceType.getUnitName().equals(
-                    PredefinedAdvancedTypes.CHILDREN.getTypeName())
-                    && !advanceType.getUnitName()
-                            .equals(
-                                    PredefinedAdvancedTypes.SUBCONTRACTOR
-                                            .getTypeName())) {
+                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
                 Comboitem comboItem = new Comboitem();
                 comboItem.setValue(advanceType);
                 comboItem.setLabel(advanceType.getUnitName());

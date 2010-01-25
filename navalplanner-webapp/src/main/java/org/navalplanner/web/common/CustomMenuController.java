@@ -198,7 +198,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("General resource allocation"),"/planner/index.zul;company_load","01-introducion.html#id1"),
             subItem(_("Orders list"), "/planner/index.zul;orders_list","01-introducion.html#id2"),
             subItem(_("Templates list"), "/templates/templates.zul", ""),
-            subItem(_("Subcontracted tasks list"),"/subcontract/subcontractedTasks.zul", ""));
+            subItem(_("Subcontracted tasks list"), "/subcontract/subcontractedTasks.zul", ""),
+            subItem(_("Report advances"), "/subcontract/reportAdvances.zul", ""));
 
         topItem(_("Resources"), "/resources/worker/worker.zul", "",
             subItem(_("Workers List"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"),

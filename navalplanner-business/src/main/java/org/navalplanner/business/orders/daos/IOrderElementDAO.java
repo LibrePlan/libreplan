@@ -94,4 +94,6 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
 
     List<OrderElement> getAll();
 
+    public List<OrderElement> findOrderElementsWithExternalCode();
+
 }

@@ -604,7 +604,7 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     @Override
-    protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
+    public Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignments(
             AdvanceType advanceType) {
         Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
 

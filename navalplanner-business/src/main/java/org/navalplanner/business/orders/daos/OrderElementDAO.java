@@ -232,4 +232,11 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         return list(OrderElement.class);
     }
 
+    @Override
+    public List<OrderElement> findOrderElementsWithExternalCode() {
+        Criteria c = getSession().createCriteria(OrderElement.class);
+        c.add(Restrictions.isNotNull("externalCode"));
+        return c.list();
+    }
+
 }
