@@ -691,4 +691,13 @@ public final class OrderElementConverter {
         return directAdvanceAssignment;
     }
 
+    public static AdvanceMeasurement toEntity(
+            AdvanceMeasurementDTO advanceMeasurementDTO) {
+        AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(
+                LocalDate
+                        .fromDateFields(advanceMeasurementDTO.date),
+                        advanceMeasurementDTO.value);
+        return advanceMeasurement;
+    }
+
 }
