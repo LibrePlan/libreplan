@@ -179,7 +179,7 @@ Gestión de avances de los elementos de pedido
 La introducción de tipos de avances y gestión de los avances de los elementos de pedido fue descrita en el capítulo de "Avances".
 
 Gestión de etiquetas del pedido
-------------------------------
+-------------------------------
 
 Las etiquetas, tal y como se describen en el capítulo dedicado a las mismas, son entidades que permiten categorizar los elementos de pedido. De este modo, el usuario puede agrupar información de planificación o pedidos en base a ellas.
 

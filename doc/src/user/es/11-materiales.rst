@@ -5,7 +5,7 @@ Materiales
 
 
 Administración de materiales
-===========================
+============================
 
 Es posible gestionar una base de datos de materiales básica organizados por categorías.
 
