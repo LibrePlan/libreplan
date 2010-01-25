@@ -49,6 +49,38 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
         }
     }
 
+    @Override
+    public XYModel getAccumulatedHoursChartData(
+            IStretchesFunctionModel stretchesFunctionModel) {
+        List<Stretch> stretches = stretchesFunctionModel.getStretches();
+        if (stretches.isEmpty()) {
+            return new SimpleXYModel();
+        } else {
+            return getAccumulatedHoursChartData(stretches,
+                    stretchesFunctionModel.getTaskStartDate(), new BigDecimal(
+                            stretchesFunctionModel.getTaskHours()));
+        }
+    }
+
+    @Override
+    public XYModel getDedicationChart(
+            IStretchesFunctionModel stretchesFunctionModel) {
+        List<Stretch> stretches = stretchesFunctionModel.getStretches();
+        if (stretches.isEmpty()) {
+            return new SimpleXYModel();
+        }
+        return getDedicationChart(stretches, stretchesFunctionModel
+                .getTaskStartDate(), new BigDecimal(stretchesFunctionModel
+                .getTaskHours()), stretchesFunctionModel.getTaskCalendar());
+    }
+
+    protected abstract XYModel getDedicationChart(List<Stretch> stretches,
+            LocalDate startDate, BigDecimal totalHours,
+            BaseCalendar taskCalendar);
+
+    protected abstract XYModel getAccumulatedHoursChartData(
+            List<Stretch> stretches, LocalDate startDate, BigDecimal taskHours);
+
     private static class ForDefaultStreches extends GraphicForStreches {
 
         @Override
@@ -57,23 +89,14 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
         }
 
         @Override
-        public XYModel getAccumulatedHoursChartData(
-                IStretchesFunctionModel stretchesFunctionModel) {
+        public XYModel getAccumulatedHoursChartData(List<Stretch> stretches,
+                LocalDate startDate, BigDecimal taskHours) {
             XYModel xymodel = new SimpleXYModel();
-
-            List<Stretch> stretches = stretchesFunctionModel.getStretches();
-            if (stretches.isEmpty()) {
-                return xymodel;
-            }
 
             String title = "percentage";
 
-            LocalDate startDate = stretchesFunctionModel.getTaskStartDate();
             xymodel.addValue(title, startDate.toDateTimeAtStartOfDay()
                     .getMillis(), 0);
-
-            BigDecimal taskHours = new BigDecimal(stretchesFunctionModel
-                    .getTaskHours());
 
             for (Stretch stretch : stretches) {
                 BigDecimal amountWork = stretch.getAmountWorkPercentage()
@@ -86,25 +109,14 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             return xymodel;
         }
 
-        @Override
-        public XYModel getDedicationChart(
-                IStretchesFunctionModel stretchesFunctionModel) {
+        protected XYModel getDedicationChart(List<Stretch> stretches,
+                LocalDate startDate, BigDecimal taskHours,
+                BaseCalendar calendar){
             XYModel xymodel = new SimpleXYModel();
-
-            List<Stretch> stretches = stretchesFunctionModel.getStretches();
-            if (stretches.isEmpty()) {
-                return xymodel;
-            }
-
             String title = "hours";
 
-            LocalDate previousDate = stretchesFunctionModel.getTaskStartDate();
+            LocalDate previousDate = startDate;
             BigDecimal previousPercentage = BigDecimal.ZERO;
-
-            BigDecimal taskHours = new BigDecimal(stretchesFunctionModel
-                    .getTaskHours());
-            BaseCalendar calendar = stretchesFunctionModel.getTaskCalendar();
-
             xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
                     .getMillis(), 0);
 
@@ -150,17 +162,17 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
         }
 
         @Override
-        public XYModel getAccumulatedHoursChartData(
-                IStretchesFunctionModel stretchesFunctionModel) {
+        protected XYModel getAccumulatedHoursChartData(List<Stretch> stretches,
+                LocalDate startDate, BigDecimal taskHours) {
             return new SimpleXYModel();
         }
 
         @Override
-        public XYModel getDedicationChart(
-                IStretchesFunctionModel stretchesFunctionModel) {
+        protected XYModel getDedicationChart(List<Stretch> stretches,
+                LocalDate startDate, BigDecimal totalHours,
+                BaseCalendar taskCalendar) {
             return new SimpleXYModel();
         }
-
     }
 
 }
