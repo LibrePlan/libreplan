@@ -20,7 +20,7 @@
 
 <?page title="${i18n:_('Navalpro: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
-<zk>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
 <zscript><![CDATA[
     stretchesFunctionController = arg.get("stretchesFunctionController");
@@ -58,12 +58,15 @@
 
     </vbox>
 
-    <vbox id="charts" visible="@{stretchesFunctionController.chartsEnabled}">
+    <vbox id="charts">
+        <div visible="@{stretchesFunctionController.chartsDisabled}">
+            <n:h4>${i18n:_('Can\'t calculate charts for current data')}</n:h4>
+        </div>
         <chart id="dedicationChart" title="${i18n:_('Dedication chart')}"
             type="time_series" threeD="false"
             model="@{stretchesFunctionController.getDedicationChartData}"
             yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
-            showLegend="false" />
+            showLegend="false"/>
 
         <chart id="accumulatedHoursChart"
             title="${i18n:_('Accumulated hours chart')}"

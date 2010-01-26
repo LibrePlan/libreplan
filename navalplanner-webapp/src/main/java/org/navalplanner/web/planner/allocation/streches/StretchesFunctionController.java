@@ -295,4 +295,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
         return graphicGenerator.areChartsEnabled(stretchesFunctionModel);
     }
 
+    public boolean isChartsDisabled() {
+        return !isChartsEnabled();
+    }
+
 }
