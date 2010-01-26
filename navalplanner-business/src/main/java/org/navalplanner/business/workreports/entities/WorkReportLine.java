@@ -27,11 +27,13 @@ import java.util.Set;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
@@ -39,7 +41,7 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLine extends BaseEntity implements Comparable {
+public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public static final String DATE = "date";
 
@@ -50,17 +52,12 @@ public class WorkReportLine extends BaseEntity implements Comparable {
     public static final String HOURS = "numHours";
 
     public static WorkReportLine create() {
-        WorkReportLine workReportLine = new WorkReportLine();
-        workReportLine.setNewObject(true);
-        return workReportLine;
+        return create(new WorkReportLine());
     }
 
     public static WorkReportLine create(Integer numHours, Resource resource,
             OrderElement orderElement) {
-        WorkReportLine workReportLine = new WorkReportLine(numHours, resource,
-                orderElement);
-        workReportLine.setNewObject(true);
-        return workReportLine;
+        return create(new WorkReportLine(numHours, resource, orderElement));
     }
 
     private Integer numHours;
@@ -308,6 +305,11 @@ public class WorkReportLine extends BaseEntity implements Comparable {
             return numHours.intValue();
         }
         return null;
+    }
+
+    @Override
+    protected IWorkReportLineDAO getIntegrationEntityDAO() {
+        return Registry.getWorkReportLineDAO();
     }
 
 }
