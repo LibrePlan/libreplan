@@ -20,11 +20,16 @@
 
 package org.navalplanner.ws.workreports.api;
 
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+
 /**
  * Service for managing work reports.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public interface IWorkReportService {
+
+    InstanceConstraintViolationsListDTO addWorkReports(
+            WorkReportListDTO workReportListDTO);
 
 }

@@ -20,6 +20,9 @@
 
 package org.navalplanner.ws.common.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -63,6 +66,35 @@ public final class LabelConverter {
         if (label == null) {
             label = Label.create(labelDTO.name);
             label.setType(labelType);
+        }
+
+        return label;
+    }
+
+    public static Set<Label> toEntity(Set<LabelDTO> labels)
+            throws InstanceNotFoundException {
+        Set<Label> result = new HashSet<Label>();
+        for (LabelDTO labelDTO : labels) {
+            result.add(toEntity(labelDTO));
+        }
+        return result;
+    }
+
+    public final static Label toEntity(LabelDTO labelDTO)
+            throws InstanceNotFoundException {
+        LabelType labelType = null;
+        try {
+            labelType = Registry.getLabelTypeDAO().findUniqueByName(
+                    labelDTO.type);
+        } catch (NonUniqueResultException e) {
+            throw new RuntimeException(e);
+        }
+
+        Label label = Registry.getLabelDAO().findByNameAndType(labelDTO.name,
+                labelType);
+        if (label == null) {
+            throw new InstanceNotFoundException(labelDTO.name, Label.class
+                    .getName());
         }
 
         return label;
