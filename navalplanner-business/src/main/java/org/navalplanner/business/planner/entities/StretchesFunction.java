@@ -129,21 +129,31 @@ public class StretchesFunction extends AssignmentFunction {
                 LocalDate startInclusive, LocalDate endExclusive) {
             UnivariateRealFunction accumulatingFunction = new SplineInterpolator()
                     .interpolate(x, y);
-            int[] hoursForEachDay = extractHoursShouldAssignForEachDay(
-                    accumulatingFunction, startInclusive, endExclusive);
-            return hoursForEachDay;
+            int[] extractAccumulated = extractAccumulated(accumulatingFunction,
+                    startInclusive, endExclusive);
+            return extractHoursShouldAssignForEachDay(ValleyFiller
+                    .fillValley(extractAccumulated));
         }
 
-        private static int[] extractHoursShouldAssignForEachDay(
+        private static int[] extractAccumulated(
                 UnivariateRealFunction accumulatedFunction,
                 LocalDate startInclusive, LocalDate endExclusive) {
             int[] result = new int[Days.daysBetween(startInclusive,
                     endExclusive).getDays()];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = evaluate(accumulatedFunction, i);
+            }
+            return result;
+        }
+
+        private static int[] extractHoursShouldAssignForEachDay(
+                int[] accumulated) {
+            int[] result = new int[accumulated.length];
             int previous = 0;
             for (int i = 0; i < result.length; i++) {
-                int accumulated = evaluate(accumulatedFunction, i);
-                result[i] = accumulated - previous;
-                previous = accumulated;
+                final int current = accumulated[i];
+                result[i] = current - previous;
+                previous = current;
             }
             return result;
         }
