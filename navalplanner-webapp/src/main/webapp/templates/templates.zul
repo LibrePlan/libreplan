@@ -36,6 +36,7 @@
 <?component name="advancesAssignment" class="org.navalplanner.web.templates.advances.AdvancesAssignmentComponent" macroURI="/templates/_advances.zul"?>
 <?component name="editTemplateWindow" macroURI="_editTemplateWindow.zul" inline="true"?>
 <?component name="historicalAssignment" class="org.navalplanner.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent" macroURI="/templates/_historicalAssignment.zul" ?>
+<?component name="historicalStatistics" class="org.navalplanner.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent" macroURI="/templates/_historicalStatistics.zul" ?>
 
 <zk>
     <zscript><![CDATA[
@@ -56,6 +57,7 @@
                     <tab label="${i18n:_('Materials')}" />
                     <tab label="${i18n:_('Quality Forms')}" />
                     <tab label="${i18n:_('Historical assignment')}" />
+                    <tab label="${i18n:_('Historical statistics')}" />
                 </tabs>
                 <tabpanels>
                     <tabpanel>
@@ -105,6 +107,9 @@
                     </tabpanel>
                     <tabpanel>
                         <historicalAssignment id="historicalAssignment"/>
+                    </tabpanel>
+                    <tabpanel>
+                        <historicalStatistics id="historicalStatistics"/>
                     </tabpanel>
                 </tabpanels>
             </tabbox>

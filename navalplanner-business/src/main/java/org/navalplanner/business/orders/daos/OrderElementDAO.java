@@ -113,7 +113,7 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         OrderElement order = transactionService
                 .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
 
-                     @Override
+                    @Override
                     public OrderElement execute() {
                         OrderElement current = orderElement;
                         OrderElement result = current;
@@ -124,7 +124,11 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
                         return result;
                     }
                 });
-        return orderDAO.findExistingEntity(order.getId());
+        if (order != null) {
+            return orderDAO.findExistingEntity(order.getId());
+        } else {
+            return null;
+        }
     }
 
     @Override

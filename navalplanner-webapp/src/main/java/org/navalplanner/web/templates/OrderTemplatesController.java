@@ -32,6 +32,7 @@ import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
 import org.navalplanner.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent;
+import org.navalplanner.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.navalplanner.web.templates.quality.QualityFormAssignerComponent;
@@ -102,6 +103,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         bindQualityFormWithCurrentTemplate();
         bindEditTemplateWindowWithController();
         bindHistoricalArragenmentWithCurrentTemplate();
+        bindHistoricalStatisticsWithCurrentTemplate();
         show(editWindow);
     }
 
@@ -147,6 +149,12 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         OrderElementHistoricalAssignmentComponent c = (OrderElementHistoricalAssignmentComponent) editWindow
                 .getFellow("historicalAssignment");
         c.useModel(model, globalView);
+    }
+
+    private void bindHistoricalStatisticsWithCurrentTemplate() {
+        OrderElementHistoricalStatisticsComponent c = (OrderElementHistoricalStatisticsComponent) editWindow
+                .getFellow("historicalStatistics");
+        c.useModel(model);
     }
 
     public boolean isTemplateTreeDisabled() {
