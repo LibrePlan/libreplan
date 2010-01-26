@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.NonUniqueResultException;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -40,7 +39,6 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
@@ -91,7 +89,7 @@ public final class OrderElementConverter {
         Set<LabelDTO> labels = new HashSet<LabelDTO>();
         if (configuration.isLabels()) {
             for (Label label : orderElement.getLabels()) {
-                labels.add(toDTO(label));
+                labels.add(LabelConverter.toDTO(label));
             }
         }
 
@@ -206,10 +204,6 @@ public final class OrderElementConverter {
         return new MaterialAssignmentDTO(materialAssignment.getMaterial()
                 .getCode(), materialAssignment.getUnits(), materialAssignment
                 .getUnitPrice(), materialAssignment.getEstimatedAvailability());
-    }
-
-    public final static LabelDTO toDTO(Label label) {
-        return new LabelDTO(label.getName(), label.getType().getName());
     }
 
     public final static HoursGroupDTO toDTO(HoursGroup hoursGroup,
@@ -376,7 +370,7 @@ public final class OrderElementConverter {
 
         if (configuration.isLabels()) {
             for (LabelDTO labelDTO : orderElementDTO.labels) {
-                orderElement.addLabel(toEntity(labelDTO));
+                orderElement.addLabel(LabelConverter.forceToEntity(labelDTO));
             }
         }
 
@@ -446,33 +440,6 @@ public final class OrderElementConverter {
         materialAssignment
                 .setEstimatedAvailability(materialAssignmentDTO.estimatedAvailability);
         return materialAssignment;
-    }
-
-    public final static Label toEntity(LabelDTO labelDTO) {
-        LabelType labelType = null;
-        try {
-            labelType = Registry.getLabelTypeDAO().findUniqueByName(
-                    labelDTO.type);
-        } catch (NonUniqueResultException e) {
-            throw new RuntimeException(e);
-        } catch (InstanceNotFoundException e) {
-            labelType = LabelType.create(labelDTO.type);
-            /*
-             * "validate" method avoids that "labelType" goes to the Hibernate's
-             * session if "labelType" is not valid.
-             */
-            labelType.validate();
-            Registry.getLabelTypeDAO().save(labelType);
-        }
-
-        Label label = Registry.getLabelDAO().findByNameAndType(labelDTO.name,
-                labelType);
-        if (label == null) {
-            label = Label.create(labelDTO.name);
-            label.setType(labelType);
-        }
-
-        return label;
     }
 
     public final static HoursGroup toEntity(HoursGroupDTO hoursGroupDTO,
@@ -569,7 +536,7 @@ public final class OrderElementConverter {
         if (configuration.isLabels()) {
             for (LabelDTO labelDTO : orderElementDTO.labels) {
                 if (!orderElement.containsLabel(labelDTO.name, labelDTO.type)) {
-                    orderElement.addLabel(toEntity(labelDTO));
+                    orderElement.addLabel(LabelConverter.forceToEntity(labelDTO));
                 }
             }
         }
