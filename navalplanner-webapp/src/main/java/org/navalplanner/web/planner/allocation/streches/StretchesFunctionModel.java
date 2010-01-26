@@ -38,6 +38,8 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
+import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -136,7 +138,17 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                 throw new ValidationException(
                         _("For interpolation at least two streches needed"));
             }
-
+            if (stretchesFunction.getDesiredType() == Type.INTERPOLATED) {
+                if (!atLeastTwoStreches(getStretches())) {
+                    throw new ValidationException(
+                            _("There must be at least 2 streches for doing interpolation"));
+                }
+                if (!theFirstIntervalIsPosteriorToFirstDay(getStretches(),
+                        getTaskStartDate())) {
+                    throw new ValidationException(
+                            _("The first strech must be after the first day for doing interpolation"));
+                }
+            }
             if (originalStretchesFunction != null) {
                 originalStretchesFunction
                         .resetToStrechesFrom(stretchesFunction);
@@ -145,6 +157,23 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                 stretchesFunction = originalStretchesFunction;
             }
         }
+    }
+
+    public static boolean areValidForInterpolation(List<Stretch> stretches,
+            LocalDate start) {
+        return atLeastTwoStreches(stretches)
+                && theFirstIntervalIsPosteriorToFirstDay(stretches, start);
+    }
+
+    private static boolean atLeastTwoStreches(List<Stretch> stretches) {
+        return stretches.size() >= 2;
+    }
+
+    private static boolean theFirstIntervalIsPosteriorToFirstDay(
+            List<Stretch> stretches, LocalDate start) {
+        List<Interval> intervals = StretchesFunction.intervalsFor(stretches);
+        Interval first = intervals.get(0);
+        return first.getEnd().compareTo(start) > 0;
     }
 
     @Override

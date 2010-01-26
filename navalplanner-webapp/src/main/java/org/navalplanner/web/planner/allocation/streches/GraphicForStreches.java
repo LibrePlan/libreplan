@@ -190,16 +190,8 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         private boolean canComputeChartFrom(List<Stretch> stretches,
                 LocalDate start) {
-            return stretches.size() >= 2
-                    && theFirstIntervalIsPosteriorToFirstDay(stretches, start);
-        }
-
-        private boolean theFirstIntervalIsPosteriorToFirstDay(
-                List<Stretch> stretches, LocalDate start) {
-            List<Interval> intervals = StretchesFunction
-                    .intervalsFor(stretches);
-            Interval first = intervals.get(0);
-            return first.getEnd().compareTo(start) > 0;
+            return StretchesFunctionModel.areValidForInterpolation(stretches,
+                    start);
         }
 
         private int[] hoursForEachDayInterpolatedUsingSplines(
