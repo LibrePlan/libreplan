@@ -140,6 +140,110 @@ public class StretchesFunctionController extends GenericForwardComposer {
         return stretchesRenderer;
     }
 
+    private interface IFocusApplycability {
+        public abstract boolean focusIfApplycableOnLength(Stretch strech,
+                Decimalbox lenghtPercentage);
+
+        public abstract boolean focusIfApplycableOnAmountWork(Stretch strech,
+                Decimalbox amountWork);
+    }
+
+    private static class FocusState implements IFocusApplycability {
+
+        private static final NoFocus NO_FOCUS = new NoFocus();
+
+        private IFocusApplycability currentFocus;
+
+        private FocusState(IFocusApplycability currentFocus) {
+            this.currentFocus = currentFocus;
+        }
+
+        public static FocusState noFocus() {
+            return new FocusState(NO_FOCUS);
+        }
+
+        @Override
+        public boolean focusIfApplycableOnAmountWork(Stretch strech,
+                Decimalbox amountWork) {
+            boolean result = currentFocus.focusIfApplycableOnAmountWork(strech,
+                    amountWork);
+            if (result) {
+                currentFocus = NO_FOCUS;
+            }
+            return result;
+        }
+
+        @Override
+        public boolean focusIfApplycableOnLength(Stretch strech,
+                Decimalbox lenghtPercentage) {
+            boolean result = currentFocus.focusIfApplycableOnLength(strech,
+                    lenghtPercentage);
+            if (result) {
+                currentFocus = NO_FOCUS;
+            }
+            return result;
+        }
+
+        public void focusOn(Stretch stretch, Field field) {
+            this.currentFocus = new FocusOnStrech(stretch, field);
+        }
+
+    }
+
+    private static class NoFocus implements IFocusApplycability {
+
+        @Override
+        public boolean focusIfApplycableOnAmountWork(Stretch strech,
+                Decimalbox amountWork) {
+            return false;
+        }
+
+        @Override
+        public boolean focusIfApplycableOnLength(Stretch strech,
+                Decimalbox lenghtPercentage) {
+            return false;
+        }
+    }
+
+    public enum Field {
+        AMOUNT_WORK, LENGTH
+    }
+
+    private static class FocusOnStrech implements IFocusApplycability {
+
+        private final Stretch stretch;
+
+        private final Field field;
+
+        public FocusOnStrech(Stretch stretch, Field field) {
+            this.stretch = stretch;
+            this.field = field;
+        }
+
+        @Override
+        public boolean focusIfApplycableOnAmountWork(Stretch stretch,
+                Decimalbox amountWork) {
+            if (field == Field.AMOUNT_WORK && this.stretch.equals(stretch)) {
+                amountWork.focus();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public boolean focusIfApplycableOnLength(Stretch stretch,
+                Decimalbox lenghtPercentage) {
+            if (field == Field.LENGTH && this.stretch.equals(stretch)) {
+                lenghtPercentage.focus();
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    private FocusState focusState = FocusState.noFocus();
+
     /**
      * Renders a {@link Stretch}.
      *
@@ -204,6 +308,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                                 stretchesFunctionModel
                                         .setStretchLengthPercentage(stretch,
                                                 value);
+                                focusState.focusOn(stretch, Field.LENGTH);
                                 reloadStretchesListAndCharts();
                             } catch (IllegalArgumentException e) {
                                 throw new WrongValueException(tempDecimalbox, e
@@ -212,6 +317,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                         }
                     });
             appendChild(item, decimalbox);
+            focusState.focusIfApplycableOnLength(stretch, decimalbox);
         }
 
         private void appendAmountWorkPercentage(Listitem item,
@@ -234,6 +340,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                                     new BigDecimal(100), RoundingMode.DOWN);
                             try {
                                 stretch.setAmountWorkPercentage(value);
+                                focusState.focusOn(stretch, Field.AMOUNT_WORK);
                                 reloadStretchesListAndCharts();
                             } catch (IllegalArgumentException e) {
                                 throw new WrongValueException(
@@ -243,6 +350,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
                         }
                     });
             appendChild(item, decimalBox);
+            focusState.focusIfApplycableOnAmountWork(stretch, decimalBox);
         }
 
         private void appendOperations(Listitem item, final Stretch stretch) {
