@@ -162,4 +162,51 @@ public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
         return query.list();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Object[]> getWorkingHoursGroupedPerWorker(
+            List<String> workerNifs, Date startingDate, Date endingDate) {
+        String strQuery = "SELECT worker.nif, SUM(wrl.numHours) "
+                + "FROM Worker worker, WorkReportLine wrl "
+                + "LEFT OUTER JOIN wrl.resource resource "
+                + "WHERE resource.id = worker.id ";
+
+        // Set date range
+        if (startingDate != null && endingDate != null) {
+            strQuery += "AND wrl.date BETWEEN :startingDate AND :endingDate ";
+        }
+        if (startingDate != null && endingDate == null) {
+            strQuery += "AND wrl.date >= :startingDate ";
+        }
+        if (startingDate == null && endingDate != null) {
+            strQuery += "AND wrl.date <= :endingDate ";
+        }
+
+        // Set workers
+        if (workerNifs != null && !workerNifs.isEmpty()) {
+            strQuery += "AND worker.nif IN (:workerNifs) ";
+        }
+
+        // Group by
+        strQuery += "GROUP BY worker.nif ";
+
+        // Order by
+        strQuery += "ORDER BY worker.nif";
+
+        // Set parameters
+        Query query = getSession().createQuery(strQuery);
+        if (startingDate != null) {
+            query.setParameter("startingDate", startingDate);
+        }
+        if (endingDate != null) {
+            query.setParameter("endingDate", endingDate);
+        }
+        if (workerNifs != null && !workerNifs.isEmpty()) {
+            query.setParameterList("workerNifs", workerNifs);
+        }
+
+        // Get result
+        return query.list();
+    }
+
 }

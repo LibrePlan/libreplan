@@ -115,4 +115,7 @@ public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
     List<Worker> findByFirstNameSecondNameAndNifAnotherTransaction(
             String firstname, String surname, String nif);
 
+    List<Object[]> getWorkingHoursGroupedPerWorker(List<String> workerNifs,
+            Date startingDate, Date endingDate);
+
 }

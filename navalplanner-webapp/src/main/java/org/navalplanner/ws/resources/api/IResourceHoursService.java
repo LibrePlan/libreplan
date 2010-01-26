@@ -20,7 +20,7 @@
 
 package org.navalplanner.ws.resources.api;
 
-import java.util.Date;
+
 
 
 /**
@@ -30,7 +30,10 @@ import java.util.Date;
  */
 public interface IResourceHoursService {
 
-    ResourceWorkedHoursListDTO getHoursAllWorkersBetween(Date startDate,
-            Date endDate);
+    ResourceWorkedHoursListDTO getHoursAllWorkersBetween(String startDate,
+            String endDate);
+
+    ResourceWorkedHoursListDTO getHoursOfWorker(String resourceCode,
+            String startDate, String endDate);
 
 }
