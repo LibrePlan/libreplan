@@ -48,4 +48,9 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
 		return criteria.add(Restrictions.eq("workReportType", workReportType)).list();
 	}
 
+    @Override
+    public List<WorkReport> getAll() {
+        return list(WorkReport.class);
+    }
+
 }

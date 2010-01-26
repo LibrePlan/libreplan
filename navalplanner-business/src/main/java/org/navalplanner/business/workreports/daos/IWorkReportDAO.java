@@ -35,4 +35,6 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
 
     List<WorkReport> getAllByWorkReportType(WorkReportType workReportType);
 
+    List<WorkReport> getAll();
+
 }
