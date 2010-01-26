@@ -55,6 +55,7 @@
             <ref bean="resourceServiceREST"/>
             <ref bean="subcontractServiceREST"/>
             <ref bean="reportAdvancesServiceREST"/>
+            <ref bean="resourceHoursServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />
