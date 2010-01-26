@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class WorkReportDAO extends GenericDAOHibernate<WorkReport, Long>
+public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
         implements IWorkReportDAO {
 
 	@SuppressWarnings("unchecked")

@@ -27,10 +27,12 @@ import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
@@ -38,22 +40,18 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReport extends BaseEntity {
+public class WorkReport extends IntegrationEntity {
 
     public static final String DATE = "date";
     public static final String RESOURCE = "resource";
     public static final String ORDERELEMENT = "orderElement";
 
     public static WorkReport create() {
-        WorkReport workReport = new WorkReport();
-        workReport.setNewObject(true);
-        return workReport;
+        return create(new WorkReport());
     }
 
     public static WorkReport create(WorkReportType workReportType) {
-        WorkReport workReport = new WorkReport(workReportType);
-        workReport.setNewObject(true);
-        return workReport;
+        return create(new WorkReport(workReportType));
     }
 
     public static WorkReport create(Date date,
@@ -61,8 +59,7 @@ public class WorkReport extends BaseEntity {
             Resource resource, OrderElement orderElement) {
         WorkReport workReport = new WorkReport(date, workReportType,
                 workReportLines, resource, orderElement);
-        workReport.setNewObject(true);
-        return workReport;
+        return create(workReport);
     }
 
     private Date date;
@@ -270,6 +267,11 @@ public class WorkReport extends BaseEntity {
         for (WorkReportLine line : getWorkReportLines()) {
             line.updateSharedOrderElementByLines();
         }
+    }
+
+    @Override
+    protected IWorkReportDAO getIntegrationEntityDAO() {
+        return Registry.getWorkReportDAO();
     }
 
 }

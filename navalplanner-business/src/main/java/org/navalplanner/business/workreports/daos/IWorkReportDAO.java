@@ -22,7 +22,7 @@ package org.navalplanner.business.workreports.daos;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 
@@ -31,7 +31,7 @@ import org.navalplanner.business.workreports.entities.WorkReportType;
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
-public interface IWorkReportDAO extends IGenericDAO<WorkReport, Long> {
+public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
 
     List<WorkReport> getAllByWorkReportType(WorkReportType workReportType);
 

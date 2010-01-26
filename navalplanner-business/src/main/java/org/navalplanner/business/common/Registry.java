@@ -40,6 +40,7 @@ import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,9 @@ public class Registry {
 
     @Autowired
     private ICostCategoryDAO costCategoryDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
 
     private Registry() {
     }
@@ -220,6 +224,10 @@ public class Registry {
 
     public static IOrderDAO getOrderDAO() {
         return getInstance().orderDAO;
+    }
+
+    public static IWorkReportDAO getWorkReportDAO() {
+        return getInstance().workReportDAO;
     }
 
 }

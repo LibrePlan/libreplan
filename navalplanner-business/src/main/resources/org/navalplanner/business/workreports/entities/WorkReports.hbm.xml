@@ -57,6 +57,8 @@
     </id>
     <version name="version" access="property" type="long" />
 
+    <property name="code" access="property" not-null="true" unique="true"/>
+
     <property name="date"/>
 
     <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
