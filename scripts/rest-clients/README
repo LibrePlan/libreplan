@@ -49,6 +49,14 @@
     - update-order.sh order-update-sample.xml (authenticate with
       wswriter/wswriter)
 
+  * Export resources hours:
+
+    - export-resources-hours.sh 2010-01-01 2010-12-31 (authenticate with
+      wsreader/wsreader)
+
+    - export-resources-hours.sh 21654685 2010-01-01 2010-12-31 (authenticate
+      with wsreader/wsreader)
+
 + When working with the online demo add "--prod" argument to every command.
 Example:
 
