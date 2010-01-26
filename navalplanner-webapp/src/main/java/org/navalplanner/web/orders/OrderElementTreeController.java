@@ -114,6 +114,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         this.orderElementController = orderElementController;
     }
 
+    public OrderElementController getOrderElementController() {
+        return orderElementController;
+    }
+
     @Override
     protected OrderElementTreeModel getModel() {
         return orderModel.getOrderElementTreeModel();
@@ -413,10 +417,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            markModifiedTreeitem((Treerow) item.getFirstChild());
-                            IOrderElementModel model = orderModel
-                                    .getOrderElementModel(currentOrderElement);
-                            orderElementController.openWindow(model);
+                            showEditionOrderElement(item);
                         }
                     });
             return editbutton;
@@ -519,4 +520,22 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         return tooltipText.toString();
     }
 
+    public void showEditionOrderElement(final Treeitem item) {
+        OrderElement currentOrderElement = (OrderElement) item.getValue();
+        markModifiedTreeitem((Treerow) item.getFirstChild());
+        IOrderElementModel model = orderModel
+                .getOrderElementModel(currentOrderElement);
+        orderElementController.openWindow(model);
+    }
+
+    public Treeitem getTreeitemByOrderElement(OrderElement element) {
+        List<Treeitem> listItems = new ArrayList<Treeitem>(this.tree.getItems());
+        for (Treeitem item : listItems) {
+            OrderElement orderElement = (OrderElement) item.getValue();
+            if (orderElement.getId().equals(element.getId())) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

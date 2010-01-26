@@ -124,13 +124,13 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public void createTemplateFrom(OrderElement orderElement) {
         initializeAcompanyingObjectsOnConversation();
         orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
-        OrderElement reloaded = orderElementDAO
-                .findExistingEntity(orderElement.getId());
-        template = reloaded.createTemplate();
+        OrderElement orderElementOrigin = orderElementDAO
+                .findExistingEntity(orderElement
+                .getId());
+        template = orderElementOrigin.createTemplate();
         loadAssociatedData(template);
         treeModel = new TemplatesTree(template);
     }
-
 
     @Override
     @Transactional(readOnly = true)

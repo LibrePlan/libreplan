@@ -53,4 +53,5 @@ public interface IOrderTemplatesModel {
     List<Label> getLabels();
 
     Set<QualityForm> getAllQualityForms();
+
 }

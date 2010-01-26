@@ -27,6 +27,7 @@ import java.util.Map;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.web.common.entrypoints.URLHandler;
@@ -280,13 +281,20 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrdersList() {
-        getTabsRegistry().show(ordersTab);
+        ordersTab.show();
     }
 
     @Override
     public void goToOrder(Order order) {
         mode.goToOrderMode(order);
         getTabsRegistry().show(planningTab);
+    }
+
+    @Override
+    public void goToOrderElementDetails(OrderElement orderElement, Order order) {
+        mode.goToOrderMode(order);
+        getTabsRegistry().show(ordersTab);
+        orderCRUDController.highLight(orderElement);
     }
 
 }

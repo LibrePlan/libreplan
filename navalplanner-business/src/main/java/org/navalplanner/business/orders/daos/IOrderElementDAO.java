@@ -27,6 +27,7 @@ import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
  * Contract for {@link OrderElementDAO}
@@ -76,6 +77,8 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
      */
     int getAssignedHours(OrderElement orderElement);
 
+    int getAssignedDirectHours(OrderElement orderElement);
+
     /**
      * Returns the advance percentage in hours for an {@link OrderElement}
      *
@@ -95,5 +98,7 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
     List<OrderElement> getAll();
 
     public List<OrderElement> findOrderElementsWithExternalCode();
+
+    List<OrderElement> findByTemplate(OrderElementTemplate template);
 
 }

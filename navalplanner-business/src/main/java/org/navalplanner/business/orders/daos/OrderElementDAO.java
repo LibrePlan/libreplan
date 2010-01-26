@@ -36,6 +36,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,17 +113,17 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         OrderElement order = transactionService
                 .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
 
-            @Override
-            public OrderElement execute() {
-                OrderElement current = orderElement;
-                OrderElement result = current;
-                while (current != null) {
-                    result = current;
-                    current = findParent(current);
-                }
-                return result;
-            }
-        });
+                     @Override
+                    public OrderElement execute() {
+                        OrderElement current = orderElement;
+                        OrderElement result = current;
+                        while (current != null) {
+                            result = current;
+                            current = findParent(current);
+                        }
+                        return result;
+                    }
+                });
         return orderDAO.findExistingEntity(order.getId());
     }
 
@@ -140,14 +141,16 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
                             + getAssignedHours(w);
                 }
             }
-            List<WorkReportLine> listWRL = this.workReportLineDAO
-                    .findByOrderElement(orderElement);
-            return (getAssignedDirectHours(listWRL) + addAsignedHoursChildren);
+            return (getAssignedDirectHours(orderElement) + addAsignedHoursChildren);
         }
         return 0;
     }
 
-    private int getAssignedDirectHours(List<WorkReportLine> listWRL) {
+    @Override
+    @Transactional(readOnly = true)
+    public int getAssignedDirectHours(OrderElement orderElement) {
+        List<WorkReportLine> listWRL = this.workReportLineDAO
+                .findByOrderElement(orderElement);
         int asignedDirectHours = 0;
         Iterator<WorkReportLine> iterator = listWRL.iterator();
         while (iterator.hasNext()) {
@@ -186,6 +189,12 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     public List<OrderElement> findByCode(String code) {
         Criteria c = getSession().createCriteria(OrderElement.class);
         c.add(Restrictions.eq("infoComponent.code", code).ignoreCase());
+        return (List<OrderElement>) c.list();
+    }
+
+    public List<OrderElement> findByTemplate(OrderElementTemplate template) {
+        Criteria c = getSession().createCriteria(OrderElement.class);
+        c.add(Restrictions.eq("template", template));
         return (List<OrderElement>) c.list();
     }
 

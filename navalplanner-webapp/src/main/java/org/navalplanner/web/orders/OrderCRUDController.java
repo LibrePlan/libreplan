@@ -89,6 +89,7 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Window;
 
@@ -197,6 +198,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private OrdersRowRenderer ordersRowRenderer = new OrdersRowRenderer();
 
+    private OrderElementTreeController orderElementTreeController;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -281,8 +284,9 @@ public class OrderCRUDController extends GenericForwardComposer {
             OrderElementController orderElementController) throws Exception {
         TreeComponent orderElementsTree = (TreeComponent) editWindow
                 .getFellow("orderElementTree");
-        orderElementsTree.useController(new OrderElementTreeController(
-                orderModel, orderElementController));
+        orderElementTreeController = new OrderElementTreeController(
+                orderModel, orderElementController);
+        orderElementsTree.useController(orderElementTreeController);
     }
 
     private IOrderElementModel getOrderElementModel() {
@@ -848,4 +852,17 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderFilter.setVisible(false);
         filter.setVisible(true);
     }
+
+    public void highLight(OrderElement orderElement) {
+        selectTab("tabOrderElements");
+        if ((!(orderElement instanceof Order))
+                && (orderElementTreeController != null)) {
+            final Treeitem item = orderElementTreeController
+                    .getTreeitemByOrderElement(orderElement);
+            if (item != null) {
+                orderElementTreeController.showEditionOrderElement(item);
+            }
+        }
+    }
+
 }

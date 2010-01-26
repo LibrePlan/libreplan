@@ -20,6 +20,7 @@
 package org.navalplanner.web.planner.tabs;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.entrypoints.EntryPoint;
 import org.navalplanner.web.common.entrypoints.EntryPoints;
 
@@ -41,5 +42,8 @@ public interface IGlobalViewEntryPoints {
 
     @EntryPoint("order")
     public void goToOrder(Order order);
+
+    @EntryPoint( { "orderElement", "order" })
+    public void goToOrderElementDetails(OrderElement orderElement, Order order);
 
 }

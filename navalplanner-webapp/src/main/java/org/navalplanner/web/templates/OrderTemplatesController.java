@@ -21,13 +21,17 @@ package org.navalplanner.web.templates;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
+import org.navalplanner.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.navalplanner.web.templates.quality.QualityFormAssignerComponent;
@@ -56,6 +60,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private Window listWindow;
 
     private Window editWindow;
+
+    @Resource
+    private IGlobalViewEntryPoints globalView;
 
     @Autowired
     private IURLHandlerRegistry handlerRegistry;
@@ -94,6 +101,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
         bindEditTemplateWindowWithController();
+        bindHistoricalArragenmentWithCurrentTemplate();
         show(editWindow);
     }
 
@@ -133,6 +141,12 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 .getFellow("editTemplateWindow");
         editTemplateController = EditTemplateWindowController.bindTo(model,
                 editTemplateWindow);
+    }
+
+    private void bindHistoricalArragenmentWithCurrentTemplate() {
+        OrderElementHistoricalAssignmentComponent c = (OrderElementHistoricalAssignmentComponent) editWindow
+                .getFellow("historicalAssignment");
+        c.useModel(model, globalView);
     }
 
     public boolean isTemplateTreeDisabled() {
