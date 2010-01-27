@@ -214,8 +214,10 @@ public class OrderModel implements IOrderModel {
                     authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
 
                     Order order = authorization.getOrder();
-                    order.getName(); //this lines forces the load of the basic attributes of the order
-                    orders.add(order);
+                    if(!orders.contains(order)) {
+                        order.getName(); //this lines forces the load of the basic attributes of the order
+                        orders.add(order);
+                    }
                 }
             }
             initializeOrders(orders);
