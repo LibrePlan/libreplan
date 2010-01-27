@@ -68,4 +68,33 @@ public interface IOrderAuthorizationDAO extends IGenericDAO<OrderAuthorization, 
      */
     List<OrderAuthorization> listByUserAndItsProfiles(User user);
 
+    /**
+     * Retrieves the list of {@link OrderAuthorization} objects related with
+     * the specified {@link Order} and {@link User} objects.
+     * @param order {@link Order} object
+     * @param user {@link User} object
+     * @return list of {@link OrderAuthorization} objects
+     */
+    List<OrderAuthorization> listByOrderAndUser(Order order, User user);
+
+    /**
+     * Retrieves the list of {@link OrderAuthorization} objects related with
+     * the specified {@link Order} and {@link Profile} objects.
+     * @param order {@link Order} object
+     * @param profile {@link Profile} object
+     * @return list of {@link OrderAuthorization} objects
+     */
+    List<OrderAuthorization> listByOrderAndProfile(Order order, Profile profile);
+
+    /**
+     * Retrieves the list of {@link OrderAuthorization} objects related with
+     * the specified {@link Order} and {@link User} object or with the
+     * {@link Profile} objects contained by the user.
+     * @param order {@link Order} object
+     * @param user user {@link User} object
+     * @return list of {@link OrderAuthorization} objects
+     */
+    List<OrderAuthorization> listByOrderUserAndItsProfiles(Order order,
+            User user);
+
 }

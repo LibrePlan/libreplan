@@ -71,4 +71,30 @@ public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorizatio
         }
         return list;
     }
+
+    @Override
+    public List<OrderAuthorization> listByOrderAndUser(Order order, User user) {
+        Criteria c = getSession().createCriteria(OrderAuthorization.class);
+        c.add(Restrictions.eq("order", order));
+        c.add(Restrictions.eq("user", user));
+        return c.list();
+    }
+
+    @Override
+    public List<OrderAuthorization> listByOrderAndProfile(Order order, Profile profile) {
+        Criteria c = getSession().createCriteria(OrderAuthorization.class);
+        c.add(Restrictions.eq("order", order));
+        c.add(Restrictions.eq("profile", profile));
+        return c.list();
+    }
+
+    @Override
+    public List<OrderAuthorization> listByOrderUserAndItsProfiles(Order order, User user) {
+        List<OrderAuthorization> list = new ArrayList<OrderAuthorization>();
+        list.addAll(listByOrderAndUser(order,user));
+        for(Profile profile : user.getProfiles()) {
+            list.addAll(listByOrderAndProfile(order, profile));
+        }
+        return list;
+    }
 }
