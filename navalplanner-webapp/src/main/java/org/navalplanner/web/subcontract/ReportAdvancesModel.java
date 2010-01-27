@@ -46,6 +46,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.subcontract.exceptions.ConnectionProblemsException;
 import org.navalplanner.web.subcontract.exceptions.UnrecoverableErrorServiceException;
+import org.navalplanner.ws.cert.NaiveTrustProvider;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
@@ -196,6 +197,8 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
         OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
         ExternalCompany externalCompany = order.getCustomer();
+
+        NaiveTrustProvider.setAlwaysTrust(true);
 
         WebClient client = WebClient.create(externalCompany.getAppURI());
 

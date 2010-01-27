@@ -41,6 +41,7 @@ import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.web.subcontract.exceptions.ConnectionProblemsException;
 import org.navalplanner.web.subcontract.exceptions.UnrecoverableErrorServiceException;
+import org.navalplanner.ws.cert.NaiveTrustProvider;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
@@ -133,6 +134,8 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
         ExternalCompany externalCompany = subcontractedTaskData
                 .getExternalCompany();
+
+        NaiveTrustProvider.setAlwaysTrust(true);
 
         WebClient client = WebClient.create(externalCompany.getAppURI());
 
