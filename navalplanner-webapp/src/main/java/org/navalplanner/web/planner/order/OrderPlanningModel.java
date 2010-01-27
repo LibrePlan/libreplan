@@ -61,6 +61,12 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.OrderAuthorizationType;
+import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.common.ViewSwitcher;
@@ -80,6 +86,7 @@ import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
 import org.navalplanner.web.print.CutyPrint;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -151,6 +158,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private ITaskElementDAO taskDAO;
 
     @Autowired
+    private IUserDAO userDAO;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
     private IAdHocTransactionService transactionService;
 
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
@@ -197,8 +210,31 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
-        ISaveCommand saveCommand = buildSaveCommand();
-        configuration.addGlobalCommand(saveCommand);
+
+        //Check the write permissions to setup the save button
+        ISaveCommand saveCommand = null;
+        if(SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            saveCommand = buildSaveCommand();
+            configuration.addGlobalCommand(saveCommand);
+        }
+        else {
+            try {
+                User user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+                for(OrderAuthorization authorization :
+                        orderAuthorizationDAO.listByOrderUserAndItsProfiles(order, user)) {
+                    if(authorization.getAuthorizationType() ==
+                            OrderAuthorizationType.WRITE_AUTHORIZATION) {
+                        saveCommand = buildSaveCommand();
+                        configuration.addGlobalCommand(saveCommand);
+                        break;
+                    }
+                }
+            }
+            catch(InstanceNotFoundException e) {
+                //this case shouldn't happen, because it would mean that there isn't a logged user
+                //anyway, if it happenned we continue, disabling the save button
+            }
+        }
 
         final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
         configuration.addCommandOnTask(resourceAllocationCommand);
@@ -512,7 +548,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             PlannerConfiguration<?> configuration, Planner planner,
             ISaveCommand saveCommand, final Chart loadChart) {
         planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart));
-        saveCommand.addListener(fillChartOnSave(loadChart));
+        if(saveCommand != null) {
+            saveCommand.addListener(fillChartOnSave(loadChart));
+        }
         taskElementAdapter.addListener(readOnlyProxy(transactionService,
                 IOnMoveListener.class, new IOnMoveListener() {
                     @Override
