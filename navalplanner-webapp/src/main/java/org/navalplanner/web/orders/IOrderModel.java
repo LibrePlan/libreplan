@@ -119,4 +119,6 @@ public interface IOrderModel {
 
     boolean userCanRead(Order order, String loginName);
 
+    boolean userCanWrite(Order order, String loginName);
+
 }

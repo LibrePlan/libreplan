@@ -471,16 +471,26 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void confirmRemove(Order order) {
-        try {
-            int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", order.getName()), "Delete",
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                remove(order);
+        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())) {
+            try {
+                int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", order.getName()),
+                        "Delete", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+                if (Messagebox.OK == status) {
+                    remove(order);
+                }
+            } catch (InterruptedException e) {
+                messagesForUser.showMessage(
+                        Level.ERROR, e.getMessage());
+                LOG.error(_("Error on showing removing element: ", order.getId()), e);
             }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(
-                    Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", order.getId()), e);
+        }
+        else {
+            try {
+                Messagebox.show(_("You don't have permissions to edit this order"),
+                        _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -732,18 +742,20 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void appendButtonDelete(final Hbox hbox, final Order order) {
-        Button buttonDelete = new Button();
-        buttonDelete.setSclass("icono");
-        buttonDelete.setImage("/common/img/ico_borrar1.png");
-        buttonDelete.setHoverImage("/common/img/ico_borrar.png");
-        buttonDelete.setTooltiptext(_("Delete"));
-        buttonDelete.addEventListener("onClick",new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                confirmRemove(order);
-            }
-        });
-        hbox.appendChild(buttonDelete);
+        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())) {
+            Button buttonDelete = new Button();
+            buttonDelete.setSclass("icono");
+            buttonDelete.setImage("/common/img/ico_borrar1.png");
+            buttonDelete.setHoverImage("/common/img/ico_borrar.png");
+            buttonDelete.setTooltiptext(_("Delete"));
+            buttonDelete.addEventListener("onClick",new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    confirmRemove(order);
+                }
+            });
+            hbox.appendChild(buttonDelete);
+        }
     }
 
     private void appendButtonPlan(final Hbox hbox, final Order order) {
