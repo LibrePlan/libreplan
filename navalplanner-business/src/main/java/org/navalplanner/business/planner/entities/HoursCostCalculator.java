@@ -78,6 +78,10 @@ public class HoursCostCalculator implements ICostCalculator {
 
     @Override
     public SortedMap<LocalDate, BigDecimal> getEstimatedCost(Task task) {
+        if (task.isSubcontracted()) {
+            return getAdvanceCost(task);
+        }
+
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
         List<DayAssignment> dayAssignments = task.getDayAssignments();
@@ -101,6 +105,10 @@ public class HoursCostCalculator implements ICostCalculator {
 
     @Override
     public SortedMap<LocalDate, BigDecimal> getWorkReportCost(Task task) {
+        if (task.isSubcontracted()) {
+            return getAdvanceCost(task);
+        }
+
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
         List<WorkReportLine> workReportLines = workReportLineDAO
