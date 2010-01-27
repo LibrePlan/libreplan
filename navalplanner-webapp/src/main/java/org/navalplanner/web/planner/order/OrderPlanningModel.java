@@ -236,6 +236,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
         }
 
+        //if there's no write permission, we disable the edition features of the gantt component
+        if(saveCommand == null) {
+            configuration.setAddingDependenciesEnabled(false);
+            configuration.setEditingDatesEnabled(false);
+            configuration.setMovingTasksEnabled(false);
+            configuration.setResizingTasksEnabled(false);
+        }
+
         final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
         configuration.addCommandOnTask(resourceAllocationCommand);
         configuration.addCommandOnTask(buildMilestoneCommand());
