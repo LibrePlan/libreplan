@@ -117,4 +117,6 @@ public interface IOrderModel {
 
     List<Order> getFilterOrders(OrderPredicate predicate);
 
+    boolean userCanRead(Order order, String loginName);
+
 }

@@ -146,6 +146,9 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IUserDAO userDAO;
 
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
+
     private List<Order> orderList = new ArrayList<Order>();
 
 
@@ -689,6 +692,32 @@ public class OrderModel implements IOrderModel {
             }
         }
         return filterOrderList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean userCanRead(Order order, String loginName) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_ORDERS) ||
+                SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return true;
+        }
+        try {
+            User user = userDAO.findByLoginName(loginName);
+            for(OrderAuthorization authorization :
+                    orderAuthorizationDAO.listByOrderUserAndItsProfiles(order, user)) {
+                if(authorization.getAuthorizationType() ==
+                        OrderAuthorizationType.READ_AUTHORIZATION ||
+                    authorization.getAuthorizationType() ==
+                        OrderAuthorizationType.WRITE_AUTHORIZATION) {
+                    return true;
+                }
+            }
+        }
+        catch(InstanceNotFoundException e) {
+            //this case shouldn't happen, because it would mean that there isn't a logged user
+            //anyway, if it happenned we don't allow the user to pass
+        }
+        return false;
     }
 
 }

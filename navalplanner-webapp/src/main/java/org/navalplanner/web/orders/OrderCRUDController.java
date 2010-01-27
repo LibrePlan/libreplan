@@ -491,14 +491,22 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void schedule(Order order) {
-        if (order.isScheduled()) {
-            planningControllerEntryPoints.goToScheduleOf(order);
-        }else{
+        if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
+            if (order.isScheduled()) {
+                planningControllerEntryPoints.goToScheduleOf(order);
+            }else{
+                try {
+                    Messagebox.show(_("The order has no scheduled elements"),
+                            _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        else {
             try {
-                Messagebox
-                        .show(_("The order has no scheduled elements"),
-                                _("Information"), Messagebox.OK,
-                        Messagebox.INFORMATION);
+                Messagebox.show(_("You don't have read access to this order"),
+                        _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -512,8 +520,18 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Runnable onUp;
 
     public void goToEditForm(Order order) {
-        showOrderElementFilter();
-        planningControllerEntryPoints.goToOrderDetails(order);
+        if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
+            showOrderElementFilter();
+            planningControllerEntryPoints.goToOrderDetails(order);
+        }
+        else {
+            try {
+                Messagebox.show(_("You don't have read access to this order"),
+                        _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void initEdit(Order order) {
