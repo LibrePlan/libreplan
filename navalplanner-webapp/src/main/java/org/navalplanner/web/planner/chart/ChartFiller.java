@@ -526,10 +526,10 @@ public abstract class ChartFiller implements IChartFiller {
         Integer days = Days.daysBetween(firstDay, lastDay).getDays();
         if (days > 0) {
             BigDecimal ammount = lastValue.subtract(firstValue);
-            BigDecimal ammountPerDay = ammount.setScale(2).divide(
+            BigDecimal ammountPerDay = ammount.setScale(2, RoundingMode.DOWN).divide(
                     new BigDecimal(days), RoundingMode.DOWN);
 
-            BigDecimal value = firstValue.setScale(2);
+            BigDecimal value = firstValue.setScale(2, RoundingMode.DOWN);
             for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = day
                     .plusDays(1)) {
                 map.put(day, value);
