@@ -42,6 +42,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -55,6 +56,8 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.planner.ITaskElementAdapter;
@@ -64,6 +67,7 @@ import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.print.CutyPrint;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -127,6 +131,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -516,8 +523,17 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private List<TaskElement> retainOnlyTopLevel() {
-        List<Order> list = orderDAO.list(Order.class);
         List<TaskElement> result = new ArrayList<TaskElement>();
+        User user;
+        try {
+            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+        }
+        catch(InstanceNotFoundException e) {
+            //this case shouldn't happen, because it would mean that there isn't a logged user
+            //anyway, if it happenned we return an empty list
+            return result;
+        }
+        List<Order> list = orderDAO.getOrdersByAuthorization(user);
         for (Order order : list) {
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
             if (associatedTaskElement != null) {
