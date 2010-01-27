@@ -69,6 +69,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             return "";
         }
 
+        @Override
+        public String getImage() {
+            return "";
+        }
+
     }
 
     private static class NullCommandOnTask<T> implements ICommandOnTask<T> {

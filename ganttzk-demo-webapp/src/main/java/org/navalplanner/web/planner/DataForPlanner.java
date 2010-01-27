@@ -64,6 +64,11 @@ public class DataForPlanner {
                     }
 
                     @Override
+                    public String getImage() {
+                        return "";
+                    }
+
+                    @Override
                     public void doAction(
                             IContext<ITaskFundamentalProperties> context) {
                         addNewTask(context);
@@ -82,6 +87,12 @@ public class DataForPlanner {
                     public String getName() {
                         return "";
                     }
+
+                    @Override
+                    public String getImage() {
+                        return "";
+                    }
+
                 });
         configuration
                 .addCommandOnTask(new ICommandOnTask<ITaskFundamentalProperties>() {

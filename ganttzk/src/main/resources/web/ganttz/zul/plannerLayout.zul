@@ -7,8 +7,11 @@ planner = self;
     <borderlayout sclass="plannerlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center" id="toolbar" sclass="toolbar-box">
-
+        <separator/>
         <!--  Commands -->
+        <button onClick="planner.invalidate()"
+            image="/common/img/ico_refresh.png"
+            tooltiptext="${i18n:_('Refresh')}" />
         <button id="btnPrint" onClick="planner.print()"
             image="/common/img/ico_print.png"
             tooltiptext="${i18n:_('Print')}" />
@@ -25,10 +28,10 @@ planner = self;
             tooltiptext="${i18n:_('Show/Hide Critical path')}" />
         <button id="showAllLabels" onClick="planner.showAllLabels();"
             image="/common/img/ico_labels.png"
-            tooltiptext="${i18n:_('Show/Hide all labels')}" sclass="planner-command show-labels" />
+            tooltiptext="${i18n:_('Show/Hide labels')}" sclass="planner-command show-labels" />
         <button id="showAllResources" onClick="planner.showAllResources();"
             image="/common/img/ico_resources.png"
-            tooltiptext="${i18n:_('Show all resources')}" sclass="planner-command show-resources" />
+            tooltiptext="${i18n:_('Show/Hide resources')}" sclass="planner-command show-resources" />
         <separator />
 
         <!--  Filtering -->

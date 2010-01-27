@@ -252,4 +252,9 @@ public class SaveCommand implements ISaveCommand {
         listeners.remove(listener);
     }
 
+    @Override
+    public String getImage() {
+        return "/common/img/ico_save.png";
+    }
+
 }

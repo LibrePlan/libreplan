@@ -49,7 +49,12 @@ class CommandContextualized<T> {
 
     Button toButton() {
         Button result = new Button();
-        result.setLabel(command.getName());
+        if ("".equals(command.getImage())) {
+            result.setLabel(command.getName());
+        } else {
+            result.setImage(command.getImage());
+            result.setTooltiptext(command.getName());
+        }
         result.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override

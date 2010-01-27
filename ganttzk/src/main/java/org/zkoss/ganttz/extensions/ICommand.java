@@ -32,4 +32,6 @@ public interface ICommand<T> {
 
     public void doAction(IContext<T> context);
 
+    public String getImage();
+
 }

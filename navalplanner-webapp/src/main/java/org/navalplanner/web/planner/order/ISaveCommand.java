@@ -39,4 +39,6 @@ public interface ISaveCommand extends ICommand<TaskElement> {
 
     public void removeListener(IAfterSaveListener listener);
 
+    public String getImage();
+
 }

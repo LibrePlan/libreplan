@@ -1092,6 +1092,19 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     color:#0068B1;
 }
 
+.toolbar-box span.z-button {
+    margin: 0 0 0 0;
+}
+
+.toolbar-box .planner-icon,
+.toolbar-box  .planner-command {
+   padding-top: 1px;
+   padding-right: 1px;
+}
+
+
+
+
 .z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
     -moz-background-clip:border;
     -moz-background-inline-policy:continuous;

@@ -323,6 +323,8 @@ public class Planner extends HtmlMacroComponent  {
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, doubleClickCommand,
                 disabilityConfiguration);
+        Button button = (Button) getFellow("btnPrint");
+        button.setDisabled(!context.isPrintEnabled());
     }
 
     @SuppressWarnings("unchecked")
