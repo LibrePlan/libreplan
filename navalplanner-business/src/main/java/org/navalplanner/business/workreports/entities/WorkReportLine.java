@@ -101,6 +101,12 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public void setNumHours(Integer numHours) {
         this.numHours = numHours;
+        if ((workReport != null)
+                && (workReport.getWorkReportType() != null)
+                && (workReport.getWorkReportType().getHoursManagement()
+                        .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK))) {
+            this.numHours = getDiferenceBetweenTimeStartAndFinish();
+        }
     }
 
     public Date getClockFinish() {
@@ -128,6 +134,11 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public void setDate(Date date) {
         this.date = date;
+        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
+            if (workReport.getWorkReportType().getDateIsSharedByLines()) {
+                this.date = workReport.getDate();
+            }
+        }
     }
 
     @NotNull(message = "resource not specified")
@@ -137,6 +148,11 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public void setResource(Resource resource) {
         this.resource = resource;
+        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
+            if (workReport.getWorkReportType().getResourceIsSharedInLines()) {
+                this.resource = workReport.getResource();
+            }
+        }
     }
 
     @NotNull(message = "order element not specified")
@@ -146,6 +162,11 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public void setOrderElement(OrderElement orderElement) {
         this.orderElement = orderElement;
+        if ((workReport != null) && (workReport.getWorkReportType() != null)) {
+            if (workReport.getWorkReportType().getOrderElementIsSharedInLines()) {
+                this.orderElement = workReport.getOrderElement();
+            }
+        }
     }
 
     public Set<Label> getLabels() {
@@ -156,6 +177,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         this.labels = labels;
     }
 
+    @NotNull(message = "work report not specified")
     public WorkReport getWorkReport() {
         return workReport;
     }
@@ -168,6 +190,9 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
         // copy the required fields if these are shared by lines
         updatesAllSharedDataByLines();
+
+        // update calculated hours
+        updateNumHours();
     }
 
     @Valid
@@ -278,8 +303,10 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
     }
 
     private void updateNumHours() {
-        if (workReport.getWorkReportType().getHoursManagement().equals(
-                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+        if ((workReport != null)
+                && (workReport.getWorkReportType() != null)
+                && workReport.getWorkReportType().getHoursManagement().equals(
+                        HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             setNumHours(getDiferenceBetweenTimeStartAndFinish());
         }
     }
@@ -310,6 +337,38 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
     @Override
     protected IWorkReportLineDAO getIntegrationEntityDAO() {
         return Registry.getWorkReportLineDAO();
+    }
+
+    @AssertTrue(message = "fields should match with work report data if are shared by lines")
+    public boolean checkConstraintFieldsMatchWithWorkReportIfAreSharedByLines() {
+        if (workReport.getWorkReportType().getDateIsSharedByLines()) {
+            if (!workReport.getDate().equals(date)) {
+                return false;
+            }
+        }
+        if (workReport.getWorkReportType().getOrderElementIsSharedInLines()) {
+            if (!workReport.getOrderElement().getId().equals(
+                    orderElement.getId())) {
+                return false;
+            }
+        }
+        if (workReport.getWorkReportType().getResourceIsSharedInLines()) {
+            if (!workReport.getResource().getId().equals(resource.getId())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "number of hours is not properly calculated based on clock")
+    public boolean checkConstraintHoursCalculatedByClock() {
+        if (workReport.getWorkReportType().getHoursManagement().equals(
+                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+            if (getDiferenceBetweenTimeStartAndFinish() != numHours) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

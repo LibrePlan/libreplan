@@ -20,7 +20,6 @@
 
 package org.navalplanner.business.test.workreports.entities;
 
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
@@ -51,11 +50,6 @@ public class WorkReportTypeTest extends AbstractWorkReportTest {
 
     @Autowired
     IWorkReportTypeDAO workReportTypeDAO;
-
-    @Test
-    public void testWorkReportTypeTest() {
-        assertTrue(true);
-    }
 
     @Test
     public void checkInvalidNameWorkReportType()

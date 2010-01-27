@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
@@ -112,6 +113,7 @@ public class WorkReport extends IntegrationEntity {
         }
     }
 
+    @NotNull(message = "work report type not specified")
     public WorkReportType getWorkReportType() {
         return workReportType;
     }
