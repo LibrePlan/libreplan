@@ -217,11 +217,12 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
             catch(InstanceNotFoundException e) {
                 return false;
             }
-            List<OrderAuthorization> authorizations = dao.listByUserAndItsProfiles(user);
+            List<OrderAuthorization> authorizations =
+                dao.listByOrderUserAndItsProfiles(order, user);
             for(OrderAuthorization authorization : authorizations) {
-                if (authorization.getOrder().getId().equals(order.getId()) &&
-                    authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
-                        return true;
+                if (authorization.getAuthorizationType() ==
+                        OrderAuthorizationType.WRITE_AUTHORIZATION) {
+                    return true;
                 }
             }
             return false;
