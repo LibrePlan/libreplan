@@ -59,11 +59,20 @@ public interface IOrderDAO extends IGenericDAO<Order, Long> {
     List<Task> getTasksByOrder(Order order);
 
     /**
-     * Returns a list of orders filtered by the authorizations of the indicated
+     * Returns a list of orders filtered by the read authorizations of the indicated
+     * user. Write authorizations are also counted, because they implicitly suppose
+     * read access.
+     * @param user User.
+     * @return Filtered list of orders.
+     */
+    List<Order> getOrdersByReadAuthorization(User user);
+
+    /**
+     * Returns a list of orders filtered by the write authorizations of the indicated
      * user.
      * @param user User.
      * @return Filtered list of orders.
      */
-    List<Order> getOrdersByAuthorization(User user);
+    List<Order> getOrdersByWriteAuthorization(User user);
 
 }

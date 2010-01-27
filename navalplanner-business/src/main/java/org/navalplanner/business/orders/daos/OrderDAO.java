@@ -186,7 +186,7 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
     }
 
     @Override
-    public List<Order> getOrdersByAuthorization(User user) {
+    public List<Order> getOrdersByReadAuthorization(User user) {
         if (user.getRoles().contains(UserRole.ROLE_READ_ALL_ORDERS) ||
             user.getRoles().contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return getOrders();
@@ -198,6 +198,27 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
                 if (authorization.getAuthorizationType() == OrderAuthorizationType.READ_AUTHORIZATION ||
                     authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
 
+                    Order order = authorization.getOrder();
+                    if(!orders.contains(order)) {
+                        order.getName(); //this lines forces the load of the basic attributes of the order
+                        orders.add(order);
+                    }
+                }
+            }
+            return orders;
+        }
+    }
+
+    @Override
+    public List<Order> getOrdersByWriteAuthorization(User user) {
+        if (user.getRoles().contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return getOrders();
+        }
+        else {
+            List<Order> orders = new ArrayList<Order>();
+            List<OrderAuthorization> authorizations = orderAuthorizationDAO.listByUserAndItsProfiles(user);
+            for(OrderAuthorization authorization : authorizations) {
+                if (authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
                     Order order = authorization.getOrder();
                     if(!orders.contains(order)) {
                         order.getName(); //this lines forces the load of the basic attributes of the order

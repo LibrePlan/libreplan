@@ -197,7 +197,7 @@ public class OrderModel implements IOrderModel {
             //anyway, if it happenned we return an empty list
             return new ArrayList<Order>();
         }
-        List<Order> orders = orderDAO.getOrdersByAuthorization(user);
+        List<Order> orders = orderDAO.getOrdersByReadAuthorization(user);
         initializeOrders(orders);
         return orders;
     }

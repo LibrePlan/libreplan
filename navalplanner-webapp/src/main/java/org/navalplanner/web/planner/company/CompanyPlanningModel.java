@@ -533,7 +533,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             //anyway, if it happenned we return an empty list
             return result;
         }
-        List<Order> list = orderDAO.getOrdersByAuthorization(user);
+        List<Order> list = orderDAO.getOrdersByReadAuthorization(user);
         for (Order order : list) {
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
             if (associatedTaskElement != null) {
