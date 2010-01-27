@@ -209,6 +209,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
             ((Button)listWindow.getFellowIfAny("show_create_form")).setDisabled(false);
             ((Button)listWindow.getFellowIfAny("create_from_template_button")).setDisabled(false);
+            ((Button)self.getFellowIfAny("ordersTabCreateOrderButton")).setDisabled(false);
         }
 
         // Configuration of the order filter
