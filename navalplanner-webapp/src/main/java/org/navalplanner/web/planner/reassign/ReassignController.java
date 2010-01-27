@@ -23,6 +23,7 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -182,6 +184,13 @@ public class ReassignController extends GenericForwardComposer {
 
 
     public void confirm() {
+        if (currentType.needsAssociatedDate()) {
+            Date value = associatedDate.getValue();
+            if (value == null) {
+                throw new WrongValueException(associatedDate,
+                        _("must be not empty"));
+            }
+        }
         window.setVisible(false);
     }
 
