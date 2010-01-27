@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
+import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
@@ -44,6 +45,7 @@ import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
+import org.navalplanner.business.workreports.entities.HoursManagementEnum;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
@@ -132,9 +134,23 @@ public class WorkReportServiceTest {
     }
 
     private WorkReportType givenWorkReportTypeStored() {
+        return givenWorkReportTypeStored(false, false, false, null);
+    }
+
+    private WorkReportType givenWorkReportTypeStored(boolean dateShared,
+            boolean orderElementShared, boolean resourceShared,
+            HoursManagementEnum hoursManagement) {
         WorkReportType workReportType = WorkReportType.create();
         workReportType.setCode("type-of-work-hours-code-" + UUID.randomUUID());
         workReportType.setName("type-of-work-hours-name");
+
+        workReportType.setDateIsSharedByLines(dateShared);
+        workReportType.setOrderElementIsSharedInLines(orderElementShared);
+        workReportType.setResourceIsSharedInLines(resourceShared);
+
+        if (hoursManagement != null) {
+            workReportType.setHoursManagement(hoursManagement);
+        }
 
         workReportTypeDAO.save(workReportType);
         workReportTypeDAO.flush();
@@ -159,10 +175,10 @@ public class WorkReportServiceTest {
         return workReportLineDTO;
     }
 
-    private WorkReportDTO createWorkReportDTO() {
+    private WorkReportDTO createWorkReportDTO(WorkReportType workReportType) {
         WorkReportDTO workReportDTO = new WorkReportDTO();
         workReportDTO.code = "work-report-code-" + UUID.randomUUID();
-        workReportDTO.workReportType = givenWorkReportTypeStored().getCode();
+        workReportDTO.workReportType = workReportType.getCode();
 
         workReportDTO.workReportLines.add(createWorkReportLineDTO());
 
@@ -174,7 +190,7 @@ public class WorkReportServiceTest {
         int previous = workReportDAO.getAll().size();
 
         WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
-                .asList(createWorkReportDTO()));
+                .asList(createWorkReportDTO(givenWorkReportTypeStored())));
 
         InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
                 .addWorkReports(workReportListDTO);
@@ -188,6 +204,101 @@ public class WorkReportServiceTest {
         assertThat(workReportLines.size(), equalTo(1));
 
         assertThat(workReportLines.iterator().next().getNumHours(), equalTo(8));
+    }
+
+    @Test
+    public void importInvalidWorkReportWithoutDateAtWorkReportLevel() {
+        int previous = workReportDAO.getAll().size();
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(createWorkReportDTO(givenWorkReportTypeStored(true,
+                        false, false, null))));
+
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
+                .addWorkReports(workReportListDTO);
+        assertThat(
+                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
+                        .size(), equalTo(1));
+        List<WorkReport> workReports = workReportDAO.getAll();
+        assertThat(workReports.size(), equalTo(previous));
+    }
+
+    @Test
+    public void importValidWorkReportWithDateAtWorkReportLevel() {
+        int previous = workReportDAO.getAll().size();
+
+        WorkReportDTO workReportDTO = createWorkReportDTO(givenWorkReportTypeStored(
+                true, false, false, null));
+        Date date = new Date();
+        workReportDTO.date = date;
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(workReportDTO));
+
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
+                .addWorkReports(workReportListDTO);
+        assertThat(
+                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
+                        .size(), equalTo(0));
+        List<WorkReport> workReports = workReportDAO.getAll();
+        assertThat(workReports.size(), equalTo(previous + 1));
+
+        assertThat(workReports.get(previous).getDate(), equalTo(date));
+        assertThat(workReports.get(previous).getWorkReportLines().iterator()
+                .next().getDate(), equalTo(date));
+    }
+
+    @Test
+    public void importInvalidWorkReportCalculatedHours() {
+        int previous = workReportDAO.getAll().size();
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(createWorkReportDTO(givenWorkReportTypeStored(false,
+                        false, false,
+                        HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK))));
+
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
+                .addWorkReports(workReportListDTO);
+        assertThat(
+                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
+                        .size(), equalTo(1));
+        List<WorkReport> workReports = workReportDAO.getAll();
+        assertThat(workReports.size(), equalTo(previous));
+    }
+
+    @Test
+    public void importValidWorkReportCalculatedHours() {
+        int previous = workReportDAO.getAll().size();
+
+        WorkReportDTO workReportDTO = createWorkReportDTO(givenWorkReportTypeStored(
+                false, false, false,
+                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK));
+        WorkReportLineDTO workReportLineDTO = workReportDTO.workReportLines
+                .iterator().next();
+
+        int hours = 12;
+        LocalTime start = new LocalTime(8, 0);
+        LocalTime end = start.plusHours(hours);
+        workReportLineDTO.clockStart = start.toDateTimeToday().toDate();
+        workReportLineDTO.clockFinish = end.toDateTimeToday().toDate();
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(workReportDTO));
+
+        InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = workReportService
+                .addWorkReports(workReportListDTO);
+        assertThat(
+                instanceConstraintViolationsListDTO.instanceConstraintViolationsList
+                        .size(), equalTo(0));
+        List<WorkReport> workReports = workReportDAO.getAll();
+        assertThat(workReports.size(), equalTo(previous + 1));
+
+        Set<WorkReportLine> workReportLines = workReports.get(previous)
+                .getWorkReportLines();
+        assertThat(workReportLines.size(), equalTo(1));
+
+        assertThat(workReportLines.iterator().next().getNumHours(),
+                equalTo(hours));
     }
 
 }

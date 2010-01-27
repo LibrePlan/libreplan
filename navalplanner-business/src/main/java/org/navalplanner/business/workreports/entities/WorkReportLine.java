@@ -239,6 +239,10 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
     @SuppressWarnings("unused")
     @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
     public boolean checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             return (getClockStart() != null);
@@ -249,6 +253,10 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
     @SuppressWarnings("unused")
     @AssertTrue(message = "closckFinish:the clockStart must be not null if number of hours is calcultate by clock")
     public boolean checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             return (getClockFinish() != null);
@@ -339,6 +347,10 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     @AssertTrue(message = "fields should match with work report data if are shared by lines")
     public boolean checkConstraintFieldsMatchWithWorkReportIfAreSharedByLines() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
         if (workReport.getWorkReportType().getDateIsSharedByLines()) {
             if (!workReport.getDate().equals(date)) {
                 return false;
@@ -360,6 +372,10 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     @AssertTrue(message = "number of hours is not properly calculated based on clock")
     public boolean checkConstraintHoursCalculatedByClock() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
             if (getDiferenceBetweenTimeStartAndFinish() != numHours) {
@@ -367,6 +383,12 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
             }
         }
         return true;
+    }
+
+    private boolean firstLevelValidationsPassed() {
+        return (workReport != null) && (typeOfWorkHours != null)
+                && (numHours != null) && (date != null) && (resource != null)
+                && (orderElement != null);
     }
 
 }

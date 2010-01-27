@@ -198,6 +198,10 @@ public class WorkReport extends IntegrationEntity {
     @SuppressWarnings("unused")
     @AssertTrue(message = "date:the date must be not null if is shared by lines")
     public boolean checkConstraintDateMustBeNotNullIfIsSharedByLines() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
         if (workReportType.getDateIsSharedByLines()) {
             return (getDate() != null);
         }
@@ -207,6 +211,10 @@ public class WorkReport extends IntegrationEntity {
     @SuppressWarnings("unused")
     @AssertTrue(message = "resource:the resource must be not null if is shared by lines")
     public boolean checkConstraintResourceMustBeNotNullIfIsSharedByLines() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
         if (workReportType.getResourceIsSharedInLines()) {
             return (getResource() != null);
         }
@@ -216,6 +224,10 @@ public class WorkReport extends IntegrationEntity {
     @SuppressWarnings("unused")
     @AssertTrue(message = "orderElement:the order element must be not null if is shared by lines")
     public boolean checkConstraintOrderElementMustBeNotNullIfIsSharedByLines() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
         if (workReportType.getOrderElementIsSharedInLines()) {
             return (getOrderElement() != null);
         }
@@ -274,6 +286,10 @@ public class WorkReport extends IntegrationEntity {
     @Override
     protected IWorkReportDAO getIntegrationEntityDAO() {
         return Registry.getWorkReportDAO();
+    }
+
+    private boolean firstLevelValidationsPassed() {
+        return (workReportType != null);
     }
 
 }
