@@ -735,7 +735,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         buttonEdit.addEventListener("onClick",new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                hbox.appendChild(new Label("aaa"));
                 goToEditForm(order);
             }
         });
