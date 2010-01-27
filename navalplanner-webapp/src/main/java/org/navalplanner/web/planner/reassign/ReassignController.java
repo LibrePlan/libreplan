@@ -19,13 +19,14 @@
  */
 package org.navalplanner.web.planner.reassign;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import java.util.Collections;
 
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Window;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -33,21 +34,39 @@ import org.zkoss.ganttz.extensions.IContext;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class ReassignCommand implements IReassignCommand {
+public class ReassignController extends GenericForwardComposer {
 
-    @Override
-    public void doAction(IContext<TaskElement> context) {
-        ReassignController.openOn(context.getRelativeTo());
+    public static void openOn(org.zkoss.zk.ui.Component component) {
+        Window result = (Window) Executions.createComponents(
+                "/planner/reassign.zul", component, Collections.emptyMap());
+        ReassignController controller = (ReassignController) result
+                .getAttribute("controller");
+        controller.showWindow();
+    }
+
+    private Window window;
+
+    private void showWindow() {
+        try {
+            window.setMode("modal");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public String getName() {
-        return _("Reassign");
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        this.window = (Window) comp;
+        comp.setAttribute("controller", this);
     }
 
-    @Override
-    public String getImage() {
-        return null;
+    public void confirm() {
+        window.setVisible(false);
+    }
+
+    public void cancel() {
+        window.setVisible(false);
     }
 
 }
