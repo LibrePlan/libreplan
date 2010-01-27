@@ -225,9 +225,9 @@ public class StretchesFunctionController extends GenericForwardComposer {
                 Decimalbox amountWork) {
             if (field == Field.AMOUNT_WORK && this.stretch.equals(stretch)) {
                 amountWork.focus();
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         @Override
