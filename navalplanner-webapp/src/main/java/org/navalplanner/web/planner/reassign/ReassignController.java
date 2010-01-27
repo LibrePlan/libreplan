@@ -19,15 +19,27 @@
  */
 package org.navalplanner.web.planner.reassign;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
+import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
-
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
@@ -35,6 +47,61 @@ import org.zkoss.zul.Window;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReassignController extends GenericForwardComposer {
+
+    public enum Type {
+        ALL {
+
+            @Override
+            public String getName() {
+                return _("All");
+            }
+
+            @Override
+            public boolean needsAssociatedDate() {
+                return false;
+            }
+        },
+        FROM_TODAY {
+
+            @Override
+            public String getName() {
+                return _("From Today");
+            }
+
+            @Override
+            public boolean needsAssociatedDate() {
+                return false;
+            }
+        },
+        FROM_CHOOSEN {
+
+            @Override
+            public String getName() {
+                return _("From Choosen");
+            }
+
+            @Override
+            public boolean needsAssociatedDate() {
+                return true;
+            }
+        };
+
+        public static Type fromRadio(Radio selectedItem) {
+            return Type.valueOf(selectedItem.getValue());
+        }
+
+        public Radio createRadio() {
+            Radio result = new Radio();
+            result.setLabel(getName());
+            result.setValue(this.toString());
+            return result;
+        }
+
+        public abstract String getName();
+
+        public abstract boolean needsAssociatedDate();
+
+    }
 
     public static void openOn(org.zkoss.zk.ui.Component component) {
         Window result = (Window) Executions.createComponents(
@@ -45,6 +112,14 @@ public class ReassignController extends GenericForwardComposer {
     }
 
     private Window window;
+
+    private Radiogroup reassigningTypeSelector;
+
+    private Grid reassigningTypesGrid;
+
+    private Datebox associatedDate;
+
+    private Type currentType = Type.ALL;
 
     private void showWindow() {
         try {
@@ -59,7 +134,52 @@ public class ReassignController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         this.window = (Window) comp;
         comp.setAttribute("controller", this);
+        associatedDate.setVisible(currentType.needsAssociatedDate());
+        fillGridWithRadios();
+        listenForTypeChange();
+        reassigningTypesGrid.invalidate();
     }
+
+
+    private void fillGridWithRadios() {
+        reassigningTypesGrid.setModel(new SimpleListModel(Type
+                .values()));
+        reassigningTypesGrid.setRowRenderer(OnColumnsRowRenderer.create(
+                reassigningTypesRenderer(), Arrays.asList(0)));
+    }
+
+    private ICellForDetailItemRenderer<Integer, Type> reassigningTypesRenderer() {
+        return new ICellForDetailItemRenderer<Integer, Type>() {
+            @Override
+            public org.zkoss.zk.ui.Component cellFor(Integer column, Type type) {
+                Radio radio = type.createRadio();
+                radio.setChecked(currentType == type);
+                return radio;
+            }
+        };
+    }
+
+    private void listenForTypeChange() {
+        reassigningTypeSelector.addEventListener(Events.ON_CHECK,
+                new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Radio selectedItem = reassigningTypeSelector
+                                .getSelectedItem();
+                        newTypeChoosen(Type.fromRadio(selectedItem));
+                        associatedDate.setVisible(currentType
+                                .needsAssociatedDate());
+                    }
+                });
+    }
+
+
+    private void newTypeChoosen(Type fromRadio) {
+        this.currentType = fromRadio;
+        associatedDate.setVisible(false);
+    }
+
 
     public void confirm() {
         window.setVisible(false);

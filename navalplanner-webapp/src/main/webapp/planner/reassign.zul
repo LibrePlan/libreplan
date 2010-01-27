@@ -29,10 +29,19 @@
     <window border="normal" title="${i18n:_('Reassining')}"
         apply="${controllerForReassigning}">
 
-        <hbox>
-            <vbox>
-            </vbox>
-        </hbox>
+        <groupbox mold="3d" style="margin-top: 5px" closable="false">
+            <caption label="${i18n:_('Reassigning type')}:" />
+            <hbox>
+                <radiogroup id="reassigningTypeSelector">
+                    <grid id="reassigningTypesGrid">
+                        <columns>
+                          <column />
+                        </columns>
+                    </grid>
+                </radiogroup>
+                <datebox id="associatedDate" />
+            </hbox>
+        </groupbox>
 
         <hbox>
             <button label="${i18n:_('Accept')}"
