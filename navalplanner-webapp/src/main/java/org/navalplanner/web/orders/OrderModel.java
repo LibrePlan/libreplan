@@ -144,9 +144,6 @@ public class OrderModel implements IOrderModel {
     private IOrderSequenceDAO orderSequenceDAO;
 
     @Autowired
-    private IOrderAuthorizationDAO orderAuthorizationDAO;
-
-    @Autowired
     private IUserDAO userDAO;
 
     private List<Order> orderList = new ArrayList<Order>();
@@ -191,38 +188,18 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_ORDERS) ||
-            SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
-            final List<Order> list = orderDAO.getOrders();
-            initializeOrders(list);
-            return list;
+        User user;
+        try {
+            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
         }
-        else {
-            List<Order> orders = new ArrayList<Order>();
-            User user;
-            try {
-                user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
-            }
-            catch(InstanceNotFoundException e) {
-                //this case shouldn't happen, because it would mean that there isn't a logged user
-                //anyway, if it happenned we return an empty list
-                return orders;
-            }
-            List<OrderAuthorization> authorizations = orderAuthorizationDAO.listByUserAndItsProfiles(user);
-            for(OrderAuthorization authorization : authorizations) {
-                if (authorization.getAuthorizationType() == OrderAuthorizationType.READ_AUTHORIZATION ||
-                    authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
-
-                    Order order = authorization.getOrder();
-                    if(!orders.contains(order)) {
-                        order.getName(); //this lines forces the load of the basic attributes of the order
-                        orders.add(order);
-                    }
-                }
-            }
-            initializeOrders(orders);
-            return orders;
+        catch(InstanceNotFoundException e) {
+            //this case shouldn't happen, because it would mean that there isn't a logged user
+            //anyway, if it happenned we return an empty list
+            return new ArrayList<Order>();
         }
+        List<Order> orders = orderDAO.getOrdersByAuthorization(user);
+        initializeOrders(orders);
+        return orders;
     }
 
     private void initializeOrders(List<Order> list) {

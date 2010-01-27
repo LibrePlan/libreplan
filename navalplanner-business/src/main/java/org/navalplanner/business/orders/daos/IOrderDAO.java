@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.planner.entities.Task;
 
 /**
@@ -33,6 +34,7 @@ import org.navalplanner.business.planner.entities.Task;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 public interface IOrderDAO extends IGenericDAO<Order, Long> {
 
@@ -55,5 +57,13 @@ public interface IOrderDAO extends IGenericDAO<Order, Long> {
      * @return
      */
     List<Task> getTasksByOrder(Order order);
+
+    /**
+     * Returns a list of orders filtered by the authorizations of the indicated
+     * user.
+     * @param user User.
+     * @return Filtered list of orders.
+     */
+    List<Order> getOrdersByAuthorization(User user);
 
 }

@@ -38,6 +38,11 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.OrderAuthorizationType;
+import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -49,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -60,6 +66,9 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
 
     @Autowired
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Override
     public List<Order> getOrders() {
@@ -174,6 +183,30 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
         query.setParameterList("orderElements", orderElements);
 
         return (List<Task>) query.list();
+    }
+
+    @Override
+    public List<Order> getOrdersByAuthorization(User user) {
+        if (user.getRoles().contains(UserRole.ROLE_READ_ALL_ORDERS) ||
+            user.getRoles().contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return getOrders();
+        }
+        else {
+            List<Order> orders = new ArrayList<Order>();
+            List<OrderAuthorization> authorizations = orderAuthorizationDAO.listByUserAndItsProfiles(user);
+            for(OrderAuthorization authorization : authorizations) {
+                if (authorization.getAuthorizationType() == OrderAuthorizationType.READ_AUTHORIZATION ||
+                    authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
+
+                    Order order = authorization.getOrder();
+                    if(!orders.contains(order)) {
+                        order.getName(); //this lines forces the load of the basic attributes of the order
+                        orders.add(order);
+                    }
+                }
+            }
+            return orders;
+        }
     }
 
 }
