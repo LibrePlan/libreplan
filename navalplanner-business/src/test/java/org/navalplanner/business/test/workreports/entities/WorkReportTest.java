@@ -211,8 +211,8 @@ public class WorkReportTest {
         LocalTime start = new LocalTime(8, 0);
         LocalTime end = start.plusHours(8);
 
-        workReportLine.setClockStart(start.toDateTimeToday().toDate());
-        workReportLine.setClockFinish(end.toDateTimeToday().toDate());
+        workReportLine.setClockStart(start);
+        workReportLine.setClockFinish(end);
 
         assertThat(workReportLine.getNumHours(), equalTo(8));
 

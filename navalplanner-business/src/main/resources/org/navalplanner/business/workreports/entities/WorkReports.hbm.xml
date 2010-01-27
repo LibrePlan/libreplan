@@ -100,8 +100,10 @@
 
     <property name="numHours" access="field"/>
     <property name="date" access="field"/>
-    <property name="clockStart" access="field"/>
-    <property name="clockFinish" access="field"/>
+    <property name="clockStart" access="field"
+        type="org.joda.time.contrib.hibernate.PersistentLocalTimeExact" />
+    <property name="clockFinish" access="field"
+        type="org.joda.time.contrib.hibernate.PersistentLocalTimeExact" />
 
     <many-to-one name="workReport" class="org.navalplanner.business.workreports.entities.WorkReport" column="WORK_REPORT_ID" />
 

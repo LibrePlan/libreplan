@@ -954,8 +954,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
             @Override
             public Date get() {
-                if (line != null) {
-                    return line.getClockStart();
+                if ((line != null) && (line.getClockStart() != null)) {
+                    return line.getClockStart().toDateTimeToday().toDate();
                 }
                 return null;
             }
@@ -1002,8 +1002,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
             @Override
             public Date get() {
-                if (line != null) {
-                    return line.getClockFinish();
+                if ((line != null) && (line.getClockFinish() != null)) {
+                    return line.getClockFinish().toDateTimeToday().toDate();
                 }
                 return null;
             }

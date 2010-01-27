@@ -23,6 +23,7 @@ package org.navalplanner.business.reports.dtos;
 import java.util.Date;
 import java.util.Set;
 
+import org.joda.time.LocalTime;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -34,9 +35,9 @@ public class HoursWorkedPerWorkerDTO {
 
     private Date date;
 
-    private Date clockStart;
+    private LocalTime clockStart;
 
-    private Date clockFinish;
+    private LocalTime clockFinish;
 
     private Integer numHours;
 
@@ -84,19 +85,19 @@ public class HoursWorkedPerWorkerDTO {
         this.numHours = numHours;
     }
 
-    public Date getClockStart() {
+    public LocalTime getClockStart() {
         return clockStart;
     }
 
-    public void setClockStart(Date clockStart) {
+    public void setClockStart(LocalTime clockStart) {
         this.clockStart = clockStart;
     }
 
-    public Date getClockFinish() {
+    public LocalTime getClockFinish() {
         return clockFinish;
     }
 
-    public void setClockFinish(Date clockFinish) {
+    public void setClockFinish(LocalTime clockFinish) {
         this.clockFinish = clockFinish;
     }
 

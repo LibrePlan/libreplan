@@ -27,6 +27,8 @@ import java.util.Set;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
+import org.joda.time.Hours;
+import org.joda.time.LocalTime;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
@@ -64,9 +66,9 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     private Date date;
 
-    private Date clockStart;
+    private LocalTime clockStart;
 
-    private Date clockFinish;
+    private LocalTime clockFinish;
 
     private Resource resource;
 
@@ -109,20 +111,32 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         }
     }
 
-    public Date getClockFinish() {
+    public LocalTime getClockFinish() {
         return clockFinish;
     }
 
     public void setClockFinish(Date clockFinish) {
+        if (clockFinish != null) {
+            setClockFinish(LocalTime.fromDateFields(clockFinish));
+        }
+    }
+
+    public void setClockFinish(LocalTime clockFinish) {
         this.clockFinish = clockFinish;
         updateNumHours();
     }
 
-    public Date getClockStart() {
+    public LocalTime getClockStart() {
         return clockStart;
     }
 
     public void setClockStart(Date clockStart) {
+        if (clockStart != null) {
+            setClockStart(LocalTime.fromDateFields(clockStart));
+        }
+    }
+
+    public void setClockStart(LocalTime clockStart) {
         this.clockStart = clockStart;
         updateNumHours();
     }
@@ -312,24 +326,8 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
     }
 
     private Integer getDiferenceBetweenTimeStartAndFinish() {
-        if ((getClockStart() != null) && (getClockFinish() != null)) {
-            Long divisor = new Long(3600000);
-            Long topHour = new Long(24);
-            Long clockStart = new Long(0);
-            Long clockFinish = new Long(0);
-            Long numHours;
-
-            clockStart = (getClockStart().getTime()) / divisor;
-            clockFinish = (getClockFinish().getTime()) / divisor;
-
-            // if clock start greater than clock finish
-            if (clockStart.compareTo(clockFinish) > 0) {
-                numHours = topHour - clockStart;
-                numHours = numHours + clockFinish;
-            } else {
-                numHours = clockFinish - clockStart;
-            }
-            return numHours.intValue();
+        if ((clockStart != null) && (clockFinish != null)) {
+            return Hours.hoursBetween(clockStart, clockFinish).getHours();
         }
         return null;
     }
