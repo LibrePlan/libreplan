@@ -85,6 +85,7 @@ import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
+import org.navalplanner.web.planner.reassign.IReassignCommand;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
 import org.navalplanner.web.print.CutyPrint;
@@ -639,6 +640,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return saveCommand;
     }
 
+    private ICommand<TaskElement> buildReassigningCommand() {
+        IReassignCommand result = getReassignCommand();
+        return result;
+    }
+
     private Chart setupChart(Order orderReloaded,
             IChartFiller loadChartFiller, Timeplot chartComponent,
             TimeTracker timeTracker) {
@@ -805,6 +811,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
     protected abstract ISaveCommand getSaveCommand();
+
+    protected abstract IReassignCommand getReassignCommand();
 
     protected abstract IResourceAllocationCommand getResourceAllocationCommand();
 

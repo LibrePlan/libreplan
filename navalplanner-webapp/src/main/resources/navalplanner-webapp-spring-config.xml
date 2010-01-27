@@ -32,6 +32,7 @@
       <lookup-method name="getAddMilestoneCommand" bean="addMilestoneCommand"/>
       <lookup-method name="getDeleteMilestoneCommand" bean="deleteMilestoneCommand"/>
       <lookup-method name="getSubcontractCommand" bean="subcontractCommand"/>
+      <lookup-method name="getReassignCommand" bean="reassignCommand"/>
     </bean>
 
     <bean class="org.navalplanner.web.planner.company.CompanyPlanningModel" scope="prototype">
