@@ -21,22 +21,31 @@
 package org.navalplanner.web.planner.company;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
+import org.navalplanner.web.common.components.finders.FilterPair;
+import org.navalplanner.web.orders.OrderPredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Vbox;
 
 /**
  * Controller for company planning view. Representation of company orders in the
@@ -44,7 +53,7 @@ import org.zkoss.zk.ui.util.Composer;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@Component
+@org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CompanyPlanningController implements Composer{
 
@@ -54,6 +63,13 @@ public class CompanyPlanningController implements Composer{
     private List<ICommandOnTask<TaskElement>> additional = new ArrayList<ICommandOnTask<TaskElement>>();
 
     private Planner planner;
+
+    private Vbox orderFilter;
+    private Vbox filter;
+    private Datebox filterStartDate;
+    private Datebox filterFinishDate;
+    private BandboxMultipleSearch bdFilters;
+    private Checkbox checkIncludeOrderElements;
 
     private ICommandOnTask<TaskElement> doubleClickCommand;
 
@@ -82,12 +98,29 @@ public class CompanyPlanningController implements Composer{
         planner.setAreContainersExpandedByDefault(Planner
                 .guessContainersExpandedByDefault(parameters));
 
+        orderFilter = (Vbox) planner.getFellow("orderFilter");
+        // Configuration of the order filter
+        Component filterComponent = Executions.createComponents(
+                "/orders/_orderFilter.zul", orderFilter,
+                new HashMap<String, String>());
+        filterComponent.setVariable("controller", this, true);
+        filterStartDate = (Datebox) filterComponent
+                .getFellow("filterStartDate");
+        filterFinishDate = (Datebox) filterComponent
+                .getFellow("filterFinishDate");
+        bdFilters = (BandboxMultipleSearch) filterComponent
+                .getFellow("bdFilters");
+        checkIncludeOrderElements = (Checkbox) filterComponent
+                .getFellow("checkIncludeOrderElements");
+        filterComponent.setVisible(true);
+
     }
 
     public void setConfigurationForPlanner() {
+        // Added predicate
         model
                 .setConfigurationToPlanner(planner, additional,
-                        doubleClickCommand);
+                doubleClickCommand, createPredicate());
     }
 
     public void setAdditional(List<ICommandOnTask<TaskElement>> additional) {
@@ -103,6 +136,40 @@ public class CompanyPlanningController implements Composer{
 
     public void setURLParameters(Map<String, String[]> parameters) {
         this.parameters = parameters;
+    }
+
+    public void onApplyFilter() {
+        OrderPredicate predicate = createPredicate();
+        if (predicate != null) {
+            filterByPredicate(predicate);
+        } else {
+            showAllOrders();
+        }
+    }
+
+    private OrderPredicate createPredicate() {
+        List<FilterPair> listFilters = (List<FilterPair>) bdFilters
+                .getSelectedElements();
+        Date startDate = filterStartDate.getValue();
+        Date finishDate = filterFinishDate.getValue();
+        Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
+
+        if (listFilters.isEmpty() && startDate == null && finishDate == null) {
+            return null;
+        }
+        return new OrderPredicate(listFilters, startDate, finishDate,
+                includeOrderElements);
+    }
+
+    private void filterByPredicate(OrderPredicate predicate) {
+        // Recalculate predicate
+        model.setConfigurationToPlanner(planner, additional,
+                doubleClickCommand, createPredicate());
+        planner.invalidate();
+    }
+
+    public void showAllOrders() {
+        planner.invalidate();
     }
 
 }

@@ -60,6 +60,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.orders.OrderPredicate;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
@@ -102,7 +103,6 @@ import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
 import org.zkoss.zul.Vbox;
-
 
 /**
  * Model for company planning view.
@@ -177,8 +177,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
-            ICommandOnTask<TaskElement> doubleClickCommand) {
-        PlannerConfiguration<TaskElement> configuration = createConfiguration();
+            ICommandOnTask<TaskElement> doubleClickCommand,
+            OrderPredicate predicate) {
+        PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
 
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
@@ -496,8 +497,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration() {
+        return createConfiguration(null);
+    }
+
+    private PlannerConfiguration<TaskElement> createConfiguration(
+            OrderPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
-        List<TaskElement> toShow = sortByStartDate(retainOnlyTopLevel());
+        List<TaskElement> toShow;
+        if (predicate != null) {
+            toShow = sortByStartDate(retainOnlyTopLevel(predicate));
+        } else {
+            toShow = sortByStartDate(retainOnlyTopLevel(null));
+        }
         forceLoadOfDependenciesCollections(toShow);
         forceLoadOfWorkingHours(toShow);
         forceLoadOfLabels(toShow);
@@ -522,9 +533,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return result;
     }
 
-    private List<TaskElement> retainOnlyTopLevel() {
+    private List<TaskElement> retainOnlyTopLevel(OrderPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
+
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
         }
@@ -533,11 +545,16 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             //anyway, if it happenned we return an empty list
             return result;
         }
+
         List<Order> list = orderDAO.getOrdersByReadAuthorization(user);
+
         for (Order order : list) {
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
+
             if (associatedTaskElement != null) {
-                result.add(associatedTaskElement);
+                if (predicate == null || predicate.accepts(order)) {
+                    result.add(associatedTaskElement);
+                }
             }
         }
         return result;

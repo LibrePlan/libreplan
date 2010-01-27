@@ -207,6 +207,8 @@ public class OrderModel implements IOrderModel {
 
     private void initializeOrders(List<Order> list) {
         for (Order order : list) {
+            // Remove or not?
+            // orderDAO.reattachUnmodifiedEntity(order);
             if (order.getCustomer() != null) {
                 order.getCustomer().getName();
             }
@@ -686,7 +688,6 @@ public class OrderModel implements IOrderModel {
     public List<Order> getFilterOrders(OrderPredicate predicate) {
         List<Order> filterOrderList = new ArrayList<Order>();
         for (Order order : orderList) {
-            orderDAO.reattachUnmodifiedEntity(order);
             if (predicate.accepts(order)) {
                 filterOrderList.add(order);
             }

@@ -7,18 +7,19 @@ planner = self;
     <borderlayout sclass="plannerlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center" id="toolbar" sclass="toolbar-box">
+
         <!--  Commands -->
         <button id="btnPrint" onClick="planner.print()"
             image="/common/img/ico_print.png"
             tooltiptext="${i18n:_('Print')}" />
         <separator/>
+
         <!--  Visualization modes -->
         <label>${i18n:_('Zoom level')}:</label>
         <listbox mold="select" rows="1"
             model="${planner.zoomLevels}"
             onSelect="planner.setZoomLevel(self.selectedItem.value);" >
         </listbox>
-
         <button id="showCriticalPath" onClick="planner.showCriticalPath();"
             image="/common/img/ico_criticalpath.png"
             tooltiptext="${i18n:_('Show/Hide Critical path')}" />
@@ -28,22 +29,10 @@ planner = self;
         <button id="showAllResources" onClick="planner.showAllResources();"
             image="/common/img/ico_resources.png"
             tooltiptext="${i18n:_('Show all resources')}" sclass="planner-command show-resources" />
+        <separator />
+
         <!--  Filtering -->
-        <separator/>
-        <label>${i18n:_('Filter')}:</label>
-        <combobox>
-            <comboitem label="Orders"
-                description="Show full orders and company view" />
-            <comboitem label="Tasks"
-                description="Tasks inside orders or filtered" />
-        </combobox>
-        <combobox>
-            <comboitem label="Filter by Label" />
-            <comboitem label="Filter by criterion" />
-            <comboitem label="Filter by resources" />
-            <comboitem label="Critical way" />
-        </combobox>
-        <textbox/>
+        <vbox id="orderFilter"/>
         <separator />
 
        </hbox>

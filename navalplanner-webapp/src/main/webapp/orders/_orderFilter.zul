@@ -1,6 +1,6 @@
-<hbox align="center" style="margin-left:240px;">
-    <!-- Filter by -->
-    <label>Filter order:</label>
+<hbox align="center" sclass="filtering-area">
+    <label value="${i18n:_('Filter by')}"
+        tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
     <bandboxMultipleSearch id="bdFilters" widthBandbox="285px" widthListbox="300px"
         finder="multipleFiltersFinder"/>
     <label value="${i18n:_('from')}"/>
@@ -8,7 +8,9 @@
     <label value="${i18n:_('to')}"/>
     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
     <label value="${i18n:_('include order elements')}"/>
-    <checkbox id="checkIncludeOrderElements"/>
+    <checkbox id="checkIncludeOrderElements"
+        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}" />
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}"
         onClick="controller.onApplyFilter()"/>
 </hbox>

@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.company;
 import java.util.Collection;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.orders.OrderPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
@@ -39,5 +40,10 @@ public interface ICompanyPlanningModel {
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand);
+
+    public void setConfigurationToPlanner(Planner planner,
+            Collection<ICommandOnTask<TaskElement>> additional,
+            ICommandOnTask<TaskElement> doubleClickCommand,
+            OrderPredicate predicate);
 
 }
