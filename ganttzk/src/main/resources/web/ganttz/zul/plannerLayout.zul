@@ -7,12 +7,28 @@ planner = self;
     <borderlayout sclass="plannerlayout" width="auto">
        <north height="30px" border="0">
        <hbox align="center" id="toolbar" sclass="toolbar-box">
+        <!--  Commands -->
+        <button id="btnPrint" onClick="planner.print()"
+            image="/common/img/ico_print.png"
+            tooltiptext="${i18n:_('Print')}" />
         <separator/>
+        <!--  Visualization modes -->
         <label>${i18n:_('Zoom level')}:</label>
         <listbox mold="select" rows="1"
             model="${planner.zoomLevels}"
             onSelect="planner.setZoomLevel(self.selectedItem.value);" >
         </listbox>
+
+        <button id="showCriticalPath" onClick="planner.showCriticalPath();"
+            image="/common/img/ico_criticalpath.png"
+            tooltiptext="${i18n:_('Show/Hide Critical path')}" />
+        <button id="showAllLabels" onClick="planner.showAllLabels();"
+            image="/common/img/ico_labels.png"
+            tooltiptext="${i18n:_('Show/Hide all labels')}" sclass="planner-command show-labels" />
+        <button id="showAllResources" onClick="planner.showAllResources();"
+            image="/common/img/ico_resources.png"
+            tooltiptext="${i18n:_('Show all resources')}" sclass="planner-command show-resources" />
+        <!--  Filtering -->
         <separator/>
         <label>${i18n:_('Filter')}:</label>
         <combobox>
@@ -29,17 +45,6 @@ planner = self;
         </combobox>
         <textbox/>
         <separator />
-        <button id="showCriticalPath" onClick="planner.showCriticalPath();"
-            label="${i18n:_('Critical path')}" />
-
-        <button id="showAllLabels" onClick="planner.showAllLabels();"
-            label="${i18n:_('Show all labels')}" sclass="planner-command show-labels" />
-
-        <button id="showAllResources" onClick="planner.showAllResources();"
-            label="${i18n:_('Show all resources')}" sclass="planner-command show-resources" />
-
-        <button id="btnPrint" onClick="planner.print()"
-            label="${i18n:_('Print')}" />
 
        </hbox>
        </north>
