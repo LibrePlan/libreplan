@@ -2,9 +2,6 @@
 
 <order xmlns="http://rest.ws.navalplanner.org"
   code="ORDER-1" name="Order" init-date="2010-01-01">
-  <labels>
-    <label name="medium" type="priority" />
-  </labels>
   <children>
     <order-line-group code="ORDER-1-OE-1" name="Order element 1">
       <children>
@@ -21,9 +18,6 @@
       </children>
     </order-line-group>
     <order-line code="ORDER-1-OE-2" name="Order element 2">
-      <labels>
-        <label name="high" type="risk" />
-      </labels>
       <hours-groups>
         <hours-group code="HG-1" working-hours="1500" resource-type="WORKER" />
       </hours-groups>
