@@ -89,10 +89,12 @@
                         <row id="startConstraint">
                             <label value="${i18n:_('Constraint')}" />
                             <vbox>
-                                <combobox id="startConstraintTypes">
+                                <combobox id="startConstraintTypes"
+                                    disabled="@{editController.isSubcontractedAndIsTask}">
                                 </combobox>
                                 <datebox id="startConstraintDate" constraint ="no empty"
-                                    value="@{editController.startConstraintDate}" />
+                                    value="@{editController.startConstraintDate}"
+                                    disabled="@{editController.isSubcontractedAndIsTask}" />
                             </vbox>
                         </row>
                         <row id="subcontract" visible="@{editController.isTask}">
