@@ -51,4 +51,6 @@ public interface IReportAdvancesModel {
             throws UnrecoverableErrorServiceException,
             ConnectionProblemsException;
 
+    String exportXML(Order order);
+
 }

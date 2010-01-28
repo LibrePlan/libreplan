@@ -21,10 +21,13 @@ package org.navalplanner.web.subcontract;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -222,6 +225,24 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
                 .isMaterialAssignmentsExported(), isAdvancesExported,
                 subcontractedTaskData.isHoursGroupsExported(),
                 isCriterionsExported);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String exportXML(SubcontractedTaskData subcontractedTaskData) {
+        SubcontractedTaskDataDTO subcontractedTaskDataDTO = getSubcontractedTaskData(subcontractedTaskData);
+
+        StringWriter xml = new StringWriter();
+        try {
+            JAXBContext jaxbContext = JAXBContext
+                    .newInstance(SubcontractedTaskDataDTO.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.marshal(subcontractedTaskDataDTO, xml);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return xml.toString();
     }
 
 }

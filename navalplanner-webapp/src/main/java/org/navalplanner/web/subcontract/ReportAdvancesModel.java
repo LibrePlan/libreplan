@@ -21,6 +21,7 @@ package org.navalplanner.web.subcontract;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -273,6 +276,24 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     private String getCompanyCode() {
         return configurationDAO.getConfiguration().getCompanyCode();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String exportXML(Order order) {
+        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
+
+        StringWriter xml = new StringWriter();
+        try {
+            JAXBContext jaxbContext = JAXBContext
+                    .newInstance(OrderElementWithAdvanceMeasurementsListDTO.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.marshal(orderElementWithAdvanceMeasurementsListDTO, xml);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return xml.toString();
     }
 
 }

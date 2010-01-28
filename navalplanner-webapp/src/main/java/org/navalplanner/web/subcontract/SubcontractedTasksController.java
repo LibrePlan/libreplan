@@ -21,9 +21,14 @@ package org.navalplanner.web.subcontract;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
@@ -36,12 +41,16 @@ import org.navalplanner.web.subcontract.exceptions.UnrecoverableErrorServiceExce
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -139,7 +148,42 @@ public class SubcontractedTasksController extends GenericForwardComposer {
 
         private void appendOperations(Row row,
                 SubcontractedTaskData subcontractedTaskData) {
-            row.appendChild(getSendButton(subcontractedTaskData));
+            Hbox hbox = new Hbox();
+            hbox.appendChild(getExportButton(subcontractedTaskData));
+            hbox.appendChild(getSendButton(subcontractedTaskData));
+            row.appendChild(hbox);
+        }
+
+        private Button getExportButton(
+                final SubcontractedTaskData subcontractedTaskData) {
+            Button exportButton = new Button(_("XML"));
+            exportButton.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    String uri = CallbackServlet.registerAndCreateURLFor(
+                            (HttpServletRequest) Executions.getCurrent()
+                                    .getNativeRequest(),
+                            new IServletRequestHandler() {
+
+                                @Override
+                                public void handle(HttpServletRequest request,
+                                        HttpServletResponse response)
+                                        throws ServletException, IOException {
+                                    response.setContentType("text/xml");
+                                    String xml = subcontractedTasksModel
+                                            .exportXML(subcontractedTaskData);
+                                    response.getWriter().write(xml);
+                                }
+
+                            }, false);
+
+                    Executions.getCurrent().sendRedirect(uri, "_blank");
+                }
+
+            });
+
+            return exportButton;
         }
 
         private Button getSendButton(

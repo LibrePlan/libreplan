@@ -81,6 +81,11 @@ public class CallbackServlet extends HttpServlet {
 
     public static String registerAndCreateURLFor(HttpServletRequest request,
             IServletRequestHandler handler) {
+        return registerAndCreateURLFor(request, handler, true);
+    }
+
+    public static String registerAndCreateURLFor(HttpServletRequest request,
+            IServletRequestHandler handler, boolean withContextPath) {
         // theorically could be an infinite loop, must be improved. Gods of
         // computer science forgive me
         String generatedKey = "";
@@ -89,12 +94,14 @@ public class CallbackServlet extends HttpServlet {
         do {
             generatedKey = generateKey();
         } while (handlersCallbacks.putIfAbsent(generatedKey, toBeRegistered) != null);
-        return buildURLFromKey(request, generatedKey);
+        return buildURLFromKey(request, generatedKey, withContextPath);
     }
 
     private static synchronized String buildURLFromKey(
-            HttpServletRequest request, String generatedKey) {
-        return request.getContextPath() + MAPPING + generatedKey;
+            HttpServletRequest request, String generatedKey,
+            boolean withContextPath) {
+        String contextPath = withContextPath ? request.getContextPath() : "";
+        return contextPath + MAPPING + generatedKey;
     }
 
     private static String generateKey() {

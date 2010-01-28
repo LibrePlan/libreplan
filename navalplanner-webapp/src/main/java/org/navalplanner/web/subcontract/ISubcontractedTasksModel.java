@@ -41,4 +41,6 @@ public interface ISubcontractedTasksModel {
             throws ValidationException, ConnectionProblemsException,
             UnrecoverableErrorServiceException;
 
+    String exportXML(SubcontractedTaskData subcontractedTaskData);
+
 }
