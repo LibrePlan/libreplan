@@ -32,6 +32,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.ws.common.Util.mustEnd;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -43,9 +44,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -1107,25 +1105,6 @@ public class OrderElementServiceTest {
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
         assertFalse(((IndirectCriterionRequirement) orderElement
                 .getCriterionRequirements().iterator().next()).isIsValid());
-    }
-
-    public static Matcher<String> mustEnd(final String property) {
-        return new BaseMatcher<String>() {
-
-            @Override
-            public boolean matches(Object object) {
-                if (object instanceof String) {
-                    String s = (String) object;
-                    return s.endsWith(property);
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("must end with " + property);
-            }
-        };
     }
 
     @Test
