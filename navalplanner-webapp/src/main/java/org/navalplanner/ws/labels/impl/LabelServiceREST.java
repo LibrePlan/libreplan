@@ -20,11 +20,32 @@
 
 package org.navalplanner.ws.labels.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.daos.ILabelTypeDAO;
+import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
+import org.navalplanner.ws.common.impl.Util;
 import org.navalplanner.ws.labels.api.ILabelService;
+import org.navalplanner.ws.labels.api.LabelTypeDTO;
+import org.navalplanner.ws.labels.api.LabelTypeListDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST-based implementation of {@link ILabelService}.
@@ -35,5 +56,68 @@ import org.springframework.stereotype.Service;
 @Produces("application/xml")
 @Service("labelServiceREST")
 public class LabelServiceREST implements ILabelService {
+
+    @Autowired
+    private ILabelTypeDAO labelTypeDAO;
+
+    @Override
+    @GET
+    @Transactional(readOnly = true)
+    public LabelTypeListDTO getLabelTypes() {
+        return LabelConverter.toDTO(labelTypeDAO.getAll());
+    }
+
+    @Override
+    @POST
+    @Consumes("application/xml")
+    @Transactional
+    public InstanceConstraintViolationsListDTO addLabelTypes(
+            LabelTypeListDTO labelTypes) {
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
+        Long numItem = new Long(1);
+        Set<String> labelTypeNames = new HashSet<String>();
+
+        for (LabelTypeDTO labelTypeDTO : labelTypes.labelTypes) {
+            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
+
+            LabelType labelType = LabelConverter.toEntity(labelTypeDTO);
+
+            if (labelType.getName() != null
+                    && labelTypeNames.contains(labelType.getName()
+                            .toLowerCase())) {
+
+                instanceConstraintViolationsDTO = InstanceConstraintViolationsDTO
+                        .create(Util.generateInstanceConstraintViolationsDTOId(
+                                numItem, labelTypeDTO),
+                                _("label type name is used by another label "
+                                        + "type being imported"));
+            } else {
+                try {
+                    labelType.validate();
+                    labelTypeDAO.save(labelType);
+
+                    if (labelType.getName() != null) {
+                        labelTypeNames.add(labelType.getName().toLowerCase());
+                    }
+                } catch (ValidationException e) {
+                    instanceConstraintViolationsDTO = ConstraintViolationConverter
+                            .toDTO(Util
+                                    .generateInstanceConstraintViolationsDTOId(
+                                            numItem, labelTypeDTO), e
+                                    .getInvalidValues());
+                }
+            }
+
+            if (instanceConstraintViolationsDTO != null) {
+                instanceConstraintViolationsList
+                        .add(instanceConstraintViolationsDTO);
+            }
+
+            numItem++;
+        }
+
+        return new InstanceConstraintViolationsListDTO(
+                instanceConstraintViolationsList);
+    }
 
 }

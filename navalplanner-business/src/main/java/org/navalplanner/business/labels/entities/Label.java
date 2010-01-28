@@ -57,6 +57,10 @@ public class Label extends IntegrationEntity {
         return create(new Label(name));
     }
 
+    public static Label create(String code, String name) {
+        return create(new Label(name), code);
+    }
+
     protected Label(String name) {
         this.name = name;
     }

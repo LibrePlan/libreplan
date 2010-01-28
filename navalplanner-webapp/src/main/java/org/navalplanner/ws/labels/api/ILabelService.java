@@ -21,6 +21,7 @@
 package org.navalplanner.ws.labels.api;
 
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
  * Service for managing {@link Label} entities.
@@ -28,5 +29,10 @@ import org.navalplanner.business.labels.entities.Label;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public interface ILabelService {
+
+    LabelTypeListDTO getLabelTypes();
+
+    InstanceConstraintViolationsListDTO addLabelTypes(
+            LabelTypeListDTO labelTypes);
 
 }

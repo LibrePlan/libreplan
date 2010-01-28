@@ -53,6 +53,10 @@ public class LabelType extends IntegrationEntity implements Comparable {
         return create(new LabelType(name));
     }
 
+    public static LabelType create(String code, String name) {
+        return create(new LabelType(name), code);
+    }
+
     protected LabelType(String name) {
         this.name = name;
     }
@@ -72,6 +76,7 @@ public class LabelType extends IntegrationEntity implements Comparable {
     public void addLabel(Label label) {
         Validate.notNull(label);
         labels.add(label);
+        label.setType(this);
     }
 
     public void removeLabel(Label label) {
@@ -90,4 +95,5 @@ public class LabelType extends IntegrationEntity implements Comparable {
     protected ILabelTypeDAO getIntegrationEntityDAO() {
         return Registry.getLabelTypeDAO();
     }
+
 }
