@@ -644,6 +644,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private ICommand<TaskElement> buildReassigningCommand() {
         IReassignCommand result = getReassignCommand();
+        result.setState(planningState);
         return result;
     }
 

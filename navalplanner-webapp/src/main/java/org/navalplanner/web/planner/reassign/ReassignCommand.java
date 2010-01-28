@@ -23,6 +23,7 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -36,8 +37,16 @@ import org.zkoss.ganttz.extensions.IContext;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReassignCommand implements IReassignCommand {
 
+    private PlanningState planningState;
+
     public interface IConfigurationResult {
         public void result(ReassignConfiguration configuration);
+    }
+
+    @Override
+    public void setState(PlanningState planningState) {
+        Validate.notNull(planningState);
+        this.planningState = planningState;
     }
 
     @Override

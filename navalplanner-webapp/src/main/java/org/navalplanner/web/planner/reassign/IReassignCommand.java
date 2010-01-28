@@ -20,6 +20,7 @@
 package org.navalplanner.web.planner.reassign;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.zkoss.ganttz.extensions.ICommand;
 
 /**
@@ -27,5 +28,7 @@ import org.zkoss.ganttz.extensions.ICommand;
  *
  */
 public interface IReassignCommand extends ICommand<TaskElement> {
+
+    public void setState(PlanningState planningState);
 
 }
