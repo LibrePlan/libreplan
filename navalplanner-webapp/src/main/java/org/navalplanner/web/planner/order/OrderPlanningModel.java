@@ -221,6 +221,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 writingAllowed);
         setupEditingCapabilities(configuration, writingAllowed);
 
+        configuration.addGlobalCommand(buildReassigningCommand());
+
         final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
         configuration.addCommandOnTask(resourceAllocationCommand);
         configuration.addCommandOnTask(buildMilestoneCommand());
