@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-09 12:30+0100\n"
+"POT-Creation-Date: 2010-01-28 11:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,56 +16,99 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:35
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
 msgid "Show all labels"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:38
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:14
-msgid "Zoom decrease"
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:11
+msgid "Zoom level"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:109
-msgid "100%"
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:195
+msgid "Erase"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:104
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:106
 msgid "0% - 100%"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:16
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:17
 msgid "Filter"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:36
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:12
-msgid "Zoom increase"
-msgstr ""
-
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:99
-msgid "Assignation percentage"
-msgstr ""
-
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:32
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:33
 msgid "Critical path"
 msgstr ""
 
-#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:147
-msgid "increasing zoom"
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:30
+msgid "Year"
 msgstr ""
 
-#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:164
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:46
+msgid "Month"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:206
+msgid "Set End-Start"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:214
+msgid "Set End-End"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:225
 msgid "decreasing zoom"
 msgstr ""
 
-#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:345
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:409
 msgid "Hide critical path"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:114
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:39
+msgid "Show all resources"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:116
 msgid "+ 100%"
 msgstr ""
 
-#: /home/jaragunde/projects/xestion-producion/ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:340
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:62
+msgid "Day"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:111
+msgid "100%"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:42
+msgid "Print"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:210
+msgid "Set Start-Start"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:101
+msgid "Assignation percentage"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:54
+msgid "Week"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:208
+msgid "increasing zoom"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:188
+msgid "changing zoom"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:38
+msgid "Quarter"
+msgstr ""
+
+#: ./ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:404
 msgid "Show critical path"
 msgstr ""
