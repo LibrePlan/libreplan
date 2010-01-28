@@ -52,11 +52,19 @@
                          </row>
                          <row>
                             <label value="${i18n:_('Maximum/minimum of the estimated hours')}"/>
-                            <label value="@{historicalStatistics.differentialEstimatedHours}"/>
+                            <hbox>
+                                <label value="@{historicalStatistics.maxEstimatedHours}"/>
+                                <label value=" / "/>
+                                <label value="@{historicalStatistics.minEstimatedHours}"/>
+                            </hbox>
                          </row>
                          <row>
                             <label value="${i18n:_('Maximum/minimum of the worked hours')}"/>
-                            <label value="@{historicalStatistics.differentialWorkedHours}"/>
+                            <hbox>
+                                <label value="@{historicalStatistics.maxWorkedHours}"/>
+                                <label value=" / "/>
+                                <label value="@{historicalStatistics.minWorkedHours}"/>
+                            </hbox>
                          </row>
                     </rows>
                 </grid>

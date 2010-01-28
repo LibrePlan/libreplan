@@ -101,4 +101,16 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
 
     List<OrderElement> findByTemplate(OrderElementTemplate template);
 
+    BigDecimal calculateAverageEstimatedHours(final List<OrderElement> list);
+
+    BigDecimal calculateAverageWorkedHours(final List<OrderElement> list);
+
+    BigDecimal calculateMaxEstimatedHours(final List<OrderElement> list);
+
+    BigDecimal calculateMinEstimatedHours(final List<OrderElement> list);
+
+    BigDecimal calculateMaxWorkedHours(final List<OrderElement> list);
+
+    BigDecimal calculateMinWorkedHours(final List<OrderElement> list);
+
 }

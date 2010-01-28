@@ -979,4 +979,59 @@ public abstract class OrderElement extends BaseEntity implements
         return result;
     }
 
+    /**
+     * Calculate if the tasks of the planification point has finished
+     */
+
+    public boolean isFinishPlanificationPointTask() {
+        // look up into the order elements tree
+        TaskElement task = lookToUpAssignedTask();
+        if (task != null) {
+            return task.getOrderElement().isFinishedAdvance();
+        }
+        // look down into the order elements tree
+        List<TaskElement> listTask = lookToDownAssignedTask();
+        if (!listTask.isEmpty()) {
+            for (TaskElement taskElement : listTask) {
+                if (!taskElement.getOrderElement().isFinishedAdvance()) {
+                    return false;
+                }
+            }
+        }
+        // not exist assigned task
+        IOrderElementDAO orderElementDAO = Registry.getOrderElementDAO();
+        return (orderElementDAO.loadOrderAvoidingProxyFor(this))
+                .isFinishedAdvance();
+    }
+
+    private TaskElement lookToUpAssignedTask() {
+        OrderElement current = this;
+        while (current != null) {
+            if (isSchedulingPoint()) {
+                return getAssociatedTaskElement();
+            }
+            current = current.getParent();
+        }
+        return null;
+    }
+
+    private List<TaskElement> lookToDownAssignedTask() {
+        List<TaskElement> resultTask = new ArrayList<TaskElement>();
+        for (OrderElement child : getAllChildren()) {
+            if (child.isSchedulingPoint()) {
+                TaskElement task = child.getAssociatedTaskElement();
+                if (task != null) {
+                    resultTask.add(task);
+                }
+            }
+        }
+        return resultTask;
+    }
+
+    public boolean isFinishedAdvance() {
+        BigDecimal measuredProgress = getAdvancePercentage();
+        measuredProgress = (measuredProgress.setScale(0, BigDecimal.ROUND_UP)
+                .multiply(new BigDecimal(100)));
+        return (measuredProgress.compareTo(new BigDecimal(100)) == 0);
+    }
 }

@@ -54,4 +54,5 @@ public interface IOrderTemplatesModel {
 
     Set<QualityForm> getAllQualityForms();
 
+    OrderElementsOnConversation getOrderElementsOnConversation();
 }

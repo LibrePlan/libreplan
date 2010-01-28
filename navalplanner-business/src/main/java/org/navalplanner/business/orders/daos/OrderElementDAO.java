@@ -252,4 +252,114 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
         return c.list();
     }
 
+    /**
+     * Methods to calculate estatistics with the estimated hours and worked
+     * hours of a set of order elements.
+     * @param List
+     *            <{@link OrderElement}>
+     */
+
+    public BigDecimal calculateAverageEstimatedHours(
+            final List<OrderElement> list) {
+        BigDecimal sum = sumEstimatedHours(list);
+        return average(new BigDecimal(list.size()), sum);
+    }
+
+    public BigDecimal calculateAverageWorkedHours(final List<OrderElement> list) {
+        BigDecimal sum = sumWorkedHours(list);
+        return average(new BigDecimal(list.size()), sum);
+    }
+
+    private BigDecimal average(BigDecimal divisor, BigDecimal sum) {
+        BigDecimal average = new BigDecimal(0);
+        if (sum.compareTo(new BigDecimal(0)) > 0) {
+            average = sum.divide(divisor);
+        }
+        return average;
+    }
+
+    private BigDecimal sumEstimatedHours(final List<OrderElement> list) {
+        BigDecimal sum = new BigDecimal(0);
+        for (OrderElement orderElement : list) {
+            sum = sum.add(new BigDecimal(orderElement.getWorkHours()));
+        }
+        return sum;
+    }
+
+    private BigDecimal sumWorkedHours(final List<OrderElement> list) {
+        BigDecimal sum = new BigDecimal(0);
+        for (OrderElement orderElement : list) {
+            sum = sum.add(new BigDecimal(getAssignedDirectHours(orderElement)));
+        }
+        return sum;
+    }
+
+    public BigDecimal calculateMaxEstimatedHours(final List<OrderElement> list) {
+        BigDecimal max = new BigDecimal(0);
+        if (!list.isEmpty()) {
+            max = new BigDecimal(list.get(0).getWorkHours());
+            for (OrderElement orderElement : list) {
+                BigDecimal value = new BigDecimal(orderElement.getWorkHours());
+                max = getMax(max, value);
+            }
+        }
+        return max;
+    }
+
+    private BigDecimal getMax(BigDecimal valueA, BigDecimal valueB) {
+        if (valueA.compareTo(valueB) < 0) {
+            return valueB;
+        } else if (valueA.compareTo(valueB) > 0) {
+            return valueA;
+        }
+        return valueA;
+    }
+
+    private BigDecimal getMin(BigDecimal valueA, BigDecimal valueB) {
+        if (valueA.compareTo(valueB) > 0) {
+            return valueB;
+        } else if (valueA.compareTo(valueB) < 0) {
+            return valueA;
+        }
+        return valueA;
+    }
+
+    public BigDecimal calculateMinEstimatedHours(final List<OrderElement> list) {
+        BigDecimal min = new BigDecimal(0);
+        if (!list.isEmpty()) {
+            min = new BigDecimal(list.get(0).getWorkHours());
+            for (OrderElement orderElement : list) {
+                BigDecimal value = new BigDecimal(orderElement.getWorkHours());
+                min = getMin(min, value);
+            }
+        }
+        return min;
+    }
+
+    public BigDecimal calculateMaxWorkedHours(final List<OrderElement> list) {
+        BigDecimal max = new BigDecimal(0);
+        if (!list.isEmpty()) {
+            max = new BigDecimal(getAssignedDirectHours(list.get(0)));
+            for (OrderElement orderElement : list) {
+                BigDecimal value = new BigDecimal(
+                        getAssignedDirectHours(orderElement));
+                max = getMax(max, value);
+            }
+        }
+        return max;
+    }
+
+    public BigDecimal calculateMinWorkedHours(final List<OrderElement> list) {
+        BigDecimal min = new BigDecimal(0);
+        if (!list.isEmpty()) {
+            min = new BigDecimal(getAssignedDirectHours(list.get(0)));
+            for (OrderElement orderElement : list) {
+                BigDecimal value = new BigDecimal(
+                        getAssignedDirectHours(orderElement));
+                min = getMin(min, value);
+            }
+        }
+        return min;
+    }
+
 }

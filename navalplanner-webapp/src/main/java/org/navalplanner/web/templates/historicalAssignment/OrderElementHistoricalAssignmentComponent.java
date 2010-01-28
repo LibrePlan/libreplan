@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -53,11 +52,11 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
 
     private IOrderTemplatesModel model;
 
+    private List<OrderElement> orderElements;
+
     private IAdHocTransactionService adHocTransactionService;
 
     private IOrderElementDAO orderElementDAO;
-
-    private IOrderDAO orderDAO;
 
     private IGlobalViewEntryPoints globalView;
 
@@ -66,13 +65,14 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
         super.afterCompose();
         this.adHocTransactionService = (IAdHocTransactionService) getBean("adHocTransactionService");
         this.orderElementDAO = (IOrderElementDAO) getBean("orderElementDAO");
-        this.orderDAO = (IOrderDAO) getBean("orderDAO");
     }
 
     public void useModel(IOrderTemplatesModel model,
             IGlobalViewEntryPoints globalView) {
         template = model.getTemplate();
         this.model = model;
+        this.orderElements = model.getOrderElementsOnConversation()
+                .getOrderElements();
         this.globalView = globalView;
     }
 
@@ -83,8 +83,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
             return this.adHocTransactionService.runOnReadOnlyTransaction(new IOnTransaction<List<OrderElementHistoricAssignmentDTO>>() {
                 @Override
                 public List<OrderElementHistoricAssignmentDTO> execute() {
-                            final List<OrderElement> orderElements = new ArrayList<OrderElement>(
-                                    orderElementDAO.findByTemplate(template));
+                            model.getOrderElementsOnConversation().reattach();
                             return createOrderElementHistoricAssignmentDTOs(orderElements);
                         }
                     });

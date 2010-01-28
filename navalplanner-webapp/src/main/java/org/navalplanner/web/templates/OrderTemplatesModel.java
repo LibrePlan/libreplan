@@ -28,6 +28,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
@@ -52,6 +53,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IOrderElementTemplateDAO dao;
@@ -86,6 +90,16 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
                     qualityFormDAO);
         }
         return qualityFormsOnConversation;
+    }
+
+    private OrderElementsOnConversation orderElementsOnConversation;
+
+    public OrderElementsOnConversation getOrderElementsOnConversation() {
+        if (orderElementsOnConversation == null) {
+            orderElementsOnConversation = new OrderElementsOnConversation(
+                    orderElementDAO);
+        }
+        return orderElementsOnConversation;
     }
 
     @Override
@@ -144,6 +158,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     private void loadAssociatedData(OrderElementTemplate template) {
         loadAdvanceAssignments(template);
         loadQualityForms(template);
+        getOrderElementsOnConversation().initialize(template);
     }
 
     private void loadQualityForms(OrderElementTemplate template) {

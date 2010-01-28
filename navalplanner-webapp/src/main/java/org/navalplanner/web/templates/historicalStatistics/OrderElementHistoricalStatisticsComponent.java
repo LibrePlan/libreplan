@@ -31,7 +31,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.templates.IOrderTemplatesModel;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,12 +56,16 @@ public class OrderElementHistoricalStatisticsComponent extends
 
     private List<OrderElement> orderElements = new ArrayList<OrderElement>();
 
+    private List<OrderElement> finishedOrderElements = new ArrayList<OrderElement>();
+
     public String applications = "0";
     public String finishApplications = "0";
     public String averageEstimatedHours = "0";
     public String averageWorkedHours = "0";
-    public String differentialEstimatedHours = "0";
-    public String differentialWorkedHours = "0";
+    public String maxEstimatedHours = "0";
+    public String maxWorkedHours = "0";
+    public String minEstimatedHours = "0";
+    public String minWorkedHours = "0";
 
     @Transactional(readOnly = true)
     public void afterCompose() {
@@ -73,6 +76,8 @@ public class OrderElementHistoricalStatisticsComponent extends
 
     public void useModel(IOrderTemplatesModel model) {
         template = model.getTemplate();
+        orderElements = model.getOrderElementsOnConversation()
+                .getOrderElements();
         this.model = model;
         calculateTemplateHistoricalStatistics();
     }
@@ -84,7 +89,9 @@ public class OrderElementHistoricalStatisticsComponent extends
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
                         public Void execute() {
-                            orderElements = getOrderElementsWithThisAssignedTemplate();
+                            model.getOrderElementsOnConversation().reattach();
+                            finishedOrderElements = getFinishedApplications();
+
                             applications = getApplicationsNumber().toString();
                             finishApplications = getFinishedApplicationsNumber()
                                     .toString();
@@ -92,22 +99,18 @@ public class OrderElementHistoricalStatisticsComponent extends
                                     .toString();
                             averageWorkedHours = calculateAverageWorkedHours()
                                     .toString();
-                            differentialEstimatedHours = calculateEstimatedDifferential()
+                            maxEstimatedHours = calculateMaxEstimatedHours()
                                     .toString();
-                            differentialWorkedHours = calculateWorkedDifferential()
+                            maxWorkedHours = calculateMaxWorkedHours()
+                                    .toString();
+                            minEstimatedHours = calculateMinEstimatedHours()
+                                    .toString();
+                            minWorkedHours = calculateMinWorkedHours()
                                     .toString();
                             return null;
                         }
                     });
         }
-    }
-
-    public List<OrderElement> getOrderElementsWithThisAssignedTemplate() {
-        orderElements.clear();
-        if ((model != null) && (template != null) && (!template.isNewObject())) {
-            orderElements.addAll(orderElementDAO.findByTemplate(template));
-        }
-        return orderElements;
     }
 
     public String getApplications() {
@@ -126,12 +129,20 @@ public class OrderElementHistoricalStatisticsComponent extends
         return averageWorkedHours;
     }
 
-    public String getDifferentialEstimatedHours() {
-        return differentialEstimatedHours;
+    public String getMaxEstimatedHours() {
+        return maxEstimatedHours;
     }
 
-    public String getDifferentialWorkedHours() {
-        return differentialWorkedHours;
+    public String getMaxWorkedHours() {
+        return maxWorkedHours;
+    }
+
+    public String getMinEstimatedHours() {
+        return minEstimatedHours;
+    }
+
+    public String getMinWorkedHours() {
+        return minWorkedHours;
     }
 
     /**
@@ -147,144 +158,40 @@ public class OrderElementHistoricalStatisticsComponent extends
     }
 
     public BigDecimal calculateAverageEstimatedHours() {
-        BigDecimal sum = new BigDecimal(0);
-        BigDecimal average = new BigDecimal(0);
-        final List<OrderElement> list = getFinishedApplications();
-
-        for (OrderElement orderElement : list) {
-            sum = sum.add(new BigDecimal(orderElement.getWorkHours()));
-        }
-        if (sum.compareTo(new BigDecimal(0)) > 0) {
-            average = sum.divide(new BigDecimal(list.size()));
-        }
-        return average;
+        return orderElementDAO.calculateAverageEstimatedHours(orderElements);
     }
 
     public BigDecimal calculateAverageWorkedHours() {
-        BigDecimal sum = new BigDecimal(0);
-        BigDecimal average = new BigDecimal(0);
         final List<OrderElement> list = getFinishedApplications();
-
-        for (OrderElement orderElement : list) {
-            sum = sum.add(new BigDecimal(orderElementDAO
-                    .getAssignedDirectHours(orderElement)));
-        }
-        if (sum.compareTo(new BigDecimal(0)) > 0) {
-            average = sum.divide(new BigDecimal(list.size()));
-        }
-        return average;
+        return orderElementDAO.calculateAverageWorkedHours(list);
     }
 
-    public BigDecimal calculateEstimatedDifferential() {
-        BigDecimal average = new BigDecimal(0);
-        final List<OrderElement> list = getFinishedApplications();
-        if (!list.isEmpty()) {
-            BigDecimal initValue = new BigDecimal(list.get(0).getWorkHours());
-            BigDecimal max = initValue.setScale(2);
-            BigDecimal min = initValue.setScale(2);
-
-            for (OrderElement orderElement : list) {
-                BigDecimal value = new BigDecimal(orderElement.getWorkHours());
-                if (max.compareTo(value) < 0) {
-                    max = value.setScale(2);
-                }
-                if (min.compareTo(value) > 0) {
-                    min = value.setScale(2);
-                }
-            }
-            if (max.compareTo(new BigDecimal(0)) > 0) {
-                average = max.divide(min).setScale(2);
-            }
-        }
-        return average;
+    public BigDecimal calculateMaxEstimatedHours() {
+        return orderElementDAO.calculateMaxEstimatedHours(orderElements);
     }
 
-    public BigDecimal calculateWorkedDifferential() {
-        BigDecimal average = new BigDecimal(0);
-        final List<OrderElement> list = getFinishedApplications();
-        if (!list.isEmpty()) {
-            BigDecimal initValue = new BigDecimal(orderElementDAO
-                    .getAssignedDirectHours(list.get(0)));
-            BigDecimal max = initValue.setScale(2);
-            BigDecimal min = initValue.setScale(2);
+    public BigDecimal calculateMinEstimatedHours() {
+        return orderElementDAO.calculateMinEstimatedHours(orderElements);
+    }
 
-            for (OrderElement orderElement : list) {
-                BigDecimal value = new BigDecimal(orderElementDAO
-                        .getAssignedDirectHours(orderElement));
-                if (max.compareTo(value) < 0) {
-                    max = value.setScale(2);
-                }
-                if (min.compareTo(value) > 0) {
-                    min = value.setScale(2);
-                }
-            }
-            if (max.compareTo(new BigDecimal(0)) > 0) {
-                average = max.divide(min).setScale(2);
-            }
-        }
-        return average;
+    public BigDecimal calculateMaxWorkedHours() {
+        final List<OrderElement> list = getFinishedApplications();
+        return orderElementDAO.calculateMaxWorkedHours(list);
+    }
+
+    public BigDecimal calculateMinWorkedHours() {
+        final List<OrderElement> list = getFinishedApplications();
+        return orderElementDAO.calculateMinWorkedHours(list);
     }
 
     private List<OrderElement> getFinishedApplications() {
         List<OrderElement> result = new ArrayList<OrderElement>();
         for (OrderElement orderElement : orderElements) {
-            if (isFinishApplication(orderElement)) {
+            if (orderElement.isFinishPlanificationPointTask()) {
                 result.add(orderElement);
             }
         }
         return result;
-    }
-
-    private boolean isFinishApplication(OrderElement orderElement) {
-        // look up into the order elements tree
-        TaskElement task = lookToUpAssignedTask(orderElement);
-        if (task != null) {
-            return isFinished(task.getOrderElement());
-        }
-        // look down into the order elements tree
-        List<TaskElement> listTask = lookToDownAssignedTask(orderElement);
-        if (!listTask.isEmpty()) {
-            for (TaskElement taskElement : listTask) {
-                if (!isFinished(taskElement.getOrderElement())) {
-                    return false;
-                }
-            }
-        }
-        // not exist assigned task
-        return isFinished(orderElementDAO
-                .loadOrderAvoidingProxyFor(orderElement));
-    }
-
-    private TaskElement lookToUpAssignedTask(OrderElement current) {
-        OrderElement result = current;
-        while (current != null) {
-            if (current.isSchedulingPoint()) {
-                return current.getAssociatedTaskElement();
-            }
-            result = current;
-            current = current.getParent();
-        }
-        return null;
-    }
-
-    private List<TaskElement> lookToDownAssignedTask(OrderElement current) {
-        List<TaskElement> resultTask = new ArrayList<TaskElement>();
-        for (OrderElement child : current.getAllChildren()) {
-            if (child.isSchedulingPoint()) {
-                TaskElement task = child.getAssociatedTaskElement();
-                if (task != null) {
-                    resultTask.add(task);
-                }
-            }
-        }
-        return resultTask;
-    }
-
-    private boolean isFinished(OrderElement orderElement) {
-        BigDecimal measuredProgress = orderElement.getAdvancePercentage();
-        measuredProgress = (measuredProgress.setScale(0, BigDecimal.ROUND_UP)
-                .multiply(new BigDecimal(100)));
-        return (measuredProgress.compareTo(new BigDecimal(100)) == 0);
     }
 
     private Object getBean(String classname) {
