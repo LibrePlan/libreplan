@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
-import org.navalplanner.ws.common.api.LabelDTO;
+import org.navalplanner.ws.common.api.LabelReferenceDTO;
 
 /**
  * DTO for {@link WorkReportLine} entity.
@@ -66,7 +66,7 @@ public class WorkReportLineDTO extends IntegrationEntityDTO {
 
     @XmlElementWrapper(name = "label-list")
     @XmlElement(name = "label")
-    public Set<LabelDTO> labels = new HashSet<LabelDTO>();
+    public Set<LabelReferenceDTO> labels = new HashSet<LabelReferenceDTO>();
 
     @XmlElementWrapper(name = "text-field-list")
     @XmlElement(name = "text-field")
@@ -77,7 +77,7 @@ public class WorkReportLineDTO extends IntegrationEntityDTO {
 
     public WorkReportLineDTO(String code, Date date, String resource,
             String orderElement, String typeOfWorkHours, Date clockStart,
-            Date clockFinish, Integer numHours, Set<LabelDTO> labels,
+            Date clockFinish, Integer numHours, Set<LabelReferenceDTO> labels,
             Set<DescriptionValueDTO> descriptionValues) {
         super(code);
         this.date = date;

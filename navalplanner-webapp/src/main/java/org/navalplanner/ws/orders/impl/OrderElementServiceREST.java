@@ -94,6 +94,10 @@ public class OrderElementServiceREST implements IOrderElementService {
             instanceConstraintViolationsDTO = ConstraintViolationConverter
                     .toDTO(Util.generateInstanceId(1, orderDTO.code), e
                             .getInvalidValues());
+        } catch (InstanceNotFoundException e) {
+            instanceConstraintViolationsDTO = InstanceConstraintViolationsDTO
+                    .create(Util.generateInstanceId(1, orderDTO.code), e
+                            .getMessage());
         }
 
         if (instanceConstraintViolationsDTO != null) {

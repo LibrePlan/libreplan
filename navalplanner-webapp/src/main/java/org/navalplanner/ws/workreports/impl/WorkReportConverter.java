@@ -32,7 +32,7 @@ import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
-import org.navalplanner.ws.common.impl.LabelConverter;
+import org.navalplanner.ws.common.impl.LabelReferenceConverter;
 import org.navalplanner.ws.workreports.api.DescriptionValueDTO;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
 import org.navalplanner.ws.workreports.api.WorkReportLineDTO;
@@ -77,7 +77,7 @@ public final class WorkReportConverter {
         }
 
         if (workReportDTO.labels != null) {
-            workReport.setLabels(LabelConverter.toEntity(workReportDTO.labels));
+            workReport.setLabels(LabelReferenceConverter.toEntity(workReportDTO.labels));
         }
 
         if (workReportDTO.descriptionValues != null) {
@@ -124,7 +124,7 @@ public final class WorkReportConverter {
         }
 
         if (workReportLineDTO.labels != null) {
-            workReportLine.setLabels(LabelConverter
+            workReportLine.setLabels(LabelReferenceConverter
                     .toEntity(workReportLineDTO.labels));
         }
 

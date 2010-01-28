@@ -48,7 +48,7 @@ public class OrderDTO extends OrderLineGroupDTO {
     }
 
     public OrderDTO(String name, String code, Date initDate, Date deadline,
-            String description, Set<LabelDTO> labels,
+            String description, Set<LabelReferenceDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
             Set<AdvanceMeasurementDTO> advanceMeasurements,
             Set<CriterionRequirementDTO> criterionRequirements,

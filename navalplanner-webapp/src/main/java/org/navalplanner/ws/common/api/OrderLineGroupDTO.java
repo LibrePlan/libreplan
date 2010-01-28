@@ -52,7 +52,7 @@ public class OrderLineGroupDTO extends OrderElementDTO {
     }
 
     public OrderLineGroupDTO(String name, String code, Date initDate,
-            Date deadline, String description, Set<LabelDTO> labels,
+            Date deadline, String description, Set<LabelReferenceDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
             Set<AdvanceMeasurementDTO> advanceMeasurements,
             Set<CriterionRequirementDTO> criterionRequirements,

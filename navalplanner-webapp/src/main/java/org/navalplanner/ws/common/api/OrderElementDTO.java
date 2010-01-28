@@ -57,7 +57,7 @@ public class OrderElementDTO {
 
     @XmlElementWrapper(name = "labels")
     @XmlElement(name = "label")
-    public Set<LabelDTO> labels = new HashSet<LabelDTO>();
+    public Set<LabelReferenceDTO> labels = new HashSet<LabelReferenceDTO>();
 
     @XmlElementWrapper(name = "material-assignments")
     @XmlElement(name = "material-assignment")
@@ -77,7 +77,7 @@ public class OrderElementDTO {
     }
 
     public OrderElementDTO(String name, String code, Date initDate,
-            Date deadline, String description, Set<LabelDTO> labels,
+            Date deadline, String description, Set<LabelReferenceDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
             Set<AdvanceMeasurementDTO> advanceMeasurements,
             Set<CriterionRequirementDTO> criterionRequirements) {

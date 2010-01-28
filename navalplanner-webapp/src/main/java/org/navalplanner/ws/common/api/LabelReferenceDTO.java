@@ -26,25 +26,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.navalplanner.business.labels.entities.Label;
 
 /**
- * DTO for {@link Label} entity.
+ * DTO for references to {@link Label} entities.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @XmlRootElement(name = "label")
-public class LabelDTO {
+public class LabelReferenceDTO {
 
     @XmlAttribute
-    public String name;
+    public String code;
 
-    @XmlAttribute
-    public String type;
-
-    public LabelDTO() {
+    public LabelReferenceDTO() {
     }
 
-    public LabelDTO(String name, String type) {
-        this.name = name;
-        this.type = type;
+    public LabelReferenceDTO(String code) {
+        this.code = code;
     }
 
 }

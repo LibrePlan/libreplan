@@ -153,6 +153,10 @@ public class SubcontractServiceREST implements ISubcontractService {
             instanceConstraintViolationsDTO = ConstraintViolationConverter
                     .toDTO(Util.generateInstanceId(1, orderElementDTO.code), e
                             .getInvalidValues());
+        } catch (InstanceNotFoundException e) {
+            instanceConstraintViolationsDTO = InstanceConstraintViolationsDTO
+                    .create(Util.generateInstanceId(1, orderElementDTO.code), e
+                            .getMessage());
         }
 
         if (instanceConstraintViolationsDTO != null) {

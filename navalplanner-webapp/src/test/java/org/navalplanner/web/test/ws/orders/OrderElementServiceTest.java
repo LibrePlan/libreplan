@@ -25,7 +25,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -40,12 +39,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +55,14 @@ import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -74,7 +78,7 @@ import org.navalplanner.ws.common.api.HoursGroupDTO;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.IndirectCriterionRequirementDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
-import org.navalplanner.ws.common.api.LabelDTO;
+import org.navalplanner.ws.common.api.LabelReferenceDTO;
 import org.navalplanner.ws.common.api.MaterialAssignmentDTO;
 import org.navalplanner.ws.common.api.OrderDTO;
 import org.navalplanner.ws.common.api.OrderLineDTO;
@@ -126,6 +130,30 @@ public class OrderElementServiceTest {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private ILabelTypeDAO labelTypeDAO;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Label givenLabelStored() {
+        Label label = Label.create("label-name-" + UUID.randomUUID());
+
+        LabelType labelType = LabelType.create("label-type-"
+                + UUID.randomUUID());
+        labelType.addLabel(label);
+
+        labelTypeDAO.save(labelType);
+        labelTypeDAO.flush();
+        sessionFactory.getCurrentSession().evict(labelType);
+        sessionFactory.getCurrentSession().evict(label);
+
+        labelType.dontPoseAsTransientObjectAnymore();
+        label.dontPoseAsTransientObjectAnymore();
+
+        return label;
+    }
 
     @Test
     public void invalidOrderWithoutAttributes() {
@@ -483,8 +511,8 @@ public class OrderElementServiceTest {
         orderDTO.code = "order-code";
         orderDTO.initDate = new Date();
 
-        LabelDTO labelDTO = new LabelDTO();
-        orderDTO.labels.add(labelDTO);
+        LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
+        orderDTO.labels.add(labelReferenceDTO);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrder(orderDTO).instanceConstraintViolationsList;
@@ -492,36 +520,7 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: material, units, unitPrice
         assertThat(constraintViolations.size(), equalTo(1));
-        assertThat(constraintViolations.get(0).fieldName,
-                equalTo("LabelType::name"));
-
-        assertThat(orderDAO.getOrders().size(), equalTo(previous));
-    }
-
-    @Test
-    public void orderWithInvalidLabelWithoutName() {
-        int previous = orderDAO.getOrders().size();
-
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
-        orderDTO.initDate = new Date();
-
-        LabelDTO labelDTO = new LabelDTO();
-        labelDTO.type = "Label type";
-        orderDTO.labels.add(labelDTO);
-
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrder(orderDTO).instanceConstraintViolationsList;
-        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
-
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Mandatory fields: material, units, unitPrice
-        assertThat(constraintViolations.size(), equalTo(1));
-        assertThat(constraintViolations.get(0).fieldName, mustEnd("name"));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
@@ -536,10 +535,9 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
-        LabelDTO labelDTO = new LabelDTO();
-        labelDTO.name = "Label name";
-        labelDTO.type = "Label type";
-        orderDTO.labels.add(labelDTO);
+        LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
+        labelReferenceDTO.code = givenLabelStored().getCode();
+        orderDTO.labels.add(labelReferenceDTO);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrder(orderDTO).instanceConstraintViolationsList;
@@ -550,7 +548,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    public void orderWithLabelRepeatedInTheSameBranch() {
+    public void orderWithLabelRepeatedInTheSameBranchIsNotAddedTwice() {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
@@ -558,10 +556,9 @@ public class OrderElementServiceTest {
         orderDTO.code = "order-code";
         orderDTO.initDate = new Date();
 
-        LabelDTO labelDTO = new LabelDTO();
-        labelDTO.name = "Label name";
-        labelDTO.type = "Label type";
-        orderDTO.labels.add(labelDTO);
+        LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
+        labelReferenceDTO.code = givenLabelStored().getCode();
+        orderDTO.labels.add(labelReferenceDTO);
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line";
@@ -570,20 +567,22 @@ public class OrderElementServiceTest {
                 ResourceEnumDTO.WORKER, 1000,
                 new HashSet<CriterionRequirementDTO>());
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
-        orderLineDTO.labels.add(labelDTO);
+        orderLineDTO.labels.add(labelReferenceDTO);
         orderDTO.children.add(orderLineDTO);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrder(orderDTO).instanceConstraintViolationsList;
-        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
-                .get(0).constraintViolations;
-        // Mandatory fields: checkConstraintLabelNotRepeatedInTheSameBranch
-        assertThat(constraintViolations.size(), equalTo(1));
-        assertNull(constraintViolations.get(0).fieldName);
+        assertThat(orderDAO.getOrders().size(), equalTo(previous + 1));
 
-        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+        Order order = orderDAO.getOrders().get(previous);
+        assertThat(order.getLabels().size(), equalTo(1));
+        assertThat(order.getLabels().iterator().next().getCode(),
+                equalTo(labelReferenceDTO.code));
+
+        OrderElement orderElement = order.getChildren().get(0);
+        assertThat(orderElement.getLabels().size(), equalTo(0));
     }
 
     @Test
@@ -602,8 +601,9 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
-        LabelDTO labelDTO = new LabelDTO("Label name", "Label type");
-        orderDTO.labels.add(labelDTO);
+        LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO(givenLabelStored()
+                .getCode());
+        orderDTO.labels.add(labelReferenceDTO);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrder(orderDTO).instanceConstraintViolationsList;
@@ -613,8 +613,9 @@ public class OrderElementServiceTest {
         assertNotNull(orderElement);
         assertThat(orderElement.getLabels().size(), equalTo(1));
 
-        LabelDTO labelDTO2 = new LabelDTO("Label name2", "Label type");
-        orderDTO.labels.add(labelDTO2);
+        LabelReferenceDTO labelReferenceDTO2 = new LabelReferenceDTO(givenLabelStored()
+                .getCode());
+        orderDTO.labels.add(labelReferenceDTO2);
         instanceConstraintViolationsList = orderElementService
                 .updateOrder(orderDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
@@ -622,9 +623,8 @@ public class OrderElementServiceTest {
         orderElement = orderElementDAO.findUniqueByCode(code);
         assertThat(orderElement.getLabels().size(), equalTo(2));
         for (Label label : orderElement.getLabels()) {
-            assertThat(label.getName(), anyOf(equalTo("Label name"),
-                    equalTo("Label name2")));
-            assertThat(label.getType().getName(), equalTo("Label type"));
+            assertThat(label.getCode(), anyOf(equalTo(labelReferenceDTO.code),
+                    equalTo(labelReferenceDTO2.code)));
         }
     }
 

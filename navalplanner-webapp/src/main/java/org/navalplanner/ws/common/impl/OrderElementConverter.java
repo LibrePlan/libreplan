@@ -60,7 +60,7 @@ import org.navalplanner.ws.common.api.DirectCriterionRequirementDTO;
 import org.navalplanner.ws.common.api.HoursGroupDTO;
 import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.IndirectCriterionRequirementDTO;
-import org.navalplanner.ws.common.api.LabelDTO;
+import org.navalplanner.ws.common.api.LabelReferenceDTO;
 import org.navalplanner.ws.common.api.MaterialAssignmentDTO;
 import org.navalplanner.ws.common.api.OrderDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
@@ -86,10 +86,10 @@ public final class OrderElementConverter {
         Date deadline = orderElement.getDeadline();
         String description = orderElement.getDescription();
 
-        Set<LabelDTO> labels = new HashSet<LabelDTO>();
+        Set<LabelReferenceDTO> labels = new HashSet<LabelReferenceDTO>();
         if (configuration.isLabels()) {
             for (Label label : orderElement.getLabels()) {
-                labels.add(LabelConverter.toDTO(label));
+                labels.add(LabelReferenceConverter.toDTO(label));
             }
         }
 
@@ -224,7 +224,8 @@ public final class OrderElementConverter {
     }
 
     public final static OrderElement toEntity(OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration) {
+            ConfigurationOrderElementConverter configuration)
+            throws InstanceNotFoundException {
         OrderElement orderElement = toEntityExceptCriterionRequirements(
                 orderElementDTO, configuration);
         if (configuration.isCriterionRequirements()) {
@@ -314,7 +315,8 @@ public final class OrderElementConverter {
 
     private final static OrderElement toEntityExceptCriterionRequirements(
             OrderElementDTO orderElementDTO,
-            ConfigurationOrderElementConverter configuration) {
+            ConfigurationOrderElementConverter configuration)
+            throws InstanceNotFoundException {
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
@@ -369,8 +371,8 @@ public final class OrderElementConverter {
         orderElement.setDescription(orderElementDTO.description);
 
         if (configuration.isLabels()) {
-            for (LabelDTO labelDTO : orderElementDTO.labels) {
-                orderElement.addLabel(LabelConverter.forceToEntity(labelDTO));
+            for (LabelReferenceDTO labelDTO : orderElementDTO.labels) {
+                orderElement.addLabel(LabelReferenceConverter.toEntity(labelDTO));
             }
         }
 
@@ -454,7 +456,7 @@ public final class OrderElementConverter {
     public final static void update(OrderElement orderElement,
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
-            throws IncompatibleTypeException {
+            throws IncompatibleTypeException, InstanceNotFoundException {
         updateExceptCriterionRequirements(orderElement, orderElementDTO,
                 configuration);
         if (configuration.isCriterionRequirements()) {
@@ -465,7 +467,7 @@ public final class OrderElementConverter {
     private final static void updateExceptCriterionRequirements(
             OrderElement orderElement, OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
-            throws IncompatibleTypeException {
+            throws IncompatibleTypeException, InstanceNotFoundException {
 
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
@@ -534,9 +536,9 @@ public final class OrderElementConverter {
         }
 
         if (configuration.isLabels()) {
-            for (LabelDTO labelDTO : orderElementDTO.labels) {
-                if (!orderElement.containsLabel(labelDTO.name, labelDTO.type)) {
-                    orderElement.addLabel(LabelConverter.forceToEntity(labelDTO));
+            for (LabelReferenceDTO labelDTO : orderElementDTO.labels) {
+                if (!orderElement.containsLabel(labelDTO.code)) {
+                    orderElement.addLabel(LabelReferenceConverter.toEntity(labelDTO));
                 }
             }
         }

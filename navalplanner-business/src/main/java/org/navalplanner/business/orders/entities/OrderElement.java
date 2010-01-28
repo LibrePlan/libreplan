@@ -803,7 +803,7 @@ public abstract class OrderElement extends BaseEntity implements
 
     private boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
         for (Label label : labels) {
-            if (label.equals(newLabel)) {
+            if (label.isEqualTo(newLabel)) {
                 return false;
             }
         }
@@ -877,10 +877,9 @@ public abstract class OrderElement extends BaseEntity implements
         return null;
     }
 
-    public boolean containsLabel(String name, String type) {
+    public boolean containsLabel(String code) {
         for (Label label : getLabels()) {
-            if (label.getName().equals(name)
-                    && label.getType().getName().equals(type)) {
+            if (label.getCode().equals(code)) {
                 return true;
             }
         }
