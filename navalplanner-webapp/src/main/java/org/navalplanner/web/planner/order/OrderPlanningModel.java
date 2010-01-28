@@ -215,40 +215,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
 
-        //Check the write permissions to setup the save button
-        ISaveCommand saveCommand = null;
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
-            saveCommand = buildSaveCommand();
-            configuration.addGlobalCommand(saveCommand);
-        }
-        else {
-            String loginName = SecurityUtils.getSessionUserLoginName();
-            try {
-                User user = userDAO.findByLoginName(loginName);
-                for(OrderAuthorization authorization :
-                        orderAuthorizationDAO.listByOrderUserAndItsProfiles(order, user)) {
-                    if(authorization.getAuthorizationType() ==
-                            OrderAuthorizationType.WRITE_AUTHORIZATION) {
-                        saveCommand = buildSaveCommand();
-                        configuration.addGlobalCommand(saveCommand);
-                        break;
-                    }
-                }
-            }
-            catch(InstanceNotFoundException e) {
-                LOG.warn("there isn't a logged user for:" + loginName, e);
-                // this case shouldn't happen, we continue anyway disabling the
-                // save button
-            }
-        }
-
-        //if there's no write permission, we disable the edition features of the gantt component
-        if(saveCommand == null) {
-            configuration.setAddingDependenciesEnabled(false);
-            configuration.setEditingDatesEnabled(false);
-            configuration.setMovingTasksEnabled(false);
-            configuration.setResizingTasksEnabled(false);
-        }
+        final boolean writingAllowed = isWritingAllowedOn(orderReloaded);
+        ISaveCommand saveCommand = setupSaveCommand(configuration,
+                writingAllowed);
+        setupEditingCapabilities(configuration, writingAllowed);
 
         final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
         configuration.addCommandOnTask(resourceAllocationCommand);
@@ -586,6 +556,51 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         for (ICommand<TaskElement> c : additional) {
             configuration.addGlobalCommand(c);
         }
+    }
+
+    private boolean isWritingAllowedOn(Order order) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return true;
+        }
+        return thereIsWriteAuthorizationFor(order);
+    }
+
+    private boolean thereIsWriteAuthorizationFor(Order order) {
+        String loginName = SecurityUtils.getSessionUserLoginName();
+        try {
+            User user = userDAO.findByLoginName(loginName);
+            for (OrderAuthorization authorization : orderAuthorizationDAO
+                    .listByOrderUserAndItsProfiles(order, user)) {
+                if (authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
+                    return true;
+                }
+            }
+        } catch (InstanceNotFoundException e) {
+            LOG.warn("there isn't a logged user for:" + loginName, e);
+            // this case shouldn't happen, we continue anyway disabling the
+            // save button
+        }
+        return false;
+    }
+
+    private ISaveCommand setupSaveCommand(
+            PlannerConfiguration<TaskElement> configuration,
+            boolean writingAllowed) {
+        if (writingAllowed) {
+            ISaveCommand result = buildSaveCommand();
+            configuration.addGlobalCommand(result);
+            return result;
+        }
+        return null;
+    }
+
+    private void setupEditingCapabilities(
+            PlannerConfiguration<TaskElement> configuration,
+            boolean writingAllowed) {
+        configuration.setAddingDependenciesEnabled(writingAllowed);
+        configuration.setEditingDatesEnabled(writingAllowed);
+        configuration.setMovingTasksEnabled(writingAllowed);
+        configuration.setResizingTasksEnabled(writingAllowed);
     }
 
     private ICalendarAllocationCommand buildCalendarAllocationCommand(
