@@ -35,9 +35,17 @@ public interface IMultipleFiltersFinder {
 
     List<FilterPair> getMatching(String filter);
 
+    List<FilterPair> getFirstTenFilters();
+
     String objectToString(Object obj);
 
+    String getNewFilterText(String inputText);
+
+    boolean isValidNewFilter(Object obj);
+
     boolean isValidFormatText(List filterValues, String value);
+
+    List<FilterPair> updateDeletedFilters(List filterValues, String value);
 
     String[] getHeaders();
 

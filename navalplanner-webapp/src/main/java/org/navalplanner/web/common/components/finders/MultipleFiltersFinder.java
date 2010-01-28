@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -90,6 +91,8 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
     private static final List<String> customerReferences = new ArrayList<String>();
 
     private static OrderStatusEnum[] ordersStatusEnums;
+
+    private static boolean updating = false;
 
     private static final List<String> ordersCodes = new ArrayList<String>();
 
@@ -163,6 +166,85 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
         }
     }
 
+    public List<FilterPair> getFirstTenFilters() {
+        listMatching.clear();
+        fillWithFirstTenFiltersLabels();
+        fillWithFirstTenFiltersLabels();
+        fillWithFirstTenFiltersCustomer();
+        fillWithFirstTenFiltersState();
+        fillWihtFirstTenFiltersCodes();
+        fillWihtFirstTenFiltersCustomerReferences();
+        listMatching.add(new FilterPair(OrderFilterEnum.None,
+                OrderFilterEnum.None.toString(), null));
+        return listMatching;
+    }
+
+    private List<FilterPair> fillWithFirstTenFiltersLabels() {
+        Iterator<LabelType> iteratorLabelType = mapLabels.keySet().iterator();
+        while (iteratorLabelType.hasNext() && listMatching.size() < 10) {
+            LabelType type = iteratorLabelType.next();
+            for (int i = 0; listMatching.size() < 10
+                    && i < mapLabels.get(type).size(); i++) {
+                Label label = mapLabels.get(type).get(i);
+                String pattern = type.getName() + " :: " + label.getName();
+                listMatching.add(new FilterPair(OrderFilterEnum.Label, pattern,
+                        label));
+            }
+        }
+        return listMatching;
+    }
+
+    private List<FilterPair> fillWithFirstTenFiltersCriterions() {
+        Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
+                .iterator();
+        while (iteratorCriterionType.hasNext() && listMatching.size() < 10) {
+            CriterionType type = iteratorCriterionType.next();
+            for (int i = 0; listMatching.size() < 10
+                    && i < mapCriterions.get(type).size(); i++) {
+                Criterion criterion = mapCriterions.get(type).get(i);
+                String pattern = type.getName() + " :: " + criterion.getName();
+                listMatching.add(new FilterPair(OrderFilterEnum.Criterion,
+                        pattern, criterion));
+            }
+        }
+        return listMatching;
+    }
+
+    private List<FilterPair> fillWithFirstTenFiltersCustomer() {
+        for (int i = 0; listMatching.size() < 10
+                && i < externalCompanies.size(); i++) {
+            ExternalCompany externalCompany = externalCompanies.get(i);
+            addExternalCompany(externalCompany);
+        }
+        return listMatching;
+    }
+
+    private List<FilterPair> fillWithFirstTenFiltersState() {
+        for (int i = 0; listMatching.size() < 10
+                && i < OrderStatusEnum.values().length; i++) {
+            OrderStatusEnum state = OrderStatusEnum.values()[i];
+            addState(state);
+        }
+        return listMatching;
+    }
+
+    private List<FilterPair> fillWihtFirstTenFiltersCodes() {
+        for (int i = 0; listMatching.size() < 10 && i < ordersCodes.size(); i++) {
+            String code = ordersCodes.get(i);
+            addCode(code);
+        }
+        return listMatching;
+    }
+
+    private List<FilterPair> fillWihtFirstTenFiltersCustomerReferences() {
+        for (int i = 0; listMatching.size() < 10
+                && i < customerReferences.size(); i++) {
+            String reference = customerReferences.get(i);
+            addCustomerReference(reference);
+        }
+        return listMatching;
+    }
+
     public List<FilterPair> getMatching(String filter) {
         listMatching.clear();
         if ((filter != null) && (!filter.isEmpty())) {
@@ -178,13 +260,16 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
                 searchInOrderStatus(filter);
             }
         }
+
+        addNoneFilter();
         return listMatching;
     }
 
     private void searchInCriterionTypes(String filter) {
+        boolean limited = (filter.length() < 3);
         for (CriterionType type : mapCriterions.keySet()) {
             if (type.getName().toLowerCase().contains(filter)) {
-                setFilterPairCriterionType(type);
+                setFilterPairCriterionType(type, limited);
             } else {
                 searchInCriterions(type, filter);
             }
@@ -194,26 +279,28 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
     private void searchInCriterions(CriterionType type, String filter) {
         for (Criterion criterion : mapCriterions.get(type)) {
             if (criterion.getName().toLowerCase().contains(filter)) {
-                String pattern = type.getName() + " :: " + criterion.getName();
-                listMatching.add(new FilterPair(OrderFilterEnum.Criterion,
-                        pattern,
-                        criterion));
+                addCriterion(type, criterion);
+                if ((filter.length() < 3) && (listMatching.size() > 9)) {
+                    return;
+                }
             }
         }
     }
 
-    private void setFilterPairCriterionType(CriterionType type) {
+    private void setFilterPairCriterionType(CriterionType type, boolean limited) {
         for (Criterion criterion : mapCriterions.get(type)) {
-            String pattern = type.getName() + " :: " + criterion.getName();
-            listMatching.add(new FilterPair(OrderFilterEnum.Criterion, pattern,
-                    criterion));
+            addCriterion(type, criterion);
+            if ((limited) && (listMatching.size() > 9)) {
+                return;
+            }
         }
     }
 
     private void searchInLabelTypes(String filter) {
+        boolean limited = (filter.length() < 3);
         for (LabelType type : mapLabels.keySet()) {
             if (type.getName().toLowerCase().contains(filter)) {
-                setFilterPairLabelType(type);
+                setFilterPairLabelType(type, limited);
             } else {
                 searchInLabels(type, filter);
             }
@@ -223,18 +310,20 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
     private void searchInLabels(LabelType type, String filter) {
         for (Label label : mapLabels.get(type)) {
             if (label.getName().toLowerCase().contains(filter)) {
-                String pattern = type.getName() + " :: " + label.getName();
-                listMatching.add(new FilterPair(OrderFilterEnum.Label, pattern,
-                        label));
+                addLabel(type, label);
+                if ((filter.length() < 3) && (listMatching.size() > 9)) {
+                    return;
+                }
             }
         }
     }
 
-    private void setFilterPairLabelType(LabelType type) {
+    private void setFilterPairLabelType(LabelType type, boolean limited) {
         for (Label label : mapLabels.get(type)) {
-            String pattern = type.getName() + " :: " + label.getName();
-            listMatching.add(new FilterPair(OrderFilterEnum.Label, pattern,
-                    label));
+            addLabel(type, label);
+            if ((limited) && (listMatching.size() > 9)) {
+                return;
+            }
         }
     }
 
@@ -242,11 +331,10 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
         for(ExternalCompany externalCompany : externalCompanies){
             if ((externalCompany.getName().toLowerCase().contains(filter))
                     || (externalCompany.getNif().toLowerCase().contains(filter))) {
-                String pattern = externalCompany.getName() + " :: "
-                        + externalCompany.getNif();
-                listMatching.add(new FilterPair(
-                        OrderFilterEnum.ExternalCompany, pattern,
-                        externalCompany));
+                addExternalCompany(externalCompany);
+                if ((filter.length() < 3) && (listMatching.size() > 9)) {
+                    return;
+                }
             }
         }
     }
@@ -254,8 +342,10 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
     private void searchInOrderStatus(String filter) {
         for (OrderStatusEnum state : ordersStatusEnums) {
             if (state.name().toLowerCase().contains(filter)) {
-                listMatching.add(new FilterPair(OrderFilterEnum.State, state
-                        .name(), state));
+                addState(state);
+                if ((filter.length() < 3) && (listMatching.size() > 9)) {
+                    return;
+                }
             }
         }
     }
@@ -266,8 +356,7 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
             codeFilter = codeFilter.replace(" ", "");
             for (String code : ordersCodes) {
                 if (code.toLowerCase().equals(codeFilter)) {
-                    listMatching.add(new FilterPair(OrderFilterEnum.Code, code,
-                            code));
+                    addCode(code);
                     return;
                 }
             }
@@ -280,13 +369,48 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
             referenceFilter = referenceFilter.replace(" ", "");
             for (String reference : customerReferences) {
                 if (reference.toLowerCase().equals(referenceFilter)) {
-                    listMatching.add(new FilterPair(
-                            OrderFilterEnum.CustomerReference,
-                            reference, reference));
+                    addCustomerReference(reference);
                     return;
                 }
             }
         }
+    }
+
+    private void addCriterion(CriterionType type, Criterion criterion) {
+        String pattern = type.getName() + " :: " + criterion.getName();
+        listMatching.add(new FilterPair(OrderFilterEnum.Criterion, pattern,
+                criterion));
+    }
+
+    private void addLabel(LabelType type, Label label) {
+        String pattern = type.getName() + " :: " + label.getName();
+        listMatching.add(new FilterPair(OrderFilterEnum.Label, pattern, label));
+    }
+
+    private void addExternalCompany(ExternalCompany externalCompany) {
+        String pattern = externalCompany.getName() + " :: "
+                + externalCompany.getNif();
+        listMatching.add(new FilterPair(OrderFilterEnum.ExternalCompany,
+                pattern, externalCompany));
+    }
+
+    private void addState(OrderStatusEnum state) {
+        listMatching.add(new FilterPair(OrderFilterEnum.State, state.name(),
+                state));
+    }
+
+    private void addCode(String code) {
+        listMatching.add(new FilterPair(OrderFilterEnum.Code, code, code));
+    }
+
+    private void addCustomerReference(String reference) {
+        listMatching.add(new FilterPair(OrderFilterEnum.CustomerReference,
+                reference, reference));
+    }
+
+    private void addNoneFilter() {
+        listMatching.add(new FilterPair(OrderFilterEnum.None,
+                OrderFilterEnum.None.toString(), null));
     }
 
     public String objectToString(Object obj) {
@@ -296,10 +420,39 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
         return text;
     }
 
+    @Override
+    public String getNewFilterText(String inputText) {
+        String newFilterText = new String("");
+        String[] filtersText = inputText.split(",");
+        newFilterText = getLastText(filtersText);
+        newFilterText = newFilterText.replace(" ", "");
+        newFilterText = newFilterText.trim();
+        return newFilterText;
+    }
+
+    private String getLastText(String[] texts) {
+        Integer last = texts.length - 1;
+        if (texts.length > 0) {
+            return texts[last];
+        } else {
+            return "";
+        }
+    }
+
+    public boolean isValidNewFilter(Object obj) {
+        FilterPair filter = (FilterPair) obj;
+        if (filter.getType().equals(OrderFilterEnum.None)) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean isValidFormatText(List filterValues, String value) {
         if (filterValues.isEmpty()) {
             return true;
         }
+
+        filterValues = updateDeletedFilters(filterValues, value);
 
         String[] values = value.split(",");
         if (values.length != filterValues.size() + 1) {
@@ -308,16 +461,45 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
         int i = 0;
         for (FilterPair filterPair : (List<FilterPair>) filterValues) {
-            String filterValue = values[i].replace(" ", "");
             String filterPairText = filterPair.getType() + "("
                     + filterPair.getPattern() + ")";
-            filterPairText = filterPairText.replace(" ", "");
-            if (!filterValue.equals(filterPairText)) {
+            if (!isFilterAdded(values, filterPairText)) {
                 return false;
             }
             i++;
         }
         return true;
+    }
+
+    @Override
+    public List<FilterPair> updateDeletedFilters(List filterValues, String value) {
+        String[] values = value.split(",");
+        List<FilterPair> listFilters = (List<FilterPair>) filterValues;
+        List<FilterPair> list = new ArrayList<FilterPair>();
+        list.addAll(listFilters);
+
+        if (values.length < filterValues.size() + 1) {
+            for (FilterPair filterPair : list) {
+                String filter = filterPair.getType() + "("
+                        + filterPair.getPattern() + ")";
+                if (!isFilterAdded(values, filter)) {
+                    listFilters.remove(filterPair);
+                }
+            }
+        }
+        return listFilters;
+    }
+
+    private boolean isFilterAdded(String[] values, String filter) {
+        for (int i = 0; i < values.length; i++) {
+            String value = values[i].replace(" ", "");
+            filter = filter.replace(" ", "");
+
+            if (filter.equals(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String[] getHeaders() {

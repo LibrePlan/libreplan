@@ -1,7 +1,8 @@
-<hbox>
+<hbox align="right" style="margin-left:700px;">
   <!-- Filter by label -->
   <label value="${i18n:_('Filter by label:')}" />
-  <bandboxSearch id="bdFilter" finder="LabelBandboxFinder"
+  <bandboxSearch id="bdFilter" widthBandbox="185px" widthListbox="200px"
+        finder="LabelBandboxFinder"
         model="@{treeController.labels}"/>
   <button label="${i18n:_('Filter')}" style="margin-top: -4px"
         onClick="treeController.onApplyFilter(event)"/>

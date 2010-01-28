@@ -156,8 +156,8 @@ public class OrderPredicate implements IPredicate {
 
     private boolean acceptExternalCompany(FilterPair filter,Order order) {
         ExternalCompany filterCustomer = (ExternalCompany) filter.getValue();
-        if ((order.getCustomer() == null)
-                || (order.getCustomer().getId().equals(filterCustomer.getId()))) {
+        if ((order.getCustomer() != null)
+                && (order.getCustomer().getId().equals(filterCustomer.getId()))) {
             return true;
         }
         return false;
@@ -165,8 +165,8 @@ public class OrderPredicate implements IPredicate {
 
     private boolean acceptState(FilterPair filter,Order order) {
         OrderStatusEnum filterState = (OrderStatusEnum) filter.getValue();
-        if ((order.getState() == null)
-                || (order.getState().equals(filterState))) {
+        if ((order.getState() != null)
+                && (order.getState().equals(filterState))) {
             return true;
         }
         return false;
@@ -185,9 +185,8 @@ public class OrderPredicate implements IPredicate {
     private boolean acceptFiltersDates(Order order) {
         // Check if exist work report items into interval between the start date
         // and finish date.
-        if ((isInTheRangeFilterDates(order.getInitDate()) || isInTheRangeFilterDates(order.getDeadline()))
-                || ((isInTheRangeWorkReportDates(startDate, order)) || (isInTheRangeWorkReportDates(
-                        finishDate, order)))) {
+        if (isInTheRangeFilterDates(order.getInitDate())
+                && isInTheRangeFilterDates(order.getDeadline())) {
             return true;
         }
         return false;

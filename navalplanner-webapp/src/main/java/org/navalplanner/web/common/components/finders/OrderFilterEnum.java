@@ -25,7 +25,8 @@ package org.navalplanner.web.common.components.finders;
 
 public enum OrderFilterEnum {
 
-    Criterion("Criterion"), Label("Label"), ExternalCompany("Customer"), State(
+    None("..."), Criterion("Criterion"), Label("Label"), ExternalCompany(
+            "Customer"), State(
             "State"), Code("Code"), CustomerReference("Customer Reference");
 
     private String description;

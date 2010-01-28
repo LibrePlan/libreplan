@@ -57,6 +57,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -75,7 +76,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Vbox filter;
 
-    private Vbox orderFilter;
+    private Hbox orderFilter;
 
     private BandboxSearch bdFilter;
 

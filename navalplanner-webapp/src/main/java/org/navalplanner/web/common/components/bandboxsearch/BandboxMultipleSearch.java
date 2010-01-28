@@ -29,6 +29,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.IMultipleFiltersFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -76,8 +77,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         bandbox = (Bandbox) getFellowIfAny("bandbox");
 
         if (multipleFiltersFinder != null) {
-            listbox.setModel(new SimpleListModel(multipleFiltersFinder
-                .getMatching("")));
+            listbox.setModel(getSubModel());
             listbox.setItemRenderer(multipleFiltersFinder.getItemRenderer());
             addHeaders();
 
@@ -91,15 +91,9 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
                     final String inputText = ((InputEvent) event).getValue();
                     if ((inputText == null) || (inputText.isEmpty())) {
                         clear();
+                        searchMultipleFilters();
                     } else {
-                        String newFilterText = getNewFilterText(inputText);
-                        if ((newFilterText != null)
-                                && (newFilterText.length() > 2)) {
-                            listbox.setModel(getSubModel(newFilterText));
-                            listbox.invalidate();
-                        } else {
-                            clearListbox();
-                        }
+                        searchMultipleFilters(inputText);
                     }
                 }
             });
@@ -112,9 +106,11 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     final Object object = getSelectedItem().getValue();
-                    addSelectedElement(object);
+                    if (multipleFiltersFinder.isValidNewFilter(object)) {
+                        addSelectedElement(object);
+                        clearListbox();
+                    }
                     bandbox.close();
-                    clearListbox();
                 }
             });
         }
@@ -122,21 +118,20 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         updateWidth();
     }
 
-    private String getNewFilterText(String inputText){
-        String newFilterText = new String("");
-        String[] filtersText = inputText.split(",");
-        newFilterText = getLastText(filtersText);
-        newFilterText = newFilterText.replace(" ", "");
-        newFilterText = newFilterText.trim();
-        return newFilterText;
+    private void searchMultipleFilters() {
+        listbox.setModel(getSubModel());
+        listbox.invalidate();
     }
 
-    private String getLastText(String[] texts) {
-        Integer last = texts.length - 1;
-        if (texts.length > 0) {
-            return texts[last];
+    private void searchMultipleFilters(String inputText) {
+        String newFilterText = multipleFiltersFinder
+                .getNewFilterText(inputText);
+        selectedFiltersText = inputText.replace(newFilterText, "");
+        if ((newFilterText != null) && (!newFilterText.isEmpty())) {
+            listbox.setModel(getSubModel(newFilterText));
+            listbox.invalidate();
         } else {
-            return "";
+            searchMultipleFilters();
         }
     }
 
@@ -151,8 +146,23 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
             selectedFiltersText = selectedFiltersText
                     .concat(multipleFiltersFinder.objectToString(obj));
             bandbox.setValue(selectedFiltersText);
-            selectedFilters.add(obj);
+
+            addFilter(obj);
+            selectedFilters = multipleFiltersFinder.updateDeletedFilters(
+                    selectedFilters, selectedFiltersText);
         }
+    }
+
+    private void addFilter(Object obj) {
+        FilterPair newFilter = (FilterPair) obj;
+        for (FilterPair filter : (List<FilterPair>) selectedFilters) {
+            if ((filter.getType().equals(newFilter.getType()))
+                    && (filter.getPattern().equals(newFilter.getPattern()))) {
+                throw new WrongValueException(bandbox,
+                        _("filter already exists"));
+            }
+        }
+        selectedFilters.add(obj);
     }
 
     public List getSelectedElements() {
@@ -167,7 +177,16 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     /**
-     * Find {@link Label} which name or type start with prefix
+     * Find the first ten filters
+     */
+    @SuppressWarnings("unchecked")
+    private ListModel getSubModel() {
+        List result = multipleFiltersFinder.getFirstTenFilters();
+        return new SimpleListModel(result);
+    }
+
+    /**
+     * Find filter which contains the expression
      * @param inputText
      */
     @SuppressWarnings("unchecked")
@@ -227,7 +246,6 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
      * @param bandbox
      */
     public void clear() {
-        clearListbox();
         clearSelectedElement();
     }
 

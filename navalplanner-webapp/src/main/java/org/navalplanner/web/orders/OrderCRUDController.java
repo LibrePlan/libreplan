@@ -176,7 +176,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Grid listing;
 
-    private Vbox orderFilter;
+    private Hbox orderFilter;
 
     private Vbox filter;
 
