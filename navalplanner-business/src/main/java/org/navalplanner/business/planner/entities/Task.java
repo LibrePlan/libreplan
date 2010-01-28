@@ -325,29 +325,64 @@ public class Task extends TaskElement {
         return startConstraint;
     }
 
+    private static abstract class AllocationModificationStrategy {
+
+        public abstract List<ResourcesPerDayModification> getResourcesPerDayModified(
+                List<ResourceAllocation<?>> allocations);
+
+        public abstract List<HoursModification> getHoursModified(
+                List<ResourceAllocation<?>> allocations);
+
+    }
+
+    private static class WithTheSameHoursAndResourcesPerDay extends
+            AllocationModificationStrategy {
+
+        @Override
+        public List<HoursModification> getHoursModified(
+                List<ResourceAllocation<?>> allocations) {
+            return HoursModification.fromExistent(allocations);
+        }
+
+        @Override
+        public List<ResourcesPerDayModification> getResourcesPerDayModified(
+                List<ResourceAllocation<?>> allocations) {
+            return ResourcesPerDayModification.fromExistent(allocations);
+        }
+
+    }
+
     @Override
     protected void moveAllocations() {
+        reassign(new WithTheSameHoursAndResourcesPerDay());
+    }
+
+    private void reassign(AllocationModificationStrategy strategy) {
         List<ModifiedAllocation> copied = ModifiedAllocation
                 .copy(getResourceAllocations());
-        List<ResourcesPerDayModification> allocations = ResourcesPerDayModification
-                .fromExistent(ModifiedAllocation.modified(copied));
+        List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
+                .modified(copied);
+        List<ResourcesPerDayModification> allocations = strategy
+                .getResourcesPerDayModified(toBeModified);
         if (allocations.isEmpty()) {
             return;
         }
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
+            ResourceAllocation.allocating(allocations)
+                              .allocateOnTaskLength();
             break;
         case END_DATE:
-            LocalDate end = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(getAssignedHours());
+            LocalDate end = ResourceAllocation
+                                .allocating(allocations)
+                                .untilAllocating(getAssignedHours());
             setEndDate(end.toDateTimeAtStartOfDay().toDate());
             break;
         case RESOURCES_PER_DAY:
-            ResourceAllocation.allocatingHours(
-                    HoursModification.fromExistent(ModifiedAllocation
-                            .modified(copied))).allocateUntil(
-                    new LocalDate(getEndDate()));
+            List<HoursModification> hoursModified = strategy
+                    .getHoursModified(toBeModified);
+            ResourceAllocation.allocatingHours(hoursModified)
+                              .allocateUntil(new LocalDate(getEndDate()));
             break;
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
