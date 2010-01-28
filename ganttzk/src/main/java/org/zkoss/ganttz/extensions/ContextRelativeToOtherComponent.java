@@ -20,9 +20,12 @@
 
 package org.zkoss.ganttz.extensions;
 
+import java.util.List;
+
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Position;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.zk.ui.Component;
 
@@ -105,6 +108,11 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
     @Override
     public void reloadCharts() {
         context.reloadCharts();
+    }
+
+    @Override
+    public List<Task> getTasksOrderedByStartDate() {
+        return context.getTasksOrderedByStartDate();
     }
 
 }

@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.extensions;
 
+import java.util.List;
+
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Position;
@@ -108,6 +110,11 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
     @Override
     public void reloadCharts() {
         context.reloadCharts();
+    }
+
+    @Override
+    public List<Task> getTasksOrderedByStartDate() {
+        return context.getTasksOrderedByStartDate();
     }
 
 }

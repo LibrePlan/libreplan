@@ -23,6 +23,8 @@ package org.zkoss.ganttz;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -436,6 +438,19 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public List<Task> getTasksOrderedByStartDate() {
+        List<Task> tasks = diagramGraph.getTasks();
+        Collections.sort(tasks, new Comparator<Task>() {
+
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getBeginDate().compareTo(o2.getBeginDate());
+            }
+        });
+        return tasks;
     }
 
 }

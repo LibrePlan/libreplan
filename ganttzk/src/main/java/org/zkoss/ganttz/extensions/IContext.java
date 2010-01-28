@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.extensions;
 
+import java.util.List;
+
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
@@ -98,6 +100,8 @@ public interface IContext<T> {
     TimeTracker getTimeTracker();
 
     IDomainAndBeansMapper<T> getMapper();
+
+    public List<Task> getTasksOrderedByStartDate();
 
     /**
      * Recalculates the position of the task associated to domainObject.
