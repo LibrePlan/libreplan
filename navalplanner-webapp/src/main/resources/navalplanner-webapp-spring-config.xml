@@ -57,6 +57,7 @@
             <ref bean="reportAdvancesServiceREST"/>
             <ref bean="resourceHoursServiceREST"/>
             <ref bean="workReportServiceREST"/>
+            <ref bean="labelServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />
