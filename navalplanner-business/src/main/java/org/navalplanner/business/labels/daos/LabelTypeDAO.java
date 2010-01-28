@@ -96,4 +96,17 @@ public class LabelTypeDAO extends IntegrationEntityDAO<LabelType> implements
         return labelType;
     }
 
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameAnotherTransaction(LabelType labelType) {
+        return existsByName(labelType);
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public LabelType findUniqueByNameAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findUniqueByName(name);
+    }
+
 }

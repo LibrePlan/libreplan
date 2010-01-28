@@ -24,10 +24,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 
 /**
@@ -94,6 +97,48 @@ public class LabelType extends IntegrationEntity implements Comparable {
     @Override
     protected ILabelTypeDAO getIntegrationEntityDAO() {
         return Registry.getLabelTypeDAO();
+    }
+
+    @AssertTrue(message = "label names must be unique inside a label type")
+    public boolean checkConstraintNonRepeatedLabelNames() {
+        Set<String> labelNames = new HashSet<String>();
+
+        for (Label label : labels) {
+            if (!StringUtils.isBlank(label.getName())) {
+                if (labelNames.contains(label.getName().toLowerCase())) {
+                    return false;
+                } else {
+                    labelNames.add(label.getName().toLowerCase());
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @AssertTrue(message = "label type name is already being used")
+    public boolean checkConstraintUniqueLabelTypeName() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
+        ILabelTypeDAO labelTypeDAO = Registry.getLabelTypeDAO();
+
+        if (isNewObject()) {
+            return !labelTypeDAO.existsByNameAnotherTransaction(this);
+        } else {
+            try {
+                LabelType c = labelTypeDAO
+                        .findUniqueByNameAnotherTransaction(name);
+                return c.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
+        }
+    }
+
+    private boolean firstLevelValidationsPassed() {
+        return !StringUtils.isBlank(name);
     }
 
 }

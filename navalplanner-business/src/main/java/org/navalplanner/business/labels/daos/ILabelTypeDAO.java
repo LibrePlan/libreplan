@@ -41,4 +41,9 @@ public interface ILabelTypeDAO extends IIntegrationEntityDAO<LabelType> {
     LabelType findUniqueByName(String type) throws InstanceNotFoundException,
             NonUniqueResultException;
 
+    boolean existsByNameAnotherTransaction(LabelType labelType);
+
+    LabelType findUniqueByNameAnotherTransaction(String name)
+            throws InstanceNotFoundException;
+
 }
