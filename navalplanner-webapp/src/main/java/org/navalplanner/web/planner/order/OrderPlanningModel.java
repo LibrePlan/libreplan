@@ -36,6 +36,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -140,6 +142,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#AA80d5"; // Violet
     public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
 
+    private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
+
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -213,13 +217,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         //Check the write permissions to setup the save button
         ISaveCommand saveCommand = null;
-        if(SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             saveCommand = buildSaveCommand();
             configuration.addGlobalCommand(saveCommand);
         }
         else {
+            String loginName = SecurityUtils.getSessionUserLoginName();
             try {
-                User user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+                User user = userDAO.findByLoginName(loginName);
                 for(OrderAuthorization authorization :
                         orderAuthorizationDAO.listByOrderUserAndItsProfiles(order, user)) {
                     if(authorization.getAuthorizationType() ==
@@ -231,8 +236,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 }
             }
             catch(InstanceNotFoundException e) {
-                //this case shouldn't happen, because it would mean that there isn't a logged user
-                //anyway, if it happenned we continue, disabling the save button
+                LOG.warn("there isn't a logged user for:" + loginName, e);
+                // this case shouldn't happen, we continue anyway disabling the
+                // save button
             }
         }
 
