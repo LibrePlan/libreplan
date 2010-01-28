@@ -21,12 +21,30 @@ package org.navalplanner.web.planner.reassign;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContext;
 
 /**
@@ -39,6 +57,18 @@ public class ReassignCommand implements IReassignCommand {
 
     private PlanningState planningState;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     public interface IConfigurationResult {
         public void result(ReassignConfiguration configuration);
     }
@@ -50,18 +80,113 @@ public class ReassignCommand implements IReassignCommand {
     }
 
     @Override
-    public void doAction(IContext<TaskElement> context) {
+    public void doAction(final IContext<TaskElement> context) {
         ReassignController.openOn(context.getRelativeTo(),
                 new IConfigurationResult() {
                     @Override
-                    public void result(ReassignConfiguration configuration) {
-                        doReassignation(configuration);
+                    public void result(final ReassignConfiguration configuration) {
+                        transactionService
+                                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+
+                                    @Override
+                                    public Void execute() {
+                                        doReassignation(context, configuration);
+                                        return null;
+                                    }
+                                });
                     }
                 });
     }
 
-    private void doReassignation(ReassignConfiguration configuration) {
+    private static class WithAssociatedEntity {
+        static WithAssociatedEntity create(
+                IDomainAndBeansMapper<TaskElement> mapper, Task each) {
+            return new WithAssociatedEntity(mapper
+                    .findAssociatedDomainObject(each), each);
+        }
+
+        private TaskElement domainEntity;
+
+        private Task ganntTask;
+
+        WithAssociatedEntity(TaskElement domainEntity, Task ganntTask) {
+            Validate.notNull(domainEntity);
+            Validate.notNull(ganntTask);
+            this.domainEntity = domainEntity;
+            this.ganntTask = ganntTask;
+        }
+
+
+    }
+
+    private void doReassignation(IContext<TaskElement> context,
+            ReassignConfiguration configuration) {
         Validate.notNull(configuration);
+        planningState.reassociateResourcesWithSession(resourceDAO);
+        List<Task> taskToReassign = configuration.filterForReassignment(context
+                .getTasksOrderedByStartDate());
+        reassign(reattach(withEntities(context.getMapper(), taskToReassign)));
+    }
+
+    private List<WithAssociatedEntity> reattach(
+            List<WithAssociatedEntity> withEntities) {
+        Set<Long> idsOfTypesAlreadyAttached = new HashSet<Long>();
+        for (WithAssociatedEntity each : withEntities) {
+            taskElementDAO.reattach(each.domainEntity);
+            Set<ResourceAllocation<?>> resourceAllocations = each.domainEntity
+                    .getResourceAllocations();
+            List<GenericResourceAllocation> generic = ResourceAllocation
+                    .getOfType(GenericResourceAllocation.class,
+                            resourceAllocations);
+            reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
+                    idsOfTypesAlreadyAttached, generic);
+        }
+        return withEntities;
+    }
+
+    private void reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
+            Set<Long> idsOfTypesAlreadyAttached,
+            List<GenericResourceAllocation> generic) {
+        for (GenericResourceAllocation eachGenericAllocation : generic) {
+            Set<Criterion> criterions = eachGenericAllocation
+                    .getCriterions();
+            for (Criterion eachCriterion : criterions) {
+                CriterionType type = eachCriterion.getType();
+                if (!idsOfTypesAlreadyAttached.contains(type.getId())) {
+                    idsOfTypesAlreadyAttached.add(type.getId());
+                    criterionTypeDAO.reattachUnmodifiedEntity(type);
+                }
+            }
+        }
+    }
+
+    private List<WithAssociatedEntity> withEntities(
+            IDomainAndBeansMapper<TaskElement> mapper,
+            List<Task> forReassignment) {
+        List<WithAssociatedEntity> result = new ArrayList<WithAssociatedEntity>();
+        for (Task each : forReassignment) {
+            result.add(WithAssociatedEntity.create(mapper, each));
+        }
+        return result;
+    }
+
+    private void reassign(List<WithAssociatedEntity> list) {
+        for (WithAssociatedEntity each : list) {
+            reassign(each);
+        }
+    }
+
+    private void reassign(WithAssociatedEntity e) {
+        Date previousBeginDate = e.ganntTask.getBeginDate();
+        long previousLength = e.ganntTask.getLengthMilliseconds();
+        reassign(e.domainEntity);
+        e.ganntTask.fireChangesForPreviousValues(previousBeginDate,
+                previousLength);
+    }
+
+    private void reassign(TaskElement taskElement) {
+        org.navalplanner.business.planner.entities.Task t = (org.navalplanner.business.planner.entities.Task) taskElement;
+        t.reassignAllocationsWithNewResources(resourceDAO);
     }
 
     @Override
