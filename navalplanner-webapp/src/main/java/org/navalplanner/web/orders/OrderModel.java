@@ -634,7 +634,7 @@ public class OrderModel implements IOrderModel {
                 getHoursAdvancePercentage(order)).append("% \n");
 
         if (!getDescription(order).equals("")) {
-            result.append(" , " + _("Description" + ": ")
+            result.append(" , " + _("Description") + ": "
                     + getDescription(order)
                     + "\n");
         }

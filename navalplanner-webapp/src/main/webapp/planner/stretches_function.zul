@@ -60,7 +60,7 @@
 
     <vbox id="charts">
         <div visible="@{stretchesFunctionController.chartsDisabled}">
-            <n:h4>${i18n:_('Can\'t calculate charts for current data')}</n:h4>
+            <n:h4>${i18n:_('Cannot calculate charts for current data')}</n:h4>
         </div>
         <chart id="dedicationChart" title="${i18n:_('Dedication chart')}"
             type="time_series" threeD="false"

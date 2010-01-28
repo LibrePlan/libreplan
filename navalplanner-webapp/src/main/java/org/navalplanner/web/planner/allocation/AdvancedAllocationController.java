@@ -887,7 +887,7 @@ class Row {
 
         @Override
         protected String getTitle() {
-            return _("Streches list");
+            return _("Stretches list");
         }
 
         @Override
@@ -902,7 +902,7 @@ class Row {
 
         @Override
         public String getName() {
-            return _("Streches");
+            return _("Stretches");
         }
     };
 
@@ -910,7 +910,7 @@ class Row {
 
         @Override
         protected String getTitle() {
-            return _("Streches with Interpolation");
+            return _("Stretches with Interpolation");
         }
 
         @Override

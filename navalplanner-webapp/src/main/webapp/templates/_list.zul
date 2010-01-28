@@ -24,7 +24,7 @@
             <column label="${i18n:_('Type')}" sort="auto(type)" />
             <column label="${i18n:_('Code')}" sort="auto(code)" />
             <column label="${i18n:_('Name')}" sort="auto(name)" />
-            <column label="${i18n:_('Days from Beginning to Start')}"
+            <column label="${i18n:_('Delay from beginning (days)')}"
                 sort="auto(startAsDaysFromBeginning)" />
             <column label="${i18n:_('Days from Beginning to Deadline')}"
                 sort="auto(endAsDaysFromBeginning)" />

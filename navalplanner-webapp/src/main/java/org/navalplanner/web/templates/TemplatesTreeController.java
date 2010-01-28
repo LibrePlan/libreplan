@@ -221,7 +221,7 @@ public class TemplatesTreeController extends
                 tooltipText.append(". ");
             }
             if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
-                tooltipText.append(_(" Labels:"));
+                tooltipText.append(" " + _("Labels") + ":");
             tooltipText.append(StringUtils.join(elem.getLabels(), ","));
                 tooltipText.append(".");
             }

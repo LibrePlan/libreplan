@@ -127,7 +127,7 @@
                                     value="@{controller.order.materialsBudget}"
                                     onChange="controller.reloadTotalBudget(txtTotalBudget)" />
                                 <separator bar="false" spacing="15px" orient="vertical"/>
-                                <label value="${i18n:_(' Total :')}" />
+                                <label value=" ${i18n:_('Total')} :" />
                                 <label id="txtTotalBudget" value="@{controller.order.totalBudget}"/>
                             </hbox>
                         </row>

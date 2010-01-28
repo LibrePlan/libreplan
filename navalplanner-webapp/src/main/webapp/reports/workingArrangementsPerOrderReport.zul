@@ -38,7 +38,7 @@
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.reports.WorkingArrangementsPerOrderController"
-        title="${i18n:_('Working arrangements')}"
+        title="${i18n:_('Task scheduling status for an order')}"
         border="normal" >
 
         <!-- Select orders -->

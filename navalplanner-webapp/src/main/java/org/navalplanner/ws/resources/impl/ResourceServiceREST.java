@@ -158,7 +158,7 @@ public class ResourceServiceREST implements IResourceService {
                 StringUtils.trim(w.nif);
         } else {
             throw new RuntimeException(
-                _("Service does not manages resource of type: {0}",
+                _("Service does not manage resource of type: {0}",
                     resourceDTO.getClass().getName()));
         }
 
@@ -174,7 +174,7 @@ public class ResourceServiceREST implements IResourceService {
                 "worker being imported");
         } else {
             throw new RuntimeException(
-                 _("Service does not manages resource of type: {0}",
+                 _("Service does not manage resource of type: {0}",
                     resourceDTO.getClass().getName()));
         }
 

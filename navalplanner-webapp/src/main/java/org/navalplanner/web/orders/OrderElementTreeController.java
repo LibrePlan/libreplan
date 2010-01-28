@@ -497,7 +497,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             tooltipText.append(". ");
         }
         if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
-            tooltipText.append(_(" Labels:"));
+            tooltipText.append(" " + _("Labels") + ":");
             tooltipText.append(StringUtils.join(getLabels(), ","));
             tooltipText.append(".");
         }
@@ -507,13 +507,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             for(CriterionRequirement each:elem.getCriterionRequirements()) {
                 criterionNames.add(each.getCriterion().getName());
             }
-            tooltipText.append(_(" Criteria:"));
+            tooltipText.append(" " + _("Criteria") + ":");
             tooltipText.append(StringUtils.join(criterionNames, ","));
             tooltipText.append(".");
         }
         // To calculate other unit advances implement
         // getOtherAdvancesPercentage()
-        tooltipText.append(_(" Advance:") + elem.getAdvancePercentage());
+        tooltipText.append(" " + _("Advance") + ":" + elem.getAdvancePercentage());
         tooltipText.append(".");
 
         // tooltipText.append(elem.getAdvancePercentage());

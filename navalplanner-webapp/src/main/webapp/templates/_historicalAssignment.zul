@@ -26,7 +26,7 @@
     <!-- Order element historic assignment to templates-->
     <vbox>
         <vbox id="messagesContainerHistoricAssignment" />
-        <panel title="${i18n:_('Historical list Assignment')}" border="normal">
+        <panel title="${i18n:_('Assignment log')}" border="normal">
             <panelchildren>
                 <grid height="200px" fixedLayout="true"
                     model="@{historicalAssignment.orderElementsWithThisAssignedTemplate}">

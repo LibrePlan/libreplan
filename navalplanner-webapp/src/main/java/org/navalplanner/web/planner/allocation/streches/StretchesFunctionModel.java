@@ -136,17 +136,17 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             }
             if (!stretchesFunction.ifInterpolatedMustHaveAtLeastTwoStreches()) {
                 throw new ValidationException(
-                        _("For interpolation at least two streches needed"));
+                        _("For interpolation at least two stretches are needed"));
             }
             if (stretchesFunction.getDesiredType() == Type.INTERPOLATED) {
                 if (!atLeastTwoStreches(getStretches())) {
                     throw new ValidationException(
-                            _("There must be at least 2 streches for doing interpolation"));
+                            _("There must be at least 2 stretches for doing interpolation"));
                 }
                 if (!theFirstIntervalIsPosteriorToFirstDay(getStretches(),
                         getTaskStartDate())) {
                     throw new ValidationException(
-                            _("The first strech must be after the first day for doing interpolation"));
+                            _("The first stretch must be after the first day for doing interpolation"));
                 }
             }
             if (originalStretchesFunction != null) {

@@ -56,7 +56,7 @@
                     <tab label="${i18n:_('Labels')}" />
                     <tab label="${i18n:_('Materials')}" />
                     <tab label="${i18n:_('Quality Forms')}" />
-                    <tab label="${i18n:_('Historical assignment')}" />
+                    <tab label="${i18n:_('Assignment log')}" />
                     <tab label="${i18n:_('Historical statistics')}" />
                 </tabs>
                 <tabpanels>
@@ -78,7 +78,7 @@
                                     </hbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Days from Beginning to Start')}" />
+                                    <label value="${i18n:_('Delay from beginning (days)')}" />
                                     <intbox
                                         value="@{templateController.template.startAsDaysFromBeginning}" constraint="no negative"/>
                                 </row>

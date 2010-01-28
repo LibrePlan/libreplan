@@ -63,7 +63,7 @@
                              <datebox id="startingDate" constraint = "@{controller.checkConstraintStartingDate}"/>
                          </row>
                          <row>
-                             <label value="${i18n:_('Work done untill ending date:')}" />
+                             <label value="${i18n:_('Work done until ending date:')}" />
                              <datebox id="endingDate" constraint = "@{controller.checkConstraintEndingDate}"/>
                          </row>
                      </rows>

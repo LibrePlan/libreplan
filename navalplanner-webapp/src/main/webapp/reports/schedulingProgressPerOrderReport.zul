@@ -52,17 +52,17 @@
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Starting date:')}" />
+                             <label value="${i18n:_('Starting date')}:" />
                              <datebox id="startingDate"
                                      onChange="controller.checkCannotBeHigher(startingDate, endingDate)"/>
                          </row>
                          <row>
-                             <label value="${i18n:_('Ending date:')}" />
+                             <label value="${i18n:_('Ending date')}:" />
                              <datebox id="endingDate"
                                      onChange="controller.checkCannotBeHigher(startingDate, endingDate)"/>
                          </row>
                          <row>
-                             <label value="${i18n:_('Reference date:')}" />
+                             <label value="${i18n:_('Reference date')}:" />
                              <datebox id="referenceDate" />
                          </row>
                      </rows>
@@ -81,7 +81,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Advance type:')}" />
+                            <label value="${i18n:_('Advance type')}:" />
                             <listbox id="lbAdvanceType"
                                     model="@{controller.advanceTypeDTOs}"
                                     mold="select"
@@ -128,7 +128,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format:')}" />
+                            <label value="${i18n:_('Output format')}:" />
                             <combobox_output_format id="outputFormat" />
                         </row>
                     </rows>
