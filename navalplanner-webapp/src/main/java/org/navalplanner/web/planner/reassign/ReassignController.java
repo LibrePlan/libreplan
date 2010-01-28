@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
+import org.joda.time.LocalDate;
+import org.navalplanner.web.planner.reassign.ReassignCommand.IConfigurationResult;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -105,12 +107,13 @@ public class ReassignController extends GenericForwardComposer {
 
     }
 
-    public static void openOn(org.zkoss.zk.ui.Component component) {
+    public static void openOn(org.zkoss.zk.ui.Component component,
+            IConfigurationResult configurationResult) {
         Window result = (Window) Executions.createComponents(
                 "/planner/reassign.zul", component, Collections.emptyMap());
         ReassignController controller = (ReassignController) result
                 .getAttribute("controller");
-        controller.showWindow();
+        controller.showWindow(configurationResult);
     }
 
     private Window window;
@@ -123,7 +126,10 @@ public class ReassignController extends GenericForwardComposer {
 
     private Type currentType = Type.ALL;
 
-    private void showWindow() {
+    private IConfigurationResult configurationResult;
+
+    private void showWindow(IConfigurationResult configurationResult) {
+        this.configurationResult = configurationResult;
         try {
             window.setMode("modal");
         } catch (InterruptedException e) {
@@ -192,6 +198,11 @@ public class ReassignController extends GenericForwardComposer {
             }
         }
         window.setVisible(false);
+        LocalDate associatedDate = this.associatedDate.getValue() != null ? LocalDate
+                .fromDateFields(this.associatedDate.getValue())
+                : null;
+        configurationResult.result(ReassignConfiguration
+                .create(currentType, associatedDate));
     }
 
     public void cancel() {

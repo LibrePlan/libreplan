@@ -21,6 +21,7 @@ package org.navalplanner.web.planner.reassign;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -35,9 +36,23 @@ import org.zkoss.ganttz.extensions.IContext;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReassignCommand implements IReassignCommand {
 
+    public interface IConfigurationResult {
+        public void result(ReassignConfiguration configuration);
+    }
+
     @Override
     public void doAction(IContext<TaskElement> context) {
-        ReassignController.openOn(context.getRelativeTo());
+        ReassignController.openOn(context.getRelativeTo(),
+                new IConfigurationResult() {
+                    @Override
+                    public void result(ReassignConfiguration configuration) {
+                        doReassignation(configuration);
+                    }
+                });
+    }
+
+    private void doReassignation(ReassignConfiguration configuration) {
+        Validate.notNull(configuration);
     }
 
     @Override
