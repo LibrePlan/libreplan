@@ -295,11 +295,13 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public boolean isResizingTasksEnabled() {
-        return disabilityConfiguration.isResizingTasksEnabled();
+        return disabilityConfiguration.isResizingTasksEnabled()
+                && !task.isSubcontracted();
     }
 
     public boolean isMovingTasksEnabled() {
-        return disabilityConfiguration.isMovingTasksEnabled();
+        return disabilityConfiguration.isMovingTasksEnabled()
+                && !task.isSubcontracted();
     }
 
     void doUpdatePosition(String leftX, String topY) {
