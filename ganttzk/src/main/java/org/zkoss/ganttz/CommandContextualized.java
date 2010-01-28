@@ -20,6 +20,7 @@
 
 package org.zkoss.ganttz;
 
+import org.apache.commons.lang.StringUtils;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zk.ui.event.Event;
@@ -49,7 +50,7 @@ class CommandContextualized<T> {
 
     Button toButton() {
         Button result = new Button();
-        if ("".equals(command.getImage())) {
+        if (StringUtils.isEmpty(command.getImage())) {
             result.setLabel(command.getName());
         } else {
             result.setImage(command.getImage());
