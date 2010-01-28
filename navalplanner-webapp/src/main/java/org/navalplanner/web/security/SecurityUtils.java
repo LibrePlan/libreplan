@@ -20,9 +20,12 @@
 
 package org.navalplanner.web.security;
 
+import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.zkoss.zk.ui.Executions;
 
 /**
@@ -42,7 +45,11 @@ public final class SecurityUtils {
     public final static String getSessionUserLoginName() {
         HttpServletRequest request = (HttpServletRequest)Executions
             .getCurrent().getNativeRequest();
-        return request.getUserPrincipal().getName();
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) {
+            return MandatoryUser.USER.getLoginName();
+        }
+        return principal.getName();
     }
 
 }
