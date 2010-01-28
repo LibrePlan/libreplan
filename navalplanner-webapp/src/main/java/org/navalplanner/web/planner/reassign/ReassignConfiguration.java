@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.web.planner.reassign.ReassignController.Type;
 import org.zkoss.ganttz.data.Task;
 
 /**
@@ -38,11 +37,11 @@ public class ReassignConfiguration {
         return new ReassignConfiguration(type, date);
     }
 
-    private ReassignController.Type type;
+    private Type type;
 
     private LocalDate date;
 
-    private ReassignConfiguration(ReassignController.Type type, LocalDate date) {
+    private ReassignConfiguration(Type type, LocalDate date) {
         this.type = type;
         Validate.isTrue(!type.needsAssociatedDate() || date != null);
         this.date = date == null ? new LocalDate() : date;
@@ -69,3 +68,4 @@ public class ReassignConfiguration {
     }
 
 }
+

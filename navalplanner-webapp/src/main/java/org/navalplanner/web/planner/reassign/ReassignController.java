@@ -52,61 +52,6 @@ import org.zkoss.zul.Window;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReassignController extends GenericForwardComposer {
 
-    public enum Type {
-        ALL {
-
-            @Override
-            public String getName() {
-                return _("All");
-            }
-
-            @Override
-            public boolean needsAssociatedDate() {
-                return false;
-            }
-        },
-        FROM_TODAY {
-
-            @Override
-            public String getName() {
-                return _("From Today");
-            }
-
-            @Override
-            public boolean needsAssociatedDate() {
-                return false;
-            }
-        },
-        FROM_CHOOSEN {
-
-            @Override
-            public String getName() {
-                return _("From Choosen");
-            }
-
-            @Override
-            public boolean needsAssociatedDate() {
-                return true;
-            }
-        };
-
-        public static Type fromRadio(Radio selectedItem) {
-            return Type.valueOf(selectedItem.getValue());
-        }
-
-        public Radio createRadio() {
-            Radio result = new Radio();
-            result.setLabel(getName());
-            result.setValue(this.toString());
-            return result;
-        }
-
-        public abstract String getName();
-
-        public abstract boolean needsAssociatedDate();
-
-    }
-
     public static void openOn(org.zkoss.zk.ui.Component component,
             IConfigurationResult configurationResult) {
         Window result = (Window) Executions.createComponents(
