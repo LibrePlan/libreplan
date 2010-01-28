@@ -27,7 +27,9 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -36,7 +38,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
  * @author Diego Pino Garcia<dpino@igalia.com>
  *
  */
-public class Label extends BaseEntity {
+public class Label extends IntegrationEntity {
 
     @NotEmpty(message = "name not specified")
     private String name;
@@ -102,6 +104,11 @@ public class Label extends BaseEntity {
 
     public String toString() {
         return name;
+    }
+
+    @Override
+    protected ILabelDAO getIntegrationEntityDAO() {
+        return Registry.getLabelDAO();
     }
 
 }

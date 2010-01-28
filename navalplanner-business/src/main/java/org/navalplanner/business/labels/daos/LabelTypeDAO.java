@@ -26,7 +26,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -42,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class LabelTypeDAO extends GenericDAOHibernate<LabelType, Long> implements
+public class LabelTypeDAO extends IntegrationEntityDAO<LabelType> implements
         ILabelTypeDAO {
 
     @Override

@@ -26,7 +26,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotEmpty;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 
 /**
  * LabeType entity
@@ -34,7 +36,7 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Diego Pino Garcia<dpino@igalia.com>
  *
  */
-public class LabelType extends BaseEntity implements Comparable {
+public class LabelType extends IntegrationEntity implements Comparable {
 
     @NotEmpty(message = "name not specified")
     private String name;
@@ -82,5 +84,10 @@ public class LabelType extends BaseEntity implements Comparable {
             return getName().compareTo(((LabelType) arg0).getName());
         }
         return -1;
+    }
+
+    @Override
+    protected ILabelTypeDAO getIntegrationEntityDAO() {
+        return Registry.getLabelTypeDAO();
     }
 }

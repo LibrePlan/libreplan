@@ -22,14 +22,14 @@ package org.navalplanner.business.labels.daos;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface ILabelDAO extends IGenericDAO<Label, Long> {
+public interface ILabelDAO extends IIntegrationEntityDAO<Label> {
 
     List<Label> getAll();
 

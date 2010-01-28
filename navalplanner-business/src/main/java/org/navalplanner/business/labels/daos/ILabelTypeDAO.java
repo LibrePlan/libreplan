@@ -23,14 +23,14 @@ package org.navalplanner.business.labels.daos;
 import java.util.List;
 
 import org.hibernate.NonUniqueResultException;
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.LabelType;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface ILabelTypeDAO extends IGenericDAO<LabelType, Long> {
+public interface ILabelTypeDAO extends IIntegrationEntityDAO<LabelType> {
 
     List<LabelType> getAll();
 

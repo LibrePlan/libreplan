@@ -11,6 +11,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
+    <property name="code" access="property" not-null="true" unique="true"/>
 	<properties name="nameAndType" unique="true">
 		<property name="name" />
 		<many-to-one name="type" class="LabelType" column="LABEL_TYPE_ID" />
@@ -31,6 +32,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
+    <property name="code" access="property" not-null="true" unique="true"/>
     <property name="name" unique="true"/>
 
     <set name="labels" inverse="false" cascade="all">

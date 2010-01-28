@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -38,8 +38,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class LabelDAO extends GenericDAOHibernate<Label, Long> implements
-        ILabelDAO {
+public class LabelDAO extends IntegrationEntityDAO<Label> implements ILabelDAO {
 
     @Override
     public List<Label> getAll() {
