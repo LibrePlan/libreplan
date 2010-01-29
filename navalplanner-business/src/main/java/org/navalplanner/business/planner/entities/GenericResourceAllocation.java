@@ -35,6 +35,7 @@ import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.planner.entities.HoursDistributor.ResourceWithAssignedHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -255,6 +256,11 @@ public class GenericResourceAllocation extends
             ResourcesPerDay resourcesPerDay) {
         return ResourcesPerDayModification.create(this, resourcesPerDay,
                 getAssociatedResources());
+    }
+
+    @Override
+    public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
+        return resourceDAO.findAllSatisfyingCriterions(getCriterions());
     }
 
 }

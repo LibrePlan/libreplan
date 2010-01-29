@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.entities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -221,6 +223,11 @@ public class SpecificResourceAllocation extends
     public ResourcesPerDayModification withDesiredResourcesPerDay(
             ResourcesPerDay resourcesPerDay) {
         return ResourcesPerDayModification.create(this, resourcesPerDay);
+    }
+
+    @Override
+    public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
+        return Collections.singletonList(resource);
     }
 
 }

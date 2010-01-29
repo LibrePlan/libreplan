@@ -44,6 +44,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Allocator
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
@@ -707,5 +708,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public boolean hasAssignments() {
         return !getAssignments().isEmpty();
     }
+
+    /**
+     * Do a query to recover a list of resources that are suitable for this
+     * allocation. For a {@link SpecificResourceAllocation} returns the current
+     * resource. For a {@link GenericResourceAllocation} returns the resources
+     * that currently match this allocation criterions
+     * @return a list of resources that are proper for this allocation
+     */
+    public abstract List<Resource> querySuitableResources(IResourceDAO resourceDAO);
 
 }
