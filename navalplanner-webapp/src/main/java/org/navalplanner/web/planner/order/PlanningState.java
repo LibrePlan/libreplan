@@ -64,7 +64,7 @@ public class PlanningState {
 
     public void reassociateResourcesWithSession(IResourceDAO resourceDAO) {
         for (Resource resource : resources) {
-            resourceDAO.save(resource);
+            resourceDAO.reattach(resource);
         }
         addingNewlyCreated(resourceDAO);
     }
