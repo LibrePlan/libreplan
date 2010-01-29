@@ -185,24 +185,28 @@ public class OrderPredicate implements IPredicate {
     private boolean acceptFiltersDates(Order order) {
         // Check if exist work report items into interval between the start date
         // and finish date.
-        if (isInTheRangeFilterDates(order.getInitDate())
-                && isInTheRangeFilterDates(order.getDeadline())) {
+        return (acceptStartDate(order.getInitDate()) && (acceptFinishDate(order
+                .getDeadline())));
+    }
+
+    private boolean acceptStartDate(Date initDate) {
+        if ((initDate == null) && (startDate == null)) {
             return true;
         }
-        return false;
+        return isInTheRangeFilterDates(initDate);
+    }
+
+    private boolean acceptFinishDate(Date deadLine) {
+        if ((deadLine == null) && (finishDate == null)) {
+            return true;
+        }
+        return isInTheRangeFilterDates(deadLine);
     }
 
     private boolean isInTheRangeFilterDates(Date date) {
         // Check if date is into interval between the startdate and finish date
         return (isGreaterToStartDate(date, startDate) && isLowerToFinishDate(
                 date, finishDate));
-    }
-
-    private boolean isInTheRangeWorkReportDates(Date date,
-            Order order) {
-        // Check if date is into interval between the startdate and finish date
-        return (isGreaterToStartDate(date, order.getInitDate()) && isLowerToFinishDate(
-                date, order.getDeadline()));
     }
 
     private boolean isGreaterToStartDate(Date date, Date startDate) {
