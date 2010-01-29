@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -43,12 +44,17 @@ public abstract class AllocationModification {
 
     private final ResourceAllocation<?> beingModified;
 
-    private final List<Resource> resourcesOnWhichApplyAllocation;
+    private List<Resource> resourcesOnWhichApplyAllocation;
 
     protected AllocationModification(ResourceAllocation<?> beingModified, Collection<? extends Resource> resources) {
         this.beingModified = beingModified;
         this.resourcesOnWhichApplyAllocation = Collections
                 .unmodifiableList(new ArrayList<Resource>(resources));
+    }
+
+    protected void withNewResources(IResourceDAO resourceDAO) {
+        resourcesOnWhichApplyAllocation = beingModified
+                .querySuitableResources(resourceDAO);
     }
 
     public ResourceAllocation<?> getBeingModified() {

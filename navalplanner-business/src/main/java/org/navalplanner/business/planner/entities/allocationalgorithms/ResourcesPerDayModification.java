@@ -32,6 +32,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 
 public abstract class ResourcesPerDayModification extends
@@ -107,6 +108,15 @@ public abstract class ResourcesPerDayModification extends
                 resourcesPerDay, resources);
     }
 
+    public static List<ResourcesPerDayModification> withNewResources(
+            List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
+        List<ResourcesPerDayModification> result = fromExistent(allocations);
+        for (ResourcesPerDayModification each : result) {
+            each.withNewResources(resourceDAO);
+        }
+        return result;
+    }
+
     public static ResourcesPerDayModification create(
             SpecificResourceAllocation resourceAllocation,
             ResourcesPerDay resourcesPerDay) {
@@ -148,5 +158,7 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract List<DayAssignment> createAssignmentsAtDay(LocalDate day,
             int limit);
+
+
 
 }

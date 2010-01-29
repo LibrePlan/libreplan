@@ -29,6 +29,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -89,6 +90,15 @@ public abstract class HoursModification extends AllocationModification {
         List<HoursModification> result = new ArrayList<HoursModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             result.add(resourceAllocation.asHoursModification());
+        }
+        return result;
+    }
+
+    public static List<HoursModification> withNewResources(
+            List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
+        List<HoursModification> result = fromExistent(allocations);
+        for (HoursModification each : result) {
+            each.withNewResources(resourceDAO);
         }
         return result;
     }

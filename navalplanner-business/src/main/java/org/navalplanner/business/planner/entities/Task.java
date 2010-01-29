@@ -43,6 +43,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -352,9 +353,35 @@ public class Task extends TaskElement {
 
     }
 
+    private static class WithAnotherResources extends
+            AllocationModificationStrategy {
+        private final IResourceDAO resourceDAO;
+
+        WithAnotherResources(IResourceDAO resourceDAO) {
+            this.resourceDAO = resourceDAO;
+        }
+
+        @Override
+        public List<HoursModification> getHoursModified(
+                List<ResourceAllocation<?>> allocations) {
+            return HoursModification.withNewResources(allocations, resourceDAO);
+        }
+
+        @Override
+        public List<ResourcesPerDayModification> getResourcesPerDayModified(
+                List<ResourceAllocation<?>> allocations) {
+            return ResourcesPerDayModification.withNewResources(allocations,
+                    resourceDAO);
+        }
+    }
+
     @Override
     protected void moveAllocations() {
         reassign(new WithTheSameHoursAndResourcesPerDay());
+    }
+
+    public void reassignAllocationsWithNewResources(IResourceDAO resourceDAO) {
+        reassign(new WithAnotherResources(resourceDAO));
     }
 
     private void reassign(AllocationModificationStrategy strategy) {
