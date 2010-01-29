@@ -96,8 +96,9 @@ public class WorkingArrangementsPerOrderModel implements
             new ArrayList<WorkingArrangementPerOrderDTO>();
 
         final List<Task> tasks = orderDAO.getTasksByOrder(order);
+        final List<Task> sortTasks = sortTasks(order, tasks);
         final Date deadLineOrder = order.getDeadline();
-        for (Task each : tasks) {
+        for (Task each : sortTasks) {
             final Task task = (Task) each;
             // If taskStatus is ALL, add task and calculate its real status
             if (TaskStatusEnum.ALL.equals(taskStatus)) {
@@ -117,6 +118,28 @@ public class WorkingArrangementsPerOrderModel implements
             }
         }
         return new JRBeanCollectionDataSource(workingArrangementPerOrderList);
+    }
+
+    private List<Task> sortTasks(Order order, List<Task> tasks) {
+        List<Task> sortTasks = new ArrayList<Task>();
+        final List<OrderElement> orderElements = order.getAllChildren();
+        for (OrderElement orderElement : orderElements) {
+            Task task = findOrderElementInTasks(orderElement, tasks);
+            if (task != null) {
+                sortTasks.add(task);
+            }
+        }
+        return sortTasks;
+    }
+
+    private Task findOrderElementInTasks(OrderElement orderElement,
+            List<Task> tasks) {
+        for (Task task : tasks) {
+            if (task.getOrderElement().getId().equals(orderElement.getId())) {
+                return task;
+            }
+        }
+        return null;
     }
 
     /**

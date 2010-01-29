@@ -500,8 +500,9 @@ public abstract class OrderElement extends BaseEntity implements
 
     public List<OrderElement> getAllChildren() {
         List<OrderElement> children = getChildren();
-        List<OrderElement> result = new ArrayList<OrderElement>(children);
+        List<OrderElement> result = new ArrayList<OrderElement>();
         for (OrderElement orderElement : children) {
+            result.add(orderElement);
             result.addAll(orderElement.getAllChildren());
         }
         return result;
