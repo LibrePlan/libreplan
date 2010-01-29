@@ -94,6 +94,7 @@ public class ReassignCommand implements IReassignCommand {
                                         return null;
                                     }
                                 });
+                        context.reloadCharts();
                     }
                 });
     }
