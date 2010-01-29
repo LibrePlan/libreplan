@@ -191,6 +191,7 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
+
         User user;
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
@@ -200,6 +201,7 @@ public class OrderModel implements IOrderModel {
             //anyway, if it happenned we return an empty list
             return new ArrayList<Order>();
         }
+        getLabelsOnConversation().reattachLabels();
         List<Order> orders = orderDAO.getOrdersByReadAuthorization(user);
         initializeOrders(orders);
         return orders;
@@ -686,8 +688,10 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getFilterOrders(OrderPredicate predicate) {
+        reattachLabels();
         List<Order> filterOrderList = new ArrayList<Order>();
         for (Order order : orderList) {
+            orderDAO.reattach(order);
             if (predicate.accepts(order)) {
                 filterOrderList.add(order);
             }
