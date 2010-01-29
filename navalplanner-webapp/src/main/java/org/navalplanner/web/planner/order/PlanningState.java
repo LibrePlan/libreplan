@@ -32,6 +32,7 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 
 public class PlanningState {
     private final ArrayList<TaskElement> initial;
@@ -51,7 +52,7 @@ public class PlanningState {
         this.initial = new ArrayList<TaskElement>(initialState);
         this.toSave = new HashSet<TaskElement>(initialState);
         this.toRemove = new HashSet<TaskElement>();
-        this.resources = new HashSet<Resource>(initialResources);
+        this.resources = doReattachments(new HashSet<Resource>(initialResources));
     }
 
     public Collection<? extends TaskElement> getTasksToSave() {
@@ -70,7 +71,29 @@ public class PlanningState {
     }
 
     private void addingNewlyCreated(IResourceDAO resourceDAO) {
-        resources.addAll(resourceDAO.list(Resource.class));
+        Set<Resource> newResources = getNewResources(resourceDAO);
+        doReattachments(newResources);
+        resources.addAll(newResources);
+    }
+
+    private <T extends Collection<Resource>> T doReattachments(T result) {
+        for (Resource each : result) {
+            reattachCalendarFor(each);
+        }
+        return result;
+    }
+
+    private void reattachCalendarFor(Resource each) {
+        if (each.getCalendar() != null) {
+            BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+        }
+    }
+
+    private Set<Resource> getNewResources(IResourceDAO resourceDAO) {
+        Set<Resource> result = new HashSet<Resource>(resourceDAO
+                .list(Resource.class));
+        result.removeAll(resources);
+        return result;
     }
 
     public Collection<? extends TaskElement> getToRemove() {
