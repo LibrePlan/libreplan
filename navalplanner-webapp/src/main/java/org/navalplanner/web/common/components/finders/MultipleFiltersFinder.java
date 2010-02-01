@@ -169,7 +169,7 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
     public List<FilterPair> getFirstTenFilters() {
         listMatching.clear();
         fillWithFirstTenFiltersLabels();
-        fillWithFirstTenFiltersLabels();
+        fillWithFirstTenFiltersCriterions();
         fillWithFirstTenFiltersCustomer();
         fillWithFirstTenFiltersState();
         fillWihtFirstTenFiltersCodes();
@@ -186,9 +186,7 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
             for (int i = 0; listMatching.size() < 10
                     && i < mapLabels.get(type).size(); i++) {
                 Label label = mapLabels.get(type).get(i);
-                String pattern = type.getName() + " :: " + label.getName();
-                listMatching.add(new FilterPair(OrderFilterEnum.Label, pattern,
-                        label));
+                addLabel(type, label);
             }
         }
         return listMatching;
@@ -202,9 +200,7 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
             for (int i = 0; listMatching.size() < 10
                     && i < mapCriterions.get(type).size(); i++) {
                 Criterion criterion = mapCriterions.get(type).get(i);
-                String pattern = type.getName() + " :: " + criterion.getName();
-                listMatching.add(new FilterPair(OrderFilterEnum.Criterion,
-                        pattern, criterion));
+                addCriterion(type, criterion);
             }
         }
         return listMatching;
