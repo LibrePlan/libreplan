@@ -139,12 +139,7 @@ public class CompanyPlanningController implements Composer{
     }
 
     public void onApplyFilter() {
-        OrderPredicate predicate = createPredicate();
-        if (predicate != null) {
-            filterByPredicate(predicate);
-        } else {
-            showAllOrders();
-        }
+        filterByPredicate(createPredicate());
     }
 
     private OrderPredicate createPredicate() {
@@ -164,11 +159,7 @@ public class CompanyPlanningController implements Composer{
     private void filterByPredicate(OrderPredicate predicate) {
         // Recalculate predicate
         model.setConfigurationToPlanner(planner, additional,
-                doubleClickCommand, createPredicate());
-        planner.invalidate();
-    }
-
-    public void showAllOrders() {
+                doubleClickCommand, predicate);
         planner.invalidate();
     }
 
