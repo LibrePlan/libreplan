@@ -122,4 +122,10 @@ public class AdHocTransactionService implements IAdHocTransactionService {
         return onTransaction.execute();
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public <T> T runOnAnotherReadOnlyTransaction(IOnTransaction<T> onTransaction) {
+        return onTransaction.execute();
+    }
+
 }

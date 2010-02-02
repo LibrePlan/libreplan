@@ -29,4 +29,6 @@ public interface IAdHocTransactionService {
 
     public <T> T runOnAnotherTransaction(IOnTransaction<T> onTransaction);
 
+    public <T> T runOnAnotherReadOnlyTransaction(IOnTransaction<T> onTransaction);
+
 }

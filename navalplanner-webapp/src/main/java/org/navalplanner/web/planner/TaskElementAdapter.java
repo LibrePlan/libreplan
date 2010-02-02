@@ -361,7 +361,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         public String getResourcesText() {
             try {
                 return transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<String>() {
+                        .runOnAnotherReadOnlyTransaction(new IOnTransaction<String>() {
 
                             @Override
                             public String execute() {
