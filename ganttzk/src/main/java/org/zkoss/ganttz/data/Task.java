@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
@@ -145,7 +146,14 @@ public abstract class Task implements ITaskFundamentalProperties {
         fundamentalPropertiesListeners.firePropertyChange("beginDate",
                 previousValue, fundamentalProperties.getBeginDate());
         fireLengthMilliseconds(oldLength);
+        reloadResourcesTextIfChange(beginDate, previousValue);
         return fundamentalProperties.getLengthMilliseconds();
+    }
+
+    private void reloadResourcesTextIfChange(Date newDate, Date previousDate) {
+        if (!ObjectUtils.equals(newDate, previousDate)) {
+            reloadResourcesText();
+        }
     }
 
     public void fireChangesForPreviousValues(Date previousStart,
@@ -267,6 +275,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         long previousLength = getLengthMilliseconds();
         fundamentalProperties.moveTo(date);
         fireChangesForPreviousValues(previousStart, previousLength);
+        reloadResourcesTextIfChange(date, previousStart);
+        reloadResourcesText();
     }
 
     @Override
