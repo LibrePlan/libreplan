@@ -183,6 +183,7 @@ public class ReassignCommand implements IReassignCommand {
         reassign(e.domainEntity);
         e.ganntTask.fireChangesForPreviousValues(previousBeginDate,
                 previousLength);
+        e.ganntTask.reloadResourcesText();
     }
 
     private void reassign(TaskElement taskElement) {
