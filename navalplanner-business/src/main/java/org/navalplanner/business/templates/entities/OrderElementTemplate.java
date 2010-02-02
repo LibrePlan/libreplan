@@ -400,4 +400,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public Set<AdvanceAssignmentTemplate> getAdvanceAssignmentTemplates() {
         return Collections.unmodifiableSet(advanceAssignmentTemplates);
     }
+
+    public boolean isRoot() {
+        return getParent() == null;
+    }
 }

@@ -52,7 +52,7 @@ public class TemplatesEligibleForSubElement extends
                 .list(OrderElementTemplate.class);
         List<OrderElementTemplate> result = new ArrayList<OrderElementTemplate>();
         for (OrderElementTemplate each : all) {
-            if ((!(each instanceof OrderTemplate))) {
+            if (!(each instanceof OrderTemplate) && each.isRoot()) {
                 result.add(each);
             }
         }
