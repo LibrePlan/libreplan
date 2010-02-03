@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-28 11:13+0100\n"
-"PO-Revision-Date: 2010-01-28 11:45+0100\n"
+"POT-Creation-Date: 2010-02-03 13:36+0100\n"
+"PO-Revision-Date: 2010-02-03 13:57+0100\n"
 "Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
-msgid "Show all labels"
-msgstr "Mostrar todas las etiquetas"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:11
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:21
 msgid "Zoom level"
 msgstr "Nivel de zoom"
 
@@ -34,14 +30,6 @@ msgstr "Borrar"
 msgid "0% - 100%"
 msgstr "0% - 100%"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:17
-msgid "Filter"
-msgstr "Filtro"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:33
-msgid "Critical path"
-msgstr "Camino crítico"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:30
 msgid "Year"
 msgstr "Año"
@@ -49,6 +37,10 @@ msgstr "Año"
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:46
 msgid "Month"
 msgstr "Mes"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:34
+msgid "Show/Hide resources"
+msgstr "Mostrar/ocultar recursos"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:206
 msgid "Set End-Start"
@@ -66,10 +58,6 @@ msgstr "reduciendo zoom"
 msgid "Hide critical path"
 msgstr "Ocultar camino crítico"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:39
-msgid "Show all resources"
-msgstr "Mostrar todos los recursos"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:116
 msgid "+ 100%"
 msgstr "+ 100%"
@@ -78,11 +66,19 @@ msgstr "+ 100%"
 msgid "Day"
 msgstr "Día"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:28
+msgid "Show/Hide Critical path"
+msgstr "Mostrar/ocultar camino crítico"
+
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:111
 msgid "100%"
 msgstr "100%"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:42
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:31
+msgid "Show/Hide labels"
+msgstr "Mostrar/ocultar etiquetas"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:17
 msgid "Print"
 msgstr "Imprimir"
 
@@ -110,9 +106,19 @@ msgstr "cambiando zoom"
 msgid "Quarter"
 msgstr "Cuarto"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:14
+msgid "Refresh"
+msgstr "Actualizar"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:404
 msgid "Show critical path"
 msgstr "Mostrar camino crítico"
+
+#~ msgid "Filter"
+#~ msgstr "Filtro"
+
+#~ msgid "Critical path"
+#~ msgstr "Camino crítico"
 
 #~ msgid "Zoom increase"
 #~ msgstr "Aumentar zoom"
