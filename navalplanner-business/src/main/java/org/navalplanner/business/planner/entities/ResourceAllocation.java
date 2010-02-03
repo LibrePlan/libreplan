@@ -448,6 +448,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
+    private void markAsUnsatisfied() {
+        removingAssignments(getAssignments());
+        assert isUnsatisfied();
+    }
+
+    public boolean isUnsatisfied() {
+        return !hasAssignments();
+    }
+
     private void resetAssignmentsTo(List<T> assignments) {
         removingAssignments(getAssignments());
         addingAssignments(assignments);
@@ -709,9 +718,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
-    // FIXME evaluate if it the possibility of existing an allocation without
-    // assignments is valid. If it isn't remove this method and add validations
-    // to ResourceAllocation
     public boolean hasAssignments() {
         return !getAssignments().isEmpty();
     }
