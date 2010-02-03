@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.common.daos;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -56,6 +57,11 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
     @SuppressWarnings("unchecked")
     @Override
     public E findByCode(String code) throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(null,
+                getEntityClass().getName());
+        }
 
         E entity = (E) getSession().createCriteria(getEntityClass()).add(
             Restrictions.eq("code", code).ignoreCase()).uniqueResult();

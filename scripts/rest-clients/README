@@ -23,6 +23,9 @@
     - Check the returned errors are consistent with the comments in
       criterion-types-sample.xml.
 
+    - Repeat with criterion-types-update-sample.xml (for updating some
+      criterion types).
+
   * Export criterion types:
 
     - export-criterion-types.sh (authenticate with wsreader/wsreader)

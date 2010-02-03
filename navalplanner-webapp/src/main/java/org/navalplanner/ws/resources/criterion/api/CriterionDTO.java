@@ -22,11 +22,13 @@ package org.navalplanner.ws.resources.criterion.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.navalplanner.ws.common.api.DuplicateCodeBeingImportedException;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
@@ -42,7 +44,7 @@ public class CriterionDTO extends IntegrationEntityDTO {
     public String name;
 
     @XmlAttribute
-    public boolean active = true;
+    public Boolean active;
 
     @XmlElementWrapper(name="children")
     @XmlElement(name="criterion")
@@ -50,7 +52,7 @@ public class CriterionDTO extends IntegrationEntityDTO {
 
     public CriterionDTO() {}
 
-    public CriterionDTO(String code, String name, boolean active,
+    public CriterionDTO(String code, String name, Boolean active,
         List<CriterionDTO> children) {
 
         super(code);
@@ -65,7 +67,7 @@ public class CriterionDTO extends IntegrationEntityDTO {
      * to facilitate the implementation of test cases that add new instances
      * (such instances will have a unique code).
      */
-    public CriterionDTO(String name, boolean active,
+    public CriterionDTO(String name, Boolean active,
         List<CriterionDTO> children) {
 
         this(generateCode(), name, active, children);
@@ -75,6 +77,18 @@ public class CriterionDTO extends IntegrationEntityDTO {
     @Override
     public String getEntityType() {
         return ENTITY_TYPE;
+    }
+
+    @Override
+    public void checkDuplicateCode(Set<String> existingKeys)
+        throws DuplicateCodeBeingImportedException {
+
+        super.checkDuplicateCode(existingKeys);
+
+        for (CriterionDTO c : children) {
+            c.checkDuplicateCode(existingKeys);
+        }
+
     }
 
 }

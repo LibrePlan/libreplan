@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<criterion-type-list xmlns="http://rest.ws.navalplanner.org">
+
+    <!-- OK -->
+    <criterion-type code="ct-6" name="ct-6-XXX" description="ct-6 desc XXX"/>
+
+    <!-- OK -->
+    <criterion-type code="ct-4">
+
+        <criterion-list>
+            <criterion code="ct-4-c2">
+                <children>
+                    <criterion code="ct-4-c2-1-1" active="true"/>
+                </children>
+            </criterion>
+        </criterion-list>
+    </criterion-type>
+
+</criterion-type-list>

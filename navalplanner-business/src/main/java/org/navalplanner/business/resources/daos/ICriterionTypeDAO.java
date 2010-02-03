@@ -36,6 +36,9 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 public interface ICriterionTypeDAO
     extends IIntegrationEntityDAO<CriterionType> {
 
+    CriterionType findByCodeAnotherTransactionInitialized(String code)
+        throws InstanceNotFoundException;
+
     CriterionType findUniqueByName(String name)
             throws InstanceNotFoundException;
 

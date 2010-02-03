@@ -45,14 +45,17 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 public class Criterion extends IntegrationEntity implements ICriterion {
 
     public static Criterion createUnvalidated(String code, String name,
-        CriterionType type, Criterion parent, boolean active) {
+        CriterionType type, Criterion parent, Boolean active) {
 
         Criterion criterion = create(new Criterion(), code);
 
         criterion.name = name;
         criterion.type = type;
         criterion.parent = parent;
-        criterion.active = active;
+
+        if (active != null) {
+            criterion.active = active;
+        }
 
         return criterion;
 
@@ -167,6 +170,29 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     public void setChildren(Set<Criterion> children) {
         this.children = children;
+    }
+
+    public void moveTo(Criterion newParent) {
+
+        if (parent == null) {
+
+            if (newParent != null) {
+                parent = newParent;
+                parent.getChildren().add(this);
+            }
+
+        } else { // parent != null
+
+            if (!parent.equals(newParent)) {
+                parent.getChildren().remove(this);
+                parent = newParent;
+                if (parent != null) {
+                    parent.getChildren().add(this);
+                }
+            }
+
+        }
+
     }
 
     public boolean isEquivalent(ICriterion criterion) {

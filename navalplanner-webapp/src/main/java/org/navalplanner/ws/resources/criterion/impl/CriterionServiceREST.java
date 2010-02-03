@@ -23,6 +23,7 @@ package org.navalplanner.ws.resources.criterion.impl;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,9 +34,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.ws.common.api.DuplicateCodeBeingImportedException;
+import org.navalplanner.ws.common.api.DuplicateNaturalKeyBeingImportedException;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
@@ -77,75 +81,94 @@ public class CriterionServiceREST implements ICriterionService {
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             new ArrayList<InstanceConstraintViolationsDTO>();
         Long numItem = new Long(1);
-        Set<String> criterionTypeNames = new HashSet<String>();
+        Set<String> existingKeys = new HashSet<String>();
 
         /* Process criterion types. */
         for (CriterionTypeDTO criterionTypeDTO :
             criterionTypes.criterionTypes) {
 
-            /* Convert DTO to entity. */
             InstanceConstraintViolationsDTO instanceConstraintViolationsDTO =
                 null;
-            CriterionType criterionType =
-                CriterionConverter.toEntity(criterionTypeDTO);
+            CriterionType criterionType = null;
 
-            /*
-             * Check if the criterion type name is used by another criterion
-             * type being imported.
-             */
-            if (criterionType.getName() != null && criterionTypeNames.contains(
-                criterionType.getName().toLowerCase())) {
+            try {
 
+                /*
+                 * We must detect if there exists another instance being
+                 * imported with the same code or natural key, since
+                 * "IntegrationEntity::checkConstraintUniqueCode" and
+                 * the natural key unique constraint rule
+                 * (@AssertTrue/@AssertFalse method) in the concrete entity only
+                 * can check this condition with respect to the entities already
+                 * existing in database (such methods use DAO
+                 * "xxxAnotherTransaction" methods to avoid Hibernate to launch
+                 * INSERT statements for new objects when launching queries in
+                 * conversational use cases).
+                 */
+                criterionTypeDTO.checkDuplicateCode(existingKeys);
+                criterionTypeDTO.checkDuplicateNaturalKey(existingKeys);
+
+                /*
+                 * Convert DTO to entity. Note that the entity, if exists in
+                 * the database, must be retrieved in another transaction.
+                 * Otherwise (if retrieved as part of the current
+                 * transaction), if the implementation of "updateEntity" makes
+                 * modifications to the entity passed as a parameter and
+                 * then throws an exception (because something make impossible
+                 * to continue updating), the entity would be considered as
+                 * dirty because it would be contained in the underlying ORM
+                 * session, and in consequence, the ORM would try to update it
+                 * when committing the transaction. Furthermore, the entity
+                 * must be initialized so that "updateEntity" can access
+                 * related entities.
+                 */
+                try {
+                    criterionType =
+                        findByCodeAnotherTransactionInitialized(
+                            criterionTypeDTO.code);
+                    udpateEntity(criterionType, criterionTypeDTO);
+                } catch (InstanceNotFoundException e) {
+                    criterionType = toEntity(criterionTypeDTO);
+                }
+
+                /*
+                 * Save the entity (insert or update).
+                 *
+                 * "validate" is executed before "save", since "save" first
+                 * adds the object to the underlying ORM session and then
+                 * validates. So, if "validate" method is not called explicitly
+                 * before "save", an invalid entity would be added to the
+                 * underlying ORM session, causing the invalid entity to be
+                 * added to the database when the ORM commits the transaction.
+                 * As a side effect, validations are executed twice.
+                 */
+                criterionType.validate();
+                criterionTypeDAO.save(criterionType);
+
+            } catch (DuplicateCodeBeingImportedException e) {
                 instanceConstraintViolationsDTO =
                     InstanceConstraintViolationsDTO.create(
                         Util.generateInstanceConstraintViolationsDTOId(numItem,
                             criterionTypeDTO),
-                        _("criterion type name is used by another criterion " +
-                            "type being imported"));
-
-            } else {
-
-                /* Validate criterion type. */
-                try {
-
-                    /*
-                     * "validate" is executed before "save", since "save" first
-                     * adds the object to the underlying ORM session and then
-                     * validates. So, if "validate" method is not called
-                     * explicitly before "save", an invalid criterion type
-                     * would be added to the underlying ORM session, causing
-                     * the invalid criterion type to be added to the database
-                     * when the ORM commits the transaction. As a side effect,
-                     * validations are executed twice. Note also, that
-                     * "CriterionType::checkConstraintUniqueCriterionTypeName"
-                     * only checks if a criterion type with the same name
-                     * already exists in the *database*, and that the criterion
-                     * types being imported are inserted in the database when
-                     * the transaction is committed. In consequence, we can only
-                     * call "save" if the criterion type is valid according to
-                     * "validate" method and its name is not used by another
-                     * previously *imported* (not in the database yet) criterion
-                     * type.
-                     */
-                    criterionType.validate();
-                    criterionTypeDAO.save(criterionType);
-
-                    if (criterionType.getName() != null) {
-                        criterionTypeNames.add(criterionType.getName().
-                            toLowerCase());
-                    }
-
-                } catch (ValidationException e) {
-                    instanceConstraintViolationsDTO =
-                        ConstraintViolationConverter.toDTO(
-                            Util.generateInstanceConstraintViolationsDTOId(
-                                numItem, criterionTypeDTO),
-                            e.getInvalidValues());
-                }
-
+                        _("code: {0} is used by another instance of type {1} " +
+                            "being imported", e.getCode(), e.getEntityType()));
+            } catch (DuplicateNaturalKeyBeingImportedException e) {
+                instanceConstraintViolationsDTO =
+                    InstanceConstraintViolationsDTO.create(
+                        Util.generateInstanceConstraintViolationsDTOId(numItem,
+                            criterionTypeDTO),
+                        _("values: {0} are used by another instance of type " +
+                            "{1} being imported",
+                            Arrays.toString(e.getNaturalKeyValues()),
+                            e.getEntityType()));
+            } catch (ValidationException e) {
+                instanceConstraintViolationsDTO =
+                    ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceConstraintViolationsDTOId(
+                            numItem, criterionTypeDTO), e);
             }
 
-            /* Add constraint violations (if any). */
+
             if (instanceConstraintViolationsDTO != null) {
                 instanceConstraintViolationsList.add(
                     instanceConstraintViolationsDTO);
@@ -157,6 +180,25 @@ public class CriterionServiceREST implements ICriterionService {
 
         return new InstanceConstraintViolationsListDTO(
             instanceConstraintViolationsList);
+
+    }
+
+    private CriterionType findByCodeAnotherTransactionInitialized(
+        String code) throws InstanceNotFoundException {
+
+        return criterionTypeDAO.findByCodeAnotherTransactionInitialized(
+            code);
+
+    }
+
+    private CriterionType toEntity(CriterionTypeDTO criterionTypeDTO) {
+        return CriterionConverter.toEntity(criterionTypeDTO);
+    }
+
+    private void udpateEntity(CriterionType criterionType,
+        CriterionTypeDTO criterionTypeDTO) throws ValidationException {
+
+        CriterionConverter.updateCriterionType(criterionType, criterionTypeDTO);
 
     }
 

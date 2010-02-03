@@ -20,11 +20,17 @@
 
 package org.navalplanner.ws.resources.criterion.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.ws.common.impl.ResourceEnumConverter;
@@ -109,14 +115,65 @@ public final class CriterionConverter {
             criterionTypeDTO.allowHierarchy,
             criterionTypeDTO.allowSimultaneousCriterionsPerResource,
             criterionTypeDTO.enabled,
-            ResourceEnumConverter
-                        .fromDTO(criterionTypeDTO.resource));
+            ResourceEnumConverter.fromDTO(criterionTypeDTO.resource));
 
         for (CriterionDTO criterionDTO : criterionTypeDTO.criterions) {
              addCriterion(criterionType, criterionDTO, null);
         }
 
         return criterionType;
+
+    }
+
+    public final static void updateCriterionType(CriterionType criterionType,
+        CriterionTypeDTO criterionTypeDTO) throws ValidationException {
+
+        /* 1: Get criterion wrappers with parent code. */
+        Set<CriterionDTOWithParentCode> criterionWrappers =
+            getCriterionWrappers(criterionTypeDTO.criterions, null);
+
+
+        /*
+         * 2: Update basic properties in existing criteria and add new
+         * criteria.
+         */
+        for (CriterionDTOWithParentCode criterionWrapper : criterionWrappers) {
+
+            /* Step 3 requires each criterion DTO to have a code. */
+            if (StringUtils.isBlank(criterionWrapper.dto.code)) {
+                throw new ValidationException(_("missing code in a criterion"));
+            }
+
+            try {
+                Criterion criterion = criterionType.getCriterionByCode(
+                    criterionWrapper.dto.code);
+                updateCriterionBasicProperties(criterion, criterionWrapper.dto);
+            } catch (InstanceNotFoundException e) {
+                criterionType.getCriterions().add(toEntityWithoutChildren(
+                    criterionWrapper.dto, criterionType, null));
+            }
+
+        }
+
+        /* 3: Update relationships. */
+        for (CriterionDTOWithParentCode criterionWrapper : criterionWrappers) {
+
+            Criterion criterion = criterionType.getExistingCriterionByCode(
+                criterionWrapper.dto.code);
+            Criterion newCriterionParent = null;
+
+            if (criterionWrapper.parentCode != null) {
+                newCriterionParent = criterionType.getExistingCriterionByCode(
+                    criterionWrapper.parentCode);
+            }
+
+            criterion.moveTo(newCriterionParent);
+
+        }
+
+
+        /* 4: Update criterion type basic properties. */
+        updateCriterionTypeBasicProperties(criterionType, criterionTypeDTO);
 
     }
 
@@ -146,6 +203,68 @@ public final class CriterionConverter {
             criterionType, criterionParent, childDTO.active);
 
         return criterion;
+
+    }
+
+    private static Set<CriterionDTOWithParentCode> getCriterionWrappers(
+        Collection<CriterionDTO> criterionTypeDTOs, String parentCode) {
+
+        Set<CriterionDTOWithParentCode> wrappers =
+            new HashSet<CriterionDTOWithParentCode>();
+
+        for (CriterionDTO criterionDTO : criterionTypeDTOs) {
+            wrappers.add(new CriterionDTOWithParentCode(criterionDTO,
+                parentCode));
+            wrappers.addAll(getCriterionWrappers(criterionDTO.children,
+                criterionDTO.code));
+        }
+
+        return wrappers;
+
+    }
+
+    private static void updateCriterionTypeBasicProperties(
+        CriterionType criterionType, CriterionTypeDTO criterionTypeDTO) {
+
+        if (!StringUtils.isBlank(criterionTypeDTO.name)) {
+            criterionType.setName(StringUtils.trim(criterionTypeDTO.name));
+        }
+
+        if (!StringUtils.isBlank(criterionTypeDTO.description)) {
+            criterionType.setDescription(
+                StringUtils.trim(criterionTypeDTO.description));
+        }
+
+        if (criterionTypeDTO.allowHierarchy != null) {
+            criterionType.setAllowHierarchy(criterionTypeDTO.allowHierarchy);
+        }
+
+        if (criterionTypeDTO.allowSimultaneousCriterionsPerResource != null) {
+            criterionType.setAllowSimultaneousCriterionsPerResource(
+                criterionTypeDTO.allowSimultaneousCriterionsPerResource);
+        }
+
+        if (criterionTypeDTO.enabled != null) {
+            criterionType.setEnabled(criterionTypeDTO.enabled);
+        }
+
+        if (criterionTypeDTO.resource != null) {
+            criterionType.setResource(
+                ResourceEnumConverter.fromDTO(criterionTypeDTO.resource));
+        }
+
+    }
+
+    private static void updateCriterionBasicProperties(Criterion criterion,
+        CriterionDTO criterionDTO) {
+
+        if (!StringUtils.isBlank(criterionDTO.name)) {
+            criterion.setName(StringUtils.trim(criterionDTO.name));
+        }
+
+        if (criterionDTO.active != null) {
+            criterion.setActive(criterionDTO.active);
+        }
 
     }
 

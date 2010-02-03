@@ -20,24 +20,29 @@
 
 package org.navalplanner.web.test.ws.resources.criterion.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.ws.common.Util.assertNoConstraintViolations;
+import static org.navalplanner.web.test.ws.common.Util.assertOneConstraintViolation;
+import static org.navalplanner.web.test.ws.common.Util.getUniqueName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.common.IAdHocTransactionService;
-import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
+import org.navalplanner.ws.common.impl.ResourceEnumConverter;
 import org.navalplanner.ws.resources.criterion.api.CriterionDTO;
 import org.navalplanner.ws.resources.criterion.api.CriterionTypeDTO;
 import org.navalplanner.ws.resources.criterion.api.CriterionTypeListDTO;
@@ -60,13 +65,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CriterionServiceTest {
 
     @Autowired
-    private IAdHocTransactionService transactionService;
-
-    @Autowired
     private ICriterionService criterionService;
 
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     @Test
-    public void testAddCriterionTypes() {
+    public void testAddAndGetCriterionTypes() {
 
         /* Build criterion type "ct1" (4 constraint violations). */
         CriterionDTO ct1c1 = new CriterionDTO(null, true, // Missing criterion
@@ -137,17 +142,12 @@ public class CriterionServiceTest {
             ResourceEnumDTO.RESOURCE, new ArrayList<CriterionDTO>());
 
         /* Criterion type list. */
-        List<CriterionTypeDTO> criterionTypes =
-            new ArrayList<CriterionTypeDTO>();
-        criterionTypes.add(ct1);
-        criterionTypes.add(ct2);
-        criterionTypes.add(ct3);
-        criterionTypes.add(ct4);
+        CriterionTypeListDTO criterionTypes =
+            createCriterionTypeListDTO(ct1, ct2, ct3, ct4);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            criterionService.addCriterionTypes(
-                new CriterionTypeListDTO(criterionTypes)).
-                    instanceConstraintViolationsList;
+            criterionService.addCriterionTypes(criterionTypes).
+                instanceConstraintViolationsList;
 
         assertTrue(
             instanceConstraintViolationsList.toString(),
@@ -180,52 +180,113 @@ public class CriterionServiceTest {
 
     @Test
     @NotTransactional
-    public void testAddCriterionTypeThatAlreadyExistsInDB()
+    public void testAddRepeatedCriterionTypeThatAlreadyExistsInDB()
         throws InstanceNotFoundException {
 
-        final String criterionTypeName = getUniqueName();
+        CriterionTypeDTO criterionType = new CriterionTypeDTO(
+            getUniqueName(), "desc", true, true, true,
+            ResourceEnumDTO.RESOURCE, new ArrayList<CriterionDTO>());
 
-        IOnTransaction<InstanceConstraintViolationsListDTO>
-            createCriterionType =
-                new IOnTransaction<InstanceConstraintViolationsListDTO>() {
+        assertNoConstraintViolations(criterionService.addCriterionTypes(
+            createCriterionTypeListDTO(criterionType)));
 
-            @Override
-            public InstanceConstraintViolationsListDTO execute() {
-
-                CriterionTypeDTO criterionType = new CriterionTypeDTO(
-                        criterionTypeName, "desc", true, true, true,
-                    ResourceEnumDTO.RESOURCE, new ArrayList<CriterionDTO>());
-                List<CriterionTypeDTO> criterionTypes =
-                    new ArrayList<CriterionTypeDTO>();
-
-                criterionTypes.add(criterionType);
-
-                return criterionService.addCriterionTypes(
-                    new CriterionTypeListDTO(criterionTypes));
-
-            }
-        };
-
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            transactionService.runOnTransaction(
-                createCriterionType).
-                    instanceConstraintViolationsList;
-        assertTrue(
-            instanceConstraintViolationsList.toString(),
-            instanceConstraintViolationsList.size() == 0);
-
-        instanceConstraintViolationsList =
-            transactionService.runOnTransaction(
-                createCriterionType).
-                    instanceConstraintViolationsList;
-        assertTrue(
-            instanceConstraintViolationsList.toString(),
-            instanceConstraintViolationsList.size() == 1);
+        criterionType.code = getUniqueName(); // Another criterion with the
+                                              // same data.
+        assertOneConstraintViolation(criterionService.addCriterionTypes(
+            createCriterionTypeListDTO(criterionType))); // Repeated criterion
+                                                         // type name.
 
     }
 
-    private String getUniqueName() {
-        return UUID.randomUUID().toString();
+
+    @Test
+    @NotTransactional
+    public void testUpdateCriterionType() throws InstanceNotFoundException {
+
+        /* Build criterion type with criteria: c1, c2->c2-1. */
+        CriterionDTO c1 = new CriterionDTO("c1", true,
+            new ArrayList<CriterionDTO>());
+        CriterionDTO c2c1 = new CriterionDTO("c2-1",
+            true, new ArrayList<CriterionDTO>());
+        List<CriterionDTO> c2Criterions =  new ArrayList<CriterionDTO>();
+        c2Criterions.add(c2c1);
+        CriterionDTO c2 = new CriterionDTO("c2", true, c2Criterions);
+        List<CriterionDTO> rootCriterions = new ArrayList<CriterionDTO>();
+        rootCriterions.add(c1);
+        rootCriterions.add(c2);
+        CriterionTypeDTO ct = new CriterionTypeDTO(getUniqueName(),
+            "desc", true, true, true, ResourceEnumDTO.WORKER, rootCriterions);
+
+        /* Add criterion type. */
+        assertNoConstraintViolations(criterionService.addCriterionTypes(
+            createCriterionTypeListDTO(ct)));
+
+        /*
+         * Build a DTO for making the following update: add new root criterion
+         * ("c3"), move "c2" to "c1" and modify c2's name, and update
+         * criterion type description.
+         */
+        CriterionDTO c3 = new CriterionDTO("c3", true,
+            new ArrayList<CriterionDTO>());
+        CriterionDTO c2Updated = new CriterionDTO(c2.code, c2.name + "UPDATED",
+            null, new ArrayList<CriterionDTO>());
+        List<CriterionDTO> c1CriterionsUpdated = new ArrayList<CriterionDTO>();
+        c1CriterionsUpdated.add(c2Updated);
+        CriterionDTO c1Updated = new CriterionDTO(c1.code, null, null,
+            c1CriterionsUpdated);
+        List<CriterionDTO> rootCriterionsUpdated =
+            new ArrayList<CriterionDTO>();
+        rootCriterionsUpdated.add(c3);
+        rootCriterionsUpdated.add(c1Updated);
+        CriterionTypeDTO ctUpdated = new CriterionTypeDTO(ct.code, null,
+            "desc" + "UPDATED", null, null, null, null, rootCriterionsUpdated);
+
+        /* Update criterion type and test. */
+        assertNoConstraintViolations(criterionService.addCriterionTypes(
+            createCriterionTypeListDTO(ctUpdated)));
+
+        CriterionType ctEntity =
+            criterionTypeDAO.findByCodeAnotherTransactionInitialized(ct.code);
+        assertTrue(ctEntity.getCriterions().size() == 4);
+
+        /* Test criterion hierarchy. */
+        Criterion c1Entity = ctEntity.getCriterion(c1.name);
+        Criterion c2Entity = ctEntity.getCriterion(c2Updated.name);
+        Criterion c2c1Entity = ctEntity.getCriterion(c2c1.name);
+        Criterion c3Entity = ctEntity.getCriterion(c3.name);
+
+        assertNull(c1Entity.getParent());
+        assertTrue(c1Entity.getChildren().size() == 1);
+        assertTrue(c1Entity.getChildren().contains(c2Entity));
+        assertTrue(c2Entity.getChildren().size() == 1);
+        assertTrue(c2Entity.getChildren().contains(c2c1Entity));
+        assertTrue(c2c1Entity.getChildren().size() == 0);
+        assertNull(c3Entity.getParent());
+        assertTrue(c3Entity.getChildren().size() == 0);
+
+        /*
+         * Basic properties in criteria "c1" and "c2", which are contained in
+         * "ctUpdated", must not be modified, except c2's name property.
+         */
+        assertEquals(c1.name, c1Entity.getName());
+        assertEquals(c1.active, c1Entity.isActive());
+
+        assertEquals(c2Updated.name, c2Entity.getName());
+        assertEquals(c2.active, c2Entity.isActive());
+
+        /*
+         * Basic properties values, except description, must be not be
+         * modified.
+         */
+        assertEquals(ct.name, ctEntity.getName());
+        assertEquals(ctUpdated.description, ctEntity.getDescription());
+        assertEquals(ct.allowHierarchy, ctEntity.allowHierarchy());
+        assertEquals(ct.allowSimultaneousCriterionsPerResource,
+            ctEntity.isAllowSimultaneousCriterionsPerResource());
+        assertEquals(ct.enabled, ctEntity.isEnabled());
+        assertEquals(ResourceEnumConverter.fromDTO(ct.resource),
+            ctEntity.getResource());
+
     }
 
     private boolean containsCriterionType(
@@ -238,6 +299,20 @@ public class CriterionServiceTest {
         }
 
         return false;
+
+    }
+
+    private CriterionTypeListDTO createCriterionTypeListDTO(
+            CriterionTypeDTO... criterionTypes) {
+
+        List<CriterionTypeDTO> criterionTypeList =
+            new ArrayList<CriterionTypeDTO>();
+
+        for (CriterionTypeDTO c : criterionTypes) {
+            criterionTypeList.add(c);
+        }
+
+        return new CriterionTypeListDTO(criterionTypeList);
 
     }
 

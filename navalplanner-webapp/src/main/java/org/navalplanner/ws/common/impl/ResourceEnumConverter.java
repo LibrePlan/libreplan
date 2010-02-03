@@ -66,7 +66,15 @@ public class ResourceEnumConverter {
         }
     }
 
+    /**
+     * It returns <code>null</code> if the parameter is <code>null</code>.
+     */
     public final static ResourceEnum fromDTO(ResourceEnumDTO resource) {
+
+        if (resource == null) {
+            return null;
+        }
+
         ResourceEnum value = resourceEnumFromDTO.get(resource);
 
         if (value == null) {
@@ -75,6 +83,7 @@ public class ResourceEnumConverter {
         } else {
             return value;
         }
+
     }
 
 }

@@ -28,10 +28,13 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.ws.common.Util.assertNoConstraintViolations;
+import static org.navalplanner.web.test.ws.common.Util.assertOneConstraintViolation;
+import static org.navalplanner.web.test.ws.common.Util.assertOneConstraintViolationPerInstance;
+import static org.navalplanner.web.test.ws.common.Util.getUniqueName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -62,7 +65,6 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.IResourceService;
 import org.navalplanner.ws.resources.api.MachineDTO;
@@ -900,58 +902,6 @@ public class ResourceServiceTest {
 
     }
 
-    private void assertNoConstraintViolations(
-        InstanceConstraintViolationsListDTO
-        instanceConstraintViolationsListDTO) {
-
-        assertTrue(
-            instanceConstraintViolationsListDTO.
-            instanceConstraintViolationsList.toString(),
-            instanceConstraintViolationsListDTO.
-            instanceConstraintViolationsList.size() == 0);
-
-    }
-
-    private void assertOneConstraintViolation(
-        InstanceConstraintViolationsListDTO
-        instanceConstraintViolationsListDTO) {
-
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            instanceConstraintViolationsListDTO.
-                instanceConstraintViolationsList;
-
-        assertTrue(
-            instanceConstraintViolationsList.toString(),
-            instanceConstraintViolationsList.size() == 1);
-        assertTrue(
-            instanceConstraintViolationsList.get(0).
-            constraintViolations.toString(),
-            instanceConstraintViolationsList.get(0).
-            constraintViolations.size() == 1);
-
-    }
-
-    private void assertOneConstraintViolationPerInstance(
-        InstanceConstraintViolationsListDTO
-        instanceConstraintViolationsListDTO, int numberOfInstances) {
-
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            instanceConstraintViolationsListDTO.
-                instanceConstraintViolationsList;
-
-         assertTrue(
-             instanceConstraintViolationsList.toString(),
-             instanceConstraintViolationsList.size() == numberOfInstances);
-
-         for (InstanceConstraintViolationsDTO i :
-             instanceConstraintViolationsList) {
-             assertTrue(
-                 i.constraintViolations.toString(),
-                 i.constraintViolations.size() == 1);
-         }
-
-    }
-
     private XMLGregorianCalendar getDate(int year, int month, int day) {
 
         try {
@@ -961,10 +911,6 @@ public class ResourceServiceTest {
             throw new RuntimeException(e);
         }
 
-    }
-
-    private String getUniqueName() {
-        return UUID.randomUUID().toString();
     }
 
 }

@@ -28,6 +28,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     implements ICriterionTypeDAO {
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public CriterionType findByCodeAnotherTransactionInitialized(
+        String code) throws InstanceNotFoundException {
+
+        CriterionType criterionType =  findByCode(code);
+
+        for (Criterion c : criterionType.getCriterions()) {
+            c.getChildren().size();
+            c.getType().getName();
+        }
+
+        return criterionType;
+
+    }
 
     @Override
     public List<CriterionType> findByName(CriterionType criterionType) {

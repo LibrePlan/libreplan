@@ -33,12 +33,28 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 public interface IIntegrationEntityDAO<E extends IntegrationEntity>
     extends IGenericDAO<E, Long> {
 
+    /**
+     * If <code>code</code> is blank (whitespace, empty ("") or
+     * <code>null</code>), it returns <code>false</code>.
+     */
     public boolean existsByCode(String code);
 
+    /**
+     * If <code>code</code> is blank (whitespace, empty ("") or
+     * <code>null</code>), it returns <code>false</code>.
+     */
     public boolean existsByCodeAnotherTransaction(String code);
 
+    /**
+     * If <code>code</code> is blank (whitespace, empty ("") or
+     * <code>null</code>), it throws <code>InstanceNotFoundException</code>.
+     */
     public E findByCode(String code) throws InstanceNotFoundException;
 
+    /**
+     * If <code>code</code> is blank (whitespace, empty ("") or
+     * <code>null</code>), it throws <code>InstanceNotFoundException</code>.
+     */
     public E findByCodeAnotherTransaction(String code)
         throws InstanceNotFoundException;
 

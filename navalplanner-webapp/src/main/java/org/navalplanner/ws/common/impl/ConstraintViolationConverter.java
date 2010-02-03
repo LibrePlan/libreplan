@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTOId;
@@ -75,6 +76,7 @@ public class ConstraintViolationConverter {
 
     }
 
+    @Deprecated
     public final static InstanceConstraintViolationsDTO toDTO(
         InstanceConstraintViolationsDTOId instanceId,
         InvalidValue[] invalidValues) {
@@ -84,6 +86,27 @@ public class ConstraintViolationConverter {
 
         for (InvalidValue i : invalidValues) {
             constraintViolationDTOs.add(toDTO(i));
+        }
+
+        return new InstanceConstraintViolationsDTO(instanceId,
+            constraintViolationDTOs);
+
+    }
+
+    public final static InstanceConstraintViolationsDTO toDTO(
+        InstanceConstraintViolationsDTOId instanceId,
+        ValidationException validationException) {
+
+        List<ConstraintViolationDTO> constraintViolationDTOs =
+            new ArrayList<ConstraintViolationDTO>();
+
+        if (validationException.getInvalidValues().length == 0) {
+            constraintViolationDTOs.add(new ConstraintViolationDTO(null,
+                validationException.getMessage()));
+        } else {
+            for (InvalidValue i : validationException.getInvalidValues()) {
+                constraintViolationDTOs.add(toDTO(i));
+            }
         }
 
         return new InstanceConstraintViolationsDTO(instanceId,

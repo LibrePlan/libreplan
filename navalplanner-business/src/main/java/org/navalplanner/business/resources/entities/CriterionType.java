@@ -58,11 +58,23 @@ public class CriterionType extends IntegrationEntity implements
 
         criterionType.name = name;
         criterionType.description = description;
-        criterionType.allowHierarchy = allowHierarchy;
-        criterionType.allowSimultaneousCriterionsPerResource =
-            allowSimultaneousCriterionsPerResource;
-        criterionType.enabled = enabled;
-        criterionType.resource = resource;
+
+        if (allowHierarchy != null) {
+            criterionType.allowHierarchy = allowHierarchy;
+        }
+
+        if (allowSimultaneousCriterionsPerResource != null) {
+            criterionType.allowSimultaneousCriterionsPerResource =
+                allowSimultaneousCriterionsPerResource;
+        }
+
+        if (enabled != null) {
+            criterionType.enabled = enabled;
+        }
+
+        if (resource != null) {
+            criterionType.resource = resource;
+        }
 
         return criterionType;
 
@@ -289,8 +301,48 @@ public class CriterionType extends IntegrationEntity implements
             }
         }
 
-        throw new InstanceNotFoundException(name + "::" + criterionName,
+        throw new InstanceNotFoundException(criterionName,
             Criterion.class.getName());
+
+    }
+
+    public Criterion getCriterionByCode(String code)
+        throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code,
+                 Criterion.class.getName());
+        }
+
+        for (Criterion c : criterions) {
+            if (c.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return c;
+            }
+        }
+
+        throw new InstanceNotFoundException(code,
+            Criterion.class.getName());
+
+    }
+
+    public Criterion getExistingCriterionByCode(String code) {
+
+        try {
+            return getCriterionByCode(code);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public boolean existsCriterionByCode(String code) {
+
+        try {
+            getCriterionByCode(code);
+            return true;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
 
     }
 

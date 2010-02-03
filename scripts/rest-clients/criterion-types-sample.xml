@@ -108,4 +108,38 @@
         </criterion-list>
     </criterion-type>
 
+    <!-- Repeated criterion type code ("ct-6") -->
+    <criterion-type code="ct-6" name="ct-7" description="ct-7 desc"
+        allow-hierarchy="false"
+        allow-simultaneous-criterions-per-resource="false" enabled="false"
+        resource="WORKER"/>
+
+    <!--  Repeated criterion code (ct-8-c1) -->
+    <criterion-type code="ct-8" name="ct-8" description="ct-8 desc"
+        allow-hierarchy="true" allow-simultaneous-criterions-per-resource="true"
+        enabled="true" resource="RESOURCE">
+
+        <criterion-list>
+            <criterion code="ct-8-c1" name="c8" active="true"/>
+            <criterion code="ct-8-c1" name="c8" active="true"/>
+        </criterion-list>
+
+    </criterion-type>
+
+    <!--  Repeated criterion code (ct-4-c2-1) -->
+    <criterion-type code="ct-9" name="ct-9" description="ct-9 desc"
+        allow-hierarchy="true" allow-simultaneous-criterions-per-resource="true"
+        enabled="true" resource="RESOURCE">
+
+        <criterion-list>
+            <criterion code="ct-9-c1" name="c9" active="true"/>
+            <criterion code="ct-9-c2" name="c9" active="true">
+                <children>
+                    <criterion code="ct-9-c2-1" name="c9-1" active="true"/>
+                    <criterion code="ct-4-c2-1" name="c9-2" active="true"/>
+                </children>
+            </criterion>
+        </criterion-list>
+    </criterion-type>
+
 </criterion-type-list>

@@ -22,11 +22,13 @@ package org.navalplanner.ws.resources.criterion.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.navalplanner.ws.common.api.DuplicateCodeBeingImportedException;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
 
@@ -46,16 +48,16 @@ public class CriterionTypeDTO extends IntegrationEntityDTO {
     public String description;
 
     @XmlAttribute(name="allow-hierarchy")
-    public boolean allowHierarchy = true;
+    public Boolean allowHierarchy;
 
     @XmlAttribute(name="allow-simultaneous-criterions-per-resource")
-    public boolean allowSimultaneousCriterionsPerResource = true;
+    public Boolean allowSimultaneousCriterionsPerResource;
 
     @XmlAttribute
-    public boolean enabled = true;
+    public Boolean enabled;
 
     @XmlAttribute
-    public ResourceEnumDTO resource = ResourceEnumDTO.RESOURCE;
+    public ResourceEnumDTO resource;
 
     @XmlElementWrapper(name="criterion-list")
     @XmlElement(name="criterion")
@@ -64,8 +66,8 @@ public class CriterionTypeDTO extends IntegrationEntityDTO {
     public CriterionTypeDTO() {}
 
     public CriterionTypeDTO(String code, String name, String description,
-        boolean allowHierarchy, boolean allowSimultaneousCriterionsPerResource,
-        boolean enabled, ResourceEnumDTO resource,
+        Boolean allowHierarchy, Boolean allowSimultaneousCriterionsPerResource,
+        Boolean enabled, ResourceEnumDTO resource,
         List<CriterionDTO> criterions) {
 
         super(code);
@@ -86,8 +88,8 @@ public class CriterionTypeDTO extends IntegrationEntityDTO {
      * (such instances will have a unique code).
      */
     public CriterionTypeDTO(String name, String description,
-        boolean allowHierarchy, boolean allowSimultaneousCriterionsPerResource,
-        boolean enabled, ResourceEnumDTO resource,
+        Boolean allowHierarchy, Boolean allowSimultaneousCriterionsPerResource,
+        Boolean enabled, ResourceEnumDTO resource,
         List<CriterionDTO> criterions) {
 
         this(generateCode(), name, description, allowHierarchy,
@@ -99,6 +101,23 @@ public class CriterionTypeDTO extends IntegrationEntityDTO {
     @Override
     public String getEntityType() {
         return ENTITY_TYPE;
+    }
+
+    @Override
+    public String[] getNaturalKeyValues() {
+        return new String[] {name};
+    }
+
+    @Override
+    public void checkDuplicateCode(Set<String> existingKeys)
+        throws DuplicateCodeBeingImportedException {
+
+        super.checkDuplicateCode(existingKeys);
+
+        for (CriterionDTO c : criterions) {
+            c.checkDuplicateCode(existingKeys);
+        }
+
     }
 
 }
