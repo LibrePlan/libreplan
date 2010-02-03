@@ -57,17 +57,33 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
     }
 
     public LocalDate untilAllocating(int hoursToAllocate) {
+        int i = 0;
+        int maxDaysElapsed = 0;
+        for (Integer each : hoursForEachAllocation(hoursToAllocate)) {
+            ResourcesPerDayModification currentAllocation = allocations.get(i);
+            int daysElapsedForCurrent = untilAllocating(currentAllocation, each);
+            maxDaysElapsed = Math.max(maxDaysElapsed, daysElapsedForCurrent);
+            i++;
+        }
+        setAssignmentsForEachAllocation();
+        LocalDate start = LocalDate.fromDateFields(task.getStartDate());
+        return start.plusDays(maxDaysElapsed);
+    }
+
+    private int untilAllocating(
+            ResourcesPerDayModification resourcesPerDayModification,
+            Integer hoursToAllocate) {
         int hoursRemaining = hoursToAllocate;
         LocalDate start = new LocalDate(task.getStartDate().getTime());
         int day = 0;
         while (hoursRemaining > 0) {
             LocalDate current = start.plusDays(day);
-            int taken = assignForDay(current, hoursRemaining);
+            int taken = assignForDay(resourcesPerDayModification, current,
+                    hoursRemaining);
             hoursRemaining = hoursRemaining - taken;
             day++;
         }
-        setAssignmentsForEachAllocation();
-        return start.plusDays(day);
+        return day;
     }
 
     private void setAssignmentsForEachAllocation() {
@@ -89,21 +105,17 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
     protected abstract List<DayAssignment> createAssignmentsAtDay(
             ResourcesPerDayModification allocation, LocalDate day, Integer limit);
 
-    private int assignForDay(LocalDate day, int toBeAssigned) {
-        int i = 0;
-        int total = 0;
-        List<Integer> maxPerAllocations = calculateLimits(toBeAssigned);
-        for (ResourcesPerDayModification each : allocations) {
-            List<DayAssignment> assignments = createAssignmentsAtDay(each, day,
-                    maxPerAllocations.get(i));
-            resultAssignments.get(each).addAll(assignments);
-            total += DayAssignment.sum(assignments);
-            i++;
-        }
-        return total;
+    private int assignForDay(
+            ResourcesPerDayModification resourcesPerDayModification,
+            LocalDate day, int remaining) {
+        List<DayAssignment> newAssignments = createAssignmentsAtDay(
+                resourcesPerDayModification, day, remaining);
+        resultAssignments.get(resourcesPerDayModification).addAll(
+                newAssignments);
+        return DayAssignment.sum(newAssignments);
     }
 
-    private List<Integer> calculateLimits(int toBeAssigned) {
+    private List<Integer> hoursForEachAllocation(int toBeAssigned) {
         BigDecimal[] limits = new BigDecimal[allocations.size()];
         BigDecimal sumAll = sumAll();
         for (int i = 0; i < limits.length; i++) {
