@@ -540,10 +540,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGroupingRow(AllocationInput allocationInput) {
         Restriction restriction = allocationInput.getResultReceiver()
                 .createRestriction();
-        String taskName = allocationInput.getTaskName();
-        Row groupingRow = Row.createRow(messages, restriction, taskName
-                + " (task)", 0, allocationInput
-                .getAllocationsSortedByStartDate());
+        String taskName = _("{0} (task)", allocationInput.getTaskName());
+        Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
+                allocationInput.getAllocationsSortedByStartDate());
         return groupingRow;
     }
 
