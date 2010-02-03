@@ -402,8 +402,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (!assignedCriterionRequirementController.close()) {
             selectTab("tabRequirements");
         }
-        selectTab("tabTaskQualityForm");
         if (!assignedTaskQualityFormController.confirm()) {
+            selectTab("tabTaskQualityForm");
             return false;
         }
         try {
