@@ -8,7 +8,7 @@ Informes
 Informes
 ========
 
-"Navalpro" está integrado con *JasperReports* para a xestión de informes o cal permite implantar diversos informes que analiza datos existentes na aplicación.
+"NavalPlan" está integrado con *JasperReports* para a xestión de informes o cal permite implantar diversos informes que analiza datos existentes na aplicación.
 
 Os informes definidos son:
 
