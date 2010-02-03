@@ -251,6 +251,7 @@ public class Planner extends HtmlMacroComponent  {
                 .getDoubleClickCommand());
         this.context = newContext;
         this.disabilityConfiguration = configuration;
+        resettingPreviousComponentsToNull();
         newContext.add(configuration.getData());
         setupComponents();
 
@@ -275,6 +276,11 @@ public class Planner extends HtmlMacroComponent  {
             Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
             showCriticalPathButton.setVisible(false);
         }
+    }
+
+    private void resettingPreviousComponentsToNull() {
+        this.ganttPanel = null;
+        this.leftPane = null;
     }
 
     private void setAt(String insertionPointId, Component component) {
