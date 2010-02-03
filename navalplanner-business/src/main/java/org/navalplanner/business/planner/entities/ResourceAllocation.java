@@ -502,6 +502,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 final Integer capacity = getCapacityAt(day);
                 return amount.asHoursGivenResourceWorkingDayOf(capacity);
             }
+
+            @Override
+            public boolean thereAreAvailableHoursFrom(LocalDate date,
+                    ResourcesPerDay resourcesPerDay, int hours) {
+                return getTaskCalendar().thereAreAvailableHoursFrom(date,
+                        resourcesPerDay, hours);
+            }
         };
     }
 

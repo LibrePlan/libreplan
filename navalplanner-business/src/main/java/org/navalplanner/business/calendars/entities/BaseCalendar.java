@@ -813,7 +813,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return workableHours;
     }
 
-    protected boolean thereAreAvailableHoursFrom(LocalDate start,
+    @Override
+    public boolean thereAreAvailableHoursFrom(LocalDate start,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
         LocalDate expiringDate = getAvailabilityExpiringDate();
         if (expiringDate == null) {

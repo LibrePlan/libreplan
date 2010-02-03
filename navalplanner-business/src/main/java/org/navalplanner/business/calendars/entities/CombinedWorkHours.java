@@ -74,6 +74,16 @@ public abstract class CombinedWorkHours implements IWorkHours {
     protected abstract Integer updateCapacity(Integer current,
             IWorkHours workHour, LocalDate date);
 
+    @Override
+    public boolean thereAreAvailableHoursFrom(LocalDate date,
+            ResourcesPerDay resourcesPerDay, int hours) {
+        for (IWorkHours each : workHours) {
+            if (!each.thereAreAvailableHoursFrom(date, resourcesPerDay, hours)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 class Min extends CombinedWorkHours {

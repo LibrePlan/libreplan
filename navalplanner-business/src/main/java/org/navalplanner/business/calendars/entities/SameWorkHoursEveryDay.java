@@ -50,4 +50,10 @@ public class SameWorkHoursEveryDay implements IWorkHours {
         return amount.asHoursGivenResourceWorkingDayOf(getCapacityAt(day));
     }
 
+    @Override
+    public boolean thereAreAvailableHoursFrom(LocalDate date,
+            ResourcesPerDay resourcesPerDay, int hours) {
+        return true;
+    }
+
 }
