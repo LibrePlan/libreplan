@@ -54,6 +54,7 @@ public class PlanningTabCreator {
     public static final String ENTERPRISE_VIEW = _("Company Scheduling");
 
     public static final String ORDER_ENTERPRISE_VIEW = _("Order Scheduling");
+    public static final int MAX_ORDERNAME_LENGHT = 90;
 
     private final Mode mode;
     private final CompanyPlanningController companyPlanningController;
@@ -196,9 +197,21 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(ORDER_ENTERPRISE_VIEW));
                 if (mode.isOf(ModeType.ORDER)) {
+
+                    Label nameLabel = new Label(mode.getOrder().getName());
+                    nameLabel.setTooltiptext(mode.getOrder().getName() + "."
+                            + mode.getOrder().getDescription());
+                    nameLabel.setMaxlength(MAX_ORDERNAME_LENGHT);
+
+                    Label schedulingStateLabel = new Label(mode.getOrder()
+                            .getSchedulingState().getStateAbbreviation());
+                    schedulingStateLabel.setSclass("scheduling-state");
+                    schedulingStateLabel.setTooltiptext(mode.getOrder()
+                            .getSchedulingState().getStateName());
+
                     breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                    breadcrumbs
-                            .appendChild(new Label(mode.getOrder().getName()));
+                    breadcrumbs.appendChild(nameLabel);
+                    breadcrumbs.appendChild(schedulingStateLabel);
                 }
 
             }

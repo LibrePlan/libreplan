@@ -18,8 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.navalplanner.web.orders;
-import static org.navalplanner.web.I18nHelper._;
-
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
@@ -62,23 +60,11 @@ public class SchedulingStateToggler extends HtmlMacroComponent {
     }
 
     public String getButtonLabel() {
-        if (state.isCompletelyScheduled()) {
-            return _("C");
-        } else if (state.isPartiallyScheduled()) {
-            return _("P");
-        } else {
-            return _("U");
-        }
+        return state.getStateAbbreviation();
     }
 
     public String getButtonTextTooltip() {
-        if (state.isCompletelyScheduled()) {
-            return _("Completely scheduled");
-        } else if (state.isPartiallyScheduled()) {
-            return _("Partially scheduled");
-        } else {
-            return _("Unscheduled");
-        }
+        return state.getStateName();
     }
 
 }

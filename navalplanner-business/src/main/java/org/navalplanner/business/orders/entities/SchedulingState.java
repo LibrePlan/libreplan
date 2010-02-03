@@ -82,6 +82,7 @@ public class SchedulingState {
             public boolean isPartiallyScheduled() {
                 return true;
             }
+
         },
         COMPLETELY_SCHEDULED_SUPERELEMENT {
             @Override
@@ -98,6 +99,7 @@ public class SchedulingState {
             public boolean isPartiallyScheduled() {
                 return false;
             }
+
         },
         NO_SCHEDULED {
             @Override
@@ -348,6 +350,26 @@ public class SchedulingState {
 
     public int getChildrenNumber() {
         return children.size();
+    }
+
+    public String getStateName() {
+        if (isCompletelyScheduled()) {
+            return _("Completely scheduled");
+        } else if (isPartiallyScheduled()) {
+            return _("Partially scheduled");
+        } else {
+            return _("Unscheduled");
+        }
+    }
+
+    public String getStateAbbreviation() {
+        if (isCompletelyScheduled()) {
+            return _("C");
+        } else if (isPartiallyScheduled()) {
+            return _("P");
+        } else {
+            return _("U");
+        }
     }
 
 }
