@@ -111,11 +111,11 @@ public class AllocationResult {
         return daysDuration;
     }
 
-    public List<ResourceAllocation<?>> getNew() {
+    private List<ResourceAllocation<?>> getNew() {
         return newAllocations;
     }
 
-    public List<Task.ModifiedAllocation> getModified() {
+    private List<Task.ModifiedAllocation> getModified() {
         return modified;
     }
 
