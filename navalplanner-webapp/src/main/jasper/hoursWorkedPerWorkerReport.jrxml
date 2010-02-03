@@ -196,9 +196,9 @@
 				<textElement/>
 				<text><![CDATA[Worked hours per worker]]></text>
 			</staticText>
-			<image scaleImage="RealHeight">
-				<reportElement x="318" y="0" width="237" height="65"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/navalpro_logo.gif"]]></imageExpression>
+			<image scaleImage="RetainShape">
+				<reportElement x="318" y="0" width="180" height="53"/>
+				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="0" y="80" width="83" height="15">

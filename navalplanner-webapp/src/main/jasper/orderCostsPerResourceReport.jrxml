@@ -257,9 +257,9 @@
 				</textElement>
 				<text><![CDATA[Costs per Resource]]></text>
 			</staticText>
-			<image scaleImage="RealHeight">
-				<reportElement x="316" y="3" width="237" height="65"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/navalpro_logo.gif"]]></imageExpression>
+			<image scaleImage="RetainShape">
+				<reportElement x="316" y="0" width="180" height="53"/>
+				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="2" y="75" width="119" height="15">

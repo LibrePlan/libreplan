@@ -45,8 +45,8 @@
 	<title>
 		<band height="176" splitType="Stretch">
 			<image scaleImage="RealHeight">
-				<reportElement x="316" y="3" width="239" height="65"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/navalpro_logo.gif"]]></imageExpression>
+				<reportElement x="316" y="3" width="180" height="53"/>
+				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Title" x="0" y="13" width="263" height="33"/>
