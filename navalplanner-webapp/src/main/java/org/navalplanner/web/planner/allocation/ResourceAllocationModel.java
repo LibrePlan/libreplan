@@ -166,7 +166,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 return null;
             }
         });
-        askForReloads();
     }
 
     @Override
@@ -179,7 +178,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 return null;
             }
         });
-        askForReloads();
     }
 
     private void stepsBeforeDoingAllocation() {
@@ -194,12 +192,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         allocationResult.applyTo(task);
         ganttTask.fireChangesForPreviousValues(previousStartDate,
                 previousLength);
-    }
-
-    private void askForReloads() {
-        org.zkoss.ganttz.data.Task ganttTask = context.getTask();
-        ganttTask.reloadResourcesText();
-        context.reloadCharts();
     }
 
     @Override

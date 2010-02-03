@@ -85,9 +85,6 @@ public class SubcontractController extends GenericForwardComposer {
 
         if (status == Messagebox.YES) {
             subcontractModel.confirm();
-            if (context != null) {
-                context.reloadCharts();
-            }
         }
     }
 

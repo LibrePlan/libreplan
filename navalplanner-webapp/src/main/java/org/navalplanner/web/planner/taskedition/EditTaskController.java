@@ -174,12 +174,21 @@ public class EditTaskController extends GenericForwardComposer {
             editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
             subcontractController.accept();
 
+            askForReloads();
+
             taskElement = null;
             context = null;
 
             window.setVisible(false);
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
+        }
+    }
+
+    private void askForReloads() {
+        if (context != null) {
+            context.getTask().reloadResourcesText();
+            context.reloadCharts();
         }
     }
 
