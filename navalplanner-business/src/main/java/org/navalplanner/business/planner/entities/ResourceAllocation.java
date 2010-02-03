@@ -200,6 +200,24 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     allocation.setResourcesPerDay(resourcesPerDay);
                     allocation.resetGenericAssignmentsTo(dayAssignments);
                 }
+
+                @Override
+                protected boolean thereAreAvailableHoursFrom(
+                        LocalDate start,
+                        ResourcesPerDayModification resourcesPerDayModification,
+                        int hoursToAllocate) {
+                    IWorkHours workHoursPerDay = resourcesPerDayModification
+                            .getBeingModified().getWorkHoursPerDay();
+                    ResourcesPerDay resourcesPerDay = resourcesPerDayModification
+                            .getGoal();
+                    return workHoursPerDay.thereAreAvailableHoursFrom(start,
+                            resourcesPerDay, hoursToAllocate);
+                }
+
+                @Override
+                protected void markUnsatisfied(ResourceAllocation<?> allocation) {
+                    allocation.markAsUnsatisfied();
+                }
             };
             return allocator.untilAllocating(hoursToAllocate);
         }
@@ -530,6 +548,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             @Override
             public boolean thereAreAvailableHoursFrom(LocalDate date,
                     ResourcesPerDay resourcesPerDay, int hours) {
+                if (getTaskCalendar() == null) {
+                    return true;
+                }
                 return getTaskCalendar().thereAreAvailableHoursFrom(date,
                         resourcesPerDay, hours);
             }

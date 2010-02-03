@@ -75,6 +75,11 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             Integer hoursToAllocate) {
         int hoursRemaining = hoursToAllocate;
         LocalDate start = new LocalDate(task.getStartDate().getTime());
+        if (!thereAreAvailableHoursFrom(start, resourcesPerDayModification,
+                hoursToAllocate)) {
+            markUnsatisfied(resourcesPerDayModification.getBeingModified());
+            return 0;
+        }
         int day = 0;
         while (hoursRemaining > 0) {
             LocalDate current = start.plusDays(day);
@@ -104,6 +109,12 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 
     protected abstract List<DayAssignment> createAssignmentsAtDay(
             ResourcesPerDayModification allocation, LocalDate day, Integer limit);
+
+    protected abstract boolean thereAreAvailableHoursFrom(LocalDate start,
+            ResourcesPerDayModification resourcesPerDayModification,
+            int hoursToAllocate);
+
+    protected abstract void markUnsatisfied(ResourceAllocation<?> beingModified);
 
     private int assignForDay(
             ResourcesPerDayModification resourcesPerDayModification,
