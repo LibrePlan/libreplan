@@ -28,18 +28,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
+import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 
 public class QualityForm extends BaseEntity {
+
+    public static final String ADVANCE_TYPE_PREFIX = "QF: ";
 
     public static QualityForm create() {
         QualityForm qualityForm = new QualityForm();
@@ -69,6 +73,10 @@ public class QualityForm extends BaseEntity {
     private QualityFormType qualityFormType = QualityFormType.getDefault();
 
     private List<QualityFormItem> qualityFormItems = new ArrayList<QualityFormItem>();
+
+    private Boolean reportAdvance = false;
+
+    private AdvanceType advanceType;
 
     @NotEmpty(message = "quality form name not specified")
     public String getName() {
@@ -373,6 +381,32 @@ public class QualityForm extends BaseEntity {
 
     private boolean checkValidPosition(Integer position) {
         return (position >= 0 && position < qualityFormItems.size());
+    }
+
+    @NotNull(message = "report advance not specified")
+    public Boolean isReportAdvance() {
+        return BooleanUtils.toBoolean(reportAdvance);
+    }
+
+    public void setReportAdvance(Boolean reportAdvance) {
+        this.reportAdvance = BooleanUtils.toBoolean(reportAdvance);
+    }
+
+    public AdvanceType getAdvanceType() {
+        return advanceType;
+    }
+
+    public void setAdvanceType(AdvanceType advanceType) {
+        this.advanceType = advanceType;
+    }
+
+    @AssertTrue(message = "advance type should not be null if report advance")
+    public boolean checkConstraintAdvanceTypeIsNotNullIfReportAdvance() {
+        if (advanceType == null) {
+            return !isReportAdvance();
+        } else {
+            return isReportAdvance();
+        }
     }
 
 }

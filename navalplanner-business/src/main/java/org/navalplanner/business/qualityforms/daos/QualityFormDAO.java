@@ -20,16 +20,21 @@
 
 package org.navalplanner.business.qualityforms.daos;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.criterion.Restrictions;
+import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
+import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -45,6 +50,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
         implements IQualityFormDAO {
+
+    @Autowired
+    private IAdvanceTypeDAO advanceTypeDAO;
 
     @Override
     public List<QualityForm> getAll() {
@@ -118,6 +126,27 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public boolean existsByNameAnotherTransaction(QualityForm qualityForm) {
         return existsOtherWorkReportTypeByName(qualityForm);
+    }
+
+    @Override
+    public void save(QualityForm entity) throws ValidationException {
+        if (entity.isReportAdvance()) {
+            String name = QualityForm.ADVANCE_TYPE_PREFIX + entity.getName();
+
+            AdvanceType advanceType = entity.getAdvanceType();
+            if (advanceType != null) {
+                advanceTypeDAO.save(advanceType);
+                advanceType.setUnitName(name);
+            } else {
+                advanceType = AdvanceType.create(name, new BigDecimal(100),
+                        false, new BigDecimal(0.01), true, true, true);
+                advanceTypeDAO.save(advanceType);
+
+                entity.setAdvanceType(advanceType);
+            }
+        }
+
+        super.save(entity);
     }
 
 }

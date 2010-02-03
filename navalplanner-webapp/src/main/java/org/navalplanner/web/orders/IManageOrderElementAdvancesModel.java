@@ -96,4 +96,6 @@ public interface IManageOrderElementAdvancesModel {
 
     public void refreshChangesFromOrderElement();
 
+    public boolean isQualityForm(AdvanceAssignment advance);
+
 }

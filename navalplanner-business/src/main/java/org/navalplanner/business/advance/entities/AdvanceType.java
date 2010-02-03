@@ -20,8 +20,12 @@
 
 package org.navalplanner.business.advance.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.BooleanUtils;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
@@ -42,10 +46,16 @@ public class AdvanceType extends BaseEntity {
     public static AdvanceType create(String unitName,
             BigDecimal defaultMaxValue, boolean updatable,
             BigDecimal unitPrecision, boolean active, boolean percentage) {
-        AdvanceType advanceType = new AdvanceType(unitName, defaultMaxValue, updatable,
-                        unitPrecision, active, percentage);
-        advanceType.setNewObject(true);
-        return advanceType;
+        return create(unitName, defaultMaxValue, updatable, unitPrecision,
+                active, percentage, false);
+    }
+
+    public static AdvanceType create(String unitName,
+            BigDecimal defaultMaxValue, boolean updatable,
+            BigDecimal unitPrecision, boolean active, boolean percentage,
+            boolean qualityForm) {
+        return create(new AdvanceType(unitName, defaultMaxValue, updatable,
+                unitPrecision, active, percentage, qualityForm));
     }
 
     @NotEmpty
@@ -66,6 +76,8 @@ public class AdvanceType extends BaseEntity {
     @NotNull
     private boolean percentage = false;
 
+    private Boolean qualityForm = false;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -75,7 +87,7 @@ public class AdvanceType extends BaseEntity {
 
     private AdvanceType(String unitName, BigDecimal defaultMaxValue,
             boolean updatable, BigDecimal unitPrecision, boolean active,
-            boolean percentage) {
+            boolean percentage, boolean qualityForm) {
         this.unitName = unitName;
         this.percentage = percentage;
         setDefaultMaxValue(defaultMaxValue);
@@ -84,6 +96,7 @@ public class AdvanceType extends BaseEntity {
         this.unitPrecision = unitPrecision;
         this.unitPrecision.setScale(4, BigDecimal.ROUND_HALF_UP);
         this.active = active;
+        this.qualityForm = qualityForm;
     }
 
     public void setUnitName(String unitName) {
@@ -140,9 +153,12 @@ public class AdvanceType extends BaseEntity {
 
     public String getType() {
         if (isUpdatable()) {
-            return "De Usuario";
+            return _("User");
         }
-        return "Predefinido";
+        if (isQualityForm()) {
+            return _("Quality form");
+        }
+        return _("Predefined");
     }
 
     public void doPropagateAdvaceToParent(OrderElement orderElement) {
@@ -183,6 +199,25 @@ public class AdvanceType extends BaseEntity {
 
     public boolean getPercentage() {
         return percentage;
+    }
+
+    @NotNull(message = "quality form not specified")
+    public Boolean isQualityForm() {
+        return BooleanUtils.toBoolean(qualityForm);
+    }
+
+    public void setQualityForm(Boolean qualityForm) {
+        this.qualityForm = BooleanUtils.toBoolean(qualityForm);
+    }
+
+    @AssertTrue(message = "advance type marked as quality form but is updatable")
+    public boolean checkConstraintIfIsQualityFormIsNotUpdatable() {
+        if (isQualityForm()) {
+            if (isUpdatable()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -755,10 +755,9 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     public DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type) {
-        for (DirectAdvanceAssignment each : getDirectAdvanceAssignments()) {
-            if (type != null && each.getAdvanceType().getId().equals(type.getId())) {
-                return each;
-            }
+        DirectAdvanceAssignment result = getDirectAdvanceAssignmentByType(type);
+        if (result != null) {
+            return result;
         }
 
         for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {

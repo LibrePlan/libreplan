@@ -348,6 +348,16 @@ public abstract class OrderElement extends BaseEntity implements
 
     public abstract DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type);
 
+    public DirectAdvanceAssignment getDirectAdvanceAssignmentByType(
+            AdvanceType advanceType) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
+            if (directAdvanceAssignment.getAdvanceType().equals(advanceType)) {
+                return directAdvanceAssignment;
+            }
+        }
+        return null;
+    }
+
     public Set<DirectAdvanceAssignment> getDirectAdvanceAssignments() {
         return Collections.unmodifiableSet(directAdvanceAssignments);
     }
@@ -1035,4 +1045,5 @@ public abstract class OrderElement extends BaseEntity implements
                 .multiply(new BigDecimal(100)));
         return (measuredProgress.compareTo(new BigDecimal(100)) == 0);
     }
+
 }

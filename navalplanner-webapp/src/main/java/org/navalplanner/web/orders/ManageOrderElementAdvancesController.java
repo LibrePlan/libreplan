@@ -237,14 +237,21 @@ public class ManageOrderElementAdvancesController extends
             listItem.setDraggable("true");
             listItem.setDroppable("true");
 
+            boolean isQualityForm = false;
+            if (advance.getAdvanceType() != null) {
+                isQualityForm = manageOrderElementAdvancesModel
+                        .isQualityForm(advance);
+            }
+
             if ((advance instanceof DirectAdvanceAssignment)
                     && ((DirectAdvanceAssignment) advance)
-                            .getAdvanceMeasurements().isEmpty()) {
+                            .getAdvanceMeasurements().isEmpty()
+                    && !isQualityForm) {
                 appendComboboxAdvancType(listItem);
             } else {
                 appendLabelAdvanceType(listItem);
             }
-            appendDecimalBoxMaxValue(listItem);
+            appendDecimalBoxMaxValue(listItem, isQualityForm);
             appendDecimalBoxValue(listItem);
             appendLabelPercentage(listItem);
             appendDateBoxDate(listItem);
@@ -263,7 +270,8 @@ public class ManageOrderElementAdvancesController extends
                 .getPossibleAdvanceTypes(advance);
         for(AdvanceType advanceType : listAdvanceType){
             if (!advanceType.getUnitName().equals(
-                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+                    PredefinedAdvancedTypes.CHILDREN.getTypeName())
+                    && !advanceType.isQualityForm()) {
                 Comboitem comboItem = new Comboitem();
                 comboItem.setValue(advanceType);
                 comboItem.setLabel(advanceType.getUnitName());
@@ -324,15 +332,19 @@ public class ManageOrderElementAdvancesController extends
         listItem.appendChild(listCell);
     }
 
-    private void appendDecimalBoxMaxValue(final Listitem listItem){
+    private void appendDecimalBoxMaxValue(final Listitem listItem,
+            boolean isQualityForm) {
         AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         Decimalbox maxValue = new Decimalbox();
         maxValue.setScale(2);
 
         final DirectAdvanceAssignment directAdvanceAssignment;
-        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
+        if ((advanceAssignment instanceof IndirectAdvanceAssignment)
+                || isQualityForm) {
             maxValue.setDisabled(true);
+        }
+        if (advanceAssignment instanceof IndirectAdvanceAssignment) {
             directAdvanceAssignment = manageOrderElementAdvancesModel
                     .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advanceAssignment);
         } else {

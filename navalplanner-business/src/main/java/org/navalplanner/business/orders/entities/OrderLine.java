@@ -505,12 +505,7 @@ public class OrderLine extends OrderElement {
 
     @Override
     public DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type) {
-        for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
-            if (directAdvanceAssignment.getAdvanceType().equals(type)) {
-                return directAdvanceAssignment;
-            }
-        }
-        return null;
+        return getDirectAdvanceAssignmentByType(type);
     }
 
     public void incrementLastHoursGroupSequenceCode() {

@@ -22,11 +22,20 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
+import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -57,6 +66,9 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
     private OrderElement orderElement;
 
     private IOrderModel orderModel;
+
+    @Autowired
+    private IAdvanceTypeDAO advanceTypeDAO;
 
     @Override
     public OrderElement getOrderElement() {
@@ -253,6 +265,73 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
                 throw new ValidationException(new InvalidValue(
                         _("date not specified"), TaskQualityForm.class, "date",
                         item.getName(), taskQualityForm));
+            }
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void addAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm)
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        AdvanceType advanceType = taskQualityForm.getQualityForm()
+                .getAdvanceType();
+        advanceTypeDAO.reattach(advanceType);
+        AdvanceAssignment advanceAssignment = taskQualityForm.getOrderElement()
+                .getDirectAdvanceAssignmentByType(advanceType);
+
+        if (advanceAssignment == null) {
+            DirectAdvanceAssignment newAdvanceAssignment = DirectAdvanceAssignment
+                    .create(false, new BigDecimal(100));
+            newAdvanceAssignment.setAdvanceType(advanceType);
+            taskQualityForm.getOrderElement().addAdvanceAssignment(
+                    newAdvanceAssignment);
+            addAdvanceMeasurements(taskQualityForm, newAdvanceAssignment);
+        }
+    }
+
+    private void addAdvanceMeasurements(TaskQualityForm taskQualityForm,
+            DirectAdvanceAssignment newAdvanceAssignment) {
+        for (TaskQualityFormItem taskQualityFormItem : taskQualityForm
+                .getTaskQualityFormItems()) {
+            if (taskQualityFormItem.getPassed()
+                    && (taskQualityFormItem.getDate() != null)) {
+                LocalDate date = LocalDate
+                        .fromDateFields(taskQualityFormItem.getDate());
+                BigDecimal value = taskQualityFormItem.getPercentage();
+                newAdvanceAssignment
+                        .addAdvanceMeasurements(AdvanceMeasurement
+                                .create(date, value));
+            }
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void removeAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm) {
+        AdvanceType advanceType = taskQualityForm.getQualityForm()
+                .getAdvanceType();
+        advanceTypeDAO.reattach(advanceType);
+        AdvanceAssignment advanceAssignment = taskQualityForm.getOrderElement()
+                .getDirectAdvanceAssignmentByType(advanceType);
+
+        if (advanceAssignment != null) {
+            taskQualityForm.getOrderElement().removeAdvanceAssignment(
+                    advanceAssignment);
+        }
+    }
+
+    @Override
+    public void updateAdvancesIfNeeded() {
+        if (orderElement != null) {
+            for (TaskQualityForm taskQualityForm : getTaskQualityForms()) {
+                if (taskQualityForm.isReportAdvance()) {
+                    DirectAdvanceAssignment advanceAssignment = orderElement
+                            .getAdvanceAssignmentByType(taskQualityForm
+                                    .getQualityForm().getAdvanceType());
+                    advanceAssignment.getAdvanceMeasurements().clear();
+                    addAdvanceMeasurements(taskQualityForm, advanceAssignment);
+                }
             }
         }
     }

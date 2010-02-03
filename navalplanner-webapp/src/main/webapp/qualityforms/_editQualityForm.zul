@@ -55,6 +55,10 @@
                                     onSelect="controller.changeQualityFormType();"
                                     selectedItem="@{controller.qualityForm.qualityFormType}"/>
                             </row>
+                            <row>
+                                <label value="${i18n:_('Report advance')}" />
+                                <checkbox checked="@{controller.qualityForm.reportAdvance}" />
+                            </row>
                         </rows>
                     </grid>
                 </vbox>

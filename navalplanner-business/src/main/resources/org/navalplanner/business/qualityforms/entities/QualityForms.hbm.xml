@@ -29,6 +29,12 @@
                 <property name="position" access="field"/>
         </composite-element>
     </list>
+
+    <property name="reportAdvance" access="field" />
+
+    <many-to-one name="advanceType" column="ADVANCE_TYPE_ID"
+        class="org.navalplanner.business.advance.entities.AdvanceType" />
+
 </class>
 
 <!-- TaskQualityForm -->
@@ -55,6 +61,9 @@
                 <property name="date" access="field"/>
         </composite-element>
     </list>
+
+    <property name="reportAdvance" access="field" />
+
 </class>
 
 </hibernate-mapping>

@@ -27,6 +27,8 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
@@ -266,7 +268,49 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             appendNewLabel(row, taskQualityForm.getQualityForm().getName());
             appendNewLabel(row, taskQualityForm.getQualityForm()
                     .getQualityFormType().toString());
+            appendCheckboxReportAdvance(row, taskQualityForm);
             appendOperations(row);
+        }
+
+        private void appendCheckboxReportAdvance(Row row,
+                final TaskQualityForm taskQualityForm) {
+            final Checkbox tmpCheckbox = new Checkbox();
+            Checkbox checkbox = Util.bind(tmpCheckbox,
+                    new Util.Getter<Boolean>() {
+                        @Override
+                        public Boolean get() {
+                            return taskQualityForm.isReportAdvance();
+                        }
+                    }, new Util.Setter<Boolean>() {
+                        @Override
+                        public void set(Boolean value) {
+                            try {
+                                if (value) {
+                                    assignedTaskQualityFormsToOrderElementModel
+                                            .addAdvanceAssignmentIfNeeded(taskQualityForm);
+                                } else {
+                                    assignedTaskQualityFormsToOrderElementModel
+                                            .removeAdvanceAssignmentIfNeeded(taskQualityForm);
+                                }
+
+                                taskQualityForm.setReportAdvance(value);
+                            } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
+                                throw new RuntimeException(e);
+                            } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+                                messages
+                                        .showMessage(
+                                                Level.ERROR,
+                                                _("Another order element in the same branch is already reporting advance for this quality form"));
+                                tmpCheckbox.setChecked(false);
+                            }
+                        }
+                    });
+
+            if (!taskQualityForm.getQualityForm().isReportAdvance()) {
+                checkbox.setDisabled(true);
+            }
+
+            row.appendChild(checkbox);
         }
     }
 
@@ -477,6 +521,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     // Operations to confirm and validate
 
     public boolean confirm() {
+        assignedTaskQualityFormsToOrderElementModel.updateAdvancesIfNeeded();
         validateConstraints();
         return validate();
     }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
@@ -16,10 +17,7 @@ public class TaskQualityForm extends BaseEntity {
 
     public static TaskQualityForm create(OrderElement orderElement,
             QualityForm qualityForm) {
-        TaskQualityForm taskQualityForm = new TaskQualityForm(orderElement,
-                qualityForm);
-        taskQualityForm.setNewObject(true);
-        return taskQualityForm;
+        return create(new TaskQualityForm(orderElement, qualityForm));
     }
 
     protected TaskQualityForm() {
@@ -37,6 +35,8 @@ public class TaskQualityForm extends BaseEntity {
     private QualityForm qualityForm;
 
     private List<TaskQualityFormItem> taskQualityFormItems = new ArrayList<TaskQualityFormItem>();
+
+    private Boolean reportAdvance = false;
 
     @Valid
     public List<TaskQualityFormItem> getTaskQualityFormItems() {
@@ -146,4 +146,14 @@ public class TaskQualityForm extends BaseEntity {
         }
         return true;
     }
+
+    @NotNull(message = "report advance not specified")
+    public Boolean isReportAdvance() {
+        return BooleanUtils.toBoolean(reportAdvance);
+    }
+
+    public void setReportAdvance(Boolean reportAdvance) {
+        this.reportAdvance = BooleanUtils.toBoolean(reportAdvance);
+    }
+
 }

@@ -22,6 +22,8 @@ package org.navalplanner.web.orders;
 
 import java.util.List;
 
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
@@ -123,4 +125,13 @@ public interface IAssignedTaskQualityFormsToOrderElementModel {
      * @param
      */
     void validate();
+
+    void addAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm)
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException;
+
+    void removeAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm);
+
+    void updateAdvancesIfNeeded();
+
 }

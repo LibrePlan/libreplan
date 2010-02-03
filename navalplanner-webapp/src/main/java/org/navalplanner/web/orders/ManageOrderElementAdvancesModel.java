@@ -136,12 +136,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void refreshChangesFromOrderElement() {
-        for (IndirectAdvanceAssignment each : orderElement
-                .getIndirectAdvanceAssignments()) {
-            if (!listAdvanceAssignments.contains(each)) {
-                listAdvanceAssignments.add(each);
-            }
-        }
+        fillVariables();
     }
 
     @Override
@@ -288,6 +283,14 @@ public class ManageOrderElementAdvancesModel implements
         if (this.advanceAssignment == null) {
             return true;
         }
+
+        AdvanceType advanceType = this.advanceAssignment.getAdvanceType();
+        if (advanceType != null) {
+            if (advanceType.isQualityForm()) {
+                return true;
+            }
+        }
+
         return this.isIndirectAdvanceAssignment;
     }
 
@@ -549,6 +552,14 @@ public class ManageOrderElementAdvancesModel implements
         }
 
         return xymodel;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isQualityForm(AdvanceAssignment advance) {
+        AdvanceType advanceType = advance.getAdvanceType();
+        advanceTypeDAO.reattach(advanceType);
+        return advanceType.isQualityForm();
     }
 
 }
