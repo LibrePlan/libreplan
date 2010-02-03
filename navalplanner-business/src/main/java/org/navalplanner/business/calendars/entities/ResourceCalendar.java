@@ -85,7 +85,10 @@ public class ResourceCalendar extends BaseCalendar {
         return false;
     }
 
-    private Integer multiplyByCapacity(Integer workableHours) {
+    private int multiplyByCapacity(Integer workableHours) {
+        if (workableHours == null) {
+            return 0;
+        }
         if (capacity == null) {
             return workableHours;
         }
