@@ -740,7 +740,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void forceLoadOfCriterions(TaskElement taskElement) {
         List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
                 GenericResourceAllocation.class, taskElement
-                        .getResourceAllocations());
+                        .getSatisfiedResourceAllocations());
         for (GenericResourceAllocation each : generic) {
             for (Criterion eachCriterion : each.getCriterions()) {
                 eachCriterion.getName();
@@ -754,7 +754,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
      */
     private void forceLoadOfResourceAllocationsResources(TaskElement taskElement) {
         Set<ResourceAllocation<?>> resourceAllocations = taskElement
-                .getResourceAllocations();
+                .getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {

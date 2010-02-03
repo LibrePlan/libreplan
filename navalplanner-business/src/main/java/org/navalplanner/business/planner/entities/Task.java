@@ -123,7 +123,7 @@ public class Task extends TaskElement {
         throw new UnsupportedOperationException();
     }
 
-    public Set<ResourceAllocation<?>> getResourceAllocations() {
+    public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
         List<ResourceAllocation<?>> filtered = ResourceAllocation
                 .getSatisfied(resourceAllocations);
         return Collections.unmodifiableSet(new HashSet<ResourceAllocation<?>>(
@@ -208,13 +208,13 @@ public class Task extends TaskElement {
     public Set<GenericResourceAllocation> getGenericResourceAllocations() {
         return new HashSet<GenericResourceAllocation>(ResourceAllocation
                 .getOfType(GenericResourceAllocation.class,
-                        getResourceAllocations()));
+                        getSatisfiedResourceAllocations()));
     }
 
     public Set<SpecificResourceAllocation> getSpecificResourceAllocations() {
         return new HashSet<SpecificResourceAllocation>(ResourceAllocation
                 .getOfType(SpecificResourceAllocation.class,
-                        getResourceAllocations()));
+                        getSatisfiedResourceAllocations()));
     }
 
     public static class ModifiedAllocation {
@@ -374,7 +374,7 @@ public class Task extends TaskElement {
 
     private void reassign(AllocationModificationStrategy strategy) {
         List<ModifiedAllocation> copied = ModifiedAllocation
-                .copy(getResourceAllocations());
+                .copy(getSatisfiedResourceAllocations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
                 .modified(copied);
         List<ResourcesPerDayModification> allocations = strategy
@@ -464,7 +464,7 @@ public class Task extends TaskElement {
     }
 
     public void removeAllResourceAllocations() {
-        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
+        Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             removeResourceAllocation(resourceAllocation);
         }

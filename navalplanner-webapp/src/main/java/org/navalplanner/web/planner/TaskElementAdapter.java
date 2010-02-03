@@ -186,7 +186,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private Set<Resource> resourcesForTask() {
-            Set<ResourceAllocation<?>> resourceAllocations = taskElement.getResourceAllocations();
+            Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
             Set<Resource> resources = new HashSet<Resource>();
             for (ResourceAllocation<?> each : resourceAllocations) {
                 resources.addAll(each
@@ -419,7 +419,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             List<String> result = new ArrayList<String>();
             Set<Resource> alreadyFoundResources = new HashSet<Resource>();
             for (ResourceAllocation<?> each : taskElement
-                    .getResourceAllocations()) {
+                    .getSatisfiedResourceAllocations()) {
                 result.addAll(extractRepresentations(each,
                         alreadyFoundResources));
             }

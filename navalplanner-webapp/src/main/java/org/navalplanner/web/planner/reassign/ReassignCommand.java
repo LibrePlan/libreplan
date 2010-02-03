@@ -135,7 +135,7 @@ public class ReassignCommand implements IReassignCommand {
         for (WithAssociatedEntity each : withEntities) {
             taskElementDAO.reattach(each.domainEntity);
             Set<ResourceAllocation<?>> resourceAllocations = each.domainEntity
-                    .getResourceAllocations();
+                    .getSatisfiedResourceAllocations();
             List<GenericResourceAllocation> generic = ResourceAllocation
                     .getOfType(GenericResourceAllocation.class,
                             resourceAllocations);

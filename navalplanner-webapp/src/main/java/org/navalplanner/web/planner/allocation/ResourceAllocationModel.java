@@ -244,10 +244,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
-        loadResources(this.task.getResourceAllocations());
-        loadDerivedAllocations(this.task.getResourceAllocations());
+        loadResources(this.task.getSatisfiedResourceAllocations());
+        loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(this.task
-                .getResourceAllocations());
+                .getSatisfiedResourceAllocations());
         allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
                 createWorkerFinder());
         return allocationRowsHandler;
@@ -275,7 +275,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     private void loadCriterionsOfGenericAllocations() {
         Set<ResourceAllocation<?>> resourceAllocations = this.task
-                .getResourceAllocations();
+                .getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
                 GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;

@@ -137,7 +137,7 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void removeDetachedDerivedDayAssignments(TaskElement taskElement) {
-        for (ResourceAllocation<?> each : taskElement.getResourceAllocations()) {
+        for (ResourceAllocation<?> each : taskElement.getSatisfiedResourceAllocations()) {
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 removeAssigments(eachDerived.getDetached());
                 eachDerived.clearDetached();
@@ -161,7 +161,7 @@ public class SaveCommand implements ISaveCommand {
         if (taskElement.isNewObject()) {
             taskElement.dontPoseAsTransientObjectAnymore();
         }
-        Set<ResourceAllocation<?>> resourceAllocations = taskElement.getResourceAllocations();
+        Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
         dontPoseAsTransient(resourceAllocations);
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {

@@ -88,12 +88,12 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    public Set<ResourceAllocation<?>> getResourceAllocations() {
+    public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
 
         List<TaskElement> children = this.getChildren();
         for (TaskElement child : children) {
-            result.addAll(child.getResourceAllocations());
+            result.addAll(child.getSatisfiedResourceAllocations());
         }
 
         return result;

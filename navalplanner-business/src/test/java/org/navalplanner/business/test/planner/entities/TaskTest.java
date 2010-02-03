@@ -91,7 +91,7 @@ public class TaskTest {
 
     @Test
     public void getResourceAllocationsDoesntRetrieveUnsatisfiedAllocations() {
-        assertThat(task.getResourceAllocations().size(), equalTo(0));
+        assertThat(task.getSatisfiedResourceAllocations().size(), equalTo(0));
 
         SpecificResourceAllocation unsatisfied = SpecificResourceAllocation
                 .create(task);
@@ -99,32 +99,32 @@ public class TaskTest {
                 + "allocation", unsatisfied.isUnsatisfied());
         task.addResourceAllocation(unsatisfied);
 
-        assertThat(task.getResourceAllocations().size(), equalTo(0));
+        assertThat(task.getSatisfiedResourceAllocations().size(), equalTo(0));
         assertThat(task.getAllResourceAllocations().size(), equalTo(1));
     }
 
     @Test
     public void addingNoEmptyResourceAllocationAddsIt() {
-        assertThat(task.getResourceAllocations().size(), equalTo(0));
+        assertThat(task.getSatisfiedResourceAllocations().size(), equalTo(0));
 
         SpecificResourceAllocation resourceAllocation = stubResourceAllocationWithAssignedHours(
                 task, 500);
         task.addResourceAllocation(resourceAllocation);
-        assertThat(task.getResourceAllocations().size(), equalTo(1));
+        assertThat(task.getSatisfiedResourceAllocations().size(), equalTo(1));
     }
 
     @Test
     public void taskRemoveResourceAllocation() {
-        assertThat(task.getResourceAllocations().size(), equalTo(0));
+        assertThat(task.getSatisfiedResourceAllocations().size(), equalTo(0));
 
         SpecificResourceAllocation resourceAllocation = stubResourceAllocationWithAssignedHours(
                 task, 500);
         task.addResourceAllocation(resourceAllocation);
 
-        assertThat(task.getResourceAllocations().size(), equalTo(1));
+        assertThat(task.getSatisfiedResourceAllocations().size(), equalTo(1));
 
         task.removeResourceAllocation(resourceAllocation);
-        assertThat(task.getResourceAllocations().size(), equalTo(0));
+        assertThat(task.getSatisfiedResourceAllocations().size(), equalTo(0));
     }
 
     @Test

@@ -326,11 +326,11 @@ public abstract class TaskElement extends BaseEntity {
         return calendar;
     }
 
-    public abstract Set<ResourceAllocation<?>> getResourceAllocations();
+    public abstract Set<ResourceAllocation<?>> getSatisfiedResourceAllocations();
 
     public SortedMap<LocalDate, Integer> getHoursAssignedByDay() {
         SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
-        for (ResourceAllocation<?> resourceAllocation : getResourceAllocations()) {
+        for (ResourceAllocation<?> resourceAllocation : getSatisfiedResourceAllocations()) {
             for (DayAssignment each : resourceAllocation
                     .getAssignments()) {
                 addToResult(result, each.getDay(), each.getHours());
@@ -347,7 +347,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public List<DayAssignment> getDayAssignments() {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
-        Set<ResourceAllocation<?>> resourceAllocations = getResourceAllocations();
+        Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             dayAssignments.addAll(resourceAllocation.getAssignments());
         }

@@ -96,7 +96,7 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
         for(TaskElement each: tasks) {
             each.getName();
             initializeTaskSource(each.getTaskSource());
-            initializeResourceAllocations(each.getResourceAllocations());
+            initializeResourceAllocations(each.getSatisfiedResourceAllocations());
         }
     }
 

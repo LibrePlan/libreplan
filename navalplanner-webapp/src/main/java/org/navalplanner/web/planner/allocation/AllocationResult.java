@@ -62,7 +62,7 @@ public class AllocationResult {
 
     public static AllocationResult createCurrent(Task task) {
         Set<ResourceAllocation<?>> resourceAllocations = task
-                .getResourceAllocations();
+                .getSatisfiedResourceAllocations();
         List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation
                 .copy(resourceAllocations);
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
@@ -141,7 +141,7 @@ public class AllocationResult {
     private Set<ResourceAllocation<?>> getNotModified(
             List<ResourceAllocation<?>> modified) {
         Set<ResourceAllocation<?>> all = new HashSet<ResourceAllocation<?>>(
-                task.getResourceAllocations());
+                task.getSatisfiedResourceAllocations());
         all.removeAll(modified);
         return all;
     }

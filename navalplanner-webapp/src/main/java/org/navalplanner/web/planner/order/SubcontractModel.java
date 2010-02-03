@@ -159,7 +159,7 @@ public class SubcontractModel implements ISubcontractModel {
     @Override
     public boolean hasResourceAllocations() {
         if (task != null) {
-            return !task.getResourceAllocations().isEmpty();
+            return !task.getSatisfiedResourceAllocations().isEmpty();
         }
         return false;
     }

@@ -90,7 +90,7 @@ public class AdvancedAllocationTabCreator {
         private Set<Resource> getAssociatedResources(Task task) {
             Set<Resource> result = new HashSet<Resource>();
             for (ResourceAllocation<?> resourceAllocation : task
-                    .getResourceAllocations()) {
+                    .getSatisfiedResourceAllocations()) {
                 result.addAll(resourceAllocation.getAssociatedResources());
             }
             return result;

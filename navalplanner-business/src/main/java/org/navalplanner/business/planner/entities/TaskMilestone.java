@@ -49,7 +49,7 @@ public class TaskMilestone extends TaskElement {
 
     }
 
-    public Set<ResourceAllocation<?>> getResourceAllocations() {
+    public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
         return Collections.emptySet();
     }
 
