@@ -90,13 +90,17 @@ public class TaskTest {
     }
 
     @Test
-    public void addingEmptyResourceAllocationDoesntAddIt() {
+    public void getResourceAllocationsDoesntRetrieveUnsatisfiedAllocations() {
         assertThat(task.getResourceAllocations().size(), equalTo(0));
 
-        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
-        task.addResourceAllocation(resourceAllocation);
+        SpecificResourceAllocation unsatisfied = SpecificResourceAllocation
+                .create(task);
+        assertTrue("in order to be meaningful this test needs an unsatisfied "
+                + "allocation", unsatisfied.isUnsatisfied());
+        task.addResourceAllocation(unsatisfied);
 
         assertThat(task.getResourceAllocations().size(), equalTo(0));
+        assertThat(task.getAllResourceAllocations().size(), equalTo(1));
     }
 
     @Test
@@ -152,6 +156,7 @@ public class TaskTest {
                 .anyTimes();
         expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
         expect(resourceAllocation.hasAssignments()).andReturn(true).anyTimes();
+        expect(resourceAllocation.isSatisfied()).andReturn(true).anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;
     }

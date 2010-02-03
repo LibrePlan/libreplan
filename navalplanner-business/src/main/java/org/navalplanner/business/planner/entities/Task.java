@@ -124,21 +124,14 @@ public class Task extends TaskElement {
     }
 
     public Set<ResourceAllocation<?>> getResourceAllocations() {
-        return Collections.unmodifiableSet(filterEmpty(resourceAllocations));
+        List<ResourceAllocation<?>> filtered = ResourceAllocation
+                .getSatisfied(resourceAllocations);
+        return Collections.unmodifiableSet(new HashSet<ResourceAllocation<?>>(
+                filtered));
     }
 
-    private Set<ResourceAllocation<?>> filterEmpty(
-            Set<ResourceAllocation<?>> allocations) {
-        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
-        for (ResourceAllocation<?> each : allocations) {
-            if (each.hasAssignments()) {
-                result.add(each);
-            } else {
-                LOG.warn("there is an empty resource allocation: "
-                        + each.toString() + " ,on task: " + this);
-            }
-        }
-        return result;
+    public Set<ResourceAllocation<?>> getAllResourceAllocations() {
+        return Collections.unmodifiableSet(resourceAllocations);
     }
 
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
@@ -146,13 +139,8 @@ public class Task extends TaskElement {
             throw new IllegalArgumentException(
                     "the resourceAllocation's task must be this task");
         }
-        if (resourceAllocation.hasAssignments()) {
-            resourceAllocations.add(resourceAllocation);
-            resourceAllocation.associateAssignmentsToResource();
-        } else {
-            LOG.warn("adding a resource allocation without assignments: "
-                    + resourceAllocation);
-        }
+        resourceAllocations.add(resourceAllocation);
+        resourceAllocation.associateAssignmentsToResource();
     }
 
     public void removeResourceAllocation(

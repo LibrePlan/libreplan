@@ -56,6 +56,17 @@ import org.navalplanner.business.resources.entities.Resource;
 public abstract class ResourceAllocation<T extends DayAssignment> extends
         BaseEntity {
 
+    public static <T extends ResourceAllocation<?>> List<T> getSatisfied(
+            Collection<T> resourceAllocations) {
+        List<T> result = new ArrayList<T>();
+        for (T each : resourceAllocations) {
+            if (each.isSatisfied()) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     public static <T extends ResourceAllocation<?>> List<T> getOfType(
             Class<T> type,
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
@@ -453,8 +464,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         assert isUnsatisfied();
     }
 
+    public boolean isSatisfied() {
+        return hasAssignments();
+    }
+
     public boolean isUnsatisfied() {
-        return !hasAssignments();
+        return !isSatisfied();
     }
 
     private void resetAssignmentsTo(List<T> assignments) {
