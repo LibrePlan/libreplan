@@ -33,7 +33,9 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
- * Computes aggregate values on a set{@link ResourceAllocation}
+ * Computes aggregate values on a set{@link ResourceAllocation}.
+ * <p>
+ * It only contains satisfied resource allocations
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class AggregateOfResourceAllocations {
@@ -45,7 +47,7 @@ public class AggregateOfResourceAllocations {
         Validate.notNull(allocations);
         Validate.noNullElements(allocations);
         this.resourceAllocations = new HashSet<ResourceAllocation<?>>(
-                allocations);
+                ResourceAllocation.getSatisfied(allocations));
     }
 
     public int getTotalHours() {
@@ -65,16 +67,7 @@ public class AggregateOfResourceAllocations {
     }
 
     public boolean isEmpty() {
-        return resourceAllocations.isEmpty() || allEmpty();
-    }
-
-    private boolean allEmpty() {
-        for (ResourceAllocation<?> each : resourceAllocations) {
-            if (each.hasAssignments()) {
-                return false;
-            }
-        }
-        return true;
+        return resourceAllocations.isEmpty();
     }
 
     public List<ResourceAllocation<?>> getAllocationsSortedByStartDate() {

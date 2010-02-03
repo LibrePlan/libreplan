@@ -30,6 +30,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,15 @@ public class AggregateOfResourceAllocationsTest {
     }
 
     @Test
+    public void unsatisfiedAllocationsAreIgnored() {
+        List<ResourceAllocation<?>> allocationsList = Collections
+                .<ResourceAllocation<?>> singletonList(givenUnsatisfiedResourceAllocation());
+        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
+                allocationsList);
+        assertTrue(aggregate.isEmpty());
+    }
+
+    @Test
     public void calculatesTheTotalHours() {
         givenAggregateOfResourceAllocationsWithAssignedHours(4, 5, 6);
         assertThat(aggregate.getTotalHours(), equalTo(15));
@@ -92,10 +102,18 @@ public class AggregateOfResourceAllocationsTest {
             ResourceAllocation<?> resourceAllocation = createMock(ResourceAllocation.class);
             expect(resourceAllocation.getResourcesPerDay()).andReturn(r)
                     .anyTimes();
+            expect(resourceAllocation.isSatisfied()).andReturn(true).anyTimes();
             replay(resourceAllocation);
             list.add(resourceAllocation);
         }
         aggregate = new AggregateOfResourceAllocations(list);
+    }
+
+    private ResourceAllocation<?> givenUnsatisfiedResourceAllocation() {
+        ResourceAllocation<?> result = createMock(ResourceAllocation.class);
+        expect(result.isSatisfied()).andReturn(false).anyTimes();
+        replay(result);
+        return result;
     }
 
     private void givenAggregateOfResourceAllocationsWithAssignedHours(
@@ -104,6 +122,8 @@ public class AggregateOfResourceAllocationsTest {
         for (int h : hours) {
             ResourceAllocation<?> resourceAllocation = createMock(ResourceAllocation.class);
             expect(resourceAllocation.getAssignedHours()).andReturn(h)
+                    .anyTimes();
+            expect(resourceAllocation.isSatisfied()).andReturn(true)
                     .anyTimes();
             replay(resourceAllocation);
             list.add(resourceAllocation);
