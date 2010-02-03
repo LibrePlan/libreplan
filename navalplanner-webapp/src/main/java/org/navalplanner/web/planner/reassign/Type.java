@@ -47,11 +47,11 @@ public enum Type {
             return false;
         }
     },
-    FROM_CHOOSEN {
+    FROM_CHOSEN {
 
         @Override
         public String getName() {
-            return _("From Choosen");
+            return _("From Chosen");
         }
 
         @Override

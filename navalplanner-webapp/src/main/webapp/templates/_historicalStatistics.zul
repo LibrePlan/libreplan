@@ -26,7 +26,7 @@
     <!-- Order element historic assignment to templates-->
     <vbox>
         <vbox id="messagesContainerHistoricStatistics" />
-        <panel title="${i18n:_('Historical list ')}" border="normal">
+        <panel title="${i18n:_('Statistics list ')}" border="normal">
             <panelchildren>
                <grid>
                     <columns>

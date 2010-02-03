@@ -9,8 +9,8 @@
     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
     <label value="${i18n:_('include order elements')}"/>
     <checkbox id="checkIncludeOrderElements"
-        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}" />
+        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required criteria')}" />
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}"
+        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required criteria')}"
         onClick="controller.onApplyFilter()"/>
 </hbox>

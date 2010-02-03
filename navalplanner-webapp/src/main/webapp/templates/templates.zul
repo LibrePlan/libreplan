@@ -57,7 +57,7 @@
                     <tab label="${i18n:_('Materials')}" />
                     <tab label="${i18n:_('Quality Forms')}" />
                     <tab label="${i18n:_('Assignment log')}" />
-                    <tab label="${i18n:_('Historical statistics')}" />
+                    <tab label="${i18n:_('Statistics log')}" />
                 </tabs>
                 <tabpanels>
                     <tabpanel>
