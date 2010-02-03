@@ -1,92 +1,92 @@
-Xestión de custos
+﻿Cost management
 #################
 
-.. _tarefas:
+.. _costes:
 .. contents::
 
 
-Custos
-======
+Costs
+=====
 
-A xestión de custos está prantexada para poder realizar unha previsión estimativa dos custos dos recursos de un proxecto. Para a xestión de custos determinouse a existencia das seguintes entidades:
+Cost management allows users to estimate the costs of resources used in a project. In order to manage costs, the following entities have to be determined:
 
-* Tipos de horas traballadas: Indicarán os tipos de horas de traballo dos recursos. É posible incluílos como tipos tanto os tipos de horas para máquinas como para traballadores. Exemplos de tipos de horas serían: Extraordinarias pagadas a 20 euros de xeito xenérico. Os campos que se poden incluír nos tipos de horas traballadas:
+* Hour type worked: These indicate the hour types worked for the resource. Users can include hour types for machines and for workers. Examples of hour types include: Additional hours paid at €20 per hour generically. The following fields can be included in the hour types worked:
 
-   * Código: Código externo do tipo de horas.
-   * Nome: Nome do tipo de hora. Por exemplo, extraordinaria.
-   * Prezo por defecto: Prezo base por defecto para o tipo de horas.
-   * Activado: Indica se o tipo de hora está activado.
+   * Code: External code for the hour type.
+   * Name: Name of the hour type. For example, additional.
+   * Default rate: Basic default rate for the hour type.
+   * Activation: Indicating whether the hour type is activated or not.
 
-* Categorías de custo. As categorías de custo indican categorías que se utilizarán para definir custos dependendo dos tipos de horas durante uns períodos (estes períodos poden ser indefinidos). Por exemplo, as horas extraordinarias dos oficiais de 1ª durante o seguinte ano será 24 euros hora. As categorías de custo estarán formadas por:
+* Cost categories. Cost categories show categories that are used to define costs according to hour type during certain periods (these periods may be indefinite). For example, the cost of additional hours for first grade skilled workers in the following year is €24 per hour. Cost categories contain:
 
-   * Nome: Nome da categoría de custo.
-   * Activado: Indica se a categoría está activada ou non.
-   * Listado de tipos de hora asignados á categoría de custo. Indicarán diversos períodos e prezos para os tipos de hora. Por exemplo, cada ano con cambio de prezos incluirase como un período de tipo de hora neste listado. Por outro lado, para cada tipo de horas mantense un prezo por hora (que pode ser diferente do prezo por hora por defecto que se incluiu para o tipo de hora).
+   * Name: Cost category name.
+   * Activation: Indicating whether the category is activated or not.
+   * List of hour types assigned to the cost category. They indicate several periods and rates for hour types. For example, as rates change, each year is included on this list as an hour type period, but an hourly rate is maintained for each hour type (which may be different from the default hourly rate included for the hour type).
 
 
+Managing hour types worked
+------------------------------------------
 
-Administración de horas traballadas
------------------------------------
+Users need to carry out the following steps to register hour types worked:
 
-Para dar de alta tipos de horas traballadas é necesario dar os seguintes pasos:
-
-* Seleccionar a operación "Administrar tipos de hora de traballo" no menú de "Administración".
-* A aplicación amosa o listado de tipos de hora existentes.
+* Select “Manage hour types worked ” on the “Administration” menu.
+* The program shows a list of existing hour types.
 
 .. figure:: images/hour-type-list.png
    :scale: 35
 
-   Lista de tipos de horas
+   Hour type list
 
-* O usuario preme na icona de "Editar" ou preme no botón "Crear".
-* A aplicación amosa un formulario de edición do tipo de hora.
+* Click “Edit” or “Create”.
+* The program shows an hour type editing form.
 
 .. figure:: images/hour-type-edit.png
    :scale: 50
 
-   Edición de tipos de horas
+   Editing hour types
 
-* O usuario introduce ou modifica:
+* Users can enter or change:
 
-   * O nome do tipo de hora.
-   * O código do tipo de hora.
-   * O prezo por defecto.
-   * Activación/Desactivación do tipo de hora.
+   * The hour type name.
+   * The hour type code.
+   * The default rate.
+   * Hour type activation/de-activation.
 
-* O usuario preme en "Gardar" ou "Gardar e Continuar".
+* Click “Save” or “Save and continue”.
 
-Categorías de custo
+Cost categories
 -------------------
 
-Para dar de alta categorías de custo é necesario dar os seguintes pasos:
+Users need to carry out the following steps to register cost categories:
 
-* Seleccionar a operación "Administrar categorías de custo" no menú de "Administración".
-* A aplicación amosa o listado de categorías existentes.
+* Select “Manage cost categories” on the “Administration” menu.
+* The program shows a list of existing categories.
 
 .. figure:: images/category-cost-list.png
    :scale: 50
 
-   Lista de categorías de custo
+   Cost category list 
 
-* O usuario preme na icona de "Editar" ou preme no botón "Crear".
-* A aplicación amosa un formulario de edición da categoría de custo.
+* Click “Edit” or “Create” button.
+* The program shows a cost category editing form.
 
 .. figure:: images/category-cost-edit.png
    :scale: 50
 
-   Edición de categorías de custo
+   Editing cost categories
 
-* O usuario introduce ou modifica:
+* Users enter or change:
 
-   * O nome da categoría de custo.
-   * Activación/Desactivación do tipo de hora.
-   * Listado de tipos de hora que forman parte da categoría. Para cada tipo de hora:
+   * The name of the cost category.
+   * The activation/de-activation of the hour type.
+   * The list of hour types included in the category. All hour types have the following fields:
 
-      * Tipo de hora: Elixir un dos tipos de hora existentes no sistema. Se non existen ningún é necesario crealo (explícase na subsección anterior).
-      * Data de inicio e data fin (opcional esta segunda) do período no que afecta a categoría de custo.
-      * Prezo por hora para esta categoría especificamente.
+      * Hour type: Choose one of the existing hour types on the system. If none exist, an hour type has to be created (this process is explained in the previous subsection).
+      * Start and finish date (the latter is optional) for the period that applies to the cost category.
+      * Hourly rate for this specific category
 
-* O usuario preme en "Gardar" ou "Gardar e Continuar".
+* Click “Save” or “Save and continue”.
 
 
-A asignación de categorías de custo a recursos pode verse no capítulo de recursos. Acceder á sección de "Recursos".
+The assignment of cost categories to resources is described in the chapter on resources. Go to the “Resources” section.
+

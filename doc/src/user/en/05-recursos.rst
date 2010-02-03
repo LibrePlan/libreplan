@@ -1,172 +1,169 @@
-Xestión de recursos
-###################
+﻿Management of resources
+#######################
 
 .. _recursos:
 .. contents::
 
-A aplicación xestiona dous tipos de recursos diferentes: recursos traballadores e recursos máquinas.
+The program manages two different types of resources: staff and machines.
 
-Os recursos traballadores representan os traballadores das empresas. As características principais son:
+Staff resources are the workers of the companies. Their main characteristics are:
 
-* Satisfarán un ou varios criterios de tipo xenérico ou tipo traballador.
-* Son asignables específicamente a unha tarefa.
-* Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai o traballador.
-* Disporán de un calendario por defecto ou específico se así o decide o usuario.
+* They fulfil one or several generic or worker criteria.
+* They can be specifically assigned to a task.
+* They can be assigned, as part of the generic assignment, to a task that requires a resource criterion.
+* They have a default or specific calendar if the user so decides.
 
-Os recursos máquina representan as máquinas das empresas. As características principais son:
+Machine resources are the machines in the companies. Their main characteristics are:
 
-* Satisfarán un ou varios criterios de tipo xenérico ou tipo máquina.
-* Son asignables específicamente a unha tarefa.
-* Son asignables como parte da asignación xenérica a unha tarefa que requira un criterio que satisfai a máquina.
-* Disporán de un calendario por defecto ou específico se así o decide o usuario.
-* Contará un unha pantalla de configuración na que se poderá establecer un valor *alfa* que represente a relación entre máquina e traballador.
+* They fulfil one or several generic or machine criteria.
+* They can be specifically assigned to a task.
+* They can be assigned, as part of the generic assignment, to a task that requires a machine criterion.
+* They have a default or specific calendar if the user so decides.
+* The program will have a configuration screen where an *alpha* value can be set up that represents the machine/worker ratio.
 
-  * O *alfa* representa canto tempo dun traballador é necesario para que a máquina funcione. Por exemplo, un alfa de 0.5 indica que de cada 8 horas de máquina son necesarias 4 de un traballador.
-  * É posible asignar un *alfa* de xeito específico a un traballador, é dicir, elíxese o traballador que estará ocupado esa porcentaxe do seu tempo coa máquina.
-  * Ou ben, é posible facer unha asignación xenérica en base a un criterio, de xeito que se asigna unha porcentaxe do uso a todos os criterios que satisfán ese criterio e teñen tempo dispoñible. O funcionamento da asignación xenérica será a mesma que a explicada para asignacións xenéricas a tarefas.
+  * The *alpha* value represents how much time a worker is needed to make the machine work. For example, an alpha value of 0.5 means that every 8 hours of machine work requires 4 hours of a worker’s time.
+  * Users can assign an *alpha* value specifically to a worker, i.e. selecting the worker who will be assigned to the machine for this percentage of time.
+  * Users can also make a generic assignment based on one criterion, so that a percentage of use is assigned to all the criteria that fulfil this criterion and have time available. Generic assignment works in the same way as generic assignment to tasks, which has already been explained.
 
-O usuario poderá crear, editar e invalidar (nunca borrar definitivamente) traballadores da empresa dende a pestana de "Recursos". Dende dita pestana existen as seguintes operacións:
+Users can create, edit and invalidate (never delete definitively) workers from the company by going to the "Resources" tab. This tab has the following features:
 
-* Listado de traballadores: Os traballadores amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
-* Listado de máquinas: As máquinas amosaranse listados e paxinados, dende onde poderán xestionar os seus datos.
+* List of workers: Workers will be shown in lists and will be numbered. This is where their details can be managed.
+* List of machines: Machines will be shown in lists and will be numbered. This is where their details can be managed.
 
-Xestión de traballadores
+Management of workers
 ========================
 
+The management of workers is carried out by going to the "Resources" tab and then the feature "List of workers". Users can edit all of the workers on the resource list by clicking the standard editing icon.
 
-A xestión de traballadores realizarase dende a pestana de "Recursos" e a operación de "Lista de traballadores". Dende a lista de recursos é posible editar cada un dos traballadores premendo na icona estándar de edición.
+When users are in the editing option of a resource, they can access the following tabs:
 
-Unha vez na edición dun recurso, o usuario poderá acceder ás seguintes pestanas:
+1) Worker details tab. This tab lets users edit the basic ID details of workers.
 
-1) Pestana de datos de traballador. Esta pestana permitirá editar os datos básicos de identificación do traballador.
-
-   * Nome
-   * Apelidos
-   * DNI
+   * Name
+   * Surname(s)
+   * National ID document (DNI)
 
 .. figure:: images/worker-personal-data.png
    :scale: 50
 
-   Edición de datos persoais de traballador
+   Editing workers' personal details
 
-2) Pestana de criterios. Dende este punto poderase configurar os criterios que un traballador satisfai. O usuario poderá asignar calquera valor de criterio de tipo traballador ou xenérico que así considere a un traballador. É importante, para que a aplicación sexa utilizada en todo o seu valor, que os traballadores satisfagan criterios. Para asignar criterios o usuario debe:
+2) Criteria tab. This is where the criteria fulfilled by a worker can be configured. Users can assign any worker or generic criteria that they consider suitable to a worker. It is important that the workers fulfil criteria in order for the program to be used to its full extent. Users must do the following to assign criteria:
 
-   i. Premer no botón "Engadir criterio".
+   i. Click the "Add criteria" button.
 
-   ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
+   ii. Search for the criterion to be added and select the most appropriate.
 
-   iii. Premer no botón de engadir.
+   iii. Click the add button.
 
-   iv. Seleccionar data de inicio do criterio dende o momento que deba aplicarse.
+   iv. Select the start date of the criterion when it becomes applicable.
 
-   v. Seleccionar a data de fin de aplicación do criterio ó recurso. Dita data non é obrigatoria indicando que o criterio é indefinido.
+   v. Select the end date for applying the criterion to the resource. This date is not obligatory if the criterion is shown as being indefinite.
 
 .. figure:: images/worker-criterions.png
    :scale: 50
 
-   Asociación de criterios a traballador
+   Associating criteria with workers
 
-3)  Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para o recurso traballador. Cada traballador disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir dun existente.
+3) Calendar tab. This tab can be used to configure a specific calendar for the worker resource. All workers have an assigned default calendar; however, it is possible to assign a specific calendar for each one based on an existing calendar.
 
 .. figure:: images/worker-calendar.png
    :scale: 50
 
-   Pestana de calendario para un recurso
+   Calendar tab for a resource
 
-4)  Pestana de categoría de custo. Pestana dende a que se pode configurar a categoría de custo que satisfai un recurso nun período dado. Estes datos son utilizados para posteriormente calcular os custos asociados ó traballador nun proxecto.
+4) Cost category tab. This tab can be used to configure the cost category that a resource fulfils in a given time. These details are used to subsequently calculate the costs relating to a worker in a project.
 
 .. figure:: images/worker-costcategory.png
    :scale: 50
 
-   Pestana de categoría de custo para recurso
+   Cost category tab for a resource
 
-A asignación de recursos explícase na sección de asignación de recursos.
+Resource assignment is explained in the resource assignment section.
 
+Management of machines
+=======================
 
-Xestión de máquinas
-===================
+Machines are resources for all purposes; therefore, similar to workers, machines can be managed and assigned tasks. Resource assignment is dealt with in the assignment section, in which the specific features of machines will be explained.
 
-As máquinas son recursos a todos os efectos, polo cal, tal e como sucede cos traballadores, as máquinas serán administrables e asignables a tarefas. A asignación de recursos tratarase na sección de asignación. Neste punto explicaranse as características específicas das máquinas.
+Machines are managed from the "Resources" menu entry. This section has an operation called "Machine list", which shows the machines a company has. Users can edit or delete a machine from this list.
 
-As máquinas son administradas dende a entrada de menú "Recursos". En dita sección existe unha operación chamada "Listado de máquinas" que permitirá a visualización das máquinas que dispoñen nunha empresa. A partir deste listado poderase editar ou borrar unha máquina.
+When editing machines, the system shows a series of tabs that can be used to manage different details:
 
+1) Machine details tab. This tab can be used to edit the ID details of the machines. The details that can be changed on this tab are:
 
-Na edición dunha máquina o sistema amosará unha serie de pestanas dende as cales se permitirá administrar diferentes datos:
+   i Name.
 
-1) Pestana de datos da máquina. Pestana para a edición de datos identificativos das máquinas. Os datos modificables nesta pestana son:
+   ii Machine code.
 
-   i Nome.
-
-   ii Código da máquina.
-
-   iii Descrición da máquina.
+   iii Description of the machine.
 
 
 .. figure:: images/machine-data.png
    :scale: 50
 
-   Edición de datos de máquina
+   Editing machine details
 
-2) Pestana de criterios. Tal e como se comentou na anterior sección de recursos traballadores, esta será a pestana na que se poden engadir criterios que satisfán as diversas máquinas do sistema. Os criterios que serán asignables ás máquinas serán os de criterios de tipo máquina ou xenéricos. Non se poderán asignar criterios de traballadores. Para asignar criterios o usuario deberá:
+2) Criteria tab. As stated in the previous section on worker resources, this tab is used to add criteria that are fulfilled by the different machines on the system. There are two types of criteria that can be assigned to machines: machine or generic. Worker criteria cannot be assigned to machines. Users must do the following to assign criteria:
 
-   i. Premer no botón "Engadir criterio".
+   i. Click the "Add criteria" button.
 
-   ii. Buscar o criterio que desexa engadir e seleccionar o que encaixe coa súa procura.
+   ii. Search for the criterion to be added and select the most appropriate.
 
-   iii. Seleccionar data de inicio do criterio dende o momento que deba aplicarse.
+   iii. Select the start date for the criterion when it becomes applicable.
 
-   iv. Seleccionar a data de fin de aplicación do criterio ó recurso. Dita data non é obrigatoria indicando que o criterio é indefinido.
+   iv. Select the end date for applying the criterion to the resource. This date is not obligatory if the criterion is shown as being indefinite.
 
-   v. Premer no botón de "Gardar e Continuar".
+   v. Click the "Save and continue" button.
 
 .. figure:: images/machine-criterions.png
    :scale: 50
 
-   Asignación de criterios a máquinas
+   Assigning criteria to machines
 
-3) Pestana de calendario. Pestana dende a que se pode configurar un calendario específico para o recurso máquina. Cada traballador disporá de un calendario por defecto asignado, sen embargo, será posible asignar un calendario específico para cada un a partir dun existente.
+3) Calendar tab. This tab can be used to configure a specific calendar for the machine resource. All workers have an assigned default calendar; however, it is possible to assign a specific calendar for each one based on an existing calendar.
 
 .. figure:: images/machine-calendar.png
    :scale: 50
 
-   Asignación de calendario a máquina
+   Assigning calendars to machines
 
-4) Pestana de configuración de máquinas: Dende esta pestana será posible configurar a relación das máquinas cos recursos traballadores existentes. Unha máquina disporá de un alfa que indicará a relación entre a máquina e os recursos implicados, tal e como xa se comentou, un alfa de 0.5 indicará que se consumirá traballo de 0.5 persoas para cada xornada completa de máquina. O sistema, a partir dun alfa, crea automaticamente asignacións á traballadores que estean dalgún xeito relacionado coa máquina unha vez se asigna unha máquina a unha tarefa. A forma de relacionar un traballador con unha máquina pódese facer de dous xeitos:
+4) Machine configuration tab. On this tab, it is possible to configure the ratio of machines to existing worker resources. A machine has an alpha value that indicates the machine/involved resources ratio. As has already been mentioned, an alpha value of 0.5 indicates that 0.5 people are used for each full day's operation of a machine.  The system, based on an alpha value, automatically assigns workers who are in some way associated with a machine once the machine is assigned to a task. Associating a worker with a machine can be done in two ways:
 
-   i Asignando especificamente un rango de datas nas que o traballador se desexa asignar a unha máquina. Será unha asignación específica de modo que o sistema asignará automaticamente horas ó traballador cando se planifique a máquina.
+   i Specifically assigning a range of dates on which the worker is to be assigned to a machine. This is a specific assignment as the system automatically assigns hours to the worker when the machine is planned.
 
-   ii Asignando especificamente criterios que se desexa satisfagan os traballadores que sexan asignados ás máquinas. Deste xeito farase unha asignación xenérica ós traballadores que satisfán os criterios.
+   ii Specifically assigning criteria to be fulfilled by workers who are assigned to machines. This creates a generic assignment of workers who fulfil the criteria.
 
 .. figure:: images/machine-configuration.png
    :scale: 50
 
-   Configuración de máquina
+   Configuration of machines
 
-5) Pestana de categoría de custo. Pestana dende a que se pode configurar a categoría de custo que satisfai unha máquina nun período dado. Estes datos son utilizados para posteriormente calcular os custos asociados ó traballador nun proxecto.
+5) Cost category tab. This tab can be used to configure the cost category fulfilled by a machine in a given time. These details are used to subsequently calculate the costs relating to a worker in a project.
 
 .. figure:: images/machine-costcategory.png
    :scale: 50
 
-   Asignación de categoría de custo a máquina
+   Assigning cost categories to machines
 
-Grupos de traballadores virtuais
+Virtual worker groups 
 ================================
 
-A aplicación permite a creación de recursos no sistema os cales non son traballadores reais, senón que son persoal simulado que permite aumentar a capacidade produtiva nun momento determinado segundo as configuracións que se definan do seu calendario.
+The program enables users to create resources in the system, which are not real workers but simulated staff that enable production capacity to be increased at a specific time according to the configured settings in the calendar.
 
-Mediante os grupos de traballadores virtuais será posible comprobar como se vería afectada a planificación dos proxectos contratando e asignando persoal que satisfaga os criterios que se definan, axudando deste modo no proceso de toma de decisións
+Through virtual worker groups, it is possible to check how project planning would be affected by contracting and assigning staff who fulfil the defined criteria, thus facilitating the decision-making process.
 
-As pestanas das que consta o formulario de creación de grupos de traballadores virtuais son as mesmas que as que permiten configurar os traballadores, e dicir:
+The tabs for creating virtual worker groups are the same as the ones to configure workers: 
 
-   * Datos xerais
-   * Criterios asignados
-   * Calendarios
-   * Horas asociadas
+   * General details
+   * Assigned criteria
+   * Calendars
+   * Associated hours
 
-A diferencia con respecto ós traballadores, e que nos grupos de traballadores virtuais especifícase un nome para o grupo e unha cantidade que se corresponderá co número de persoas reais que forman este grupo. Adicionalmente existe un campo de observacións no que se pode aportar información adicional como por exemplo para que proxecto estaría prevista a contratación do equivalente do grupo de recursos virtuais, etc.
+The difference with respect to workers is that virtual worker groups have a name for the group and a quantity, which refers to the number of real people in the group. There is also a field for comments, in which additional information can be provided, for example, which project would require contracting that is equivalent to the virtual worker group.
 
 .. figure:: images/virtual-resources.png
    :scale: 50
 
-   Recursos virtuais
+   Virtual resources
 

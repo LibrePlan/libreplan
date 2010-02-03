@@ -1,43 +1,44 @@
-Materiais
+﻿Materials
 ##########
 .. _materiales:
 .. contents::
 
 
-Administración de materiais
+Administration of materials
 ===========================
 
-É posible xestionar unha base de datos de materiais básica organizados por categorías.
+Users can manage a basic database of materials, organised by categories. 
 
-As categorías son contedores ós que se poden asignar materiais concretos e ó mesmo tempo máis categorías. Almacénanse en modo arbóreo de xeito que os materiais poden pertencer a categorías folla ou categorías intermedias.
+The categories are containers that can be assigned specific materials and also more categories. They are stored in a tree structure as the materials can belong to leaf or intermediary categories.
 
-Para administrar categorías:
+Users have to do the following to manage categories:
 
-* O usuario accede á operación de "Administración->Materiais".
-* A aplicación amosa unha árbore de categorías.
-* O usuario introduce un nome de categoría dentro da entrada de texto con un botón "Engadir" e preme no botón.
-* A aplicación engade a categoría na árbore de categorías.
+* Go to the “Administration->Materials” option.
+* The program shows a tree of categories.
+* The user enters a category name in the text box and then clicks “Add”.
+* The program adds the category to the tree.
 
-Se o usuario desexa posicionar unha categoría dentro da árbore de categorías debe seleccionar previamente a categoría pai en dita árbore para despois premer en "Engadir".
+If users want to insert a category into the category tree, they have to first select the parent category in the tree and then click “Add”.
 
 .. figure:: images/material.png
    :scale: 50
 
-   Pantalla de administración de materiais
+   Material administration screen
 
-Para administrar materiais:
+Users have to do the following to manage materials:
 
-* O usuario selecciona a categoría para a que desexa incluír materiais e preme no botón "Engadir" na zona dereita de "Materiais".
-* A aplicación engade unha nova fila baleira con campos para introducir os datos do material:
+* Select the category to which materials are to be included and click ”Add” to the right of “Materials”.
+* The program adds a new empty row with fields to enter details about the material:
 
-   * Código: Código do tipo de material (pode ser o código externo).
-   * Descrición: Descrición do material.
-   * Prezo da unidade: Prezo unitario de cada elemento de material.
-   * Unidade: Unidade na que se desexa medir cada unidade de material.
-   * Categoría: Categoría á que pertence.
-   * Deshabilitado: Se o material está borrado ou non.
+   * Code: Material type code (this can be the external code from an ERP).
+   * Description: Description of the material.
+   * Price of the unit: Unit price of each piece of material.
+   * Unit: Unit that is used to measure each unit of material.
+   * Category: Category to which it belongs.
+   * Availability: Whether or not the material has been removed.
 
-* O usuario enche os campos e preme no botón "Gardar".
+* Users complete the fields and click “Save”.
 
-A asignación de materiais a elementos de pedidos explícase no capítulo de "Pedidos".
+The assignment of materials to order elements is explained in the chapter on "Orders".
+
 

@@ -1,167 +1,169 @@
-Asignación de recursos
-######################
+﻿Assignment of resources
+########################
 
 .. asigacion_
 .. contents::
 
-A asignación de recursos é unha das partes máis importantes da aplicación. A asignación de recursos pode realizarse de dous xeitos diferentes:
+The assignment of resources is one of the program's most important features, and can be carried out in two different ways:
 
-* Asignacións específicas.
-* Asignacións xenéricas.
+* Specific assignment.
+* Generic assignment.
 
-Cada unha das asignacións é explicada nas seguintes seccións.
+Both types of assignment are explained in the following sections.
 
-Para realizar calquera das dúas asignacións de recursos é necesario dar os mesmos pasos:
+To carry out either of the two types of resource assignment, the following steps are necessary: 
 
-* Acceder á planificación dun pedido.
-* Premer co botón dereito sobre a tarefa que se desexa planificar.
+* Go to the planning of an order.
+* Right click on the task to be planned.
 
 .. figure:: images/resource-assignment-planning.png
    :scale: 50
 
-   Menú de asignación de recursos
+   Resource assignment menu
 
-* A aplicación amosa unha pantalla na que se pode visualizar a seguinte información.
+* The program shows a screen in which the following information can be viewed:
 
-   * Listado de criterios que deben ser satisfeitos. Por cada grupo de horas, amosarase un listado de grupos de horas e cada grupo de horas esixirá o seu listado de criterios.
-   * Información da tarefa: data de inicio e data de fin da tarefa.
-   * Tipo de cálculo: O sistema permite elixir a estratexia que se desexa levar a cabo para calcular as asignacións:
+   * List of criteria that must be fulfilled. For each hour group, a list of hour groups is shown, each of which requires a list of criteria.
+   * Task information: start and end date of the task.
+   * Type of calculation: The system allows users to choose the strategy to be used to calculate assignments:
 
-      * Calcular número de horas: Calcula o número de horas que faría falla que adicasen os recursos asignados dados unha data de fin e un número de recursos por día.
-      * Calcular data fin: Calcula a data de fin da tarefa a partir dos número de recursos da tarefa e das horas totais adicar para rematar a tarefa.
-      * Calcular número de recursos: Calcula o número de recursos necesarios para rematar a tarefa en unha data específica e adicando unha serie de horas coñecidas.
+      * Calculate number of hours: This calculates the number of hours required to be devoted to the assigned resources, which are given an end date and a resource number per day.
+      * Calculate end date: This calculates the end date of the task based on the number of task resources and the total number of hours to finish the task. 
+      * Calculate number of resources: This calculates the number of resources required to finish the task on a specific date and devotes a known number of hours to them.
 
-   * Asignación recomendada: Opción que lle permite á aplicación recoller os criterios que deben ser satisfeitos e as horas totais de cada grupo de horas e fai unha proposta de asignación xenérica recomendada. Se había unha asignación previa, o sistema elimina dita asignación substituíndoa pola nova.
-   * Asignacións: Listado de asignacións realizadas. Neste listado poderanse ver as asignacións xenéricas (o nome sería a lista de criterios satisfeita, horas e número de recursos por día). Cada asignación realizada pode ser borrada explicitamente premendo no botón de borrar.
+   * Recommended assignment: This option allows the program to gather criteria that must be fulfilled and the total number of hours from all hour groups, and then recommends a generic assignment. If there was a prior assignment, the system deletes it and replaces it with the new one.
+   * Assignments: A list of assignments that have been carried out. This list shows the generic assignments (the number will be the list of fulfilled criteria, and the number of hours and resources per day). Every assignment carried out can be explicitly removed by clicking the delete button.
 
 .. figure:: images/resource-assignment.png
    :scale: 50
 
-   Asignación de recursos
+   Resource assignment 
 
-* O usuario selecciona "Procura de recursos".
-* A aplicación amosa unha nova pantalla formada por unha árbore de criterios e un listado á dereita dos traballadores que cumpren os criterios seleccionados:
+* Users select "Search resources".
+* The program shows a new screen consisting of a criteria tree and a list to the right of workers that fulfil the selected criteria:
 
 .. figure:: images/resource-assignment-search.png
    :scale: 50
 
-   Procura de asignación de recursos
+   Resource assignment search
 
-* O usuario pode seleccionar:
+* Users can select:
 
-   * Asignación específica. Ver sección "Asignación específica" para coñecer que significa elixir esta opción.
-   * Asignación xenérica. Ver sección "Asignación xenérica para coñecer que significa elixir esta opción.
+   * Specific assignment. See the "Specific assignment" section to find out what is involved when choosing this option.
+   * Generic assignment. See the "Generic assignment" section to find out what is involved when choosing this option.
 
-* O usuario selecciona unha lista de criterios (xenérica) ou unha lista de traballadores (específica). A elección múltiple realízase premendo no botón "Crtl" á hora de pulsar en cada traballador ou criterio.
+* Users select a list of criteria (generic) or a list of workers (specific). A multiple-choice selection is performed by pressing the "Ctrl" button when clicking each worker/criterion.
 
-* O usuario preme no botón "Seleccionar". É importante ter en conta que se non se marca asignación xenérica é necesario escoller un traballador ou máquina para poder realizar unha asignación, en caso contrario chega con elixir un ou varios criterios.
+* Users then click the "Select" button. It is important to remember that if a generic assignment is not marked, users need to choose a worker or machine to perform an assignment. If this is not done, it is sufficient for users to choose one or several criteria.
 
-* A aplicación amosa no listado de asignacións da pantalla orixinal de asignación de recursos a lista de criterios ou recursos seleccionados.
+* The program then shows the selected criteria or resource list on the list of assignments from the original resource assignment screen.
 
-* O usuario debe encher as horas ou os recursos por día dependendo da estratexia de asignación que lle solicitou levar a cabo á aplicación.
+* Users must choose the hours or resources per day depending on the assignment method used on the program.
 
 
-Asignación específica
-=====================
+Specific assignment
+===================
 
-A asignación específica é aquela asignación de un recurso de xeito concreto e específico á unha tarefa de un proxecto, é dicir, o usuario da aplicación está decidindo que "nome e apelidos" ou qué "máquina" concreta debe ser asignada a unha tarefa.
+This is the specific assignment of a resource to a project task, i.e. the user decides which specific “name and surname(s)” or “machine” must be assigned to a task.
 
-A asignación específica é realizable dende a pantalla que se pode ver na imaxe:
+Specific assignment can be carried out on the screen shown in this image:
 
 
 .. figure:: images/asignacion-especifica.png
    :scale: 50
 
-   Asignación específica de recursos
+   Specific resource assignment 
 
-A aplicación, cando un recurso é asignado específicamente, crea asignacións diarias en relación á porcentaxe de recurso diario que o usuario elixiu para asignación e contrastando co calendario dispoñible do recurso. Exemplo: unha asignación de 0.5 recursos  para unha tarefa de 32 horas fará que se asignen ó recurso específico (supoñendo un calendario laboral de 8 horas diarias) 4 horas diarias para realizar a tarefa.
+When a resource is specifically assigned, the program creates daily assignments in relation to the percentage of daily assigned resources selected, by previously comparing it with the available resource calendar. For example, an assignment of 0.5 resources for a 32-hour task means that 4 hours per day are assigned to the specific resource to fulfil the task (supposing a working calendar of 8 hours per day).
 
-Asignación específica de máquinas
----------------------------------
+Specific machine assignment
+---------------------------
 
-A asignación específica de máquinas actuará do mesmo xeito que a de traballadores, é dicir, cando se asigna unha máquina a unha tarefa, o sistema almacena unha asignación de horas específica á máquina elixida. A diferencia principal será que no momento de asignar unha máquina, o sistema buscará o listado de traballadores ou criterios asignados á máquina:
+Specific machine assignment functions in the same way as that for workers. When a machine is assigned a task, the system stores a specific assignment of hours for the chosen machine. The main difference is that the system searches the list of assigned workers or criteria at the moment the machine is assigned:
 
-* Se a máquina tiña un listado de traballadores asignados, elixirá entre o número deles que requira a máquina para o calendario asignado. Por exemplo, se o calendario da máquina é de 16 horas diarias e dos recursos de 8, asignará dous recursos da lista de recursos dispoñibles.
-* Se a máquina tiña un criterio ou varios asignados, realizará asignacións xenéricas entre os recursos que satisfán os criterios asignados á máquina.
+* If the machine has a list of assigned workers, the program chooses from those that are required by the machine for the assigned calendar. For example, if the machine calendar is 16 hours per day and the resource calendar is 8 hours, two resources are assigned from the list of available resources.
+* If the machine has one or several assigned criteria, generic assignments are carried out from among the resources that fulfil the criteria assigned to the machine.
 
-Asignación xenérica
-===================
+Generic assignment
+==================
 
-A asignación xenérica é aquela asignación onde o usuario no elixe os recursos concretamente e deixa á decisión da aplicación como reparte as cargas entre os recursos dispoñibles da empresa.
+Generic assignment occurs when users do not choose resources specifically, but leave the decision to the program, which distributes the loads among the company's available resources.
 
 .. figure:: images/asignacion-xenerica.png
    :scale: 50
 
-   Asignación xenérica de recursos
+   Generic resource assignment 
 
-O sistema de asignación utiliza como base os seguintes supostos:
+The assignment system uses the following assumptions as a basis:
 
-* As tarefas contarán con criterios a ser requeridos ós recursos.
-* Os recursos estarán configurados para que satisfagan os criterios.
+* Tasks have criteria that are required from resources.
+* Resources are configured to fulfil criteria.
 
-Sen embargo, o sistema non fallará naqueles casos nos que non se asignen criterios senón que non discernirá entre diferencias de criterios.
+However, the system does not fail when criteria have not been assigned, but when all resources fulfil the non-requirement of criteria.
 
-O algoritmo de asignación xenérica actuará do seguinte xeito:
+The generic assignment algorithm functions in the following way:
 
-* Cada recurso e día será tratado como un contedor onde caben asignacións diarias de horas, baseándose a capacidade máxima de asignación no calendario da tarefa.
-* O sistema busca os recursos que satisfán o criterio.
-* O sistema analiza qué asignacións teñen actualmente os diferentes recursos que cumpren os criterios.
-* De entre os que satisfán os criterios escóllense os recursos que teñen dispoñibilidade suficiente.
-* Se os recursos máis libres van sendo ocupados, seguirase realizando asignacións nos recursos que tiñan menor dispoñibilidade.
-* Só cando todos os recursos que satisfán os criterios correspondentes están asignados ó 100% se comeza coa sobreasignación de recursos ata completar o total necesario para realizar a tarefa.
+* All resources and days are treated as containers where daily assignment of hours fit, based on the maximum assignment capacity in the task calendar.
+* The system searches for the resources that fulfil the criterion.
+* The system analyses which assignments currently have different resources that fulfil criteria. 
+* The resources that fulfil the criteria are chosen from those that have sufficient availability.
+* If freer resources are not available, assignments are made to the resources that have less availability.
+* Over-assignment of resources only starts when all the resources that fulfil the respective criteria are 100% assigned until the total amount required to carry out the task is attained.
 
-Asignación xenérica de máquinas
--------------------------------
+Generic machine assignment 
+--------------------------
 
-A asignación xenérica de máquinas actuará do mesmo xeito que a de traballadores, é dicir, cando se asigna unha máquina a unha tarefa, o sistema almacena unha asignación de horas xenérica a cada unha das máquinas que satisfán os criterios, tal e como se describiu xenericamente para os recursos en xeral. Sen embargo, tratándose de máquinas o sistema realiza a seguinte operación a maiores:
+Generic machine assignment functions in the same way as worker assignment. For example, when a machine is assigned to a task, the system stores a generic assignment of hours for all machines that fulfil the criteria as described for the resources in general. However, in addition, the system performs the following procedure for machines:
 
-* Para cada máquina elixida para a asignación xenérica:
+* For all machines chosen for generic assignment:
 
-  * Recolle a información de configuración da máquina, é dicir, alfa, traballadores e criterios asignados.
-  * Se a máquina tiña un listado de traballadores asignados, elixirá entre o número deles que requira a máquina dependendo do calendario asignado. Por exemplo, se o calendario da máquina é de 16 horas diarias e dos recursos de 8, asignará dous recursos da lista de recursos dispoñibles.
-  * Se a máquina tiña un criterio ou varios asignados, realizará asignacións xenéricas entre os recursos que satisfán os criterios asignados á máquina.
+  * It collects the machine's configuration information: alpha value, assigned workers and criteria. 
+  * If the machine has an assigned list of workers, the program chooses the number required by the machine depending on the assigned calendar. For example, if the machine calendar is 16 hours per day and the resource calendar is 8 hours, the program assigns two resources from the list of available resources.
+  * If the machine has one or several assigned criteria, the program makes generic assignments from among the resources that fulfil the criteria assigned to the machine.
 
-Asignación avanzada
+
+Advanced assignment
 ===================
 
-A asignación avanzada permite deseñar as asignacións que se realizan automaticamente pola aplicación de xeito máis personalizado. Esta operación permite elixir manualmente as horas diarias que adican os recursos ás tarefas que están asignadas ou definir unha función que se lle aplica a ditas asignacións.
+Advanced assignments allow users to design assignments that are automatically carried out by the application in order to personalise them. This procedure allows users to manually choose the daily hours that are dedicated by resources to tasks that are assigned or define a function that is applied to the assignment. 
 
-Para xestionar a asignación avanzada os pasos a dar serán os seguintes:
+The steps to follow in order to manage advanced assignments are:
 
-* Acceder á ventá de asignación avanzada. Existen dous modos de acceder á asignación avanzada:
+* Go to the advanced assignment window. There are two ways to access advanced assignments:
 
-   * Accedendo a un pedido concreto e cambiar de perspectiva para asignación avanzada. Neste caso amosaranse todas as tarefas do pedido e os recursos asignados (tanto específicos como xenéricos).
-   * Accedendo á asignación de recursos e premendo no botón "Asignación avanzada". Neste caso amosaranse as asignacións da tarefa para a que se está asignando recursos (amósanse tanto as xenéricas como as específicas).
+   * Go to a specific order and change the view to advanced assignment. In this case, all the tasks on the order and assigned resources (specific and generic) will be shown.
+   * Go to the resource assignment window by clicking the "Advanced assignment" button. In this case, the assignments that show the resources (generic and specific) assigned for a task will be shown.  
 
 .. figure:: images/advance-assignment.png
    :scale: 45
 
-   Asignación avanzada de recursos
+   Advanced resource assignment
 
-* O usuario pode acceder ó zoom que desexe:
+* Users can choose the required zoom level they want:
 
-   * Se o zoom elixido é un zoom superior a día. Se o usuario modifica o valor de horas asignado á semana, mes, cuarto ou semestre, o sistema reparte as horas de xeito lineal durante todos os días do período elixido.
-   * Se o zoom elixido é un zoom de día. Se o usuario modifica o valor de horas asignado ó día, estas horas só aplican ó día. Deste xeito o usuario pode decidir cantas horas se asignan diariamente ós recursos da tarefa.
+   * If the chosen zoom is more than one day. If users change the assigned hour value to a week, month, four-month or six-month period, the system distributes the hours lineally for all days throughout the chosen period.
+   * If the chosen zoom is one day. If users change the assigned hour value to a day, these hours only apply to a day. Consequently, users can decide how many hours they want to assign per day to task resources.
 
-* O usuario pode elixir deseñar unha función de asignación avanzada. Para realizalo:
+* Users can choose to design an advanced assignment function. In order to do so, users have to:
 
-   * Elixir a función na lista de selección que aparece ó lado de cada recurso e premer en "Configurar".
-   * O sistema amosará unha nova ventá se a función elixida require de configuración específica. As funcións soportadas son:
+   * Choose the function on the selection list that appears at the side of each resource and click "Configure".
+   * The system shows a new window if the chosen function needs to be specifically configured. Supported functions:
 
-      * Tramos: Función que permite definir tramos nos que se aplica unha función polinómica. A función por tramos configúrase do seguinte xeito:
-
-
-         * Data. Data na que finaliza o tramo. Se se establece o seguinte valor (lonxitude) a data será calculada, en caso contrario, calcúlase a lonxitude.
-         * Definición da lonxitude de cada tramo. Indica que porcentaxe de duración da tarefa compre ese tramo.
-         * Definición da cantidade de traballo. Indica que porcentaxe de carga de traballo se espera ter feito nese tramo. A cantidade de traballo debe ser incremental, de xeito que se hai un tramo de 10% o seguinte tramo debe ser superior (por exemplo, 20%).
-         * Gráficas de tramos e carga acumulada.
+      * Segments: A function that allows users to define segments to which a polynomial function is applied. The function per segment is configured as follows:
 
 
-   * O usuario preme en "Aceptar".
-   * A aplicación almacena a función e aplícaa nas asignacións diarias do recurso.
+         * Date. Date on which the segment ends. If the following value is established (length), the date is calculated, alternatively, length is calculated.
+         * Defining the length of each segment. This indicates what percentage of the task’s duration is required for the segment.
+         * Defining the amount of work. This indicates what workload percentage is expected to be completed in this segment. The quantity of work must be incremental. For example, if there is a 10% segment, the next one must be larger (for example, 20%).
+         * Segment graphs and accumulated loads.
+
+
+   * Users then click “Accept”.
+   * The program stores the function and applies it to the daily resource assignments.
 
 .. figure:: images/stretches.png
    :scale: 40
 
-   Configuración de función por tramos
+   Configuration of the segment function
+
 

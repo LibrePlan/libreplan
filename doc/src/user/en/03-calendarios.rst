@@ -1,176 +1,177 @@
-Calendarios
+﻿Calendars
 ###########
 
 .. contents::
 
-Os calendarios serán as entidades do portal que determinen as capacidade de carga dos distintos recursos. Un calendario na aplicación estará formado por unha serie de días anuais, onde cada día disporá de unha serie de horas dispoñibles para traballar.
+Calendars are the program entities that determine the load capacity of different resources. A calendar consists of a series of days in the year with each day divided into available working hours.
 
-Por exemplo, un festivo terá 0 horas dispoñibles e, se as horas de traballo dentro dun día laboral son 8, será este número o que se asignará de dispoñibilidade para ese día.
+For example, a public holiday may have 0 hours available and, if the working hours in a workday are 8, this is the number of hours that is designated as available time for that day.
 
-Existen dous modos de indicarlle ó sistema cantas horas de traballo ten un día:
+There are two ways of informing the system of how many working hours there are in a day:
 
-* Por día da semana. Por exemplo, os luns trabállanse 8 horas xeralmente.
-* Por excepcións. Por exemplo, o luns 30 de Xaneiro trabállanse 10 horas.
+* According to weekday. For example, on Mondays people generally work 8 hours.
+* According to exceptions. For example, 10 working hours on Monday 30 January.
 
-Administración de calendarios
+Administration of calendars
 =============================
 
-O sistema de calendarios é xerárquico de modo que se poden crear calendarios base e tamén calendarios que herdan dos calendarios base, mantendo unha estrutura arbórea. Un calendario que herda dun calendario de nivel superior da árbore, herdará as adicacións diarias e as excepcións sempre e cando non sexan modificadas explicitamente para o calendario fillo. Ademais, é necesario entender os seguintes conceptos para administrar calendarios:
+The calendar system is hierarchical, meaning that base calendars or calendars based on them can be created, thus maintaining a tree structure. A calendar based on a calendar from a higher level of the tree will take on the daily duties and exceptions, providing that they have not been explicitly modified for the new calendar. The following concepts must be understood to manage calendars:
 
-* Cada día é independente entre si e cada ano ten días diferentes, é dicir, se se marca o 8 de Decembro de 2009 como festivo iso non quere dicir que o ano 2010 xa teña o día 8 de Decembro como festivo.
-* Os días laborais márcanse en base a días da semana, é dicir, se se determina que o normal é traballar 8 horas os luns, quedarán todos os luns de todas as semanas dos diferentes anos marcados como 8 horas dispoñibles.
-* É posible marcar excepcións ou intervalos de excepción, é dicir, elixir un día concreto ou grupo de días nos que as horas dispoñibles sexan diferentes á regra xeral para dito día da semana.
+* Each day is independent in itself and each year has different days. For example, if 8 December 2009 is a public holiday, this does not mean that 2010 already has 8 December marked as a public holiday.
+* Working days are based on weekdays. For example, if it is normal to work 8 hours on Mondays, all the Mondays from all the weeks in the different years will have 8 hours available.
+* Exceptions or exception periods can be marked. For example, choosing a specific day or several days which have a different number of hours available than the general rule for those weekdays.
 
 .. figure:: images/calendar-administration.png
    :scale: 50
 
-   Administración de calendarios
+   Administration of calendars
 
-A administración de calendarios está accesible dende as operacións da pestana de "Administración". Desde dito punto o usuario pode realizar as seguintes operacións:
+The administration of calendars can be accessed from the procedures on the "Administration" tab. Users can carry out the following procedures from here:
 
-1. Crear un novo calendario dende cero.
-2. Crear un calendario derivado de outro calendario.
-3. Crear un calendario como copia de outro calendario.
-4. Editar un calendario existente.
+1. Creating a new calendar from scratch.
+2. Creating a calendar based on another one.
+3. Creating a calendar as a copy of another one.
+4. Editing an existing calendar.
 
-Creación dun novo calendario
-----------------------------
+Creating a new calendar
+-------------------------------
 
-Para a creación dun novo calendario é necesario premer no botón "Navalpro". O sistema amosará un formulario no que o usuario poderá realizar as seguintes operacións:
+In order to create a new calendar, users need to click the "Create" button. The system then shows a form where users can carry out the following procedures:
 
-* Elixir a pestana na que desexa traballar:
+* Choosing the tab they want to work on.
 
-   * Marcado de excepcións
-   * Selección de horas traballadas por día.
+   * Marking exceptions.
+   * Choosing hours worked per day.
 
-* Se o usuario selecciona o marcado de excepcións:
-   * Seleccionar un día específico do calendario.
-   * Marcar o tipo de excepción. Os tipos dispoñibles son: vacacións, baixa, folga, festivo, festivo traballable.
-   * Seleccionar a data de fin do intervalo de excepción (para marcar excepcións de 1 día de duración non se necesita modificar este campo).
-   * Marcar o número de horas traballadas durante os días excepcionais.
-   * Borrar excepcións previas.
+* If users select the marking exceptions option, they can:
+   * Select a specific day on the calendar.
+   * Select the type of exception. The types available are: holidays, illness, strike, public holiday, working holiday.
+   * Select the end date of the exception period (this field does not need to be changed to mark exceptions that only last 1 day).
+   * Mark the number of hours worked during the days of the exception period.
+   * Delete previous exceptions.
 
-* Se o usuario elixe a selección de horas traballadas por día:
+* If users choose to select the number of hours worked per day, they can:
 
-   * Marcar as horas dispoñibles para cada día da semana (luns, martes, mércores, xoves, venres, sábados e domingos).
-   * Crear novas distribucións de horas semanais aplicables no futuro.
-   * Borrar distribucións de horas realizadas previamente.
+   * Mark the hours available for each weekday (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday).
+   * Distribute different weekly hours for the future.
+   * Delete previous hour distribution lists.
 
-Con estas operacións un usuario da aplicación ten a capacidade de personalizar os calendarios completamente ás súas necesidades. Para almacenar os cambios no formulario é necesario premer no botón "Gardar".
+With these procedures, users of the program can fully personalise the calendars according to their needs. Users need to click the "Save" button to store changes made to the form.
 
 .. figure:: images/calendar-edition.png
    :scale: 50
 
-   Edición de calendario
+   Editing calendars
 
 .. figure:: images/calendar-exceptions.png
    :scale: 50
 
-   Inclusión de excepción en calendario
+   Adding an exception to calendars
 
-Creación dun calendario derivado
---------------------------------
+Creating derived calendars
+----------------------------------
 
-Un calendario derivado é un calendario que se crea como fillo dun existente, é dicir, herda todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades.
+A derived calendar is a calendar created from another existing one. For example, it has all the features of the original one, but users can change it to contain other options.
 
-Un exemplo de uso de calendarios derivados é a existencia dun calendario xeral para España e a creación dun derivado para só incluir os festivos galegos engadidos sobre os que xa estaban definidos no xeral.
+An example of using derived calendars is when there is a general calendar for Spain, and the creation of a derived calendar to include public holidays in Galicia in additional to the ones defined in the general calendar.
 
-É importante destacar que ante calquera modificación realizada sobre o calendario orixinal o calendario derivado será directamente afectado, sempre e cando, non se definira unha actuación concreta sobre el mesmo. Por exemplo, no calendario de España inclúese un día laboral no 17 de Maio con 8 horas de traballo e no calendario galego, que se creou como derivación, o día 17 de Maio é considerado un día de 0 horas de traballo por ser festivo. Se sobre o calendario español se cambian os días da semana do 17 Maio para que as horas dispoñibles sexan 4 diarias, no galego o que sucederá é que todos os días da semana do 17 de Maio terán 4 horas dispoñibles excepto o mesmo día 17 que terá 0 horas, tal e como explicitamente se establecera antes.
+It is important to point out that any change made to the original calendar is made directly to the derived calendar, providing that a specific exception against this was not defined. For example, the calendar for Spain has an 8-hour working day on 17 May, but the calendar for Galicia (a derived calendar) has no working hours on the very same day, as it is a public holiday. If the Spanish calendar was changed to have 4 hours available per day for the week of 17 May, the Galician calendar would also change to have 4 hours available for every day on the same week, except 17 May, which would have no working hours for the reason stated above.
 
 .. figure:: images/calendar-create-derived.png
    :scale: 50
 
-   Creación de calendario derivado
+   Creating a derived calendar
 
-Para crear un calendario derivado na aplicación, é necesario facer o seguinte:
+To create a derived calendar in the program, it is necessary to:
 
-* Acceder ó menú de *Administración*.
-* Premer na operación de administración de calendarios.
-* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Crear".
-* Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
+* Go to the *Administration* menu.
+* Click the *Calendar administration* procedure.
+* Choose one of the calendars to be the basis for a derived calendar and click the "Create" button.
+* Once this procedure has been carried out, the system shows an editing form with the same characteristics as the forms used to create forms from scratch, with the difference that the proposed exceptions and the hours per weekday are based on the original calendar.
 
-Creación dun calendario por copia
----------------------------------
+Creating a calendar by copying
+-----------------------------------
 
-Un calendario copiado é un calendario que se crea como copia exacta de outro existente, é dicir, que recibe todas as características do orixinal e ó mesmo tempo é posible modificalo para que conteña as súas particularidades.
+A copied calendar is a calendar created as an exact copy of another existing one. For example, it has all the features of the original one, but users can also change it to contain other options.
 
-A diferencia entre copiar e derivar un calendario radica nos cambios no orixinal. No caso de copias, se o orixinal é modificado, non afectará á copia, sen embargo, cando se deriva, si afecta ó fillo.
+The difference between a copied and a derived calendar is based on the changes in the original. In relation to copies, if the original is modified, the copy is not affected. However, derived calendars are affected by changes made to the original.
 
-Un exemplo de uso de calendario por copia é o dispor de un calendario para Pontevedra e necesitar un calendario para A Coruña onde a maioría das características son as mesmas, sen embargo, non se espera que os cambios nun afecten ó outro.
+An example of using a copied calendar is having a calendar for "Pontevedra" and needing a calendar for "A Coruña", for which most of the features would be the same. However, changes on one calendar should not be reflected in the other.
 
-Para crear un calendario copiado na aplicación, é necesario facer o seguinte:
+To create a copied calendar in the program, it is necessary to do the following:
 
-* Acceder ó menú de *Administración*.
-* Premer na operación de administración de calendarios.
-* Elixir un dos calendarios sobre o que se desexa realizar un derivado e premer no botón "Crear".
-* Unha vez realizada esta operación o sistema amosará un formulario de edición coas mesmas características que os formularios para crear calendarios dende cero, coa diferencia de que as excepcións e as horas por día da semana se propoñen en base ó calendario orixinal.
+* Go to the *Administration* menu.
+* Click the Calendar administration procedure.
+* Choose one of the calendars to be the basis for a derived calendar and click the "Create" button.
+* Once this procedure has been carried out, the system shows an editing form with the same characteristics as the forms used to create forms from scratch, with the difference that the proposed exceptions and the hours per weekday are based on the original calendar.
 
-Calendario por defecto
+Default calendar
 ----------------------
-Un dos calendarios existentes no sistema pode ser dado de alta como calendario por defecto. Este calendario será o que se asigne a calquera entidade que no sistema sexa xestionado con calendarios.
 
-Para configurar o calendario por defecto débese realizar o seguinte:
+One of the existing calendars in the system can be marked as the default calendar. This calendar is the one that will be designated to any entity in the system that is managed with calendars.
 
-* Acceder ó menú de *Administración*.
-* Premer na operación *configuración*.
-* Onde aparece o texto *Calendario por defecto*, seleccionar o que se desexe establecer como calendario por defecto da aplicación.
-* Premer en *Gardar*.
+The following must be carried out to set up a default calendar:
+
+* Go to the *Administration* menu.
+* Click the *Configuration* procedure.
+* Where *Default calendar* appears, select the calendar to be used as the program’s default calendar.
+* Click *Save*.
 
 .. figure:: images/default-calendar.png
    :scale: 50
 
-   Creación de calendario por defecto
+   Creating a default calendar
 
-Asignación de calendario a recursos
+Assigning a calendar to resources
 -----------------------------------
 
-Os recursos só teñen activación, é dicir, horas dispoñibles para traballar, se o dispoñen de un calendario asignado con un período válido de activación. Se non se lle asignou ningún calendario ós recursos, os recursos teñen asignado o calendario por defecto con un período de activación que comeza na data de alta e sen data de caducidade.
+Resources can only be activated, i.e. available working hours, if they have an assigned calendar with a valid activation period. If no calendar is assigned to resources, the default calendar is assigned with an activation period that begins on the start date and does not have an expiry date.
 
 .. figure:: images/resource-calendar.png
    :scale: 50
 
-   Calendario de recursos
+   Calendar of resources
 
-Sen embargo, é posible eliminar o calendario asignado previamente a un recurso e crear un calendario novo a partir de un existente. Deste xeito haberá recursos que poidan ser completamente personalizados a nivel de calendario.
+However, users can delete the calendar that has been previously assigned to a resource and create a new calendar based on one that already exists. Consequently, resources can be fully personalised in relation to calendars.
 
-Para asignar un calendario a un recurso é necesario dar os seguintes pasos:
+The following steps have to be carried out to assign a calendar:
 
-* Acceder á edición de recursos.
-* Elixir un recurso e premer en editar.
-* Seleccionar a pestana de "Calendario".
-* A partir da pestana anterior aparecerá un calendario coas excepcións, as horas traballables por día e os períodos de activación.
-* Para cada pestana:
+* Go to the Edit resources option.
+* Choose a resource and click edit.
+* Select the "Calendar" tab.
+* A calendar with the exceptions, workable hours per day and activation periods will then appear on the previous tab.
+* Each tab will have:
 
-   * Excepcións: Será posible elixir o tipo de excepción e un período no que se aplica para poder incluír as vacacións, días festivos, laborables diferentes, etc.
-   * Semana de traballo: Será posible modificar as horas traballadas durante os distintos días da semana (luns, martes, etc.).
-   * Períodos de activación: Será posible crear novos períodos de activación que reflicte as datas de inicio e fin dos contratos asociados ó recurso. Ver a seguinte imaxe.
+   * Exceptions: Users can choose the kind of exception and a period to which it applies in order to include holidays, public holidays, different workdays, etc.
+   * Working week: Users can change the hours worked during the different weekdays (Monday, Tuesday, etc.).
+   * Activation periods: Users can create new activation periods that reflect the start and end dates of the contracts associated with the resource. See the following image.
 
-* Para almacenar é necesario premer en *Gardar*.
-* O usuario pode premer en *Borrar* se desexa cambiar o calendario asignado ó recurso.
+* Users need to click *Save* to store information.
+* Users can click *Delete* if they want to change the calendar assigned to a resource.
 
 .. figure:: images/new-resource-calendar.png
    :scale: 50
 
-   Asignación de novo calendario a recurso
+   Assigning new calendars to resources
 
-Asignación de calendario a pedidos
+Assigning calendars to orders
 ----------------------------------
 
-Os proxectos poden dispor de un calendario diferente do calendario por defecto. Para cambiar o calendario do pedido é necesario:
+Projects can have a different calendar to the default calendar. Users need to do the following to change the calendar for the order:
 
-   * Acceder ó listado de pedidos dentro da vista global de empresa.
-   * Editar o pedido en cuestión.
-   * Acceder á pestana de "Datos xerais".
-   * Seleccionar no despregable de selección o calendario que se desexa asignar.
-   * Premer en "Gardar" ou "Gardar e Continuar".
+   * Access the order list in the company overview.
+   * Edit the order in question.
+   * Access the "General information" tab.
+   * Select the calendar to be assigned on the drop-down menu.
+   * Click "Save" or "Save and continue".
 
-Asignación de calendario a tarefas
+Assigning calendars to tasks
 ----------------------------------
-Do mesmo xeito que se permite asignar calendarios a recursos ou pedidos, é posible realizar a mesma operación para tarefas planificadas. Esta operación permite definir calendarios específicos para momentos concretos dun proxecto. Para realizar esta operación será necesario:
+In the same way that calendars can be assigned to resources or orders, users can carry out the same procedure for planned tasks. This procedure allows specific calendars to be defined for specific stages of a project. To carry out this procedure, it is necessary to:
 
-   * Acceder á planificación de un proxecto.
-   * Premer no botón dereito sobre a tarefa á que se desexa asignar calendario.
-   * Seleccionar a operación "Asignación de calendario".
-   * Elixir o que se desexa asignar á tarefa.
-   * Premer en "Aceptar".
+   * Access the planning of a project.
+   * Right click the task to which a calendar is to be assigned.
+   * Select the "Assign calendar" procedure.
+   * Select the calendar to be assigned to the task.
+   * Click *Accept*.
 

@@ -1,62 +1,63 @@
-Usuarios
+﻿Users
 ########
 
-.. _tarefas:
+.. _tareas:
 .. contents::
 
 
-Administración de usuarios
-==========================
+Managing users
+==============
 
-O sistema de usuarios de "Navalpro" permitirá xestionar perfiles, permisos e usuarios. Un usuario pertence a un perfil de usuario e por outro lado os perfiles poden ter unha serie de roles predefinidos para o acceso á aplicación. Os roles son os permisos definidos sobre "Navalpro". Exemplos de roles:
+"Navalpro"'s system enables users to manage profiles, authorisations and users. Users belong to user profiles, which may have a series of predefined roles to access the program. Roles are defined authorisations in "Navalpro". Examples of roles:
 
-* Administración: Rol que os usuarios administradores deben ter asignados para poder realizar operacións de administración.
-* Lector de servizos web: Rol que os usuarios necesitan para poder consultar servizos web da aplicación.
-* Escritor de servizos web: Rol que os usuarios necesitan para poder escribir utilizando os servizos web da aplicación.
+* Administration: A role to which administrators must be assigned in order to be able to carry out administration operations.
+* Web service reader: A role that users need to be able to consult the program's web services.
+* Web service writer: A role that users need to be able to write via the program's web services.
 
-Os roles están predefinidos no sistema. Un perfil de usuario está composto por un ou varios roles, de modo que se comproban roles ós que pertencen os usuarios para realizar certas operacións.
+Roles are predefined in the system. A user profile consists of one or several roles. Users must have certain roles to carry out certain operations.
 
-Os usuarios pertencen a un ou varios perfiles ou directamente a un ou varios roles, de modo que se pode asignar permisos específicos ou un grupo de permisos xenérico.
+Users have one or several profiles or one or several roles directly so that specific or generic authorisation can be assigned.
+ 
+It is necessary to carry out the following steps to manage users:
 
-Para administrar usuarios é necesario realizar os seguintes pasos:
+* Go to “Manage users” on the “Administration” menu.
+* The program shows a form with a list of users.
+* Click the editing button for the chosen user or click the “Create” button.
+* A form will appear with the following fields:
 
-* Acceder á operación de "Xestionar usuarios" do menú de "Administración".
-* A aplicación amosará un formulario co listado de usuarios.
-* Premer o botón de edición do usuario elixido ou premer no botón "Crear".
-* Amosase un formulario cos seguintes campos:
-
-   * Nome de usuario.
-   * Contrasinal
-   * Habilitado/Deshabilitado.
-   * E-mail
-   * Lista de roles asociados. Para engadir un novo rol é necesario buscar un dos roles amosados na lista de selección e premer en "Asignar".
-   * Lista de perfiles asociados. Para engadir un novo perfil é necesario buscar un dos perfiles amosados na lista de selección e premer en "Asignar".
+   * User name.
+   * Password
+   * Authorised/unauthorised.
+   * Email
+   * List of associated roles. Users need to search for one of the roles shown on the selection list and click “Assign” to add a new role.
+   * List of associated profiles. Users need to search for one of the profiles shown on the selection list and click “Assign” to add a new profile.
 
 .. figure:: images/manage-user.png
    :scale: 50
 
-   Administración de usuarios
+   Managing users
 
-* Premer en "Gardar" ou "Gardar e Continuar".
+* Click “Save” or “Save and continue”.
 
 
-Administración de perfiles
---------------------------
+Managing profiles
+-----------------
 
-Para administrar os perfiles da aplicación é necesario dar os seguintes pasos:
+Users need to carry out the following steps to manage the program's profiles.
 
-* Acceder á operación de "Xestionar perfiles de usuario" do menú de "Administración".
-* A aplicación amosará un listado de perfiles.
-* Premer o botón de edición do perfil elixido ou premer no botón "Crear".
-* A aplicación amosará un formulario cos seguintes campos:
+* Go to “Manage user profiles” on the “Administration” menu.
+* The program shows a list of profiles.
+* Click the editing button for the chosen profile or click “Create”.
+* A form appears in the program with the following fields:
 
-   * Nome
-   * Lista de roles (permisos) asociados ó perfil. Para engadir un rol asociado ó perfil deberase seleccionar un da lista de roles e premer en "Engadir".
+   * Name
+   * List of roles (authorisations) associated with the profile. Users must select a role from the role list and click “Add” to add one that is associated with the profile.
 
 .. figure:: images/manage-user-profile.png
    :scale: 50
 
-   Xestión de perfiles de usuarios
+   Managing user profiles
 
-* Premer en "Gardar" ou "Gardar e Continuar" e o sistema almacenará o perfil creado ou modificado.
+* Click "Save" or "Save and continue" and the system will store the created or modified profile.
+
 

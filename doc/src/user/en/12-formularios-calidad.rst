@@ -1,37 +1,38 @@
-Formularios de calidade
-#######################
+﻿Quality forms
+######################
 
-.. _calidade:
+.. _calidad:
 .. contents::
 
 
-Administración de formularios de calidade
-=========================================
+Administration of quality forms
+===============================
 
-Os formularios de calidade son unha lista de preguntas ou frases que indiquen tarefas ou procesos que deben estar completados para que unha tarefa se poida dar por completada por parte da empresa usuaria. Estes formularios están formados polos seguintes campos:
+Quality forms consist of a list of questions or sentences that indicate the tasks or processes that should have been completed so that a task can be marked as complete by the company. These forms consist of the following fields:
 
-* Nome
-* Descrición
-* Tipo de formulario de calidade. O tipo pode tomar dous valores:
+* Name
+* Description
+* Type of quality form. The type can have two values:
 
-   * Por porcentaxe: Indica que as preguntas deben levar unha orde lóxica e que a contestación positiva das preguntas indica un avance respecto da tarefa. Por exemplo, que un proceso básico para unha tarefa implica que a tarefa está ó 15%. É necesario contestar unha pregunta previa para poder pasar á seguinte.
-   * Por item: Indica que as preguntas non teñen por que levar unha orde lóxica e en consecuencia poden ser contestadas segundo se desexe.
+   * Percentage: Indicating that the questions must have a logical order and affirmative answers to the questions indicate that the task is progressing. For example, a basic process for a task suggests that the task is 15% complete. Users need to answer a question beforehand to be able to go on to the next one.
+   * Item: Indicating that the questions are not required to have a logical order and therefore can be answered as desired.
 
-Para administrar estes formularios de calidade é necesario realizar os seguintes pasos:
+Users must carry out the following steps to manage the quality forms:
 
-* Acceder no menú de "Administración" á operación "Formularios de calidade".
-* Premer en editar un existente ou no botón de "Crear".
-* A aplicación amosa un formulario con nome, descrición e tipo.
-* Seleccionar o tipo.
-* A aplicación amosa os campos permitidos para cada tipo:
+* From the “Administration” menu, access the “Quality forms” option.
+* Click edit an existing form or “Create”.
+* The program shows a form with a name, description and type.
+* Select the type.
+* The program shows the fields that are allowed for each type:
 
-   * Por porcentaxe: pregunta e porcentaxe.
-   * Por item: pregunta.
+   * Percentage: question and percentage.
+   * Item: question.
 
-* Premer en "Gardar" ou "Gardar e Continuar".
+* Click “Save” or “Save and continue”.
 
 .. figure:: images/quality.png
    :scale: 50
 
-   Pantalla de administración de materiais
+   Material administration screen
+
 

@@ -1,95 +1,92 @@
-Avances
-#######
+﻿Progress
+#########
 
 .. contents::
 
-O avance dun proxecto marca o grao no que se está cumprindo co alcance estimado para a realización do mesmo, asimesmo, o avance dunha tarefa indica ese mesmo grao para o alcance estimado para dita tarefa.
+The progress of a project shows the degree to which the estimated time of completion of the project is being fulfilled, and the progress of a task indicates the degree to which it is being fulfilled in terms of estimated completion.
 
-Xeralmente os avances non teñen un modo automático de ser medidos, e é unha persoa quen en base á experiencia ou á realización de unha lista de chequeo determina o grao de compleción de unha tarefa ou un proxecto.
+In general, progress cannot be measured automatically; a member of staff with experience or a checklist has to determine the degree of completion of a task or project.
 
-Cabe destacar que hai unha diferencia importante entre a uso de horas asignadas a unha tarefa ou proxecto, co grao de avance nesa mesma tarefa ou proxecto. Mentres que o uso de horas pode estar en desvío ou non, o proxecto pode estar nun grao de avance inferior ó estimado para o día no que se está controlando ou superior. Prodúcense, debido a estas dúas medidas, varias posibles situacións:
+It should be noted that there is a significant difference between the use of hours assigned to a task or project and the degree of progress of that task or project. While the number of used hours may be more or less than they should be, the project may be behind or ahead of its estimated completion on the day that is being monitored. Several possible situations may arise due to these two measurements:
 
-* Consumíronse menos horas das estimadas para o elemento a medir e ó mesmo tempo o proxecto está indo máis lento do estimado, porque o avance é inferior ó estimado para o día de control.
-* Consumíronse menos horas das estimadas para o elemento a medir e ó mesmo tempo o proxecto está indo máis rápido do estimado, porque o avance é inferior ó estimado para o día de control.
-* Consumíronse máis horas das estimadas e ó mesmo tempo o proxecto está indo máis lento do estimado, porque o avance é inferior ó estimado para o día de control.
-* Consumíronse máis horas das estimadas e ó mesmo tempo o proxecto está indo máis rápido do estimado, porque o avance é inferior ó estimado para o día de control.
+* Less hours are consumed than expected for the element that is to be measured and, at the same time, the project is more behind than expected because progress is lower than estimated for the day that is being monitored.
+* Less hours are consumed than expected for the element that is to be measured and, at the same time, the project is more ahead than expected because progress is lower than estimated for the day that is being monitored.
+* More hours are consumed than expected and, at the same time, the project is more behind than expected because progress is lower than estimated for the day that is being monitored.
+* More hours are consumed than expected and, at the same time, the project is more ahead than expected because progress is lower than expected for the day that is being monitored.
 
-O contraste de estas posibles situacións é posible realizalo dende a propia planificación, utilizando información do grao de avance e por outro lado do grao de uso de horas. Neste capítulo tratarase a introdución da información para poder levar un control do avance.
+It is possible to compare these possible situations from the planning itself by using information relating to the degree of progress made and also the degree to which the hours have been used. This chapter will deal with the entering of information in order to carry out the monitoring of progress.
 
-A filosofía implantada no proxecto para o control do avance está baseada en que o usuario divida ata o punto no que desexa o control de avances dos seus proxectos. En consecuencia, se o usuario desexa controlar a nivel de pedido, só debe introducir información nos elementos de nivel 1, cando se desexa poder dispoñer de un control máis fino sobre as tarefas, debe introducir información de avances en niveis inferiores, sendo o sistema que propaga cara arriba na xerarquía todos os datos.
+The philosophy of the project for monitoring progress is based on the users stating how far they want to monitor the progress of their projects. As a result, if users want to monitor orders, they only have to enter information for level-1 elements. If they want monitoring to be more precise in relation to tasks, they have to enter information about progress at lower levels, and it is the system that transmits all of the data upwards in the hierarchy.
 
-Xestión de tipos de avance
+Managing types of progress
 ==========================
 
-Cada empresa pode ter unhas necesidades diferentes de control do avance dos seus proxectos, e concretamente das tarefas que os compoñen, por esta razón foi necesario contemplar a existencia dunhas entidades no sistema chamadas "tipos de avance". Os tipos de avance son diferentes tipoloxías que cada usuario pode dar de alta no sistema para medir o avance dunha tarefa. Por exemplo, unha tarefa pode ser medida porcentualmente, pero ó mesmo tempo ese avance porcentual se traduce en un avance en *Toneladas* sobre o acordado co cliente.
+All companies have different needs when monitoring project progress, specifically the tasks they consist of. It was therefore necessary to consider the existence of entities in the system called “types of progress”. Users can register the different types of progress in the system to measure a task's progress. For example, a task can be measured in percentage terms, but at the same time, this percentage progress can be translated to progress in *Tonnes* on the agreed amount with the client.
 
-Un tipo de avance está caracterizado por un nome, un valor máximo e unha precisión:
+A type of progress is given a name, a maximum value and a precision value:
 
-* Nome: Será un nome representativo que o usuario debe recordar para cando seleccione a asignación de avances sexa capaz de entender que tipo de avance está medindo.
-* Valor máximo: É o valor máximo que se lle permitirá a unha tarefa ou proxecto establecer como medida total de avance. Por exemplo, traballando con *Toneladas*, se se considera que o máximo normal en toneladas é de 4000 e nunca vai a haber tarefas que requiran realizar máis de 4000 toneladas de algún material, ese debería ser o valor máximo establecido.
-* Precisión: É o valor dos incrementos que se permitirán para o tipo de avance creado. Por exemplo, se o avance en *Toneladas* se vai a medir en valores redondeados, podería ser 1 a precisión. Dende ese momento, só se poderían introducir medidas de avance con números enteiros, por exemplo, 1, 2, 300, etc.
+* Name: This is a representative name that users must remember so that when selecting the progress designation, they understand what kind of progress is to be measured.
+* Maximum value: This is the maximum value that can be established for a task or project as the total progress measurement. For example, when working with *Tonnes*, if we take the normal maximum of tonnes to be 4000 and there are never going to be tasks that need more than 4000 tonnes of any material, this would be the maximum established amount.
+* Precision value: The value of the increases allowed for the type of progress created. For example, if progress in *Tonnes* is to be measured in rounded values, 1 could be the precision value. From that moment on, only progress measurements with whole numbers can be entered, for example 1, 2, 300, etc.
 
-O sistema conta con dous tipos de avance creados por defecto:
+The system has two types of default progress:
 
-* Porcentual: Tipo de avance xeral que permite medir o avance dun proxecto ou tarefa en base ó porcentaxe que se estima de compleción do mesmo, por exemplo, unha tarefa está ó 30% respecto ó 100% estimado nun día concreto.
-* Unidades: Tipo de avance xeral que permite medir o avance en unidades sen necesidade de especificar as unidades concretas. A tarefa comprendía a creación de 3000 unidades e o avance son 500 unidades sobre as 3000 estimadas.
+* Percentage: a type of general progress that enables the progress of a project or task to be measured based on an estimated completion percentage. For example, a task is 30% complete out of the 100% estimated for a specific day.
+* Units: a type of general progress that enables the progress to be measured in units without the need to state specific units. For example, a task consists of creating 3000 units and the progress is 500 units out of the total of 3000.
 
 .. figure:: images/tipos-avances.png
    :scale: 50
 
-   Administración de tipos de avances
+   Administration of types of progress
 
-O usuario poderá crear novos tipos de avance do seguinte xeito:
+Users can create new types of progress in the following way:
 
-* O usuario accede á sección de "Administración".
-* Preme na opción do menú de segundo nivel "Xestionar tipos de avance".
-* O sistema amosa un listado de tipos de avance existentes.
-* Con cada tipo de avance o usuario poderá:
+* Go to the "Administration" section.
+* Click the second level menu option "Manage types of progress".
+* The system will then show a list of existing types of progress.
+* Users may do the following with each type of progress:
 
-  * Editar
-  * Borrar
+  * Edit
+  * Delete
 
-* A maiores, o usuario poderá crear un tipo de avance novo.
-* Coa edición ou a creación, o sistema amosará un formulario coa seguinte información:
+* Then users can create a new type of progress.
+* When editing or creating, the system shows a form with the following information:
 
-  * Nome do tipo de avance.
-  * Valor máximo que acepta o tipo de avance.
-  * Precisión do tipo de avance.
+  * Name of the type of progress.
+  * Maximum value accepted by the type of progress.
+  * Precision value for the type of progress.
 
+Entering progress based on t
+======================================
 
-Introdución de avances en base a tipo
-=====================================
+Entering progress is done on order elements, but it can also be done using a short cut from the planning tasks. The decision on what type of progress users want to associate with each order element is their own responsibility.
 
-A introdución dos avances vaise realizar sobre os elementos de pedido, sen embargo, será posible facelo con un atallo dende as tarefas de planificación. Será responsabilidade do usuario da aplicación a decisión sobre que tipos de avance desexa asociar a cada elemento de pedido.
+Users can enter a unique and default type of progress for the whole order.
 
-Será posible introducir un tipo de avance único e defectivo para todo un pedido.
-
-Antes de poder realizar medidas de avance, é necesario asociar o tipo elixido ó pedido, por exemplo, un avance de tipo porcentaxe para medir porcentualmente os avances realizados sobre o total da tarefa ou un avance de tipo pactado por se se queren introducir a futuro medicións de avances pactadas co cliente.
+Before carrying out progress measurements, users need to associate the chosen type with the order. For example, progress in percentage terms to measure progress made on the entire task or an agreed progress rate if progress measurements agreed with the client are to be entered in the future.
 
 .. figure:: images/avance.png
    :scale: 40
 
-   Pantalla de introdución de avances con visualización gráfica.
+   Progress entering screen with graphic visualisation.
 
-Para introducir medicións de avance será necesario realizar o seguinte:
+The following must be done to enter progress measurements:
 
-* Seleccionar o tipo de avance para o que desexa introducir o avance.
+* Select the type of progress to which the progress is going to be added.
 
-  * Se non existe ningún tipo de avance é necesario engadir un tipo de avance.
+  * If there is no type of progress, a new type of progress must be added.
 
-* No formulario que aparece debaixo cos campos "Valor" e "Data" introducir o valor absoluto da medida e a data que se lle desexa asignar á medida tomada.
-* O sistema almacenará automaticamente os datos introducidos.
+* In the form that appears under the "Value" and "Date" fields, enter the absolute value of the measurement and the date that is to be given to the measurement taken.
+* The system automatically stores the entered data.
 
 
+Comparison of progress with an order element
+=================================================
 
-Contraste de avances sobre un elemento do pedido
-================================================
-
-Será posible contrastar graficamente as evolucións dos avances dos pedidos en base ás medicións realizadas. Cada tipo de avance dispón dunha columna con botóns de chequeo (de título "Navalpro") o cal ó ser marcado se amosará a gráfica de evolucións de medidas realizadas sobre o elemento de pedido.
+Users can compare graphically how much progress is being made on the orders with the measurements taken. All types of progress have a column with a check button (called "Show"). When this is marked, the progress chart of measurements taken is shown on the order element.
 
 .. figure:: images/contraste-avance.png
    :scale: 40
 
-   Contraste de varios avances.
-
+   Comparison of several kinds of progress.
 

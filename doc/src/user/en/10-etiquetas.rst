@@ -1,55 +1,57 @@
-Etiquetas
+﻿Tags
 #########
 
 .. contents::
 
-As etiquetas son entidades que se utilizan na aplicación para a organización conceptualmente de tarefas ou elementos de pedido.
+Tags are entities used in the program to conceptually organise tasks or order elements.
 
-As etiquetas categorizanse segundo os tipos de etiquetas. Unha etiqueta só pertencerá a un tipo de etiqueta, sen embargo, nada impide crear tantas etiquetas similares que pertenzan a tipos de etiquetas diferentes.
+Tags are categorised according to tag type. A tag can only belong to one tag type, however, users can create many similar tags belonging to different tag types.
 
-Tipos de etiquetas
-==================
+Tag types
+===========
 
-Os tipos de etiquetas utilízanse para agrupar tipoloxías de etiquetas que os usuarios desexen xestionar na aplicación. Exemplos de tipos de etiquetas posibles:
+Tag types are used to group the types of tag that users want to manage in the program. Here are some examples of possible tag types:
 
-i. Cliente: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base ó cliente que os solicitou.
-ii. Zona: O usuario podería estar interesado en etiquetar as tarefas, pedidos ou elementos de pedido en base á zona na que se realizan.
+i. Client: Users may be interested in tagging tasks, orders or order elements in relation to the client who requests them.
+ii. Area: Users may be interested in tagging tasks, orders or order elements in relation to the areas in which they are carried out.
 
-A administración de tipos de etiquetas xestionarase dende a opción de menú de "Administración". Será dende esta opción, dende a que o usuario poderá editar tipos de etiqueta, crear novos tipos de etiqueta ou engadir etiquetas a tipos de etiquetas. Dende dita operación poderá accederse ó listado de etiquetas.
+The administration of tag types is managed from the “Administration” menu option. This is where users can edit tag types, create new tag types and add tags to tag types. Users can access the list of tags from this option.
 
 .. figure:: images/tag-types-list.png
    :scale: 50
 
-   Lista de tipos de etiquetas
+   List of tag types 
 
-Dende o listado de tipos de etiquetas será posible:
+From the list of tag types, users can:
 
-i. Crear novo tipo de etiquetas.
-ii. Editar un tipo de etiquetas existente.
-iii. Borrar un tipo de etiquetas con todas as súas etiquetas.
+i. Create a new tag type.
+ii. Edit an existing tag type.
+iii. Delete a tag type with all of its tags.
 
-Tanto a edición como a creación de etiquetas comparten formulario. Dende dito formulario o usuario poderá, asignar un nome ó tipo de etiquetas, crear ou borrar etiquetas e almacenar os cambios. Para realizar isto:
+Editing and creating tags share the same form. From this form, the user can assign a name to the tag type, create or delete tags and store the changes. The procedure is as follows:
 
-i. O usuario debería seleccionar unha etiqueta a editar ou premer no botón de creación de unha nova.
-ii. O sistema amosará un formulario con unha entrada de texto para o nome e un listado de entradas de texto coas etiquetas existentes e asignadas.
-iii. Se o usuario desexa engadir unha nova etiqueta debe premer no botón "Navalpro".
-iv. O sistema amosará unha nova fila ó listado con unha entrada de texto baleira que o usuario debe editar.
-v. O usuario introduce un nome para a etiqueta.
-vi. O sistema engade o nome ó listado.
-vii. O usuario preme en "Gardar" para gardar e saír ou "Gardar e Continuar" para gardar e continuar editando o formulario.
+i. Select a tag to edit or click the create button for a new one.
+ii. The system shows a form with a text entry for the name and a list of text entries with existing and assigned tags.
+iii. If users wish to add a new tag, they must click on the “New tag” button.
+iv. The system shows a new row on the list with an empty text box that users must edit.
+v. Users enter a name for the tag.
+vi. The system adds the name to the list.
+vii. Users click “Save” or “Save and continue” to continue editing the form.
 
 .. figure:: images/tag-types-edition.png
    :scale: 50
 
-   Edición de tipos de etiquetas
+   Editing tag types
 
-Etiquetas
-=========
+Tags
+====
 
-As etiquetas son entidades que pertencen a un tipo de etiqueta. Estas entidades poden ser asignadas a elementos de pedido. O feito de asignar unha etiqueta a un elemento de pedido fará que todos os elementos descendentes dese elemento herden a etiqueta á que pertencen. O feito de contar con unha etiqueta asignada permitirá que eses elementos saian filtrados nos puntos nos que se ofrecerá a posibilidade de procura:
+Tags are entities that belong to a tag type. These entities can be assigned to order elements. Assigning a tag to an order element means that all the elements descending from this element will inherit the tag to which they belong. Having an assigned tag means that these entities are filtered where searches can be carried out:
 
-i. Procura de tarefas no diagrama de Gantt.
-ii. Procura de elementos de pedido no listado de elementos de pedido.
-iii. Filtrados para informes.
+i. Search for tasks in the Gantt chart.
+ii. Search for order elements in the list of order elements.
+iii. Filters for reports.
 
-A asignación de etiquetas a elementos de pedido será cuberta no capítulo de pedidos.
+The assignment of tags to order elements is covered in the chapter on orders.
+
+

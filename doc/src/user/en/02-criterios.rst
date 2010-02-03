@@ -1,63 +1,62 @@
-Criterios
+﻿Criteria
 #########
 
 .. contents::
 
-Os criterios serán os elementos que se utilizarán de xeito transversal na aplicación para categorizar os recursos e ás tarefas. Un exemplo moi sinxelo de utilización de criterios é o feito de asignar a un recurso o criterio “soldador” e requirir nas tarefas que sexa necesario cumprir o criterio “soldador” para realizar asignación de recursos.
+Criteria are elements that are used in the program to categorise resources and tasks. Tasks need criteria and the resources fulfil them. The following sequence is an example of how to use criteria: A resource is designated the criterion of "welder" (that is the resource fulfils the "welder" category) and a task requires the "welder" criterion to be carried out. As a result, when resources are allocated to tasks, workers with the "welder" criterion are used when allocating resources generically (not applicable to specific allocation). See the chapter on allocating resources to find out more about the different kinds of allocation.
 
-No proxecto, existen varias funcionalidades a realizar con criterios:
+Several operations can be carried out with criteria in the program:
 
-* Administración de criterios
-* Asignación de criterios a recursos.
-* Asignación de criterios a tarefas.
-* Filtrado de entidades por criterios. Será posible filtrar tarefas e elementos de pedido por criterios para realizar operacións na aplicación. Asimesmo, os informes e gráficos de cargas de recursos serán filtrables por criterios.
+* Criteria administration
+* Allocation of criteria to resources.
+* Allocation of criteria to tasks.
+* Filtering entities according to criteria. Tasks and order items can be filtered according to criteria to carry out operations in the program. 
 
-Das tres funcionalidades anteriores só se explicará a primeira delas nesta sección deixando para seccións posteriores os dous tipos de asignación, a de recursos no capitulo "Xestión de recursos" e a de tarefas no capítulo "Planificación de tarefas".
+Only the first function out of the three described above will be explained in this section. The two kinds of allocation will be dealt with later, the allocation of resources in the chapter on "Resource management" and the filtering function in the chapter on "Task planning".
 
 
-Administración de criterios
+Criteria administration
 ===========================
-
-A administración de criterios será accesible dende o menú de administración:
+Criteria administration can be accessed from the administration menu:
 
 .. figure:: images/menu.png
    :scale: 50
 
-   Pestanas de menú de primeiro nivel
+   First level menu tabs
 
-A operación específica para administrar criterios é *Xestionar Criterios*. A partir de dita operación é posible listar os criterios dispoñibles no sistema.
+The specific operation to manage criteria is *Manage criteria*. The criteria available in the system can be listed by using this operation.
 
 .. figure:: images/lista-criterios.png
    :scale: 50
 
-   Listado de criterios
+   List of criteria
 
-Premendo no botón *Crear* poderase acceder ó formulario de creación/edición de un criterio. A edición de un criterio farase premendo na icona de edición do mesmo.
+The create/edit criterion form can be accessed by clicking on the *Create* button. A criterion can be edited by clicking on the edit icon.
 
 .. figure:: images/edicion-criterio.png
    :scale: 50
 
-   Edición de criterios
+   Editing criteria
 
-No formulario de edición de criterios que se amosa na imaxe anterior poderanse realizar as seguintes operacións:
+The following operations can be carried out using the criteria editing form shown in the previous image:
 
-* Edición do nome do criterio
-* Indicar se é posible asignar varios valores simultaneamente ó mesmo elemento para o tipo de criterio seleccionado. Por exemplo, un recurso que satisfai dous criterios, soldador e torneiro.
-* Indicar o tipo do criterio:
+* Editing the name of the criterion
+* Indicating whether several values can be allocated at the same time or just one element for the kind of criterion selected. For example, a resource that fulfils two criteria, welder and lathe operator.
+* Indicating the kind of criteria:
 
-  * Tipo xenérico: Criterio que poderá satisfacer indistintamente unha máquina ou un traballador.
-  * Tipo traballador: Criterio que poderá satisfacer un traballador exclusivamente.
-  * Tipo máquina: Criterio que poderá satisfacer unha máquina exclusivamente.
+  * Generic kind: A criterion that may be used for machines or workers alike.
+  * Worker kind: A criterion that may be used only for a worker.
+  * Machine kind: A criterion that may be used only for a machine.
 
-* Indicar se o criterio é xerárquico ou non. Existen casos nos que os criterios deben ser tratados xerarquicamente, é dicir, que o feito de ser un criterio asignado a un elemento non folla faga que este criterio estea asignado automaticamente ós fillos. Un exemplo claro de xerarquización de criterios é o criterio localización, unha persoa que teña asignado Galicia como localización pertencerá á localización España por ser xerárquico.
-* Indicar se o criterio está habilitado e deshabilitado. Esta é a forma de borrar criterios. Debido a que unha vez creado un criterio e utilizado en datos históricos, estes non poden ser cambiados, o criterio debe existir no sistema. Para evitar que este criterio saia en diferentes elementos de selección, poderá ser invalidado.
-* Realizar unha descrición do criterio.
-* Engadir novos valores. Na segunda parte do formulario aparece unha entrada de texto con un botón *New Criterion*
-* Editar o nome dos criterios existentes.
-* Desprazar verticalmente os criterios na lista dos existentes.
-* Eliminar un valor de criterio da lista.
+* Indicating whether the criterion is hierarchical or not. Sometimes criteria must be treated hierarchically, for example, the fact that a criterion has been allocated to an element does not mean that this criterion is automatically allocated to issues that stem from it. A clear example of criteria hierarchy is the location criterion as it is hierarchical, for example, a person who has designated Galicia as their location will belong to Spain.
+* Indicating whether the criterion is authorised or not. This is the way users erase criteria. As a criterion cannot be changed once it has been created and used in historic data, the criterion must be on the system. It can be invalidated to avoid the criterion from appearing in different selection elements.
+* Describing the criterion.
+* Adding new values. A text entry with the *New criterion* button is on the second part of the form.
+* Editing the name of existing criteria.
+* Moving the criteria up or down the list of current criteria.
+* Removing a criteria value from the list.
 
-O formulario de administración de criterios é un formulario que responde ás características dos formularios comentados na introdución como de 3 operacións (gardar, gardar e pechar e pechar).
+The criteria administration form responds to the characteristics of the forms described in the introduction as 3 operations (save, save and close, and close).
 
 
 

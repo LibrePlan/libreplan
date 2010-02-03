@@ -1,301 +1,302 @@
-Pedidos e elementos de pedidos
+﻿Orders and order elements
 ##############################
 
 .. contents::
 
-Os pedidos son as entidades que describirán os traballos a realizar por parte dos usuarios que utilicen a aplicación.
-Cada pedido corresponderase cos proxectos que as empresas van a ofrecerlles ós seus clientes.
+Orders describe the work to be carried out by the users who use the program.
+Each order corresponds with the projects that the companies are going to offer their clients.
 
-Un pedido está formado por unha ou varias liñas de pedido. Cada liña de pedido corresponderase coa estruturación que se desexe realizar sobre os traballos dentro dese pedido. As liñas de pedido organízanse de xeito xerárquico sen limitacións de profundidade. O feito de que as liñas de pedido se organicen de xeito xerárquico marcará o funcionamento de diversas características herdables, tal como as etiquetas.
+An order consists of one or several order lines. Each order line corresponds with the planning the works on the order should follow when being implemented. Order lines are organised hierarchically without any limitations on depth. The fact that order lines are organised hierarchically shows how several inheritable features work, such as labels.
 
-Nas seguintes seccións describiranse as operacións que un usuario pode realizar cos pedidos e as liñas de pedidos.
+The following sections will describe the operations that users can carry out with orders and order lines.
 
-Pedido
+Order
 ======
 
-Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa. O pedido para o planificador identifica a entidade de proxecto dentro da empresa. A diferencia das aplicacións de xestión globais, "Navalpro" só necesita utilizar certos datos dos pedidos. Estes datos son:
+An order is a project or work that a client requests from a company. The order for the planned works identifies the project in the company.  The difference with comprehensive management programs such as “Navalpro” is that they only need to use certain order details. These details are:
 
-* Nome do pedido
-* Código do pedido.
-* Importe total do pedido
-* Data de comezo estimada
-* Data de finalización
-* Responsable
-* Descrición
-* Calendario asignado.
-* Autoxeneración de códigos. Campo para indicarlle ó sistema que autoxenere os códigos dos elementos de pedido e dos grupos de horas.
-* Preferencia entre dependencias e restricións. O usuario pode elixir dependencias ou restricións como prioritarios á hora de ser aplicados no caso en que entren en conflito.
+* Order name 
+* Order code 
+* Total amount of order
+* Estimated start date
+* End date
+* Person in charge
+* Description
+* Assigned calendar
+* Automatic generation of codes. A field used to instruct the system to automatically generate order element and hour group codes.
+* Preference between dependencies and restrictions. Users can choose dependencies or restrictions as priorities when applied in the event of conflict.
 
-Sen embargo, o propio pedido está relacionado con outras entidades que finalmente o dotarán de unha maior riqueza:
+However, the actual order has other entities that make it more complete:
 
-* Horas asignadas ó pedido.
-* Avances imputados ó pedido.
-* Etiquetas.
-* Criterios asignados ó pedido.
-* Materiais
-* Formularios de calidade
+* Hours assigned to the order
+* Progress attributed to the order
+* Labels
+* Criteria assigned to the order
+* Materials
+* Quality forms
 
-Para editar ou crear un pedido é posible realizalo dende varios puntos da aplicación:
+Editing or creating an order can be carried out from various locations in the program:
 
-* Accedendo á perspectiva de "Lista de pedidos" dentro da vista global de empresa.
+* From the "order list" in the company overview.
 
-   * A edición realízase premendo no botón de editar sobre o pedido elixido.
-   * A creación realízase premendo en "Novo pedido".
+   * Editing is carried out by clicking the edit button on the chosen order.
+   * Creating a new order is carried out by clicking "New order".
 
-* Accedendo a un pedido no diagrama de Gantt e cambiando de perspectiva á de detalles de pedido.
+* From an order in the Gantt chart and changing to the order details view.
 
 
-Dende a edición de pedido é posible acceder ás seguintes pestanas:
+Users can access the following tabs from the editing order option:
 
-* Edición dos datos de pedidos. Dende dita pantalla é posible editar os datos básicos do pedido. Actualmente:
+* Editing order details. Users can edit basic order details on this screen. Currently these are:
 
-  * Nome
-  * Código
-  * Data de comezo estimada
-  * Data de finalización
-  * Responsable
-  * Cliente
-  * Descrición
+  * Name
+  * Code
+  * Estimated start date
+  * End date
+  * Person in charge
+  * Client
+  * Description
 
 .. figure:: images/order-edition.png
    :scale: 50
 
-   Edición de pedido
+   Editing orders
 
-* Listado de elementos de pedido. Dende o listado de elenentos de pedido é posible realizar varias operacións:
+* Order element list. Users can carry out several operations from the order element list:
 
-  * Crear novos elementos de pedido.
-  * Subir nun mesmo nivel da xerarquía un elemento de pedido.
-  * Baixar nun mesmo nivel da xerarquía un elemento de pedido.
-  * Indentar un elemento de pedido, ou o que é o mesmo mover cara abaixo na xerarquía, cambiando de nivel o elemento.
-  * Des-indentar un elemento de pedido, ou o que é o mesmo mover cara arriba na xerarquía, cambiando de nivel o elemento.
-  * Filtrar os elementos de pedido.
-  * Borrar elementos de pedido.
-  * Mover arrastrando e soltando un elemento de pedido na xerarquía.
+  * Creating new order elements.
+  * Raising an order element in the hierarchy by one level.
+  * Lowering an order element in the hierarchy by one level.
+  * Indenting an order element, which is the same as moving it down the hierarchy, by changing the element's level.
+  * Unindenting an order element, which is the same as moving it up the hierarchy, by changing the element's level.
+  * Filtering order elements.
+  * Deleting order elements.
+  * Moving an element in the hierarchy by dragging and dropping.
 
 .. figure:: images/order-elements-list.png
    :scale: 40
 
-   Listado de elementos de pedido
+   Order element list
 
-* Horas asignadas. Pantalla na que se amosan as horas totais imputadas ó proxecto, tratándose de unha pantalla de visualización onde se agrupan as horas imputadas ós elementos de pedido.
+* Assigned hours. A screen that shows the total hours attributed to a project, consisting of a viewing screen where the hours entered in the order elements are grouped.
 
 .. figure:: images/order-assigned-hours.png
    :scale: 50
 
-   Asignación de horas imputadas ó pedido polos traballadores
+   Assigning hours attributed to the order by the workers
 
-* Avances. Pantalla na que se permiten imputar tipos de avances e medidas de avances ó pedido. Ver sección de "Avances" para o funcionamento da mesma.
+* Progress. A screen where users can attribute types of progress and progress measurements relating to the order. See the "Progress" section to find out how it works.
 
-* Etiquetas. Pantalla na que se permite asignar etiquetas a un pedido e coñecer as etiquetas directas e indirectas que xa foron asignadas. Ver a seguinte sección de edición de elementos de pedido máis en profundidade para coñecer o procedemento de xestionar as etiquetas.
+* Labels. A screen where users can assign labels to an order and identify previously assigned direct and indirect labels. See the following order element editing section for an in-depth description of the label management procedure.
 
 .. figure:: images/order-labels.png
    :scale: 35
 
-   Etiquetas de pedido
+   Order labels
 
-* Criterios. Pantalla na que se poden asignar os criterios que se desexan aplicar globalmente a todas as tarefas de un pedido. Estes criterios serían aplicados de xeito automático a todos os elementos de pedido, excepto que estes fosen invalidados explicitamente. Asimesmo, pódense visualizar os grupos de horas dos elementos de pedidos agrupados por criterios, o cal permite coñecer os criterios que se esixen ó longo de un pedido.
+* Criteria. A screen where users can assign the criteria they want to apply to all the tasks on an order. These criteria will be applied automatically to all order elements, except those that were explicitly invalidated. The hour groups of order elements, which are grouped by criteria, can also be viewed, enabling users to identify the criteria required for an order.
 
 .. figure:: images/order-criterions.png
    :scale: 50
 
-   Criterios de pedido
+   Order criteria
 
-* Materiais. Pantalla na que se pode asignar o material dispoñible no sistema ó pedido. O material será seleccionable de entre as categorías de material que existen na aplicación. Os materiais son xestionados do seguinte modo:
+* Materials. A screen where users can assign available material to orders. The material can be selected from among the material categories available in the program. Materials are managed in the following way:
 
-   * O usuario selecciona a pestana que se amosa na zona inferior da pantalla chamada "Procura de materiais".
-   * O usuario pode introducir un texto para a procura de materiais ou seleccionar as categorías para as que se desexa amosar materiais.
-   * O sistema filtra os resultados.
-   * O usuario selecciona os materiais que desexa (para seleccionar máis de un material o usuario pode premer no botón "Ctrl" que permite a selección múltiple no listado.
-   * O usuario preme en "Asignar".
-   * O sistema amosa o listado de materiais xa asignado ó pedido.
-   * O usuario selecciona as unidades e o estado que desexa asignarlle ó pedido.
-   * O usuario preme en "Gardar" ou "Gardar e Continuar".
-   * Se o usuario desexa xestionar a recepción de material, o sistema permite premer en "Dividir" para cambiar o estado dunha cantidade parcial de materiais.
+   * Users select the tab shown in the lower part of the screen called "Search materials".
+   * Users can enter text to search for materials or select the categories for which they want materials.
+   * The system then filters the results.
+   * Users select the materials they want (users can select more than one material on the list by pressing the "Ctrl" button).
+   * Users then click "Assign".
+   * The system then shows the list of materials that has already been assigned to the order.
+   * Users select the units and the status they want to assign to the order.
+   * Users then click "Save" or "Save and continue".
+   * If users want to manage the receipt of the material, they can click "Divide" to change the status of a partial quantity of material.
 
 .. figure:: images/order-material.png
    :scale: 50
 
-   Material asociado a un pedido
+   Material associated with an order
 
-* Calidade. É posible asignar un formulario de calidade ó pedido co obxectivo de ser cumprimentado para asegurar a realización de certas actividades asociadas ó pedido. Ver a seguinte sección de edición de elementos de pedido máis en profundidade para coñecer o procedemento de xestionar o formulario de calidade.
+* Quality. Users can assign a quality form to the order, which would then be completed to ensure that certain activities associated with the order are carried out. See the following section on editing order elements to find out about the management procedure for quality forms.
 
 .. figure:: images/order-quality.png
    :scale: 50
 
-   Formulario de calidade asociado ó pedido
+   Quality form associated with the order
 
-Edición de elementos de pedido
-===============================
+Editing order elements
+==============================
 
-A edición de elementos de pedido realizarase dende a pestana de listado de elementos de pedido a partir da icona de edición. Se o usuario preme na icona de edición, o sistema amosa unha nova pantalla dende a que o usuario pode realizar o seguinte:
+Editing order elements is carried out from the "Order element list" tab by clicking the editing icon, which shows a new screen from which the user can carry out the following:
 
-* Editar a información do elemento de pedido.
-* Visualización de horas imputadas a elemento de pedido.
-* Xestionar os avances dos elementos de pedido.
-* Xestionar as etiquetas do pedido.
-* Xestionar os criterios esixidos polo elemento de pedido.
-* Xestionar os materiais.
-* Xestionar os formularios de calidade.
+* Edit information about the order element.
+* View hours attributed to order elements.
+* Manage progress of order elements.
+* Manage order labels.
+* Manage criteria required by the order element.
+* Manage materials.
+* Manage quality forms.
 
-As seguintes subseccións tratan cada un das operacións en profundidade.
+The following subsections describe each one of the operations in depth.
 
-Edición da información do elemento de pedido
---------------------------------------------
+Editing information about the order element
+------------------------------------------------
 
-A edición de información de elemento de pedido inclúe a edición dos seguintes datos:
+Editing information about the order element includes the editing of the following details:
 
-* Nome do elemento de pedido.
-* Código do elemento de pedido.
-* Data de inicio do elemento de pedido.
-* Data estimada de fin do elemento de pedido.
-* Horas totais do elemento de pedido. Estas horas poden ser calculadas a partir dos grupos de horas engadidas ou introducidas directamente neste punto que se repartiran entre os grupos de horas, creando algún novo se as porcentaxes non coinciden coas porcentaxes iniciais.
-* **Grupos de horas**: É posible engadir un ou varios grupos de horas ó elemento de pedido. **O significado destes grupos de horas** é o establecemento dos requirimentos que se lle esixirán ós recursos que vaian a ser asignados para realizalas.
-* Criterios: É posible engadir criterios que se deben satisfacer para poder se asignado xenericamente para realizar dito elemento de pedido.
+* Order element name.
+* Order element code.
+* Start date of the order element.
+* Estimated end date of the order element.
+* Total hours of the order element. These hours can be calculated from the added hour groups or entered directly into this section, in which the hours have been distributed among the hour groups, and a new one created if the percentages do not coincide with initial percentages.
+* **Hour groups**: It is possible to add one or several hour groups to the order element. **The purpose of these hour groups** is to establish the requirements of the resources that will be assigned to carry them out.
+* Criteria: It is possible to add criteria that must be fulfilled to enable generic assignment to carry out the order element.
 
 .. figure:: images/order-element-edition.png
    :scale: 50
 
-   Edición de elemento de pedido
+   Editing order elements
 
-Visualización de horas imputadas a elementos de pedido
+Viewing hours attributed to order elements
 ------------------------------------------------------
 
-A pestana de "Horas Navalpro" permite visualizar os partes de traballo asociados a un elemento de pedido e ó mesmo tempo permite visualizar cantas horas das presupostadas están xa realizadas.
+The "Assigned hours" tab enables users to view the work reports associated with an order element and also how many of the estimated hours have already been carried out.
 
 .. figure:: images/order-element-hours.png
    :scale: 50
 
-   Horas asignadas a elementos de pedido
+   Hours assigned to order elements
 
-A pantalla está dividida en dúas partes:
+The screen is divided into two parts:
 
-* Listado de partes de traballo: O usuario verá o listado de partes de traballo que están asociados ó elemento de pedido podendo comprobar a data e hora, recurso e número de horas adicadas á tarefa.
-* Uso das horas presupostadas: O sistema calcula o total de horas adicadas á tarefa e as contrasta coas que estaban presupostadas.
+* Work report list: Users can view the list of work reports that are associated with an order element in order to check the date and time, resource and number of hours devoted to the task.
+* Use of estimated hours: The system calculates the total number of hours devoted to a task and compares them with the estimated hours.
 
-Xestión de avances dos elementos de pedido
-------------------------------------------
+Managing progress of order elements
+---------------------------------------------
 
-A introdución de tipos de avances e xestión dos avances dos elementos de pedido foi descrita no capítulo de "Avances".
+Entering types of progress and the management of order element progress has been described in the "Progress" chapter.
 
-Xestión de etiquetas do pedido
+Managing order labels
 ------------------------------
 
-As etiquetas, tal e como se describen no capítulo adicado ás mesmas, son entidades que permiten categorizar os elementos de pedido. Deste xeito, o usuario poderá agrupar información de planificación ou pedidos en base a elas.
+Labels, as described in the chapter on labels, enable users to categorise order elements. Consequently, users can group planning or order information based on them.
 
-Un usuario pode asignar etiquetas directamente a un elemento de pedido ou ben a un ascendente na xerarquía dese elemento de pedido. A partir do momento no que se asignar unha etiqueta dun dos dous xeitos anteriores, tanto o elemento de pedido como a tarefa de planificación asociada estarán asociadas a dita etiqueta, sendo utilizadas para posteriores filtrados.
+Users can assign labels directly to an order element or even to a previous order element in the hierarchy. From the moment a label from one of the two previous methods is assigned, the order element and the related planning task are associated with the label, and used for subsequent filtering.
 
 .. figure:: images/order-element-tags.png
    :scale: 50
 
-   Asignación de etiquetas para elementos de pedido
+   Assigning labels for order elements
 
-Tal e como se pode ver na imaxe, dende a pestana de **etiquetas**, o usuario poderá realizar as seguintes operacións:
+As can be seen in the image, users can carry out the following procedures from the **labels** tab:
 
-* Visualización das etiquetas que un elemento do pedido terá asociadas por herdanza dun elemento de pedido superior na xerarquía á que lle foi asignada directamente. A tarefa de planificación asociada a cada elemento de pedido terá as mesmas etiquetas asociadas.
-* Visualización das etiquetas que un elemento do pedido ten asociadas directamente a través do seguinte formulario de asignación de etiquetas inferior.
-* Asignar etiquetas existentes: Un usuario poderá asignar etiquetas existentes a partir da procura dunha entre as existentes no formulario inferior ó listado de etiquetas directas. Para buscar unha etiqueta chega con premer na icona coa lupa ou escribir o inicio da etiqueta na entrada de texto para que o sistema amose as opcións dispoñibles.
-* Crear e asignar etiquetas novas: Un usuario poderá crear novas etiquetas asociadas a un tipo de etiquetas existente dende dito formulario. Para realizar a operación é necesario que seleccione un tipo de etiqueta á que se asociará e se introduza o valor da etiqueta para o tipo seleccionado. Premendo en "Navalpro e Navalpro" o sistema xa a creará automáticamente e a asigna ó elemento de pedido.
+* View the labels associated with an order element that were inherited from an order element that was higher in the hierarchy than the one that was directly assigned. The planning task associated with each order element has the same associated labels.
+* View labels that are directly associated with an order element by means of the following assignment form for lower-level labels.
+* Assign existing labels: Users can assign labels by searching for a particular one from among the available labels on the form that is lower than the direct label list.  To search for a label, users can click the magnifying glass icon or write the first letters of the label in the text box so that the system can show the available options.
+* Create and assign new labels: Users can create new labels associated with a type of existing label from this form. In order to carry out the procedure, it is necessary to select a type of label to be associated and then enter the value of the label for the type selected. The system creates the label automatically and assigns the order element when "Create and assign" is clicked.
 
 
-Xestionar os criterios esixidos polo elemento de pedido e os grupos de horas
-----------------------------------------------------------------------------
+Managing criteria required by the order element and hour groups
+--------------------------------------------------------------------------------
 
-Tanto un pedido como un elemento de pedido poden ter asignados os criterios que se esixen para ser realizados. Os criterios poden afectar de xeito directo ou de xeito indirecto:
+Both an order and an order element can be assigned criteria that need to be fulfilled for it to be carried out. Criteria can be direct or indirect:
 
-* Criterios directos: Son os que se asignan directamente ó elemento de pedido. Son os criterios que se van a esixir ós grupos de horas que forman parte do elemento de pedido.
-* Criterios indirectos: Son os criterios que se asignan en elementos de pedido superiores na xerarquía e son herdados polo elemento en edición.
+* Direct criteria: These are assigned directly to the order element. They are criteria that are required by the hour groups on the order element.
+* Indirect criteria: These are assigned on order elements that are higher in the hierarchy and are inherited by the element that is being edited.
 
-A maiores do criterio esixido, é posible definir un ou varios grupos de horas que forman parte do elemento de pedido. Dependendo de se o elemento de pedido contén outros elementos de pedido como fillos ou é un nodo folla. No primeiro dos casos os datos de horas e grupos de horas son solo visualizables e no caso de nodos folla son editables. O funcionamento neste segundo caso é o seguinte:
+Apart from the required criterion, one or various hour groups that are part of the order element can be defined. It all depends on whether the order element contains other order elements as child nodes or if it is a leaf node. In the first case the information about hours and hour groups can only be viewed, but leaf nodes can be edited. The latter case works as follows:
 
-* Por defecto, o sistema crea un grupo de horas asociado ó elemento de pedido. Os datos modificables para un grupo de horas é:
+* The system creates an hour group by default, which is associated to the order element. The details that can be modified for an hour group are:
 
-   * Código do grupo de horas, se non é autoxenerado.
-   * Tipo de criterio. O usuario pode elixir se desexa asignar un criterio de tipo máquina ou traballador.
-   * Número de horas do grupo de horas.
-   * Lista de criterios que se aplican ó grupo de horas. Para engadir novos criterios o usuario debe premer en "Engadir criterio" e seleccionar un no buscador que aparece tras premer no botón.
+   * Code for the hour group if it is not automatically generated.
+   * Type of criterion. Users can choose to assign a machine or worker criterion. 
+   * Number of hours in the hour group.
+   * List of criteria to be applied to the hour group. To add new criteria, users have to click "Add criterion" and select one from the search engine, which appears after clicking the button.
 
-* O usuario pode engadir novos grupos de horas con características diferentes que os grupos de horas anteriores. Exemplo disto sería que un elemento de pedido debe ser feito por un soldador (30h) e por un pintor (40h).
+* Users can add new hour groups with features that are different from previous hour groups. An example of this would be when an order element must be carried out by a welder (30h) and a painter (40h).
 
 .. figure:: images/order-element-criterion.png
    :scale: 50
 
-   Asignación de criterios a elementos de pedidos
+   Assigning criteria to order elements
 
-Xestionar os materiais
-----------------------
+Managing materials
+------------------------
 
-Os materiais son xestionados nos proxectos como un listado asociado a cada liña de pedido ou a un pedido globalmente. O listado de materiais está formado polos seguintes campos:
+Materials are managed in the projects as a list associated with each order line or an order in general. The list of materials is made up of the following fields:
 
-* Código
-* Data
-* Unidades: Unidades necesarias.
-* Tipo de unidade: Tipo de unidade no que se mide o material.
-* Prezo da unidade: Prezo unitario.
-* Prezo total: Prezo resultante de multiplicar o prezo unitario polas unidades.
-* Categoría: Categoría de material á que pertence.
-* Estado: Recibido, Solicitado, Pendente, Procesando, Cancelado.
+* Code
+* Date
+* Units: Required units.
+* Type of unit: Type of unit used to measure the material.
+* Price of the unit: Unit price.
+* Total price: The price is calculated by multiplying the unit price by the number of units.
+* Category: Category to which the material belongs.
+* Status: Received, requested, pending, processing, cancelled.
 
-O modo de traballar cos materiais é o seguinte:
+Working with materials is carried out as follows:
 
-* O usuario selecciona a pestana de "Materiais" dun elemento de pedido.
-* O sistema amosa dúas subpestanas: "Materiais" e "Procura de materiais".
-* Se o elemento de pedido non tiña materiais asignados, a primeira pestana amosará un listado baleiro.
-* O usuario preme en "Procura de materiais" na zona inferior esquerda da ventana.
-* O sistema amosa o listado de categorías dispoñibles e os materiais asociados.
+* Users select the "Materials" tab on an order element.
+* The system then shows two sub-tabs: "Materials" and "Search materials".
+* If the order element did not have assigned materials, the first tab will be empty.
+* Users then click on "Search materials" in the lower left-hand part of the window.
+* The system then shows the list of available categories and associated materials.
 
 .. figure:: images/order-element-material-search.png
    :scale: 50
 
-   Procura de material
+   Searching material
 
-* O usuario selecciona categorías nas que buscar para afinar a procura de materiais.
-* O sistema amosa os materiais pertencentes ás categorías seleccionadas.
-* O usuario selecciona no listado de materiais aqueles que desexa asignar ó elemento de pedido.
-* O usuario preme en "Asignar".
-* O sistema amosa o listado seleccionado de materiais na pestana de "Materiais" con novos campos por cubrir.
+* Users select categories to search to refine searches for materials.
+* The system shows the materials that belong to the selected categories.
+* From the materials list, users select the materials to assign to the order element.
+* Users click "Assign".
+* The system shows the selected list of materials on the "Materials" tab with new fields to complete. 
 
 .. figure:: images/order-element-material-assign.png
    :scale: 50
 
-   Asignación de material a elemento de pedido
+   Assigning materials to order elements
 
-* O usuario selecciona as unidades, estado e data dos materiais asignados.
+* Users select the units, status and date of assigned materials.
 
-Para control posterior dos materiais é posible cambiar o estado dun grupo de unidades do material recibido. Para realizar esta operación o usuario debe:
+For subsequent monitoring of materials, it is possible to change the status of a unit group of the received material. This procedure is carried out as follows:
 
-* Premer no botón "Dividir" que se amosa no listado de materiais á dereita de cada fila.
-* Seleccionar o número de unidades para os que desexa dividir a fila.
-* A aplicación amosa dúas filas co material dividido.
-* O usuario cambia o estado da fila de material que desexa.
+* Users click the "Divide" button on the list of materials to the right of each row.
+* Users select the number of units they want the row to be divided into.
+* The program shows two rows with the material divided.
+* Users change the status of the row containing the material.
 
-A utilidade desta operación de división é a de poder recibir entregas parciais de material sin necesidade de esperar a recibilo todo para marcalo como recibido.
+The advantage of using this dividing tool is the possibility of receiving partial deliveries of material without having to wait to receive it all in order to mark it as received. 
 
-Xestionar os formularios de calidade
+Managing quality forms
 ------------------------------------
 
-Existen elementos de pedido que deben certificar que certas tarefas foron realizados para poder ser marcadas como completadas. É por iso que xurden os formularios de calidade, os cales están formados por unha lista de preguntas que poden ter asignado un peso segundo sexa contestada positivamente.
+Some order elements must certify that certain tasks have been carried out in order for them to be marked as complete. This is why the program has quality forms, which consist of a list of questions that can be considered important if they are answered positively.
 
-É importante destacar que un formulario de calidade debe ser creado previamente para poder ser asignado ó elemento de pedido.
+It is important to mention that a quality form has to be created previously so that it can be assigned to an order element.
 
-Para xestionar os formulario de calidade:
+To manage quality forms:
 
-* O usuario accede á pestana de "Formularios de calidade".
+* Go to the "Quality forms" tab.
 
 .. figure:: images/order-element-quality.png
    :scale: 50
 
-   Asignación de formulario de calidade a elemento de pedido
+   Assigning quality forms to order elements
 
-* A aplicación amosa un buscador de formularios de calidade. Existen dous tipos de formularios de calidade: por elementos ou porcentaxe.
+* The program has a search engine for quality forms. There are two types of quality forms: according to element or percentage.
 
-   * Por elementos: Cada elemento é independente.
-   * Por porcentaxe: Cada pregunta incrementa o avance no elemento de pedido en un porcentaxe. As porcentaxes deben ser incrementales ata o 100%.
+   * Element: Every element is independent.
+   * Percentage: Every question increases progress in the order element by a percentage. It must be possible for percentages to be increased to 100%. 
 
-* O usuario selecciona un dos formularios dados de alta dende a interface de administración e preme en "Asignar".
-* A aplicación asigna o formulario elixido no listado de formularios asignados ó elemento de pedido.
-* O usuario preme no botón "Editar" do elemento de pedido.
-* A aplicación desprega as preguntas do formulario de calidade no listado inferior.
-* O usuario marca como acadadas as preguntas que son realizadas.
-   * Se o tipo de formulario de calidade é por porcentaxe, as preguntas serán contestadas por orde.
-   * Se o tipo de formulario de calidade é por elementos, as preguntas serán contestadas en calquera orde.
+* Users select one of the forms created in the administration interface and click "Assign".
+* The program assigns the form chosen from the list of forms assigned to the order element.
+* Users click the "Edit" button on the order element.
+* The program displays the questions from the quality form in the lower list.
+* Users mark the questions that have been carried out as achieved.
+   * If the quality form is based on percentages, the questions are answered in order.
+   * If the quality form is based on elements, the questions can be answered in any order.
+
