@@ -298,6 +298,14 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         }
     }
 
+    private boolean isOverAssignable(LocalDate localDate) {
+        CalendarException exceptionDay = getExceptionDay(localDate);
+        if (exceptionDay != null) {
+            return exceptionDay.getType().isOverAssignable();
+        }
+        return true;
+    }
+
     public Integer getHours(Date date, Days day) {
         return getHours(new LocalDate(date), day);
     }
@@ -783,7 +791,26 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     @Override
     public Integer toHours(LocalDate day, ResourcesPerDay resourcesPerDay) {
         final Integer workableHours = getWorkableHours(day);
-        return resourcesPerDay.asHoursGivenResourceWorkingDayOf(workableHours);
+        return limitOverAssignability(day, resourcesPerDay
+                .asHoursGivenResourceWorkingDayOf(workableHours), workableHours);
+    }
+
+    private Integer limitOverAssignability(LocalDate day, int workableHours,
+            int hoursInitiallyCalculated) {
+        boolean overAssignable = isOverAssignable(day);
+        if (overAssignable) {
+            return hoursInitiallyCalculated;
+        } else {
+            return Math.min(hoursInitiallyCalculated,
+                    multiplyByCapacity(workableHours));
+        }
+    }
+
+    /**
+     * This method is intended to be overriden
+     */
+    protected int multiplyByCapacity(Integer workableHours) {
+        return workableHours;
     }
 
 }
