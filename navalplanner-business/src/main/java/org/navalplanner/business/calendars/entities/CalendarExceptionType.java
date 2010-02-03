@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -36,6 +37,9 @@ public class CalendarExceptionType extends BaseEntity {
 
     private String name;
     private String color;
+
+    // Beware. Not Assignable was intended to mean not over assignable. This
+    // name is kept in order to not break legacy data
     private Boolean notAssignable;
 
     /**
@@ -59,8 +63,10 @@ public class CalendarExceptionType extends BaseEntity {
         return color;
     }
 
-    public Boolean isNotAssignable() {
-        return notAssignable;
+    /**
+     * @return If more hours can be assigned on this day.
+     */
+    public boolean isOverAssignable() {
+        return BooleanUtils.isFalse(notAssignable);
     }
-
 }
