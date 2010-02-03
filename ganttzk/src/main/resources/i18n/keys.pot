@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-28 11:13+0100\n"
+"POT-Creation-Date: 2010-02-03 13:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
-msgid "Show all labels"
-msgstr ""
-
 #: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:11
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:21
 msgid "Zoom level"
 msgstr ""
 
@@ -33,20 +29,16 @@ msgstr ""
 msgid "0% - 100%"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:17
-msgid "Filter"
-msgstr ""
-
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:33
-msgid "Critical path"
-msgstr ""
-
 #: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:30
 msgid "Year"
 msgstr ""
 
 #: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:46
 msgid "Month"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:34
+msgid "Show/Hide resources"
 msgstr ""
 
 #: ./ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:206
@@ -65,10 +57,6 @@ msgstr ""
 msgid "Hide critical path"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:39
-msgid "Show all resources"
-msgstr ""
-
 #: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:116
 msgid "+ 100%"
 msgstr ""
@@ -77,11 +65,19 @@ msgstr ""
 msgid "Day"
 msgstr ""
 
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:28
+msgid "Show/Hide Critical path"
+msgstr ""
+
 #: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:111
 msgid "100%"
 msgstr ""
 
-#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:42
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:31
+msgid "Show/Hide labels"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:17
 msgid "Print"
 msgstr ""
 
@@ -107,6 +103,10 @@ msgstr ""
 
 #: ./ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:38
 msgid "Quarter"
+msgstr ""
+
+#: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:14
+msgid "Refresh"
 msgstr ""
 
 #: ./ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:404
