@@ -96,7 +96,8 @@ abstract class LoadPeriodGenerator {
         Validate.notNull(allocationsOnInterval);
         this.start = start;
         this.end = end;
-        this.allocationsOnInterval = allocationsOnInterval;
+        this.allocationsOnInterval = ResourceAllocation
+                .getSatisfied(allocationsOnInterval);
     }
 
     public List<LoadPeriodGenerator> join(LoadPeriodGenerator next) {
