@@ -293,7 +293,8 @@ public class AdvancedAllocationTabCreator {
 
     private void addAllocations(Order order,
             List<AllocationInput> result, TaskElement taskElement) {
-        if (taskElement instanceof Task) {
+        if (taskElement instanceof Task
+                && ((Task) taskElement).hasSomeSatisfiedAllocation()) {
             result.add(createAllocationInputFor(order, (Task) taskElement));
         }
         if (!taskElement.isLeaf()) {

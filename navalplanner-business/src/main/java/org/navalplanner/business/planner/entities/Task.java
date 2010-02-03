@@ -474,4 +474,8 @@ public class Task extends TaskElement {
         return (subcontractedTaskData != null);
     }
 
+    public boolean hasSomeSatisfiedAllocation() {
+        return !getSatisfiedResourceAllocations().isEmpty();
+    }
+
 }
