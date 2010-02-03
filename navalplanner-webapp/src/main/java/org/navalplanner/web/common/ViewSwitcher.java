@@ -67,8 +67,7 @@ public class ViewSwitcher implements Composer {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
                 new AdvancedAllocationController(createBack(),
-                        asAllocationInput(
-                        allocationResult, resultReceiver)));
+                        asAllocationInput(allocationResult, resultReceiver)));
         return result;
     }
 
@@ -85,8 +84,7 @@ public class ViewSwitcher implements Composer {
             AllocationResult allocationResult,
             IAdvanceAllocationResultReceiver resultReceiver) {
         return Collections.singletonList(new AllocationInput(allocationResult
-                .getAggregate(), allocationResult.getTask(),
-                resultReceiver));
+                .getAggregate(), allocationResult.getTask(), resultReceiver));
     }
 
     public void goToPlanningOrderView() {
