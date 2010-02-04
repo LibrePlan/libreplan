@@ -31,7 +31,7 @@
             <button id="ordersTabCreateOrderButton" label="New order" tooltiptext="${i18n:_('Create new order')}" class="planner-command" disabled="true"/>
             <button label="Save" tooltiptext="${i18n:_('Save order')}" class="planner-command" disabled="true"/>
             <hbox id="orderFilter" visible="false"/>
-            <vbox id="filter" />
+            <vbox id="orderElementFilter" />
        </hbox>
        </north>
 

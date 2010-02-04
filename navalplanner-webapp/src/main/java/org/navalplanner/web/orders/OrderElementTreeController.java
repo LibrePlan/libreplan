@@ -74,17 +74,17 @@ import org.zkoss.zul.Vbox;
  */
 public class OrderElementTreeController extends TreeController<OrderElement> {
 
-    private Vbox filter;
+    private Vbox orderElementFilter;
 
     private Hbox orderFilter;
 
-    private BandboxMultipleSearch bdFilters2;
+    private BandboxMultipleSearch bdFiltersOrderElement;
 
-    private Datebox filterStartDate2;
+    private Datebox filterStartDateOrderElement;
 
-    private Datebox filterFinishDate2;
+    private Datebox filterFinishDateOrderElement;
 
-    private Textbox filterName;
+    private Textbox filterNameOrderElement;
 
     private OrderElementTreeitemRenderer renderer = new OrderElementTreeitemRenderer();
 
@@ -193,16 +193,17 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         // Configuration of the order elements filter
         Component filterComponent = Executions.createComponents(
-                "/orders/_orderElementTreeFilter.zul", filter,
+                "/orders/_orderElementTreeFilter.zul", orderElementFilter,
                 new HashMap<String, String>());
         filterComponent.setVariable("treeController", this, true);
-        bdFilters2 = (BandboxMultipleSearch) filterComponent
-                .getFellow("bdFilters2");
-        filterStartDate2 = (Datebox) filterComponent
-                .getFellow("filterStartDate2");
-        filterFinishDate2 = (Datebox) filterComponent
-                .getFellow("filterFinishDate2");
-        filterName = (Textbox) filterComponent.getFellow("filterName");
+        bdFiltersOrderElement = (BandboxMultipleSearch) filterComponent
+                .getFellow("bdFiltersOrderElement");
+        filterStartDateOrderElement = (Datebox) filterComponent
+                .getFellow("filterStartDateOrderElement");
+        filterFinishDateOrderElement = (Datebox) filterComponent
+                .getFellow("filterFinishDateOrderElement");
+        filterNameOrderElement = (Textbox) filterComponent
+                .getFellow("filterNameOrderElement");
 
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
@@ -464,11 +465,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     private OrderElementPredicate createPredicate() {
-        List<FilterPair> listFilters = (List<FilterPair>) bdFilters2
+        List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
                 .getSelectedElements();
-        Date startDate = filterStartDate2.getValue();
-        Date finishDate = filterFinishDate2.getValue();
-        String name = filterName.getValue();
+        Date startDate = filterStartDateOrderElement.getValue();
+        Date finishDate = filterFinishDateOrderElement.getValue();
+        String name = filterNameOrderElement.getValue();
 
         if (listFilters.isEmpty() && startDate == null && finishDate == null
                 && name == null) {
@@ -502,7 +503,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
      */
     public void clear() {
         selectDefaultTab();
-        bdFilters2.clear();
+        bdFiltersOrderElement.clear();
         predicate = null;
     }
 
@@ -576,9 +577,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     throws WrongValueException {
                 Date finishDate = (Date) value;
                 if ((finishDate != null)
-                        && (filterStartDate2.getValue() != null)
-                        && (finishDate.compareTo(filterStartDate2.getValue()) < 0)) {
-                    filterFinishDate2.setValue(null);
+                        && (filterStartDateOrderElement.getValue() != null)
+                        && (finishDate.compareTo(filterStartDateOrderElement
+                                .getValue()) < 0)) {
+                    filterFinishDateOrderElement.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be greater than start date"));
                 }
@@ -593,9 +595,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     throws WrongValueException {
                 Date startDate = (Date) value;
                 if ((startDate != null)
-                        && (filterFinishDate2.getValue() != null)
-                        && (startDate.compareTo(filterFinishDate2.getValue()) > 0)) {
-                    filterStartDate2.setValue(null);
+                        && (filterFinishDateOrderElement.getValue() != null)
+                        && (startDate.compareTo(filterFinishDateOrderElement
+                                .getValue()) > 0)) {
+                    filterStartDateOrderElement.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than finish date"));
                 }

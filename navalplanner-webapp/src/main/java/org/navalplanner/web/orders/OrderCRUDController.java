@@ -178,7 +178,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Hbox orderFilter;
 
-    private Vbox filter;
+    private Vbox orderElementFilter;
 
     private Datebox filterStartDate;
 
@@ -875,12 +875,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void showOrderFilter() {
         orderFilter.setVisible(true);
-        filter.setVisible(false);
+        orderElementFilter.setVisible(false);
     }
 
     private void showOrderElementFilter() {
         orderFilter.setVisible(false);
-        filter.setVisible(true);
+        orderElementFilter.setVisible(true);
     }
 
     public void highLight(OrderElement orderElement) {

@@ -1,14 +1,14 @@
 <hbox align="center" sclass="filtering-area">
     <label value="${i18n:_('Filter by')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
-    <bandboxMultipleSearch id="bdFilters2" widthBandbox="385px" widthListbox="400px"
+    <bandboxMultipleSearch id="bdFiltersOrderElement" widthBandbox="385px" widthListbox="400px"
         finder="multipleFiltersFinder"/>
     <label value="${i18n:_('from')}"/>
-    <datebox id="filterStartDate2" constraint = "@{treeController.checkConstraintStartDate}"/>
+    <datebox id="filterStartDateOrderElement" constraint = "@{treeController.checkConstraintStartDate}"/>
     <label value="${i18n:_('to')}"/>
-    <datebox id="filterFinishDate2" constraint = "@{treeController.checkConstraintFinishDate}"/>
+    <datebox id="filterFinishDateOrderElement" constraint = "@{treeController.checkConstraintFinishDate}"/>
     <label value="${i18n:_('with name likes')}"/>
-    <textbox id="filterName" />
+    <textbox id="filterNameOrderElement" />
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}"
         onClick="treeController.onApplyFilter()"/>
