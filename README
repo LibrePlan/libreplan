@@ -1,0 +1,83 @@
+NavalPlan
+=========
+
+
+Description
+-----------
+
+*NavalPlan* is a planning tool for users based on some concepts: company and
+multi-project overview, criteria assignments, tasks tagging, resources
+management, resource allocation (specific and generic) company load control,
+external integration, etc.
+
+Features
+~~~~~~~~
+
+* Company and multi-project overview.
+* Criteria management: Criteria are a system entity that enables resources
+  (both humans and machines) and tasks to be classified.
+* Resources management: There are two different kinds: humans and machines.
+* Resource allocation: One of the key points of the program is having the
+  possibility of two kinds of designation: specific and generic. Generic
+  allocation is based on criteria that are required to carry out a task and
+  must be fulfilled by resources that are capable of performing them.
+* Calendars: Calendars determine the available productive hours for different
+  resources. The user may create general calendars for the company or input
+  characteristics for more specific calendars, meaning that calendars for
+  resources and tasks can be made.
+* Labels: These are elements that are used to label project tasks. With these
+  labels, the user of the program can group tasks together according to
+  concept, which can then be checked at a later date as a group or after being
+  filtered.
+* Orders and order elements: Work requested by clients is treated by the
+  application as an order, which is structured in order elements. The order and
+  its elements adhere to a hierarchical structure of undefined levels. This
+  element tree is the basis when planning work.
+
+
+Requirements
+------------
+
+* Java 1.6
+* Maven 2
+
+See ``INSTALL`` file for installation instructions.
+
+
+Availability
+------------
+
+The cutting-edge version of this project is always available from the Git
+repository at http://git.igalia.com/xestion-producion.git.
+
+There is not any released versions yet.
+
+
+Webpage
+-------
+
+You can find more information about *NavalPlan* at
+http://navalplan.sourceforge.net/.
+
+
+License
+-------
+
+*NavalPlan* is released under the terms of the GNU Affero General Public
+License version 3 [1]_.
+
+Please read the ``COPYING`` file for details.
+
+
+Authors
+-------
+
+This project is sponsored by *Fundación para o Fomento da Calidade Industrial e
+o Desenvolvemento Tecnolóxico de Galicia* [2]_.
+
+Please see ``AUTHORS`` file for more information about the authors.
+
+
+
+.. [1] http://www.fsf.org/licensing/licenses/agpl.html
+.. [2] http://www.fundacioncalidade.org/
