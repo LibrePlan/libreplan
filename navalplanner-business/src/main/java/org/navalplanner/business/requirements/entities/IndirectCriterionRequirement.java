@@ -19,6 +19,8 @@
  */
 
 package org.navalplanner.business.requirements.entities;
+
+import org.apache.commons.lang.BooleanUtils;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -33,7 +35,7 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
 
    private DirectCriterionRequirement parent;
 
-   private Boolean isValid = true;
+   private Boolean valid = true;
 
     public static IndirectCriterionRequirement create(DirectCriterionRequirement
             parent,Criterion criterion) {
@@ -77,11 +79,12 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
         this.parent = directCriterionRequirement;
     }
 
-    public boolean isIsValid() {
-        return isValid;
+    @Override
+    public boolean isValid() {
+        return BooleanUtils.toBoolean(valid);
     }
 
-    public void setIsValid(boolean isValid) {
-        this.isValid = isValid;
+    public void setValid(Boolean valid) {
+        this.valid = BooleanUtils.toBoolean(valid);
     }
 }

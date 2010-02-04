@@ -33,16 +33,16 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 @XmlRootElement(name = "indirect-criterion-requirement")
 public class IndirectCriterionRequirementDTO extends CriterionRequirementDTO {
 
-    @XmlAttribute(name = "is-valid")
-    public boolean isValid = true;
+    @XmlAttribute(name = "valid")
+    public boolean valid = true;
 
     public IndirectCriterionRequirementDTO() {
     }
 
     public IndirectCriterionRequirementDTO(String name, String type,
-            boolean isValid) {
+            boolean valid) {
         super(name, type);
-        this.isValid = isValid;
+        this.valid = valid;
     }
 
 }

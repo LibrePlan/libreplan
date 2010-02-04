@@ -983,7 +983,7 @@ public class OrderElementServiceTest {
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
         assertFalse(((IndirectCriterionRequirement) orderElement
-                .getCriterionRequirements().iterator().next()).isIsValid());
+                .getCriterionRequirements().iterator().next()).isValid());
     }
 
     @Test
@@ -1086,7 +1086,7 @@ public class OrderElementServiceTest {
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
         assertTrue(((IndirectCriterionRequirement) orderElement
-                .getCriterionRequirements().iterator().next()).isIsValid());
+                .getCriterionRequirements().iterator().next()).isValid());
 
         IndirectCriterionRequirementDTO indirectCriterionRequirementDTO = new IndirectCriterionRequirementDTO(
                 name, type, false);
@@ -1104,7 +1104,7 @@ public class OrderElementServiceTest {
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
         assertFalse(((IndirectCriterionRequirement) orderElement
-                .getCriterionRequirements().iterator().next()).isIsValid());
+                .getCriterionRequirements().iterator().next()).isValid());
     }
 
     @Test
@@ -1156,7 +1156,7 @@ public class OrderElementServiceTest {
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
         assertFalse(((IndirectCriterionRequirement) orderElement
-                .getCriterionRequirements().iterator().next()).isIsValid());
+                .getCriterionRequirements().iterator().next()).isValid());
     }
 
 }

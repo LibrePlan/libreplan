@@ -338,7 +338,7 @@ public class HoursGroupWrapper implements INewObject,
         List<IndirectCriterionRequirement> result = new ArrayList<IndirectCriterionRequirement>();
         for (IndirectCriterionRequirement requirement : hoursGroup
                 .getIndirectCriterionRequirement()) {
-            if (!requirement.isIsValid()) {
+            if (!requirement.isValid()) {
                 result.add(requirement);
             }
         }
@@ -349,7 +349,7 @@ public class HoursGroupWrapper implements INewObject,
         List<IndirectCriterionRequirement> result = new ArrayList<IndirectCriterionRequirement>();
         for (IndirectCriterionRequirement requirement : hoursGroup
                 .getIndirectCriterionRequirement()) {
-            if (requirement.isIsValid()) {
+            if (requirement.isValid()) {
                 result.add(requirement);
             }
         }

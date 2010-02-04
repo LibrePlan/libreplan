@@ -161,7 +161,7 @@ public final class OrderElementConverter {
 
         if (criterionRequirement instanceof IndirectCriterionRequirement) {
             boolean isValid = ((IndirectCriterionRequirement) criterionRequirement)
-                    .isIsValid();
+                    .isValid();
             return new IndirectCriterionRequirementDTO(name, type, isValid);
         } else { // criterionRequirement instanceof DirectCriterionRequirement
             return new DirectCriterionRequirementDTO(name, type);
@@ -279,7 +279,7 @@ public final class OrderElementConverter {
                                 criterionRequirable, criterion);
                         if (indirectCriterionRequirement != null) {
                             indirectCriterionRequirement
-                                    .setIsValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).isValid);
+                                    .setValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).valid);
                         }
                     }
                 }

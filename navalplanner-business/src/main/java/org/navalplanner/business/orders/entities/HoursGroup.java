@@ -174,7 +174,7 @@ public class HoursGroup extends BaseEntity implements Cloneable,
             criterions.add(criterionRequirement.getCriterion());
         }
         for (IndirectCriterionRequirement requirement : getIndirectCriterionRequirement()) {
-            if (requirement.isIsValid()) {
+            if (requirement.isValid()) {
                 criterions.add(requirement.getCriterion());
             }
         }

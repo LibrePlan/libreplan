@@ -76,4 +76,8 @@ public class CriterionRequirement extends BaseEntity{
     public void setOrderElement(OrderElement orderElement) {
         this.orderElement = orderElement;
     }
+
+    public boolean isValid() {
+        return true;
+    }
 }

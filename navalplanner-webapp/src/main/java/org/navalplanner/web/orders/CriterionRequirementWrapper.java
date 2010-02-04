@@ -169,14 +169,14 @@ public class CriterionRequirementWrapper  implements INewObject {
         if ((criterionRequirement != null)
                 && (criterionRequirement instanceof IndirectCriterionRequirement)) {
             ((IndirectCriterionRequirement) criterionRequirement)
-                    .setIsValid(valid);
+                    .setValid(valid);
         }
     }
 
     private void initValid(CriterionRequirement requirement) {
         this.valid = true;
         if(criterionRequirement instanceof IndirectCriterionRequirement){
-            this.valid = ((IndirectCriterionRequirement)criterionRequirement).isIsValid();
+            this.valid = ((IndirectCriterionRequirement)criterionRequirement).isValid();
         }
     }
 
@@ -184,7 +184,7 @@ public class CriterionRequirementWrapper  implements INewObject {
         if ((criterionRequirement != null)
                 && (criterionRequirement instanceof IndirectCriterionRequirement)) {
             return ((IndirectCriterionRequirement) criterionRequirement)
-                    .isIsValid();
+                    .isValid();
         }
         return valid == null ? false : valid;
     }

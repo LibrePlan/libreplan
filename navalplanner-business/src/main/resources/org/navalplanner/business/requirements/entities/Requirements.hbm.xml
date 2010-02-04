@@ -26,7 +26,7 @@
     </subclass>
     <subclass discriminator-value="INDIRECT" name="IndirectCriterionRequirement">
       <many-to-one class="DirectCriterionRequirement" column="parent" name="parent"/>
-      <property access="field" name="isValid"/>
+      <property access="field" name="valid"/>
     </subclass>
   </class>
 </hibernate-mapping>

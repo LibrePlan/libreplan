@@ -156,7 +156,7 @@ public class CriterionRequirementHandler implements
             IndirectCriterionRequirement indirect = findIndirectRequirementByParent(
                     child.getIndirectCriterionRequirement(), parent);
             if (indirect != null) {
-                indirect.setIsValid(valid);
+                indirect.setValid(valid);
             }
             propagateValidCriterionRequirement(child, parent, valid);
         }
@@ -168,7 +168,7 @@ public class CriterionRequirementHandler implements
             IndirectCriterionRequirement indirect = findIndirectRequirementByParent(
                     hoursGroup.getIndirectCriterionRequirement(), parent);
             if (indirect != null) {
-                indirect.setIsValid(valid);
+                indirect.setValid(valid);
             }
         }
     }
@@ -326,14 +326,14 @@ public class CriterionRequirementHandler implements
             parent = (DirectCriterionRequirement) requirement;
         } else {
             parent = ((IndirectCriterionRequirement) requirement).getParent();
-            valid = ((IndirectCriterionRequirement) requirement).isIsValid();
+            valid = ((IndirectCriterionRequirement) requirement).isValid();
         }
 
         indirect = findIndirectRequirementByParent(oldIndirects, parent);
         if (indirect == null) {
             indirect = IndirectCriterionRequirement.create(parent, requirement
                     .getCriterion());
-            indirect.setIsValid(valid);
+            indirect.setValid(valid);
         }
         return (IndirectCriterionRequirement) indirect;
     }

@@ -541,7 +541,7 @@ public abstract class OrderElement extends BaseEntity implements
      */
 
     public void setValidCriterionRequirement(IndirectCriterionRequirement requirement,boolean valid){
-        requirement.setIsValid(valid);
+        requirement.setValid(valid);
         criterionRequirementHandler.propagateValidCriterionRequirement(this,
                 requirement.getParent(), valid);
     }
