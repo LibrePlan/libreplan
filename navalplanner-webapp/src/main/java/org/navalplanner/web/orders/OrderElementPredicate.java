@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -104,18 +105,43 @@ public class OrderElementPredicate implements IPredicate {
 
     private boolean acceptCriterion(FilterPair filter, OrderElement orderElement) {
         Criterion filterCriterion = (Criterion) filter.getValue();
-        return existCriterionInOrderElement(filterCriterion, orderElement);
+        return existCriterionInOrderElementOrHoursGroups(filterCriterion,
+                orderElement);
     }
 
-    private boolean existCriterionInOrderElement(Criterion filterCriterion,
+    private boolean existCriterionInOrderElementOrHoursGroups(
+            Criterion filterCriterion,
             OrderElement orderElement) {
         for (CriterionRequirement criterionRequirement : orderElement
                 .getCriterionRequirements()) {
-            if(criterionRequirement.getCriterion().getId().equals(filterCriterion.getId())){
+            if (acceptsCriterionRequrirement(filterCriterion,
+                    criterionRequirement)) {
                 return true;
             }
         }
+        return existCriterionInHoursGroups(filterCriterion, orderElement
+                .getHoursGroups());
+    }
+
+    private boolean existCriterionInHoursGroups(Criterion filterCriterion,
+            List<HoursGroup> hoursGroups) {
+        for (HoursGroup hoursGroup : hoursGroups) {
+            for (CriterionRequirement criterionRequirement : hoursGroup
+                    .getCriterionRequirements()) {
+                if (acceptsCriterionRequrirement(filterCriterion,
+                        criterionRequirement)) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    private boolean acceptsCriterionRequrirement(Criterion filterCriterion,
+            CriterionRequirement criterionRequirement) {
+        return criterionRequirement.isValid()
+                && criterionRequirement.getCriterion().getId().equals(
+                        filterCriterion.getId());
     }
 
     private boolean acceptLabel(FilterPair filter, OrderElement orderElement) {
