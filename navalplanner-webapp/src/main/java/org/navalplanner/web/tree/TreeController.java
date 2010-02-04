@@ -139,6 +139,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     public void move(Component dropedIn, Component dragged) {
+        if (isPredicateApplied()) {
+            return;
+        }
+
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
 
         Treerow from = (Treerow) dragged;
@@ -286,8 +290,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         return item.getLevel() == 0;
     }
 
-    protected boolean isSecondLevelElement(Treeitem item) {
-        return item.getLevel() == 1;
+    protected boolean isFirstItem(T element) {
+        List children = element.getParent().getChildren();
+        return (children.get(0).equals(element));
+    }
+
+    protected boolean isLastItem(T element) {
+        List children = element.getParent().getChildren();
+        return (children.get(children.size() - 1).equals(element));
     }
 
     public abstract class Renderer implements TreeitemRenderer,
@@ -439,45 +449,45 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected abstract void onDoubleClickForSchedulingStateCell(
                 T currentElement);
 
-        protected Button createUpButton(final Treeitem item,
+        protected Button createDownButton(final Treeitem item,
                 final T currentElement) {
-            EventListener upButtonListener = new EventListener() {
+            EventListener downButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     down(currentElement);
                 }
             };
             Button result;
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
+            if (isPredicateApplied() || isLastItem(currentElement)) {
                 result = createButton("/common/img/ico_bajar_out.png", "",
                         "/common/img/ico_bajar_out.png", "icono",
-                        upButtonListener);
+                        downButtonListener);
                 result.setDisabled(true);
             } else {
                 result = createButton("/common/img/ico_bajar1.png",
                         _("Move down"), "/common/img/ico_bajar.png", "icono",
-                        upButtonListener);
+                        downButtonListener);
             }
             return result;
         }
 
-        protected Button createDownButton(final Treeitem item, final T element) {
-            EventListener downButtonListener = new EventListener() {
+        protected Button createUpButton(final Treeitem item, final T element) {
+            EventListener upButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     up(element);
                 }
             };
             Button result;
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
+            if (isPredicateApplied() || isFirstItem(element)) {
                 result = createButton("/common/img/ico_subir_out.png", "",
                         "/common/img/ico_subir_out.png", "icono",
-                        downButtonListener);
+                        upButtonListener);
                 result.setDisabled(true);
             } else {
                 result = createButton("/common/img/ico_subir1.png",
                         _("Move up"), "/common/img/ico_subir.png", "icono",
-                        downButtonListener);
+                        upButtonListener);
             }
             return result;
         }
@@ -491,8 +501,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
             };
             final Button result;
-            if ((isFirstLevelElement(item) || isSecondLevelElement(item))
-                    && isPredicateApplied()) {
+            if (isPredicateApplied() || isFirstLevelElement(item)) {
                 result = createButton("/common/img/ico_izq_out.png", "",
                         "/common/img/ico_izq_out.png", "icono",
                         unindentListener);
@@ -513,10 +522,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
             };
             final Button result;
-            if (isFirstLevelElement(item) && isPredicateApplied()) {
+            if (isPredicateApplied() || isFirstItem(element)) {
                 result = createButton("/common/img/ico_derecha_out.png", "",
                         "/common/img/ico_derecha_out.png", "icono",
                         indentListener);
+                result.setDisabled(true);
             } else {
                 result = createButton("/common/img/ico_derecha1.png",
                         _("Indent"), "/common/img/ico_derecha.png", "icono",
