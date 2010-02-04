@@ -106,6 +106,31 @@ public class BaseCalendarTest {
         calendar.addExceptionDay(christmasDay);
     }
 
+    @Test
+    public void testOnlyGivesZeroHoursWhenThereIsNoParent() {
+        BaseCalendar calendar = createBasicCalendar();
+        assertFalse(calendar.onlyGivesZeroHours());
+        initializeAllToZeroHours(calendar);
+        assertTrue(calendar.onlyGivesZeroHours());
+    }
+
+    private void initializeAllToZeroHours(BaseCalendar calendar) {
+        for (Days each : Days.values()) {
+            calendar.setHours(each, 0);
+        }
+    }
+
+    @Test
+    public void testOnlyGivesZeroHoursWhenThereIsParent() {
+        BaseCalendar calendar = createBasicCalendar();
+        initializeAllToZeroHours(calendar);
+        BaseCalendar parent = createBasicCalendar();
+        calendar.setParent(parent);
+        assertTrue(calendar.onlyGivesZeroHours());
+        calendar.setDefault(Days.MONDAY);
+        assertFalse(calendar.onlyGivesZeroHours());
+    }
+
     public static BaseCalendar createChristmasCalendar() {
         BaseCalendar calendar = createBasicCalendar();
         addChristmasAsExceptionDay(calendar);

@@ -132,4 +132,28 @@ public class CalendarData extends BaseEntity {
         this.expiringDate = null;
     }
 
+    public boolean isPosteriorTo(LocalDate date) {
+        return expiringDate == null || expiringDate.compareTo(date) > 0;
+    }
+
+    boolean isEmpty() {
+        for (Days each : Days.values()) {
+            if (!isEmptyFor(each)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    boolean isEmptyFor(Days day) {
+        Integer hours = getHours(day);
+        if (!isDefault(day) && hours > 0) {
+            return false;
+        } else if (isDefault(day) && getParent() != null
+                && !parent.onlyGivesZeroHours(day)) {
+            return false;
+        }
+        return true;
+    }
+
 }

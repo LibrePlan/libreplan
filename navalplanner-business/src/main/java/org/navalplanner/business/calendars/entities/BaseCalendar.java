@@ -813,4 +813,69 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return workableHours;
     }
 
+    protected boolean thereAreAvailableHoursFrom(LocalDate start,
+            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
+        LocalDate expiringDate = getAvailabilityExpiringDate();
+        if (expiringDate == null) {
+            return !onlyGivesZeroHours();
+        }
+        return thereAreHoursUntil(hoursToAllocate, resourcesPerDay, start,
+                expiringDate);
+    }
+
+    public boolean onlyGivesZeroHours() {
+        CalendarData last = lastCalendarData();
+        return last.isEmpty();
+    }
+
+    public boolean onlyGivesZeroHours(Days each) {
+        CalendarData last = lastCalendarData();
+        return last.isEmptyFor(each);
+    }
+
+    private CalendarData lastCalendarData() {
+        return calendarDataVersions.get(calendarDataVersions.size() - 1);
+    }
+
+    private boolean thereAreHoursUntil(int hoursToAllocate,
+            ResourcesPerDay resourcesPerDay, LocalDate start,
+            LocalDate expiringDate) {
+        int hoursSum = 0;
+        int days = org.joda.time.Days.daysBetween(start, expiringDate)
+                .getDays();
+        for (int i = 0; i < days; i++) {
+            LocalDate current = start.plusDays(i);
+            hoursSum += toHours(current, resourcesPerDay);
+            if (hoursSum >= hoursToAllocate) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private LocalDate getAvailabilityExpiringDate() {
+        List<CalendarAvailability> availabilities = getCalendarAvailabilities();
+        if (availabilities.isEmpty()) {
+            return null;
+        }
+        CalendarAvailability last = availabilities.get(0);
+        for (CalendarAvailability each : availabilities) {
+            LocalDate startDate = each.getStartDate();
+            if (startDate.compareTo(last.getStartDate()) > 0) {
+                last = each;
+            }
+        }
+        return last.getEndDate();
+    }
+
+    private List<CalendarException> getExceptionsFrom(LocalDate start) {
+        List<CalendarException> result = new ArrayList<CalendarException>();
+        for (CalendarException each : exceptions) {
+            if (each.getDate().compareTo(start) >= 0) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
 }
