@@ -263,6 +263,9 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     }
 
     private Integer getWorkableHours(LocalDate date) {
+        if (!isActive(date)) {
+            return 0;
+        }
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
             return exceptionDay.getHours();
