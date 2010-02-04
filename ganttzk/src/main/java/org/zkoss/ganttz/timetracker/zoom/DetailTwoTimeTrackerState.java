@@ -106,7 +106,10 @@ public class DetailTwoTimeTrackerState extends TimeTrackerState {
 
         ArrayList<DetailItem> result = new ArrayList<DetailItem>();
 
-        DateTime beginInterval = new DateTime(initialDate);
+        DateTime tempDate = new DateTime(initialDate);
+        DateTime beginInterval = new DateTime(tempDate.year().get(), tempDate
+                .monthOfYear().get(), 1, 0, 0, 0, 0);
+
         DateTime endInterval = beginInterval.plusMonths(3);
         int startDateQuarter = calculateInQuarterPeriodDateInYear(initialDate,
                 initialYear);

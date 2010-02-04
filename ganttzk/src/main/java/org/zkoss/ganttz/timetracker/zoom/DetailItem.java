@@ -92,8 +92,7 @@ public final class DetailItem {
     }
 
     public void markDeadlineDay(DateTime deadline) {
-        if (!this.startDate.isAfter(deadline)
-                && !this.endDate.isBefore(deadline)) {
+        if (!this.startDate.isAfter(deadline) && deadline.isBefore(endDate)) {
             int offsetInPx = Math.round((((float) Days.daysBetween(
                     this.startDate, deadline).getDays()) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
