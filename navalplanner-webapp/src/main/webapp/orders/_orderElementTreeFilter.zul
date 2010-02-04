@@ -1,9 +1,13 @@
-<hbox align="right" style="margin-left:700px;">
-  <!-- Filter by label -->
-  <label value="${i18n:_('Filter by label:')}" />
-  <bandboxSearch id="bdFilter" widthBandbox="185px" widthListbox="200px"
-        finder="LabelBandboxFinder"
-        model="@{treeController.labels}"/>
-  <button label="${i18n:_('Filter')}" style="margin-top: -4px"
-        onClick="treeController.onApplyFilter(event)"/>
+<hbox align="center" sclass="filtering-area">
+    <label value="${i18n:_('Filter by')}"
+        tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
+    <bandboxMultipleSearch id="bdFilters2" widthBandbox="385px" widthListbox="400px"
+        finder="multipleFiltersFinder"/>
+    <label value="${i18n:_('from')}"/>
+    <datebox id="filterStartDate2" constraint = "@{treeController.checkConstraintStartDate}"/>
+    <label value="${i18n:_('to')}"/>
+    <datebox id="filterFinishDate2" constraint = "@{treeController.checkConstraintFinishDate}"/>
+    <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}"
+        onClick="treeController.onApplyFilter()"/>
 </hbox>

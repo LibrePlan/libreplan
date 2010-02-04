@@ -56,14 +56,32 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         }
     }
 
+    private static <T extends ITreeNode<T>> MutableTreeModel<T> createFilteredTreeFrom(
+            Class<T> type, T tree, List<T> elements) {
+        MutableTreeModel<T> treeModel = MutableTreeModel.create(type, tree);
+        T parent = treeModel.getRoot();
+        addFilteredChildren(treeModel, parent, elements);
+        return treeModel;
+    }
+
+    private static <T extends ITreeNode<T>> void addFilteredChildren(
+            MutableTreeModel<T> treeModel, T parent, List<T> children) {
+        for (T each : children) {
+            if ((each.getParent() != null) && (each.getParent().equals(parent))) {
+                treeModel.add(parent, each);
+                addFilteredChildren(treeModel, each, children);
+            }
+        }
+    }
+
     private MutableTreeModel<T> tree;
 
     protected EntitiesTree(Class<T> type, T root) {
         tree = createTreeFrom(type, root);
     }
 
-    protected EntitiesTree(Class<T> type, T root, List<T> rootChildren) {
-        tree = createTreeFrom(type, root, rootChildren);
+    protected EntitiesTree(Class<T> type, T root, List<T> elements) {
+        tree = createFilteredTreeFrom(type, root, elements);
     }
 
     public TreeModel asTree() {

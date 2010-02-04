@@ -64,8 +64,8 @@ public class TemplatesTreeController extends
         protected void addOperationsCell(Treeitem item,
                 OrderElementTemplate currentElement) {
             addCell(createEditButton(currentElement),
-                    createUpButton(item, currentElement),
                     createDownButton(item, currentElement),
+                    createUpButton(item, currentElement),
                     createUnindentButton(item, currentElement),
                     createIndentButton(item, currentElement),
                     createRemoveButton(currentElement));

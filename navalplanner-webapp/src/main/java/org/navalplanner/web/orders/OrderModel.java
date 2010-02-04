@@ -517,12 +517,10 @@ public class OrderModel implements IOrderModel {
             IPredicate predicate) {
         // Iterate through orderElements from order
         List<OrderElement> orderElements = new ArrayList<OrderElement>();
-        for (OrderElement orderElement : order.getOrderElements()) {
+        for (OrderElement orderElement : order.getAllOrderElements()) {
             if (!orderElement.isNewObject()) {
                 reattachOrderElement(orderElement);
             }
-            reattachLabels();
-            initializeLabels(orderElement.getLabels());
 
             // Accepts predicate, add it to list of orderElements
             if (predicate.accepts(orderElement)) {

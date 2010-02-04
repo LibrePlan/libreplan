@@ -70,11 +70,8 @@ public interface IOrderModel {
     IOrderElementModel getOrderElementModel(OrderElement orderElement);
 
     /**
-     * Iterates through order.orderElements, and checks if orderElement holds
-     * predicate. In case it's true, add orderElement and all its children to
-     * filtered orderElements list
-     *
-     * @return
+     * Iterates through all the orderElements of an order, and checks if
+     * orderElement holds predicate. In case it is true, adds orderElement.
      */
     OrderElementTreeModel getOrderElementsFilteredByPredicate(IPredicate predicate);
 

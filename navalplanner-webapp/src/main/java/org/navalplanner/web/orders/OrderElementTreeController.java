@@ -43,6 +43,7 @@ import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
+import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
@@ -54,7 +55,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
@@ -78,15 +78,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Hbox orderFilter;
 
-    private BandboxSearch bdFilter;
+    private BandboxMultipleSearch bdFilters2;
 
-    private Datebox filterStartDate;
+    private Datebox filterStartDate2;
 
-    private Datebox filterFinishDate;
-
-    private BandboxMultipleSearch bdFilters;
-
-    private Checkbox checkIncludeOrderElements;
+    private Datebox filterFinishDate2;
 
     private OrderElementTreeitemRenderer renderer = new OrderElementTreeitemRenderer();
 
@@ -194,13 +190,17 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         super.doAfterCompose(comp);
 
         // Configuration of the order elements filter
-        orderFilter.setVisible(false);
-        filter.setVisible(true);
         Component filterComponent = Executions.createComponents(
-                "/orders/_orderElementTreeFilter.zul",
-                filter, new HashMap<String, String>());
+                "/orders/_orderElementTreeFilter.zul", filter,
+                new HashMap<String, String>());
         filterComponent.setVariable("treeController", this, true);
-        bdFilter = (BandboxSearch) filterComponent.getFellow("bdFilter");
+        bdFilters2 = (BandboxMultipleSearch) filterComponent
+                .getFellow("bdFilters2");
+        filterStartDate2 = (Datebox) filterComponent
+                .getFellow("filterStartDate2");
+        filterFinishDate2 = (Datebox) filterComponent
+                .getFellow("filterFinishDate2");
+
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
     }
@@ -404,8 +404,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 final OrderElement currentOrderElement) {
             addCell(createEditButton(currentOrderElement, item),
                     createTemplateButton(currentOrderElement),
-                    createUpButton(item,currentOrderElement),
                     createDownButton(item,currentOrderElement),
+                    createUpButton(item,currentOrderElement),
                     createUnindentButton(item, currentOrderElement),
                     createIndentButton(item, currentOrderElement),
                     createRemoveButton(currentOrderElement));
@@ -448,21 +448,41 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     /**
      * Apply filter to order elements in current order
-     * @param event
      */
-    public void onApplyFilter(Event event) {
-            org.navalplanner.business.labels.entities.Label label = getSelectedLabel();
-            if (label == null) {
-            label = org.navalplanner.business.labels.entities.Label.create("");
-            }
-            // Create predicate and filter order elements by predicate
-            predicate = new LabelOrderElementPredicate(label);
-            filterByPredicate();
+    public void onApplyFilter() {
+        OrderElementPredicate predicate = createPredicate();
+        this.predicate = predicate;
+
+        if (predicate != null) {
+            filterByPredicate(predicate);
+        } else {
+            showAllOrderElements();
+        }
     }
 
-    private org.navalplanner.business.labels.entities.Label getSelectedLabel() {
-        return (org.navalplanner.business.labels.entities.Label) bdFilter
-                .getSelectedElement();
+    private OrderElementPredicate createPredicate() {
+        List<FilterPair> listFilters = (List<FilterPair>) bdFilters2
+                .getSelectedElements();
+        Date startDate = filterStartDate2.getValue();
+        Date finishDate = filterFinishDate2.getValue();
+
+        if (listFilters.isEmpty() && startDate == null && finishDate == null) {
+            return null;
+        }
+        return new OrderElementPredicate(listFilters, startDate, finishDate);
+    }
+
+    private void filterByPredicate(OrderElementPredicate predicate) {
+        OrderElementTreeModel orderElementTreeModel = orderModel
+                .getOrderElementsFilteredByPredicate(predicate);
+        tree.setModel(orderElementTreeModel.asTree());
+        tree.invalidate();
+    }
+
+    public void showAllOrderElements() {
+        this.predicate = null;
+        tree.setModel(orderModel.getOrderElementTreeModel().asTree());
+        tree.invalidate();
     }
 
     @Override
@@ -476,7 +496,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
      */
     public void clear() {
         selectDefaultTab();
-        bdFilter.clear();
+        bdFilters2.clear();
         predicate = null;
     }
 
@@ -539,4 +559,42 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
         return null;
     }
+
+    /**
+     * Operations to filter the orders by multiple filters
+     */
+    public Constraint checkConstraintFinishDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date finishDate = (Date) value;
+                if ((finishDate != null)
+                        && (filterStartDate2.getValue() != null)
+                        && (finishDate.compareTo(filterStartDate2.getValue()) < 0)) {
+                    filterFinishDate2.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be greater than start date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date startDate = (Date) value;
+                if ((startDate != null)
+                        && (filterFinishDate2.getValue() != null)
+                        && (startDate.compareTo(filterFinishDate2.getValue()) > 0)) {
+                    filterStartDate2.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be lower than finish date"));
+                }
+            }
+        };
+    }
+
 }

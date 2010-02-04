@@ -39,8 +39,8 @@ import org.navalplanner.web.tree.EntitiesTree;
 public class OrderElementTreeModel extends EntitiesTree<OrderElement> {
 
     public OrderElementTreeModel(OrderElement root,
-            List<OrderElement> rootChildren) {
-        super(OrderElement.class, root, rootChildren);
+            List<OrderElement> orderElements) {
+        super(OrderElement.class, root, orderElements);
     }
 
     public OrderElementTreeModel(OrderElement root) {
