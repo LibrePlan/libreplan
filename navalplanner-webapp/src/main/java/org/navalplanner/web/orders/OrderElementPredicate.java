@@ -29,6 +29,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.components.finders.FilterPair;
+import org.navalplanner.web.common.components.finders.OrderElementFilterEnum;
 
 /**
  * Checks if {@link OrderElement} matches with the different filters.
@@ -92,7 +93,7 @@ public class OrderElementPredicate implements IPredicate {
     }
 
     private boolean acceptFilter(FilterPair filter, OrderElement orderElement) {
-        switch (filter.getType()) {
+        switch ((OrderElementFilterEnum) filter.getType()) {
         case Criterion:
             return acceptCriterion(filter, orderElement);
         case Label:
