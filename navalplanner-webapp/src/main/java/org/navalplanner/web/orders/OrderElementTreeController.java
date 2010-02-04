@@ -533,11 +533,15 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 && (!elem.getCriterionRequirements().isEmpty())) {
             ArrayList<String> criterionNames = new ArrayList<String>();
             for(CriterionRequirement each:elem.getCriterionRequirements()) {
-                criterionNames.add(each.getCriterion().getName());
+                if (each.isValid()) {
+                    criterionNames.add(each.getCriterion().getName());
+                }
             }
-            tooltipText.append(" " + _("Criteria") + ":");
-            tooltipText.append(StringUtils.join(criterionNames, ","));
-            tooltipText.append(".");
+            if (!criterionNames.isEmpty()) {
+                tooltipText.append(" " + _("Criteria") + ":");
+                tooltipText.append(StringUtils.join(criterionNames, ","));
+                tooltipText.append(".");
+            }
         }
         // To calculate other unit advances implement
         // getOtherAdvancesPercentage()
