@@ -12,6 +12,7 @@
             Hibernate infers type="integer".
         -->
     <version name="version" access="property" type="long" />
+    <property name="code" access="property" not-null="true" unique="true"/>
     <set access="field" cascade="all-delete-orphan" inverse="true" name="criterionSatisfactions">
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>
@@ -46,7 +47,6 @@
 
     <joined-subclass name="org.navalplanner.business.resources.entities.Machine">
       <key column="MACHINE_ID"/>
-      <property name="code"/>
       <property name="name"/>
       <property name="description"/>
       <set inverse="true" name="configurationUnits" cascade="all-delete-orphan">
@@ -98,6 +98,7 @@
       </generator>
     </id>
     <version name="version" access="property" type="long" />
+    <property name="code" access="property" not-null="true" unique="true"/>
     <property access="field" name="startDate" not-null="true"/>
     <property access="field" name="finishDate"/>
     <property access="field" name="isDeleted"/>

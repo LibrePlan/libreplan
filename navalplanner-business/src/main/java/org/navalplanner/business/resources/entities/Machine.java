@@ -25,13 +25,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.daos.IMachineDAO;
 
 /**
 * Entity
@@ -40,8 +35,6 @@ import org.navalplanner.business.resources.daos.IMachineDAO;
 * @author Fernando Bellas Permuy <fbellas@udc.es>
 */
 public class Machine extends Resource {
-
-    private String code;
 
     private String name;
 
@@ -67,9 +60,8 @@ public class Machine extends Resource {
     public static Machine createUnvalidated(String code, String name,
         String description) {
 
-        Machine machine = create(new Machine());
+        Machine machine = create(new Machine(), code);
 
-        machine.code = code;
         machine.name = name;
         machine.description = description;
 
@@ -77,27 +69,15 @@ public class Machine extends Resource {
 
     }
 
+    /**
+     * Used by Hibernate. Do not use!
+     */
     protected Machine() {
 
     }
 
-    protected Machine(String code, String name, String description) {
-        this.code = code;
-        this.name = name;
-        this.description = description;
-    }
-
     public static Machine create() {
         return create(new Machine());
-    }
-
-    @NotEmpty(message="machine code not specified")
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     @NotEmpty(message="machine name not specified")
@@ -114,7 +94,7 @@ public class Machine extends Resource {
     }
 
     public String getShortDescription() {
-        return code + " :: " + name;
+        return getCode() + " :: " + name;
     }
 
     public void setDescription(String description) {
@@ -125,45 +105,6 @@ public class Machine extends Resource {
         ICriterion compositedCriterion = CriterionCompounder.buildAnd(
                 new ArrayList<ICriterion>(criterions)).getResult();
         return compositedCriterion.isSatisfiedBy(this);
-    }
-
-    @AssertTrue(message="machine code has to be unique. It is already used")
-    public boolean checkConstraintUniqueCode() {
-
-        /* Check if it makes sense to check the constraint .*/
-        if (!isCodeSpecified()) {
-            return true;
-        }
-
-        /* Check the constraint. */
-        boolean result;
-        if (isNewObject()) {
-            result = !existsMachineWithTheCode();
-        } else {
-            result = isIfExistsTheExistentMachineThisOne();
-        }
-        return result;
-
-    }
-
-    private boolean isCodeSpecified() {
-        return !StringUtils.isBlank(code);
-    }
-
-    private boolean existsMachineWithTheCode() {
-        IMachineDAO machineDAO = Registry.getMachineDAO();
-        return machineDAO.existsMachineWithCodeInAnotherTransaction(code);
-    }
-
-    private boolean isIfExistsTheExistentMachineThisOne() {
-        IMachineDAO machineDAO = Registry.getMachineDAO();
-        try {
-            Machine machine =
-                machineDAO.findUniqueByCodeInAnotherTransaction(code);
-            return machine.getId().equals(getId());
-        } catch (InstanceNotFoundException e) {
-            return true;
-        }
     }
 
     @Override

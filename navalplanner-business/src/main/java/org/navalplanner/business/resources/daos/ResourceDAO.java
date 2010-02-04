@@ -29,7 +29,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Query;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
@@ -48,8 +48,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 @Transactional
-public class ResourceDAO extends GenericDAOHibernate<Resource, Long> implements
-        IResourceDAO {
+public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
+    IResourceDAO {
 
     @Override
     public List<Worker> getWorkers() {

@@ -23,7 +23,7 @@ package org.navalplanner.business.resources.daos;
 import java.util.Collection;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
@@ -36,7 +36,7 @@ import org.navalplanner.business.resources.entities.Worker;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface IResourceDAO extends IGenericDAO<Resource, Long> {
+public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
 
     public List<Worker> getWorkers();
 

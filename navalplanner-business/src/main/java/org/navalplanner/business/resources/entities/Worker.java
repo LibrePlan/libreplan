@@ -36,21 +36,20 @@ import org.navalplanner.business.common.Registry;
 public class Worker extends Resource {
 
     public static Worker create() {
-        Worker worker = new Worker();
-        worker.setNewObject(true);
-        return worker;
+        return create(new Worker());
     }
 
-    public static Worker create(String firstName, String surname, String nif) {
-        Worker worker = new Worker(firstName, surname, nif);
-        worker.setNewObject(true);
-        return worker;
-    }
-
-    public static Worker createUnvalidated(String firstName, String surname,
+    public static Worker create(String firstName, String surname,
         String nif) {
 
-        Worker worker = create(new Worker());
+        return create(new Worker(firstName, surname, nif));
+
+    }
+
+    public static Worker createUnvalidated(String code, String firstName,
+        String surname, String nif) {
+
+        Worker worker = create(new Worker(), code);
 
         worker.firstName = firstName;
         worker.surname = surname;

@@ -27,12 +27,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
+
 /**
  * DTO for <code>Resource</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public abstract class ResourceDTO {
+public abstract class ResourceDTO extends IntegrationEntityDTO {
 
     @XmlAttribute(name="calendar-name")
     public String calendarName;
@@ -47,5 +49,11 @@ public abstract class ResourceDTO {
     public List<ResourcesCostCategoryAssignmentDTO>
         resourcesCostCategoryAssignments =
             new ArrayList<ResourcesCostCategoryAssignmentDTO>();
+
+    protected ResourceDTO() {}
+
+    protected ResourceDTO(String code) {
+        super(code);
+    }
 
 }

@@ -193,7 +193,8 @@ public class ResourceServiceTest {
     public void testAddWorkerWithExistingFirstNameSurnameAndNif() {
 
         /* Create a worker. */
-        Worker w1 = Worker.createUnvalidated(getUniqueName(), "surname", "nif");
+        Worker w1 = Worker.createUnvalidated(getUniqueName(), getUniqueName(),
+            "surname", "nif");
         saveResource(w1);
 
         /*

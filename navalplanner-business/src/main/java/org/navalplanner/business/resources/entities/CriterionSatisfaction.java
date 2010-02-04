@@ -30,17 +30,18 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 /**
  * Declares a interval of time in which the criterion is satisfied <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class CriterionSatisfaction extends BaseEntity {
+public class CriterionSatisfaction extends IntegrationEntity {
 
     public static final Comparator<CriterionSatisfaction> BY_START_COMPARATOR;
 
@@ -56,28 +57,26 @@ public class CriterionSatisfaction extends BaseEntity {
     }
 
     public static CriterionSatisfaction create() {
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction();
-        criterionSatisfaction.setNewObject(true);
-        return criterionSatisfaction;
+        return create(new CriterionSatisfaction());
     }
 
     public static CriterionSatisfaction create(Date startDate,
             Criterion criterion, Resource resource) {
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(
-                startDate, criterion, resource);
-        criterionSatisfaction.setNewObject(true);
-        return criterionSatisfaction;
+
+        return create(
+            new CriterionSatisfaction(startDate, criterion, resource));
+
     }
 
     public static CriterionSatisfaction create(Criterion criterion,
             Resource resource, Interval interval) {
-        CriterionSatisfaction criterionSatisfaction = new CriterionSatisfaction(criterion, resource, interval);
-        criterionSatisfaction.setNewObject(true);
-        return criterionSatisfaction;
+
+        return create(new CriterionSatisfaction(criterion, resource, interval));
+
     }
 
     public static CriterionSatisfaction createUnvalidated(
-        String criterionTypeName, String criterionName,
+        String code, String criterionTypeName, String criterionName,
         Resource resource, Date startDate, Date finishDate)
         throws CreateUnvalidatedException {
 
@@ -117,7 +116,7 @@ public class CriterionSatisfaction extends BaseEntity {
 
         /* Create instance of CriterionSatisfaction. */
         CriterionSatisfaction criterionSatisfaction =
-            create(new CriterionSatisfaction());
+            create(new CriterionSatisfaction(), code);
 
         criterionSatisfaction.criterion = criterion;
         criterionSatisfaction.resource = resource;
@@ -299,6 +298,11 @@ public class CriterionSatisfaction extends BaseEntity {
 
     public boolean isStartDateSpecified() {
         return startDate != null;
+    }
+
+    @Override
+    protected ICriterionSatisfactionDAO getIntegrationEntityDAO() {
+        return Registry.getCriterionSatisfactionDAO();
     }
 
 }

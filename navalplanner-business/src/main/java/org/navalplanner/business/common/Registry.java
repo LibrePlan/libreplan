@@ -24,6 +24,7 @@ import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
+import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -35,8 +36,10 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -131,6 +134,16 @@ public class Registry {
 
     @Autowired
     private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ICriterionSatisfactionDAO criterionSatisfactionDAO;
+
+    @Autowired
+    private IResourcesCostCategoryAssignmentDAO
+        resourcesCostCategoryAssignmentDAO;
 
     private Registry() {
     }
@@ -228,6 +241,21 @@ public class Registry {
 
     public static IWorkReportDAO getWorkReportDAO() {
         return getInstance().workReportDAO;
+    }
+
+    public static IResourceDAO getResourceDAO() {
+        return getInstance().resourceDAO;
+    }
+
+    public static ICriterionSatisfactionDAO getCriterionSatisfactionDAO() {
+        return getInstance().criterionSatisfactionDAO;
+    }
+
+    public static IResourcesCostCategoryAssignmentDAO
+        getResourcesCostCategoryAssignmentDAO() {
+
+        return getInstance().resourcesCostCategoryAssignmentDAO;
+
     }
 
 }

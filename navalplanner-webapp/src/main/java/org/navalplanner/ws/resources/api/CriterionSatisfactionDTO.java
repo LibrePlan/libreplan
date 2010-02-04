@@ -24,12 +24,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
+
 /**
  * DTO for <code>CriterionSatisfaction</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class CriterionSatisfactionDTO {
+public class CriterionSatisfactionDTO extends IntegrationEntityDTO {
+
+    public final static String ENTITY_TYPE = "criterion-satisfaction";
 
     @XmlAttribute(name="criterion-type-name")
     public String criterionTypeName;
@@ -47,15 +51,35 @@ public class CriterionSatisfactionDTO {
 
     public CriterionSatisfactionDTO() {}
 
-    public CriterionSatisfactionDTO(
+    public CriterionSatisfactionDTO(String code,
         String criterionTypeName, String criterionName,
         XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
 
+        super(code);
         this.criterionTypeName = criterionTypeName;
         this.criterionName = criterionName;
         this.startDate = startDate;
         this.endDate = endDate;
 
+    }
+
+    /**
+     * This constructor automatically generates a unique code. It is intended
+     * to facilitate the implementation of test cases that add new instances
+     * (such instances will have a unique code).
+     */
+    public CriterionSatisfactionDTO(
+        String criterionTypeName, String criterionName,
+        XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
+
+        this(generateCode(), criterionTypeName, criterionName, startDate,
+            endDate);
+
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
     }
 
 }

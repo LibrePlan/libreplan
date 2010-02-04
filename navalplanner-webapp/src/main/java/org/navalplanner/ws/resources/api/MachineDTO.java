@@ -29,8 +29,7 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class MachineDTO extends ResourceDTO {
 
-    @XmlAttribute
-    public String code;
+    public final static String ENTITY_TYPE = "machine";
 
     @XmlAttribute
     public String name;
@@ -41,9 +40,23 @@ public class MachineDTO extends ResourceDTO {
     public MachineDTO() {}
 
     public MachineDTO(String code, String name, String description) {
-        this.code = code;
+        super(code);
         this.name = name;
         this.description = description;
+    }
+
+    /**
+     * This constructor automatically generates a unique code. It is intended
+     * to facilitate the implementation of test cases that add new instances
+     * (such instances will have a unique code).
+     */
+    public MachineDTO(String name, String description) {
+        this(generateCode(), name, description);
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
     }
 
 }

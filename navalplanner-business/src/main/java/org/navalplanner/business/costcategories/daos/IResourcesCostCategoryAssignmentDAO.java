@@ -20,12 +20,13 @@
 
 package org.navalplanner.business.costcategories.daos;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public interface IResourcesCostCategoryAssignmentDAO extends IGenericDAO<ResourcesCostCategoryAssignment, Long> {
+public interface IResourcesCostCategoryAssignmentDAO
+    extends IIntegrationEntityDAO<ResourcesCostCategoryAssignment> {
 
 }

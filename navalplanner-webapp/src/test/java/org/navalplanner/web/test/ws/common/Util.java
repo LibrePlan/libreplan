@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.test.ws.common;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -66,6 +67,8 @@ public class Util {
         InstanceConstraintViolationsListDTO
         instanceConstraintViolationsListDTO) {
 
+        assertNotNull(instanceConstraintViolationsListDTO.
+            instanceConstraintViolationsList);
         assertTrue(
             instanceConstraintViolationsListDTO.
             instanceConstraintViolationsList.toString(),
@@ -82,9 +85,13 @@ public class Util {
             instanceConstraintViolationsListDTO.
                 instanceConstraintViolationsList;
 
+        assertNotNull(instanceConstraintViolationsListDTO.
+            instanceConstraintViolationsList);
         assertTrue(
             instanceConstraintViolationsList.toString(),
             instanceConstraintViolationsList.size() == 1);
+        assertNotNull(instanceConstraintViolationsList.get(0).
+            constraintViolations);
         assertTrue(
             instanceConstraintViolationsList.get(0).
             constraintViolations.toString(),
@@ -101,12 +108,14 @@ public class Util {
             instanceConstraintViolationsListDTO.
                 instanceConstraintViolationsList;
 
+         assertNotNull(instanceConstraintViolationsList);
          assertTrue(
              instanceConstraintViolationsList.toString(),
              instanceConstraintViolationsList.size() == numberOfInstances);
 
          for (InstanceConstraintViolationsDTO i :
              instanceConstraintViolationsList) {
+             assertNotNull(i.constraintViolations);
              assertTrue(
                  i.constraintViolations.toString(),
                  i.constraintViolations.size() == 1);

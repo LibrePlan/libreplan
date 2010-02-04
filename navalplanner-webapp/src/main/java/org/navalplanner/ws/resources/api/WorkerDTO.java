@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class WorkerDTO extends ResourceDTO {
 
+    public final static String ENTITY_TYPE = "worker";
+
     @XmlAttribute(name="first-name")
     public String firstName;
 
@@ -40,10 +42,28 @@ public class WorkerDTO extends ResourceDTO {
 
     public WorkerDTO() {}
 
-    public WorkerDTO(String firstName, String surname, String nif) {
+    public WorkerDTO(String code, String firstName, String surname,
+        String nif) {
+
+        super(code);
         this.firstName = firstName;
         this.surname = surname;
         this.nif = nif;
+
+    }
+
+    /**
+     * This constructor automatically generates a unique code. It is intended
+     * to facilitate the implementation of test cases that add new instances
+     * (such instances will have a unique code).
+     */
+    public WorkerDTO(String firstName, String surname, String nif) {
+        this(generateCode(), firstName, surname, nif);
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
     }
 
 }

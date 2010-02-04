@@ -26,17 +26,18 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class ResourcesCostCategoryAssignment extends BaseEntity {
+public class ResourcesCostCategoryAssignment extends IntegrationEntity {
 
     private LocalDate initDate;
 
@@ -56,8 +57,9 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
     }
 
     public static ResourcesCostCategoryAssignment createUnvalidated(
-        String costCategoryName, Resource resource, LocalDate initDate,
-        LocalDate endDate) throws CreateUnvalidatedException {
+        String code, String costCategoryName, Resource resource,
+        LocalDate initDate, LocalDate endDate)
+        throws CreateUnvalidatedException {
 
         /* Get CostCategory. */
         if (StringUtils.isBlank(costCategoryName)) {
@@ -76,7 +78,7 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
 
         /* Create instance of ResourcesCostCategoryAssignment. */
         ResourcesCostCategoryAssignment assignment =
-            create(new ResourcesCostCategoryAssignment());
+            create(new ResourcesCostCategoryAssignment(), code);
 
         assignment.initDate = initDate;
         assignment.endDate = endDate;
@@ -148,6 +150,11 @@ public class ResourcesCostCategoryAssignment extends BaseEntity {
 
     public boolean isInitDateSpecified() {
         return initDate != null;
+    }
+
+    @Override
+    protected IResourcesCostCategoryAssignmentDAO getIntegrationEntityDAO() {
+        return Registry.getResourcesCostCategoryAssignmentDAO();
     }
 
 }

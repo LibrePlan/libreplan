@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.costcategories.daos;
 
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,9 +32,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ResourcesCostCategoryAssignmentDAO extends
-        GenericDAOHibernate<ResourcesCostCategoryAssignment, Long> implements
-        IResourcesCostCategoryAssignmentDAO {
+public class ResourcesCostCategoryAssignmentDAO
+    extends IntegrationEntityDAO<ResourcesCostCategoryAssignment>
+    implements IResourcesCostCategoryAssignmentDAO {
 
     @Override
     public void remove(Long id) throws InstanceNotFoundException {

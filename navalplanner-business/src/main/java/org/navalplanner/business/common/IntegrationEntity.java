@@ -99,7 +99,7 @@ public abstract class IntegrationEntity extends BaseEntity {
      * the private method <code>findIntegrationEntityDAO</code>, which in turn
      * calls on the abstract method <code>getIntegrationEntityDAO()</code>.
      */
-    @AssertTrue(message="code is already being used")
+    @AssertTrue(message="code is already used")
     public boolean checkConstraintUniqueCode() {
 
         /* Check if it makes sense to check the constraint .*/
@@ -166,7 +166,8 @@ public abstract class IntegrationEntity extends BaseEntity {
         IIntegrationEntityDAO<? extends IntegrationEntity>
             integrationEntityDAO = getIntegrationEntityDAO();
 
-        if (!integrationEntityDAO.getEntityClass().equals(this.getClass())) {
+        if (!integrationEntityDAO.getEntityClass().isAssignableFrom(
+            this.getClass())) {
             throw new RuntimeException(this.getClass().getName() + "::" +
                 "getIntegrationEntityDAO returns an incompatible " +
                 "DAO: " + integrationEntityDAO.getClass().getName());

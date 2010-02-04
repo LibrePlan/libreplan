@@ -88,8 +88,8 @@ public class ResourceServiceREST implements IResourceService {
             } catch (CreateUnvalidatedException e) {
                 instanceConstraintViolationsDTO =
                     InstanceConstraintViolationsDTO.create(
-                        Util.generateInstanceId(instanceNumber,
-                            getUserProvidedId(resourceDTO)),
+                        Util.generateInstanceConstraintViolationsDTOId(
+                            (long) instanceNumber, resourceDTO),
                         e.getMessage());
             }
 
@@ -102,10 +102,10 @@ public class ResourceServiceREST implements IResourceService {
 
                         instanceConstraintViolationsDTO =
                             InstanceConstraintViolationsDTO.create(
-                                Util.generateInstanceId(instanceNumber,
-                                    getUserProvidedId(resourceDTO)),
-                                    getDuplicatedImportedResourceErrorMessage(
-                                        resourceDTO));
+                                Util.generateInstanceConstraintViolationsDTOId(
+                                    (long) instanceNumber, resourceDTO),
+                                getDuplicatedImportedResourceErrorMessage(
+                                    resourceDTO));
 
                     } else {
 
@@ -125,9 +125,8 @@ public class ResourceServiceREST implements IResourceService {
                 } catch (ValidationException e) {
                     instanceConstraintViolationsDTO =
                         ConstraintViolationConverter.toDTO(
-                            Util.generateInstanceId(instanceNumber,
-                                getUserProvidedId(resourceDTO)),
-                            e.getInvalidValues());
+                            Util.generateInstanceConstraintViolationsDTOId(
+                                (long) instanceNumber, resourceDTO), e);
                 }
             }
 

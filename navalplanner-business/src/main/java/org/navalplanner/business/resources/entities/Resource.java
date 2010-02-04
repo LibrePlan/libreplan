@@ -43,13 +43,14 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 
 /**
  * This class acts as the base class for all resources.
@@ -57,7 +58,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public abstract class Resource extends BaseEntity{
+public abstract class Resource extends IntegrationEntity {
 
     public static List<Machine> machines(
             Collection<? extends Resource> resources) {
@@ -941,11 +942,27 @@ public abstract class Resource extends BaseEntity{
 
     }
 
+    @AssertTrue(message="criterion satisfaction codes must be unique inside " +
+        "a resource")
+    public boolean checkConstraintNonRepeatedCriterionSatisfactionCodes() {
+        return getFirstRepeatedCode(criterionSatisfactions) == null;
+    }
+
+    @AssertTrue(message="resources cost category assignment codes must be " +
+        "unique inside a resource")
+    public boolean checkConstraintNonRepeatedResourcesCostCategoryAssignmentCodes() {
+        return getFirstRepeatedCode(resourcesCostCategoryAssignments) == null;
+    }
+
     protected boolean isCriterionSatisfactionOfCorrectType(
         CriterionSatisfaction c) {
 
         return c.getResourceType().equals(ResourceEnum.RESOURCE);
 
+    }
+
+    protected IResourceDAO getIntegrationEntityDAO() {
+        return Registry.getResourceDAO();
     }
 
 }

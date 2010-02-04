@@ -23,12 +23,17 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
+
 /**
  * DTO for <code>ResourcesCostCategoryAssignment</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class ResourcesCostCategoryAssignmentDTO {
+public class ResourcesCostCategoryAssignmentDTO extends IntegrationEntityDTO {
+
+     public final static String ENTITY_TYPE =
+         "resources-cost-category-assignment";
 
     @XmlAttribute(name="cost-category-name")
     public String costCategoryName;
@@ -43,13 +48,33 @@ public class ResourcesCostCategoryAssignmentDTO {
 
     public ResourcesCostCategoryAssignmentDTO() {}
 
-    public ResourcesCostCategoryAssignmentDTO(String costCategoryName,
-        XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
+    public ResourcesCostCategoryAssignmentDTO(String code,
+        String costCategoryName, XMLGregorianCalendar startDate,
+        XMLGregorianCalendar endDate) {
 
+        super(code);
         this.costCategoryName = costCategoryName;
         this.startDate = startDate;
         this.endDate = endDate;
 
+    }
+
+    /**
+     * This constructor automatically generates a unique code. It is intended
+     * to facilitate the implementation of test cases that add new instances
+     * (such instances will have a unique code).
+     */
+    public ResourcesCostCategoryAssignmentDTO(
+        String costCategoryName, XMLGregorianCalendar startDate,
+        XMLGregorianCalendar endDate) {
+
+        this(generateCode(), costCategoryName, startDate, endDate);
+
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
     }
 
 }

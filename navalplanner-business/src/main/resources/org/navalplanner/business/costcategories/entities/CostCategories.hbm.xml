@@ -70,6 +70,8 @@
     </id>
     <version name="version" access="property" type="long" />
 
+    <property name="code" access="property" not-null="true" unique="true"/>
+
     <property name="initDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
 
     <property name="endDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>

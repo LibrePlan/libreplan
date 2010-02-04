@@ -76,16 +76,23 @@ public class ResourceConverter {
 
     private final static Machine createResourceWithBasicData(
         MachineDTO machineDTO) {
-        return Machine.createUnvalidated(StringUtils.trim(machineDTO.code),
+
+        return Machine.createUnvalidated
+            (StringUtils.trim(machineDTO.code),
             StringUtils.trim(machineDTO.name),
             StringUtils.trim(machineDTO.description));
+
     }
 
     private final static Worker createResourceWithBasicData(
         WorkerDTO workerDTO) {
-        return Worker.createUnvalidated(StringUtils.trim(workerDTO.firstName),
+
+        return Worker.createUnvalidated(
+            StringUtils.trim(workerDTO.code),
+            StringUtils.trim(workerDTO.firstName),
             StringUtils.trim(workerDTO.surname),
             StringUtils.trim(workerDTO.nif));
+
     }
 
     private static void addCriterionSatisfactions(Resource resource,
@@ -109,6 +116,7 @@ public class ResourceConverter {
         throws CreateUnvalidatedException {
 
         return CriterionSatisfaction.createUnvalidated(
+            StringUtils.trim(criterionSatisfactionDTO.code),
             StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
             StringUtils.trim(criterionSatisfactionDTO.criterionName),
             resource,
@@ -154,7 +162,7 @@ public class ResourceConverter {
         throws CreateUnvalidatedException {
 
         return ResourcesCostCategoryAssignment.createUnvalidated(
-            assignmentDTO.costCategoryName, resource,
+            assignmentDTO.code, assignmentDTO.costCategoryName, resource,
             DateConverter.toLocalDate(assignmentDTO.startDate),
             DateConverter.toLocalDate(assignmentDTO.endDate));
 
