@@ -346,6 +346,12 @@ public class CriterionType extends IntegrationEntity implements
 
     }
 
+    @AssertTrue(message="criterion codes must be unique inside a criterion " +
+        "type")
+    public boolean checkConstraintNonRepeatedCriterionCodes() {
+        return getFirstRepeatedCode(criterions) == null;
+    }
+
     @AssertTrue(message="criterion names must be unique inside a criterion " +
         "type")
     public boolean checkConstraintNonRepeatedCriterionNames() {

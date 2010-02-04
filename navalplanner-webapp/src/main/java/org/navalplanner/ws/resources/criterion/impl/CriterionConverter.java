@@ -36,7 +36,6 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.ws.common.impl.ResourceEnumConverter;
 import org.navalplanner.ws.resources.criterion.api.CriterionDTO;
 import org.navalplanner.ws.resources.criterion.api.CriterionTypeDTO;
-import org.navalplanner.ws.resources.criterion.api.CriterionTypeListDTO;
 
 /**
  * Converter from/to criterion-related entities to/from DTOs.
@@ -46,20 +45,6 @@ import org.navalplanner.ws.resources.criterion.api.CriterionTypeListDTO;
 public final class CriterionConverter {
 
     private CriterionConverter() {}
-
-    public final static CriterionTypeListDTO toDTO(
-        Collection<CriterionType> criterionTypes) {
-
-        List<CriterionTypeDTO> criterionTypeDTOs =
-            new ArrayList<CriterionTypeDTO>();
-
-        for (CriterionType c : criterionTypes) {
-            criterionTypeDTOs.add(toDTO(c));
-        }
-
-        return new CriterionTypeListDTO(criterionTypeDTOs);
-
-    }
 
     public final static CriterionTypeDTO toDTO(CriterionType criterionType) {
 

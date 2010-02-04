@@ -22,13 +22,11 @@ package org.navalplanner.ws.resources.criterion.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.navalplanner.ws.common.api.DuplicateCodeBeingImportedException;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
@@ -77,18 +75,6 @@ public class CriterionDTO extends IntegrationEntityDTO {
     @Override
     public String getEntityType() {
         return ENTITY_TYPE;
-    }
-
-    @Override
-    public void checkDuplicateCode(Set<String> existingKeys)
-        throws DuplicateCodeBeingImportedException {
-
-        super.checkDuplicateCode(existingKeys);
-
-        for (CriterionDTO c : children) {
-            c.checkDuplicateCode(existingKeys);
-        }
-
     }
 
 }

@@ -28,6 +28,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTOId;
+import org.navalplanner.ws.common.api.InternalErrorDTO;
 
 /**
  * Converter for constraint violations.
@@ -111,6 +112,19 @@ public class ConstraintViolationConverter {
 
         return new InstanceConstraintViolationsDTO(instanceId,
             constraintViolationDTOs);
+
+    }
+
+    public final static InstanceConstraintViolationsDTO toDTO(
+        InstanceConstraintViolationsDTOId instanceId,
+        RuntimeException runtimeException) {
+
+        InternalErrorDTO internalErrorDTO = new InternalErrorDTO(
+            runtimeException.getMessage(),
+            Util.getStackTrace(runtimeException));
+
+        return new InstanceConstraintViolationsDTO(instanceId,
+            internalErrorDTO);
 
     }
 

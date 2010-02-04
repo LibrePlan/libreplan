@@ -1,0 +1,183 @@
+/*
+ * This file is part of ###PROJECT_NAME###
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.navalplanner.ws.common.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * This class provides generic support for implementing REST services
+ * as subclasses of this. </code>.
+ *
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ */
+public abstract class GenericRESTService<E extends IntegrationEntity,
+    DTO extends IntegrationEntityDTO> {
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    /**
+     * It retrieves all entities.
+     */
+    protected List<DTO> findAll() {
+        return toDTO(getIntegrationEntityDAO().findAll());
+    }
+
+    /**
+     * It saves (inserts or updates) a list of entities. Each entity is
+     * saved in a separate transaction.
+     */
+    protected InstanceConstraintViolationsListDTO save(List<DTO> entityDTOs) {
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            new ArrayList<InstanceConstraintViolationsDTO>();
+        Long numItem = new Long(1);
+
+        for (DTO entityDTO : entityDTOs) {
+
+            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO =
+                null;
+
+            try {
+                insertOrUpdate(entityDTO);
+            } catch (ValidationException e) {
+                instanceConstraintViolationsDTO =
+                    ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceConstraintViolationsDTOId(
+                            numItem, entityDTO), e);
+            } catch (RuntimeException e) {
+                instanceConstraintViolationsDTO =
+                    ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceConstraintViolationsDTOId(
+                            numItem, entityDTO), e);
+            }
+
+            if (instanceConstraintViolationsDTO != null) {
+                instanceConstraintViolationsList.add(
+                    instanceConstraintViolationsDTO);
+            }
+
+            numItem++;
+
+        }
+
+        return new InstanceConstraintViolationsListDTO(
+            instanceConstraintViolationsList);
+
+    }
+
+    /**
+     * It saves (inserts or updates) an entity DTO by using a new transaction.
+     *
+     * @throws ValidationException if validations are not passed
+     */
+    protected void insertOrUpdate(final DTO entityDTO)
+        throws ValidationException {
+
+        IOnTransaction<Void> save = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+
+                E entity = null;
+                IIntegrationEntityDAO<E> entityDAO =
+                    getIntegrationEntityDAO();
+
+                /* Insert or update? */
+                try {
+                    entity = entityDAO.findByCode(entityDTO.code);
+                    updateEntity(entity, entityDTO);
+                } catch (InstanceNotFoundException e) {
+                    entity = toEntity(entityDTO);
+                }
+
+                /*
+                 * Save the entity (insert or update). If validations are
+                 * not passed (they are automatically executed by
+                 * GenericDAO::save), the transaction is rolled back since
+                 * ValidationException is a runtime exception, automatically
+                 * discarding any change made to the entity.
+                 *
+                 */
+                entityDAO.save(entity);
+
+                return null;
+
+            }
+
+        };
+
+        transactionService.runOnAnotherTransaction(save);
+
+    }
+
+    /**
+     * It creates an entity from a DTO.
+     */
+    protected abstract E toEntity(DTO entityDTO);
+
+    /**
+     * It creates a DTO from an entity.
+     */
+    protected abstract DTO toDTO(E entity);
+
+    /**
+     * It must return the DAO for the entity "E".
+     */
+    protected abstract IIntegrationEntityDAO<E>
+        getIntegrationEntityDAO();
+
+    /**
+     * It must update the entity from the DTO.
+     *
+     * @throws ValidationException if updating is not possible
+     */
+    protected abstract void updateEntity(E entity, DTO entityDTO)
+        throws ValidationException;
+
+    /**
+     * It returns a list of DTOs from a list of entities.
+     */
+    protected List<DTO> toDTO(List<E> entities) {
+
+        List<DTO> dtos = new ArrayList<DTO>();
+
+        for (E entity : entities) {
+            dtos.add(toDTO(entity));
+        }
+
+        return dtos;
+
+    }
+
+}

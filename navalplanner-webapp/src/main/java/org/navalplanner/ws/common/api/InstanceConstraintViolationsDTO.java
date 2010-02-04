@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  * DTO for modeling the list of constraint violations on a given instance.
@@ -56,8 +57,12 @@ public class InstanceConstraintViolationsDTO {
     @XmlAttribute(name=ENTITY_TYPE_ATTRIBUTE_NAME)
     public String entityType;
 
+    @XmlElementWrapper(name="constraint-violations")
     @XmlElement(name="constraint-violation")
     public List<ConstraintViolationDTO> constraintViolations;
+
+    @XmlElement(name="internal-error")
+    public InternalErrorDTO internalError;
 
     public InstanceConstraintViolationsDTO() {}
 
@@ -70,14 +75,30 @@ public class InstanceConstraintViolationsDTO {
 
     }
 
-    public InstanceConstraintViolationsDTO(
-        InstanceConstraintViolationsDTOId instanceId,
-        List<ConstraintViolationDTO> constraintViolations) {
+    private InstanceConstraintViolationsDTO(
+        InstanceConstraintViolationsDTOId instanceId) {
 
         this.numItem = instanceId.getNumItem();
         this.code = instanceId.getCode();
         this.entityType = instanceId.getEntityType();
+
+    }
+
+    public InstanceConstraintViolationsDTO(
+        InstanceConstraintViolationsDTOId instanceId,
+        List<ConstraintViolationDTO> constraintViolations) {
+
+        this(instanceId);
         this.constraintViolations = constraintViolations;
+
+    }
+
+    public InstanceConstraintViolationsDTO(
+        InstanceConstraintViolationsDTOId instanceId,
+        InternalErrorDTO internalError) {
+
+        this(instanceId);
+        this.internalError = internalError;
 
     }
 

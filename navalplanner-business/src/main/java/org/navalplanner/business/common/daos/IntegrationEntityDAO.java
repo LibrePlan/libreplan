@@ -20,7 +20,10 @@
 
 package org.navalplanner.business.common.daos;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -93,6 +96,13 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
             throw new RuntimeException(e);
         }
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<E> findAll() {
+        return getSession().createCriteria(getEntityClass()).
+            addOrder(Order.asc("code")).list();
     }
 
 }

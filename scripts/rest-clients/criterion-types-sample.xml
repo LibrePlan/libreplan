@@ -38,6 +38,12 @@
     </criterion-type>
 
     <!-- OK -->
+    <criterion-type code="ct-3" name="ct-3" description="ct-3 desc"
+        allow-hierarchy="false"
+        allow-simultaneous-criterions-per-resource="false" enabled="false"
+        resource="WORKER"/>
+
+    <!-- OK -->
     <criterion-type code="ct-4" name="ct-4" description="ct-4 desc"
         allow-hierarchy="true" allow-simultaneous-criterions-per-resource="true"
         enabled="true" resource="RESOURCE">
@@ -57,19 +63,6 @@
             </criterion>
         </criterion-list>
     </criterion-type>
-
-    <!-- Repeated criterion type name (see above) -->
-    <criterion-type code="ct-4b" name=" CT-4 " description="ct-4 desc"
-        allow-hierarchy="false"
-        allow-simultaneous-criterions-per-resource="false" enabled="false"
-        resource="WORKER"/>
-
-    <!-- Repeated criterion type name (probably a criterion type with this name
-         already exists in the database) -->
-    <criterion-type code="ct-4c" name="training" description="ct-4 desc"
-        allow-hierarchy="false"
-        allow-simultaneous-criterions-per-resource="false" enabled="false"
-        resource="WORKER"/>
 
     <!-- A non-active criterion has an active subcriterion -->
     <criterion-type code="ct-5" name="ct-5" description="ct-5 desc"
@@ -91,14 +84,14 @@
         </criterion-list>
     </criterion-type>
 
-    <!-- OK -->
-    <criterion-type code="ct-6" name="ct-6" description="ct-6 desc"
+    <!-- Repeated criterion type name (see above) -->
+    <criterion-type code="ct-6" name=" CT-4 " description="ct-6 desc"
         allow-hierarchy="false"
         allow-simultaneous-criterions-per-resource="false" enabled="false"
         resource="WORKER"/>
 
     <!-- Resource type does not allow enabled criteria -->
-    <criterion-type code="ct-7" name="ct-7" description="ct-5 desc"
+    <criterion-type code="ct-7" name="ct-7" description="ct-7 desc"
         allow-hierarchy="true" allow-simultaneous-criterions-per-resource="true"
         enabled="false" resource="RESOURCE">
 
@@ -108,37 +101,26 @@
         </criterion-list>
     </criterion-type>
 
-    <!-- Repeated criterion type code ("ct-6") -->
-    <criterion-type code="ct-6" name="ct-7" description="ct-7 desc"
-        allow-hierarchy="false"
-        allow-simultaneous-criterions-per-resource="false" enabled="false"
-        resource="WORKER"/>
-
-    <!--  Repeated criterion code (ct-8-c1) -->
+    <!-- Repeated criterion code ("ct-8-c1") inside this criterion type -->
     <criterion-type code="ct-8" name="ct-8" description="ct-8 desc"
         allow-hierarchy="true" allow-simultaneous-criterions-per-resource="true"
         enabled="true" resource="RESOURCE">
 
         <criterion-list>
-            <criterion code="ct-8-c1" name="c8" active="true"/>
-            <criterion code="ct-8-c1" name="c8" active="true"/>
+            <criterion code="ct-8-c1" name="c1" active="true"/>
+            <criterion code="ct-8-c1" name="c2" active="true"/>
         </criterion-list>
 
     </criterion-type>
 
-    <!--  Repeated criterion code (ct-4-c2-1) -->
+    <!--  Repeated criterion code ("ct-4-c1") (used by a criterion of another
+          criterion type) -->
     <criterion-type code="ct-9" name="ct-9" description="ct-9 desc"
         allow-hierarchy="true" allow-simultaneous-criterions-per-resource="true"
         enabled="true" resource="RESOURCE">
 
         <criterion-list>
-            <criterion code="ct-9-c1" name="c9" active="true"/>
-            <criterion code="ct-9-c2" name="c9" active="true">
-                <children>
-                    <criterion code="ct-9-c2-1" name="c9-1" active="true"/>
-                    <criterion code="ct-4-c2-1" name="c9-2" active="true"/>
-                </children>
-            </criterion>
+            <criterion code="ct-4-c1" name="c1" active="true"/>
         </criterion-list>
     </criterion-type>
 

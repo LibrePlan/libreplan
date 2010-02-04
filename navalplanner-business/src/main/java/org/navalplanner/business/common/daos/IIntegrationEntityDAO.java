@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.common.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
@@ -59,5 +61,10 @@ public interface IIntegrationEntityDAO<E extends IntegrationEntity>
         throws InstanceNotFoundException;
 
     public E findExistingEntityByCode(String code);
+
+    /**
+     * It returns all entities ordered by ascending code.
+     */
+    public List<E> findAll();
 
 }

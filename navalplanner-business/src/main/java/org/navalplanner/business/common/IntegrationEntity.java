@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.common;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -120,6 +122,35 @@ public abstract class IntegrationEntity extends BaseEntity {
                 return true;
             }
         }
+
+    }
+
+    /**
+     * It returns the first repeated code in the entities received as a
+     * parameter. If none is repeated, it returns <code>null</code>.
+     * Concrete entities may use this method to implement validation rules
+     * for detecting repeated codes in dependent entities.
+     */
+    protected String getFirstRepeatedCode(
+        Set<? extends IntegrationEntity> entities) {
+
+        Set<String> codes = new HashSet<String>();
+
+        for (IntegrationEntity e : entities) {
+
+            String code = e.getCode();
+
+            if (!StringUtils.isBlank(code)) {
+                if (codes.contains(code.toLowerCase())) {
+                    return code;
+                } else {
+                    codes.add(code.toLowerCase());
+                }
+            }
+
+        }
+
+        return null;
 
     }
 
