@@ -39,7 +39,7 @@
       <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
     </bean>
 
-    <bean id="multipleFiltersFinder" class="org.navalplanner.web.common.components.finders.MultipleFiltersFinder" scope="singleton"
+    <bean id="ordersMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrdersMultipleFiltersFinder" scope="singleton"
         init-method="init" />
 
     <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton"

@@ -2,7 +2,7 @@
     <label value="${i18n:_('Filter by')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
     <bandboxMultipleSearch id="bdFilters" widthBandbox="385px" widthListbox="400px"
-        finder="multipleFiltersFinder"/>
+        finder="ordersMultipleFiltersFinder"/>
     <label value="${i18n:_('from')}"/>
     <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
     <label value="${i18n:_('to')}"/>
