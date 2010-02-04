@@ -124,6 +124,12 @@ public class BaseCalendarTest {
     }
 
     @Test
+    public void aBaseCalendarMustBeActive() {
+        BaseCalendar calendar = createBasicCalendar();
+        assertTrue(calendar.isActive(new LocalDate()));
+    }
+
+    @Test
     public void testGetWorkableHoursChristmas() {
         BaseCalendar calendar = createChristmasCalendar();
 
