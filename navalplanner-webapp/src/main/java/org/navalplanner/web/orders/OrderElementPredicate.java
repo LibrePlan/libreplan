@@ -23,6 +23,7 @@ package org.navalplanner.web.orders;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -42,11 +43,14 @@ public class OrderElementPredicate implements IPredicate {
 
     private Date finishDate;
 
+    private String name;
+
     public OrderElementPredicate(List<FilterPair> filters, Date startDate,
-            Date finishDate) {
+            Date finishDate, String name) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
+        this.name = name;
     }
 
     @Override
@@ -59,7 +63,8 @@ public class OrderElementPredicate implements IPredicate {
         if (orderElement == null) {
             return false;
         }
-        if (acceptFilters(orderElement) && acceptFiltersDates(orderElement)) {
+        if (acceptFilters(orderElement) && acceptFiltersDates(orderElement)
+                && acceptFilterName(orderElement)) {
             return true;
         }
         return false;
@@ -168,6 +173,18 @@ public class OrderElementPredicate implements IPredicate {
             return true;
         }
         if (date != null && (date.compareTo(finishDate) <= 0)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean acceptFilterName(OrderElement orderElement) {
+        if (name == null) {
+            return true;
+        }
+        if ((orderElement.getName() != null)
+                && (StringUtils
+                        .containsIgnoreCase(orderElement.getName(), name))) {
             return true;
         }
         return false;

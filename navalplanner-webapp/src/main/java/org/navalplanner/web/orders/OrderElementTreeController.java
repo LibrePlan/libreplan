@@ -84,6 +84,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Datebox filterFinishDate2;
 
+    private Textbox filterName;
+
     private OrderElementTreeitemRenderer renderer = new OrderElementTreeitemRenderer();
 
     private final IOrderModel orderModel;
@@ -200,6 +202,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 .getFellow("filterStartDate2");
         filterFinishDate2 = (Datebox) filterComponent
                 .getFellow("filterFinishDate2");
+        filterName = (Textbox) filterComponent.getFellow("filterName");
 
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
@@ -465,11 +468,14 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 .getSelectedElements();
         Date startDate = filterStartDate2.getValue();
         Date finishDate = filterFinishDate2.getValue();
+        String name = filterName.getValue();
 
-        if (listFilters.isEmpty() && startDate == null && finishDate == null) {
+        if (listFilters.isEmpty() && startDate == null && finishDate == null
+                && name == null) {
             return null;
         }
-        return new OrderElementPredicate(listFilters, startDate, finishDate);
+        return new OrderElementPredicate(listFilters, startDate, finishDate,
+                name);
     }
 
     private void filterByPredicate(OrderElementPredicate predicate) {
