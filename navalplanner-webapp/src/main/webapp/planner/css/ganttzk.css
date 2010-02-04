@@ -801,3 +801,14 @@ body .perspectives-column {
 .perspectives-column .z-west-body {
     width: 200px !important;
 }
+
+
+#watermark .timetracker_column .today_deadline {
+    background-image:url(/navalplanner-webapp/zkau/web/ganttz/img/watermark_today.png);
+    background-repeat: repeat-y;
+    height:100%;
+    position:absolute;
+    top:0;
+    z-index:3;
+    width: 100%;
+}
