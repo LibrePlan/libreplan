@@ -1,5 +1,5 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of ###PROJECT_NAME###
  *
  * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
  *                    Desenvolvemento Tecnolóxico de Galicia
@@ -18,49 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.common.components.finders;
-
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class FilterPair extends Object {
+package org.navalplanner.web.common.components.finders;
 
-    private IFilterEnum type;
+public enum ResourceFilterEnum implements IFilterEnum {
 
-    private String pattern;
+    None("..."), Criterion("Criterion"), CostCategory("Cost category");
 
-    private Object value;
+    private String description;
 
-    public FilterPair() {
+    private ResourceFilterEnum(String description) {
+        this.description = description;
     }
 
-    public FilterPair(IFilterEnum type, String pattern, Object value) {
-        this.type = type;
-        this.value = value;
-        this.pattern = pattern;
+    @Override
+    public String toString() {
+        return description;
     }
 
-    public IFilterEnum getType() {
-        return type;
-    }
-
-    public void setType(OrderFilterEnum type) {
-        this.type = type;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public String getPattern() {
-        return pattern;
-    }
-
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
 }

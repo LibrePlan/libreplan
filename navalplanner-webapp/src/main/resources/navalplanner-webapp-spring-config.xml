@@ -42,6 +42,9 @@
     <bean id="multipleFiltersFinder" class="org.navalplanner.web.common.components.finders.MultipleFiltersFinder" scope="singleton"
         init-method="init" />
 
+    <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton"
+        init-method="init" />
+
     <context:component-scan base-package="org.navalplanner"/>
 
     <!-- CXF -->

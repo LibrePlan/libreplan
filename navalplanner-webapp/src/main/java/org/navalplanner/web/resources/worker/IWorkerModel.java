@@ -34,6 +34,7 @@ import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.resources.search.ResourcePredicate;
 
 /**
  * This interface contains the operations to create/edit a worker. The
@@ -136,5 +137,9 @@ public interface IWorkerModel {
     Integer getCapacity();
 
     void setCapacity(Integer capacity);
+
+    public List<Worker> getFilteredWorker(ResourcePredicate predicate);
+
+    public List<Worker> getAllCurrentWorkers();
 
 }

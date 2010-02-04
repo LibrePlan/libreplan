@@ -23,7 +23,7 @@
  */
 package org.navalplanner.web.common.components.finders;
 
-public enum OrderFilterEnum {
+public enum OrderFilterEnum implements IFilterEnum {
 
     None("..."), Criterion("Criterion"), Label("Label"), ExternalCompany(
             "Customer"), State(

@@ -54,6 +54,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
+import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -95,6 +96,8 @@ public class WorkerModel implements IWorkerModel {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    private List<Worker> currentWorkerList = new ArrayList<Worker>();
+
     @Autowired
     public WorkerModel(IResourceDAO resourceDAO,
             ICriterionDAO criterionDAO) {
@@ -128,7 +131,8 @@ public class WorkerModel implements IWorkerModel {
     @Override
     @Transactional(readOnly = true)
     public List<Worker> getRealWorkers() {
-        return resourceDAO.getRealWorkers();
+        currentWorkerList = resourceDAO.getRealWorkers();
+        return currentWorkerList;
     }
 
     @Override
@@ -138,7 +142,8 @@ public class WorkerModel implements IWorkerModel {
         for (Worker each : list) {
             each.getCalendar().getCapacity();
         }
-        return list;
+        currentWorkerList = list;
+        return currentWorkerList;
     }
 
     @Override
@@ -541,4 +546,20 @@ public class WorkerModel implements IWorkerModel {
         return defaultCalendar;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Worker> getFilteredWorker(ResourcePredicate predicate) {
+        List<Worker> filteredResourceList = new ArrayList<Worker>();
+        for (Worker worker : currentWorkerList) {
+            resourceDAO.reattach(worker);
+            if (predicate.accepts(worker)) {
+                filteredResourceList.add(worker);
+            }
+        }
+        return filteredResourceList;
+    }
+
+    public List<Worker> getAllCurrentWorkers() {
+        return currentWorkerList;
+    }
 }

@@ -51,6 +51,7 @@ import org.navalplanner.business.resources.entities.MachineWorkersConfigurationU
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
+import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -80,6 +81,7 @@ public class MachineModel implements IMachineModel {
     private Machine machine;
     private Map<Long,Criterion> criterions = new HashMap<Long,Criterion>();
     private Map<Long,Worker> workers = new HashMap<Long,Worker>();
+    private List<Machine> machineList = new ArrayList<Machine>();
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -255,7 +257,8 @@ public class MachineModel implements IMachineModel {
     @Override
     @Transactional(readOnly = true)
     public List<Machine> getMachines() {
-        return machineDAO.getAll();
+        machineList = machineDAO.getAll();
+        return machineList;
     }
 
     public MachineWorkersConfigurationUnit getConfigurationUnitById(Long id)
@@ -316,4 +319,20 @@ public class MachineModel implements IMachineModel {
         baseCalendar.getExceptions().size();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Machine> getFilteredMachines(ResourcePredicate predicate) {
+        List<Machine> filteredResourceList = new ArrayList<Machine>();
+        for (Machine machine : machineList) {
+            machineDAO.reattach(machine);
+            if (predicate.accepts(machine)) {
+                filteredResourceList.add(machine);
+            }
+        }
+        return filteredResourceList;
+    }
+
+    public List<Machine> getAllMachines() {
+        return machineList;
+    }
 }

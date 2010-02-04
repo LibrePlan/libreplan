@@ -26,6 +26,7 @@ import static org.navalplanner.web.common.ConcurrentModificationDetector.addAuto
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -39,16 +40,24 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
+import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
+import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -92,6 +101,16 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private Window createNewVersionWindow;
 
     private BaseCalendarsComboitemRenderer baseCalendarsComboitemRenderer = new BaseCalendarsComboitemRenderer();
+
+    private Grid listing;
+
+    private Datebox filterStartDate;
+
+    private Datebox filterFinishDate;
+
+    private BandboxMultipleSearch bdFilters;
+
+    private Textbox txtfilter;
 
     public WorkerCRUDController() {
     }
@@ -255,6 +274,19 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
+        initFilterComponent();
+    }
+
+    private void initFilterComponent() {
+        this.filterFinishDate = (Datebox) listWindow
+                .getFellowIfAny("filterFinishDate");
+        this.filterStartDate = (Datebox) listWindow
+                .getFellowIfAny("filterStartDate");
+        this.bdFilters = (BandboxMultipleSearch) listWindow
+                .getFellowIfAny("bdFilters");
+        this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
+        this.listing = (Grid) listWindow.getFellowIfAny("listing");
+        clearFilterDates();
     }
 
     private void setupResourcesCostCategoryAssignmentController(Component comp)
@@ -495,4 +527,93 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         this.workerModel.setCapacity(capacity);
     }
 
+    /**
+     * Operations to filter the machines by multiple filters
+     */
+
+    public Constraint checkConstraintFinishDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date finishDate = (Date) value;
+                if ((finishDate != null)
+                        && (filterStartDate.getValue() != null)
+                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
+                    filterFinishDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be greater than start date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date startDate = (Date) value;
+                if ((startDate != null)
+                        && (filterFinishDate.getValue() != null)
+                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
+                    filterStartDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be lower than finish date"));
+                }
+            }
+        };
+    }
+
+    public void onApplyFilter() {
+        ResourcePredicate predicate = createPredicate();
+        if (predicate != null) {
+            filterByPredicate(predicate);
+        } else {
+            showAllWorkers();
+        }
+    }
+
+    private ResourcePredicate createPredicate() {
+        List<FilterPair> listFilters = (List<FilterPair>) bdFilters
+                .getSelectedElements();
+
+        String personalFilter = txtfilter.getValue();
+
+        // Get the dates filter
+        LocalDate startDate = null;
+        LocalDate finishDate = null;
+        if (filterStartDate.getValue() != null) {
+            startDate = LocalDate.fromDateFields(filterStartDate.getValue());
+        }
+        if (filterFinishDate.getValue() != null) {
+            finishDate = LocalDate.fromDateFields(filterFinishDate.getValue());
+        }
+
+        if (listFilters.isEmpty()
+                && (personalFilter == null || personalFilter.isEmpty())
+                && startDate == null && finishDate == null) {
+            return null;
+        }
+        return new ResourcePredicate(listFilters, personalFilter, startDate,
+                finishDate);
+    }
+
+    private void filterByPredicate(ResourcePredicate predicate) {
+        List<Worker> filteredResources = workerModel
+                .getFilteredWorker(predicate);
+        listing.setModel(new SimpleListModel(filteredResources.toArray()));
+        listing.invalidate();
+    }
+
+    private void clearFilterDates() {
+        filterStartDate.setValue(null);
+        filterFinishDate.setValue(null);
+    }
+
+    public void showAllWorkers() {
+        listing.setModel(new SimpleListModel(workerModel.getAllCurrentWorkers()
+                .toArray()));
+        listing.invalidate();
+    }
 }

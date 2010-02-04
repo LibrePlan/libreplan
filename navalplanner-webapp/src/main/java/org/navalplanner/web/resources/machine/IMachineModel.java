@@ -30,6 +30,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.resources.search.ResourcePredicate;
 
 /*
  * This interface contains the operations to create/edit a machine.
@@ -95,4 +96,7 @@ public interface IMachineModel {
 
     BaseCalendar getDefaultCalendar();
 
+    List<Machine> getFilteredMachines(ResourcePredicate predicate);
+
+    public List<Machine> getAllMachines();
 }

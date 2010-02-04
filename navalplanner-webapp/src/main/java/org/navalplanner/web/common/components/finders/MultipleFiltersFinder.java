@@ -449,9 +449,9 @@ public class MultipleFiltersFinder implements IMultipleFiltersFinder {
         }
 
         filterValues = updateDeletedFilters(filterValues, value);
-
+        value = value.replace(" ", "");
         String[] values = value.split(",");
-        if (values.length != filterValues.size() + 1) {
+        if (values.length != filterValues.size()) {
             return false;
         }
 

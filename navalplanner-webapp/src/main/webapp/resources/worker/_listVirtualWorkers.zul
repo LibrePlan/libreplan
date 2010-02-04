@@ -17,8 +17,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
+<?component name="filter" inline="true" macroURI="../search/_resourceFilter.zul"?>
 <window id="${arg.top_id}" title="${i18n:_('Virtual workers list')}">
+     <separator bar="false" spacing="5px" orient="horizontal"/>
+
+    <div align="right">
+        <filter id="filter"/>
+    </div>
+
+    <separator bar="false" spacing="30px" orient="horizontal"/>
     <newdatasortablegrid id="listing" model="@{controller.virtualWorkers}" mold="paging"
         pageSize="10" fixedLayout="true">
         <columns>

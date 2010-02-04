@@ -33,6 +33,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.web.common.components.finders.FilterPair;
+import org.navalplanner.web.common.components.finders.OrderFilterEnum;
 
 /**
  * Checks if {@link WorkReportType}, the start date and finish date from
@@ -87,7 +88,7 @@ public class OrderPredicate implements IPredicate {
     }
 
     private boolean acceptFilter(FilterPair filter,Order order){
-        switch (filter.getType()) {
+        switch ((OrderFilterEnum) filter.getType()) {
         case Criterion:
             return acceptCriterion(filter, order);
         case Label:
