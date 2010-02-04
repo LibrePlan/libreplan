@@ -1,5 +1,5 @@
 /*x
- * This file is part of ###PROJECT_NAME###
+ * This file is part of NavalPlan
  *
  * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
  *                    Desenvolvemento Tecnolóxico de Galicia
