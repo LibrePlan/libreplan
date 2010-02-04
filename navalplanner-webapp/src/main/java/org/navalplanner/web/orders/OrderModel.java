@@ -253,6 +253,14 @@ public class OrderModel implements IOrderModel {
         forceLoadCriterionRequirements(this.order);
         forceLoadCalendar(this.getCalendar());
         forceLoadCustomer(this.order.getCustomer());
+        forceLoadLabels(this.order);
+    }
+
+    private void forceLoadLabels(OrderElement orderElement) {
+        orderElement.getLabels().size();
+        for (OrderElement each : orderElement.getChildren()) {
+            forceLoadLabels(each);
+        }
     }
 
     private void forceLoadCustomer(ExternalCompany customer) {
