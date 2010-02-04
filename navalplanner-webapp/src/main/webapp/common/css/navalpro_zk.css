@@ -1154,3 +1154,7 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     padding: 1px 5px;
     cursor: default;
 }
+
+.z-menu-popup-cnt .z-menu-item-over .z-menu-item-img {
+    background-image: url(../img/ico_submenu.png);
+}
