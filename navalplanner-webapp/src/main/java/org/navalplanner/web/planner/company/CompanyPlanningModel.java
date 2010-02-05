@@ -67,6 +67,7 @@ import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.print.CutyPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,8 +194,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
+        OrderPlanningModel.configureInitialZoomLevelFor(planner, configuration);
         planner.setConfiguration(configuration);
-
         Timeplot chartLoadTimeplot = new Timeplot();
         Timeplot chartEarnedValueTimeplot = new Timeplot();
         CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();

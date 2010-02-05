@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -145,6 +146,32 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
 
+    public static void configureInitialZoomLevelFor(Planner planner,
+            PlannerConfiguration<TaskElement> configuration) {
+        if (!planner.isInitialZoomLevelAlreadySet()) {
+            ZoomLevel defaultZoomLevel = OrderPlanningModel
+                    .calculateDefaultLevel(configuration);
+            planner.setInitialZoomLevel(defaultZoomLevel);
+        }
+    }
+
+    private static ZoomLevel calculateDefaultLevel(
+            PlannerConfiguration<TaskElement> configuration) {
+        if (configuration.getData().isEmpty()) {
+            return ZoomLevel.DETAIL_ONE;
+        }
+        TaskElement earliest = Collections.min(configuration.getData(),
+                TaskElement
+                .getByStartDateComparator());
+        TaskElement latest = Collections.min(configuration.getData(),
+                TaskElement.getByEndDateComparator());
+
+        LocalDate startDate = LocalDate.fromDateFields(earliest
+                .getStartDate());
+        LocalDate endDate = LocalDate.fromDateFields(latest.getEndDate());
+        return ZoomLevel.getDefaultZoomByDates(startDate, endDate);
+    }
+
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -217,6 +244,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
+        configureInitialZoomLevelFor(planner, configuration);
 
         final boolean writingAllowed = isWritingAllowedOn(orderReloaded);
         ISaveCommand saveCommand = setupSaveCommand(configuration,

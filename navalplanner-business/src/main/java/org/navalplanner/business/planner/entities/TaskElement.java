@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,28 @@ import org.navalplanner.business.planner.entities.Dependency.Type;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class TaskElement extends BaseEntity {
+
+    public static Comparator<TaskElement> getByStartDateComparator() {
+        Comparator<TaskElement> result = new Comparator<TaskElement>() {
+
+            @Override
+            public int compare(TaskElement o1, TaskElement o2) {
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            }
+        };
+        return result;
+    }
+
+    public static Comparator<? super TaskElement> getByEndDateComparator() {
+        Comparator<TaskElement> result = new Comparator<TaskElement>() {
+
+            @Override
+            public int compare(TaskElement o1, TaskElement o2) {
+                return o1.getEndDate().compareTo(o2.getEndDate());
+            }
+        };
+        return result;
+    }
 
     protected static <T extends TaskElement> T create(T taskElement,
             TaskSource taskSource) {
