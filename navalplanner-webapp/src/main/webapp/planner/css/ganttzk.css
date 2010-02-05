@@ -202,7 +202,7 @@ min-width:200px;
 /* -------------- TaskGroup -------------- */
 .taskgroup_start {
     background-image:
-        url("/navalplanner-webapp/zkau/web/ganttz/img/group_left.png");
+        url("../img/group_left.png");
     height: 10px;
     width: 10px;
     float: left;
@@ -211,7 +211,7 @@ min-width:200px;
 
 .taskgroup_end {
     background-image:
-        url("/navalplanner-webapp/zkau/web/ganttz/img/group_right.png");
+        url("../img/group_right.png");
     height: 10px;
     width: 10px;
     position:absolute;
@@ -240,7 +240,7 @@ min-width:200px;
 
 .milestone_end {
     background-image:
-        url("/navalplanner-webapp/zkau/web/ganttz/img/milestone.png");
+        url("../img/milestone.png");
     height: 15px;
     width: 15px;
     float: right;
@@ -298,19 +298,18 @@ min-width:200px;
 
 #watermark .timetracker_column_today.timetracker_column_deadline,
 #watermark .timetracker_column_deadline.timetracker_column_today  {
-    background-image: url("/navalplanner-webapp/zkau/web/ganttz/img/watermark_deadline.png");
+    background-image: url("../img/watermark_deadline.png");
 }
 
 /* Background image for current day vertical line */
 #watermark .timetracker_column_today {
-    background-image:
-        url("/navalplanner-webapp/zkau/web/ganttz/img/watermark_today.png");
+    background-image: url("../img/watermark_today.png");
     background-repeat: repeat-y;
 }
 
 #watermark .timetracker_column_deadline {
     background-image:
-        url("/navalplanner-webapp/zkau/web/ganttz/img/watermark_deadline.png");
+        url("../img/watermark_deadline.png");
     background-repeat: repeat-y;
 }
 
@@ -790,8 +789,7 @@ div.z-tree {
     left:-100px; /* Hide when it has't been set */
     width:10px;
     height:22px;
-    background-image:
-        url("/navalplanner-webapp/zkau/web/ganttz/img/deadline2.png");
+    background-image: url("../img/deadline2.png");
 }
 
 body .perspectives-column {
@@ -804,7 +802,7 @@ body .perspectives-column {
 
 
 #watermark .timetracker_column .today_deadline {
-    background-image:url(/navalplanner-webapp/zkau/web/ganttz/img/watermark_today.png);
+    background-image:url(../img/watermark_today.png);
     background-repeat: repeat-y;
     height:100%;
     position:absolute;
