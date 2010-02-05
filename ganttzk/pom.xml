@@ -10,7 +10,7 @@
     </parent>
     <artifactId>ganttzk</artifactId>
     <packaging>jar</packaging>
-    <name>Naval Planner ZK Components Module</name>
+    <name>NavalPlan ZK Components Module</name>
 
     <build>
         <plugins>

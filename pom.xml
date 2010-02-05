@@ -6,7 +6,7 @@
     <artifactId>navalplanner</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>
-    <name>Naval Planner</name>
+    <name>NavalPlan</name>
 
     <!--
         ===================================================================
@@ -75,7 +75,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!-- Naval Planner environment properties -->
+                <!-- NavalPlan environment properties -->
                 <navalplanner.mode>dev</navalplanner.mode>
                 <!-- Hibernate properties -->
                 <hibernate.show_sql>false</hibernate.show_sql>
@@ -89,7 +89,7 @@
         <profile>
             <id>prod</id>
             <properties>
-                <!-- Naval Planner environment properties -->
+                <!-- NavalPlan environment properties -->
                 <navalplanner.mode>prod</navalplanner.mode>
                 <!-- Hibernate properties -->
                 <hibernate.show_sql>false</hibernate.show_sql>
@@ -436,13 +436,13 @@
                 <artifactId>joda-time-hibernate</artifactId>
                 <version>1.1</version>
             </dependency>
-            <!-- Naval Planner ZK Components -->
+            <!-- NavalPlan ZK Components -->
             <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>ganttzk</artifactId>
                 <version>1.0.0</version>
             </dependency>
-            <!-- Naval Planner Business -->
+            <!-- NavalPlan Business -->
             <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>navalplanner-business</artifactId>

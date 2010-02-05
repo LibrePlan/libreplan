@@ -12,7 +12,7 @@
          for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY.
     -->
 
-    <http auto-config="true" realm="Naval Planner Web Application" >
+    <http auto-config="true" realm="NavalPlan Web Application" >
 
         <!-- Web services -->
         <intercept-url pattern="/ws/rest/**" access="ROLE_WS_READER" method="GET" />
@@ -58,7 +58,7 @@
     </beans:bean>
 
     <!--
-          Beans used by the Naval Planner Web application when users are
+          Beans used by the NavalPlan Web application when users are
           registered in the database. When users are registered externally
           (e.g. in a LDAP server), these lines may be commented.
     -->

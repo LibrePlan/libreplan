@@ -8,7 +8,7 @@
     </parent>
     <artifactId>navalplanner-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Naval Planner Web Client Module</name>
+    <name>NavalPlan Web Client Module</name>
 
 	<build>
         <finalName>navalplanner-webapp</finalName>
@@ -226,12 +226,12 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkex</artifactId>
         </dependency>
-        <!-- Naval Planner ZK Components  -->
+        <!-- NavalPlan ZK Components  -->
         <dependency>
             <groupId>org.navalplanner</groupId>
             <artifactId>ganttzk</artifactId>
         </dependency>
-        <!-- Naval Planner Business  -->
+        <!-- NavalPlan Business  -->
         <dependency>
             <groupId>org.navalplanner</groupId>
             <artifactId>navalplanner-business</artifactId>

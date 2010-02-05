@@ -9,7 +9,7 @@
     </parent>
     <artifactId>navalplanner-business</artifactId>
     <packaging>jar</packaging>
-    <name>Naval Planner Business Module</name>
+    <name>NavalPlan Business Module</name>
 
     <dependencies>
         <!-- Gettext commons -->
