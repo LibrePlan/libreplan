@@ -92,9 +92,10 @@ public class CompanyPlanningController implements Composer{
                 && !(parameters.isEmpty())) {
             zoomLevelParameter = parameters.get("zoom")[0];
         }
-        planner
-                .setInitialZoomLevel(ZoomLevel
-                        .getFromString(zoomLevelParameter));
+        if (zoomLevelParameter != null) {
+            planner.setInitialZoomLevel(ZoomLevel
+                    .getFromString(zoomLevelParameter));
+        }
         planner.setAreContainersExpandedByDefault(Planner
                 .guessContainersExpandedByDefault(parameters));
 
