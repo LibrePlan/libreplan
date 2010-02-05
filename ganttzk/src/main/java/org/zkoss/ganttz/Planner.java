@@ -59,6 +59,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.api.Listbox;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -124,6 +125,8 @@ public class Planner extends HtmlMacroComponent  {
     private boolean isShowingCriticalPath = false;
 
     private ZoomLevel initialZoomLevel = null;
+
+    private Listbox listZoomLevels = null;
 
     public Planner() {
         registerNeededScripts();
@@ -276,6 +279,7 @@ public class Planner extends HtmlMacroComponent  {
             Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
             showCriticalPathButton.setVisible(false);
         }
+        listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
     }
 
     private void resettingPreviousComponentsToNull() {
@@ -384,6 +388,7 @@ public class Planner extends HtmlMacroComponent  {
     @Override
     public void afterCompose() {
         super.afterCompose();
+        listZoomLevels = (Listbox) getFellow("listZoomLevels");
     }
 
     public TimeTracker getTimeTracker() {

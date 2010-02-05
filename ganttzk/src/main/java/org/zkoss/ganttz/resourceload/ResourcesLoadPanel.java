@@ -41,6 +41,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.api.Listbox;
 
 public class ResourcesLoadPanel extends HtmlMacroComponent {
 
@@ -61,6 +62,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private MutableTreeModel<LoadTimeLine> treeModel;
 
     private final TimeTracker timeTracker;
+
+    private Listbox listZoomLevels;
 
     public ResourcesLoadPanel(List<LoadTimelinesGroup> groups,
             TimeTracker timeTracker) {
@@ -168,6 +171,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
         timeTrackerHeader.afterCompose();
         timeTrackerComponent.afterCompose();
+        listZoomLevels = (Listbox) getFellow("listZoomLevels");
+        listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
     }
 
     private TimeTrackerComponent createTimeTrackerHeader() {

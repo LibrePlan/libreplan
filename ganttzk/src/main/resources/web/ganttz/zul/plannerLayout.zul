@@ -19,7 +19,7 @@ planner = self;
 
         <!--  Visualization modes -->
         <label>${i18n:_('Zoom level')}:</label>
-        <listbox mold="select" rows="1"
+        <listbox id="listZoomLevels" mold="select" rows="1"
             model="${planner.zoomLevels}"
             onSelect="planner.setZoomLevel(self.selectedItem.value);" >
         </listbox>
