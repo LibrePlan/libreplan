@@ -24,13 +24,20 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/perspectives.css"?>
 <?component name="customMenu" inline="true" macroURI="_customMenu.zul"?>
 <zk>
+
+<zscript>
+<![CDATA[
+    contextPath = Executions.getCurrent().getContextPath();
+]]>
+</zscript>
+
 <scripts />
 <n:div xmlns:n="http://www.zkoss.org/2005/zk/native">
 <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
   <n:tr>
     <n:td width="180" valign="center">
-        <n:a href="/navalplanner-webapp/">
-        <n:img src="/navalplanner-webapp/common/img/logo.png" /></n:a></n:td>
+        <n:a href="${contextPath}/">
+        <n:img src="${contextPath}/common/img/logo.png" /></n:a></n:td>
   <n:td valign="top">
   <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
     <n:tr>
@@ -49,7 +56,7 @@
           <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
             <n:tr>
               <n:td class="usuario">${i18n:_('user')}: ${desktop.execution.userPrincipal.name}</n:td>
-              <n:td><n:a href="/navalplanner-webapp/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
+              <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
             </n:tr>
           </n:table>
         </n:div>
@@ -72,7 +79,7 @@
 <n:table width="100%">
   <n:tr class="footer">
     <n:td height="52" align="right" valign="bottom">
-        <n:img width="403" height="50" src="/navalplanner-webapp/common/img/logos_footer.gif"/>
+        <n:img width="403" height="50" src="${contextPath}/common/img/logos_footer.gif"/>
     </n:td>
 
   </n:tr>

@@ -21,6 +21,12 @@
 <div id="menuContainer" xmlns:n="http://www.zkoss.org/2005/zk/native"
     use="org.navalplanner.web.common.CustomMenuController">
 
+<zscript>
+<![CDATA[
+    contextPath = Executions.getCurrent().getContextPath();
+]]>
+</zscript>
+
     <menubar id="menubar" top="0px" left="0px"
             ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu" autodrop="true">
 
@@ -39,12 +45,12 @@
     <n:td class="migas_linea"><n:table border="0" cellspacing="0" cellpadding="0">
         <n:tr class="ruta">
           <n:td width="10" height="25"></n:td>
-          <n:td><n:a href="/navalplanner-webapp/" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
+          <n:td><n:a href="${contextPath}/" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
           <n:td width="5"></n:td>
           <n:td><hbox id="breadcrumbs"></hbox>
           <hbox>
           <hbox forEach="${menuContainer.breadcrumbsPath}">
-            <n:div align="center"><n:img src="/navalplanner-webapp/common/img/migas_separacion.gif" /></n:div>
+            <n:div align="center"><n:img src="${contextPath}/common/img/migas_separacion.gif" /></n:div>
             <n:a href="${each.encodedUrl}" class="ruta">${i18n:_(each.name)}</n:a>
           </hbox>
           </hbox>
@@ -54,9 +60,9 @@
     </n:table></n:td>
     <n:td valign="top" align="right" class="help-link">
     <div tooltip="help-popup">
-    <n:a href="/navalplanner-webapp/help/${i18n:_('en')}/${menuContainer.helpLink}" target="_blank">
+    <n:a href="${contextPath}/help/${i18n:_('en')}/${menuContainer.helpLink}" target="_blank">
         <n:span>${i18n:_('Help')}</n:span>
-        <n:img src="/navalplanner-webapp/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" style="margin-top:4px;"/>
+        <n:img src="${contextPath}/common/img/axuda.gif" alt="Axuda" width="23" height="24" border="0" style="margin-top:4px;"/>
     </n:a>
     </div>
     </n:td>
