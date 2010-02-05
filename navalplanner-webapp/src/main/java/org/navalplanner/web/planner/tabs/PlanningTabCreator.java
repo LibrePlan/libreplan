@@ -185,6 +185,7 @@ public class PlanningTabCreator {
             protected void afterShowAction() {
 
                 orderPlanningController.setOrder(reload(mode.getOrder()));
+                Order order = orderPlanningController.getOrder();
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 arguments.put("orderPlanningController",
                         orderPlanningController);
@@ -198,15 +199,15 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Label(ORDER_ENTERPRISE_VIEW));
                 if (mode.isOf(ModeType.ORDER)) {
 
-                    Label nameLabel = new Label(mode.getOrder().getName());
-                    nameLabel.setTooltiptext(mode.getOrder().getName() + "."
-                            + mode.getOrder().getDescription());
+                    Label nameLabel = new Label(order.getName());
+                    nameLabel.setTooltiptext(order.getName() + "."
+                            + order.getDescription());
                     nameLabel.setMaxlength(MAX_ORDERNAME_LENGHT);
 
-                    Label schedulingStateLabel = new Label(mode.getOrder()
+                    Label schedulingStateLabel = new Label(order
                             .getSchedulingState().getStateAbbreviation());
                     schedulingStateLabel.setSclass("scheduling-state");
-                    schedulingStateLabel.setTooltiptext(mode.getOrder()
+                    schedulingStateLabel.setTooltiptext(order
                             .getSchedulingState().getStateName());
 
                     breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));

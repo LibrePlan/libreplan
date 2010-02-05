@@ -132,4 +132,8 @@ public class OrderPlanningController implements Composer {
         this.parameters = parameters;
     }
 
+    public Order getOrder() {
+        return model.getOrder();
+    }
+
 }

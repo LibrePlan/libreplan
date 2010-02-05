@@ -41,4 +41,6 @@ public interface IOrderPlanningModel {
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional);
 
+    Order getOrder();
+
 }

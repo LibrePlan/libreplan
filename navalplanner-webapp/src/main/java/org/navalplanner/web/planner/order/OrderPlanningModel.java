@@ -180,6 +180,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
+    private Order orderReloaded;
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -208,7 +210,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             EditTaskController editTaskController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
-        Order orderReloaded = reload(order);
+        orderReloaded = reload(order);
         if (!orderReloaded.isSomeTaskElementScheduled()) {
             throw new IllegalArgumentException(_(
                     "The order {0} must be scheduled", orderReloaded));
@@ -1112,5 +1114,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     protected abstract ISubcontractCommand getSubcontractCommand();
+
+    public Order getOrder() {
+        return orderReloaded;
+    }
 
 }
