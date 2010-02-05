@@ -98,4 +98,9 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
         return Days.days(7 * NUMBER_OF_WEEKS_MINIMUM);
     }
 
+    @Override
+    protected ZoomLevel getZoomLevel() {
+        return ZoomLevel.DETAIL_THREE;
+    }
+
 }

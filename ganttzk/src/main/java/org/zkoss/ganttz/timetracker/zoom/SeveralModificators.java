@@ -57,10 +57,10 @@ public class SeveralModificators implements IDetailItemModificator {
     }
 
     @Override
-    public DetailItem applyModificationsTo(DetailItem item) {
+    public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z) {
         DetailItem result = item;
         for (IDetailItemModificator each : modificators) {
-            result = each.applyModificationsTo(result);
+            result = each.applyModificationsTo(result, z);
         }
         return result;
     }

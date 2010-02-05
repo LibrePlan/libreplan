@@ -110,6 +110,7 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
@@ -336,14 +337,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private IDetailItemModificator createDeadlineShower(Date orderDeadline) {
         final DateTime deadline = new DateTime(orderDeadline);
-        return new IDetailItemModificator() {
+        IDetailItemModificator deadlineMarker = new IDetailItemModificator() {
 
             @Override
-            public DetailItem applyModificationsTo(DetailItem item) {
+            public DetailItem applyModificationsTo(DetailItem item,
+                    ZoomLevel zoomlevel) {
                 item.markDeadlineDay(deadline);
                 return item;
             }
         };
+        return SeveralModificators.create(deadlineMarker,
+                createBankHolidayMarker());
+    }
+
+    public static IDetailItemModificator createBankHolidayMarker() {
+        return new BankHolidaysMarker();
     }
 
     private void appendTabs(Tabbox chartComponent) {

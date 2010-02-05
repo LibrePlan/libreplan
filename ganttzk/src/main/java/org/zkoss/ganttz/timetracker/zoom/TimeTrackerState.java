@@ -72,22 +72,29 @@ public abstract class TimeTrackerState {
             Interval interval);
 
     public Collection<DetailItem> getSecondLevelDetails(Interval interval) {
-        // Also mark holidays and current date
-        return markEvens(applyConfiguredModifications(secondLevelModificator,
-                createDetailsForSecondLevel(interval)));
+        if (getZoomLevel() == ZoomLevel.DETAIL_FIVE) {
+            // Evens are not highlighted in day view
+            return applyConfiguredModifications(
+                    secondLevelModificator,
+                    createDetailsForSecondLevel(interval), getZoomLevel());
+        } else {
+            return markEvens(applyConfiguredModifications(
+                    secondLevelModificator,
+                    createDetailsForSecondLevel(interval), getZoomLevel()));
+        }
     }
 
     public Collection<DetailItem> getFirstLevelDetails(Interval interval) {
-        return markEvens(applyConfiguredModifications(firstLevelModificator,
-                createDetailsForFirstLevel(interval)));
+        return applyConfiguredModifications(firstLevelModificator,
+                createDetailsForFirstLevel(interval), getZoomLevel());
     }
 
     private static List<DetailItem> applyConfiguredModifications(
             IDetailItemModificator modificator,
-            Collection<? extends DetailItem> detailsItems) {
+            Collection<? extends DetailItem> detailsItems, ZoomLevel zoomlevel) {
         List<DetailItem> result = new ArrayList<DetailItem>(detailsItems.size());
         for (DetailItem each : detailsItems) {
-            result.add(modificator.applyModificationsTo(each));
+            result.add(modificator.applyModificationsTo(each, zoomlevel));
         }
         return result;
     }
@@ -137,5 +144,7 @@ public abstract class TimeTrackerState {
     public abstract Interval getRealIntervalFor(Interval testInterval);
 
     public abstract double daysPerPixel();
+
+    protected abstract ZoomLevel getZoomLevel();
 
 }

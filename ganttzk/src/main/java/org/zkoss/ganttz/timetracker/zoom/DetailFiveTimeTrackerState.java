@@ -20,15 +20,10 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadablePeriod;
-import org.zkoss.ganttz.util.Interval;
 
 /**
  * Zoom level for weeks in the first level and days in the second level
@@ -37,10 +32,8 @@ import org.zkoss.ganttz.util.Interval;
  */
 public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
-
     private static final int NUMBER_OF_DAYS_MINIMUM = 50;
     public static final int FIRST_LEVEL_SIZE = 140;
-
     public static final int SECOND_LEVEL_SIZE = 20;
 
     DetailFiveTimeTrackerState(IDetailItemModificator firstLevelModificator,
@@ -99,29 +92,12 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     }
 
     @Override
-    // Just change styles for holidays
-    public Collection<DetailItem> getSecondLevelDetails(Interval interval) {
-        // Also mark holidays and current date
-        List<DetailItem> items = (List<DetailItem>) createDetailsForSecondLevel(interval);
-        ArrayList<DetailItem> result = new ArrayList<DetailItem>();
-        int dayOfWeek;
-
-        for (DetailItem detailItem : items) {
-            dayOfWeek = detailItem.getStartDate().dayOfWeek().get();
-            if ((dayOfWeek == 6) || (dayOfWeek == 7)) {
-                detailItem.setBankHoliday(true);
-                result.add(detailItem);
-            } else {
-                detailItem.setBankHoliday(false);
-                result.add(detailItem);
-            }
-        }
-        return result;
-    }
-
-    @Override
     protected Days getMinimumPeriod() {
         return Days.days(NUMBER_OF_DAYS_MINIMUM);
     }
 
+    @Override
+    protected ZoomLevel getZoomLevel() {
+        return ZoomLevel.DETAIL_FIVE;
+    }
 }

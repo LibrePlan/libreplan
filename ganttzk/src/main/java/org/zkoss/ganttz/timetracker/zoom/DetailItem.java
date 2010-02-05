@@ -174,4 +174,11 @@ public final class DetailItem {
         return offset;
     }
 
+    public void markBankHoliday() {
+        int dayOfWeek = getStartDate().dayOfWeek().get();
+        if ((dayOfWeek == 6) || (dayOfWeek == 7)) {
+            setBankHoliday(true);
+        }
+    }
+
 }

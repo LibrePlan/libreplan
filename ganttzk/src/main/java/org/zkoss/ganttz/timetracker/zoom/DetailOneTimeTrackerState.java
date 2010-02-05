@@ -112,4 +112,9 @@ public class DetailOneTimeTrackerState extends TimeTrackerState {
         return new Interval(year(pairYears[0]), year(pairYears[1] + 1));
     }
 
+    @Override
+    protected ZoomLevel getZoomLevel() {
+        return ZoomLevel.DETAIL_ONE;
+    }
+
 }

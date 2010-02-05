@@ -17,15 +17,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.zkoss.ganttz.timetracker.zoom;
+package org.navalplanner.web.planner.order;
 
+import org.zkoss.ganttz.timetracker.zoom.DetailItem;
+import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
-public interface IDetailItemModificator {
-
-    public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z);
-
+public final class BankHolidaysMarker implements
+        IDetailItemModificator {
+    @Override
+    public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z) {
+        if (z == ZoomLevel.DETAIL_FIVE) {
+            item.markBankHoliday();
+        }
+        return item;
+    }
 }

@@ -113,4 +113,9 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
         return Days.days(NUMBER_OF_MONTHS_MINIMUM * 31);
     }
 
+    @Override
+    protected ZoomLevel getZoomLevel() {
+        return ZoomLevel.DETAIL_FOUR;
+    }
+
 }
