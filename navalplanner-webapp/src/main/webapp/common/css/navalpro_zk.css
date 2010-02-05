@@ -1109,7 +1109,7 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     -moz-background-clip:border;
     -moz-background-inline-policy:continuous;
     -moz-background-origin:padding;
-    background: transparent url(/navalplanner-webapp/zkau/web/zkex/zul/img/layout/borderlayout-hm.png) repeat-x scroll 0 0;
+    background: transparent url(../img/borderlayout-hm.png) repeat-x scroll 0 0;
 }
 
 .allocation-criterion-selector span.z-dottree-ico,
