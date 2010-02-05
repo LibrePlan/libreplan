@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
@@ -54,6 +55,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
 @Component
@@ -304,6 +306,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     public Interval getViewInterval() {
         return viewInterval;
+    }
+
+    public ZoomLevel calculateInitialZoomLevel() {
+        Interval interval = getViewInterval();
+        return ZoomLevel.getDefaultZoomByDates(new LocalDate(interval
+                .getStart()), new LocalDate(interval.getFinish()));
     }
 
 }

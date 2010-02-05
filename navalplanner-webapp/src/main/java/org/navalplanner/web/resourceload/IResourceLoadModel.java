@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
 public interface IResourceLoadModel {
@@ -36,4 +37,5 @@ public interface IResourceLoadModel {
 
     Interval getViewInterval();
 
+    ZoomLevel calculateInitialZoomLevel();
 }

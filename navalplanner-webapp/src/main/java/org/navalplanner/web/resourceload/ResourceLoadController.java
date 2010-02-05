@@ -85,7 +85,8 @@ public class ResourceLoadController implements Composer {
 
     private ResourcesLoadPanel buildResourcesLoadPanel() {
         return new ResourcesLoadPanel(resourceLoadModel.getLoadTimeLines(),
-                new TimeTracker(resourceLoadModel.getViewInterval(), parent));
+                new TimeTracker(resourceLoadModel.getViewInterval(),
+                        resourceLoadModel.calculateInitialZoomLevel(), parent));
     }
 
     public void filterBy(Order order) {

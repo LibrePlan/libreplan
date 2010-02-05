@@ -22,6 +22,8 @@ package org.zkoss.ganttz.timetracker.zoom;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 /**
  * @author Francisco Javier Moran Rúa
  */
@@ -34,6 +36,11 @@ public enum ZoomLevel {
                 IDetailItemModificator secondLevel) {
             return new DetailOneTimeTrackerState(firstLevel, secondLevel);
         }
+
+        @Override
+        public boolean isSuitableFor(int days) {
+            return days > 950;
+        }
     },
     DETAIL_TWO(_("Quarter")) {
         @Override
@@ -41,6 +48,11 @@ public enum ZoomLevel {
                 IDetailItemModificator firstLevel,
                 IDetailItemModificator secondLevel) {
             return new DetailTwoTimeTrackerState(firstLevel, secondLevel);
+        }
+
+        @Override
+        public boolean isSuitableFor(int days) {
+            return days > 550;
         }
     },
     DETAIL_THREE(_("Month")) {
@@ -50,6 +62,11 @@ public enum ZoomLevel {
                 IDetailItemModificator secondLevel) {
             return new DetailThreeTimeTrackerState(firstLevel, secondLevel);
         }
+
+        @Override
+        public boolean isSuitableFor(int days) {
+            return days > 175;
+        }
     },
     DETAIL_FOUR(_("Week")) {
         @Override
@@ -58,6 +75,11 @@ public enum ZoomLevel {
                 IDetailItemModificator secondLevel) {
             return new DetailFourTimeTrackerState(firstLevel, secondLevel);
         }
+
+        @Override
+        public boolean isSuitableFor(int days) {
+            return days > 50;
+        }
     },
     DETAIL_FIVE(_("Day")) {
         @Override
@@ -65,6 +87,11 @@ public enum ZoomLevel {
                 IDetailItemModificator firstLevel,
                 IDetailItemModificator secondLevel) {
             return new DetailFiveTimeTrackerState(firstLevel, secondLevel);
+        }
+
+        @Override
+        public boolean isSuitableFor(int days) {
+            return true;
         }
     };
 
@@ -118,5 +145,20 @@ public enum ZoomLevel {
         return requiredZoomLevel;
 
     }
+
+    public static ZoomLevel getDefaultZoomByDates(LocalDate initDate,
+            LocalDate endDate) {
+        if (initDate != null && endDate != null) {
+            int days = Days.daysBetween(initDate, endDate).getDays();
+            for (ZoomLevel each : ZoomLevel.values()) {
+                if (each.isSuitableFor(days)) {
+                    return each;
+                }
+            }
+        }
+        return ZoomLevel.DETAIL_ONE;
+    }
+
+    protected abstract boolean isSuitableFor(int days);
 
 }

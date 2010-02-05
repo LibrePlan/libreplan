@@ -68,6 +68,11 @@ public class TimeTracker {
 
     private boolean registeredFirstTask = false;
 
+    public TimeTracker(Interval interval, ZoomLevel zoomLevel, Component parent) {
+        this(interval, zoomLevel, SeveralModificators.empty(),
+                SeveralModificators.empty(), parent);
+    }
+
     public TimeTracker(Interval interval, Component componentOnWhichGiveFeedback) {
         this(interval, SeveralModificators.empty(),
                 SeveralModificators.empty(), componentOnWhichGiveFeedback);
