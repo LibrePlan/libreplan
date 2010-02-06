@@ -548,6 +548,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void initEdit(Order order) {
         orderModel.initEdit(order);
         addEditWindowIfNeeded();
+        checkWritePermissions(order);
         orderAuthorizationController.initEdit(order);
         showEditWindow(_("Edit order"));
     }
@@ -583,6 +584,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             showOrderElementFilter();
             orderModel.prepareForCreate();
             showEditWindow(_("Create order"));
+            checkCreationPermissions();
             orderAuthorizationController.initCreate((Order) orderModel.getOrder());
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
@@ -895,4 +897,36 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    /**
+     * Checks the creation permissions of the current user and enables/disables
+     * the save buttons accordingly.
+     */
+    private void checkCreationPermissions() {
+        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            ((Button)editWindow.getFellowIfAny("save")).setDisabled(false);
+            ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(false);
+        }
+        else {
+            ((Button)editWindow.getFellowIfAny("save")).setDisabled(true);
+            ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(true);
+        }
+    }
+
+    /**
+     * Checks the write permissions of the current user on this Order and enables/disables
+     * the save buttons accordingly.
+     */
+    private void checkWritePermissions(Order order) {
+        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())) {
+            setEditionDisabled(false);
+        }
+        else {
+            setEditionDisabled(true);
+        }
+    }
+
+    private void setEditionDisabled(boolean disabled) {
+        ((Button)editWindow.getFellowIfAny("save")).setDisabled(disabled);
+        ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(disabled);
+    }
 }

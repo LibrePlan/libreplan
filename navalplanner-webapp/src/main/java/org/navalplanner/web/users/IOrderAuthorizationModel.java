@@ -71,6 +71,4 @@ public interface IOrderAuthorizationModel {
 
     void removeOrderAuthorization(OrderAuthorization orderAuthorization);
 
-    boolean userCanWrite(String loginName);
-
 }

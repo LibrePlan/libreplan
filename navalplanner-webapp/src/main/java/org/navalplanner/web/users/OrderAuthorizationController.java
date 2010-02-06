@@ -65,13 +65,11 @@ public class OrderAuthorizationController extends GenericForwardComposer{
 
     public void initCreate(Order order) {
         orderAuthorizationModel.initCreate(order);
-        checkCreationPermissions();
         Util.reloadBindings(window);
     }
 
     public void initEdit(Order order) {
         orderAuthorizationModel.initEdit(order);
-        checkWritePermissions();
         Util.reloadBindings(window);
     }
 
@@ -138,33 +136,4 @@ public class OrderAuthorizationController extends GenericForwardComposer{
         messagesForUser = component;
     }
 
-    /**
-     * Checks the creation permissions of the current user and enables/disables
-     * the save buttons accordingly.
-     */
-    private void checkCreationPermissions() {
-        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            ((Button)window.getFellowIfAny("save")).setDisabled(false);
-            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(false);
-        }
-        else {
-            ((Button)window.getFellowIfAny("save")).setDisabled(true);
-            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(true);
-        }
-    }
-
-    /**
-     * Checks the write permissions of the current user on this Order and enables/disables
-     * the save buttons accordingly.
-     */
-    private void checkWritePermissions() {
-        if(orderAuthorizationModel.userCanWrite(SecurityUtils.getSessionUserLoginName())) {
-            ((Button)window.getFellowIfAny("save")).setDisabled(false);
-            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(false);
-        }
-        else {
-            ((Button)window.getFellowIfAny("save")).setDisabled(true);
-            ((Button)window.getFellowIfAny("save_and_continue")).setDisabled(true);
-        }
-    }
 }

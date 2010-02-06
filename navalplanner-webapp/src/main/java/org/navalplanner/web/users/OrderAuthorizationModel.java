@@ -223,32 +223,6 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean userCanWrite(String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
-            return true;
-        }
-        else {
-            User user;
-            try {
-                user = userDAO.findByLoginName(loginName);
-            }
-            catch(InstanceNotFoundException e) {
-                return false;
-            }
-            List<OrderAuthorization> authorizations =
-                dao.listByOrderUserAndItsProfiles(order, user);
-            for(OrderAuthorization authorization : authorizations) {
-                if (authorization.getAuthorizationType() ==
-                        OrderAuthorizationType.WRITE_AUTHORIZATION) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     private ProfileOrderAuthorization createProfileOrderAuthorization(
             Order order, Profile profile) {
         ProfileOrderAuthorization orderAuthorization =
