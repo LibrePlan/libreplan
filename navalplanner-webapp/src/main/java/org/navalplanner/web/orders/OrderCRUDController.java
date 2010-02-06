@@ -379,16 +379,28 @@ public class OrderCRUDController extends GenericForwardComposer {
         setCurrentTab();
         final boolean couldSave = save();
         if (couldSave) {
-            selectTab(getCurrentTab().getId());
             Order order = (Order) orderModel.getOrder();
-            orderModel.initEdit(order);
-            if(order.getState() == OrderStatusEnum.STORED) {
-                //disable save buttons if state == STORED
-                setEditionDisabled(true);
+            if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
+                selectTab(getCurrentTab().getId());
+                orderModel.initEdit(order);
+                checkWritePermissions(order);
+                if(order.getState() == OrderStatusEnum.STORED) {
+                    //disable save buttons if state == STORED
+                    setEditionDisabled(true);
+                }
+                orderAuthorizationController.initEdit((Order) orderModel.getOrder());
+                initializeTabs();
+                showWindow(editWindow);
             }
-            orderAuthorizationController.initEdit((Order) orderModel.getOrder());
-            initializeTabs();
-            showWindow(editWindow);
+            else {
+                try {
+                    Messagebox.show(_("You don't have read access to this order"),
+                            _("Information"), Messagebox.OK, Messagebox.INFORMATION);
+                    goToList();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -536,9 +548,21 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Runnable onUp;
 
     public void goToEditForm(Order order) {
+        showOrderElementFilter();
+        planningControllerEntryPoints.goToOrderDetails(order);
+    }
+
+    public void initEdit(Order order) {
         if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-            showOrderElementFilter();
-            planningControllerEntryPoints.goToOrderDetails(order);
+            orderModel.initEdit(order);
+            addEditWindowIfNeeded();
+            checkWritePermissions(order);
+            if(order.getState() == OrderStatusEnum.STORED) {
+                //disable save buttons if state == STORED
+                setEditionDisabled(true);
+            }
+            orderAuthorizationController.initEdit(order);
+            showEditWindow(_("Edit order"));
         }
         else {
             try {
@@ -548,18 +572,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public void initEdit(Order order) {
-        orderModel.initEdit(order);
-        addEditWindowIfNeeded();
-        checkWritePermissions(order);
-        if(order.getState() == OrderStatusEnum.STORED) {
-            //disable save buttons if state == STORED
-            setEditionDisabled(true);
-        }
-        orderAuthorizationController.initEdit(order);
-        showEditWindow(_("Edit order"));
     }
 
     private void showEditWindow(String title) {
