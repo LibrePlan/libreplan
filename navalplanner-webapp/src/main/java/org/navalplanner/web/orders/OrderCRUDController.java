@@ -380,7 +380,12 @@ public class OrderCRUDController extends GenericForwardComposer {
         final boolean couldSave = save();
         if (couldSave) {
             selectTab(getCurrentTab().getId());
-            orderModel.initEdit((Order) orderModel.getOrder());
+            Order order = (Order) orderModel.getOrder();
+            orderModel.initEdit(order);
+            if(order.getState() == OrderStatusEnum.STORED) {
+                //disable save buttons if state == STORED
+                setEditionDisabled(true);
+            }
             orderAuthorizationController.initEdit((Order) orderModel.getOrder());
             initializeTabs();
             showWindow(editWindow);
@@ -549,6 +554,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.initEdit(order);
         addEditWindowIfNeeded();
         checkWritePermissions(order);
+        if(order.getState() == OrderStatusEnum.STORED) {
+            //disable save buttons if state == STORED
+            setEditionDisabled(true);
+        }
         orderAuthorizationController.initEdit(order);
         showEditWindow(_("Edit order"));
     }
@@ -928,5 +937,15 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void setEditionDisabled(boolean disabled) {
         ((Button)editWindow.getFellowIfAny("save")).setDisabled(disabled);
         ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(disabled);
+    }
+
+    public void onStatusChange() {
+        Order order = (Order)orderModel.getOrder();
+        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())
+                && order.getState() != OrderStatusEnum.STORED) {
+            //Enable the save buttons if the status changes from STORE to
+            //any other one
+            setEditionDisabled(false);
+        }
     }
 }
