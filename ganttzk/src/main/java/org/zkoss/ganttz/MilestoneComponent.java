@@ -33,4 +33,9 @@ public class MilestoneComponent extends TaskComponent {
         super(task, disabilityConfiguration);
     }
 
+    @Override
+    protected boolean canShowResourcesText() {
+        return false;
+    }
+
 }

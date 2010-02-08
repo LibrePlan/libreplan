@@ -203,14 +203,24 @@ public class TaskComponent extends Div implements AfterCompose {
 
             @Override
             public void reloadResourcesTextRequested() {
-                smartUpdate("resourcesText", getResourcesText());
+                if (canShowResourcesText()) {
+                    smartUpdate("resourcesText", getResourcesText());
+                }
                 String cssClass = isSubcontracted() ? "box subcontracted-task"
                         : "box standard-task";
                 response("setClass", new AuInvoke(TaskComponent.this,
                         "setClass", cssClass));
             }
+
         };
         this.task.addReloadListener(reloadResourcesTextRequested);
+    }
+
+    /**
+     * Note: This method is intended to be overridden.
+     */
+    protected boolean canShowResourcesText() {
+        return true;
     }
 
     protected String calculateClass() {

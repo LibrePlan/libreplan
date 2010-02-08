@@ -359,6 +359,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public String getResourcesText() {
+            if (taskElement.getOrderElement() == null) {
+                return "";
+            }
             try {
                 return transactionService
                         .runOnAnotherReadOnlyTransaction(new IOnTransaction<String>() {
