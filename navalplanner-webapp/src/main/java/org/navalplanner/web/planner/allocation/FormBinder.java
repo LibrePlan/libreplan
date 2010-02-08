@@ -539,8 +539,16 @@ public class FormBinder {
                 allHoursInputChange);
         allResourcesPerDay.addEventListener(Events.ON_CHANGE,
                 allResourcesPerDayChange);
-        sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
+        sumResourcesPerDayOrSetToZero();
         Util.reloadBindings(allocationsGrid);
+    }
+
+    private void sumResourcesPerDayOrSetToZero() {
+        if (allResourcesPerDay.isDisabled()) {
+            sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
+        } else {
+            allResourcesPerDay.setValue(BigDecimal.ZERO);
+        }
     }
 
     private void distributeHoursFromTotalToRows() {
