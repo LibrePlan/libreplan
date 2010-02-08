@@ -168,7 +168,7 @@ public class TaskElementDAOTest {
     }
 
     private TaskMilestone createValidTaskMilestone() {
-        TaskMilestone result = TaskMilestone.create();
+        TaskMilestone result = TaskMilestone.create(new Date());
         return result;
     }
 

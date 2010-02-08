@@ -35,8 +35,11 @@ import org.joda.time.Days;
  */
 public class TaskMilestone extends TaskElement {
 
-    public static TaskMilestone create() {
+    public static TaskMilestone create(Date initialDate) {
+        Validate.notNull(initialDate);
         TaskMilestone milestone = new TaskMilestone();
+        milestone.setStartDate(initialDate);
+        milestone.setEndDate(initialDate);
         return createWithoutTaskSource(milestone);
     }
 

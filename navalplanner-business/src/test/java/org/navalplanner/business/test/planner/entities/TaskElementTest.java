@@ -164,7 +164,7 @@ public class TaskElementTest {
 
     @Test
     public void MilestoneOrderElementIsNull() {
-        TaskMilestone milestone = TaskMilestone.create();
+        TaskMilestone milestone = TaskMilestone.create(new Date());
         assertThat(milestone.getOrderElement(), nullValue());
     }
 
