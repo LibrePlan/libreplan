@@ -161,8 +161,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     .runOnReadOnlyTransaction(new IOnTransaction<Long>() {
                         @Override
                         public Long execute() {
-                            taskDAO.reattach(taskElement);
-                            reattachAllResourcesForTask();
+                            stepsBeforePossibleReallocation();
                             Long result = setBeginDateInsideTransaction(beginDate);
                             fireTaskElementMoved(taskElement);
                             return result;
@@ -206,12 +205,21 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public void setLengthMilliseconds(long lengthMilliseconds) {
-            updateEndDate(lengthMilliseconds);
+        public void setLengthMilliseconds(final long lengthMilliseconds) {
+            transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                        @Override
+                        public Void execute() {
+                            stepsBeforePossibleReallocation();
+                            updateEndDate(lengthMilliseconds);
+                            return null;
+                        }
+                    });
+            fireTaskElementMoved(taskElement);
         }
 
         private void updateEndDate(long lengthMilliseconds) {
-            taskElement.setEndDate(new Date(getBeginDate().getTime()
+            taskElement.resizeTo(new Date(getBeginDate().getTime()
                     + lengthMilliseconds));
         }
 
@@ -532,6 +540,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public boolean isSubcontracted() {
             return taskElement.isSubcontracted();
+        }
+
+        private void stepsBeforePossibleReallocation() {
+            taskDAO.reattach(taskElement);
+            reattachAllResourcesForTask();
         }
 
     }

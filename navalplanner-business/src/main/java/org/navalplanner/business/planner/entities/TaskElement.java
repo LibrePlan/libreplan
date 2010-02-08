@@ -202,8 +202,7 @@ public abstract class TaskElement extends BaseEntity {
         if (newStartDate == null) {
             return;
         }
-        boolean sameDay = new LocalDate(newStartDate).equals(new LocalDate(
-                startDate));
+        final boolean sameDay = areSameDay(newStartDate, startDate);
         long durationMilliseconds = this.endDate.getTime()
                 - this.startDate.getTime();
         this.startDate = newStartDate;
@@ -211,6 +210,10 @@ public abstract class TaskElement extends BaseEntity {
         if (!sameDay) {
             moveAllocations();
         }
+    }
+
+    private boolean areSameDay(Date one, Date other) {
+        return new LocalDate(one).equals(new LocalDate(other));
     }
 
     protected abstract void moveAllocations();
@@ -222,6 +225,19 @@ public abstract class TaskElement extends BaseEntity {
     public void setEndDate(Date endDate) {
         this.endDate = endDate != null ? new Date(endDate.getTime()) : null;
     }
+
+    public void resizeTo(Date endDate) {
+        if (!canBeResized()) {
+            return;
+        }
+        boolean sameDay = areSameDay(this.endDate, endDate);
+        setEndDate(endDate);
+        if (!sameDay) {
+            moveAllocations();
+        }
+    }
+
+    protected abstract boolean canBeResized();
 
     public LocalDate getDeadline() {
         return deadline;

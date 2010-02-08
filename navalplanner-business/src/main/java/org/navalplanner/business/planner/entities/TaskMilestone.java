@@ -114,4 +114,9 @@ public class TaskMilestone extends TaskElement {
     protected void initializeEndDate() {
         // do nothing
     }
+
+    @Override
+    protected boolean canBeResized() {
+        return false;
+    }
 }

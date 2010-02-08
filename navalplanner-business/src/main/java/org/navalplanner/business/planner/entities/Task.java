@@ -478,4 +478,9 @@ public class Task extends TaskElement {
         return !getSatisfiedResourceAllocations().isEmpty();
     }
 
+    @Override
+    protected boolean canBeResized() {
+        return calculatedValue != CalculatedValue.END_DATE;
+    }
+
 }
