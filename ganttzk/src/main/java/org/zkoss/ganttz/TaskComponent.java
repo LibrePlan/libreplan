@@ -325,6 +325,7 @@ public class TaskComponent extends Div implements AfterCompose {
     void doUpdateSize(String size) {
         int pixels = stripPx(size);
         this.task.setLengthMilliseconds(getMapper().toMilliseconds(pixels));
+        updateWidth();
     }
 
     void doAddDependency(String destinyTaskId) {
@@ -399,9 +400,7 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         setLeft("0");
         setLeft(getMapper().toPixels(this.task.getBeginDate()) + "px");
-        setWidth("0");
-        setWidth(getMapper().toPixels(this.task.getLengthMilliseconds())
-                + "px");
+        updateWidth();
         smartUpdate("name", this.task.getName());
         DependencyList dependencyList = getDependencyList();
         if (dependencyList != null) {
@@ -409,6 +408,12 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         updateDeadline();
         updateCompletionIfPossible();
+    }
+
+    private void updateWidth() {
+        setWidth("0");
+        setWidth(getMapper().toPixels(this.task.getLengthMilliseconds())
+                + "px");
     }
 
     private void updateDeadline() {
