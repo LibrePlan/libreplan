@@ -206,10 +206,15 @@ public class TaskComponent extends Div implements AfterCompose {
                 if (canShowResourcesText()) {
                     smartUpdate("resourcesText", getResourcesText());
                 }
-                String cssClass = isSubcontracted() ? "box subcontracted-task"
-                        : "box standard-task";
+                String cssClass = calculateCssClass();
                 response("setClass", new AuInvoke(TaskComponent.this,
                         "setClass", cssClass));
+            }
+
+            private String calculateCssClass() {
+                return (isSubcontracted() ? "box subcontracted-task"
+                        : "box standard-task")
+                        + (isResizingTasksEnabled() ? " yui-resize" : "");
             }
 
         };
