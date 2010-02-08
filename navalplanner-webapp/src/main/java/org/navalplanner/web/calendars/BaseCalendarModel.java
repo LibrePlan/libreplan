@@ -152,8 +152,16 @@ public class BaseCalendarModel implements IBaseCalendarModel {
                 forceLoadBaseCalendar(calendarData.getParent());
             }
         }
-        baseCalendar.getExceptions().size();
+        loadingExceptionsWithTheirTypes(baseCalendar);
         baseCalendar.getCalendarAvailabilities().size();
+    }
+
+    private static void loadingExceptionsWithTheirTypes(
+            BaseCalendar baseCalendar) {
+        Set<CalendarException> exceptions = baseCalendar.getExceptions();
+        for (CalendarException each : exceptions) {
+            each.getType().getName();
+        }
     }
 
     private void forceLoadExceptionTypes() {
