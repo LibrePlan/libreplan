@@ -809,13 +809,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void forceLoadOfWorkingHours(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            taskElement.getTaskSource().getTotalHours();
-            OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
-                orderElement.getWorkHours();
-            }
-            if (!taskElement.isLeaf()) {
-                forceLoadOfWorkingHours(taskElement.getChildren());
+            if (taskElement.getTaskSource() != null) {
+                taskElement.getTaskSource().getTotalHours();
+                OrderElement orderElement = taskElement.getOrderElement();
+                if (orderElement != null) {
+                    orderElement.getWorkHours();
+                }
+                if (!taskElement.isLeaf()) {
+                    forceLoadOfWorkingHours(taskElement.getChildren());
+                }
             }
         }
     }
