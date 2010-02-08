@@ -164,7 +164,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         TaskElement earliest = Collections.min(configuration.getData(),
                 TaskElement
                 .getByStartDateComparator());
-        TaskElement latest = Collections.min(configuration.getData(),
+        TaskElement latest = Collections.max(configuration.getData(),
                 TaskElement.getByEndDateComparator());
 
         LocalDate startDate = LocalDate.fromDateFields(earliest
