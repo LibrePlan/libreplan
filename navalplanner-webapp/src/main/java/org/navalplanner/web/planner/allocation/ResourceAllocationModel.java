@@ -218,7 +218,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void reassociateResourcesWithSession() {
-        planningState.reassociateResourcesWithSession(resourceDAO);
+        planningState.reassociateResourcesWithSession();
     }
 
     private void removeDeletedAllocations() {
@@ -238,7 +238,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         this.task = task;
         this.currentStartDate = task.getStartDate();
         this.planningState = planningState;
-        planningState.reassociateResourcesWithSession(resourceDAO);
+        planningState.reassociateResourcesWithSession();
         taskElementDAO.reattach(this.task);
         reattachTaskSource();
         loadCriterionsOfGenericAllocations();

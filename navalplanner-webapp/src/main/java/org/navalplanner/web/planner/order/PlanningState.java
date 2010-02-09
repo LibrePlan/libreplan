@@ -50,12 +50,15 @@ public class PlanningState {
 
     private final ICriterionDAO criterionDAO;
 
+    private final IResourceDAO resourceDAO;
+
     public PlanningState(TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources,
-            ICriterionDAO criterionDAO) {
+            ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
         this.rootTask = rootTask;
         this.criterionDAO = criterionDAO;
+        this.resourceDAO = resourceDAO;
         this.initial = new ArrayList<TaskElement>(initialState);
         this.toSave = new HashSet<TaskElement>(initialState);
         this.toRemove = new HashSet<TaskElement>();
@@ -70,7 +73,7 @@ public class PlanningState {
         return new ArrayList<TaskElement>(initial);
     }
 
-    public void reassociateResourcesWithSession(IResourceDAO resourceDAO) {
+    public void reassociateResourcesWithSession() {
         for (Resource resource : resources) {
             resourceDAO.reattach(resource);
         }

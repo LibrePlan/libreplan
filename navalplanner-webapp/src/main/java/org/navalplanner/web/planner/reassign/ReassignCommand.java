@@ -123,7 +123,7 @@ public class ReassignCommand implements IReassignCommand {
     private void doReassignation(IContext<TaskElement> context,
             ReassignConfiguration configuration) {
         Validate.notNull(configuration);
-        planningState.reassociateResourcesWithSession(resourceDAO);
+        planningState.reassociateResourcesWithSession();
         List<Task> taskToReassign = configuration.filterForReassignment(context
                 .getTasksOrderedByStartDate());
         reassign(reattach(withEntities(context.getMapper(), taskToReassign)));
