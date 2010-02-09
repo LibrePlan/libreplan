@@ -262,14 +262,20 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .byTask(sortedByStartDate);
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
         for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
-            LoadTimeLine timeLine = buildTimeLine(resource, entry.getKey()
-                    .getName(),
+            Task task = entry.getKey();
+            LoadTimeLine timeLine = buildTimeLine(resource, getTaskName(task),
                     entry.getValue());
             if (!timeLine.isEmpty()) {
                 secondLevel.add(timeLine);
             }
         }
         return secondLevel;
+    }
+
+    private String getTaskName(Task task) {
+        TaskElement topMost = task.getTopMost();
+        String prefix = topMost != task ? (topMost.getName() + " :: ") : "";
+        return prefix + task.getName();
     }
 
     private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,

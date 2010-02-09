@@ -398,4 +398,12 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public TaskElement getTopMost() {
+        TaskElement result = this;
+        while (result.getParent() != null) {
+            result = result.getParent();
+        }
+        return result;
+    }
+
 }
