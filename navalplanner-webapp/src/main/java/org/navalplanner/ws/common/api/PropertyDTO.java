@@ -18,19 +18,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.common.exceptions;
+package org.navalplanner.ws.common.api;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * An exception representing that a "createUnvalidated" method in an entity
- * class could not create an instance.
+ * DTO for modeling a property, containing a name and a value.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@SuppressWarnings("serial")
-public class CreateUnvalidatedException extends Exception {
+public class PropertyDTO {
 
-    public CreateUnvalidatedException(String message) {
-        super(message);
+    @XmlAttribute
+    public String name;
+
+    @XmlAttribute
+    public String value;
+
+    public PropertyDTO() {}
+
+    public PropertyDTO(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+
+        printWriter.print(name + " = " + value);
+        printWriter.close();
+
+        return stringWriter.toString();
+
     }
 
 }

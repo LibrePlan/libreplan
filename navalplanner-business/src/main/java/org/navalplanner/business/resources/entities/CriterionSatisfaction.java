@@ -20,19 +20,15 @@
 
 package org.navalplanner.business.resources.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.util.Comparator;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -75,44 +71,25 @@ public class CriterionSatisfaction extends IntegrationEntity {
 
     }
 
+    /**
+     * @throws InstanceNotFoundException if criterion type or criterion does
+     *         not exist
+     */
     public static CriterionSatisfaction createUnvalidated(
         String code, String criterionTypeName, String criterionName,
         Resource resource, Date startDate, Date finishDate)
-        throws CreateUnvalidatedException {
+        throws InstanceNotFoundException {
 
         ICriterionTypeDAO criterionTypeDAO =
             Registry.getCriterionTypeDAO();
 
         /* Get CriterionType. */
-        if (StringUtils.isBlank(criterionTypeName)) {
-            throw new CreateUnvalidatedException(
-                _("criterion type name not specified"));
-        }
-
-        CriterionType criterionType = null;
-        try {
-            criterionType = criterionTypeDAO.findUniqueByName(
-                criterionTypeName);
-        } catch (InstanceNotFoundException e) {
-            throw new CreateUnvalidatedException(
-                _("{0}: criterion type does not exist", criterionTypeName));
-        }
+        CriterionType criterionType = criterionTypeDAO.findUniqueByName(
+            criterionTypeName);
 
         /* Get Criterion. */
-        if (StringUtils.isBlank(criterionName)) {
-            throw new CreateUnvalidatedException(
-                _("criterion name not specified"));
-        }
-
-        Criterion criterion = null;
-        try {
-            criterion = criterionType.getCriterion(
-                criterionName);
-        } catch (InstanceNotFoundException e) {
-            throw new CreateUnvalidatedException(
-                 _("{0}: criterion is not of type {1}", criterionName,
-                     criterionTypeName));
-        }
+        Criterion criterion = criterionType.getCriterion(
+            criterionName);
 
         /* Create instance of CriterionSatisfaction. */
         CriterionSatisfaction criterionSatisfaction =

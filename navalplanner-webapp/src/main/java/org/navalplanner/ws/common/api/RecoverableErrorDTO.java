@@ -22,33 +22,39 @@ package org.navalplanner.ws.common.api;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * DTO for modeling an internal error.
+ * DTO for modeling a recoverable error.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-@XmlRootElement(name="internal-error")
-public class InternalErrorDTO {
+public class RecoverableErrorDTO {
 
+    public final static String ERROR_CODE_ATTRIBUTE_NAME = "error-code";
     public final static String MESSAGE_ATTRIBUTE_NAME = "message";
-    public final static String STACK_TRACE_ATTRIBUTE_NAME = "stack-trace";
+
+    @XmlAttribute(name=ERROR_CODE_ATTRIBUTE_NAME)
+    public int errorCode;
 
     @XmlAttribute(name=MESSAGE_ATTRIBUTE_NAME)
     public String message;
 
-    @XmlElement(name=STACK_TRACE_ATTRIBUTE_NAME)
-    public String stackTrace;
+    @XmlElement(name="property")
+    public List<PropertyDTO> properties;
 
-    public InternalErrorDTO() {}
+    public RecoverableErrorDTO() {}
 
-    public InternalErrorDTO(String message, String stackTrace) {
+    public RecoverableErrorDTO(int errorCode, String message,
+        List<PropertyDTO> properties) {
+
+        this.errorCode = errorCode;
         this.message = message;
-        this.stackTrace = stackTrace;
+        this.properties = properties;
+
     }
 
     @Override
@@ -57,8 +63,14 @@ public class InternalErrorDTO {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
 
-        printWriter.println(MESSAGE_ATTRIBUTE_NAME + " = " + message);
-        printWriter.println(STACK_TRACE_ATTRIBUTE_NAME + " = " + stackTrace);
+        printWriter.println(
+            ERROR_CODE_ATTRIBUTE_NAME + " = " + errorCode + " - " +
+            MESSAGE_ATTRIBUTE_NAME +  " = " + message);
+
+        for (PropertyDTO p : properties) {
+            printWriter.println(p);
+        }
+
         printWriter.close();
 
         return stringWriter.toString();

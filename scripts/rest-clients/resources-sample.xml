@@ -24,35 +24,51 @@
         </criterion-satisfaction-list>
     </machine>
 
-    <!--  Another machine is being imported with the same code. -->
-    <machine code="m1" name="m3-name" description="m3-desc"/>
-
-    <!-- OK or not OK depending on the existence of "TestCalendar". -->
-    <machine code="m4" name="m4-name" description="m4-desc"
-        calendar-name="TestCalendar"/>
-
     <!-- [It assumes existence of "TestCostCategory"] OK. -->
-    <machine code="m5" name="m5-name" description="m5-desc">
+    <machine code="m3" name="m3-name" description="m3-desc">
         <resources-cost-category-assignment-list>
             <resources-cost-category-assignment
-                code="m5-a1"
+                code="m3-a1"
                 cost-category-name="TestCostCategory"
                 start-date="2001-01-01"/>
             <resources-cost-category-assignment
-                code="m5-a2"
+                code="m3-a2"
                 cost-category-name="TestCostCategory"
                 start-date="2000-01-01"
                 end-date="2000-04-01"/>
         </resources-cost-category-assignment-list>
     </machine>
 
-    <!-- [It assumes existence of "TestCostCategory"] Missing start date. -->
+    <!-- [It assumes existence of "TestCostCategory"] Repeated cost assignment
+         code (used by another machine). -->
+    <machine code="m4" name="m4-name" description="m4-desc">
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                code="m3-a1"
+                cost-category-name="TestCostCategory"
+                start-date="2001-01-01"/>
+        </resources-cost-category-assignment-list>
+    </machine>
+
+    <!-- OK or not OK depending on the existence of "TestCalendar". -->
+    <machine code="m5" name="m5-name" description="m5-desc"
+        calendar-name="TestCalendar"/>
+
+    <!-- [It assumes existence of "TestCostCategory"] Missing start date and
+         code, and repeated code in cost assignments. -->
     <machine code="m6" name="m6-name" description="m6-desc">
         <resources-cost-category-assignment-list>
             <resources-cost-category-assignment
                 code="m6-a1"
                 cost-category-name="TestCostCategory"
                 end-date="2000-01-01"/>
+            <resources-cost-category-assignment
+                cost-category-name="TestCostCategory"
+                start-date="2001-01-01"/>
+            <resources-cost-category-assignment
+                code="m6-a1"
+                cost-category-name="TestCostCategory"
+                start-date="2000-01-01" end-date="2000-02-01"/>
         </resources-cost-category-assignment-list>
     </machine>
 
@@ -106,7 +122,8 @@
         </criterion-satisfaction-list>
     </worker>
 
-    <!--  Missing start date in criterion satisfaction. -->
+    <!--  Missing start date and code, and repeated code in criterion
+          satisfactions. -->
     <worker code="w2" first-name="w2-firstName" surname="w2-surname" nif="w2-nif">
         <criterion-satisfaction-list>
             <criterion-satisfaction
@@ -114,6 +131,15 @@
                 criterion-type-name="LEAVE"
                 criterion-name="paternityLeave"
                 end-date="2009-12-25"/>
+            <criterion-satisfaction
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2009-12-25"/>
+             <criterion-satisfaction
+                code="w2-s1"
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2000-01-01" end="2000-02-01"/>
         </criterion-satisfaction-list>
     </worker>
 
@@ -290,8 +316,22 @@
         </criterion-satisfaction-list>
     </worker>
 
-    <!-- Another worker is being imported with the same first name, surname,
-         and nif. -->
+    <!-- There is another worker with the same first name, surname, and nif. -->
     <worker code="w15" first-name="w1-firstName" surname="w1-surname" nif="w1-nif"/>
+
+    <!-- Repeated criterion satisfaction code (used by another worker). -->
+    <worker code="w16" first-name="w16-firstName" surname="w16-surname" nif="w16-nif">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                code="w1-s1"
+                criterion-type-name="WORK_RELATIONSHIP"
+                criterion-name="hiredResourceWorkingRelationship"
+                start-date="2009-01-01"
+                end-date=""/>
+        </criterion-satisfaction-list>
+    </worker>
+
+    <!-- Missing code. -->
+    <worker first-name="w17-firstName" surname="w17-surname" nif="w17-nif"/>
 
 </resource-list>

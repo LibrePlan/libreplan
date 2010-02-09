@@ -22,7 +22,7 @@ package org.navalplanner.business.resources.daos;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Machine;
 
@@ -31,8 +31,9 @@ import org.navalplanner.business.resources.entities.Machine;
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface IMachineDAO extends IGenericDAO<Machine, Long> {
+public interface IMachineDAO extends IIntegrationEntityDAO<Machine> {
 
     /**
      * Returns machines which name/NIF partially matches with name

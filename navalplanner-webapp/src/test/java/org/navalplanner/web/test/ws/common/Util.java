@@ -21,6 +21,7 @@
 package org.navalplanner.web.test.ws.common;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -90,6 +91,8 @@ public class Util {
         assertTrue(
             instanceConstraintViolationsList.toString(),
             instanceConstraintViolationsList.size() == 1);
+        assertNoRecoverableError(instanceConstraintViolationsList.get(0));
+        assertNoInternalError(instanceConstraintViolationsList.get(0));
         assertNotNull(instanceConstraintViolationsList.get(0).
             constraintViolations);
         assertTrue(
@@ -115,11 +118,53 @@ public class Util {
 
          for (InstanceConstraintViolationsDTO i :
              instanceConstraintViolationsList) {
+             assertNoRecoverableError(i);
+             assertNoInternalError(i);
              assertNotNull(i.constraintViolations);
              assertTrue(
                  i.constraintViolations.toString(),
                  i.constraintViolations.size() == 1);
          }
+
+    }
+
+    public static void assertOneRecoverableError(
+        InstanceConstraintViolationsListDTO
+        instanceConstraintViolationsListDTO) {
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
+            instanceConstraintViolationsListDTO.
+                instanceConstraintViolationsList;
+
+        assertNotNull(instanceConstraintViolationsListDTO.
+            instanceConstraintViolationsList);
+        assertTrue(
+            instanceConstraintViolationsList.toString(),
+            instanceConstraintViolationsList.size() == 1);
+        assertNoConstraintViolations(instanceConstraintViolationsList.get(0));
+        assertNoInternalError(instanceConstraintViolationsList.get(0));
+        assertNotNull(instanceConstraintViolationsList.get(0).recoverableError);
+
+    }
+
+    private static void assertNoConstraintViolations(
+        InstanceConstraintViolationsDTO i) {
+
+        assertNull(i.toString(), i.constraintViolations);
+
+    }
+
+    private static void assertNoRecoverableError(
+        InstanceConstraintViolationsDTO i) {
+
+        assertNull(i.toString(), i.recoverableError);
+
+    }
+
+    private static void assertNoInternalError(
+        InstanceConstraintViolationsDTO i) {
+
+        assertNull(i.toString(), i.internalError);
 
     }
 

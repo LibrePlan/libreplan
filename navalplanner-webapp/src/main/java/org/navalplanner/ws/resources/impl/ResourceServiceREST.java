@@ -20,35 +20,22 @@
 
 package org.navalplanner.ws.resources.impl;
 
-import static org.navalplanner.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
-import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
-import org.navalplanner.ws.common.impl.Util;
+import org.navalplanner.ws.common.impl.GenericRESTService;
 import org.navalplanner.ws.resources.api.IResourceService;
-import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourceListDTO;
-import org.navalplanner.ws.resources.api.WorkerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST-based implementation of <code>IResourceService</code>.
@@ -58,7 +45,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Path("/resources/")
 @Produces("application/xml")
 @Service("resourceServiceREST")
-public class ResourceServiceREST implements IResourceService {
+public class ResourceServiceREST
+    extends GenericRESTService<Resource, ResourceDTO>
+    implements IResourceService {
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -66,117 +55,32 @@ public class ResourceServiceREST implements IResourceService {
     @Override
     @POST
     @Consumes("application/xml")
-    @Transactional
     public InstanceConstraintViolationsListDTO addResources(
         ResourceListDTO resources) {
 
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
-            new ArrayList<InstanceConstraintViolationsDTO>();
-        int instanceNumber = 1;
-        Set<String> resourceUserProvidedIds = new HashSet<String>();
-
-        /* Process resources. */
-        for (ResourceDTO resourceDTO : resources.resources) {
-
-            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO =
-                null;
-            Resource resource = null;
-
-            /* Convert DTO to entity. */
-            try {
-                resource = ResourceConverter.toEntity(resourceDTO);
-            } catch (CreateUnvalidatedException e) {
-                instanceConstraintViolationsDTO =
-                    InstanceConstraintViolationsDTO.create(
-                        Util.generateInstanceConstraintViolationsDTOId(
-                            (long) instanceNumber, resourceDTO),
-                        e.getMessage());
-            }
-
-            /* Validate resource. */
-            if (resource != null) {
-                try {
-
-                    if (resourceUserProvidedIds.contains(
-                        getUserProvidedId(resourceDTO).toLowerCase())) {
-
-                        instanceConstraintViolationsDTO =
-                            InstanceConstraintViolationsDTO.create(
-                                Util.generateInstanceConstraintViolationsDTOId(
-                                    (long) instanceNumber, resourceDTO),
-                                getDuplicatedImportedResourceErrorMessage(
-                                    resourceDTO));
-
-                    } else {
-
-                        /*
-                         * See CriterionServiceREST::addCriterionTypes for a
-                         * justification of the explicit use of
-                         * BaseEntity::validate.
-                         *
-                         */
-                        resource.validate();
-                        resourceDAO.save(resource);
-                        resourceUserProvidedIds.add(
-                            getUserProvidedId(resourceDTO).toLowerCase());
-
-                    }
-
-                } catch (ValidationException e) {
-                    instanceConstraintViolationsDTO =
-                        ConstraintViolationConverter.toDTO(
-                            Util.generateInstanceConstraintViolationsDTOId(
-                                (long) instanceNumber, resourceDTO), e);
-                }
-            }
-
-            /* Add constraint violations (if any). */
-            if (instanceConstraintViolationsDTO != null) {
-                instanceConstraintViolationsList.add(
-                    instanceConstraintViolationsDTO);
-            }
-
-            instanceNumber++;
-
-        }
-
-        return new InstanceConstraintViolationsListDTO(
-                instanceConstraintViolationsList);
+        return save(resources.resources);
 
     }
 
-    private String getUserProvidedId(ResourceDTO resourceDTO) {
-
-        if (resourceDTO instanceof MachineDTO) {
-            MachineDTO m = (MachineDTO) resourceDTO;
-            return "machine" + '-' + StringUtils.trim(m.code);
-        } else if (resourceDTO instanceof WorkerDTO) {
-            WorkerDTO w = (WorkerDTO) resourceDTO;
-            return "worker" + '-' + StringUtils.trim(w.firstName) +
-                '-' + StringUtils.trim(w.surname) + '-' +
-                StringUtils.trim(w.nif);
-        } else {
-            throw new RuntimeException(
-                _("Service does not manage resource of type: {0}",
-                    resourceDTO.getClass().getName()));
-        }
-
+    @Override
+    protected Resource toEntity(ResourceDTO entityDTO) {
+        return ResourceConverter.toEntity(entityDTO);
     }
 
-    private String getDuplicatedImportedResourceErrorMessage(
-        ResourceDTO resourceDTO) {
+    @Override
+    protected ResourceDTO toDTO(Resource entity) {
+       return null; // This service does not provide finder methods.
+    }
 
-        if (resourceDTO instanceof MachineDTO) {
-            return _("code is used by another machine being imported");
-        } else if (resourceDTO instanceof WorkerDTO) {
-            return _("first name, surname, and nif are used by another " +
-                "worker being imported");
-        } else {
-            throw new RuntimeException(
-                 _("Service does not manage resource of type: {0}",
-                    resourceDTO.getClass().getName()));
-        }
+    @Override
+    protected IIntegrationEntityDAO<Resource> getIntegrationEntityDAO() {
+        return resourceDAO;
+    }
 
+    @Override
+    protected void updateEntity(Resource entity, ResourceDTO entityDTO)
+        throws ValidationException {
+        // FIXME: updated functionality not implemented yet.
     }
 
 }

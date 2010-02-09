@@ -22,9 +22,8 @@ package org.navalplanner.business.resources.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Machine;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -33,15 +32,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+
 /**
  * Hibernate DAO for the <code>Machine</code> entity.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class MachineDAO extends GenericDAOHibernate<Machine, Long>
+public class MachineDAO extends IntegrationEntityDAO<Machine>
     implements IMachineDAO {
 
     @Override
@@ -61,14 +62,9 @@ public class MachineDAO extends GenericDAOHibernate<Machine, Long>
     @Override
     public Machine findUniqueByCode(String code)
             throws InstanceNotFoundException {
-        Criteria criteria = getSession().createCriteria(Machine.class);
-        criteria.add(Restrictions.eq("code", code).ignoreCase());
 
-        List<Machine> list = criteria.list();
-        if (list.size() != 1) {
-            throw new InstanceNotFoundException(code, Machine.class.getName());
-        }
-        return list.get(0);
+        return findExistingEntityByCode(code);
+
     }
 
     @Override

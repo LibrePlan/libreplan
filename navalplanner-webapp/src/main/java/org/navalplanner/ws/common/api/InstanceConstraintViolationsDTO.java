@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  * DTO for modeling the list of constraint violations on a given instance.
@@ -57,9 +56,11 @@ public class InstanceConstraintViolationsDTO {
     @XmlAttribute(name=ENTITY_TYPE_ATTRIBUTE_NAME)
     public String entityType;
 
-    @XmlElementWrapper(name="constraint-violations")
     @XmlElement(name="constraint-violation")
     public List<ConstraintViolationDTO> constraintViolations;
+
+    @XmlElement(name="recoverable-error")
+    public RecoverableErrorDTO recoverableError;
 
     @XmlElement(name="internal-error")
     public InternalErrorDTO internalError;
@@ -90,6 +91,15 @@ public class InstanceConstraintViolationsDTO {
 
         this(instanceId);
         this.constraintViolations = constraintViolations;
+
+    }
+
+    public InstanceConstraintViolationsDTO(
+        InstanceConstraintViolationsDTOId instanceId,
+        RecoverableErrorDTO recoverableError) {
+
+        this(instanceId);
+        this.recoverableError = recoverableError;
 
     }
 
@@ -144,8 +154,23 @@ public class InstanceConstraintViolationsDTO {
             ENTITY_TYPE_ATTRIBUTE_NAME + " = " + entityType +
             " **");
 
-        for (ConstraintViolationDTO i : constraintViolations) {
-            printWriter.println(i);
+        if (internalError != null) {
+
+            printWriter.println("Internal error:");
+            printWriter.println(internalError);
+
+        } else if (constraintViolations != null) {
+
+            printWriter.println("Constraint violations:");
+            for (ConstraintViolationDTO i : constraintViolations) {
+                printWriter.println(i);
+            }
+
+        } else if (recoverableError != null) {
+
+            printWriter.println("Recoverable error:");
+            printWriter.println(recoverableError);
+
         }
 
         printWriter.close();

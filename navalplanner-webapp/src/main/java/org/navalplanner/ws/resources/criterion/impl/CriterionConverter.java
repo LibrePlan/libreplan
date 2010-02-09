@@ -111,7 +111,7 @@ public final class CriterionConverter {
     }
 
     public final static void updateCriterionType(CriterionType criterionType,
-        CriterionTypeDTO criterionTypeDTO) throws ValidationException {
+        CriterionTypeDTO criterionTypeDTO) {
 
         /* 1: Get criterion wrappers with parent code. */
         Set<CriterionDTOWithParentCode> criterionWrappers =

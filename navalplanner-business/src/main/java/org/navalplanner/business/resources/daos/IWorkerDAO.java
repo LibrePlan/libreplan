@@ -23,7 +23,7 @@ package org.navalplanner.business.resources.daos;
 import java.util.Date;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerDTO;
 import org.navalplanner.business.resources.entities.Worker;
@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-public interface IWorkerDAO extends IGenericDAO<Worker, Long> {
+public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
 
     /**
      * Returns workers which name/NIF partially matches with name

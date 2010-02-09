@@ -57,7 +57,8 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
      * It saves (inserts or updates) a list of entities. Each entity is
      * saved in a separate transaction.
      */
-    protected InstanceConstraintViolationsListDTO save(List<DTO> entityDTOs) {
+    protected InstanceConstraintViolationsListDTO save(
+        List<? extends DTO> entityDTOs) {
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             new ArrayList<InstanceConstraintViolationsDTO>();
@@ -71,6 +72,11 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
             try {
                 insertOrUpdate(entityDTO);
             } catch (ValidationException e) {
+                instanceConstraintViolationsDTO =
+                    ConstraintViolationConverter.toDTO(
+                        Util.generateInstanceConstraintViolationsDTOId(
+                            numItem, entityDTO), e);
+            } catch (RecoverableErrorException e) {
                 instanceConstraintViolationsDTO =
                     ConstraintViolationConverter.toDTO(
                         Util.generateInstanceConstraintViolationsDTOId(
@@ -100,9 +106,15 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
      * It saves (inserts or updates) an entity DTO by using a new transaction.
      *
      * @throws ValidationException if validations are not passed
+     * @throws RecoverableErrorException if a recoverable error occurs
      */
     protected void insertOrUpdate(final DTO entityDTO)
-        throws ValidationException {
+        throws ValidationException, RecoverableErrorException {
+        /*
+         * NOTE: ValidationException and RecoverableErrorException are runtime
+         * exceptions. In consequence, if any of them occurs, transaction is
+         * automatically rolled back.
+         */
 
         IOnTransaction<Void> save = new IOnTransaction<Void>() {
 
@@ -122,13 +134,22 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
                 }
 
                 /*
-                 * Save the entity (insert or update). If validations are
-                 * not passed (they are automatically executed by
-                 * GenericDAO::save), the transaction is rolled back since
-                 * ValidationException is a runtime exception, automatically
-                 * discarding any change made to the entity.
+                 * Save the entity (insert or update).
+                 *
+                 * IGenericDAO::save first reattaches the object into the
+                 * underlying ORM session, and then calls BaseEntity::validate.
+                 * Despite this, we must call BaseEntity::validate before
+                 * IGenericDAO::save to avoid an invalid object to enter in
+                 * the underlying ORM session. Otherwise, the ORM could try
+                 * to flush the ORM session (with an invalid object violating
+                 * database-level restrictions) when executing
+                 * IGenericDAO::save, since this method calls
+                 * BaseEntity::validate (after reattaching the object), which
+                 * probably will cause queries to be launched to the database
+                 * (which may cause the flushing).
                  *
                  */
+                entity.validate();
                 entityDAO.save(entity);
 
                 return null;
@@ -143,8 +164,14 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
 
     /**
      * It creates an entity from a DTO.
+     *
+     * @throws ValidationException if it is not possible to create the entity
+     *         because some very important constraint is violated
+     * @throws RecoverableErrorException if a recoverable
+     * 	       error occurs
      */
-    protected abstract E toEntity(DTO entityDTO);
+    protected abstract E toEntity(DTO entityDTO)
+        throws ValidationException, RecoverableErrorException;
 
     /**
      * It creates a DTO from an entity.
@@ -160,10 +187,12 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
     /**
      * It must update the entity from the DTO.
      *
-     * @throws ValidationException if updating is not possible
+     * @throws ValidationException if updating is not possible because some
+     *         very important constraint is violated
+     * @throws RecoverableErrorException if a recoverable error occurs
      */
     protected abstract void updateEntity(E entity, DTO entityDTO)
-        throws ValidationException;
+        throws ValidationException, RecoverableErrorException;
 
     /**
      * It returns a list of DTOs from a list of entities.

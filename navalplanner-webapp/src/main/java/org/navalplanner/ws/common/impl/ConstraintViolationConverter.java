@@ -22,6 +22,7 @@ package org.navalplanner.ws.common.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -29,6 +30,8 @@ import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTOId;
 import org.navalplanner.ws.common.api.InternalErrorDTO;
+import org.navalplanner.ws.common.api.PropertyDTO;
+import org.navalplanner.ws.common.api.RecoverableErrorDTO;
 
 /**
  * Converter for constraint violations.
@@ -112,6 +115,29 @@ public class ConstraintViolationConverter {
 
         return new InstanceConstraintViolationsDTO(instanceId,
             constraintViolationDTOs);
+
+    }
+
+    public final static InstanceConstraintViolationsDTO toDTO(
+        InstanceConstraintViolationsDTOId instanceId,
+        RecoverableErrorException recoverableErrorException) {
+
+        List<PropertyDTO> properties = new ArrayList<PropertyDTO>();
+
+        for (Map.Entry<String, String> p :
+            recoverableErrorException.getProperties().entrySet()) {
+
+            properties.add(new PropertyDTO(p.getKey(), p.getValue()));
+
+        }
+
+        RecoverableErrorDTO recoverableErrorDTO = new RecoverableErrorDTO(
+            recoverableErrorException.getErrorCode().ordinal() + 1,
+            recoverableErrorException.getMessage(),
+            properties);
+
+        return new InstanceConstraintViolationsDTO(instanceId,
+            recoverableErrorDTO);
 
     }
 

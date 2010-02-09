@@ -20,15 +20,12 @@
 
 package org.navalplanner.business.costcategories.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -56,25 +53,16 @@ public class ResourcesCostCategoryAssignment extends IntegrationEntity {
         return (ResourcesCostCategoryAssignment) create(new ResourcesCostCategoryAssignment());
     }
 
+    /**
+     * @throws InstanceNotFoundException if cost category does not exist
+     */
     public static ResourcesCostCategoryAssignment createUnvalidated(
         String code, String costCategoryName, Resource resource,
         LocalDate initDate, LocalDate endDate)
-        throws CreateUnvalidatedException {
+        throws InstanceNotFoundException {
 
-        /* Get CostCategory. */
-        if (StringUtils.isBlank(costCategoryName)) {
-            throw new CreateUnvalidatedException(
-                _("cost category name not specified"));
-        }
-
-        CostCategory costCategory = null;
-        try {
-            costCategory = Registry.getCostCategoryDAO().findUniqueByName(
-                StringUtils.trim(costCategoryName));
-        } catch (InstanceNotFoundException e) {
-            throw new CreateUnvalidatedException(
-               _("{0}: cost category does not exist", costCategoryName));
-        }
+        CostCategory costCategory = Registry.getCostCategoryDAO().findUniqueByName(
+            StringUtils.trim(costCategoryName));
 
         /* Create instance of ResourcesCostCategoryAssignment. */
         ResourcesCostCategoryAssignment assignment =

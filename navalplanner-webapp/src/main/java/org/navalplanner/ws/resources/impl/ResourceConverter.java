@@ -25,20 +25,24 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.exceptions.CreateUnvalidatedException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.ws.common.impl.DateConverter;
+import org.navalplanner.ws.common.impl.InstanceNotFoundRecoverableErrorException;
 import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourcesCostCategoryAssignmentDTO;
 import org.navalplanner.ws.resources.api.WorkerDTO;
+import org.navalplanner.ws.resources.criterion.api.CriterionDTO;
+import org.navalplanner.ws.resources.criterion.api.CriterionTypeDTO;
 
 /**
  * Converter from/to resource-related entities to/from DTOs.
@@ -49,8 +53,7 @@ public class ResourceConverter {
 
     private ResourceConverter() {}
 
-    public final static Resource toEntity(ResourceDTO resourceDTO)
-        throws CreateUnvalidatedException {
+    public final static Resource toEntity(ResourceDTO resourceDTO) {
 
         Resource resource;
 
@@ -96,8 +99,7 @@ public class ResourceConverter {
     }
 
     private static void addCriterionSatisfactions(Resource resource,
-        List<CriterionSatisfactionDTO> criterionSatisfactions)
-        throws CreateUnvalidatedException {
+        List<CriterionSatisfactionDTO> criterionSatisfactions) {
 
         for (CriterionSatisfactionDTO criterionSatisfactionDTO :
             criterionSatisfactions) {
@@ -112,30 +114,56 @@ public class ResourceConverter {
     }
 
     private static CriterionSatisfaction toEntity(
-        CriterionSatisfactionDTO criterionSatisfactionDTO, Resource resource)
-        throws CreateUnvalidatedException {
+        CriterionSatisfactionDTO criterionSatisfactionDTO, Resource resource) {
 
-        return CriterionSatisfaction.createUnvalidated(
-            StringUtils.trim(criterionSatisfactionDTO.code),
-            StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
-            StringUtils.trim(criterionSatisfactionDTO.criterionName),
-            resource,
-            DateConverter.toDate(criterionSatisfactionDTO.startDate),
-            DateConverter.toDate(criterionSatisfactionDTO.endDate));
+        if (StringUtils.isBlank(criterionSatisfactionDTO.criterionTypeName)) {
+            throw new ValidationException(
+                _("criterion type name not specified"));
+        }
+
+        if (StringUtils.isBlank(criterionSatisfactionDTO.criterionName)) {
+            throw new ValidationException(
+                _("criterion name not specified"));
+        }
+
+        try {
+
+            return CriterionSatisfaction.createUnvalidated(
+                StringUtils.trim(criterionSatisfactionDTO.code),
+                StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
+                StringUtils.trim(criterionSatisfactionDTO.criterionName),
+                resource,
+                DateConverter.toDate(criterionSatisfactionDTO.startDate),
+                DateConverter.toDate(criterionSatisfactionDTO.endDate));
+
+        } catch (InstanceNotFoundException e) {
+
+            if (e.getClassName().equals(CriterionType.class.getName())) {
+                throw new InstanceNotFoundRecoverableErrorException(
+                    CriterionTypeDTO.ENTITY_TYPE, e.getKey().toString());
+            } else {
+                throw new InstanceNotFoundRecoverableErrorException(
+                    CriterionDTO.ENTITY_TYPE, e.getKey().toString());
+            }
+
+        }
 
     }
 
     private static void setResourceCalendar(Resource resource,
-        String calendarName) throws CreateUnvalidatedException {
+        String calendarName) {
 
         try {
             resource.setResourceCalendar(calendarName);
         } catch (InstanceNotFoundException e) {
-             throw new CreateUnvalidatedException(
-                _("{0}: calendar not found", calendarName));
+            throw new InstanceNotFoundRecoverableErrorException(
+                "resource-calendar", e.getKey().toString());
+                // TODO: literal "resource-calendar" should possibly be
+                // replaced by ResourceCalendarDTO.ENTITY_TYPE if
+                // ResourceCalendarDTO is created in the future.
         } catch (MultipleInstancesException e) {
-            throw new CreateUnvalidatedException(
-                _("there exist multiple calendars with name {0}",
+            throw new ValidationException(
+                _("there exist multiple resource calendars with name {0}",
                     calendarName));
         }
 
@@ -143,8 +171,7 @@ public class ResourceConverter {
 
     private static void addResourcesCostCategoryAssignments(
         Resource resource, List<ResourcesCostCategoryAssignmentDTO>
-        resourcesCostCategoryAssignments)
-        throws CreateUnvalidatedException {
+        resourcesCostCategoryAssignments) {
 
         for (ResourcesCostCategoryAssignmentDTO assignmentDTO :
             resourcesCostCategoryAssignments) {
@@ -158,13 +185,25 @@ public class ResourceConverter {
     }
 
     private static ResourcesCostCategoryAssignment toEntity(
-        ResourcesCostCategoryAssignmentDTO assignmentDTO, Resource resource)
-        throws CreateUnvalidatedException {
+        ResourcesCostCategoryAssignmentDTO assignmentDTO, Resource resource) {
 
-        return ResourcesCostCategoryAssignment.createUnvalidated(
-            assignmentDTO.code, assignmentDTO.costCategoryName, resource,
-            DateConverter.toLocalDate(assignmentDTO.startDate),
-            DateConverter.toLocalDate(assignmentDTO.endDate));
+        if (StringUtils.isBlank(assignmentDTO.costCategoryName)) {
+            throw new ValidationException(
+                _("cost category name not specified"));
+        }
+
+        try {
+            return ResourcesCostCategoryAssignment.createUnvalidated(
+                assignmentDTO.code, assignmentDTO.costCategoryName, resource,
+                DateConverter.toLocalDate(assignmentDTO.startDate),
+                DateConverter.toLocalDate(assignmentDTO.endDate));
+        } catch (InstanceNotFoundException e) {
+            throw new InstanceNotFoundRecoverableErrorException(
+                "cost-category", e.getKey().toString());
+            // TODO: literal "cost-category" should possibly be replaced by
+            // CostCategoryDTO.ENTITY_TYPE if CostCategoryDTO is created in the
+            // future.
+        }
 
     }
 

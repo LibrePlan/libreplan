@@ -26,7 +26,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerDTO;
 import org.navalplanner.business.resources.entities.Worker;
@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 
 /**
  * Hibernate DAO for the <code>Worker</code> entity.
@@ -46,7 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class WorkerDAO extends GenericDAOHibernate<Worker, Long>
+public class WorkerDAO extends IntegrationEntityDAO<Worker>
     implements IWorkerDAO {
 
     @Override
