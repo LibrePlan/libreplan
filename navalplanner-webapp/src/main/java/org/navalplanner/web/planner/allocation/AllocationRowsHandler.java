@@ -90,7 +90,7 @@ public class AllocationRowsHandler {
     public void addGeneric(Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched, Integer hours) {
         if (resourcesMatched.isEmpty()) {
-            formBinder.markNoWorkersMatchedByCriterions(criterions);
+            formBinder.markNoResourcesMatchedByCriterions(criterions);
         } else {
             GenericAllocationRow genericAllocationRow = GenericAllocationRow
                     .create(criterions, resourcesMatched);

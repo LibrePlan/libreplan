@@ -444,13 +444,13 @@ public class FormBinder {
         return resourcesDescriptions;
     }
 
-    public void markNoWorkersMatchedByCriterions(
+    public void markNoResourcesMatchedByCriterions(
             Collection<? extends Criterion> criterions) {
         messagesForUser
                 .showMessage(
                         Level.ERROR,
                         _(
-                        "there are no workers for required criteria: {0}. So the generic allocation can't be added",
+                                "there are no resources for required criteria: {0}. So the generic allocation can't be added",
                         ResourceLoadModel.getName(criterions)));
     }
 
