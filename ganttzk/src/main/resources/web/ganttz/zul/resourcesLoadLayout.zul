@@ -60,7 +60,7 @@ resourcesLoadPanel = self;
 
         <center border="0">
             <borderlayout sclass="resourcesload">
-                <west size="200px" flex="true" collapsible="true"
+                <west size="250px" flex="true" collapsible="true"
                     splittable="true" autoscroll="true">
 
                     <borderlayout >
