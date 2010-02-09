@@ -148,15 +148,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
 
     public static void configureInitialZoomLevelFor(Planner planner,
-            PlannerConfiguration<TaskElement> configuration) {
+            ZoomLevel defaultZoomLevel) {
         if (!planner.isInitialZoomLevelAlreadySet()) {
-            ZoomLevel defaultZoomLevel = OrderPlanningModel
-                    .calculateDefaultLevel(configuration);
             planner.setInitialZoomLevel(defaultZoomLevel);
         }
     }
 
-    private static ZoomLevel calculateDefaultLevel(
+    public static ZoomLevel calculateDefaultLevel(
             PlannerConfiguration<TaskElement> configuration) {
         if (configuration.getData().isEmpty()) {
             return ZoomLevel.DETAIL_ONE;
@@ -245,7 +243,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
-        configureInitialZoomLevelFor(planner, configuration);
+        ZoomLevel defaultZoomLevel = OrderPlanningModel
+                .calculateDefaultLevel(configuration);
+        configureInitialZoomLevelFor(planner, defaultZoomLevel);
 
         final boolean writingAllowed = isWritingAllowedOn(orderReloaded);
         ISaveCommand saveCommand = setupSaveCommand(configuration,
@@ -286,12 +286,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Chart loadChart = setupChart(orderReloaded,
                 new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
-                planner.getTimeTracker());
+                planner.getTimeTracker(),
+                defaultZoomLevel);
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 loadChart);
         Chart earnedValueChart = setupChart(orderReloaded,
                 earnedValueChartFiller,
-                chartEarnedValueTimeplot, planner.getTimeTracker());
+                chartEarnedValueTimeplot, planner
+                        .getTimeTracker(), defaultZoomLevel);
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
@@ -688,9 +690,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private Chart setupChart(Order orderReloaded,
             IChartFiller loadChartFiller, Timeplot chartComponent,
-            TimeTracker timeTracker) {
+            TimeTracker timeTracker,
+            ZoomLevel defaultZoomLevel) {
         Chart result = new Chart(chartComponent, loadChartFiller,
                 timeTracker);
+        result.setZoomLevel(defaultZoomLevel);
         result.fillChart();
         return result;
     }

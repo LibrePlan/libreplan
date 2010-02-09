@@ -67,8 +67,8 @@ import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
-import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
+import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.print.CutyPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,7 +195,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
-        OrderPlanningModel.configureInitialZoomLevelFor(planner, configuration);
+        ZoomLevel defaultZoomLevel = OrderPlanningModel
+                .calculateDefaultLevel(configuration);
+        OrderPlanningModel.configureInitialZoomLevelFor(planner,
+                defaultZoomLevel);
         configuration.setSecondLevelModificators(new BankHolidaysMarker());
         planner.setConfiguration(configuration);
         Timeplot chartLoadTimeplot = new Timeplot();
@@ -207,9 +210,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 chartEarnedValueTimeplot, earnedValueChartFiller);
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner
-                .getTimeTracker());
+                .getTimeTracker(), defaultZoomLevel);
         Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
-                earnedValueChartFiller, planner.getTimeTracker());
+                earnedValueChartFiller, planner.getTimeTracker(),
+                defaultZoomLevel);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
@@ -466,9 +470,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private Chart setupChart(Timeplot chartComponent,
-            IChartFiller loadChartFiller, TimeTracker timeTracker) {
+            IChartFiller loadChartFiller, TimeTracker timeTracker,
+            ZoomLevel defaultZoomLevel) {
         Chart loadChart = new Chart(chartComponent, loadChartFiller,
                 timeTracker);
+        loadChart.setZoomLevel(defaultZoomLevel);
         loadChart.fillChart();
         timeTracker.addZoomListener(fillOnZoomChange(loadChart));
         return loadChart;
