@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -104,8 +105,6 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
         resourceLoadList.expand(line);
     }
 
-
-
     private Tree getContainerTree() {
         return (Tree) getFellow("loadsTree");
     }
@@ -126,8 +125,26 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
     private Div createLabelWithName(LoadTimeLine principal) {
         Div result = new Div();
         Label label = new Label();
-        label.setValue(principal.getConceptName());
+        final String conceptName = principal.getConceptName();
+        label.setValue(conceptName);
+        limitValue(result, label, 40);
         result.appendChild(label);
+        return result;
+    }
+
+    private static void limitValue(Div parent, Label label, int maxLength) {
+        String originalValue = label.getValue();
+        if (originalValue == null || originalValue.length() <= maxLength) {
+            return;
+        }
+        label.setValue(originalValue.substring(0, maxLength - 3) + "...");
+        label.setTooltip(createPopup(parent, originalValue));
+    }
+
+    private static Popup createPopup(Div parent, String originalValue) {
+        Popup result = new Popup();
+        result.appendChild(new Label(originalValue));
+        parent.appendChild(result);
         return result;
     }
 }
