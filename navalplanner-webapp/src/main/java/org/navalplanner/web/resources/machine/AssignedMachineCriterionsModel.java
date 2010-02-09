@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -62,6 +63,9 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
 
     private List<CriterionWithItsType> criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
 
@@ -120,6 +124,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     private void initializeCriterion(Criterion criterion) {
+        criterionDAO.reattachUnmodifiedEntity(criterion);
         criterion.getName();
         if (criterion.getParent() != null) {
             criterion.getParent().getName();
