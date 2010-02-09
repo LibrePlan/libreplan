@@ -169,17 +169,23 @@ Timeplot
 
 TODO
 ----
+   * Ferramentas
+
       * Ferramentas externas: Cutycap
       * JFreeChart.
       * YUI. Libreria Javascript para compoñentes.
       * JasperReports para informes.
       * Jgrapht. Grafo de tarefas.
+
    * Servicios web REST.
+
       * JAX-RS API.
       * Apache CXF.
+
    * Framework Spring security. Para autenticación.
    * Hibernate Validator para validacións.
    * Framework auxiliares:
+
       * JODA
       * Gettext para internacionalizacion.
       * Apache Math.

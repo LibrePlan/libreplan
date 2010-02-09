@@ -191,6 +191,6 @@ Logo o integrador deberá responder a lista confirmando a aplicación do parche.
 Trucos con GIT
 ==============
 
-Cando estase resolvendo conflictos podense ver os distintos pais do merge. Empregar =git show :1:filename= para ver o ancestro comun, =git show :2:filename= para ver a version local, =git show :3:filename= para ver a version remota. Para escoller unha das versions empregar =git checkout --ours file= e =git checkout --theirs file=. (Solo en git 1.6.1 e posteriores)
+Cando estase resolvendo conflictos podense ver os distintos pais do merge. Empregar *git show :1:filename* para ver o ancestro comun, *git show :2:filename* para ver a version local, *git show :3:filename* para ver a version remota. Para escoller unha das versions empregar *git checkout --ours file* e *git checkout --theirs file*. (Solo en git 1.6.1 e posteriores)
 
-Podese usar un =git mergetool= para resolver os conflictos empregando unha ferramenta visual.
+Podese usar un *git mergetool* para resolver os conflictos empregando unha ferramenta visual.
