@@ -30,7 +30,10 @@ import java.util.Set;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 
@@ -45,10 +48,14 @@ public class PlanningState {
 
     private final TaskGroup rootTask;
 
+    private final ICriterionDAO criterionDAO;
+
     public PlanningState(TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
-            Collection<? extends Resource> initialResources) {
+            Collection<? extends Resource> initialResources,
+            ICriterionDAO criterionDAO) {
         this.rootTask = rootTask;
+        this.criterionDAO = criterionDAO;
         this.initial = new ArrayList<TaskElement>(initialState);
         this.toSave = new HashSet<TaskElement>(initialState);
         this.toRemove = new HashSet<TaskElement>();
@@ -67,7 +74,26 @@ public class PlanningState {
         for (Resource resource : resources) {
             resourceDAO.reattach(resource);
         }
+        // ensuring no repeated instances of criterions
+        reattachCriterions(getExistentCriterions(resources));
         addingNewlyCreated(resourceDAO);
+    }
+
+    private void reattachCriterions(Set<Criterion> criterions) {
+        for (Criterion each : criterions) {
+            criterionDAO.reattachUnmodifiedEntity(each);
+        }
+    }
+
+    private Set<Criterion> getExistentCriterions(Set<Resource> resources) {
+        Set<Criterion> result = new HashSet<Criterion>();
+        for (Resource resource : resources) {
+            for (CriterionSatisfaction each : resource
+                    .getCriterionSatisfactions()) {
+                result.add(each.getCriterion());
+            }
+        }
+        return result;
     }
 
     private void addingNewlyCreated(IResourceDAO resourceDAO) {
@@ -79,6 +105,8 @@ public class PlanningState {
     private <T extends Collection<Resource>> T doReattachments(T result) {
         for (Resource each : result) {
             reattachCalendarFor(each);
+            // loading criterions so there are no repeated instances
+            forceLoadOfCriterions(each);
         }
         return result;
     }
@@ -86,6 +114,15 @@ public class PlanningState {
     private void reattachCalendarFor(Resource each) {
         if (each.getCalendar() != null) {
             BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+        }
+    }
+
+    private void forceLoadOfCriterions(Resource resource) {
+        Set<CriterionSatisfaction> criterionSatisfactions = resource
+                .getCriterionSatisfactions();
+        for (CriterionSatisfaction each : criterionSatisfactions) {
+            each.getCriterion().getName();
+            each.getCriterion().getType();
         }
     }
 

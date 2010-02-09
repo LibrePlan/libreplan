@@ -746,7 +746,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         criterionDAO.list(Criterion.class);
         forceLoadOfChildren(Arrays.asList(taskElement));
         planningState = new PlanningState(taskElement, orderReloaded
-                .getAssociatedTasks(), allResources);
+                .getAssociatedTasks(), allResources, criterionDAO);
         forceLoadOfDependenciesCollections(planningState.getInitial());
         forceLoadOfWorkingHours(planningState.getInitial());
         forceLoadOfLabels(planningState.getInitial());
