@@ -279,6 +279,10 @@ public class Planner extends HtmlMacroComponent  {
             Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
             showCriticalPathButton.setVisible(false);
         }
+        if (!configuration.isExpandAllEnabled()) {
+            Button expandAllButton = (Button) getFellow("expandAll");
+            expandAllButton.setVisible(false);
+        }
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
     }
 
@@ -478,6 +482,19 @@ public class Planner extends HtmlMacroComponent  {
     public void setAreContainersExpandedByDefault(
             boolean containersExpandedByDefault) {
         this.containersExpandedByDefault = containersExpandedByDefault;
+    }
+
+    public void expandAll() {
+        Button expandAllButton = (Button) getFellow("expandAll");
+        if (disabilityConfiguration.isExpandAllEnabled()) {
+            if (expandAllButton.getSclass().equals("planner-command")) {
+                context.expandAll();
+                expandAllButton.setSclass("planner-command clicked");
+            } else {
+                context.collapseAll();
+                expandAllButton.setSclass("planner-command");
+            }
+        }
     }
 
 }

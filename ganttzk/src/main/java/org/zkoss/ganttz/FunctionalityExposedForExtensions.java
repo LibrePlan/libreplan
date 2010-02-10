@@ -453,4 +453,20 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         return tasks;
     }
 
+    public void expandAll() {
+        setExpandAll(true, getTasksOrderedByStartDate());
+    }
+
+    public void collapseAll() {
+        setExpandAll(false, getTasksOrderedByStartDate());
+    }
+
+    private void setExpandAll(boolean expand, List<Task> tasks) {
+        for (Task task : tasks) {
+            if (task instanceof TaskContainer) {
+                ((TaskContainer) task).setExpanded(expand);
+            }
+        }
+    }
+
 }

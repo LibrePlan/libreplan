@@ -35,4 +35,6 @@ public interface IDisabilityConfiguration {
 
     public boolean isCriticalPathEnabled();
 
+    public boolean isExpandAllEnabled();
+
 }

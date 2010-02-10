@@ -130,6 +130,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean criticalPathEnabled = true;
 
+    private boolean expandAllEnabled = true;
+
     // private String identifier = null;
 
     private IDetailItemModificator firstLevelModificators = SeveralModificators
@@ -274,6 +276,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isCriticalPathEnabled() {
         return criticalPathEnabled;
+    }
+
+    public void setExpandAllEnabled(boolean expandAllEnabled) {
+        this.expandAllEnabled = expandAllEnabled;
+    }
+
+    @Override
+    public boolean isExpandAllEnabled() {
+        return expandAllEnabled;
     }
 
     public IDetailItemModificator getSecondLevelModificators() {

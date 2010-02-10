@@ -37,6 +37,7 @@ import org.zkoss.ganttz.LeftTasksTreeRow.ILeftTasksTreeNavigator;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.data.TaskContainer.IExpandListener;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
@@ -54,9 +55,24 @@ import org.zkoss.zul.TreeitemRenderer;
 public class LeftTasksTree extends HtmlMacroComponent {
 
     private final class TaskBeanRenderer implements TreeitemRenderer {
-        public void render(Treeitem item, Object data) throws Exception {
+        private Map<TaskContainer, IExpandListener> expandListeners = new HashMap<TaskContainer, IExpandListener>();
+
+        public void render(final Treeitem item, Object data) throws Exception {
             Task task = (Task) data;
             item.setOpen(isOpened(task));
+            if (task instanceof TaskContainer) {
+                final TaskContainer container = (TaskContainer) task;
+                IExpandListener expandListener = new IExpandListener() {
+
+                    @Override
+                    public void expandStateChanged(boolean isNowExpanded) {
+                        item.setOpen(isNowExpanded);
+                    }
+                };
+                expandListeners.put(container, expandListener);
+                container.addExpandListener(expandListener);
+
+            }
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
                     task);
             String cssClass = "depth_" + path.length;

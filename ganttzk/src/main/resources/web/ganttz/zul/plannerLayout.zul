@@ -32,6 +32,10 @@ planner = self;
         <button id="showAllResources" onClick="planner.showAllResources();"
             image="/common/img/ico_resources.png"
             tooltiptext="${i18n:_('Show/Hide resources')}" sclass="planner-command show-resources" />
+        <button id="expandAll" onClick="planner.expandAll();"
+            image="/common/img/ico_expand.png"
+            tooltiptext="${i18n:_('Expand/Collapse all')}"
+            sclass="planner-command" />
         <separator />
 
         <!--  Filtering -->
