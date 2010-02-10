@@ -37,6 +37,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.templates.entities.OrderTemplate;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 
 /**
  * It represents an {@link Order} with its related information. <br />
@@ -86,6 +87,13 @@ public class Order extends OrderLineGroup {
     private String customerReference;
 
     private String externalCode;
+
+    private Set<OrderAuthorization> orderAuthorizations = new HashSet<OrderAuthorization>();
+
+    public void addOrderAuthorization(OrderAuthorization orderAuthorization) {
+        orderAuthorization.setOrder(this);
+        orderAuthorizations.add(orderAuthorization);
+    }
 
     public BigDecimal getWorkBudget() {
         if (workBudget == null) {

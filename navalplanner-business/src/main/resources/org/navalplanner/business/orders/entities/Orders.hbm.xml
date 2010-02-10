@@ -92,6 +92,11 @@
                 <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
                     class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
 
+                <set name="orderAuthorizations" cascade="all-delete-orphan" inverse="true" >
+                    <key column="ORDER_ID" />
+                    <one-to-many class="org.navalplanner.business.users.entities.OrderAuthorization" />
+                </set>
+
             </joined-subclass>
 
         </joined-subclass>
