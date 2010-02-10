@@ -634,7 +634,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         assignments));
             }
         }
-        derivedAllocations = new HashSet<DerivedAllocation>(result);
+        resetDerivedAllocationsTo(result);
+    }
+
+    /**
+     * Resets the derived allocations
+     */
+    private void resetDerivedAllocationsTo(
+            Collection<DerivedAllocation> derivedAllocations) {
+        // avoiding error: A collection with cascade="all-delete-orphan" was no
+        // longer referenced by the owning entity instance
+        derivedAllocations.clear();
+        derivedAllocations.addAll(derivedAllocations);
     }
 
     public Set<DerivedAllocation> getDerivedAllocations() {
@@ -738,8 +749,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         .copyAssignmentsAsChildrenOf(current));
             }
         }
-        this.derivedAllocations = new HashSet<DerivedAllocation>(currentMap
-                .values());
+        resetDerivedAllocationsTo(currentMap.values());
     }
 
     protected abstract void mergeAssignments(ResourceAllocation<?> modifications);
