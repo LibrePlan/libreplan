@@ -216,7 +216,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         Component filterComponent = Executions.createComponents(
                 "/orders/_orderFilter.zul", orderFilter,
                 new HashMap<String, String>());
-        filterComponent.setVariable("controller", this, true);
+        filterComponent.setVariable("orderFilterController", this, true);
         filterStartDate = (Datebox) filterComponent
                 .getFellow("filterStartDate");
         filterFinishDate = (Datebox) filterComponent

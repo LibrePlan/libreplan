@@ -4,13 +4,13 @@
     <bandboxMultipleSearch id="bdFilters" widthBandbox="385px" widthListbox="400px"
         finder="ordersMultipleFiltersFinder"/>
     <label value="${i18n:_('from')}"/>
-    <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
+    <datebox id="filterStartDate" constraint = "@{orderFilterController.checkConstraintStartDate}"/>
     <label value="${i18n:_('to')}"/>
-    <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
+    <datebox id="filterFinishDate" constraint = "@{orderFilterController.checkConstraintFinishDate}"/>
     <label value="${i18n:_('include order elements')}"/>
     <checkbox id="checkIncludeOrderElements"
         tooltiptext="${i18n:_('Apply filtering to order elements satisfying required criteria')}" />
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to order elements satisfying required criteria')}"
-        onClick="controller.onApplyFilter()"/>
+        onClick="orderFilterController.onApplyFilter()"/>
 </hbox>
