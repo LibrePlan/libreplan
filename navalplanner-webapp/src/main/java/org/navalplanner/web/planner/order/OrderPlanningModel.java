@@ -744,8 +744,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        TaskGroup taskElement = orderReloaded
-                .getAssociatedTaskElement();
+        TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
         final List<Resource> allResources = resourceDAO.list(Resource.class);
         criterionDAO.list(Criterion.class);
         forceLoadOfChildren(Arrays.asList(taskElement));

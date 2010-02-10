@@ -188,8 +188,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
             Set<Resource> resources = new HashSet<Resource>();
             for (ResourceAllocation<?> each : resourceAllocations) {
-                resources.addAll(each
-                        .getAssociatedResources());
+                resources.addAll(each.getAssociatedResources());
                 for (DerivedAllocation derivedAllocation : each
                         .getDerivedAllocations()) {
                     resources
