@@ -72,6 +72,7 @@ import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
@@ -766,6 +767,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         for (TaskElement each : initial) {
             forceLoadOfResourceAllocationsResources(each);
             forceLoadOfCriterions(each);
+            if (each.getCalendar() != null) {
+                BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+            }
             if (each instanceof TaskGroup) {
                 findChildrenWithQueryToAvoidProxies((TaskGroup) each);
                 List<TaskElement> children = each.getChildren();
