@@ -170,6 +170,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
+    private void notifyDateboxCantBeCreated(final String dateboxName,
+            final String codeOrderElement) {
+        try {
+            Messagebox.show(_("the " + dateboxName
+                    + "datebox of the order element " + codeOrderElement
+                    + " could not be created.\n"),
+                    _("Operation cannot be done"), Messagebox.OK,
+                    Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+        }
+    }
+
     protected void filterByPredicateIfAny() {
         if (predicate != null) {
             filterByPredicate();
@@ -309,41 +321,61 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {
-            addCell(Util.bind(new Datebox(), new Util.Getter<Date>() {
+            DynamicDatebox dinamicDatebox = new DynamicDatebox(
+                    currentOrderElement, new DynamicDatebox.Getter<Date>() {
 
-                @Override
-                public Date get() {
-                    return currentOrderElement.getInitDate();
-                }
-            }, new Util.Setter<Date>() {
+                        @Override
+                        public Date get() {
+                            return currentOrderElement.getInitDate();
+                        }
+                    }, new DynamicDatebox.Setter<Date>() {
 
-                @Override
-                public void set(Date value) {
-                    currentOrderElement.setInitDate(value);
-                }
-            }));
+                        @Override
+                        public void set(Date value) {
+                            currentOrderElement.setInitDate(value);
+
+                        }
+                    });
+            addDateCell(dinamicDatebox, _("init"), currentOrderElement);
         }
 
         void addEndDateCell(final OrderElement currentOrderElement) {
-            addCell(Util.bind(new Datebox(), new Util.Getter<Date>() {
+            DynamicDatebox dinamicDatebox = new DynamicDatebox(
+                    currentOrderElement, new DynamicDatebox.Getter<Date>() {
 
-                @Override
-                public Date get() {
-                    return currentOrderElement.getDeadline();
-                }
-            }, new Util.Setter<Date>() {
+                        @Override
+                        public Date get() {
+                            return currentOrderElement.getDeadline();
+                        }
+                    }, new DynamicDatebox.Setter<Date>() {
 
-                @Override
-                public void set(Date value) {
-                    currentOrderElement.setDeadline(value);
-                }
-            }));
+                        @Override
+                        public void set(Date value) {
+                            currentOrderElement.setDeadline(value);
+                        }
+                    });
+            addDateCell(dinamicDatebox, _("end"), currentOrderElement);
         }
 
         void addHoursCell(final OrderElement currentOrderElement) {
             Intbox intboxHours = buildHoursIntboxFor(currentOrderElement);
             hoursIntBoxByOrderElement.put(currentOrderElement, intboxHours);
             addCell(intboxHours);
+        }
+
+        private void addDateCell(final DynamicDatebox dinamicDatebox,
+                final String dateboxName,
+                final OrderElement currentOrderElement) {
+
+            Component cell = Executions.getCurrent().createComponents(
+                    "/common/components/dynamicDatebox.zul", null, null);
+            try {
+                dinamicDatebox.doAfterCompose(cell);
+            } catch (Exception e) {
+                notifyDateboxCantBeCreated(dateboxName, currentOrderElement
+                        .getCode());
+            }
+            addCell(cell);
         }
 
         private Intbox buildHoursIntboxFor(
