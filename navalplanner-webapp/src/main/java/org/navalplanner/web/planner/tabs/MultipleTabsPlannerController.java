@@ -69,6 +69,51 @@ import org.zkoss.zk.ui.util.Composer;
 public class MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
 
+    private final class TabWithLoadingFeedback extends TabProxy {
+        private boolean feedback = true;
+
+        private TabWithLoadingFeedback(ITab tab) {
+            super(tab);
+        }
+
+        @Override
+        public void show() {
+            if (feedback) {
+                showWithFeedback();
+            } else {
+                showWithoutFeedback();
+            }
+        }
+
+        private void showWithFeedback() {
+            LongOperationFeedback.execute(tabsSwitcher,
+                new ILongOperation() {
+
+                    @Override
+                    public String getName() {
+                        return _("changing perspective");
+                    }
+
+                    @Override
+                    public void doAction() throws Exception {
+                        proxiedTab.show();
+                    }
+                });
+        }
+
+        private void showWithoutFeedback() {
+            proxiedTab.show();
+        }
+
+        public void toggleToNoFeedback() {
+            feedback = false;
+        }
+
+        public void toggleToFeedback() {
+            feedback = true;
+        }
+    }
+
     public static final String PLANNIFICATION = _("Scheduling");
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
@@ -81,7 +126,7 @@ public class MultipleTabsPlannerController implements Composer,
     @Autowired
     private OrderCRUDController orderCRUDController;
 
-    private ITab planningTab;
+    private TabWithLoadingFeedback planningTab;
 
     private ITab resourceLoadTab;
 
@@ -158,25 +203,8 @@ public class MultipleTabsPlannerController implements Composer,
         return Executions.getCurrent().getParameterMap();
     }
 
-    private ITab doFeedbackOn(ITab tab) {
-        return new TabProxy(tab) {
-            @Override
-            public void show() {
-                LongOperationFeedback.execute(tabsSwitcher,
-                        new ILongOperation() {
-
-                            @Override
-                            public String getName() {
-                                return _("changing perspective");
-                            }
-
-                            @Override
-                            public void doAction() throws Exception {
-                                proxiedTab.show();
-                            }
-                        });
-            }
-        };
+    private TabWithLoadingFeedback doFeedbackOn(ITab tab) {
+        return new TabWithLoadingFeedback(tab);
     }
 
     private IBack returnToPlanningTab() {
@@ -245,7 +273,9 @@ public class MultipleTabsPlannerController implements Composer,
         final URLHandler<IGlobalViewEntryPoints> handler = registry
                 .getRedirectorFor(IGlobalViewEntryPoints.class);
         if (!handler.applyIfMatches(this)) {
+            planningTab.toggleToNoFeedback();
             goToCompanyScheduling();
+            planningTab.toggleToFeedback();
         }
         handler.registerListener(this, comp.getPage());
     }
@@ -292,8 +322,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrderElementDetails(OrderElement orderElement, Order order) {
-        mode.goToOrderMode(order);
         getTabsRegistry().show(ordersTab);
+        mode.goToOrderMode(order);
         orderCRUDController.highLight(orderElement);
     }
 
