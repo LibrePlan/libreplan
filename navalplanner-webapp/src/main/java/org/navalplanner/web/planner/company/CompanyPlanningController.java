@@ -65,7 +65,6 @@ public class CompanyPlanningController implements Composer{
     private Planner planner;
 
     private Vbox orderFilter;
-    private Vbox filter;
     private Datebox filterStartDate;
     private Datebox filterFinishDate;
     private BandboxMultipleSearch bdFilters;
