@@ -60,7 +60,7 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
         } else {
             return getAccumulatedHoursChartData(stretches,
                     stretchesFunctionModel.getTaskStartDate(), new BigDecimal(
-                            stretchesFunctionModel.getTaskHours()));
+                            stretchesFunctionModel.getAllocationHours()));
         }
     }
 
@@ -73,7 +73,7 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
         }
         return getDedicationChart(stretches, stretchesFunctionModel
                 .getTaskStartDate(), new BigDecimal(stretchesFunctionModel
-                .getTaskHours()), stretchesFunctionModel.getTaskCalendar());
+                .getAllocationHours()), stretchesFunctionModel.getTaskCalendar());
     }
 
     protected abstract XYModel getDedicationChart(List<Stretch> stretches,

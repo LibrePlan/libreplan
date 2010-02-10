@@ -35,6 +35,7 @@ import org.navalplanner.business.planner.daos.IAssignmentFunctionDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.Task;
@@ -85,28 +86,31 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
+    private ResourceAllocation<?> resourceAllocation;
+
     @Override
     @Transactional(readOnly = true)
     public void init(
             StretchesFunction stretchesFunction,
-            Task task,
+            ResourceAllocation<?> resourceAllocation,
             org.navalplanner.business.planner.entities.StretchesFunction.Type type) {
         if (stretchesFunction != null) {
             assignmentFunctionDAO.reattach(stretchesFunction);
             this.originalStretchesFunction = stretchesFunction;
             this.stretchesFunction = stretchesFunction.copy();
             this.stretchesFunction.changeTypeTo(type);
-            this.task = task;
-            forceLoadTask();
+            this.resourceAllocation = resourceAllocation;
+            this.task = resourceAllocation.getTask();
+            forceLoadData();
             this.taskEndDate = task.getEndDate();
         }
     }
 
-    private void forceLoadTask() {
+    private void forceLoadData() {
         taskSourceDAO.reattach(task.getTaskSource());
         taskElementDAO.reattach(task);
-        task.getHoursSpecifiedAtOrder();
         task.getCalendar();
+        this.resourceAllocation.getAssignedHours();
     }
 
     @Override
@@ -266,12 +270,11 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     @Override
-    public Integer getTaskHours() {
+    public Integer getAllocationHours() {
         if (task == null) {
             return null;
         }
-
-        return task.getHoursSpecifiedAtOrder();
+        return resourceAllocation.getAssignedHours();
     }
 
     @Override
@@ -279,7 +282,6 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         if (task == null) {
             return null;
         }
-
         return task.getCalendar();
     }
 

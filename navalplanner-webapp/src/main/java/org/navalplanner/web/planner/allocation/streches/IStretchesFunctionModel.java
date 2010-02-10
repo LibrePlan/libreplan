@@ -28,9 +28,9 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 
 
@@ -46,7 +46,8 @@ public interface IStretchesFunctionModel {
      * Initial conversation steps
      */
 
-    void init(StretchesFunction stretchesFunction, Task task, Type type);
+    void init(StretchesFunction stretchesFunction,
+            ResourceAllocation<?> resourceAllocation, Type type);
 
     /*
      * Intermediate conversation steps
@@ -67,7 +68,7 @@ public interface IStretchesFunctionModel {
 
     LocalDate getTaskStartDate();
 
-    Integer getTaskHours();
+    Integer getAllocationHours();
 
     BaseCalendar getTaskCalendar();
 
