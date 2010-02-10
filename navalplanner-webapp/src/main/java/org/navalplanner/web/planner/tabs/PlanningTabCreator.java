@@ -70,7 +70,7 @@ public class PlanningTabCreator {
             CompanyPlanningController companyPlanningController,
             OrderPlanningController orderPlanningController,
             IOrderDAO orderDAO,
- Component breadcrumbs,
+            Component breadcrumbs,
             Map<String, String[]> parameters) {
         return new PlanningTabCreator(mode, companyPlanningController,
                 orderPlanningController, breadcrumbs, orderDAO, parameters)
