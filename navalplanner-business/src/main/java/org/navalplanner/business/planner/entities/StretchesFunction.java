@@ -141,7 +141,7 @@ public class StretchesFunction extends AssignmentFunction {
             int[] result = new int[Days.daysBetween(startInclusive,
                     endExclusive).getDays()];
             for (int i = 0; i < result.length; i++) {
-                result[i] = evaluate(accumulatedFunction, i);
+                result[i] = evaluate(accumulatedFunction, i + 1);
             }
             return result;
         }
