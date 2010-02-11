@@ -948,8 +948,10 @@ class Row {
 
     private Button getAssignmentFunctionsConfigureButton(
             final Combobox assignmentFunctionsCombo) {
-        final Button button = new Button(_("Configure"));
-
+        final Button button = new Button("", "/common/img/ico_editar1.png");
+        button.setHoverImage("/common/img/ico_editar.png");
+        button.setSclass("icono");
+        button.setTooltiptext(_("Configure"));
         button.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override

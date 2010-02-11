@@ -50,15 +50,6 @@
 
                     <borderlayout >
                         <north border="0" height="0px" flex="true" collapsible="true" autoscroll="true">
-                        <vbox pack="center" align="center">
-                            <!--  tree fixedLayout="false">
-                                <treecols sizable="false">
-                                    <treecol label="Name" height="30px"  />
-                                    <treecol label="Hours"  />
-                                    <treecol label="Function" />
-                                </treecols>
-                            </tree-->
-                            </vbox>
                         </north>
                         <center border="0" sclass="advancedassignmentdetails">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
