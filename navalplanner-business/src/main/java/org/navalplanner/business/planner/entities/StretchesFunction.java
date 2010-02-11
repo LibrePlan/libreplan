@@ -173,8 +173,9 @@ public class StretchesFunction extends AssignmentFunction {
             List<Interval> intervalsDefinedByStreches = stretchesFunction
                     .getIntervalsDefinedByStreches();
             int totalHours = resourceAllocation.getAssignedHours();
-            LocalDate start = resourceAllocation.getStartDate();
-            LocalDate end = resourceAllocation.getEndDate();
+            Task task = resourceAllocation.getTask();
+            LocalDate start = LocalDate.fromDateFields(task.getStartDate());
+            LocalDate end = LocalDate.fromDateFields(task.getEndDate());
             apply(resourceAllocation, intervalsDefinedByStreches, start, end,
                     totalHours);
         }
