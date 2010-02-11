@@ -78,6 +78,7 @@ public class AsignedHoursToOrderElementController extends
         asignedHoursToOrderElementModel.initOrderElement(getOrderElement());
 
         if (orderElementHours != null) {
+            Util.createBindingsFor(orderElementHours);
             Util.reloadBindings(orderElementHours);
         }
 

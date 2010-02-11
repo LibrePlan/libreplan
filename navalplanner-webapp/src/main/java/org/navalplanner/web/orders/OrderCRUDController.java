@@ -270,7 +270,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void setupEditControllers() throws Exception {
         Component comp = self;
 
-        setupAsignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementsToOrderElementController(comp);
@@ -306,10 +305,16 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AsignedHoursToOrderElementController assignedHoursController;
 
-    private void setupAsignedHoursToOrderElementController(Component comp) throws Exception{
-        Component orderElementHours = editWindow.getFellowIfAny("orderElementHours");
-        assignedHoursController = (AsignedHoursToOrderElementController)
-            orderElementHours.getVariable("asignedHoursToOrderElementController", true);
+    public void setupAsignedHoursToOrderElementController() throws Exception {
+        if (assignedHoursController == null) {
+            Component orderElementHours = editWindow
+                    .getFellowIfAny("orderElementHours");
+            assignedHoursController = (AsignedHoursToOrderElementController) orderElementHours
+                    .getVariable("asignedHoursToOrderElementController", true);
+
+            final IOrderElementModel orderElementModel = getOrderElementModel();
+            assignedHoursController.openWindow(orderElementModel);
+        }
     }
 
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
@@ -605,7 +610,9 @@ public class OrderCRUDController extends GenericForwardComposer {
             .getFellow("orderElementTree");
             redraw(orderElementsTree);
         }
-        assignedHoursController.openWindow(orderElementModel);
+        if (assignedHoursController != null) {
+            assignedHoursController.openWindow(orderElementModel);
+        }
         manageOrderElementAdvancesController.openWindow(orderElementModel);
         assignedLabelsController.openWindow(orderElementModel);
         assignedCriterionRequirementController.openWindow(orderElementModel);
