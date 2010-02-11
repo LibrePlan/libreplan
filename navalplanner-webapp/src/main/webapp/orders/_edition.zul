@@ -38,7 +38,8 @@
                 onSelect = "controller.setupOrderElementTreeController();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
                 onSelect = "controller.setupAsignedHoursToOrderElementController();"/>
-            <tab id="tabAdvances" label="${i18n:_('Advances')}" />
+            <tab id="tabAdvances" label="${i18n:_('Advances')}"
+                onSelect = "controller.setupManageOrderElementAdvancesController();"/>
             <tab id="tabLabels" label="${i18n:_('Label')}" />
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
                  onClick = "controller.reloadHoursGroupOrder();"/>
@@ -154,7 +155,7 @@
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
             </tabpanel>
             <tabpanel>
-                <listOrderElementAdvances id="orderElementAdvances" />
+                <listOrderElementAdvances id="orderElementAdvances" fulfill="tabAdvances.onSelect"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementLabels id="orderElementLabels" />
