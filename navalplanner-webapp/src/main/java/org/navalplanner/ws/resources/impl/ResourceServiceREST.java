@@ -31,6 +31,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.GenericRESTService;
+import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.navalplanner.ws.resources.api.IResourceService;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourceListDTO;
@@ -63,8 +64,11 @@ public class ResourceServiceREST
     }
 
     @Override
-    protected Resource toEntity(ResourceDTO entityDTO) {
+    protected Resource toEntity(ResourceDTO entityDTO)
+        throws ValidationException, RecoverableErrorException {
+
         return ResourceConverter.toEntity(entityDTO);
+
     }
 
     @Override
@@ -79,8 +83,10 @@ public class ResourceServiceREST
 
     @Override
     protected void updateEntity(Resource entity, ResourceDTO entityDTO)
-        throws ValidationException {
-        // FIXME: updated functionality not implemented yet.
+        throws ValidationException, RecoverableErrorException {
+
+        ResourceConverter.updateResource(entity, entityDTO);
+
     }
 
 }

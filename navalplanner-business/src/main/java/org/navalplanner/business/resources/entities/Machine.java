@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 
@@ -66,6 +67,18 @@ public class Machine extends Resource {
         machine.description = description;
 
         return machine;
+
+    }
+
+    public void updateUnvalidated(String name, String description) {
+
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
+
+        if (!StringUtils.isBlank(description)) {
+            this.description = description;
+        }
 
     }
 

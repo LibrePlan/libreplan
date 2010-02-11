@@ -111,7 +111,7 @@ public final class CriterionConverter {
     }
 
     public final static void updateCriterionType(CriterionType criterionType,
-        CriterionTypeDTO criterionTypeDTO) {
+        CriterionTypeDTO criterionTypeDTO) throws ValidationException {
 
         /* 1: Get criterion wrappers with parent code. */
         Set<CriterionDTOWithParentCode> criterionWrappers =
@@ -132,7 +132,9 @@ public final class CriterionConverter {
             try {
                 Criterion criterion = criterionType.getCriterionByCode(
                     criterionWrapper.dto.code);
-                updateCriterionBasicProperties(criterion, criterionWrapper.dto);
+                criterion.updateUnvalidated(
+                    StringUtils.trim(criterionWrapper.dto.name),
+                    criterionWrapper.dto.active);
             } catch (InstanceNotFoundException e) {
                 criterionType.getCriterions().add(toEntityWithoutChildren(
                     criterionWrapper.dto, criterionType, null));
@@ -158,7 +160,13 @@ public final class CriterionConverter {
 
 
         /* 4: Update criterion type basic properties. */
-        updateCriterionTypeBasicProperties(criterionType, criterionTypeDTO);
+        criterionType.updateUnvalidated(
+            StringUtils.trim(criterionTypeDTO.name),
+            StringUtils.trim(criterionTypeDTO.description),
+            criterionTypeDTO.allowHierarchy,
+            criterionTypeDTO.allowSimultaneousCriterionsPerResource,
+            criterionTypeDTO.enabled,
+            ResourceEnumConverter.fromDTO(criterionTypeDTO.resource));
 
     }
 
@@ -205,51 +213,6 @@ public final class CriterionConverter {
         }
 
         return wrappers;
-
-    }
-
-    private static void updateCriterionTypeBasicProperties(
-        CriterionType criterionType, CriterionTypeDTO criterionTypeDTO) {
-
-        if (!StringUtils.isBlank(criterionTypeDTO.name)) {
-            criterionType.setName(StringUtils.trim(criterionTypeDTO.name));
-        }
-
-        if (!StringUtils.isBlank(criterionTypeDTO.description)) {
-            criterionType.setDescription(
-                StringUtils.trim(criterionTypeDTO.description));
-        }
-
-        if (criterionTypeDTO.allowHierarchy != null) {
-            criterionType.setAllowHierarchy(criterionTypeDTO.allowHierarchy);
-        }
-
-        if (criterionTypeDTO.allowSimultaneousCriterionsPerResource != null) {
-            criterionType.setAllowSimultaneousCriterionsPerResource(
-                criterionTypeDTO.allowSimultaneousCriterionsPerResource);
-        }
-
-        if (criterionTypeDTO.enabled != null) {
-            criterionType.setEnabled(criterionTypeDTO.enabled);
-        }
-
-        if (criterionTypeDTO.resource != null) {
-            criterionType.setResource(
-                ResourceEnumConverter.fromDTO(criterionTypeDTO.resource));
-        }
-
-    }
-
-    private static void updateCriterionBasicProperties(Criterion criterion,
-        CriterionDTO criterionDTO) {
-
-        if (!StringUtils.isBlank(criterionDTO.name)) {
-            criterion.setName(StringUtils.trim(criterionDTO.name));
-        }
-
-        if (criterionDTO.active != null) {
-            criterion.setActive(criterionDTO.active);
-        }
 
     }
 

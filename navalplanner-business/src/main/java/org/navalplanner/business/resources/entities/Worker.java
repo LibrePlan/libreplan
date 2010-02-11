@@ -59,6 +59,22 @@ public class Worker extends Resource {
 
     }
 
+    public void updateUnvalidated(String firstName, String surname, String nif) {
+
+        if (!StringUtils.isBlank(firstName)) {
+            this.firstName = firstName;
+        }
+
+        if (!StringUtils.isBlank(surname)) {
+            this.surname = surname;
+        }
+
+        if (!StringUtils.isBlank(nif)) {
+            this.nif = nif;
+        }
+
+    }
+
     private String firstName;
 
     private String surname;

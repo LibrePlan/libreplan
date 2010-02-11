@@ -34,6 +34,9 @@ import static org.navalplanner.web.test.ws.common.Util.assertOneRecoverableError
 import static org.navalplanner.web.test.ws.common.Util.getUniqueName;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -41,6 +44,7 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +54,13 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.IConfigurationBootstrap;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -94,6 +100,9 @@ public class ResourceServiceTest {
 
     @Autowired
     private IMachineDAO machineDAO;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
@@ -720,6 +729,100 @@ public class ResourceServiceTest {
 
     }
 
+    @Test
+    public void testUpdateResources() throws InstanceNotFoundException {
+
+        /* Create a criterion type and a cost category. */
+        CriterionType ct = createCriterionType();
+        CostCategory costCategory = createCostCategory();
+
+        /* Create a machine DTO. */
+        MachineDTO m1 = new MachineDTO("name", "desc");
+        CriterionSatisfactionDTO m1s1 = new CriterionSatisfactionDTO(
+            ct.getName(), "c1", getDate(2000, 1, 1), getDate(2000, 2, 1));
+        m1.criterionSatisfactions.add(m1s1);
+        ResourcesCostCategoryAssignmentDTO m1a1 =
+            new ResourcesCostCategoryAssignmentDTO(costCategory.getName(),
+                getDate(2000, 1, 1), getDate(2000, 2, 1));
+        m1.resourcesCostCategoryAssignments.add(m1a1);
+
+        /* Create a worker DTO. */
+        WorkerDTO w1 = new WorkerDTO(getUniqueName(), "surname", "nif");
+        CriterionSatisfactionDTO w1s1 = new CriterionSatisfactionDTO(
+            ct.getName(), "c1", getDate(2000, 1, 1), getDate(2000, 2, 1));
+        w1.criterionSatisfactions.add(w1s1);
+        ResourcesCostCategoryAssignmentDTO w1a1 =
+            new ResourcesCostCategoryAssignmentDTO(costCategory.getName(),
+                getDate(2000, 1, 1), getDate(2000, 2, 1));
+        w1.resourcesCostCategoryAssignments.add(w1a1);
+
+        /* Add resources. */
+        assertNoConstraintViolations(
+            resourceService.addResources(createResourceListDTO(m1, w1)));
+
+        /*
+         * Build DTOs for making the following update:
+         *
+         * + m1: update name, m1s1's start date, and add a new cost category
+         *       assignment.
+         * + w1: update surname, w1a1's start date, and add a new criterion
+         *       satisfaction.
+         */
+        MachineDTO m1Updated = new MachineDTO(m1.code, "name" + "UPDATED",
+            null);
+        CriterionSatisfactionDTO m1s1Updated = new CriterionSatisfactionDTO(
+            m1s1.code, null, null, getDate(2000, 1, 2), null);
+        m1Updated.criterionSatisfactions.add(m1s1Updated);
+        ResourcesCostCategoryAssignmentDTO m1a2 =
+            new ResourcesCostCategoryAssignmentDTO(costCategory.getName(),
+                getDate(2000, 3, 1), getDate(2000, 4, 1));
+        m1Updated.resourcesCostCategoryAssignments.add(m1a2);
+
+        WorkerDTO w1Updated = new WorkerDTO(w1.code, null,
+            "surname" + "UPDATED", null);
+        CriterionSatisfactionDTO w1s2 = new CriterionSatisfactionDTO(
+            ct.getName(), "c1", getDate(2000, 3, 1), getDate(2000, 4, 1));
+        w1Updated.criterionSatisfactions.add(w1s2);
+        ResourcesCostCategoryAssignmentDTO w1a1Updated =
+            new ResourcesCostCategoryAssignmentDTO(w1a1.code, null,
+                getDate(2000, 2, 1), null);
+        w1Updated.resourcesCostCategoryAssignments.add(w1a1Updated);
+
+        /* Update resources and test. */
+        assertNoConstraintViolations(
+            resourceService.addResources(createResourceListDTO(m1Updated,
+                w1Updated)));
+
+        /* Test machine update. */
+        Machine m1Entity = machineDAO.findByCode(m1.code);
+
+        assertEquals(m1Updated.name, m1Entity.getName()); // Modified.
+        assertEquals(m1.description, m1Entity.getDescription()); //Not modified.
+        assertTrue(datesEquals( // Modified.
+            m1s1Updated.startDate,
+            m1Entity.getCriterionSatisfactionByCode(m1s1.code).getStartDate()));
+        assertTrue(datesEquals( // Not modified.
+            m1s1.endDate,
+            m1Entity.getCriterionSatisfactionByCode(m1s1.code).getEndDate()));
+        m1Entity.getResourcesCostCategoryAssignmentByCode(m1a2.code); // New.
+
+        /* Test worker update. */
+        Worker w1Entity = workerDAO.findByCode(w1.code);
+
+        assertEquals(w1Updated.surname, w1Entity.getSurname()); // Modified.
+        assertEquals(w1.firstName, w1Entity.getFirstName()); // Not modified.
+        w1Entity.getCriterionSatisfactionByCode(w1s2.code); // New.
+        assertTrue(datesEquals( // Modified.
+            w1a1Updated.startDate,
+            w1Entity.getResourcesCostCategoryAssignmentByCode(w1a1.code).
+                getInitDate()));
+        assertTrue(datesEquals( // Not modified.
+            w1a1.endDate,
+            w1Entity.getResourcesCostCategoryAssignmentByCode(w1a1.code).
+                getEndDate()));
+
+    }
+
     private CriterionType createCriterionType() {
         return createCriterionType(ResourceEnum.RESOURCE, true);
     }
@@ -882,6 +985,35 @@ public class ResourceServiceTest {
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    private boolean datesEquals(XMLGregorianCalendar date1, Date date2) {
+
+        GregorianCalendar date2AsGC = new GregorianCalendar();
+        date2AsGC.setTime(date2);
+
+        return datesEquals(date1.toGregorianCalendar(), date2AsGC);
+
+    }
+
+    private boolean datesEquals(XMLGregorianCalendar date1, LocalDate date2) {
+
+        GregorianCalendar date2AsGC = new GregorianCalendar(
+            date2.getYear(), date2.getMonthOfYear()-1, date2.getDayOfMonth());
+
+        return datesEquals(date1.toGregorianCalendar(), date2AsGC);
+
+
+    }
+
+    public boolean datesEquals(GregorianCalendar date1,
+        GregorianCalendar date2) {
+
+        return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
+            date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH) &&
+            date1.get(Calendar.DAY_OF_MONTH) ==
+                date2.get(Calendar.DAY_OF_MONTH);
 
     }
 

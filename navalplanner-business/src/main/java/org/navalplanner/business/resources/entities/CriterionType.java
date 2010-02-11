@@ -80,6 +80,37 @@ public class CriterionType extends IntegrationEntity implements
 
     }
 
+    public void updateUnvalidated(String name, String description,
+        Boolean allowHierarchy, Boolean allowSimultaneousCriterionsPerResource,
+        Boolean enabled, ResourceEnum resource) {
+
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
+
+        if (!StringUtils.isBlank(description)) {
+            this.description = description;
+        }
+
+        if (allowHierarchy != null) {
+            this.allowHierarchy = allowHierarchy;
+        }
+
+        if (allowSimultaneousCriterionsPerResource != null) {
+            this.allowSimultaneousCriterionsPerResource =
+                allowSimultaneousCriterionsPerResource;
+        }
+
+        if (enabled != null) {
+            this.enabled = enabled;
+        }
+
+        if (resource != null) {
+            this.resource = resource;
+        }
+
+    }
+
     public static CriterionType create(String name,String description) {
         return create(new CriterionType(name,description));
     }

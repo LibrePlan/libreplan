@@ -16,7 +16,7 @@
     <machine code="m2" name="m2-name" description="m2-desc">
         <criterion-satisfaction-list>
             <criterion-satisfaction
-                code="m2-a1"
+                code="m2-s1"
                 criterion-type-name="WORK_RELATIONSHIP"
                 criterion-name="hiredResourceWorkingRelationship"
                 start-date="2009-01-01"

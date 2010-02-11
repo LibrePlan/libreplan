@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.AssertTrue;
@@ -58,6 +59,18 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         }
 
         return criterion;
+
+    }
+
+    public void updateUnvalidated(String name, Boolean active) {
+
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
+
+        if (active != null) {
+            this.active = active;
+        }
 
     }
 

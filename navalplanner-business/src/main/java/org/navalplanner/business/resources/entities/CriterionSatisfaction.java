@@ -23,6 +23,7 @@ package org.navalplanner.business.resources.entities;
 import java.util.Comparator;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.validator.AssertTrue;
@@ -101,6 +102,43 @@ public class CriterionSatisfaction extends IntegrationEntity {
         criterionSatisfaction.finishDate = finishDate;
 
         return criterionSatisfaction;
+
+    }
+
+    /**
+     * @throws InstanceNotFoundException if criterion type or criterion does
+     *         not exist
+     */
+    public void updateUnvalidated(String criterionTypeName,
+        String criterionName, Date startDate, Date finishDate)
+        throws InstanceNotFoundException {
+
+        CriterionType criterionType = null;
+
+        if (StringUtils.isBlank(criterionTypeName)) {
+            criterionType = criterion.getType();
+        } else {
+            criterionType = Registry.getCriterionTypeDAO().findUniqueByName(
+                criterionTypeName);
+        }
+
+        String newCriterionName = null;
+
+        if (StringUtils.isBlank(criterionName)) {
+            newCriterionName = StringUtils.trim(criterion.getName());
+        } else {
+            newCriterionName = criterionName;
+        }
+
+        this.criterion = criterionType.getCriterion(newCriterionName);
+
+        if (startDate != null) {
+            this.startDate = startDate;
+        }
+
+        if (finishDate != null) {
+            this.finishDate = finishDate;
+        }
 
     }
 

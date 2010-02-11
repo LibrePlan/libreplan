@@ -77,6 +77,27 @@ public class ResourcesCostCategoryAssignment extends IntegrationEntity {
 
     }
 
+    /**
+     * @throws InstanceNotFoundException if cost category does not exist
+     */
+    public void updateUnvalidated(String costCategoryName, LocalDate initDate,
+        LocalDate endDate) throws InstanceNotFoundException {
+
+        if (!StringUtils.isBlank(costCategoryName)) {
+            this.costCategory = Registry.getCostCategoryDAO().
+                findUniqueByName(costCategoryName);
+        }
+
+        if (initDate != null) {
+            this.initDate = initDate;
+        }
+
+        if (endDate != null) {
+            this.endDate = endDate;
+        }
+
+    }
+
     @NotNull(message="cost assignment's start date not specified")
     public LocalDate getInitDate() {
         return initDate;

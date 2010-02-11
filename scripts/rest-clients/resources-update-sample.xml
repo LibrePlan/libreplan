@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- These updates could be part resources-sample-mini.xml, but have been
+     extracted to an independent file for clarity (this way, by using the Web
+     user interface, one can see the effects of importing
+     resources-sample-mini.xml first, and then
+     resources-update-sample.xml). -->
+
+<resource-list xmlns="http://rest.ws.navalplanner.org">
+
+    <!-- OK (change name, machineA-s1's start date, and machineA-a2's start
+         date). -->
+    <machine code="machineA" name="name UPDATED">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                code="machineA-s1"
+                start-date="2009-02-01"/>
+        </criterion-satisfaction-list>
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                code="machineA-a2"
+                start-date="2000-02-01"/>
+        </resources-cost-category-assignment-list>
+    </machine>
+
+    <!-- OK (change first name, add one new criterion satisfaction and another
+         new one cost category assignment). -->
+    <worker code="workerA" first-name="workerA UPDATED">
+        <criterion-satisfaction-list>
+            <criterion-satisfaction
+                code="workerA-s3"
+                criterion-type-name="LEAVE"
+                criterion-name="paternityLeave"
+                start-date="2010-01-02"
+                end-date="2010-01-03"/>
+        </criterion-satisfaction-list>
+        <resources-cost-category-assignment-list>
+            <resources-cost-category-assignment
+                code="workerA-a3"
+                cost-category-name="TestCostCategory"
+                start-date="2000-05-01"
+                end-date="2000-06-01"/>
+        </resources-cost-category-assignment-list>
+    </worker>
+
+</resource-list>

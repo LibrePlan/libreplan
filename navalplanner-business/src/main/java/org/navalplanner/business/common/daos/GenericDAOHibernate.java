@@ -94,6 +94,10 @@ public class GenericDAOHibernate<E extends BaseEntity,
         entity.validate();
     }
 
+   public void saveWithoutValidating(E entity) {
+       getSession().saveOrUpdate(entity);
+   }
+
     public void reattachUnmodifiedEntity(E entity) {
 
         getSession().lock(entity, LockMode.NONE);

@@ -56,6 +56,11 @@ public interface IGenericDAO <E, PK extends Serializable>{
     public void save(E entity) throws ValidationException;
 
     /**
+     * Unlike <code>save</code>, it does not execute validations.
+     */
+    public void saveWithoutValidating(E entity);
+
+    /**
      * It reattaches the entity to the current session. This method bypasses
      * hibernate validations and must only be used on read only transaction
      * {@link OptimisticLockingFailureException} can be thrown if the entity has

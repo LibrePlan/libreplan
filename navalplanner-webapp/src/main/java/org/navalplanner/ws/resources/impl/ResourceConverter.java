@@ -36,6 +36,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.common.impl.InstanceNotFoundRecoverableErrorException;
+import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.MachineDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
@@ -51,20 +52,27 @@ import org.navalplanner.ws.resources.criterion.api.CriterionTypeDTO;
  */
 public class ResourceConverter {
 
+    /*
+     * These constants should probably be moved to XxxDTO.ENTITY_TYPE
+     * if the corresponding DTOs are created in the future.
+     */
+    private final static String RESOURCE_CALENDAR_ENTITY_TYPE =
+        "resource-calendar";
+    private final static String COST_CATEGORY_ENTITY_TYPE = "cost-category";
+
     private ResourceConverter() {}
 
-    public final static Resource toEntity(ResourceDTO resourceDTO) {
+    public final static Resource toEntity(ResourceDTO resourceDTO)
+        throws ValidationException, RecoverableErrorException {
+
+        checkResourceDTOType(resourceDTO);
 
         Resource resource;
 
         if (resourceDTO instanceof MachineDTO) {
             resource = createResourceWithBasicData((MachineDTO) resourceDTO);
-        } else if (resourceDTO instanceof WorkerDTO) {
-            resource = createResourceWithBasicData((WorkerDTO) resourceDTO);
         } else {
-            throw new RuntimeException(
-                _("Service does not manage resource of type: {0}",
-                    resourceDTO.getClass().getName()));
+            resource = createResourceWithBasicData((WorkerDTO) resourceDTO);
         }
 
         addCriterionSatisfactions(resource,
@@ -74,6 +82,24 @@ public class ResourceConverter {
             resourceDTO.resourcesCostCategoryAssignments);
 
         return resource;
+
+    }
+
+    public final static void updateResource(Resource resource,
+        ResourceDTO resourceDTO)
+        throws ValidationException, RecoverableErrorException {
+
+        checkResourceDTOType(resourceDTO);
+
+        updateBasicData(resource, resourceDTO);
+
+        updateResourceCalendar(resource, resourceDTO.calendarName);
+
+        updateCriterionSatisfactions(resource,
+            resourceDTO.criterionSatisfactions);
+
+        updateResourcesCostCategoryAssignments(resource,
+            resourceDTO.resourcesCostCategoryAssignments);
 
     }
 
@@ -154,13 +180,10 @@ public class ResourceConverter {
         String calendarName) {
 
         try {
-            resource.setResourceCalendar(calendarName);
+            resource.setResourceCalendar(StringUtils.trim(calendarName));
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundRecoverableErrorException(
-                "resource-calendar", e.getKey().toString());
-                // TODO: literal "resource-calendar" should possibly be
-                // replaced by ResourceCalendarDTO.ENTITY_TYPE if
-                // ResourceCalendarDTO is created in the future.
+                RESOURCE_CALENDAR_ENTITY_TYPE, e.getKey().toString());
         } catch (MultipleInstancesException e) {
             throw new ValidationException(
                 _("there exist multiple resource calendars with name {0}",
@@ -178,7 +201,7 @@ public class ResourceConverter {
 
             ResourcesCostCategoryAssignment assignment = toEntity(assignmentDTO,
                 resource);
-            resource.addResourcesCostCategoryAssignment(assignment);
+            resource.addUnvalidatedResourcesCostCategoryAssignment(assignment);
 
         }
 
@@ -194,15 +217,160 @@ public class ResourceConverter {
 
         try {
             return ResourcesCostCategoryAssignment.createUnvalidated(
-                assignmentDTO.code, assignmentDTO.costCategoryName, resource,
+                assignmentDTO.code,
+                StringUtils.trim(assignmentDTO.costCategoryName), resource,
                 DateConverter.toLocalDate(assignmentDTO.startDate),
                 DateConverter.toLocalDate(assignmentDTO.endDate));
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundRecoverableErrorException(
-                "cost-category", e.getKey().toString());
-            // TODO: literal "cost-category" should possibly be replaced by
-            // CostCategoryDTO.ENTITY_TYPE if CostCategoryDTO is created in the
-            // future.
+                COST_CATEGORY_ENTITY_TYPE, e.getKey().toString());
+        }
+
+    }
+
+    private static void updateBasicData(Resource resource,
+        ResourceDTO resourceDTO) {
+
+        if (resource instanceof Machine && resourceDTO instanceof MachineDTO) {
+
+            Machine machine = (Machine) resource;
+            MachineDTO machineDTO = (MachineDTO) resourceDTO;
+
+            machine.updateUnvalidated(
+                StringUtils.trim(machineDTO.name),
+                StringUtils.trim(machineDTO.description));
+
+        } else if (resource instanceof Worker &&
+            resourceDTO instanceof WorkerDTO) {
+
+            Worker worker = (Worker) resource;
+            WorkerDTO workerDTO = (WorkerDTO) resourceDTO;
+
+            worker.updateUnvalidated(
+                StringUtils.trim(workerDTO.firstName),
+                StringUtils.trim(workerDTO.surname),
+                StringUtils.trim(workerDTO.nif));
+
+        } else {
+
+            throw new ValidationException(
+                _("Incompatible update: stored resource is not of type: {0}",
+                    resourceDTO.getEntityType()));
+        }
+
+    }
+
+
+    private static void updateResourceCalendar(Resource resource,
+        String calendarName) {
+
+        // TODO. Decide policy to update calendar (e.g. previous calendar must
+        // be removed?, if new calendar is the same as previous, must be
+        // reinitialized again?, etc.)
+
+    }
+
+    private static void updateCriterionSatisfactions(Resource resource,
+        List<CriterionSatisfactionDTO> criterionSatisfactions) {
+
+        for (CriterionSatisfactionDTO i : criterionSatisfactions) {
+
+            try {
+
+                CriterionSatisfaction criterionSatisfaction =
+                    resource.getCriterionSatisfactionByCode(i.code);
+                updateCriterionSatisfaction(criterionSatisfaction, i);
+
+            } catch (InstanceNotFoundException e) {
+
+                CriterionSatisfaction criterionSatisfaction =
+                    toEntity(i, resource);
+
+                resource.addUnvalidatedSatisfaction(criterionSatisfaction);
+            }
+
+        }
+
+    }
+
+    private static void updateCriterionSatisfaction(
+        CriterionSatisfaction criterionSatisfaction,
+        CriterionSatisfactionDTO criterionSatisfactionDTO) {
+
+        try {
+
+            criterionSatisfaction.updateUnvalidated(
+                StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
+                StringUtils.trim(criterionSatisfactionDTO.criterionName),
+                DateConverter.toDate(criterionSatisfactionDTO.startDate),
+                DateConverter.toDate(criterionSatisfactionDTO.endDate));
+
+        } catch (InstanceNotFoundException e) {
+
+            if (e.getClassName().equals(CriterionType.class.getName())) {
+                throw new InstanceNotFoundRecoverableErrorException(
+                    CriterionTypeDTO.ENTITY_TYPE, e.getKey().toString());
+            } else {
+                throw new InstanceNotFoundRecoverableErrorException(
+                    CriterionDTO.ENTITY_TYPE, e.getKey().toString());
+            }
+
+        }
+
+    }
+
+    private static void updateResourcesCostCategoryAssignments(
+        Resource resource,
+        List<ResourcesCostCategoryAssignmentDTO> resourcesCostCategoryAssignments) {
+
+        for (ResourcesCostCategoryAssignmentDTO i :
+            resourcesCostCategoryAssignments) {
+
+            try {
+
+                ResourcesCostCategoryAssignment assignment =
+                    resource.getResourcesCostCategoryAssignmentByCode(i.code);
+                updateResourcesCostCategoryAssignment(assignment, i);
+
+            } catch (InstanceNotFoundException e) {
+
+                ResourcesCostCategoryAssignment assignment =
+                    toEntity(i, resource);
+
+                resource.addUnvalidatedResourcesCostCategoryAssignment(
+                    assignment);
+
+            }
+
+        }
+
+    }
+
+    private static void updateResourcesCostCategoryAssignment(
+        ResourcesCostCategoryAssignment assignment,
+        ResourcesCostCategoryAssignmentDTO i) {
+
+        try {
+            assignment.updateUnvalidated(
+                StringUtils.trim(i.costCategoryName),
+                DateConverter.toLocalDate(i.startDate),
+                DateConverter.toLocalDate(i.endDate));
+        } catch (InstanceNotFoundException e) {
+            throw new InstanceNotFoundRecoverableErrorException(
+                COST_CATEGORY_ENTITY_TYPE, e.getKey().toString());
+        }
+
+    }
+
+    private static void checkResourceDTOType(ResourceDTO resourceDTO) {
+
+        if (!(resourceDTO instanceof MachineDTO) &&
+            !(resourceDTO instanceof WorkerDTO)) {
+
+            throw new ValidationException(
+                _("Service does not manage resource of type: {0}",
+                    resourceDTO.getEntityType()));
+
         }
 
     }

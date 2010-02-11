@@ -134,23 +134,10 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
                 }
 
                 /*
-                 * Save the entity (insert or update).
-                 *
-                 * IGenericDAO::save first reattaches the object into the
-                 * underlying ORM session, and then calls BaseEntity::validate.
-                 * Despite this, we must call BaseEntity::validate before
-                 * IGenericDAO::save to avoid an invalid object to enter in
-                 * the underlying ORM session. Otherwise, the ORM could try
-                 * to flush the ORM session (with an invalid object violating
-                 * database-level restrictions) when executing
-                 * IGenericDAO::save, since this method calls
-                 * BaseEntity::validate (after reattaching the object), which
-                 * probably will cause queries to be launched to the database
-                 * (which may cause the flushing).
-                 *
+                 * Validate and save (insert or update) the entity.
                  */
                 entity.validate();
-                entityDAO.save(entity);
+                entityDAO.saveWithoutValidating(entity);
 
                 return null;
 

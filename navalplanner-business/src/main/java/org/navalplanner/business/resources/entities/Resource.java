@@ -118,6 +118,25 @@ public abstract class Resource extends IntegrationEntity {
         return satisfactionActives;
     }
 
+    public CriterionSatisfaction getCriterionSatisfactionByCode(String code)
+        throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code,
+                 CriterionSatisfaction.class.getName());
+        }
+
+        for (CriterionSatisfaction i : criterionSatisfactions) {
+            if (i.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return i;
+            }
+        }
+
+        throw new InstanceNotFoundException(code,
+            CriterionSatisfaction.class.getName());
+
+    }
+
     public abstract String getShortDescription();
 
     public abstract String getName();
@@ -699,7 +718,7 @@ public abstract class Resource extends IntegrationEntity {
         } else {
 
             List<BaseCalendar> baseCalendars = Registry.getBaseCalendarDAO().
-                findByName(StringUtils.trim(calendarName));
+                findByName(calendarName);
 
             if (baseCalendars.isEmpty()) {
                 throw new InstanceNotFoundException(calendarName,
@@ -832,10 +851,40 @@ public abstract class Resource extends IntegrationEntity {
         return resourcesCostCategoryAssignments;
     }
 
+    public ResourcesCostCategoryAssignment
+        getResourcesCostCategoryAssignmentByCode(String code)
+        throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code,
+                ResourcesCostCategoryAssignment.class.getName());
+        }
+
+        for (ResourcesCostCategoryAssignment i :
+            resourcesCostCategoryAssignments) {
+
+            if (i.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return i;
+            }
+
+        }
+
+        throw new InstanceNotFoundException(code,
+            ResourcesCostCategoryAssignment.class.getName());
+
+    }
+
     public void addResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
         resourcesCostCategoryAssignments.add(assignment);
         if(assignment.getResource()!=this)
             assignment.setResource(this);
+    }
+
+    public void addUnvalidatedResourcesCostCategoryAssignment(
+        ResourcesCostCategoryAssignment assignment) {
+
+        resourcesCostCategoryAssignments.add(assignment);
+
     }
 
     public void removeResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {

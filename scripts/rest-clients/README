@@ -38,6 +38,9 @@
     - Check the returned errors are consistent with the comments in
       resources-sample.xml.
 
+    - Repeat with resources-update-sample.xml (resources-sample-mini.xml
+      must be previously imported).
+
   * Export order elements:
 
     - export-order-element.sh ORDER-ELEMENT-CODE (authenticate with
