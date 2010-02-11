@@ -1131,14 +1131,6 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     font-weight:bold;
 }
 
-.advancedassignmentdetails .hours {
-    min-width: 30px;
-}
-
-.function {
-    min-width: 90px;
-}
-
 .migas_linea .scheduling-state {
     -moz-border-radius-bottomleft: 6px;
     -moz-border-radius-bottomright: 1px;

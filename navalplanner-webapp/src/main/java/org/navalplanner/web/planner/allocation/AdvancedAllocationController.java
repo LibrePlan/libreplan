@@ -35,6 +35,7 @@ import java.util.WeakHashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -515,8 +516,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             Restriction restriction) {
         return Row.createRow(messages, restriction,
                 specificResourceAllocation.getResource()
-                        .getShortDescription(), 1, Arrays
-                        .asList(specificResourceAllocation));
+                        .getName(), 1, Arrays
+                .asList(specificResourceAllocation), specificResourceAllocation
+                .getResource().getShortDescription());
     }
 
     private List<Row> genericRows(AllocationInput allocationInput) {
@@ -541,7 +543,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGroupingRow(AllocationInput allocationInput) {
         Restriction restriction = allocationInput.getResultReceiver()
                 .createRestriction();
-        String taskName = _("{0} (task)", allocationInput.getTaskName());
+        String taskName = _("{0}", allocationInput.getTaskName());
         Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
                 allocationInput.getAllocationsSortedByStartDate());
         return groupingRow;
@@ -650,12 +652,19 @@ interface CellChangedListener {
 
 class Row {
 
-
-
     static Row createRow(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
-            List<? extends ResourceAllocation<?>> allocations) {
+ List<? extends ResourceAllocation<?>> allocations,
+            String description) {
+        Row newRow = new Row(messages, restriction, name, level, allocations);
+        newRow.setDescription(description);
+        return newRow;
+    }
+
+    static Row createRow(IMessagesForUser messages,
+            AdvancedAllocationController.Restriction restriction, String name,
+            int level, List<? extends ResourceAllocation<?>> allocations) {
         return new Row(messages, restriction, name, level, allocations);
     }
 
@@ -672,6 +681,8 @@ class Row {
     private Map<DetailItem, Component> componentsByDetailItem = new WeakHashMap<DetailItem, Component>();
 
     private String name;
+
+    private String description;
 
     private int level;
 
@@ -967,6 +978,13 @@ class Row {
         if (nameLabel == null) {
             nameLabel = new Label();
             nameLabel.setValue(name);
+            if (!StringUtils.isBlank(description)) {
+                nameLabel.setTooltiptext(description);
+            } else {
+                nameLabel.setTooltiptext(name);
+            }
+
+            nameLabel.setSclass("level" + level);
         }
         return nameLabel;
     }
@@ -978,9 +996,6 @@ class Row {
         this.messages = messages;
         this.restriction = restriction;
         this.name = name;
-        if (level != 0) {
-            this.name = "  · " + this.name;
-        }
         this.level = level;
         this.aggregate = new AggregateOfResourceAllocations(
                 new ArrayList<ResourceAllocation<?>>(allocations));
@@ -1057,6 +1072,14 @@ class Row {
 
     private boolean isGroupingRow() {
         return level == 0;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

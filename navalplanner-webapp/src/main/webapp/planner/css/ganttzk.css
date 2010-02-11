@@ -668,18 +668,62 @@ div.z-tree {
     padding:0 !important;
 }
 .advancedallocationlayout .taskspanelgap td.z-row-inner input {
-    padding-top:2px;
-    padding-bottom:2px;
+    padding-top: 1px;
+    padding-bottom:1px;
 }
+
+.advancedallocationlayout .taskspanelgap .z-label {
+  margin-left:3px;
+}
+
+.advancedallocationlayout .taskspanelgap .level1 {
+  margin-left:8px;
+}
+
 
 .taskspanelgap table {
     border-collapse: collapse;
 }
 
+.advancedallocationlayout .taskspanelgap input {
+    width: 100%;
+    heigth: 21px;
+}
+
+.advancedallocationlayout .taskspanelgap tr.z-grid-odd td.z-row-inner, tr.z-grid-odd,
+.advancedallocationlayout .taskspanelgap tr.z-row {
+    background: #E8E8E8;
+}
+
+.advancedallocationlayout .taskspanelgap input {
+    widht: 100%;
+}
+
+
 .taskspanelgap input {
     border: 0;
     height: 19px;
+
 }
+
+.advancedassignmentdetails tr.z-row,
+.taskspanelgap tr.z-row {
+    height: 23px;
+}
+
+.advancedassignmentdetails td {
+    overflow:hidden;
+    white-space: nowrap;
+}
+
+.advancedassignmentdetails .level1 {
+  margin-left:12px;
+}
+
+.advancedassignmentdetails .level0 {
+  font-weight:bold;
+}
+
 
 .advancedallocationlayout .leftpanelgap .z-grid-header {
     /* padding-bottom: 3px; */
@@ -696,19 +740,30 @@ div.z-tree {
     padding-bottom:0;
 }
 
-.advancedallocationlayout .leftpanelgap input {
-    height:19px;
-    width: 52px;
+.advancedassignmentdetails .z-intbox {
+    width: 50px;
 }
-
-.advancedallocationlayout .leftpanelgap .hours {
+.advancedassignmentdetails .z-combobox-inp {
     width: 60px;
 }
 
 .advancedallocationlayout .leftpanelgap .name {
-    min-width: 200px;
 }
 
+.advancedassignmentdetails .hours {
+    width: 60px;
+}
+
+.advancedassignmentdetails .function {
+    width: 110px;
+}
+
+.advancedassignmentdetails .z-combobox {
+    margin-top: 2px;
+}
+.advancedassignmentdetails .z-intbox {
+    padding-left: 0px;
+}
 
 #tasksTree div.z-tree-header, #tasksTree div.z-tree-header tr, #tasksTree div.z-tree-footer {
     overflow:visible;
@@ -771,9 +826,10 @@ div.z-tree {
     display:none;
 }
 
+/*
 .advancedassignmentdetails .z-row, .advancedallocationlayout .taskspanelgap .z-row {
     height: 20px;
-}
+} */
 
 .advancedallocationlayout .taskspanelgap td.z-row-inner {
     padding:1px;
