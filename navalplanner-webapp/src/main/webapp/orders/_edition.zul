@@ -33,8 +33,9 @@
 
     <tabbox id="tabboxOrder">
         <tabs>
-            <tab id="tabGeneralData" label="${i18n:_('General data')}" />
-            <tab id="tabOrderElements" label="${i18n:_('Order elements')}" />
+            <tab id="tabGeneralData" label="${i18n:_('General data')}" selected="true"/>
+            <tab id="tabOrderElements" label="${i18n:_('Order elements')}"
+                onSelect = "controller.setupOrderElementTreeController();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}" />
             <tab id="tabAdvances" label="${i18n:_('Advances')}" />
             <tab id="tabLabels" label="${i18n:_('Label')}" />
@@ -145,7 +146,7 @@
                     </rows>
                 </grid>
             </tabpanel>
-            <tabpanel sclass="orderelements-tab">
+            <tabpanel sclass="orderelements-tab" fulfill="tabOrderElements.onSelect">
                 <orderElementTree id="orderElementTree"/>
             </tabpanel>
             <tabpanel>

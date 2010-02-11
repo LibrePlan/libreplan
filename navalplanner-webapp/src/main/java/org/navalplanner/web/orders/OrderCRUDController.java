@@ -72,6 +72,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -267,11 +269,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void setupEditControllers() throws Exception {
         Component comp = self;
-        OrderElementController orderElementController = new OrderElementController();
-        orderElementController.doAfterCompose(comp
-                .getFellow("editOrderElement"));
 
-        setupOrderElementTreeController(comp, orderElementController);
         setupAsignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
@@ -281,13 +279,24 @@ public class OrderCRUDController extends GenericForwardComposer {
         setupOrderAuthorizationController(comp);
     }
 
-    private void setupOrderElementTreeController(Component comp,
-            OrderElementController orderElementController) throws Exception {
-        TreeComponent orderElementsTree = (TreeComponent) editWindow
-                .getFellow("orderElementTree");
-        orderElementTreeController = new OrderElementTreeController(
-                orderModel, orderElementController);
-        orderElementsTree.useController(orderElementTreeController);
+    public void setupOrderElementTreeController() throws Exception {
+        if (orderElementTreeController == null) {
+            OrderElementController orderElementController = new OrderElementController();
+            orderElementController.doAfterCompose(self
+                    .getFellow("editOrderElement"));
+            orderElementTreeController = new OrderElementTreeController(
+                    orderModel, orderElementController);
+
+            TreeComponent orderElementsTree = (TreeComponent) editWindow
+                    .getFellow("orderElementTree");
+            orderElementsTree.useController(orderElementTreeController);
+            redraw(orderElementsTree);
+        }
+    }
+
+    private void redraw(Component comp) {
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     private IOrderElementModel getOrderElementModel() {
@@ -435,6 +444,12 @@ public class OrderCRUDController extends GenericForwardComposer {
         return false;
     }
 
+    Tab tabGeneralData;
+
+    private void selectDefaultTab() {
+        selectTab("tabGeneralData");
+    }
+
     private void setCurrentTab() {
         Tabbox tabboxOrder = (Tabbox) editWindow.getFellowIfAny("tabboxOrder");
         if (tabboxOrder != null) {
@@ -576,7 +591,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void showEditWindow(String title) {
         addEditWindowIfNeeded();
-        clearEditWindow();
+        selectDefaultTab();
         initializeTabs();
         editWindow.setTitle(title);
         showWindow(editWindow);
@@ -585,6 +600,11 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void initializeTabs() {
         final IOrderElementModel orderElementModel = getOrderElementModel();
 
+        if(orderElementTreeController != null){
+            TreeComponent orderElementsTree = (TreeComponent) editWindow
+            .getFellow("orderElementTree");
+            redraw(orderElementsTree);
+        }
         assignedHoursController.openWindow(orderElementModel);
         manageOrderElementAdvancesController.openWindow(orderElementModel);
         assignedLabelsController.openWindow(orderElementModel);
@@ -907,7 +927,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void highLight(OrderElement orderElement) {
-        selectTab("tabOrderElements");
+        Tab tab = (Tab) editWindow.getFellowIfAny("tabOrderElements");
+        if (tab != null) {
+            tab.setSelected(true);
+            Events.sendEvent(new SelectEvent(Events.ON_SELECT, tab, null));
+        }
+
         if ((!(orderElement instanceof Order))
                 && (orderElementTreeController != null)) {
             final Treeitem item = orderElementTreeController
