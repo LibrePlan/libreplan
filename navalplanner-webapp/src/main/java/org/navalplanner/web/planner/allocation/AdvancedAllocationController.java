@@ -410,7 +410,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private void createComponents() {
-        timeTracker = new TimeTracker(addYearMarginTointerval(), self);
+        timeTracker = new TimeTracker(addMarginTointerval(), self);
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
                 timeTracker, "timeTracker");
         TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
@@ -424,6 +424,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             }
         });
         table = timeTrackedTableWithLeftPane.getRightPane();
+        table.setSclass("timeTrackedTableWithLeftPane");
         leftPane = timeTrackedTableWithLeftPane.getLeftPane();
         leftPane.setFixedLayout(true);
     }
@@ -612,13 +613,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         return result;
     }
 
-    private Interval addYearMarginTointerval() {
+    private Interval addMarginTointerval() {
         Interval interval = intervalFromData();
-        return new Interval(new DateTime(interval.getStart()).minusYears(1)
-                .toDate(), new DateTime(interval.getFinish()).plusYears(1)
-                .toDate());
+        // No global margin is added by default
+        return interval;
     }
-
 }
 
 abstract class ColumnOnRow implements IConvertibleToColumn {
