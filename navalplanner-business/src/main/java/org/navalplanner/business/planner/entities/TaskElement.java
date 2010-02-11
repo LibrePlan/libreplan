@@ -359,9 +359,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public BaseCalendar getCalendar() {
         if (calendar == null) {
-            return getOrderElement().getOrder().getCalendar();
+            OrderElement orderElement = getOrderElement();
+            return orderElement != null ? orderElement.getOrder().getCalendar()
+                    : null;
         }
-
         return calendar;
     }
 
