@@ -21,17 +21,9 @@
 // Check if this is advanced location tab
 ADVANCE_ALLOCATIONS = {};
 
-ADVANCE_ALLOCATIONS.taskspanel = function() {
-    return YAHOO.util.Selector.query('.taskspanelgap .z-grid-body')[0];
-};
-
-ADVANCE_ALLOCATIONS.timetrackergap = function() {
-	return YAHOO.util.Selector.query('.timetrackergap')[0];
-}
-
 ADVANCE_ALLOCATIONS.listenToScroll = function() {
-    var timetrackergap_ = ADVANCE_ALLOCATIONS.timetrackergap();
-    var taskspanel_ = ADVANCE_ALLOCATIONS.taskspanel();
+    var timetrackergap_ = YAHOO.util.Selector.query('.timetrackergap')[0];
+    var taskspanel_ = YAHOO.util.Selector.query('.taskspanelgap .z-grid-body')[0];
 
     var onScroll = function() {
         timetrackergap_.style["left"] = "-" + taskspanel_.scrollLeft + "px";
