@@ -97,7 +97,9 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         initializeEdition(element);
         prepareCategoriesTree();
         prepareAllCategoriesTree();
-        reloadGridMaterials();
+
+        Util.createBindingsFor(self);
+        Util.reloadBindings(self);
     }
 
     protected abstract void initializeEdition(T orderElement);

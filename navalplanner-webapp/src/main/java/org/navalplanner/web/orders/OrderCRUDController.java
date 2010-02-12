@@ -270,7 +270,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void setupEditControllers() throws Exception {
         Component comp = self;
 
-        setupAssignedMaterialsToOrderElementController(comp);
         setupAssignedTaskQualityFormsToOrderElementController(comp);
         setupOrderAuthorizationController(comp);
     }
@@ -361,11 +360,17 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedMaterialsToOrderElementController assignedMaterialsController;
 
-    private void setupAssignedMaterialsToOrderElementController(
-            Component comp) throws Exception {
-        OrderElementMaterialAssignmentsComponent assignmentsComponent = (OrderElementMaterialAssignmentsComponent) editWindow
+    public void setupAssignedMaterialsToOrderElementController()
+            throws Exception {
+        if (assignedMaterialsController == null) {
+            OrderElementMaterialAssignmentsComponent assignmentsComponent = (OrderElementMaterialAssignmentsComponent) editWindow
                 .getFellowIfAny("orderElementMaterials");
-        assignedMaterialsController = assignmentsComponent.getController();
+            assignedMaterialsController = assignmentsComponent.getController();
+
+            final IOrderElementModel orderElementModel = getOrderElementModel();
+            assignedMaterialsController.openWindow(orderElementModel
+                    .getOrderElement());
+        }
     }
 
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;
@@ -640,8 +645,10 @@ public class OrderCRUDController extends GenericForwardComposer {
             assignedCriterionRequirementController
                     .openWindow(orderElementModel);
         }
-        assignedMaterialsController.openWindow(orderElementModel
-                .getOrderElement());
+        if (assignedMaterialsController != null) {
+            assignedMaterialsController.openWindow(orderElementModel
+                    .getOrderElement());
+        }
         assignedTaskQualityFormController.openWindow(orderElementModel);
     }
 
