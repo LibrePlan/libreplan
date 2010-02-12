@@ -273,7 +273,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         appendTabs(chartComponent);
 
         configuration.setChartComponent(chartComponent);
-        showDeadlineIfExists(orderReloaded, configuration);
+        configureModificators(orderReloaded, configuration);
         planner.setConfiguration(configuration);
 
         Timeplot chartLoadTimeplot = new Timeplot();
@@ -329,12 +329,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return result;
     }
 
-    private void showDeadlineIfExists(Order orderReloaded,
+    private void configureModificators(Order orderReloaded,
             PlannerConfiguration<TaskElement> configuration) {
         if (orderReloaded.getDeadline() != null) {
-            configuration
-                    .setSecondLevelModificators(createDeadlineShower(orderReloaded
-                            .getDeadline()));
+            configuration.setSecondLevelModificators(SeveralModificators
+                    .create(new BankHolidaysMarker(),
+                            createDeadlineShower(orderReloaded.getDeadline())));
+        } else {
+            configuration.setSecondLevelModificators(new BankHolidaysMarker());
         }
     }
 
@@ -349,9 +351,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 return item;
             }
         };
-        return SeveralModificators.create(deadlineMarker,
-                createBankHolidayMarker());
+        return deadlineMarker;
     }
+
+
+
 
     public static IDetailItemModificator createBankHolidayMarker() {
         return new BankHolidaysMarker();
