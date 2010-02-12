@@ -19,14 +19,14 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AsignedHoursToOrderElementController">
+    apply="org.navalplanner.web.orders.AssignedHoursToOrderElementController">
 
     <!-- Direct imputation -->
     <vbox>
         <panel title="${i18n:_('Direct imputation')}">
             <panelchildren>
                 <grid style="border:0px" height="100%"
-                    model="@{asignedHoursToOrderElementController.workReportLines}"
+                    model="@{assignedHoursToOrderElementController.workReportLines}"
                     mold="paging" pageSize="10">
                     <columns>
                         <column label="${i18n:_('Date')}" />
@@ -52,7 +52,7 @@
                 <row>
                     <label value="${i18n:_('Total')}:" />
                     <label
-                        value="@{asignedHoursToOrderElementController.totalAsignedDirectHours}" />
+                        value="@{assignedHoursToOrderElementController.totalAssignedDirectHours}" />
                 </row>
             </rows>
         </grid>
@@ -73,12 +73,12 @@
                             <label
                                 value="${i18n:_('Order lines imputation')}:" />
                             <label id="totalIDC"
-                                value="@{asignedHoursToOrderElementController.hoursChildren}" />
+                                value="@{assignedHoursToOrderElementController.hoursChildren}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Total')}:" />
                             <label id="addtotal"
-                                value="@{asignedHoursToOrderElementController.totalAsignedHours}" />
+                                value="@{assignedHoursToOrderElementController.totalAssignedHours}" />
                         </row>
                     </rows>
                 </grid>
@@ -108,19 +108,19 @@
                                         <label
                                             value="${i18n:_('Budget hours')}:" />
                                         <label
-                                            value="@{asignedHoursToOrderElementController.estimatedHours}" />
+                                            value="@{assignedHoursToOrderElementController.estimatedHours}" />
                                     </row>
                                     <row>
                                         <label
                                             value="${i18n:_('Imputed hours')}:" />
                                         <label
-                                            value="@{asignedHoursToOrderElementController.totalAsignedHours}" />
+                                            value="@{assignedHoursToOrderElementController.totalAssignedHours}" />
                                     </row>
                                 </rows>
                             </grid>
                             <hbox id="Percentage">
                                 <label
-                                    value="@{asignedHoursToOrderElementController.progressWork}" />
+                                    value="@{assignedHoursToOrderElementController.progressWork}" />
                                 <label value="${i18n:_('%')}" />
                                 <progressmeter id="hoursProgressBar" />
                                 <progressmeter

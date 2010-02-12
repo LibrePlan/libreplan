@@ -56,7 +56,7 @@ public class OrderElementController extends GenericForwardComposer {
 
     private Component orderElementHours;
 
-    private AsignedHoursToOrderElementController asignedHoursToOrderElementController;
+    private AssignedHoursToOrderElementController assignedHoursToOrderElementController;
 
     private Component orderElementAdvances;
 
@@ -81,7 +81,7 @@ public class OrderElementController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setVariable("orderElementController", this, true);
         setupDetailsOrderElementController(comp);
-        setupAsignedHoursToOrderElementController(comp);
+        setupAssignedHoursToOrderElementController(comp);
         setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementToOrderElementController(comp);
@@ -94,9 +94,10 @@ public class OrderElementController extends GenericForwardComposer {
         orderElementDetails.getVariable("detailsController", true);
     }
 
-    private void setupAsignedHoursToOrderElementController(Component comp) throws Exception{
-        asignedHoursToOrderElementController = (AsignedHoursToOrderElementController)
-        orderElementHours.getVariable("asignedHoursToOrderElementController", true);
+    private void setupAssignedHoursToOrderElementController(Component comp) throws Exception{
+        assignedHoursToOrderElementController = (AssignedHoursToOrderElementController)
+ orderElementHours
+                .getVariable("assignedHoursToOrderElementController", true);
     }
 
     private void setupManageOrderElementAdvancesController(Component comp) throws Exception {
@@ -144,7 +145,7 @@ public class OrderElementController extends GenericForwardComposer {
         setOrderElementModel(model);
 
         detailsController.openWindow(model);
-        asignedHoursToOrderElementController.openWindow(model);
+        assignedHoursToOrderElementController.openWindow(model);
         manageOrderElementAdvancesController.openWindow(model);
         assignedLabelsController.openWindow(model);
         assignedCriterionRequirementController.openWindow(model);

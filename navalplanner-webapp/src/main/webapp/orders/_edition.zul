@@ -38,7 +38,7 @@
             <tab id="tabOrderElements" label="${i18n:_('Order elements')}"
                 onSelect = "controller.setupOrderElementTreeController();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
-                onSelect = "controller.setupAsignedHoursToOrderElementController();"/>
+                onSelect = "controller.setupAssignedHoursToOrderElementController();"/>
             <tab id="tabAdvances" label="${i18n:_('Advances')}"
                 onSelect = "controller.setupManageOrderElementAdvancesController();"/>
             <tab id="tabLabels" label="${i18n:_('Label')}"

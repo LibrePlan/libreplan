@@ -28,11 +28,11 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IAsignedHoursToOrderElementModel{
+public interface IAssignedHoursToOrderElementModel{
     public List<WorkReportLine> getWorkReportLines();
-    public int getAsignedDirectHours();
-    public int getTotalAsignedHours();
-    public int getAsignedDirectHoursChildren();
+    public int getAssignedDirectHours();
+    public int getTotalAssignedHours();
+    public int getAssignedDirectHoursChildren();
     public void initOrderElement(OrderElement orderElement);
     public int getEstimatedHours();
     public int getProgressWork();

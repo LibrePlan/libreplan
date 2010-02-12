@@ -43,8 +43,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class AsignedHoursToOrderElementModel implements
-        IAsignedHoursToOrderElementModel {
+public class AssignedHoursToOrderElementModel implements
+        IAssignedHoursToOrderElementModel {
 
     @Autowired
     private final IWorkReportLineDAO workReportLineDAO;
@@ -52,17 +52,17 @@ public class AsignedHoursToOrderElementModel implements
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    private int asignedDirectHours;
+    private int assignedDirectHours;
 
     private OrderElement orderElement;
 
     private List<WorkReportLine> listWRL;
 
     @Autowired
-    public AsignedHoursToOrderElementModel(IWorkReportLineDAO workReportLineDAO) {
+    public AssignedHoursToOrderElementModel(IWorkReportLineDAO workReportLineDAO) {
         Validate.notNull(workReportLineDAO);
         this.workReportLineDAO = workReportLineDAO;
-        this.asignedDirectHours = 0;
+        this.assignedDirectHours = 0;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class AsignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return new ArrayList<WorkReportLine>();
         }
-        this.asignedDirectHours = 0;
+        this.assignedDirectHours = 0;
         this.listWRL = workReportLineDAO.findByOrderElement(orderElement);
         Iterator<WorkReportLine> iterador = listWRL.iterator();
         while (iterador.hasNext()) {
@@ -79,22 +79,22 @@ public class AsignedHoursToOrderElementModel implements
             w.getResource().getShortDescription();
             w.getOrderElement().getWorkHours();
             w.getWorkReport().getDate();
-            this.asignedDirectHours = this.asignedDirectHours + w.getNumHours();
+            this.assignedDirectHours = this.assignedDirectHours + w.getNumHours();
         }
         return listWRL;
     }
 
     @Override
-    public int getAsignedDirectHours() {
+    public int getAssignedDirectHours() {
         if (orderElement == null) {
             return 0;
         }
-        return this.asignedDirectHours;
+        return this.assignedDirectHours;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public int getTotalAsignedHours() {
+    public int getTotalAssignedHours() {
         if (orderElement == null) {
             return 0;
         }
@@ -103,16 +103,16 @@ public class AsignedHoursToOrderElementModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public int getAsignedDirectHoursChildren() {
+    public int getAssignedDirectHoursChildren() {
         if (orderElement == null) {
             return 0;
         }
         if (orderElement.getChildren().isEmpty()) {
             return 0;
         }
-        int asignedDirectChildren = getTotalAsignedHours()
-                - this.asignedDirectHours;
-        return asignedDirectChildren;
+        int assignedDirectChildren = getTotalAssignedHours()
+                - this.assignedDirectHours;
+        return assignedDirectChildren;
     }
 
     @Override

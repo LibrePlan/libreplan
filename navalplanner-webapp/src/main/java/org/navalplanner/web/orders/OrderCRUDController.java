@@ -298,14 +298,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         return orderModel.getOrderElementModel(order);
     }
 
-    private AsignedHoursToOrderElementController assignedHoursController;
+    private AssignedHoursToOrderElementController assignedHoursController;
 
-    public void setupAsignedHoursToOrderElementController() throws Exception {
+    public void setupAssignedHoursToOrderElementController() throws Exception {
         if (assignedHoursController == null) {
             Component orderElementHours = editWindow
                     .getFellowIfAny("orderElementHours");
-            assignedHoursController = (AsignedHoursToOrderElementController) orderElementHours
-                    .getVariable("asignedHoursToOrderElementController", true);
+            assignedHoursController = (AssignedHoursToOrderElementController) orderElementHours
+                    .getVariable("assignedHoursToOrderElementController", true);
 
             final IOrderElementModel orderElementModel = getOrderElementModel();
             assignedHoursController.openWindow(orderElementModel);

@@ -34,48 +34,49 @@ import org.zkoss.zul.Vbox;
  * Controller for show the asigned hours of the selected order element<br />
  * @author Susana Montes Pedreria <smontes@wirelessgalicia.com>
  */
-public class AsignedHoursToOrderElementController extends
+public class AssignedHoursToOrderElementController extends
         GenericForwardComposer {
 
-    private IAsignedHoursToOrderElementModel asignedHoursToOrderElementModel;
+    private IAssignedHoursToOrderElementModel assignedHoursToOrderElementModel;
 
     private Vbox orderElementHours;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("asignedHoursToOrderElementController", this, true);
+        comp.setVariable("assignedHoursToOrderElementController", this, true);
     }
 
     public List<WorkReportLine> getWorkReportLines() {
-        return asignedHoursToOrderElementModel.getWorkReportLines();
+        return assignedHoursToOrderElementModel.getWorkReportLines();
     }
 
-    public int getTotalAsignedDirectHours() {
-        return asignedHoursToOrderElementModel.getAsignedDirectHours();
+    public int getTotalAssignedDirectHours() {
+        return assignedHoursToOrderElementModel.getAssignedDirectHours();
     }
 
-    public int getTotalAsignedHours() {
-        return asignedHoursToOrderElementModel.getTotalAsignedHours();
+    public int getTotalAssignedHours() {
+        return assignedHoursToOrderElementModel.getTotalAssignedHours();
     }
 
     public int getHoursChildren() {
-        return asignedHoursToOrderElementModel.getAsignedDirectHoursChildren();
+        return assignedHoursToOrderElementModel
+                .getAssignedDirectHoursChildren();
     }
 
     public int getEstimatedHours() {
-        return asignedHoursToOrderElementModel.getEstimatedHours();
+        return assignedHoursToOrderElementModel.getEstimatedHours();
     }
 
     public int getProgressWork() {
-        return asignedHoursToOrderElementModel.getProgressWork();
+        return assignedHoursToOrderElementModel.getProgressWork();
     }
 
     private IOrderElementModel orderElementModel;
 
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
-        asignedHoursToOrderElementModel.initOrderElement(getOrderElement());
+        assignedHoursToOrderElementModel.initOrderElement(getOrderElement());
 
         if (orderElementHours != null) {
             Util.createBindingsFor(orderElementHours);
