@@ -107,6 +107,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
         // Clear components
         bdQualityForms.clear();
+        Util.createBindingsFor(self);
         Util.reloadBindings(self);
         reloadTaskQualityForms();
     }

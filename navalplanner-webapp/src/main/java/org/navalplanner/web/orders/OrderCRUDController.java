@@ -270,8 +270,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void setupEditControllers() throws Exception {
         Component comp = self;
-
-        setupAssignedTaskQualityFormsToOrderElementController(comp);
         setupOrderAuthorizationController(comp);
     }
 
@@ -376,12 +374,15 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;
 
-    private void setupAssignedTaskQualityFormsToOrderElementController(
-            Component comp) throws Exception {
-        Component orderElementTaskQualityForms = editWindow
+    public void setupAssignedTaskQualityFormsToOrderElementController() throws Exception {
+        if (assignedTaskQualityFormController == null) {
+            Component orderElementTaskQualityForms = editWindow
                 .getFellowIfAny("orderElementTaskQualityForms");
-        assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
+            assignedTaskQualityFormController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
                 .getVariable("assignedTaskQualityFormsController", true);
+            final IOrderElementModel orderElementModel = getOrderElementModel();
+            assignedTaskQualityFormController.openWindow(orderElementModel);
+        }
     }
 
     private OrderAuthorizationController orderAuthorizationController;
@@ -457,7 +458,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                 && (!assignedCriterionRequirementController.close())) {
             selectTab("tabRequirements");
         }
-        if (!assignedTaskQualityFormController.confirm()) {
+        if ((assignedTaskQualityFormController != null)
+                && (!assignedTaskQualityFormController.confirm())) {
             selectTab("tabTaskQualityForm");
             return false;
         }
@@ -660,7 +662,9 @@ public class OrderCRUDController extends GenericForwardComposer {
             assignedMaterialsController.openWindow(orderElementModel
                     .getOrderElement());
         }
-        assignedTaskQualityFormController.openWindow(orderElementModel);
+        if (assignedTaskQualityFormController != null) {
+            assignedTaskQualityFormController.openWindow(orderElementModel);
+        }
     }
 
     private void clearEditWindow() {

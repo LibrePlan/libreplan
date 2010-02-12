@@ -47,7 +47,8 @@
                 onSelect = "controller.setupAssignedCriterionRequirementsToOrderElementController();"/>
             <tab id="tabMaterials" label="${i18n:_('Materials')}"
                 onSelect = "controller.setupAssignedMaterialsToOrderElementController();"/>
-            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}" />
+            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"
+                onSelect = "controller.setupAssignedTaskQualityFormsToOrderElementController();"/>
             <tab id="tabAuthorizations" label="${i18n:_('Authorizations')}" />
         </tabs>
         <tabpanels>
@@ -171,7 +172,7 @@
                 <listOrderElementMaterials id="orderElementMaterials" fulfill="tabMaterials.onSelect"/>
             </tabpanel>
             <tabpanel>
-                <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" />
+                <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" fulfill="tabTaskQualityForm.onSelect"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementAuthorizations id="orderElementAuthorizations"/>
