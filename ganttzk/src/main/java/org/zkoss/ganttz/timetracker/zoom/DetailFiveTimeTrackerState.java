@@ -33,8 +33,8 @@ import org.joda.time.ReadablePeriod;
 public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
     private static final int NUMBER_OF_DAYS_MINIMUM = 50;
-    public static final int FIRST_LEVEL_SIZE = 140;
-    public static final int SECOND_LEVEL_SIZE = 20;
+    public static final int FIRST_LEVEL_SIZE = 210;
+    public static final int SECOND_LEVEL_SIZE = 30;
 
     DetailFiveTimeTrackerState(IDetailItemModificator firstLevelModificator,
             IDetailItemModificator secondLevelModificator) {
