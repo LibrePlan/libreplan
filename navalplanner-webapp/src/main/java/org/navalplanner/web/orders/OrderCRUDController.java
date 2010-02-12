@@ -270,7 +270,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void setupEditControllers() throws Exception {
         Component comp = self;
 
-        setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementsToOrderElementController(comp);
         setupAssignedMaterialsToOrderElementController(comp);
         setupAssignedTaskQualityFormsToOrderElementController(comp);
@@ -331,11 +330,16 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedLabelsToOrderElementController assignedLabelsController;
 
-    private void setupAssignedLabelsToOrderElementController(Component comp)
+    public void setupAssignedLabelsToOrderElementController()
     throws Exception {
-        LabelsAssignmentToOrderElementComponent labelsAssignment = (LabelsAssignmentToOrderElementComponent) editWindow
+        if (assignedLabelsController == null) {
+            LabelsAssignmentToOrderElementComponent labelsAssignment = (LabelsAssignmentToOrderElementComponent) editWindow
                 .getFellow("orderElementLabels");
-        assignedLabelsController = labelsAssignment.getController();
+            assignedLabelsController = labelsAssignment.getController();
+
+            final IOrderElementModel orderElementModel = getOrderElementModel();
+            assignedLabelsController.openWindow(orderElementModel);
+        }
     }
 
     private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
@@ -621,7 +625,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (manageOrderElementAdvancesController != null) {
             manageOrderElementAdvancesController.openWindow(orderElementModel);
         }
-        assignedLabelsController.openWindow(orderElementModel);
+        if (assignedLabelsController != null) {
+            assignedLabelsController.openWindow(orderElementModel);
+        }
         assignedCriterionRequirementController.openWindow(orderElementModel);
         assignedMaterialsController.openWindow(orderElementModel
                 .getOrderElement());
