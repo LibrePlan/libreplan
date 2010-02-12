@@ -11,14 +11,14 @@ planner = self;
         <!--  Commands -->
         <button onClick="planner.invalidate()"
             image="/common/img/ico_refresh.png"
-            tooltiptext="${i18n:_('Refresh')}" />
+            tooltiptext="${i18n:_('Refresh')}" visible="false" />
         <button id="btnPrint" onClick="planner.print()"
             image="/common/img/ico_print.png"
             tooltiptext="${i18n:_('Print')}" />
         <separator/>
 
         <!--  Visualization modes -->
-        <label>${i18n:_('Zoom level')}:</label>
+        <label>${i18n:_('Zoom')}:</label>
         <listbox id="listZoomLevels" mold="select" rows="1"
             model="${planner.zoomLevels}"
             onSelect="planner.setZoomLevel(self.selectedItem.value);" >

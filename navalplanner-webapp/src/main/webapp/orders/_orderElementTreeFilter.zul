@@ -1,5 +1,5 @@
 <hbox align="center" sclass="filtering-area">
-    <label value="${i18n:_('Filter by')}"
+    <label value="${i18n:_('Filter')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
     <bandboxMultipleSearch id="bdFiltersOrderElement" widthBandbox="300px" widthListbox="400px"
         finder="orderElementsMultipleFiltersFinder"/>
@@ -9,7 +9,7 @@
     <label value="${i18n:_('to')}"/>
     <datebox id="filterFinishDateOrderElement" constraint = "@{treeController.checkConstraintFinishDate}"
         width="65px" />
-    <label value="${i18n:_('with name')}"/>
+    <label value="${i18n:_('name')}"/>
     <textbox id="filterNameOrderElement" width="50px" />
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}"

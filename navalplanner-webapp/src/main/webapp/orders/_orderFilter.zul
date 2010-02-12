@@ -1,5 +1,5 @@
 <hbox align="center" sclass="filtering-area">
-    <label value="${i18n:_('Filter by')}"
+    <label value=" ${i18n:_('Filter')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
     <bandboxMultipleSearch id="bdFilters" widthBandbox="385px" widthListbox="400px"
         finder="ordersMultipleFiltersFinder"/>

@@ -18,8 +18,8 @@ msgstr ""
 
 #: ./ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 #: ./ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:21
-msgid "Zoom level"
-msgstr ""
+msgid "Zoom"
+msgstr "Zoom"
 
 #: ./ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:195
 msgid "Erase"

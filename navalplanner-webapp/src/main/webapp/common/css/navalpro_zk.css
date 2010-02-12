@@ -1091,6 +1091,7 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 
 .toolbar-box .z-label {
     color:#0068B1;
+    padding-left:4px;
 }
 
 .toolbar-box span.z-button {

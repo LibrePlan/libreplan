@@ -32,7 +32,7 @@ resourcesLoadPanel = self;
        <north height="30px" border="0">
        <hbox align="center" id="toolbar">
         <separator/>
-        <label>${i18n:_('Zoom level')}:</label>
+        <label>${i18n:_('Zoom')}:</label>
         <listbox id="listZoomLevels" mold="select" rows="1"
             model="${resourcesLoadPanel.zoomLevels}"
             onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
