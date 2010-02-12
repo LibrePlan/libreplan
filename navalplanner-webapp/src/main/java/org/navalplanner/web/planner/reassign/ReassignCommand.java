@@ -198,7 +198,7 @@ public class ReassignCommand implements IReassignCommand {
 
     @Override
     public String getImage() {
-        return null;
+        return "/common/img/ico_reassign.png";
     }
 
 }
