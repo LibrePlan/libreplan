@@ -43,7 +43,7 @@
             <tab id="tabLabels" label="${i18n:_('Label')}"
                 onSelect = "controller.setupAssignedLabelsToOrderElementController();"/>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
-                 onClick = "controller.reloadHoursGroupOrder();"/>
+                onSelect = "controller.setupAssignedCriterionRequirementsToOrderElementController();"/>
             <tab id="tabMaterials" label="${i18n:_('Materials')}" />
             <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}" />
             <tab id="tabAuthorizations" label="${i18n:_('Authorizations')}" />
@@ -162,7 +162,8 @@
                 <listOrderElementLabels id="orderElementLabels" fulfill="tabLabels.onSelect"/>
             </tabpanel>
             <tabpanel>
-                <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"/>
+                <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"
+                    fulfill="tabRequirements.onSelect"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementMaterials id="orderElementMaterials"/>

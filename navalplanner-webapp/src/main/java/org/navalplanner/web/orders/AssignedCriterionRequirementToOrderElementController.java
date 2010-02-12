@@ -129,6 +129,7 @@ public class AssignedCriterionRequirementToOrderElementController extends
 
     public void openWindow(OrderElement orderElement) {
         assignedCriterionRequirementToOrderElementModel.init(orderElement);
+        Util.createBindingsFor(vboxCriterionRequirementsAndHoursGroups);
         Util.reloadBindings(vboxCriterionRequirementsAndHoursGroups);
     }
 

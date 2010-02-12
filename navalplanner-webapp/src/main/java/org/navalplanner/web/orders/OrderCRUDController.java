@@ -270,7 +270,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void setupEditControllers() throws Exception {
         Component comp = self;
 
-        setupAssignedCriterionRequirementsToOrderElementController(comp);
         setupAssignedMaterialsToOrderElementController(comp);
         setupAssignedTaskQualityFormsToOrderElementController(comp);
         setupOrderAuthorizationController(comp);
@@ -344,12 +343,20 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
 
-    private void setupAssignedCriterionRequirementsToOrderElementController(
-            Component comp) throws Exception {
-        Component orderElementCriterionRequirements = editWindow
+    public void setupAssignedCriterionRequirementsToOrderElementController()
+            throws Exception {
+        if (assignedCriterionRequirementController == null) {
+            Component orderElementCriterionRequirements = editWindow
                 .getFellowIfAny("orderElementCriterionRequirements");
-        assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
+            assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
                 .getVariable("assignedCriterionRequirementController", true);
+
+            final IOrderElementModel orderElementModel = getOrderElementModel();
+            assignedCriterionRequirementController
+                    .openWindow(orderElementModel);
+        } else {
+            reloadHoursGroupOrder();
+        }
     }
 
     private AssignedMaterialsToOrderElementController assignedMaterialsController;
@@ -439,7 +446,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                 && (!manageOrderElementAdvancesController.save())) {
             selectTab("tabAdvances");
         }
-        if (!assignedCriterionRequirementController.close()) {
+        if ((assignedCriterionRequirementController != null)
+                && (!assignedCriterionRequirementController.close())) {
             selectTab("tabRequirements");
         }
         if (!assignedTaskQualityFormController.confirm()) {
@@ -628,7 +636,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (assignedLabelsController != null) {
             assignedLabelsController.openWindow(orderElementModel);
         }
-        assignedCriterionRequirementController.openWindow(orderElementModel);
+        if (assignedCriterionRequirementController != null) {
+            assignedCriterionRequirementController
+                    .openWindow(orderElementModel);
+        }
         assignedMaterialsController.openWindow(orderElementModel
                 .getOrderElement());
         assignedTaskQualityFormController.openWindow(orderElementModel);
