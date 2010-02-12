@@ -33,7 +33,8 @@
 
     <tabbox id="tabboxOrder">
         <tabs>
-            <tab id="tabGeneralData" label="${i18n:_('General data')}" selected="true"/>
+            <tab id="tabGeneralData" label="${i18n:_('General data')}" selected="true"
+                onSelect = "controller.reloadDefaultTab();"/>
             <tab id="tabOrderElements" label="${i18n:_('Order elements')}"
                 onSelect = "controller.setupOrderElementTreeController();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
@@ -50,7 +51,7 @@
             <tab id="tabAuthorizations" label="${i18n:_('Authorizations')}" />
         </tabs>
         <tabpanels>
-            <tabpanel>
+            <tabpanel id="tabPanelGeneralData">
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />

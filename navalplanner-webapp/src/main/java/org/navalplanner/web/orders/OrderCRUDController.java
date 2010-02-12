@@ -91,6 +91,7 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Window;
@@ -620,10 +621,18 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void showEditWindow(String title) {
         addEditWindowIfNeeded();
-        selectDefaultTab();
         initializeTabs();
         editWindow.setTitle(title);
         showWindow(editWindow);
+        selectDefaultTab();
+        reloadDefaultTab();
+    }
+
+    public void reloadDefaultTab() {
+        Tabpanel tabPanel = (Tabpanel) editWindow
+                .getFellow("tabPanelGeneralData");
+        Util.createBindingsFor(tabPanel);
+        Util.reloadBindings(tabPanel);
     }
 
     private void initializeTabs() {
