@@ -75,14 +75,15 @@ table {
     display: none;
 }
 
-body .icono .z-button-cm {
+body .z-window-embedded .icono .z-button-cm,
+body .z-window-modal .icono .z-button-cm,
+body .advancedallocationlayout .icono .z-button-cm {
     color: #007bbe;
     background-color: transparent;
     background-image: none;
     border: 0px solid #007bbe;
     padding: 0px;
 }
-
 
 
 .z-button {
