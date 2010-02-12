@@ -117,4 +117,9 @@ public class DetailOneTimeTrackerState extends TimeTrackerState {
         return ZoomLevel.DETAIL_ONE;
     }
 
+    @Override
+    public int getSecondLevelSize() {
+        return SECOND_LEVEL_ITEM_SIZE;
+    }
+
 }

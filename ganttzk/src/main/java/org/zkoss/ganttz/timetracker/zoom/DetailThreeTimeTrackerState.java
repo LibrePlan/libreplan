@@ -118,4 +118,9 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
         return ZoomLevel.DETAIL_FOUR;
     }
 
+    @Override
+    public int getSecondLevelSize() {
+        return SECOND_LEVEL_SIZE;
+    }
+
 }

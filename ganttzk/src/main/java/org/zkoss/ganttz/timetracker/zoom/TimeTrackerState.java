@@ -147,4 +147,6 @@ public abstract class TimeTrackerState {
 
     protected abstract ZoomLevel getZoomLevel();
 
+    public abstract int getSecondLevelSize();
+
 }

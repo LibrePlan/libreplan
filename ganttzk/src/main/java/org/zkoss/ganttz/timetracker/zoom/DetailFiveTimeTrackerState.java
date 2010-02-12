@@ -100,4 +100,10 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     protected ZoomLevel getZoomLevel() {
         return ZoomLevel.DETAIL_FIVE;
     }
+
+    @Override
+    public int getSecondLevelSize() {
+        return SECOND_LEVEL_SIZE;
+    }
+
 }

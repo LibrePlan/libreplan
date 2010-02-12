@@ -151,13 +151,9 @@ public class TimeTracker {
     }
 
     public int getHorizontalSize() {
-        // Code to improve. Not optimus. We have to calculate the details twice
-        int result = 0;
-        Collection<DetailItem> detailsFirstLevel = getDetailsFirstLevel();
-        for (DetailItem item : detailsFirstLevel) {
-            result += item.getSize();
-        }
-        return result;
+        Collection<DetailItem> detailsSecondLevel = getDetailsSecondLevel();
+        return detailsSecondLevel.size()
+                * getTimeTrackerState().getSecondLevelSize();
     }
 
     private void clearDetailLevelDependantData() {
