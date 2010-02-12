@@ -50,6 +50,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
@@ -607,6 +608,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private boolean isWritingAllowedOn(Order order) {
+        if (order.getState() == OrderStatusEnum.STORED) {
+            //STORED orders can't be saved, independently of user permissions
+            return false;
+        }
         if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return true;
         }
