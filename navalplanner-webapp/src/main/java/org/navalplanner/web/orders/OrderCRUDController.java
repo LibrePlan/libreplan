@@ -431,7 +431,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private boolean save() {
 
-        if (!manageOrderElementAdvancesController.save()) {
+        if ((manageOrderElementAdvancesController != null)
+                && (!manageOrderElementAdvancesController.save())) {
             selectTab("tabAdvances");
         }
         if (!assignedCriterionRequirementController.close()) {
