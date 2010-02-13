@@ -50,6 +50,7 @@ import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.planner.allocation.streches.StrechesFunctionConfiguration;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
@@ -383,7 +384,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private void setInputData(IBack back, List<AllocationInput> allocationInputs) {
         Validate.notNull(back);
         Validate.noNullElements(allocationInputs);
-        Validate.isTrue(!allocationInputs.isEmpty());
         this.back = back;
         this.allocationInputs = allocationInputs;
     }
@@ -397,17 +397,26 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        normalLayout = comp.getFellow("normalLayout");
+        noDataLayout = comp.getFellow("noDataLayout");
+        onlyOneVisible = new OnlyOneVisible(normalLayout, noDataLayout);
         this.associatedComponent = comp;
         loadAndInitializeComponents();
     }
 
+
     private void loadAndInitializeComponents() {
         messages = new MessagesForUser(associatedComponent
                 .getFellow("messages"));
-        createComponents();
-        insertComponentsInLayout();
-        timeTrackerComponent.afterCompose();
-        table.afterCompose();
+        if (allocationInputs.isEmpty()) {
+            onlyOneVisible.showOnly(noDataLayout);
+        } else {
+            onlyOneVisible.showOnly(normalLayout);
+            createComponents();
+            insertComponentsInLayout();
+            timeTrackerComponent.afterCompose();
+            table.afterCompose();
+        }
     }
 
     private void createComponents() {
@@ -481,6 +490,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<Row> rowsCached = null;
     private Map<AllocationInput, Row> groupingRows = new HashMap<AllocationInput, Row>();
+
+    private OnlyOneVisible onlyOneVisible;
+    private Component normalLayout;
+    private Component noDataLayout;
 
     private List<Row> getRows() {
         if (rowsCached != null) {

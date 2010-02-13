@@ -20,14 +20,18 @@
 
 <?page title="${i18n:_('Navalpro: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
-<zk>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
 <zscript><![CDATA[
     advancedAllocationController = arg.get("advancedAllocationController");
 ]]>
 </zscript>
 
-    <borderlayout width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
+    <div id="noDataLayout">
+        <n:h4>${i18n:_('No Allocations have been done')}</n:h4>
+    </div>
+
+    <borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
        <north height="30px" border="0">
        <hbox align="center">
         <button label="${i18n:_('Accept')}" id="acceptButton" class="planner-command" />
