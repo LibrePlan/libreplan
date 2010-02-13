@@ -56,7 +56,6 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -509,13 +508,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 default:
                     throw new RuntimeException("can't handle " + constraintType);
                 }
-            } else if (taskElement instanceof TaskMilestone) {
+            } else {
                 return Collections.singletonList(DateConstraint
                         .biggerOrEqualThan(taskElement.getStartDate()));
-            } else {
-                return Collections.emptyList();
             }
-
         }
 
         @Override
