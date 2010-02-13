@@ -124,7 +124,23 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public void createTemplate() {
         if (tree.getSelectedCount() == 1) {
-            createTemplate(getSelectedNode());
+            if (isTemplateCreationConfirmed()) {
+                createTemplate(getSelectedNode());
+            }
+        }
+    }
+
+    private boolean isTemplateCreationConfirmed() {
+        try {
+            int status = Messagebox
+                    .show(
+                            _("Still not saved changes would be lost."
+                                    + " Are you sure you want to go to create a template?"),
+                            "Confirm", Messagebox.YES | Messagebox.NO,
+                            Messagebox.QUESTION);
+            return Messagebox.OK == status;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -150,6 +166,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     private void createTemplate(OrderElement selectedNode) {
+        if (!isTemplateCreationConfirmed()) {
+            return;
+        }
         if (!selectedNode.isNewObject()) {
             orderTemplates.goToCreateTemplateFrom(selectedNode);
         } else {
