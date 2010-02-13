@@ -87,6 +87,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     }
 
     protected Map<EarnedValueType, SortedMap<LocalDate, BigDecimal>> indicators = new HashMap<EarnedValueType, SortedMap<LocalDate, BigDecimal>>();
+    private Interval indicatorsInterval;
 
     protected abstract void calculateBudgetedCostWorkScheduled(Interval interval);
     protected abstract void calculateActualCostWorkPerformed(Interval interval);
@@ -100,6 +101,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     }
 
     public void calculateValues(Interval interval) {
+        this.indicatorsInterval = interval;
         // BCWS
         calculateBudgetedCostWorkScheduled(interval);
         // ACWP
@@ -299,6 +301,9 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         chart.setHeight("150px");
     }
 
+    public Interval getIndicatorsDefinitionInterval() {
+        return indicatorsInterval;
+    }
     protected void addZeroBeforeTheFirstValue(
             SortedMap<LocalDate, BigDecimal> map) {
         if (!map.isEmpty()) {

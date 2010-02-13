@@ -116,11 +116,13 @@ import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -414,7 +416,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
-            OrderEarnedValueChartFiller earnedValueChartFiller) {
+            final OrderEarnedValueChartFiller earnedValueChartFiller) {
         Vbox vbox = new Vbox();
         vbox.setClass("legend-container");
         vbox.setAlign("center");
@@ -423,8 +425,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date:")));
 
-        LocalDate date = new LocalDate();
-        Datebox datebox = new Datebox(date.toDateTimeAtStartOfDay().toDate());
+        LocalDate initialDateForIndicatorValues = calculateInitialDateForIndicatorValues(earnedValueChartFiller);
+        Datebox datebox = new Datebox(initialDateForIndicatorValues
+                .toDateTimeAtStartOfDay().toDate());
+        datebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
         dateHbox.appendChild(datebox);
 
         appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
@@ -432,7 +436,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         vbox.appendChild(dateHbox);
 
         vbox.appendChild(getEarnedValueChartConfigurableLegend(
-                earnedValueChartFiller, date));
+                earnedValueChartFiller, initialDateForIndicatorValues));
 
         Hbox hbox = new Hbox();
         hbox.setSclass("earned-value-chart");
@@ -446,6 +450,41 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         hbox.appendChild(div);
 
         earnedValueChartPannel.appendChild(hbox);
+    }
+
+    private LocalDate calculateInitialDateForIndicatorValues(
+            OrderEarnedValueChartFiller earnedValueChartFiller) {
+        Interval chartInterval = earnedValueChartFiller.getIndicatorsDefinitionInterval();
+        LocalDate today = new LocalDate();
+        return includes(chartInterval, today) ? today : LocalDate
+                .fromDateFields(chartInterval.getFinish());
+    }
+
+    private boolean includes(Interval interval, LocalDate date) {
+        LocalDate start = LocalDate.fromDateFields(interval.getStart());
+        LocalDate end = LocalDate.fromDateFields(interval.getFinish());
+        return start.compareTo(date) <= 0 && date.compareTo(end) < 0;
+    }
+
+    private Constraint dateMustBeInsideVisualizationArea(
+            final OrderEarnedValueChartFiller earnedValueChartFiller) {
+        return new Constraint() {
+
+            @Override
+            public void validate(org.zkoss.zk.ui.Component comp,
+                    Object valueObject)
+                    throws WrongValueException {
+                Date value = (Date) valueObject;
+                if (value != null
+                        && !includes(earnedValueChartFiller
+                        .getIndicatorsDefinitionInterval(), LocalDate
+                        .fromDateFields(value))) {
+                    throw new WrongValueException(comp,
+                            _("the date must be inside the visualization area"));
+                }
+
+            }
+        };
     }
 
     private void appendEventListenerToDateboxIndicators(
