@@ -124,9 +124,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public void createTemplate() {
         if (tree.getSelectedCount() == 1) {
-            if (isTemplateCreationConfirmed()) {
-                createTemplate(getSelectedNode());
-            }
+            createTemplate(getSelectedNode());
         } else {
             try {
                 Messagebox.show(_("Choose a order element "
