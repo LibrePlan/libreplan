@@ -241,6 +241,13 @@ public class TaskSource extends BaseEntity {
         public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
             try {
                 taskSourceDAO.remove(taskSource.getId());
+
+                // Flushing is required in order to avoid violation of unique
+                // constraint. If flush is not done and there is a task source
+                // that must be removed and another is created for the same
+                // order element the unique constraint
+                // "tasksource_orderelement_key" would be violated by hibernate
+                taskSourceDAO.flush();
             } catch (InstanceNotFoundException e) {
                 throw new RuntimeException(e);
             }

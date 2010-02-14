@@ -136,6 +136,9 @@ public abstract class OrderElement extends BaseEntity implements
             result.add(synchronizationForSchedulingPoint());
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
             removeUnscheduled(result);
+            if (wasASchedulingPoint()) {
+                result.add(taskSourceRemoval());
+            }
             result.add(synchronizationForSuperelement());
         } else if (schedulingState.isNoScheduled()) {
             removeTaskSource(result);
@@ -152,6 +155,10 @@ public abstract class OrderElement extends BaseEntity implements
         } else {
             return taskSource.modifyGroup(childrenSynchronizations);
         }
+    }
+
+    private boolean wasASchedulingPoint() {
+        return taskSource != null && taskSource.getTask() instanceof Task;
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {
@@ -211,9 +218,15 @@ public abstract class OrderElement extends BaseEntity implements
     private void removeTaskSource(List<TaskSourceSynchronization> result) {
         removeChildrenTaskSource(result);
         if (taskSource != null) {
-            result.add(TaskSource.mustRemove(taskSource));
-            taskSource = null;
+            result.add(taskSourceRemoval());
         }
+    }
+
+    private TaskSourceSynchronization taskSourceRemoval() {
+        Validate.notNull(taskSource);
+        TaskSourceSynchronization result = TaskSource.mustRemove(taskSource);
+        taskSource = null;
+        return result;
     }
 
     private void removeChildrenTaskSource(List<TaskSourceSynchronization> result) {
