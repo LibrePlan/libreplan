@@ -145,7 +145,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                     + " Are you sure you want to go to create a template?"),
                             "Confirm", Messagebox.YES | Messagebox.NO,
                             Messagebox.QUESTION);
-            return Messagebox.OK == status;
+            return Messagebox.YES == status;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
