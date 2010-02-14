@@ -239,6 +239,11 @@ public abstract class TaskElement extends BaseEntity {
 
     protected abstract boolean canBeResized();
 
+    /**
+     * @return if this task can be resized by an explicit action
+     */
+    public abstract boolean canBeExplicitlyResized();
+
     public LocalDate getDeadline() {
         return deadline;
     }

@@ -142,4 +142,9 @@ public class TaskGroup extends TaskElement {
     protected boolean canBeResized() {
         return true;
     }
+
+    @Override
+    public boolean canBeExplicitlyResized() {
+        return false;
+    }
 }

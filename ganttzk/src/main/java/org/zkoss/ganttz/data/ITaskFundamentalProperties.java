@@ -78,4 +78,6 @@ public interface ITaskFundamentalProperties {
 
     public boolean isSubcontracted();
 
+    public boolean canBeExplicitlyResized();
+
 }

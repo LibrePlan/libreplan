@@ -310,4 +310,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.isSubcontracted();
     }
 
+    public boolean canBeExplicitlyResized() {
+        return fundamentalProperties.canBeExplicitlyResized();
+    }
+
 }

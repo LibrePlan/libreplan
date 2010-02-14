@@ -483,4 +483,9 @@ public class Task extends TaskElement {
         return calculatedValue != CalculatedValue.END_DATE;
     }
 
+    @Override
+    public boolean canBeExplicitlyResized() {
+        return canBeResized() && !isSubcontracted();
+    }
+
 }

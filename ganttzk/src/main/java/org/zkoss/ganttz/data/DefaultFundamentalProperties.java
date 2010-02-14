@@ -167,4 +167,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return false;
     }
 
+    @Override
+    public boolean canBeExplicitlyResized() {
+        return true;
+    }
+
 }

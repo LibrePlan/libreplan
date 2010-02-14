@@ -542,6 +542,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             reattachAllResourcesForTask();
         }
 
+        @Override
+        public boolean canBeExplicitlyResized() {
+            return taskElement.canBeExplicitlyResized();
+        }
+
     }
 
     @Override
