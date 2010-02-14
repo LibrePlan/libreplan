@@ -320,7 +320,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public boolean isMovingTasksEnabled() {
         return disabilityConfiguration.isMovingTasksEnabled()
-                && !task.isSubcontracted();
+                && task.canBeExplicitlyMoved();
     }
 
     void doUpdatePosition(String leftX, String topY) {

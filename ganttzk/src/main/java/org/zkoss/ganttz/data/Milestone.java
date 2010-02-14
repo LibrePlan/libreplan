@@ -71,4 +71,9 @@ public class Milestone extends Task {
         return false;
     }
 
+    @Override
+    public boolean canBeExplicitlyMoved() {
+        return true;
+    }
+
 }

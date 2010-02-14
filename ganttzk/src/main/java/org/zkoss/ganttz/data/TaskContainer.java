@@ -208,4 +208,9 @@ public class TaskContainer extends Task {
         return true;
     }
 
+    @Override
+    public boolean canBeExplicitlyMoved() {
+        return false;
+    }
+
 }

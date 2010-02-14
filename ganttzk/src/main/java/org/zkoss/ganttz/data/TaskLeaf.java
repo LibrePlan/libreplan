@@ -52,4 +52,9 @@ public class TaskLeaf extends Task {
         return false;
     }
 
+    @Override
+    public boolean canBeExplicitlyMoved() {
+        return !isSubcontracted();
+    }
+
 }

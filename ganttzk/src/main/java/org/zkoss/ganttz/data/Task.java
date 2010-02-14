@@ -314,4 +314,5 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.canBeExplicitlyResized();
     }
 
+    public abstract boolean canBeExplicitlyMoved();
 }
