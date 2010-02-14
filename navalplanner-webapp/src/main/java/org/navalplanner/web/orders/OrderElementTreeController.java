@@ -127,6 +127,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (isTemplateCreationConfirmed()) {
                 createTemplate(getSelectedNode());
             }
+        } else {
+            try {
+                Messagebox.show(_("Choose a order element "
+                        + "from which create a template from"));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
