@@ -315,7 +315,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public boolean isResizingTasksEnabled() {
         return disabilityConfiguration.isResizingTasksEnabled()
-                && !task.isSubcontracted();
+                && !task.isSubcontracted() && task.canBeExplicitlyResized();
     }
 
     public boolean isMovingTasksEnabled() {

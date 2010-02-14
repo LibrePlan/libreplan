@@ -403,8 +403,9 @@ zkTask.init = function(cmp) {
 	    if (movingTasksEnabled()) {
             addDragSupport();
         }
-	    if(resizingTasksEnabled()) {
 	        addResizeSupport();
+	    if (!resizingTasksEnabled()) {
+	        cmp.className = cmp.className.replace("yui-resize", "");
 	    }
 		// it removes itself, so it's not executed again:
 		YAHOO.util.Event.removeListener(cmp, "mouseover", callback);
