@@ -356,7 +356,9 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         getNameBox().setValue(task.getName());
         getNameBox().setTooltiptext(task.getName());
         getStartDateBox().setValue(task.getBeginDate());
+        getStartDateBox().setDisabled(!task.canBeExplicitlyMoved());
         getEndDateBox().setValue(task.getEndDate());
+        getEndDateBox().setDisabled(!task.canBeExplicitlyResized());
         getStartDateTextBox().setValue(asString(task.getBeginDate()));
         getEndDateTextBox().setValue(asString(task.getEndDate()));
     }
