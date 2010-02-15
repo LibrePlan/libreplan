@@ -383,10 +383,12 @@ public abstract class OrderElement extends BaseEntity implements
     protected abstract Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal();
 
     public void removeAdvanceAssignment(AdvanceAssignment advanceAssignment) {
-        directAdvanceAssignments.remove(advanceAssignment);
-        if (this.getParent() != null) {
-            this.getParent().removeIndirectAdvanceAssignment(advanceAssignment
-                    .getAdvanceType());
+        if (directAdvanceAssignments.contains(advanceAssignment)) {
+            directAdvanceAssignments.remove(advanceAssignment);
+            if (this.getParent() != null) {
+                this.getParent().removeIndirectAdvanceAssignment(
+                        advanceAssignment.getAdvanceType());
+            }
         }
     }
 

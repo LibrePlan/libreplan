@@ -148,7 +148,10 @@ public class ManageOrderElementAdvancesController extends
         manageOrderElementAdvancesModel.initEdit(getOrderElement());
         this.indexSelectedItem = -1;
         selectedAdvances.clear();
+        createAndLoadBindings();
+    }
 
+    public void createAndLoadBindings() {
         Util.createBindingsFor(self);
         Util.reloadBindings(self);
     }

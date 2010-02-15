@@ -34,7 +34,8 @@
 	<tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}"></tab>
             <tab label="${i18n:_('Assigned hours')}"></tab>
-            <tab id="tabAdvances" label="${i18n:_('Advances')}"></tab>
+            <tab id="tabAdvances" label="${i18n:_('Advances')}"
+                onSelect="orderElementController.setupManageOrderElementAdvancesController();"/>
             <tab label="${i18n:_('Labels')}"></tab>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"></tab>
             <tab label="${i18n:_('Materials')}"></tab>
@@ -48,7 +49,7 @@
                 <listOrderElementHours id="orderElementHours" />
             </tabpanel>
             <tabpanel>
-                <listOrderElementAdvances id="orderElementAdvances" />
+                <listOrderElementAdvances id="orderElementAdvances" fulfill="tabAdvances.onSelect"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementLabels id="orderElementLabels" />

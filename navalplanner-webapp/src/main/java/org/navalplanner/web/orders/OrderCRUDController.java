@@ -46,10 +46,8 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnTabSelection;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.OnTabSelection.IOnSelectingTab;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
@@ -256,16 +254,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.reloadBindings(editWindow);
         Util.createBindingsFor(editOrderElement);
         Util.reloadBindings(editOrderElement);
-        final Tabbox tabBox = (Tabbox) editWindow.getFellow("tabboxOrder");
-        Component tabAdvances = editWindow.getFellow("tabAdvances");
-        OnTabSelection.createFor(tabBox).onSelectingTab(tabAdvances,
-                new IOnSelectingTab() {
-                    @Override
-                    public void tabSelected() {
-                        manageOrderElementAdvancesController.refreshChangesFromOrderElement();
-                        Util.reloadBindings(tabBox.getSelectedPanel());
-                    }
-                });
     }
 
     private void setupEditControllers() throws Exception {
@@ -315,13 +303,16 @@ public class OrderCRUDController extends GenericForwardComposer {
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
     public void setupManageOrderElementAdvancesController() throws Exception {
+        Component orderElementAdvances = editWindow
+                .getFellowIfAny("orderElementAdvances");
         if (manageOrderElementAdvancesController == null) {
             final IOrderElementModel orderElementModel = getOrderElementModel();
-            Component orderElementAdvances = editWindow
-                    .getFellowIfAny("orderElementAdvances");
             manageOrderElementAdvancesController = (ManageOrderElementAdvancesController) orderElementAdvances
                     .getVariable("manageOrderElementAdvancesController", true);
             manageOrderElementAdvancesController.openWindow(orderElementModel);
+        } else {
+            manageOrderElementAdvancesController.refreshChangesFromOrderElement();
+            manageOrderElementAdvancesController.createAndLoadBindings();
         }
     }
 

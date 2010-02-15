@@ -136,7 +136,14 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void refreshChangesFromOrderElement() {
+        List<AdvanceAssignment> listAdvanceAssignmentsCopy = new ArrayList<AdvanceAssignment>(
+                listAdvanceAssignments);
         fillVariables();
+        for (AdvanceAssignment advance : listAdvanceAssignmentsCopy) {
+            if (!listAdvanceAssignments.contains(advance)) {
+                listAdvanceAssignments.add(advance);
+            }
+        }
     }
 
     @Override

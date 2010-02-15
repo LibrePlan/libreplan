@@ -82,7 +82,6 @@ public class OrderElementController extends GenericForwardComposer {
         comp.setVariable("orderElementController", this, true);
         setupDetailsOrderElementController(comp);
         setupAssignedHoursToOrderElementController(comp);
-        setupManageOrderElementAdvancesController(comp);
         setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementToOrderElementController(comp);
         setupAssignedMaterialsToOrderElementController(comp);
@@ -100,9 +99,17 @@ public class OrderElementController extends GenericForwardComposer {
                 .getVariable("assignedHoursToOrderElementController", true);
     }
 
-    private void setupManageOrderElementAdvancesController(Component comp) throws Exception {
-        manageOrderElementAdvancesController = (ManageOrderElementAdvancesController)
-        orderElementAdvances.getVariable("manageOrderElementAdvancesController", true);
+    public void setupManageOrderElementAdvancesController()
+            throws Exception {
+        if (manageOrderElementAdvancesController == null) {
+            manageOrderElementAdvancesController = (ManageOrderElementAdvancesController) orderElementAdvances
+                    .getVariable("manageOrderElementAdvancesController", true);
+            manageOrderElementAdvancesController.openWindow(orderElementModel);
+        } else {
+            manageOrderElementAdvancesController
+                    .refreshChangesFromOrderElement();
+            manageOrderElementAdvancesController.createAndLoadBindings();
+        }
     }
 
     private void setupAssignedLabelsToOrderElementController(Component comp)
@@ -144,9 +151,11 @@ public class OrderElementController extends GenericForwardComposer {
         clearAll();
         setOrderElementModel(model);
 
+        // initialize the controllers
+        manageOrderElementAdvancesController = null;
+
         detailsController.openWindow(model);
         assignedHoursToOrderElementController.openWindow(model);
-        manageOrderElementAdvancesController.openWindow(model);
         assignedLabelsController.openWindow(model);
         assignedCriterionRequirementController.openWindow(model);
         assignedMaterialsController.openWindow(model.getOrderElement());
@@ -190,7 +199,8 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void closeAll() {
-        if (!manageOrderElementAdvancesController.close()) {
+        if ((manageOrderElementAdvancesController != null)
+                && (!manageOrderElementAdvancesController.close())) {
             selectTab("tabAdvances");
             return;
         }
