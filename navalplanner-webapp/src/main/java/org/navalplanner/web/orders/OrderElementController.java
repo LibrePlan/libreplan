@@ -83,7 +83,6 @@ public class OrderElementController extends GenericForwardComposer {
         setupDetailsOrderElementController();
 
         setupAssignedLabelsToOrderElementController(comp);
-        setupAssignedCriterionRequirementToOrderElementController(comp);
         setupAssignedMaterialsToOrderElementController(comp);
         setupAssignedTaskQualityFormsToOrderElementController(comp);
     }
@@ -122,10 +121,17 @@ public class OrderElementController extends GenericForwardComposer {
         assignedLabelsController = orderElementLabels.getController();
     }
 
-    private void setupAssignedCriterionRequirementToOrderElementController(
-            Component comp) throws Exception {
-        assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
+    public void setupAssignedCriterionRequirementToOrderElementController()
+            throws Exception {
+        if (assignedCriterionRequirementController == null) {
+            assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
                 .getVariable("assignedCriterionRequirementController", true);
+            assignedCriterionRequirementController
+                    .openWindow(orderElementModel);
+        } else {
+            Util.createBindingsFor(orderElementCriterionRequirements);
+            Util.reloadBindings(orderElementCriterionRequirements);
+        }
     }
 
     private void setupAssignedMaterialsToOrderElementController(Component comp)
@@ -160,9 +166,9 @@ public class OrderElementController extends GenericForwardComposer {
         // initialize the controllers
         manageOrderElementAdvancesController = null;
         assignedHoursToOrderElementController = null;
+        assignedCriterionRequirementController = null;
 
         assignedLabelsController.openWindow(model);
-        assignedCriterionRequirementController.openWindow(model);
         assignedMaterialsController.openWindow(model.getOrderElement());
         assignedTaskQualityFormsController.openWindow(model);
 

@@ -38,7 +38,8 @@
             <tab id="tabAdvances" label="${i18n:_('Advances')}"
                 onSelect="orderElementController.setupManageOrderElementAdvancesController();"/>
             <tab label="${i18n:_('Labels')}"></tab>
-            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"></tab>
+            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
+                onSelect="orderElementController.setupAssignedCriterionRequirementToOrderElementController();"/>
             <tab label="${i18n:_('Materials')}"></tab>
             <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"></tab>
         </tabs>
@@ -56,7 +57,7 @@
                 <listOrderElementLabels id="orderElementLabels" />
             </tabpanel>
              <tabpanel style="overflow:auto">
-                <listOrderElementCriterionRequirements id="orderElementCriterionRequirements"/>
+                <listOrderElementCriterionRequirements id="orderElementCriterionRequirements" fulfill="tabRequirements.onSelect"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementMaterials id="orderElementMaterials" />
