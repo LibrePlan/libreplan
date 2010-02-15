@@ -38,6 +38,15 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 
 public class PlanningState {
+
+    public static PlanningState create(TaskGroup rootTask,
+            Collection<? extends TaskElement> initialState,
+            Collection<? extends Resource> initialResources,
+            ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
+        return new PlanningState(rootTask, initialState, initialResources,
+                criterionDAO, resourceDAO);
+    }
+
     private final ArrayList<TaskElement> initial;
 
     private final Set<TaskElement> toSave;
@@ -52,7 +61,7 @@ public class PlanningState {
 
     private final IResourceDAO resourceDAO;
 
-    public PlanningState(TaskGroup rootTask,
+    private PlanningState(TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources,
             ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
