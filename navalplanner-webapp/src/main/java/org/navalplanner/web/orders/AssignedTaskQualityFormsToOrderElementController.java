@@ -523,8 +523,9 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
     public boolean confirm() {
         assignedTaskQualityFormsToOrderElementModel.updateAdvancesIfNeeded();
+        boolean result = validate();
         validateConstraints();
-        return validate();
+        return result;
     }
 
     public void validateConstraints() {
@@ -622,6 +623,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         Detail details = getDetails(row);
         if (details != null) {
             details.setOpen(true);
+            details.invalidate();
             assignedTaskQualityForms.invalidate();
         }
     }
