@@ -473,6 +473,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         private String buildTooltipText() {
             StringBuilder result = new StringBuilder();
+            result.append(_("Name: {0}", getName()) + "<br/>");
             result.append(_("Advance") + ": ").append(
                     getAdvancePercentage().multiply(new BigDecimal(100)))
                     .append("% , ");

@@ -6,7 +6,9 @@
 
 <div id="row${self.uuid}" class="row" z.valor="boxid="${self.uuid}">
     <div id="${self.uuid}" z.type="ganttz.taskcontainer.TaskContainer" idTask="${self.id}"
-       z.autoz="true"${self.outerAttrs}" class="taskgroup">
+       z.autoz="true"${self.outerAttrs}" class="taskgroup"
+       onMouseover="zkTasklist.showTooltip('tasktooltip${self.uuid}');"
+       onMouseOut="zkTasklist.hideTooltip('tasktooltip${self.uuid}');">
 		<div class="task-labels">${self.labelsText}</div>
 		<div class="task-resources">
 			<div class="task-resources-inner">${self.resourcesText}</div>
@@ -19,5 +21,6 @@
 			<div class="taskgroup_start"></div>
 			<div class="taskgroup_end"></div>
         </div>
+		<div id="tasktooltip${self.uuid}" class="task_tooltip">${self.tooltipText}</div>
     </div>
 </div>
