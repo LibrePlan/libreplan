@@ -306,12 +306,12 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         });
     }
 
-    private void registerOnChange(Component component) {
+    private void registerOnChange(final Component component) {
         component.addEventListener("onChange", new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                updateBean();
+                updateBean(component);
             }
         });
     }
@@ -357,10 +357,17 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         });
     }
 
-    public void updateBean() {
-        Date begin = getStartDateBox().getValue();
-        task.setName(getNameBox().getValue());
-        task.moveTo(begin);
+    public void updateBean(Component updatedComponent) {
+        if (updatedComponent == getNameBox()) {
+            task.setName(getNameBox().getValue());
+        } else if (updatedComponent == getStartDateBox()) {
+            Date begin = getStartDateBox().getValue();
+            task.moveTo(begin);
+        } else if (updatedComponent == getEndDateBox()) {
+            Date newEnd = getEndDateBox().getValue();
+            task.setLengthMilliseconds(newEnd.getTime()
+                    - task.getBeginDate().getTime());
+        }
     }
 
     private void updateComponents() {
