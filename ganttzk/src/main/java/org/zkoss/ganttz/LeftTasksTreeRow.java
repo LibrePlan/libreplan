@@ -126,10 +126,14 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
      */
     public void userWantsDateBox(Component component) {
         if (component == startDateTextBox) {
-            showDateBox(startDateBox, startDateTextBox);
+            if (canChangeStartDate()) {
+                showDateBox(startDateBox, startDateTextBox);
+            }
         }
         if (component == endDateTextBox) {
-            showDateBox(endDateBox, endDateTextBox);
+            if (canChangeEndDate()) {
+                showDateBox(endDateBox, endDateTextBox);
+            }
         }
     }
 
@@ -362,10 +366,15 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     private void updateComponents() {
         getNameBox().setValue(task.getName());
         getNameBox().setTooltiptext(task.getName());
+
         getStartDateBox().setValue(task.getBeginDate());
         getStartDateBox().setDisabled(!canChangeStartDate());
+        getStartDateTextBox().setDisabled(!canChangeStartDate());
+
         getEndDateBox().setValue(task.getEndDate());
         getEndDateBox().setDisabled(!canChangeEndDate());
+        getEndDateTextBox().setDisabled(!canChangeEndDate());
+
         getStartDateTextBox().setValue(asString(task.getBeginDate()));
         getEndDateTextBox().setValue(asString(task.getEndDate()));
     }
