@@ -37,154 +37,220 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 
-public class PlanningState {
+public abstract class PlanningState {
 
     public static PlanningState create(TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources,
             ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
-        return new PlanningState(rootTask, initialState, initialResources,
+        return new WithDataPlanningState(rootTask, initialState,
+                initialResources,
                 criterionDAO, resourceDAO);
     }
 
-    private final ArrayList<TaskElement> initial;
-
-    private final Set<TaskElement> toSave;
-
-    private final Set<TaskElement> toRemove;
-
-    private Set<Resource> resources = new HashSet<Resource>();
-
-    private final TaskGroup rootTask;
-
-    private final ICriterionDAO criterionDAO;
-
-    private final IResourceDAO resourceDAO;
-
-    private PlanningState(TaskGroup rootTask,
-            Collection<? extends TaskElement> initialState,
-            Collection<? extends Resource> initialResources,
-            ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
-        this.rootTask = rootTask;
-        this.criterionDAO = criterionDAO;
-        this.resourceDAO = resourceDAO;
-        this.initial = new ArrayList<TaskElement>(initialState);
-        this.toSave = new HashSet<TaskElement>(initialState);
-        this.toRemove = new HashSet<TaskElement>();
-        this.resources = doReattachments(new HashSet<Resource>(initialResources));
+    public static PlanningState createEmpty() {
+        return new EmptyPlannigState();
     }
 
-    public Collection<? extends TaskElement> getTasksToSave() {
-        return Collections.unmodifiableCollection(toSave);
-    }
+    public abstract Collection<? extends TaskElement> getTasksToSave();
 
-    public List<TaskElement> getInitial() {
-        return new ArrayList<TaskElement>(initial);
-    }
+    public abstract List<TaskElement> getInitial();
 
-    public void reassociateResourcesWithSession() {
-        for (Resource resource : resources) {
-            resourceDAO.reattach(resource);
+    public abstract void reassociateResourcesWithSession();
+
+    public abstract Collection<? extends TaskElement> getToRemove();
+
+    public abstract void removed(TaskElement taskElement);
+
+    public abstract void added(TaskElement taskElement);
+
+    public abstract TaskGroup getRootTask();
+
+    private static class WithDataPlanningState extends PlanningState {
+
+        private final ArrayList<TaskElement> initial;
+
+        private final Set<TaskElement> toSave;
+
+        private final Set<TaskElement> toRemove;
+
+        private Set<Resource> resources = new HashSet<Resource>();
+
+        private final TaskGroup rootTask;
+
+        private final ICriterionDAO criterionDAO;
+
+        private final IResourceDAO resourceDAO;
+
+        private WithDataPlanningState(TaskGroup rootTask,
+                Collection<? extends TaskElement> initialState,
+                Collection<? extends Resource> initialResources,
+                ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
+            this.rootTask = rootTask;
+            this.criterionDAO = criterionDAO;
+            this.resourceDAO = resourceDAO;
+            this.initial = new ArrayList<TaskElement>(initialState);
+            this.toSave = new HashSet<TaskElement>(initialState);
+            this.toRemove = new HashSet<TaskElement>();
+            this.resources = doReattachments(new HashSet<Resource>(
+                    initialResources));
         }
-        // ensuring no repeated instances of criterions
-        reattachCriterions(getExistentCriterions(resources));
-        addingNewlyCreated(resourceDAO);
-    }
 
-    private void reattachCriterions(Set<Criterion> criterions) {
-        for (Criterion each : criterions) {
-            criterionDAO.reattachUnmodifiedEntity(each);
+        @Override
+        public Collection<? extends TaskElement> getTasksToSave() {
+            return Collections.unmodifiableCollection(toSave);
         }
-    }
 
-    private Set<Criterion> getExistentCriterions(Set<Resource> resources) {
-        Set<Criterion> result = new HashSet<Criterion>();
-        for (Resource resource : resources) {
-            for (CriterionSatisfaction each : resource
-                    .getCriterionSatisfactions()) {
-                result.add(each.getCriterion());
+        @Override
+        public List<TaskElement> getInitial() {
+            return new ArrayList<TaskElement>(initial);
+        }
+
+        @Override
+        public void reassociateResourcesWithSession() {
+            for (Resource resource : resources) {
+                resourceDAO.reattach(resource);
+            }
+            // ensuring no repeated instances of criterions
+            reattachCriterions(getExistentCriterions(resources));
+            addingNewlyCreated(resourceDAO);
+        }
+
+        private void reattachCriterions(Set<Criterion> criterions) {
+            for (Criterion each : criterions) {
+                criterionDAO.reattachUnmodifiedEntity(each);
             }
         }
-        return result;
-    }
 
-    private void addingNewlyCreated(IResourceDAO resourceDAO) {
-        Set<Resource> newResources = getNewResources(resourceDAO);
-        doReattachments(newResources);
-        resources.addAll(newResources);
-    }
-
-    private <T extends Collection<Resource>> T doReattachments(T result) {
-        for (Resource each : result) {
-            reattachCalendarFor(each);
-            // loading criterions so there are no repeated instances
-            forceLoadOfCriterions(each);
+        private Set<Criterion> getExistentCriterions(Set<Resource> resources) {
+            Set<Criterion> result = new HashSet<Criterion>();
+            for (Resource resource : resources) {
+                for (CriterionSatisfaction each : resource
+                        .getCriterionSatisfactions()) {
+                    result.add(each.getCriterion());
+                }
+            }
+            return result;
         }
-        return result;
-    }
 
-    private void reattachCalendarFor(Resource each) {
-        if (each.getCalendar() != null) {
-            BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+        private void addingNewlyCreated(IResourceDAO resourceDAO) {
+            Set<Resource> newResources = getNewResources(resourceDAO);
+            doReattachments(newResources);
+            resources.addAll(newResources);
         }
-    }
 
-    private void forceLoadOfCriterions(Resource resource) {
-        Set<CriterionSatisfaction> criterionSatisfactions = resource
-                .getCriterionSatisfactions();
-        for (CriterionSatisfaction each : criterionSatisfactions) {
-            each.getCriterion().getName();
-            each.getCriterion().getType();
+        private <T extends Collection<Resource>> T doReattachments(T result) {
+            for (Resource each : result) {
+                reattachCalendarFor(each);
+                // loading criterions so there are no repeated instances
+                forceLoadOfCriterions(each);
+            }
+            return result;
         }
-    }
 
-    private Set<Resource> getNewResources(IResourceDAO resourceDAO) {
-        Set<Resource> result = new HashSet<Resource>(resourceDAO
-                .list(Resource.class));
-        result.removeAll(resources);
-        return result;
-    }
-
-    public Collection<? extends TaskElement> getToRemove() {
-        return Collections.unmodifiableCollection(onlyNotTransient(toRemove));
-    }
-
-    private List<TaskElement> onlyNotTransient(
-            Collection<? extends TaskElement> toRemove) {
-        ArrayList<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskElement taskElement : toRemove) {
-            if (taskElement.getId() != null) {
-                result.add(taskElement);
+        private void reattachCalendarFor(Resource each) {
+            if (each.getCalendar() != null) {
+                BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
             }
         }
-        return result;
-    }
 
-    public void removed(TaskElement taskElement) {
-        taskElement.detach();
-        if (!isTopLevel(taskElement)) {
-            return;
+        private void forceLoadOfCriterions(Resource resource) {
+            Set<CriterionSatisfaction> criterionSatisfactions = resource
+                    .getCriterionSatisfactions();
+            for (CriterionSatisfaction each : criterionSatisfactions) {
+                each.getCriterion().getName();
+                each.getCriterion().getType();
+            }
         }
-        toSave.remove(taskElement);
-        toRemove.add(taskElement);
-    }
 
-    private boolean isTopLevel(TaskElement taskElement) {
-        if (taskElement instanceof TaskMilestone) {
-            return true;
+        private Set<Resource> getNewResources(IResourceDAO resourceDAO) {
+            Set<Resource> result = new HashSet<Resource>(resourceDAO
+                    .list(Resource.class));
+            result.removeAll(resources);
+            return result;
         }
-        return taskElement.getParent() == null;
-    }
 
-    public void added(TaskElement taskElement) {
-        if (!isTopLevel(taskElement)) {
-            return;
+        @Override
+        public Collection<? extends TaskElement> getToRemove() {
+            return Collections
+                    .unmodifiableCollection(onlyNotTransient(toRemove));
         }
-        toRemove.remove(taskElement);
-        toSave.add(taskElement);
+
+        private List<TaskElement> onlyNotTransient(
+                Collection<? extends TaskElement> toRemove) {
+            ArrayList<TaskElement> result = new ArrayList<TaskElement>();
+            for (TaskElement taskElement : toRemove) {
+                if (taskElement.getId() != null) {
+                    result.add(taskElement);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public void removed(TaskElement taskElement) {
+            taskElement.detach();
+            if (!isTopLevel(taskElement)) {
+                return;
+            }
+            toSave.remove(taskElement);
+            toRemove.add(taskElement);
+        }
+
+        private boolean isTopLevel(TaskElement taskElement) {
+            if (taskElement instanceof TaskMilestone) {
+                return true;
+            }
+            return taskElement.getParent() == null;
+        }
+
+        @Override
+        public void added(TaskElement taskElement) {
+            if (!isTopLevel(taskElement)) {
+                return;
+            }
+            toRemove.remove(taskElement);
+            toSave.add(taskElement);
+        }
+
+        @Override
+        public TaskGroup getRootTask() {
+            return rootTask;
+        }
     }
 
-    public TaskGroup getRootTask() {
-        return rootTask;
+    private static class EmptyPlannigState extends PlanningState {
+
+        @Override
+        public void added(TaskElement taskElement) {
+        }
+
+        @Override
+        public List<TaskElement> getInitial() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public TaskGroup getRootTask() {
+            return null;
+        }
+
+        @Override
+        public Collection<? extends TaskElement> getTasksToSave() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Collection<? extends TaskElement> getToRemove() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public void reassociateResourcesWithSession() {
+        }
+
+        public void removed(TaskElement taskElement) {
+        }
+
     }
 }
