@@ -40,7 +40,7 @@ public class VirtualWorker extends Worker {
         virtualWorker.setNif("[Virtual]");
         virtualWorker.setSurname("---");
         virtualWorker.getCalendar();
-        return virtualWorker;
+        return create(virtualWorker);
     }
 
     private String observations;
