@@ -257,12 +257,24 @@ public class TimeTracker {
         return date1.compareTo(date2) > 0 ? date1 : date2;
     }
 
+    private Date min(Date date1, Date date2) {
+        if (date1 == null) {
+            return date2;
+        }
+        if (date2 == null) {
+            return date1;
+        }
+        return date1.compareTo(date2) <= 0 ? date1 : date2;
+    }
+
     private Date endPlusOneMonth(Task task) {
         Date taskEnd = max(task.getEndDate(), task.getDeadline());
         return new LocalDate(taskEnd).plusMonths(1).toDateMidnight().toDate();
     }
 
     private Date startMinusTwoWeeks(Task task) {
-        return new LocalDate(task.getBeginDate()).minusWeeks(2).toDateMidnight().toDate();
+        // the deadline could be before the start
+        return new LocalDate(min(task.getBeginDate(), task.getDeadline()))
+                .minusWeeks(2).toDateMidnight().toDate();
     }
 }
