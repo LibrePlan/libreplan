@@ -33,7 +33,8 @@
 <tabbox height="620px" id="tabboxOrderElement">
 	<tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}"></tab>
-            <tab label="${i18n:_('Assigned hours')}"></tab>
+            <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
+                onSelect="orderElementController.setupAssignedHoursToOrderElementController();"/>
             <tab id="tabAdvances" label="${i18n:_('Advances')}"
                 onSelect="orderElementController.setupManageOrderElementAdvancesController();"/>
             <tab label="${i18n:_('Labels')}"></tab>
@@ -46,7 +47,7 @@
                 <orderElementDetails id="orderElementDetails" />
             </tabpanel>
             <tabpanel>
-                <listOrderElementHours id="orderElementHours" />
+                <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementAdvances id="orderElementAdvances" fulfill="tabAdvances.onSelect"/>

@@ -80,23 +80,28 @@ public class OrderElementController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("orderElementController", this, true);
-        setupDetailsOrderElementController(comp);
-        setupAssignedHoursToOrderElementController(comp);
+        setupDetailsOrderElementController();
+
         setupAssignedLabelsToOrderElementController(comp);
         setupAssignedCriterionRequirementToOrderElementController(comp);
         setupAssignedMaterialsToOrderElementController(comp);
         setupAssignedTaskQualityFormsToOrderElementController(comp);
     }
 
-    private void setupDetailsOrderElementController(Component comp) throws Exception{
+    private void setupDetailsOrderElementController() throws Exception {
         detailsController = (DetailsOrderElementController)
         orderElementDetails.getVariable("detailsController", true);
     }
 
-    private void setupAssignedHoursToOrderElementController(Component comp) throws Exception{
-        assignedHoursToOrderElementController = (AssignedHoursToOrderElementController)
- orderElementHours
-                .getVariable("assignedHoursToOrderElementController", true);
+    public void setupAssignedHoursToOrderElementController() throws Exception {
+        if (assignedHoursToOrderElementController == null) {
+            assignedHoursToOrderElementController = (AssignedHoursToOrderElementController) orderElementHours
+                    .getVariable("assignedHoursToOrderElementController", true);
+            assignedHoursToOrderElementController.openWindow(orderElementModel);
+        } else {
+            Util.createBindingsFor(orderElementHours);
+            Util.reloadBindings(orderElementHours);
+        }
     }
 
     public void setupManageOrderElementAdvancesController()
@@ -150,12 +155,12 @@ public class OrderElementController extends GenericForwardComposer {
     public void openWindow(IOrderElementModel model){
         clearAll();
         setOrderElementModel(model);
+        detailsController.openWindow(model);
 
         // initialize the controllers
         manageOrderElementAdvancesController = null;
+        assignedHoursToOrderElementController = null;
 
-        detailsController.openWindow(model);
-        assignedHoursToOrderElementController.openWindow(model);
         assignedLabelsController.openWindow(model);
         assignedCriterionRequirementController.openWindow(model);
         assignedMaterialsController.openWindow(model.getOrderElement());
