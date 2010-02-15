@@ -26,7 +26,7 @@
     advancedAllocationController = arg.get("advancedAllocationController");
 ]]>
 </zscript>
-
+<div>
     <div id="noDataLayout">
         <n:h4>${i18n:_('No Allocations have been done')}</n:h4>
     </div>
@@ -72,4 +72,5 @@
             </borderlayout>
         </center>
     </borderlayout>
+</div>
 </zk>
