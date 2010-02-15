@@ -255,6 +255,10 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private void updateTimeTracker(List<Task> tasksCreated) {
         for (Task task : tasksCreated) {
             timeTracker.trackPosition(task);
+            if (task.isContainer()) {
+                TaskContainer container = (TaskContainer) task;
+                updateTimeTracker(container.getTasks());
+            }
         }
     }
 
