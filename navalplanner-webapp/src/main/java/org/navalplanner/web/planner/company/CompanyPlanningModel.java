@@ -519,11 +519,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         } else {
             toShow = sortByStartDate(retainOnlyTopLevel(null));
         }
+        forceLoadOfDataAssociatedTo(toShow);
         forceLoadOfDependenciesCollections(toShow);
         forceLoadOfWorkingHours(toShow);
         forceLoadOfLabels(toShow);
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
                 new TaskElementNavigator(), toShow);
+    }
+
+    private void forceLoadOfDataAssociatedTo(List<TaskElement> toShow) {
+        for (TaskElement each : toShow) {
+            OrderPlanningModel.forceLoadOfDataAssociatedTo(each);
+        }
     }
 
     private List<TaskElement> sortByStartDate(List<TaskElement> list) {

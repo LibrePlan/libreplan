@@ -813,11 +813,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void forceLoadOfChildren(Collection<? extends TaskElement> initial) {
         for (TaskElement each : initial) {
-            forceLoadOfResourceAllocationsResources(each);
-            forceLoadOfCriterions(each);
-            if (each.getCalendar() != null) {
-                BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
-            }
+            forceLoadOfDataAssociatedTo(each);
             if (each instanceof TaskGroup) {
                 findChildrenWithQueryToAvoidProxies((TaskGroup) each);
                 List<TaskElement> children = each.getChildren();
@@ -826,11 +822,19 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
+    public static void forceLoadOfDataAssociatedTo(TaskElement each) {
+        forceLoadOfResourceAllocationsResources(each);
+        forceLoadOfCriterions(each);
+        if (each.getCalendar() != null) {
+            BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+        }
+    }
+
     /**
      * Forcing the load of all criterions so there are no different criterion
      * instances for the same criteiron at database
      */
-    private void forceLoadOfCriterions(TaskElement taskElement) {
+    private static void forceLoadOfCriterions(TaskElement taskElement) {
         List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
                 GenericResourceAllocation.class, taskElement
                         .getSatisfiedResourceAllocations());
@@ -845,7 +849,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
      * Forcing the load of all resources so the resources at planning state and
      * at allocations are the same
      */
-    private void forceLoadOfResourceAllocationsResources(TaskElement taskElement) {
+    private static void forceLoadOfResourceAllocationsResources(
+            TaskElement taskElement) {
         Set<ResourceAllocation<?>> resourceAllocations = taskElement
                 .getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> each : resourceAllocations) {
