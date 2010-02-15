@@ -32,19 +32,23 @@
     closable="true" visible="false">
 <tabbox height="620px" id="tabboxOrderElement">
 	<tabs>
-            <tab id="tabDetails" label="${i18n:_('Details')}"></tab>
+            <tab id="tabDetails" label="${i18n:_('Details')}" selected="true"
+                onSelect="orderElementController.clearAll();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
                 onSelect="orderElementController.setupAssignedHoursToOrderElementController();"/>
             <tab id="tabAdvances" label="${i18n:_('Advances')}"
                 onSelect="orderElementController.setupManageOrderElementAdvancesController();"/>
-            <tab label="${i18n:_('Labels')}"></tab>
+            <tab id="tabLabels" label="${i18n:_('Labels')}"
+                onSelect="orderElementController.setupAssignedLabelsToOrderElementController();"/>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
                 onSelect="orderElementController.setupAssignedCriterionRequirementToOrderElementController();"/>
-            <tab label="${i18n:_('Materials')}"></tab>
-            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"></tab>
+            <tab id="tabMaterials" label="${i18n:_('Materials')}"
+                onSelect="orderElementController.setupAssignedMaterialsToOrderElementController();"/>
+            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"
+                onSelect="orderElementController.setupAssignedTaskQualityFormsToOrderElementController();"/>
         </tabs>
         <tabpanels>
-            <tabpanel>
+            <tabpanel id="tabPanelDetails">
                 <orderElementDetails id="orderElementDetails" />
             </tabpanel>
             <tabpanel>
@@ -54,16 +58,16 @@
                 <listOrderElementAdvances id="orderElementAdvances" fulfill="tabAdvances.onSelect"/>
             </tabpanel>
             <tabpanel>
-                <listOrderElementLabels id="orderElementLabels" />
+                <listOrderElementLabels id="orderElementLabels" fulfill="tabLabels.onSelect"/>
             </tabpanel>
              <tabpanel style="overflow:auto">
                 <listOrderElementCriterionRequirements id="orderElementCriterionRequirements" fulfill="tabRequirements.onSelect"/>
             </tabpanel>
             <tabpanel>
-                <listOrderElementMaterials id="orderElementMaterials" />
+                <listOrderElementMaterials id="orderElementMaterials" fulfill="tabMaterials.onSelect"/>
             </tabpanel>
             <tabpanel>
-                <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" />
+                <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" fulfill="tabTaskQualityForm.onSelect"/>
             </tabpanel>
         </tabpanels>
   </tabbox>

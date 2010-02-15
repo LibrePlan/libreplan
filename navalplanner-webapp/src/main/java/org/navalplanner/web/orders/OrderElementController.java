@@ -34,6 +34,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Window;
 
 /**
@@ -74,6 +75,8 @@ public class OrderElementController extends GenericForwardComposer {
 
     private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
 
+    private OrderElementMaterialAssignmentsComponent orderElementMaterials;
+
     private AssignedMaterialsToOrderElementController assignedMaterialsController;
 
     @Override
@@ -81,15 +84,16 @@ public class OrderElementController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setVariable("orderElementController", this, true);
         setupDetailsOrderElementController();
-
-        setupAssignedLabelsToOrderElementController(comp);
-        setupAssignedMaterialsToOrderElementController(comp);
-        setupAssignedTaskQualityFormsToOrderElementController(comp);
     }
 
     private void setupDetailsOrderElementController() throws Exception {
         detailsController = (DetailsOrderElementController)
         orderElementDetails.getVariable("detailsController", true);
+    }
+
+    private void redraw(Component comp) {
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     public void setupAssignedHoursToOrderElementController() throws Exception {
@@ -98,8 +102,7 @@ public class OrderElementController extends GenericForwardComposer {
                     .getVariable("assignedHoursToOrderElementController", true);
             assignedHoursToOrderElementController.openWindow(orderElementModel);
         } else {
-            Util.createBindingsFor(orderElementHours);
-            Util.reloadBindings(orderElementHours);
+            redraw(orderElementHours);
         }
     }
 
@@ -116,9 +119,13 @@ public class OrderElementController extends GenericForwardComposer {
         }
     }
 
-    private void setupAssignedLabelsToOrderElementController(Component comp)
-            throws Exception {
-        assignedLabelsController = orderElementLabels.getController();
+    public void setupAssignedLabelsToOrderElementController()throws Exception {
+        if (assignedLabelsController == null) {
+            assignedLabelsController = orderElementLabels.getController();
+            assignedLabelsController.openWindow(orderElementModel);
+        } else {
+            redraw(orderElementLabels);
+        }
     }
 
     public void setupAssignedCriterionRequirementToOrderElementController()
@@ -129,23 +136,29 @@ public class OrderElementController extends GenericForwardComposer {
             assignedCriterionRequirementController
                     .openWindow(orderElementModel);
         } else {
-            Util.createBindingsFor(orderElementCriterionRequirements);
-            Util.reloadBindings(orderElementCriterionRequirements);
+            redraw(orderElementCriterionRequirements);
         }
     }
 
-    private void setupAssignedMaterialsToOrderElementController(Component comp)
+    public void setupAssignedMaterialsToOrderElementController()
             throws Exception {
-        OrderElementMaterialAssignmentsComponent assignedMaterialsComponent = (OrderElementMaterialAssignmentsComponent) comp
-                .getFellowIfAny("orderElementMaterials");
-        assignedMaterialsController = assignedMaterialsComponent
-                .getController();
+        if (assignedMaterialsController == null) {
+            assignedMaterialsController = orderElementMaterials.getController();
+            assignedMaterialsController.openWindow(getOrderElement());
+        } else {
+            redraw(orderElementMaterials);
+        }
     }
 
-    private void setupAssignedTaskQualityFormsToOrderElementController(
-            Component comp) throws Exception {
-        assignedTaskQualityFormsController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
+    public void setupAssignedTaskQualityFormsToOrderElementController()
+            throws Exception {
+        if (assignedTaskQualityFormsController == null) {
+            assignedTaskQualityFormsController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
                 .getVariable("assignedTaskQualityFormsController", true);
+            assignedTaskQualityFormsController.openWindow(orderElementModel);
+        } else {
+            redraw(orderElementTaskQualityForms);
+        }
     }
 
     public OrderElement getOrderElement() {
@@ -167,10 +180,9 @@ public class OrderElementController extends GenericForwardComposer {
         manageOrderElementAdvancesController = null;
         assignedHoursToOrderElementController = null;
         assignedCriterionRequirementController = null;
-
-        assignedLabelsController.openWindow(model);
-        assignedMaterialsController.openWindow(model.getOrderElement());
-        assignedTaskQualityFormsController.openWindow(model);
+        assignedLabelsController = null;
+        assignedMaterialsController = null;
+        assignedTaskQualityFormsController = null;
 
         try {
             ((Window) self).doModal();
@@ -185,9 +197,11 @@ public class OrderElementController extends GenericForwardComposer {
         this.orderElementModel = orderElementModel;
     }
 
-    private void clearAll() {
+    public void clearAll() {
+        Tabpanel tabPanel = (Tabpanel) self.getFellow("tabPanelDetails");
+        Util.createBindingsFor(tabPanel);
+        Util.reloadBindings(tabPanel);
         clear();
-        assignedLabelsController.clear();
     }
 
     private void clear() {
@@ -215,12 +229,14 @@ public class OrderElementController extends GenericForwardComposer {
             selectTab("tabAdvances");
             return;
         }
-        if (!assignedCriterionRequirementController.close()) {
+        if ((assignedCriterionRequirementController != null)
+                && (!assignedCriterionRequirementController.close())) {
             selectTab("tabRequirements");
             return;
         }
         selectTab("tabTaskQualityForm");
-        if (!assignedTaskQualityFormsController.confirm()) {
+        if ((assignedTaskQualityFormsController != null)
+                && (!assignedTaskQualityFormsController.confirm())) {
             return;
         }
         close();
