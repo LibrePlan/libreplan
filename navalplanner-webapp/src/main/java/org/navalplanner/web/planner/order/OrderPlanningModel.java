@@ -241,10 +241,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
         orderReloaded = reload(order);
-        if (!orderReloaded.isSomeTaskElementScheduled()) {
-            throw new IllegalArgumentException(_(
-                    "The order {0} must be scheduled", orderReloaded));
-        }
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
         ZoomLevel defaultZoomLevel = OrderPlanningModel
@@ -793,21 +789,31 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
-        final List<Resource> allResources = resourceDAO.list(Resource.class);
-        criterionDAO.list(Criterion.class);
-        forceLoadOfChildren(Arrays.asList(taskElement));
-        planningState = PlanningState.create(taskElement, orderReloaded
-                .getAssociatedTasks(), allResources, criterionDAO, resourceDAO);
-        forceLoadOfDependenciesCollections(planningState.getInitial());
-        forceLoadOfWorkingHours(planningState.getInitial());
-        forceLoadOfLabels(planningState.getInitial());
+        planningState = createPlanningStateFor(orderReloaded);
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
         result.setNotBeforeThan(orderReloaded.getInitDate());
         result.setDependenciesConstraintsHavePriority(orderReloaded
                 .getDependenciesConstraintsHavePriority());
+        return result;
+    }
+
+    private PlanningState createPlanningStateFor(
+            Order orderReloaded) {
+        if (!orderReloaded.isSomeTaskElementScheduled()) {
+            return PlanningState.createEmpty();
+        }
+        criterionDAO.list(Criterion.class);
+        TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
+        forceLoadOfChildren(Arrays.asList(taskElement));
+        final List<Resource> allResources = resourceDAO
+                .list(Resource.class);
+        PlanningState result = PlanningState.create(taskElement, orderReloaded
+                .getAssociatedTasks(), allResources, criterionDAO, resourceDAO);
+        forceLoadOfDependenciesCollections(result.getInitial());
+        forceLoadOfWorkingHours(result.getInitial());
+        forceLoadOfLabels(result.getInitial());
         return result;
     }
 
