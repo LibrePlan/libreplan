@@ -23,6 +23,7 @@ package org.zkoss.ganttz;
 import java.util.Collection;
 import java.util.List;
 
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
@@ -39,20 +40,25 @@ public class LeftPane extends HtmlMacroComponent {
 
     private LeftTasksTree leftTasksTree;
 
+    private final IDisabilityConfiguration disabilityConfiguration;
+
     public void setGoingDownInLastArrowCommand(
             CommandContextualized<?> goingDownInLastArrowCommand) {
         this.leftTasksTree
                 .setGoingDownInLastArrowCommand(goingDownInLastArrowCommand);
     }
 
-    public LeftPane(List<Task> topLevelTasks) {
+    public LeftPane(IDisabilityConfiguration disabilityConfiguration,
+            List<Task> topLevelTasks) {
         this.topLevelTasks = topLevelTasks;
+        this.disabilityConfiguration = disabilityConfiguration;
     }
 
     @Override
     public void afterCompose() {
         super.afterCompose();
-        leftTasksTree = new LeftTasksTree(topLevelTasks);
+        leftTasksTree = new LeftTasksTree(disabilityConfiguration,
+                topLevelTasks);
         getContainer().appendChild(leftTasksTree);
         leftTasksTree.afterCompose();
     }

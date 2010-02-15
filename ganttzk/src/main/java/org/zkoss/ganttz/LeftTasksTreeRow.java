@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
@@ -68,13 +69,19 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private final ILeftTasksTreeNavigator leftTasksTreeNavigator;
 
-    public static LeftTasksTreeRow create(Task bean,
+    private final IDisabilityConfiguration disabilityConfiguration;
+
+    public static LeftTasksTreeRow create(
+            IDisabilityConfiguration disabilityConfiguration, Task bean,
             ILeftTasksTreeNavigator taskDetailnavigator) {
-        return new LeftTasksTreeRow(bean, taskDetailnavigator);
+        return new LeftTasksTreeRow(disabilityConfiguration, bean,
+                taskDetailnavigator);
     }
 
-    private LeftTasksTreeRow(Task task,
+    private LeftTasksTreeRow(IDisabilityConfiguration disabilityConfiguration,
+            Task task,
             ILeftTasksTreeNavigator leftTasksTreeNavigator) {
+        this.disabilityConfiguration = disabilityConfiguration;
         this.task = task;
         this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
                 .getCurrent());
@@ -356,11 +363,21 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         getNameBox().setValue(task.getName());
         getNameBox().setTooltiptext(task.getName());
         getStartDateBox().setValue(task.getBeginDate());
-        getStartDateBox().setDisabled(!task.canBeExplicitlyMoved());
+        getStartDateBox().setDisabled(!canChangeStartDate());
         getEndDateBox().setValue(task.getEndDate());
-        getEndDateBox().setDisabled(!task.canBeExplicitlyResized());
+        getEndDateBox().setDisabled(!canChangeEndDate());
         getStartDateTextBox().setValue(asString(task.getBeginDate()));
         getEndDateTextBox().setValue(asString(task.getEndDate()));
+    }
+
+    private boolean canChangeStartDate() {
+        return disabilityConfiguration.isMovingTasksEnabled()
+                && task.canBeExplicitlyMoved();
+    }
+
+    private boolean canChangeEndDate() {
+        return disabilityConfiguration.isResizingTasksEnabled()
+                && task.canBeExplicitlyResized();
     }
 
     private String asString(Date date) {

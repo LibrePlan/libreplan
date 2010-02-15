@@ -333,7 +333,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private void setupComponents() {
         insertGlobalCommands();
-        this.leftPane = new LeftPane(this.diagramGraph.getTopLevelTasks());
+        this.leftPane = new LeftPane(disabilityConfiguration, this.diagramGraph
+                .getTopLevelTasks());
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, doubleClickCommand,
                 disabilityConfiguration);

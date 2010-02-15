@@ -34,6 +34,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.LeftTasksTreeRow.ILeftTasksTreeNavigator;
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
@@ -76,7 +77,8 @@ public class LeftTasksTree extends HtmlMacroComponent {
             final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
                     task);
             String cssClass = "depth_" + path.length;
-            LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(task,
+            LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(
+                    disabilityConfiguration, task,
                     new TreeNavigator(tasksTreeModel, task));
             if (task.isContainer()) {
                 expandWhenOpened((TaskContainer) task, item);
@@ -314,7 +316,11 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private CommandContextualized<?> goingDownInLastArrowCommand;
 
-    public LeftTasksTree(List<Task> tasks) {
+    private final IDisabilityConfiguration disabilityConfiguration;
+
+    public LeftTasksTree(IDisabilityConfiguration disabilityConfiguration,
+            List<Task> tasks) {
+        this.disabilityConfiguration = disabilityConfiguration;
         this.tasks = tasks;
     }
 
