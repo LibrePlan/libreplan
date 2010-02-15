@@ -146,7 +146,6 @@
                             <label value="${i18n:_('State')}" />
                             <listbox id="listOrderStatus" mold="select" rows="1" width="220px"
                                 model="@{controller.orderStatus}"
-                                onSelect="controller.onStatusChange()"
                                 selectedItem="@{controller.order.state}"/>
                         </row>
                     </rows>

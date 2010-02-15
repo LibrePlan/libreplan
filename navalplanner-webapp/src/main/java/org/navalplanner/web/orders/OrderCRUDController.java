@@ -92,6 +92,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.api.Listbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -240,6 +241,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         editWindow = (Window) Executions.createComponents(
                 "/orders/_edition.zul",
                 parent, editWindowArgs);
+        bindListOrderStatusSelectToOnStatusChange();
         Map<String, Object> editOrderElementArgs = new HashMap<String, Object>();
         editOrderElementArgs.put("top_id", "editOrderElement");
         Component editOrderElement = Executions.createComponents(
@@ -254,6 +256,17 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.reloadBindings(editWindow);
         Util.createBindingsFor(editOrderElement);
         Util.reloadBindings(editOrderElement);
+    }
+
+    private void bindListOrderStatusSelectToOnStatusChange() {
+        Listbox listOrderStatus = (Listbox) editWindow
+                .getFellow("listOrderStatus");
+        listOrderStatus.addEventListener(Events.ON_SELECT, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                onStatusChange();
+            }
+        });
     }
 
     private void setupEditControllers() throws Exception {
