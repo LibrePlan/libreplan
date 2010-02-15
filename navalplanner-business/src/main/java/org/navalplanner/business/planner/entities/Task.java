@@ -68,8 +68,14 @@ public class Task extends TaskElement {
     protected void initializeEndDate() {
         Integer workHours = getWorkHours();
         long endDateTime = getStartDate().getTime()
-                + (workHours * 3600l * 1000);
+                + timeElapsedMillisWorkingOneResourceEightHoursPerDay(workHours);
         setEndDate(new Date(endDateTime));
+    }
+
+    private long timeElapsedMillisWorkingOneResourceEightHoursPerDay(
+            Integer workHours) {
+        final long millisecondsPerDay = 24 * 3600l * 1000;
+        return workHours * millisecondsPerDay / 8;
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
