@@ -161,8 +161,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                     public void found(OrderTemplate template) {
                         orderModel.prepareCreationFrom(template);
                         showEditWindow(_("Create order from Template"));
-                        orderAuthorizationController
-                                .initCreate((Order) orderModel.getOrder());
                     }
                 });
     }
@@ -247,11 +245,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         Component editOrderElement = Executions.createComponents(
                 "/orders/_editOrderElement.zul",
                 parent, editOrderElementArgs);
-        try {
-            setupEditControllers();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
         Util.createBindingsFor(editWindow);
         Util.reloadBindings(editWindow);
         Util.createBindingsFor(editOrderElement);
@@ -267,11 +261,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 onStatusChange();
             }
         });
-    }
-
-    private void setupEditControllers() throws Exception {
-        Component comp = self;
-        setupOrderAuthorizationController(comp);
     }
 
     public void setupOrderElementTreeController() throws Exception {
@@ -394,13 +383,37 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private OrderAuthorizationController orderAuthorizationController;
 
-    private void setupOrderAuthorizationController(
-            Component comp) {
+    public void setupOrderAuthorizationController() {
         Component orderElementAuthorizations = editWindow
-            .getFellowIfAny("orderElementAuthorizations");
-        orderAuthorizationController = (OrderAuthorizationController) orderElementAuthorizations
-            .getVariable("orderAuthorizationController", true);
-        orderAuthorizationController.setMessagesForUserComponent(messagesForUser);
+                .getFellowIfAny("orderElementAuthorizations");
+        if (orderAuthorizationController == null) {
+            orderAuthorizationController = (OrderAuthorizationController) orderElementAuthorizations
+                    .getVariable("orderAuthorizationController", true);
+            orderAuthorizationController
+                    .setMessagesForUserComponent(messagesForUser);
+            initOrderAuthorizations();
+        } else {
+            Util.createBindingsFor(orderElementAuthorizations);
+            Util.reloadBindings(orderElementAuthorizations);
+        }
+    }
+
+    private void initOrderAuthorizations() {
+        Component orderElementAuthorizations = editWindow
+                .getFellowIfAny("orderElementAuthorizations");
+        final Order order = (Order) orderModel.getOrder();
+        if (order.isNewObject()) {
+            orderAuthorizationController.initCreate(order);
+        } else {
+            orderAuthorizationController.initEdit(order);
+        }
+        Util.createBindingsFor(orderElementAuthorizations);
+        Util.reloadBindings(orderElementAuthorizations);
+    }
+
+    private void saveOrderAuthorizations() {
+        setupOrderAuthorizationController();
+        orderAuthorizationController.save();
     }
 
     public List<Order> getOrders() {
@@ -431,7 +444,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                     //disable save buttons if state == STORED
                     setEditionDisabled(true);
                 }
-                orderAuthorizationController.initEdit((Order) orderModel.getOrder());
                 initialStatus = order.getState();
                 initializeTabs();
                 showWindow(editWindow);
@@ -473,7 +485,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         try {
             setSelectedExternalCompany();
             orderModel.save();
-            orderAuthorizationController.save();
+            saveOrderAuthorizations();
             messagesForUser.showMessage(Level.INFO, _("Order saved"));
             return true;
         } catch (ValidationException e) {
@@ -614,7 +626,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 //disable save buttons if state == STORED
                 setEditionDisabled(true);
             }
-            orderAuthorizationController.initEdit(order);
             initialStatus = order.getState();
             showEditWindow(_("Edit order"));
         }
@@ -672,12 +683,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (assignedTaskQualityFormController != null) {
             assignedTaskQualityFormController.openWindow(orderElementModel);
         }
-    }
-
-    private void clearEditWindow() {
-        TreeComponent treeComponent = (TreeComponent) editWindow
-                .getFellow("orderElementTree");
-        treeComponent.clear();
+        if (orderAuthorizationController != null) {
+            initOrderAuthorizations();
+        }
     }
 
     public void goToCreateForm() {
@@ -686,7 +694,6 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderModel.prepareForCreate();
             showEditWindow(_("Create order"));
             checkCreationPermissions();
-            orderAuthorizationController.initCreate((Order) orderModel.getOrder());
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
