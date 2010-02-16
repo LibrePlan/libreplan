@@ -65,6 +65,12 @@ table {
     border: solid 1px red;
 }
 
+.warningbox {
+    margin: 40px;
+    padding: 40px;
+    border: solid 1px #FDBE13;
+}
+
 /* --- START -- Buttons styles ---
 =================================================== */
 

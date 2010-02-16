@@ -26,6 +26,7 @@
         <intercept-url pattern="/callback/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/zkau/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/common/layout/login.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/layout/timeout.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/advance/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMINISTRATION"/>
         <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
