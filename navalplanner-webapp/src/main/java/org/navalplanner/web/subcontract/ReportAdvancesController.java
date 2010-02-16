@@ -198,6 +198,8 @@ public class ReportAdvancesController extends GenericForwardComposer {
                 public void onEvent(Event event) throws Exception {
                     try {
                         reportAdvancesModel.sendAdvanceMeasurements(order);
+                        messagesForUser.showMessage(Level.INFO,
+                                _("Advances sent successfully"));
                     } catch (UnrecoverableErrorServiceException e) {
                         messagesForUser
                                 .showMessage(Level.ERROR, e.getMessage());
