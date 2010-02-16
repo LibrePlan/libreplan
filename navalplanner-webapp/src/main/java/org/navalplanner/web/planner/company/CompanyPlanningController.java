@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.company;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,7 +32,8 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
-import org.navalplanner.web.orders.OrderPredicate;
+import org.navalplanner.web.orders.IPredicate;
+import org.navalplanner.web.planner.CompanyPredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -42,8 +45,10 @@ import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Vbox;
 
@@ -103,7 +108,7 @@ public class CompanyPlanningController implements Composer{
         Component filterComponent = Executions.createComponents(
                 "/orders/_orderFilter.zul", orderFilter,
                 new HashMap<String, String>());
-        filterComponent.setVariable("controller", this, true);
+        filterComponent.setVariable("orderFilterController", this, true);
         filterStartDate = (Datebox) filterComponent
                 .getFellow("filterStartDate");
         filterFinishDate = (Datebox) filterComponent
@@ -140,11 +145,49 @@ public class CompanyPlanningController implements Composer{
         this.parameters = parameters;
     }
 
+    /**
+     * Operations to filter the tasks by multiple filters
+     */
+
+    public Constraint checkConstraintFinishDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date finishDate = (Date) value;
+                if ((finishDate != null)
+                        && (filterStartDate.getValue() != null)
+                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
+                    filterFinishDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be greater than start date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Date startDate = (Date) value;
+                if ((startDate != null)
+                        && (filterFinishDate.getValue() != null)
+                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
+                    filterStartDate.setValue(null);
+                    throw new WrongValueException(comp,
+                            _("must be lower than finish date"));
+                }
+            }
+        };
+    }
+
     public void onApplyFilter() {
         filterByPredicate(createPredicate());
     }
 
-    private OrderPredicate createPredicate() {
+    private IPredicate createPredicate() {
         List<FilterPair> listFilters = (List<FilterPair>) bdFilters
                 .getSelectedElements();
         Date startDate = filterStartDate.getValue();
@@ -154,11 +197,11 @@ public class CompanyPlanningController implements Composer{
         if (listFilters.isEmpty() && startDate == null && finishDate == null) {
             return null;
         }
-        return new OrderPredicate(listFilters, startDate, finishDate,
+        return new CompanyPredicate(listFilters, startDate, finishDate,
                 includeOrderElements);
     }
 
-    private void filterByPredicate(OrderPredicate predicate) {
+    private void filterByPredicate(IPredicate predicate) {
         // Recalculate predicate
         model.setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, predicate);

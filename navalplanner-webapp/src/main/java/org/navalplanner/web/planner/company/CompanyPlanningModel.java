@@ -60,7 +60,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
-import org.navalplanner.web.orders.OrderPredicate;
+import org.navalplanner.web.orders.IPredicate;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
@@ -180,7 +180,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
-            OrderPredicate predicate) {
+ IPredicate predicate) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
 
         Tabbox chartComponent = new Tabbox();
@@ -195,10 +195,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
+
         ZoomLevel defaultZoomLevel = OrderPlanningModel
                 .calculateDefaultLevel(configuration);
         OrderPlanningModel.configureInitialZoomLevelFor(planner,
                 defaultZoomLevel);
+
         configuration.setSecondLevelModificators(new BankHolidaysMarker());
         planner.setConfiguration(configuration);
         Timeplot chartLoadTimeplot = new Timeplot();
@@ -511,14 +513,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
-            OrderPredicate predicate) {
+            IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         List<TaskElement> toShow;
-        if (predicate != null) {
-            toShow = sortByStartDate(retainOnlyTopLevel(predicate));
-        } else {
-            toShow = sortByStartDate(retainOnlyTopLevel(null));
-        }
+        toShow = sortByStartDate(retainOnlyTopLevel(predicate));
+
         forceLoadOfDataAssociatedTo(toShow);
         forceLoadOfDependenciesCollections(toShow);
         forceLoadOfWorkingHours(toShow);
@@ -550,7 +549,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return result;
     }
 
-    private List<TaskElement> retainOnlyTopLevel(OrderPredicate predicate) {
+    private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
 

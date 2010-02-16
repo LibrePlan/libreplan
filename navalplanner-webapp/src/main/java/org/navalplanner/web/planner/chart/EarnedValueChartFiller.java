@@ -140,7 +140,9 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
                 .get(EarnedValueType.ACWP);
 
         for (LocalDate day : bcwp.keySet()) {
-            cv.put(day, bcwp.get(day).subtract(acwp.get(day)));
+            if ((bcwp.get(day) != null) && (acwp.get(day) != null)) {
+                cv.put(day, bcwp.get(day).subtract(acwp.get(day)));
+            }
         }
 
         indicators.put(EarnedValueType.CV, cv);
@@ -155,7 +157,9 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
                 .get(EarnedValueType.BCWS);
 
         for (LocalDate day : bcwp.keySet()) {
-            sv.put(day, bcwp.get(day).subtract(bcws.get(day)));
+            if ((bcwp.get(day) != null) && (bcws.get(day) != null)) {
+                sv.put(day, bcwp.get(day).subtract(bcws.get(day)));
+            }
         }
 
         indicators.put(EarnedValueType.SV, sv);
@@ -239,8 +243,12 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
         for (LocalDate day : bcwp.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
-            if (acwp.get(day).compareTo(BigDecimal.ZERO) != 0) {
-                value = bcwp.get(day).divide(acwp.get(day), RoundingMode.DOWN);
+            if ((acwp.get(day) != null)
+                    && (acwp.get(day).compareTo(BigDecimal.ZERO) != 0)) {
+                if ((bcwp.get(day) != null) && (acwp.get(day) != null)) {
+                    value = bcwp.get(day).divide(acwp.get(day),
+                            RoundingMode.DOWN);
+                }
             }
             cpi.put(day, value);
         }
@@ -258,7 +266,8 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
         for (LocalDate day : bcwp.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
-            if (bcws.get(day).compareTo(BigDecimal.ZERO) != 0) {
+            if ((bcws.get(day) != null)
+                    && (bcws.get(day).compareTo(BigDecimal.ZERO) != 0)) {
                 value = bcwp.get(day).divide(bcws.get(day), RoundingMode.DOWN);
             }
             spi.put(day, value);

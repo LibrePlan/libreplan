@@ -183,21 +183,21 @@ public class OrderPredicate implements IPredicate {
         return order.getCustomerReference().equals(filterCustomerReference);
     }
 
-    private boolean acceptFiltersDates(Order order) {
+    protected boolean acceptFiltersDates(Order order) {
         // Check if exist work report items into interval between the start date
         // and finish date.
         return (acceptStartDate(order.getInitDate()) && (acceptFinishDate(order
                 .getDeadline())));
     }
 
-    private boolean acceptStartDate(Date initDate) {
+    protected boolean acceptStartDate(Date initDate) {
         if ((initDate == null) && (startDate == null)) {
             return true;
         }
         return isInTheRangeFilterDates(initDate);
     }
 
-    private boolean acceptFinishDate(Date deadLine) {
+    protected boolean acceptFinishDate(Date deadLine) {
         if ((deadLine == null) && (finishDate == null)) {
             return true;
         }
