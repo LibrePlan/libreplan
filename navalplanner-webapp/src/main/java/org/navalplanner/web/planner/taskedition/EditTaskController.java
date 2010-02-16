@@ -144,7 +144,7 @@ public class EditTaskController extends GenericForwardComposer {
     public void showEditFormResourceAllocation(
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
-        if (isNotSubcontractedAndIsTask()) {
+        if (isNotSubcontractedAndIsTask(taskElement)) {
             editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
         } else {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
@@ -155,7 +155,7 @@ public class EditTaskController extends GenericForwardComposer {
     public void showEditFormSubcontract(
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
-        if (isSubcontractedAndIsTask()) {
+        if (isSubcontractedAndIsTask(taskElement)) {
             editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
         } else {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
@@ -227,6 +227,16 @@ public class EditTaskController extends GenericForwardComposer {
         return taskElement.isSubcontracted();
     }
 
+    private boolean isSubcontractedAndIsTask(TaskElement task) {
+        if (task == null) {
+            return false;
+        }
+        if (!(task instanceof Task)) {
+            return false;
+        }
+        return task.isSubcontracted();
+    }
+
     public boolean isNotSubcontractedAndIsTask() {
         if (taskElement == null) {
             return false;
@@ -235,6 +245,16 @@ public class EditTaskController extends GenericForwardComposer {
             return false;
         }
         return !taskElement.isSubcontracted();
+    }
+
+    private boolean isNotSubcontractedAndIsTask(TaskElement task) {
+        if (task == null) {
+            return false;
+        }
+        if (!(task instanceof Task)) {
+            return false;
+        }
+        return !task.isSubcontracted();
     }
 
     public void goToAdvancedAllocation() {
