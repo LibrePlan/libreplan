@@ -77,7 +77,8 @@ public class OrdersTreeComponent extends TreeComponent {
         });
         columns.add(nameAndDescriptionColumn);
         columns.add(new OrdersTreeColumn(_("Must start after"),
-                "estimated_init") {
+                        "estimated_init",
+                        _("Date which the task must start after (press enter in textbox to open calendar popup or type in date directly)")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,
@@ -86,7 +87,11 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
-        columns.add(new OrdersTreeColumn(_("Deadline"), "estimated_end") {
+        columns
+                .add(new OrdersTreeColumn(
+                        _("Deadline"),
+                        "estimated_end",
+                        _("Estimated end date for the task (press enter in textbox to open calendar popup or type in date directly)")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,

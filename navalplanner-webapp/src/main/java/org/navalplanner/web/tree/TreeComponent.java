@@ -23,6 +23,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.web.orders.OrderElementTreeController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -50,8 +51,11 @@ public abstract class TreeComponent extends HtmlMacroComponent {
 
         public Column(String label, String cssClass, String tooltip) {
             this.label = label;
+            if (!StringUtils.isEmpty(tooltip)) {
+                this.tooltip = tooltip;
+                cssClass += " help-tooltip";
+            }
             this.cssClass = cssClass;
-            this.tooltip = tooltip;
         }
 
         public String getLabel() {
@@ -102,7 +106,9 @@ public abstract class TreeComponent extends HtmlMacroComponent {
     };
 
     protected final Column schedulingStateColumn = new Column(
-            _("Scheduling state"), "scheduling_state") {
+            _("Scheduling state"),
+            "scheduling_state",
+            _("Complete, Partially or Not Scheduled. (Drag and drop to move order elements)")) {
 
         @Override
         public <T extends ITreeNode<T>> void doCell(

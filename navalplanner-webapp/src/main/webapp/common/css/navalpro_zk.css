@@ -314,10 +314,13 @@ button.z-button {
     height: 18px;
     border-bottom: 0px;
     border-top: 0px;
-    font-size: 12px; /* 11px */
     border-left: 1px dotted #7EAAC6;
     padding-left: 2px;
-    padding-top: 2px;
+    border-right: 0px;
+}
+
+.orderTree .z-datebox-inp {
+    height: 20px;
 }
 
 /* Allows tasknumber span to have fixed width */
@@ -602,7 +605,7 @@ div.z-grid {
 .orderTree .z-textbox,.orderTree .z-decimalbox,
 .orderTree .z-intbox,.orderTree .z-longbox,
 .orderTree .z-doublebox {
-    height: 25px;
+    height: 23px;
     width: 100%;
 }
 
@@ -1162,4 +1165,8 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 
 .advancedallocationlayout .global-action.z-button {
     margin-top: 1px;
+}
+
+.help-tooltip {
+    cursor: help;
 }
