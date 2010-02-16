@@ -86,8 +86,6 @@ public class Order extends OrderLineGroup {
 
     private String customerReference;
 
-    private String externalCode;
-
     private Set<OrderAuthorization> orderAuthorizations = new HashSet<OrderAuthorization>();
 
     public void addOrderAuthorization(OrderAuthorization orderAuthorization) {
@@ -149,14 +147,6 @@ public class Order extends OrderLineGroup {
 
     public void setCustomerReference(String customerReference) {
         this.customerReference = customerReference;
-    }
-
-    public String getExternalCode() {
-        return this.externalCode;
-    }
-
-    public void setExternalCode(String externalCode) {
-        this.externalCode = externalCode;
     }
 
     public ExternalCompany getCustomer() {
