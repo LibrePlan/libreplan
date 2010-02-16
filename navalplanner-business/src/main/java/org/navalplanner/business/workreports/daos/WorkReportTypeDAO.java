@@ -87,7 +87,7 @@ public class WorkReportTypeDAO extends
             throws InstanceNotFoundException {
         Validate.notNull(workReportType);
 
-        return findUniqueByName(workReportType.getCode());
+        return findUniqueByCode(workReportType.getCode());
     }
 
     @Override

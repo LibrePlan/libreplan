@@ -53,7 +53,7 @@
                                         id="code" value="@{controller.workReportType.code}" width="300px"
                                         constraint = "@{controller.validateWorkReportTypeCode}"/>
                                     <label visible = "@{controller.readOnly}"
-                                        value="@{controller.workReportType.name}" width="300px"/>
+                                        value="@{controller.workReportType.code}" width="300px"/>
                                 </hbox>
                             </row>
                             <row>
