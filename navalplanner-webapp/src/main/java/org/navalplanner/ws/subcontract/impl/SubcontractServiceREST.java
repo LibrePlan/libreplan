@@ -186,6 +186,7 @@ public class SubcontractServiceREST implements ISubcontractService {
 
         order.setName(_("Order from client"));
         order.setInitDate(orderElement.getInitDate());
+        order.setDeadline(orderElement.getDeadline());
         order.setCalendar(getDefaultCalendar());
 
         return order;
