@@ -29,7 +29,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -105,8 +104,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
             appendLabel(row, order.getName());
 
             Set<DirectAdvanceAssignment> allDirectAdvanceAssignments = order
-                    .getAllDirectAdvanceAssignments(PredefinedAdvancedTypes.SUBCONTRACTOR
-                            .getType());
+                    .getDirectAdvanceAssignmentsOfSubcontractedOrderElements();
 
             AdvanceMeasurement lastAdvanceMeasurementReported = reportAdvancesModel
                     .getLastAdvanceMeasurementReported(allDirectAdvanceAssignments);

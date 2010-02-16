@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -625,6 +626,27 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     @Override
+    public Set<IndirectAdvanceAssignment> getAllIndirectAdvanceAssignments(
+            AdvanceType advanceType) {
+        Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
+
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
+                    .equals(advanceType.getUnitName())) {
+                result.add(indirectAdvanceAssignment);
+                break;
+            }
+        }
+
+        for (OrderElement orderElement : children) {
+            result.addAll(orderElement
+                    .getAllIndirectAdvanceAssignments(advanceType));
+        }
+
+        return result;
+    }
+
+    @Override
     protected Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal() {
         Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
 
@@ -806,6 +828,39 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         return orderLine;
+    }
+
+    @Override
+    public Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsOfSubcontractedOrderElements() {
+        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
+                .getType();
+
+        if (!StringUtils.isBlank(getExternalCode())) {
+            for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+                if (directAdvanceAssignment.getAdvanceType().getUnitName()
+                        .equals(advanceType.getUnitName())) {
+                    result.add(directAdvanceAssignment);
+                    return result;
+                }
+            }
+        }
+
+        for (OrderElement orderElement : children) {
+            result.addAll(orderElement
+                    .getDirectAdvanceAssignmentsOfSubcontractedOrderElements());
+        }
+
+        if (!StringUtils.isBlank(getExternalCode())) {
+            if (result.isEmpty()) {
+                DirectAdvanceAssignment advanceAssignment = getAdvanceAssignmentByType(advanceType);
+                if (advanceAssignment != null) {
+                    result.add(advanceAssignment);
+                }
+            }
+        }
+
+        return result;
     }
 
 }

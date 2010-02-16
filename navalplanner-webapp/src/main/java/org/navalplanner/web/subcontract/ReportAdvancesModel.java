@@ -39,8 +39,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
-import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -79,9 +79,6 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
-    private IAdvanceAssignmentDAO advanceAssignmentDAO;
-
-    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Override
@@ -96,16 +93,29 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
                     .loadOrderAvoidingProxyFor(orderElement);
             if (ordersMap.get(order.getId()) == null) {
                 ordersMap.put(order.getId(), order);
-                forceLoadDirectAdvanceAssignments(order);
+                forceLoadHoursGroups(order);
+                forceLoadAdvanceAssignments(order);
             }
         }
 
         return new ArrayList<Order>(ordersMap.values());
     }
 
-    private void forceLoadDirectAdvanceAssignments(Order order) {
-        order.getAllDirectAdvanceAssignments(
-                PredefinedAdvancedTypes.SUBCONTRACTOR.getType()).size();
+    private void forceLoadHoursGroups(OrderElement orderElement) {
+        orderElement.getHoursGroups().size();
+        for (OrderElement child : orderElement.getChildren()) {
+            forceLoadHoursGroups(child);
+        }
+    }
+
+    private void forceLoadAdvanceAssignments(Order order) {
+        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
+                .getType();
+        for (DirectAdvanceAssignment directAdvanceAssignment : order
+                .getAllDirectAdvanceAssignments(advanceType)) {
+            directAdvanceAssignment.getAdvanceMeasurements().size();
+        }
+        order.getAllIndirectAdvanceAssignments(advanceType).size();
     }
 
     @Override
@@ -119,13 +129,11 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         Iterator<DirectAdvanceAssignment> iterator = allDirectAdvanceAssignments
                 .iterator();
         DirectAdvanceAssignment advanceAssignment = iterator.next();
-        advanceAssignmentDAO.reattachUnmodifiedEntity(advanceAssignment);
 
         AdvanceMeasurement lastAdvanceMeasurement = advanceAssignment
                 .getLastAdvanceMeasurement();
         while (iterator.hasNext()) {
             advanceAssignment = iterator.next();
-            advanceAssignmentDAO.reattachUnmodifiedEntity(advanceAssignment);
             AdvanceMeasurement advanceMeasurement = advanceAssignment
                     .getLastAdvanceMeasurement();
             if (advanceMeasurement.getDate().compareTo(
@@ -148,8 +156,6 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         AdvanceMeasurement lastAdvanceMeasurementReported = null;
 
         for (DirectAdvanceAssignment advanceAssignment : allDirectAdvanceAssignments) {
-            advanceAssignmentDAO.reattachUnmodifiedEntity(advanceAssignment);
-
             for (AdvanceMeasurement advanceMeasurement : advanceAssignment.getAdvanceMeasurements()) {
                 if (advanceMeasurement.getCommunicationDate() != null) {
                     if (lastAdvanceMeasurementReported == null) {
@@ -178,8 +184,6 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         }
 
         for (DirectAdvanceAssignment advanceAssignment : allDirectAdvanceAssignments) {
-            advanceAssignmentDAO.reattachUnmodifiedEntity(advanceAssignment);
-
             for (AdvanceMeasurement advanceMeasurement : advanceAssignment.getAdvanceMeasurements()) {
                 if (advanceMeasurement.getCommunicationDate() == null) {
                     return true;
@@ -244,8 +248,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         List<OrderElementWithAdvanceMeasurementsDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsDTO>();
 
         Set<DirectAdvanceAssignment> directAdvanceAssignments = order
-                .getAllDirectAdvanceAssignments(PredefinedAdvancedTypes.SUBCONTRACTOR
-                        .getType());
+                .getDirectAdvanceAssignmentsOfSubcontractedOrderElements();
 
         for (DirectAdvanceAssignment advanceAssignment : directAdvanceAssignments) {
             Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
