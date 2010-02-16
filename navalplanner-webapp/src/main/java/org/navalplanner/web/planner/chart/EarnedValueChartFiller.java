@@ -191,7 +191,9 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
         for (LocalDate day : acwp.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
-            if (bcwp.get(day).compareTo(BigDecimal.ZERO) != 0) {
+            if ((bcwp.get(day) != null) && (acwp.get(day) != null)
+                    && (bac.get(day) != null)
+                    && (bcwp.get(day).compareTo(BigDecimal.ZERO) != 0)) {
                 value = acwp.get(day).divide(bcwp.get(day), RoundingMode.DOWN)
                         .multiply(bac.get(day));
             }
@@ -210,7 +212,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
                 .get(EarnedValueType.EAC);
 
         for (LocalDate day : bac.keySet()) {
-            if (eac.get(day) != null) {
+            if ((eac.get(day) != null) && (bac.get(day) != null)) {
                 vac.put(day, bac.get(day).subtract(eac.get(day)));
             }
         }
@@ -227,7 +229,9 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
                 .get(EarnedValueType.ACWP);
 
         for (LocalDate day : eac.keySet()) {
-            etc.put(day, eac.get(day).subtract(acwp.get(day)));
+            if ((eac.get(day) != null) && (acwp.get(day) != null)) {
+                etc.put(day, eac.get(day).subtract(acwp.get(day)));
+            }
         }
 
         indicators.put(EarnedValueType.ETC, etc);
@@ -266,7 +270,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
         for (LocalDate day : bcwp.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
-            if ((bcws.get(day) != null)
+            if ((bcws.get(day) != null) && (bcwp.get(day) != null)
                     && (bcws.get(day).compareTo(BigDecimal.ZERO) != 0)) {
                 value = bcwp.get(day).divide(bcws.get(day), RoundingMode.DOWN);
             }
