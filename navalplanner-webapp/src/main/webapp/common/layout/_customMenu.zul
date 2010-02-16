@@ -31,7 +31,7 @@
             ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu" autodrop="true">
 
                 <menu forEach="${menuContainer.customMenuItems}" label="${i18n:_(each.name)}" class="${each.activeParent?'current-section':''}" >
-                <menupopup>
+                <menupopup sclass="submenu">
                     <menuitem forEach="${each.children}" label="${i18n:_(each.name)}"
                         href='${each.url}' />
                 </menupopup>

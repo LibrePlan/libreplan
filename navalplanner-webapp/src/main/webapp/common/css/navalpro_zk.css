@@ -1156,6 +1156,6 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     cursor: default;
 }
 
-.z-menu-popup-cnt .z-menu-item-over .z-menu-item-img {
+.submenu .z-menu-popup-cnt .z-menu-item-over .z-menu-item-img {
     background-image: url(../img/ico_submenu.png);
 }
