@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -334,6 +335,7 @@ public class OrderLineGroup extends OrderElement implements
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
         DirectAdvanceAssignment newDirectAdvanceAssignment = DirectAdvanceAssignment
                 .create();
+        newDirectAdvanceAssignment.setFake(true);
         newDirectAdvanceAssignment.setMaxValue(new BigDecimal(100));
         newDirectAdvanceAssignment.setAdvanceType(indirectAdvanceAssignment
                 .getAdvanceType());
@@ -393,6 +395,7 @@ public class OrderLineGroup extends OrderElement implements
         DirectAdvanceAssignment origAdvanceAssignment = iterator.next();
         DirectAdvanceAssignment directAdvanceAssignment = DirectAdvanceAssignment
                 .create();
+        directAdvanceAssignment.setFake(true);
         directAdvanceAssignment
                 .setMaxValue(origAdvanceAssignment.getMaxValue());
         directAdvanceAssignment
@@ -460,6 +463,7 @@ public class OrderLineGroup extends OrderElement implements
 
         LocalDate date;
         BigDecimal add;
+        Date communicationDate;
 
         BigDecimal totalHours = null;
         if (advanceAssignment.getAdvanceType().getPercentage()) {
@@ -471,6 +475,7 @@ public class OrderLineGroup extends OrderElement implements
             if (next1.getDate().compareTo(next2.getDate()) < 0) {
                 date = next1.getDate();
                 add = next1.getValue().subtract(previous1);
+                communicationDate = next1.getCommunicationDate();
                 previous1 = next1.getValue();
 
                 if (advanceAssignment.getAdvanceType().getPercentage()) {
@@ -489,6 +494,7 @@ public class OrderLineGroup extends OrderElement implements
             } else if (next1.getDate().compareTo(next2.getDate()) > 0) {
                 date = next2.getDate();
                 add = next2.getValue().subtract(previous2);
+                communicationDate = next2.getCommunicationDate();
                 previous2 = next2.getValue();
 
                 if (advanceAssignment.getAdvanceType().getPercentage()) {
@@ -509,6 +515,8 @@ public class OrderLineGroup extends OrderElement implements
                 BigDecimal add1 = next1.getValue().subtract(previous1);
                 BigDecimal add2 = next2.getValue().subtract(previous2);
                 add = add1.add(add2);
+                communicationDate = getGreatestDate(next1
+                        .getCommunicationDate(), next2.getCommunicationDate());
                 previous1 = next1.getValue();
                 previous2 = next2.getValue();
 
@@ -545,12 +553,14 @@ public class OrderLineGroup extends OrderElement implements
             advanceMeasurement.setDate(date);
             previousResult = previousResult.add(add);
             advanceMeasurement.setValue(previousResult);
+            advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
         }
 
         while (next1 != null) {
             date = next1.getDate();
             add = next1.getValue().subtract(previous1);
+            communicationDate = next1.getCommunicationDate();
             previous1 = next1.getValue();
 
             if (advanceAssignment.getAdvanceType().getPercentage()) {
@@ -572,12 +582,14 @@ public class OrderLineGroup extends OrderElement implements
             advanceMeasurement.setDate(date);
             advanceMeasurement.setValue(previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
+            advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
         }
 
         while (next2 != null) {
             date = next2.getDate();
             add = next2.getValue().subtract(previous2);
+            communicationDate = next2.getCommunicationDate();
             previous2 = next2.getValue();
 
             if (advanceAssignment.getAdvanceType().getPercentage()) {
@@ -599,9 +611,18 @@ public class OrderLineGroup extends OrderElement implements
             advanceMeasurement.setDate(date);
             advanceMeasurement.setValue(previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
+            advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
         }
 
+    }
+
+    private Date getGreatestDate(Date communicationDate, Date communicationDate2) {
+        if ((communicationDate == null) || (communicationDate2 == null)) {
+            return null;
+        }
+        return (communicationDate.compareTo(communicationDate2) >= 0) ? communicationDate
+                : communicationDate2;
     }
 
     @Override

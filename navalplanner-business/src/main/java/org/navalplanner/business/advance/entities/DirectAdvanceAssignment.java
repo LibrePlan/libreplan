@@ -58,6 +58,8 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     private SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>(
             new AdvanceMeasurementComparator());
 
+    private boolean fake = false;
+
     public DirectAdvanceAssignment() {
         super();
     }
@@ -145,6 +147,15 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         }
 
         return null;
+    }
+
+
+    public void setFake(boolean fake) {
+        this.fake = fake;
+    }
+
+    public boolean isFake() {
+        return fake;
     }
 
 }

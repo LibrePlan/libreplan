@@ -22,10 +22,12 @@ package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.orders.entities.OrderElement;
 
 public class AdvanceMeasurement extends BaseEntity {
 
@@ -93,6 +95,10 @@ public class AdvanceMeasurement extends BaseEntity {
         return this.advanceAssignment;
     }
 
+    public void setCommunicationDate(Date communicationDate) {
+        this.communicationDate = communicationDate;
+    }
+
     public Date getCommunicationDate() {
         return communicationDate;
     }
@@ -104,8 +110,23 @@ public class AdvanceMeasurement extends BaseEntity {
      * @param communicationDate
      */
     public void updateCommunicationDate(Date communicationDate) {
-        if ((this.communicationDate == null) && (communicationDate != null)) {
-            this.communicationDate = communicationDate;
+        DirectAdvanceAssignment advanceAssignment = (DirectAdvanceAssignment) getAdvanceAssignment();
+        if (advanceAssignment.isFake()) {
+            OrderElement orderElement = advanceAssignment.getOrderElement();
+            Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement
+                    .getAllDirectAdvanceAssignments(advanceAssignment
+                            .getAdvanceType());
+            for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+                for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
+                        .getAdvanceMeasurements()) {
+                    advanceMeasurement
+                            .updateCommunicationDate(communicationDate);
+                }
+            }
+        } else {
+            if ((this.communicationDate == null) && (communicationDate != null)) {
+                this.communicationDate = communicationDate;
+            }
         }
     }
 
