@@ -51,15 +51,6 @@ public class TemplatesTreeController extends
         private final ClassValidator<OrderElementTemplate> validator = new ClassValidator<OrderElementTemplate>(
                 OrderElementTemplate.class);
 
-        void addFirstCell(OrderElementTemplate currentElement) {
-            int[] path = getModel().getPath(currentElement);
-            String cssClass = "depth_" + path.length;
-            Label label = new Label();
-            label.setValue("");
-            label.setSclass(cssClass);
-            addCell(label);
-        }
-
         @Override
         protected void addOperationsCell(Treeitem item,
                 OrderElementTemplate currentElement) {

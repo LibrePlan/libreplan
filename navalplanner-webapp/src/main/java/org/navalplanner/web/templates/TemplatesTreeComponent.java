@@ -74,15 +74,7 @@ public class TemplatesTreeComponent extends TreeComponent {
     @Override
     public List<Column> getColumns() {
         List<Column> result = new ArrayList<Column>();
-        result.add(new TemplatesTreeColumn("", "") {
 
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addFirstCell(currentElement);
-            }
-
-        });
         result.add(schedulingStateColumn);
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
