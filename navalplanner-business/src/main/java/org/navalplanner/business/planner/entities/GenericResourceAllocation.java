@@ -134,8 +134,8 @@ public class GenericResourceAllocation extends
         private HoursDistributor hoursDistributor;
 
         public GenericAllocation(List<Resource> resources) {
-            hoursDistributor = new HoursDistributor(
-                    resources);
+            hoursDistributor = new HoursDistributor(resources,
+                    getAssignedHoursForResource());
         }
 
         @Override
@@ -150,6 +150,21 @@ public class GenericResourceAllocation extends
             return result;
         }
 
+    }
+
+    private IAssignedHoursForResource assignedHoursCalculatorOverriden = null;
+
+    public void overrideAssignedHoursForResource(
+            GenericResourceAllocation allocation) {
+        assignedHoursCalculatorOverriden = allocation
+                .getAssignedHoursForResource();
+    }
+
+    private IAssignedHoursForResource getAssignedHoursForResource() {
+        if (assignedHoursCalculatorOverriden != null) {
+            return assignedHoursCalculatorOverriden;
+        }
+        return new AssignedHoursDiscounting(this);
     }
 
     @Override
@@ -236,6 +251,8 @@ public class GenericResourceAllocation extends
         allocation.genericDayAssignments = new HashSet<GenericDayAssignment>(
                 this.genericDayAssignments);
         allocation.criterions = new HashSet<Criterion>(criterions);
+        allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
+                this);
         return allocation;
     }
 

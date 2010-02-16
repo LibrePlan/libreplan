@@ -94,13 +94,19 @@ public class GenericAllocationRow extends AllocationRow {
 
     @Override
     public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
-        return ResourcesPerDayModification.create(createGenericAllocation(task),
-                getResourcesPerDay(), this.resources);
+        GenericResourceAllocation newGeneric = createGenericAllocation(task);
+        return ResourcesPerDayModification
+                .create(newGeneric, getResourcesPerDay(), this.resources);
     }
 
     private GenericResourceAllocation createGenericAllocation(Task task) {
-        return GenericResourceAllocation
-                .create(task, criterions);
+        GenericResourceAllocation result = GenericResourceAllocation.create(
+                task, criterions);
+        GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
+        if (origin != null) {
+            result.overrideAssignedHoursForResource(origin);
+        }
+        return result;
     }
 
     @Override

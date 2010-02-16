@@ -69,4 +69,9 @@ public class DerivedDayAssignment extends DayAssignment {
                 allocation);
     }
 
+    @Override
+    public boolean belongsTo(Object allocation) {
+        return allocation != null && this.allocation.equals(allocation);
+    }
+
 }

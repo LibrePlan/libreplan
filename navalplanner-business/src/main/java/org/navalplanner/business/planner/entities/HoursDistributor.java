@@ -50,8 +50,12 @@ public class HoursDistributor {
 
     private final List<Integer> capacities;
 
-    public HoursDistributor(List<Resource> resources) {
+    private final IAssignedHoursForResource assignedHoursForResource;
+
+    public HoursDistributor(List<Resource> resources,
+            IAssignedHoursForResource assignedHoursForResource) {
         this.resources = resources;
+        this.assignedHoursForResource = assignedHoursForResource;
         this.workHours = new ArrayList<IWorkHours>();
         for (Resource resource : resources) {
             this.workHours.add(generateWorkHoursFor(resource));
@@ -139,7 +143,8 @@ public class HoursDistributor {
             List<Share> shares = new ArrayList<Share>();
             Resource resource = resources.get(i);
             IWorkHours workHoursForResource = workHours.get(i);
-            int alreadyAssignedHours = resource.getAssignedHours(day);
+            int alreadyAssignedHours = assignedHoursForResource
+                    .getAssignedHoursAt(resource, day);
             Integer capacityEachOne = workHoursForResource.toHours(day, ONE);
             final int capacityUnits = capacities.get(i);
             assert capacityUnits >= 1;

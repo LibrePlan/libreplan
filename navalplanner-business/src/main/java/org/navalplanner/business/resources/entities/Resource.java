@@ -744,6 +744,17 @@ public abstract class Resource extends IntegrationEntity {
         return sum;
     }
 
+    public int getAssignedHoursDiscounting(
+            Object alloationFromWhichDiscountHours, LocalDate day) {
+        int sum = 0;
+        for (DayAssignment dayAssignment : getAssignmentsForDay(day)) {
+            if (!dayAssignment.belongsTo(alloationFromWhichDiscountHours)) {
+                sum += dayAssignment.getHours();
+            }
+        }
+        return sum;
+    }
+
     public void addNewAssignments(Collection<? extends DayAssignment> assignments) {
         Validate.notNull(assignments);
         Validate.noNullElements(assignments);

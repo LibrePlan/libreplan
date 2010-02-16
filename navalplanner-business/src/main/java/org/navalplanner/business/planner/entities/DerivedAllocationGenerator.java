@@ -98,7 +98,8 @@ public class DerivedAllocationGenerator {
             List<Resource> resourcesFound,
             List<? extends DayAssignment> dayAssignments) {
         List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
-        HoursDistributor distributor = new HoursDistributor(resourcesFound);
+        HoursDistributor distributor = new HoursDistributor(resourcesFound,
+                new AssignedHoursDiscounting(parent));
         for (DayAssignment each : dayAssignments) {
             BigDecimal hours = alpha.multiply(new BigDecimal(each.getHours()));
             LocalDate day = each.getDay();

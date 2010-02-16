@@ -85,4 +85,10 @@ public class SpecificDayAssignment extends DayAssignment {
     protected void detachFromAllocation() {
         this.specificResourceAllocation = null;
     }
+
+    @Override
+    public boolean belongsTo(Object resourceAllocation) {
+        return resourceAllocation != null
+                && specificResourceAllocation.equals(resourceAllocation);
+    }
 }

@@ -174,4 +174,6 @@ public abstract class DayAssignment extends BaseEntity {
 
     protected abstract void detachFromAllocation();
 
+    public abstract boolean belongsTo(Object allocation);
+
 }

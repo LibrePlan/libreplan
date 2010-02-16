@@ -124,6 +124,10 @@ public class DerivedAllocationGeneratorTest {
         Worker result = createNiceMock(Worker.class);
         expect(result.getAssignedHours(isA(LocalDate.class))).andReturn(
                 assignedHours).anyTimes();
+        expect(
+                result.getAssignedHoursDiscounting(isA(Object.class),
+                        isA(LocalDate.class))).andReturn(assignedHours)
+                .anyTimes();
         replay(result);
         return result;
     }

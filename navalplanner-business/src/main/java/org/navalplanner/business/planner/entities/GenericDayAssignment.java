@@ -84,4 +84,15 @@ public class GenericDayAssignment extends DayAssignment {
         genericResourceAllocation = null;
     }
 
+    @Override
+    public boolean belongsTo(Object allocation) {
+        return allocation != null
+                && genericResourceAllocation.equals(allocation);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " hours: " + getHours();
+    }
+
 }
