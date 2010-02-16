@@ -974,7 +974,7 @@ public abstract class OrderElement extends BaseEntity implements
         return this;
     }
 
-    private void setExternalCode(String externalCode) {
+    protected void setExternalCode(String externalCode) {
         this.externalCode = externalCode;
     }
 

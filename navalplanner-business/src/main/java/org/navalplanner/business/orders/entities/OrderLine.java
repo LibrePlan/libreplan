@@ -113,6 +113,11 @@ public class OrderLine extends OrderElement {
         if (getCode() != null) {
             this.setCode(getCode());
         }
+
+        // propagate external code to new container
+        result.setExternalCode(getExternalCode());
+        this.setExternalCode(null);
+
         return result;
     }
 
