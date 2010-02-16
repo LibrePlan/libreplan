@@ -57,9 +57,10 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.api.Listbox;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -109,6 +110,8 @@ public class Planner extends HtmlMacroComponent  {
     private LeftPane leftPane;
 
     private GanttPanel ganttPanel;
+
+    private boolean fixedZoomByUser = false;
 
     private List<? extends CommandContextualized<?>> contextualizedGlobalCommands;
 
@@ -193,10 +196,11 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
-
         if (ganttPanel == null) {
             return;
         }
+        this.fixedZoomByUser = true;
+        initialZoomLevel = zoomLevel;
         ganttPanel.setZoomLevel(zoomLevel);
     }
 
@@ -468,8 +472,8 @@ public class Planner extends HtmlMacroComponent  {
         return ganttPanel.getTimeTracker().getDetailLevel();
     }
 
-    public boolean isInitialZoomLevelAlreadySet() {
-        return this.initialZoomLevel != null;
+    public boolean isFixedZoomByUser() {
+        return this.fixedZoomByUser;
     }
 
     public void setInitialZoomLevel(final ZoomLevel zoomLevel) {
@@ -498,4 +502,12 @@ public class Planner extends HtmlMacroComponent  {
         }
     }
 
+    public void updateSelectedZoomLevel() {
+        if (!isFixedZoomByUser()) {
+            Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
+                    initialZoomLevel.ordinal());
+            listZoomLevels.setSelectedItem(selectedItem);
+            listZoomLevels.invalidate();
+        }
+    }
 }

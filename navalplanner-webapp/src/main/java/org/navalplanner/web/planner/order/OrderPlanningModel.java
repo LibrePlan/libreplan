@@ -153,7 +153,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     public static void configureInitialZoomLevelFor(Planner planner,
             ZoomLevel defaultZoomLevel) {
-        if (!planner.isInitialZoomLevelAlreadySet()) {
+        if (!planner.isFixedZoomByUser()) {
             planner.setInitialZoomLevel(defaultZoomLevel);
         }
     }
@@ -243,6 +243,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
+
         ZoomLevel defaultZoomLevel = OrderPlanningModel
                 .calculateDefaultLevel(configuration);
         configureInitialZoomLevelFor(planner, defaultZoomLevel);

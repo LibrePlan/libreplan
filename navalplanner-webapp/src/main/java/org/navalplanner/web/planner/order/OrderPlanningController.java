@@ -160,6 +160,7 @@ public class OrderPlanningController implements Composer {
     private void updateConfiguration() {
         model.setConfigurationToPlanner(planner, order, viewSwitcher,
                 editTaskController, calendarAllocationController, additional);
+        planner.updateSelectedZoomLevel();
     }
 
     public EditTaskController getEditTaskController() {

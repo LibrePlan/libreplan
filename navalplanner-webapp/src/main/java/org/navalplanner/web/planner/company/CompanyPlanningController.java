@@ -121,6 +121,8 @@ public class CompanyPlanningController implements Composer{
         model
                 .setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, createPredicate());
+        planner.updateSelectedZoomLevel();
+        planner.invalidate();
     }
 
     public void setAdditional(List<ICommandOnTask<TaskElement>> additional) {
@@ -160,6 +162,7 @@ public class CompanyPlanningController implements Composer{
         // Recalculate predicate
         model.setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, predicate);
+        planner.updateSelectedZoomLevel();
         planner.invalidate();
     }
 
