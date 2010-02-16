@@ -231,6 +231,11 @@ public class MultipleTabsPlannerController implements Composer,
             private void notGoBackImmediately() {
                 Events.postEvent(new Event(eventName, tabsSwitcher));
             }
+
+            @Override
+            public boolean isAdvanceAssignmentOfSingleTask() {
+                return false;
+            }
         };
     }
 

@@ -176,6 +176,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public interface IBack {
         public void goBack();
+
+        boolean isAdvanceAssignmentOfSingleTask();
     }
 
     public abstract static class Restriction {
@@ -633,6 +635,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         // No global margin is added by default
         return interval;
     }
+
+    public boolean isAdvancedAllocationOfSingleTask() {
+        return back.isAdvanceAssignmentOfSingleTask();
+    }
+
 }
 
 abstract class ColumnOnRow implements IConvertibleToColumn {

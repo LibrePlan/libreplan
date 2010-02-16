@@ -77,6 +77,12 @@ public class ViewSwitcher implements Composer {
             public void goBack() {
                 goToPlanningOrderView();
             }
+
+            @Override
+            public boolean isAdvanceAssignmentOfSingleTask() {
+                return true;
+            }
+
         };
     }
 
