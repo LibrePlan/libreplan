@@ -826,6 +826,23 @@ div.z-tree {
     display:none;
 }
 
+.advancedassignmentdetails .z-grid-body {
+    position:relative;
+    margin-top: 31px;
+    overflow:hidden;
+}
+
+.advancedassignmentdetails .z-grid-header {
+    z-index:2;
+    position:absolute;
+    overflow:hidden;
+}
+
+/* Workaround for extra column when configuring functions */
+.advancedassignmentdetails td + td + td + td {
+    display:none;
+}
+
 /*
 .advancedassignmentdetails .z-row, .advancedallocationlayout .taskspanelgap .z-row {
     height: 20px;
