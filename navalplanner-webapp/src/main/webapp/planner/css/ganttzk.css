@@ -448,6 +448,7 @@ tr.z-vbox-sep {
     float: left;
     height: 10px;
     position: absolute;
+    border-left: solid 1px white;
 }
 
 .FULL_LOAD {
