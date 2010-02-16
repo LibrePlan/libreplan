@@ -185,9 +185,16 @@ public class TaskComponent extends Div implements AfterCompose {
         if (task.isSubcontracted()) {
             setClass("box subcontracted-task");
         } else {
-            setClass("box standard-task");
+            if (task.isContainer()) {
+                if (task.isExpanded()) {
+                    setClass("box standard-task expanded");
+                } else {
+                    setClass("box standard-task closed");
+                }
+            } else {
+                setClass("box standard-task");
+            }
         }
-
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
         taskViolationListener = new IConstraintViolationListener<Date>() {
@@ -207,14 +214,24 @@ public class TaskComponent extends Div implements AfterCompose {
                     smartUpdate("resourcesText", getResourcesText());
                 }
                 String cssClass = calculateCssClass();
+
                 response("setClass", new AuInvoke(TaskComponent.this,
                         "setClass", cssClass));
             }
 
             private String calculateCssClass() {
-                return (isSubcontracted() ? "box subcontracted-task"
+                String cssClass = (isSubcontracted() ? "box subcontracted-task"
                         : "box standard-task")
                         + (isResizingTasksEnabled() ? " yui-resize" : "");
+
+                if (getTask() instanceof TaskContainer) {
+                    if (getTask().isExpanded()) {
+                        cssClass += " expanded";
+                    } else {
+                        cssClass += " closed";
+                    }
+                }
+                return cssClass;
             }
 
         };
