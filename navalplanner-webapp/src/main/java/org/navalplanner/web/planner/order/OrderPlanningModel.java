@@ -48,6 +48,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
@@ -1222,6 +1223,36 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     public Order getOrder() {
         return orderReloaded;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void forceLoadLabelsAndCriterionRequirements() {
+        orderDAO.reattach(orderReloaded);
+        forceLoadLabels(orderReloaded);
+        forceLoadCriterionRequirements(orderReloaded);
+    }
+
+    private void forceLoadLabels(OrderElement orderElement) {
+        orderElement.getLabels().size();
+        if (!orderElement.isLeaf()) {
+            for (OrderElement element : orderElement.getChildren()) {
+                forceLoadLabels(element);
+            }
+        }
+    }
+
+    private void forceLoadCriterionRequirements(OrderElement orderElement) {
+        orderElement.getCriterionRequirements().size();
+        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            hoursGroup.getCriterionRequirements().size();
+        }
+
+        if (!orderElement.isLeaf()) {
+            for (OrderElement element : orderElement.getChildren()) {
+                forceLoadCriterionRequirements(element);
+            }
+        }
     }
 
 }

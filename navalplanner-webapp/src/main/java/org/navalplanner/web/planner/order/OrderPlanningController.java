@@ -197,6 +197,8 @@ public class OrderPlanningController implements Composer {
     }
 
     private void filterByPredicate(final OrderElementPredicate predicate) {
+        model.forceLoadLabelsAndCriterionRequirements();
+
         final IContext<?> context = planner.getContext();
         planner.setTaskListPredicate(new FilterAndParentExpandedPredicates(context) {
             @Override
