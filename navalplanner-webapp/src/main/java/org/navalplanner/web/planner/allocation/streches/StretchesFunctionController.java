@@ -279,6 +279,9 @@ public class StretchesFunctionController extends GenericForwardComposer {
                 @Override
                 public void set(Date value) {
                     try {
+                        if (value == null) {
+                            value = new Date();
+                        }
                         stretchesFunctionModel.setStretchDate(stretch, value);
                         reloadStretchesListAndCharts();
                     } catch (IllegalArgumentException e) {
@@ -302,6 +305,9 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     }, new Util.Setter<BigDecimal>() {
                         @Override
                         public void set(BigDecimal value) {
+                            if (value == null) {
+                                value = BigDecimal.ZERO;
+                            }
                             value = value.setScale(2).divide(
                                     new BigDecimal(100), RoundingMode.DOWN);
                             try {
