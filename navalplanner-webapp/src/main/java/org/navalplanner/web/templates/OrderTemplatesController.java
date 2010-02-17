@@ -200,7 +200,10 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
         TreeComponent treeComponent = (TreeComponent) editWindow.getFellow("orderElementTree");
-        treeComponent.useController(new TemplatesTreeController(model, this));
+        TemplatesTreeController treeController = new TemplatesTreeController(
+                model, this);
+        treeComponent.useController(treeController);
+        treeController.setReadOnly(false);
         final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
         handler.registerListener(this, page);
