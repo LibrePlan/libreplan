@@ -105,6 +105,7 @@ public class TaskGroup extends TaskElement {
     }
 
     public void setTaskChildrenTo(List<TaskElement> children) {
+        Validate.noNullElements(children);
         int positionOnTaskElements = 0;
         for (int i = 0; i < children.size(); i++) {
             TaskElement element = children.get(i);
@@ -112,8 +113,7 @@ public class TaskGroup extends TaskElement {
                 taskElements.add(element);
             } else {
                 while (positionOnTaskElements < taskElements.size()
-                        && taskElements.get(positionOnTaskElements)
-                                .isMilestone()) {
+                        && isMilestone(taskElements.get(positionOnTaskElements))) {
                     positionOnTaskElements++;
                 }
                 if (positionOnTaskElements >= taskElements.size()) {
@@ -128,10 +128,15 @@ public class TaskGroup extends TaskElement {
                 .listIterator(positionOnTaskElements);
         while (listIterator.hasNext()) {
             TaskElement current = listIterator.next();
-            if (!current.isMilestone()) {
+            if (!isMilestone(current)) {
                 listIterator.remove();
             }
         }
+    }
+
+    private boolean isMilestone(TaskElement t) {
+        // it can be null since removed elements are nullified in the list
+        return t != null && t.isMilestone();
     }
 
     @Override
