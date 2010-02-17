@@ -32,11 +32,11 @@ import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -67,39 +67,42 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private final IDisabilityConfiguration disabilityConfiguration;
 
+    private FilterAndParentExpandedPredicates predicate;
+
+    private List<Task> visibleTasks = new ArrayList<Task>();
+
+    private Map<Task, TaskComponent> taskComponentByTask;
+
     public TaskList(
             FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> doubleClickCommand,
             List<Task> tasks,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
-            IDisabilityConfiguration disabilityConfiguration) {
+            IDisabilityConfiguration disabilityConfiguration,
+            FilterAndParentExpandedPredicates predicate) {
         this.context = context;
         this.doubleClickCommand = doubleClickCommand;
         this.originalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
         this.disabilityConfiguration = disabilityConfiguration;
+        this.predicate = predicate;
     }
 
     public static TaskList createFor(
             FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> doubleClickCommand,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
-            IDisabilityConfiguration disabilityConfiguration) {
+            IDisabilityConfiguration disabilityConfiguration,
+            FilterAndParentExpandedPredicates predicate) {
         TaskList result = new TaskList(context, doubleClickCommand, context
                 .getDiagramGraph().getTopLevelTasks(),
-                commandsOnTasksContextualized, disabilityConfiguration);
+                commandsOnTasksContextualized, disabilityConfiguration,
+                predicate);
         return result;
     }
 
     public List<DependencyComponent> asDependencyComponents(
             Collection<? extends Dependency> dependencies) {
-        List<? extends Object> children = getChildren();
-        List<TaskComponent> taskComponents = ComponentsFinder.findComponentsOfType(
-                TaskComponent.class, children);
-        Map<Task, TaskComponent> taskComponentByTask = new HashMap<Task, TaskComponent>();
-        for (TaskComponent taskComponent : taskComponents) {
-            taskComponent.publishTaskComponents(taskComponentByTask);
-        }
         List<DependencyComponent> result = new ArrayList<DependencyComponent>();
         for (Dependency dependency : dependencies) {
             result.add(new DependencyComponent(taskComponentByTask
@@ -118,7 +121,6 @@ public class TaskList extends XulElement implements AfterCompose {
         final boolean isFirst = getFirstTopTaskComponent() == null
                 || getFirstTopTaskComponent().equals(beforeThis);
         insertBefore(taskComponent, beforeThis);
-
         addContextMenu(taskComponent);
         addListenerForTaskComponentEditForm(taskComponent);
         taskComponent.afterCompose();
@@ -130,13 +132,6 @@ public class TaskList extends XulElement implements AfterCompose {
             adjustZoomColumnsHeight();
             getGanttPanel().getDependencyList().redrawDependencies();
         }
-        if (taskComponent instanceof TaskContainerComponent) {
-            TaskContainerComponent container = (TaskContainerComponent) taskComponent;
-            if (container.isExpanded()) {
-                container.open(relocate);
-            }
-        }
-
     }
 
     public synchronized void addTaskComponent(
@@ -155,7 +150,10 @@ public class TaskList extends XulElement implements AfterCompose {
     public void addTasks(Position position, Collection<? extends Task> newTasks) {
         if (position.isAppendToTop()) {
             for (Task t : newTasks) {
-                addTaskComponent(TaskComponent.asTaskComponent(t, this), true);
+                TaskComponent taskComponent = TaskComponent.asTaskComponent(t,
+                        this);
+                addTaskComponent(taskComponent, true);
+                taskComponent.publishTaskComponents(taskComponentByTask);
             }
         } else if (position.isAtTop()) {
             final int insertionPosition = position.getInsertionPosition();
@@ -166,6 +164,7 @@ public class TaskList extends XulElement implements AfterCompose {
             for (Task t : newTasks) {
                 TaskComponent toAdd = TaskComponent.asTaskComponent(t, this);
                 addTaskComponent(beforeThis, toAdd, true);
+                toAdd.publishTaskComponents(taskComponentByTask);
                 beforeThis = toAdd.getNextSibling();
             }
         } else {
@@ -262,9 +261,15 @@ public class TaskList extends XulElement implements AfterCompose {
 
     @Override
     public void afterCompose() {
+        List<TaskComponent> taskComponents = new ArrayList<TaskComponent>();
         for (Task task : originalTasks) {
-            addTaskComponent(TaskComponent.asTaskComponent(task, this), false);
+            TaskComponent taskComponent = TaskComponent.asTaskComponent(task,
+                    this);
+            addTaskComponent(taskComponent, false);
+            taskComponents.add(taskComponent);
+            visibleTasks.add(task);
         }
+
         if (zoomLevelChangedListener == null) {
             zoomLevelChangedListener = new IZoomLevelChangedListener() {
                 @Override
@@ -276,6 +281,11 @@ public class TaskList extends XulElement implements AfterCompose {
                 }
             };
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
+        }
+
+        taskComponentByTask = new HashMap<Task, TaskComponent>();
+        for (TaskComponent taskComponent : taskComponents) {
+            taskComponent.publishTaskComponents(taskComponentByTask);
         }
     }
 
@@ -344,4 +354,62 @@ public class TaskList extends XulElement implements AfterCompose {
     public IDisabilityConfiguration getDisabilityConfiguration() {
         return disabilityConfiguration;
     }
+
+    public void reload(boolean relocate) {
+        ArrayList<Task> tasksPendingToAdd = new ArrayList<Task>();
+        reload(originalTasks, tasksPendingToAdd, relocate);
+        addPendingTasks(tasksPendingToAdd, null, relocate);
+    }
+
+    private void reload(List<Task> tasks, List<Task> tasksPendingToAdd,
+            boolean relocate) {
+        for (Task task : tasks) {
+            if (visibleTasks.contains(task)) {
+                addPendingTasks(tasksPendingToAdd, find(task), relocate);
+            }
+
+            if (predicate.accepts(task)) {
+                if (!visibleTasks.contains(task)) {
+                    tasksPendingToAdd.add(task);
+                }
+            } else {
+                if (visibleTasks.contains(task)) {
+                    TaskComponent taskComponent = find(task);
+                    hideTaskComponent(taskComponent);
+
+                    visibleTasks.remove(task);
+                    task.setVisible(false);
+                }
+            }
+
+            if (task instanceof TaskContainer) {
+                reload(task.getTasks(), tasksPendingToAdd, relocate);
+            }
+        }
+    }
+
+    private void addPendingTasks(List<Task> tasksPendingToAdd,
+            TaskComponent insertBefore, boolean relocate) {
+        if (tasksPendingToAdd.isEmpty()) {
+            return;
+        }
+
+        for (Task taskToAdd : tasksPendingToAdd) {
+            TaskComponent taskComponent = taskComponentByTask.get(taskToAdd);
+            if (taskComponent == null) {
+                taskComponent = TaskComponent.asTaskComponent(taskToAdd, this);
+                taskComponent.publishTaskComponents(taskComponentByTask);
+            }
+            addTaskComponent(insertBefore, taskComponent, relocate);
+            visibleTasks.add(taskToAdd);
+            taskToAdd.setVisible(true);
+        }
+        tasksPendingToAdd.clear();
+    }
+
+    public void setPredicate(FilterAndParentExpandedPredicates predicate) {
+        this.predicate = predicate;
+        reload(false);
+    }
+
 }

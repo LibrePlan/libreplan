@@ -318,10 +318,16 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private final IDisabilityConfiguration disabilityConfiguration;
 
+    private FilterAndParentExpandedPredicates predicate;
+
+    private final List<Task> visibleTasks = new ArrayList<Task>();
+
     public LeftTasksTree(IDisabilityConfiguration disabilityConfiguration,
-            List<Task> tasks) {
+            List<Task> tasks,
+            FilterAndParentExpandedPredicates predicate) {
         this.disabilityConfiguration = disabilityConfiguration;
         this.tasks = tasks;
+        this.predicate = predicate;
     }
 
     private void fillModel(Collection<? extends Task> tasks, boolean firstTime) {
@@ -331,8 +337,19 @@ public class LeftTasksTree extends HtmlMacroComponent {
     private void fillModel(Task parent, Integer insertionPosition,
             Collection<? extends Task> children, final boolean firstTime) {
         if (firstTime) {
-            this.tasksTreeModel.add(parent, insertionPosition, children);
             for (Task node : children) {
+                if (predicate.accpetsFilterPredicate(node)) {
+                    if (!visibleTasks.contains(node)) {
+                        this.tasksTreeModel.add(parent, node);
+                        visibleTasks.add(node);
+                    }
+                } else {
+                    if (visibleTasks.contains(node)) {
+                        this.tasksTreeModel.remove(node);
+                        visibleTasks.remove(node);
+                    }
+                }
+
                 if (node.isContainer()) {
                     fillModel(node, 0, node.getTasks(), firstTime);
                 }
@@ -341,12 +358,48 @@ public class LeftTasksTree extends HtmlMacroComponent {
         } else {
             for (Task node : children) {
                 if (node.isContainer()) {
-                    this.deferredFiller.addParentOfPendingToAdd(node);
+                    if (predicate.accpetsFilterPredicate(node)) {
+                        if (!visibleTasks.contains(node)) {
+                            this.deferredFiller.addParentOfPendingToAdd(node);
+                        }
+                    }
                 }
             }
             // the node must be added after, so the multistepTreeFiller is
             // ready
-            this.tasksTreeModel.add(parent, insertionPosition, children);
+            for (Task node : children) {
+                if (predicate.accpetsFilterPredicate(node)) {
+                    if (!visibleTasks.contains(node)) {
+                        // this.tasksTreeModel.add(parent, node);
+                        this.tasksTreeModel.add(parent, insertionPosition,
+                                Arrays.asList(node));
+                        visibleTasks.add(node);
+                    }
+                } else {
+                    if (visibleTasks.contains(node)) {
+                        this.tasksTreeModel.remove(node);
+                        removeTaskAndAllChildren(visibleTasks, node);
+                    }
+                }
+
+                if (node.isContainer()) {
+                    fillModel(node, 0, node.getTasks(), firstTime);
+                }
+
+                if (visibleTasks.contains(node)) {
+                    insertionPosition++;
+                }
+            }
+        }
+    }
+
+    private void removeTaskAndAllChildren(List<Task> visibleTasks, Task task) {
+        visibleTasks.remove(task);
+
+        if (task.isContainer()) {
+            for (Task node : task.getTasks()) {
+                removeTaskAndAllChildren(visibleTasks, node);
+            }
         }
     }
 
@@ -396,6 +449,11 @@ public class LeftTasksTree extends HtmlMacroComponent {
     public void setGoingDownInLastArrowCommand(
             CommandContextualized<?> goingDownInLastArrowCommand) {
         this.goingDownInLastArrowCommand = goingDownInLastArrowCommand;
+    }
+
+    public void setPredicate(FilterAndParentExpandedPredicates predicate) {
+        this.predicate = predicate;
+        fillModel(tasks, false);
     }
 
 }

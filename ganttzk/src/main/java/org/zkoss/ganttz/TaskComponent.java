@@ -527,4 +527,9 @@ public class TaskComponent extends Div implements AfterCompose {
         return task.isSubcontracted();
     }
 
+    @Override
+    public String toString() {
+        return task.toString();
+    }
+
 }

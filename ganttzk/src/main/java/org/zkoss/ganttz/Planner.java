@@ -338,10 +338,24 @@ public class Planner extends HtmlMacroComponent  {
     private void setupComponents() {
         insertGlobalCommands();
         this.leftPane = new LeftPane(disabilityConfiguration, this.diagramGraph
-                .getTopLevelTasks());
+                .getTopLevelTasks(),
+                new FilterAndParentExpandedPredicates(context) {
+
+                    @Override
+                    public boolean accpetsFilterPredicate(Task task) {
+                        return true;
+                    }
+                });
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, doubleClickCommand,
-                disabilityConfiguration);
+                disabilityConfiguration,
+                new FilterAndParentExpandedPredicates(
+                        context) {
+                    @Override
+                    public boolean accpetsFilterPredicate(Task task) {
+                        return true;
+                    }
+                });
         Button button = (Button) getFellow("btnPrint");
         button.setDisabled(!context.isPrintEnabled());
     }
@@ -510,4 +524,20 @@ public class Planner extends HtmlMacroComponent  {
             listZoomLevels.invalidate();
         }
     }
+
+    public IContext<?> getContext() {
+        return context;
+    }
+
+    public void setTaskListPredicate(FilterAndParentExpandedPredicates predicate) {
+        leftPane.setPredicate(predicate);
+        getTaskList().setPredicate(predicate);
+        getDependencyList().redrawDependencies();
+
+        // TODO Call invalidate() should not be needed in the future if we
+        // change Task and TaskContainer DSPs in order to use the UUID component
+        // in a div tag that wraps the component
+        ganttPanel.invalidate();
+    }
+
 }

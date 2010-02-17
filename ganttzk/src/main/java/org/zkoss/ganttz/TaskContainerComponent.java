@@ -53,25 +53,22 @@ public class TaskContainerComponent extends TaskComponent implements
 
     private transient IExpandListener expandListener;
 
-    public TaskContainerComponent(TaskContainer taskContainer, TaskList taskList) {
+    public TaskContainerComponent(final TaskContainer taskContainer,
+            final TaskList taskList) {
         super(taskContainer, taskList.getDisabilityConfiguration());
         if (!taskContainer.isContainer()) {
             throw new IllegalArgumentException();
         }
+        this.taskList = taskList;
         this.expandListener = new IExpandListener() {
 
             @Override
             public void expandStateChanged(boolean isNowExpanded) {
-                if (isNowExpanded) {
-                    open();
-                } else {
-                    close();
-                }
+                taskList.reload(true);
                 updateClass();
             }
         };
         taskContainer.addExpandListener(expandListener);
-        this.taskList = taskList;
         for (Task task : taskContainer.getTasks()) {
             getCurrentComponents().add(createChild(task));
         }
@@ -116,16 +113,6 @@ public class TaskContainerComponent extends TaskComponent implements
                     : subtaskComponents.get(insertionPosition - 1);
             addAllAt(previous, taskComponents, true);
         }
-    }
-
-    public void open() {
-        open(true);
-    }
-
-    public void open(boolean recolocate) {
-        Component previous = this;
-        List<TaskComponent> toAdd = getCurrentComponents();
-        addAllAt(previous, toAdd, recolocate);
     }
 
     private void addAllAt(Component previous, List<TaskComponent> toAdd,
@@ -173,17 +160,6 @@ public class TaskContainerComponent extends TaskComponent implements
     protected String calculateClass() {
         return super.calculateClass() + " "
                 + (getTaskContainer().isExpanded() ? "expanded" : "closed");
-    }
-
-    private void close() {
-        for (TaskComponent subtaskComponent : getCurrentComponents()) {
-            if (subtaskComponent instanceof TaskContainerComponent) {
-                TaskContainerComponent container = (TaskContainerComponent) subtaskComponent;
-                container.close();
-            }
-            taskList.hideTaskComponent(subtaskComponent);
-            taskList.redrawDependencies();
-        }
     }
 
     public void insert(Position position, Collection<? extends Task> newTasks) {

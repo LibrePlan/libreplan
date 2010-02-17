@@ -110,7 +110,7 @@ public abstract class Task implements ITaskFundamentalProperties {
         return visible;
     }
 
-    protected void setVisible(boolean visible) {
+    public void setVisible(boolean visible) {
         boolean previousValue = this.visible;
         this.visible = visible;
         visibilityProperties.firePropertyChange("visible", previousValue,
@@ -315,4 +315,10 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public abstract boolean canBeExplicitlyMoved();
+
+    @Override
+    public String toString() {
+        return fundamentalProperties.getName();
+    }
+
 }

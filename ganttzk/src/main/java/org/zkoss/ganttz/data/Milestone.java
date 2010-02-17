@@ -51,7 +51,7 @@ public class Milestone extends Task {
     }
 
     @Override
-    protected void setVisible(boolean visible) {
+    public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (!this.expanded) {
             return;

@@ -43,8 +43,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.FilterAndParentExpandedPredicates;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
@@ -54,7 +57,6 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
@@ -194,13 +196,20 @@ public class OrderPlanningController implements Composer {
                 name);
     }
 
-    private void filterByPredicate(OrderElementPredicate predicate) {
-        // TODO
-        try {
-            Messagebox.show("TODO");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    private void filterByPredicate(final OrderElementPredicate predicate) {
+        final IContext<?> context = planner.getContext();
+        planner.setTaskListPredicate(new FilterAndParentExpandedPredicates(context) {
+            @Override
+            public boolean accpetsFilterPredicate(Task task) {
+                if (predicate == null) {
+                    return true;
+                }
+                TaskElement taskElement = (TaskElement) context.getMapper()
+                        .findAssociatedDomainObject(task);
+                return predicate.accepts(taskElement.getOrderElement());
+            }
+
+        });
     }
 
     public Constraint checkConstraintFinishDate() {

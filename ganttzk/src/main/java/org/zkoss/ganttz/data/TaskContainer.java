@@ -150,7 +150,7 @@ public class TaskContainer extends Task {
     }
 
     @Override
-    protected void setVisible(boolean visible) {
+    public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (!this.expanded) {
             return;
@@ -163,9 +163,6 @@ public class TaskContainer extends Task {
     public void setExpanded(boolean expanded) {
         boolean valueChanged = expanded != this.expanded;
         this.expanded = expanded;
-        for (Task task : tasks) {
-            task.setVisible(this.expanded);
-        }
         if (valueChanged) {
             expandListeners
                     .fireEvent(new IListenerNotification<IExpandListener>() {
