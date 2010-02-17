@@ -27,7 +27,7 @@ import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
-import org.navalplanner.web.orders.IPredicate;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Checks if {@link WorkReportLine} matches the constraints

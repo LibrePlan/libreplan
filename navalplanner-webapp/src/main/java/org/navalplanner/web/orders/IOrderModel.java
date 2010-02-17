@@ -36,6 +36,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderTemplate;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Contract for {@link OrderModel}<br />

@@ -31,6 +31,7 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.OrderElementFilterEnum;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Checks if {@link OrderElement} matches with the different filters.

@@ -48,6 +48,7 @@ import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.navalplanner.web.tree.TreeController;
+import org.zkoss.ganttz.IPredicate;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;

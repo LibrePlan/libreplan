@@ -35,7 +35,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.ResourceFilterEnum;
-import org.navalplanner.web.orders.IPredicate;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Checks if {@link Resource} matches with this predicate.

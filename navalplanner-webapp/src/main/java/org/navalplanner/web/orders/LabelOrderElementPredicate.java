@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Checks if {@link Label} from {@link OrderElement} matches attribute label

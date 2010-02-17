@@ -35,7 +35,7 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
-import org.navalplanner.web.orders.IPredicate;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Contract for {@link WorkRerportType}

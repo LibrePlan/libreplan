@@ -60,7 +60,6 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
-import org.navalplanner.web.orders.IPredicate;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
@@ -80,6 +79,7 @@ import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
+import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -180,7 +180,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
- IPredicate predicate) {
+            IPredicate predicate) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
 
         Tabbox chartComponent = new Tabbox();

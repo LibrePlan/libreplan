@@ -6,8 +6,8 @@ import java.util.List;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.web.common.components.finders.FilterPair;
-import org.navalplanner.web.orders.IPredicate;
 import org.navalplanner.web.orders.OrderPredicate;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Checks if {@link Order}, the start date and finish date from associated

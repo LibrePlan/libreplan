@@ -53,7 +53,7 @@ import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
-import org.navalplanner.web.orders.IPredicate;
+import org.zkoss.ganttz.IPredicate;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;

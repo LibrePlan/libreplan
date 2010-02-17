@@ -24,7 +24,7 @@ import java.util.Date;
 
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
-import org.navalplanner.web.orders.IPredicate;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Checks if {@link WorkReportType}, the start date and finish date from

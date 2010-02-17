@@ -81,6 +81,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.IPredicate;
 
 /**
  * Model for UI operations related to {@link Order}. <br />

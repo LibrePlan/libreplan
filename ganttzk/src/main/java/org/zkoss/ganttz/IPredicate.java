@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.orders;
+package org.zkoss.ganttz;
 
 /**
  * Classes implementing this interface check if object matches a given
