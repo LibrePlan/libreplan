@@ -50,7 +50,9 @@ import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -197,18 +199,34 @@ public class OrderPlanningController implements Composer {
     }
 
     private void filterByPredicate(final OrderElementPredicate predicate) {
-        model.forceLoadLabelsAndCriterionRequirements();
+        LongOperationFeedback.execute(orderElementFilter, new ILongOperation() {
 
-        final IContext<?> context = planner.getContext();
-        planner.setTaskListPredicate(new FilterAndParentExpandedPredicates(context) {
             @Override
-            public boolean accpetsFilterPredicate(Task task) {
-                if (predicate == null) {
-                    return true;
-                }
-                TaskElement taskElement = (TaskElement) context.getMapper()
-                        .findAssociatedDomainObject(task);
-                return predicate.accepts(taskElement.getOrderElement());
+            public void doAction() throws Exception {
+                model.forceLoadLabelsAndCriterionRequirements();
+
+                final IContext<?> context = planner.getContext();
+                planner
+                        .setTaskListPredicate(new FilterAndParentExpandedPredicates(
+                                context) {
+                            @Override
+                            public boolean accpetsFilterPredicate(Task task) {
+                                if (predicate == null) {
+                                    return true;
+                                }
+                                TaskElement taskElement = (TaskElement) context
+                                        .getMapper()
+                                        .findAssociatedDomainObject(task);
+                                return predicate.accepts(taskElement
+                                        .getOrderElement());
+                            }
+
+                        });
+            }
+
+            @Override
+            public String getName() {
+                return _("filtering");
             }
 
         });

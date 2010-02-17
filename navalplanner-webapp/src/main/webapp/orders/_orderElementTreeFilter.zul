@@ -10,7 +10,8 @@
     <datebox id="filterFinishDateOrderElement" constraint = "@{treeController.checkConstraintFinishDate}"
         width="65px" />
     <label value="${i18n:_('name')}"/>
-    <textbox id="filterNameOrderElement" width="50px" />
+    <textbox id="filterNameOrderElement" width="50px"
+        onOK="treeController.onApplyFilter()" />
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}"
         onClick="treeController.onApplyFilter()"/>
