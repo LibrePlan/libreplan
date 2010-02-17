@@ -75,6 +75,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
@@ -1058,6 +1059,20 @@ public class OrderCRUDController extends GenericForwardComposer {
             //Status was STORED, it was changed to a different one and then
             //changed back to STORED, so we have to disable the save buttons
             setEditionDisabled(true);
+        }
+    }
+
+    public void sortOrders() {
+        Column columnDateStart = (Column) listWindow
+                .getFellow("columnDateStart");
+        if (columnDateStart != null) {
+            if (columnDateStart.getSortDirection().equals("ascending")) {
+                columnDateStart.sort(false, false);
+                columnDateStart.setSortDirection("ascending");
+            } else if (columnDateStart.getSortDirection().equals("descending")) {
+                columnDateStart.sort(true, false);
+                columnDateStart.setSortDirection("descending");
+            }
         }
     }
 }

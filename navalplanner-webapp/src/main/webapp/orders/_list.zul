@@ -21,12 +21,13 @@
 <window id="${arg.top_id}" title="${i18n:_('Orders list')}">
     <grid id="listing" model="@{controller.orders}" mold="paging"
         pageSize="10" fixedLayout="true"
-        rowRenderer= "@{controller.ordersRowRender}">
+        rowRenderer= "@{controller.ordersRowRender}"
+        onInitRender ="controller.sortOrders();">
         <columns>
             <column label="${i18n:_('Name')}" align="center" sort="auto(name)"/>
             <column label="${i18n:_('Code')}" align="center" sort="auto(code)"/>
-            <column label="${i18n:_('Starting date')}" align="center" sort="auto(initDate)"/>
-            <column label="${i18n:_('Deadline')}" align="center" sort="auto(deadline)" />
+            <column id="columnDateStart" label="${i18n:_('Starting date')}" align="center" sort="auto(initDate,deadline)" sortDirection="ascending"/>
+            <column label="${i18n:_('Deadline')}" align="center" sort="auto(deadline,initDate)" />
             <column label="${i18n:_('Customer')}" align="center" sort="auto(customer)" />
             <column label="${i18n:_('Customer reference')}" align="center"/>
             <column label="${i18n:_('Total Budget')}" align="center"/>
