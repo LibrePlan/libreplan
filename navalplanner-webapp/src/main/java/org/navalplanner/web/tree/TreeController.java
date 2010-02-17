@@ -405,6 +405,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             final SchedulingState schedulingState = getSchedulingStateFrom(currentElement);
             SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(
                     schedulingState);
+            schedulingStateToggler.setReadOnly(readOnly);
             final Treecell cell = addCell(
                     getDecorationFromState(getSchedulingStateFrom(currentElement)),
                     schedulingStateToggler);

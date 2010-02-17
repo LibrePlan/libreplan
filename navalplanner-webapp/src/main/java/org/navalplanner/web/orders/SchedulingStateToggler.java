@@ -31,6 +31,8 @@ public class SchedulingStateToggler extends HtmlMacroComponent {
 
     private final SchedulingState state;
 
+    private boolean readOnly = false;
+
     public SchedulingStateToggler(SchedulingState state) {
         Validate.notNull(state);
         this.state = state;
@@ -44,11 +46,11 @@ public class SchedulingStateToggler extends HtmlMacroComponent {
     }
 
     public boolean isScheduleButtonVisible() {
-        return state.canBeScheduled();
+        return !readOnly && state.canBeScheduled();
     }
 
     public boolean isUnscheduleButtonVisible() {
-        return state.canBeUnscheduled();
+        return !readOnly && state.canBeUnscheduled();
     }
 
     public void schedule() {
@@ -65,6 +67,14 @@ public class SchedulingStateToggler extends HtmlMacroComponent {
 
     public String getButtonTextTooltip() {
         return state.getStateName();
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
 }
