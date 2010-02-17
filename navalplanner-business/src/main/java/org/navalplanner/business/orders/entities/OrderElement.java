@@ -248,6 +248,7 @@ public abstract class OrderElement extends BaseEntity implements
             throw new IllegalStateException("already initialized");
         }
         schedulingStateType = type;
+        schedulingState = null;
     }
 
     public void initializeTemplate(OrderElementTemplate template) {
