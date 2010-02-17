@@ -124,4 +124,9 @@ public class TaskMilestone extends TaskElement {
     public boolean canBeExplicitlyResized() {
         return false;
     }
+
+    @Override
+    public boolean isMilestone() {
+        return true;
+    }
 }

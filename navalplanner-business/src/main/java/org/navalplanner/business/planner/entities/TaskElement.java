@@ -412,4 +412,6 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
+    public abstract boolean isMilestone();
+
 }

@@ -494,4 +494,9 @@ public class Task extends TaskElement {
         return canBeResized() && !isSubcontracted();
     }
 
+    @Override
+    public boolean isMilestone() {
+        return false;
+    }
+
 }

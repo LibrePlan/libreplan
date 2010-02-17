@@ -105,21 +105,32 @@ public class TaskGroup extends TaskElement {
     }
 
     public void setTaskChildrenTo(List<TaskElement> children) {
+        int positionOnTaskElements = 0;
         for (int i = 0; i < children.size(); i++) {
             TaskElement element = children.get(i);
-            if (i >= taskElements.size()) {
+            if (positionOnTaskElements >= taskElements.size()) {
                 taskElements.add(element);
             } else {
-                taskElements.set(i, element);
+                while (positionOnTaskElements < taskElements.size()
+                        && taskElements.get(positionOnTaskElements)
+                                .isMilestone()) {
+                    positionOnTaskElements++;
+                }
+                if (positionOnTaskElements >= taskElements.size()) {
+                    taskElements.add(element);
+                } else {
+                    taskElements.set(positionOnTaskElements, element);
+                }
             }
+            positionOnTaskElements++;
         }
-        if (children.size() < taskElements.size()) {
-            ListIterator<TaskElement> listIterator = taskElements
-                    .listIterator(children.size());
-            do {
-                listIterator.next();
+        ListIterator<TaskElement> listIterator = taskElements
+                .listIterator(positionOnTaskElements);
+        while (listIterator.hasNext()) {
+            TaskElement current = listIterator.next();
+            if (!current.isMilestone()) {
                 listIterator.remove();
-            } while (listIterator.hasNext());
+            }
         }
     }
 
@@ -145,6 +156,11 @@ public class TaskGroup extends TaskElement {
 
     @Override
     public boolean canBeExplicitlyResized() {
+        return false;
+    }
+
+    @Override
+    public boolean isMilestone() {
         return false;
     }
 }
