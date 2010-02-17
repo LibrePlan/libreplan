@@ -123,7 +123,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Autocomplete autocompleteResource;
 
-    private Textbox txtOrderElement;
+    private Bandbox bandboxSelectOrderElementInHead;
 
     private final static String MOLD = "paging";
 
@@ -296,8 +296,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
 
         if (!getWorkReport()
-                .checkConstraintResourceMustBeNotNullIfIsSharedByLines()) {
-            showInvalidMessage(txtOrderElement,
+                .checkConstraintOrderElementMustBeNotNullIfIsSharedByLines()) {
+            showInvalidMessage(bandboxSelectOrderElementInHead,
                     _("Order Element code cannot be null"));
             return false;
         }
@@ -557,7 +557,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 .getFellow("headingFieldsAndLabels");
         autocompleteResource = (Autocomplete) window
                 .getFellow("autocompleteResource");
-        txtOrderElement = (Textbox) window.getFellow("txtOrderElement");
+        bandboxSelectOrderElementInHead = (Bandbox) window
+                .getFellow("bandboxSelectOrderElementInHead");
     }
 
     private void loadComponentslist(Component window) {
@@ -1202,27 +1203,35 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     /* Operations to manage the fields and labels in the heading */
 
-    public String getCodeOrderElement() {
-        if ((getWorkReport() != null)
-                && (getWorkReport().getOrderElement() != null)) {
-            return getWorkReport().getOrderElement().getCode();
-        }
-        return null;
+    public void setOrderElementInComponent(Event event) throws Exception {
+        Listbox listbox = (Listbox) event.getTarget();
+        OrderElement orderElement = (OrderElement) listbox.getSelectedItem()
+                .getValue();
+        bandboxSelectOrderElementInHead.setValue(orderElement.getCode());
+        bandboxSelectOrderElementInHead.setOpen(false);
     }
 
-    public void setCodeOrderElement(String code) {
-        if ((code != null) && (!code.isEmpty())) {
-            try {
-                getWorkReport().setOrderElement(
-                        workReportModel.findOrderElement(code));
-                reloadWorkReportLines();
-            } catch (InstanceNotFoundException e) {
-                throw new WrongValueException(txtOrderElement,
-                        _("OrderElement not found"));
+    public Constraint checkConstraintOrderElementInHead() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                String code = (String) value;
+                if ((code != null) && (!code.isEmpty())) {
+                    try {
+                        getWorkReport().setOrderElement(
+                                workReportModel.findOrderElement(code));
+                        reloadWorkReportLines();
+                    } catch (InstanceNotFoundException e) {
+                        throw new WrongValueException(
+                                bandboxSelectOrderElementInHead,
+                                _("OrderElement not found"));
+                    }
+                } else {
+                    getWorkReport().setOrderElement(null);
+                }
             }
-        } else {
-            getWorkReport().setOrderElement(null);
-        }
+        };
     }
 
     public OrderedFieldsAndLabelsRowRenderer getOrderedFieldsAndLabelsRowRenderer() {
