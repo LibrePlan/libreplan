@@ -38,6 +38,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +56,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.orders.entities.TaskSource.TaskGroupSynchronization;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
@@ -160,11 +162,30 @@ public class TaskElementDAOTest {
     private TaskGroup createValidTaskGroup() {
         OrderLine orderLine = createOrderLine();
         TaskSource taskSource = TaskSource.createForGroup(orderLine);
-        TaskSourceSynchronization synchronization = TaskSource
-                .mustAddGroup(taskSource, Collections
-                .<TaskSourceSynchronization> emptyList());
+        TaskGroupSynchronization synchronization = new TaskGroupSynchronization(
+                taskSource, Collections.<TaskSourceSynchronization> emptyList()) {
+
+            @Override
+            protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                    List<TaskElement> children) {
+                TaskGroup result = TaskGroup.create(taskSource);
+                Date today = new Date();
+                result.setStartDate(today);
+                result.setEndDate(plusDays(today, 3));
+                setTask(taskSource, result);
+                taskSourceDAO.save(taskSource);
+                return result;
+            }
+
+        };
         synchronization.apply(taskSourceDAO);
         return (TaskGroup) taskSource.getTask();
+    }
+
+    private Date plusDays(Date today, int days) {
+        LocalDate result = LocalDate.fromDateFields(today)
+                .plusDays(days);
+        return result.toDateTimeAtStartOfDay().toDate();
     }
 
     private TaskMilestone createValidTaskMilestone() {

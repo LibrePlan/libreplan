@@ -152,19 +152,23 @@ public class TaskSource extends BaseEntity {
         }
     }
 
-    static abstract class TaskGroupSynchronization extends
+    public static abstract class TaskGroupSynchronization extends
             TaskSourceSynchronization {
 
         protected final TaskSource taskSource;
 
         private final List<TaskSourceSynchronization> synchronizations;
 
-        TaskGroupSynchronization(TaskSource taskSource,
+        protected TaskGroupSynchronization(TaskSource taskSource,
                 List<TaskSourceSynchronization> synchronizations) {
             Validate.notNull(taskSource);
             Validate.notNull(synchronizations);
             this.taskSource = taskSource;
             this.synchronizations = synchronizations;
+        }
+
+        protected void setTask(TaskSource taskSource, TaskGroup result) {
+            taskSource.setTask(result);
         }
 
         @Override

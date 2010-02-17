@@ -11,8 +11,8 @@
         <version name="version" access="property" type="long" />
         <property name="name" />
         <property name="notes"/>
-        <property name="startDate" type="timestamp" />
-        <property name="endDate" type="timestamp" />
+        <property name="startDate" type="timestamp" not-null="true"/>
+        <property name="endDate" type="timestamp" not-null="true"/>
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
 
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"/>

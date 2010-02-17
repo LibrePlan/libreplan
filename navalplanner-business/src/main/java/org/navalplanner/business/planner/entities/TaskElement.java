@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
@@ -184,6 +185,7 @@ public abstract class TaskElement extends BaseEntity {
         return Collections.unmodifiableSet(dependenciesWithThisDestination);
     }
 
+    @NotNull
     public Date getStartDate() {
         return startDate != null ? new Date(startDate.getTime()) : null;
     }
@@ -218,6 +220,7 @@ public abstract class TaskElement extends BaseEntity {
 
     protected abstract void moveAllocations();
 
+    @NotNull
     public Date getEndDate() {
         return endDate != null ? new Date(endDate.getTime()) : endDate;
     }
