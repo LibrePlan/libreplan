@@ -274,7 +274,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             TreeComponent orderElementsTree = (TreeComponent) editWindow
                     .getFellow("orderElementTree");
+            orderElementTreeController.setTreeComponent(orderElementsTree);
             orderElementsTree.useController(orderElementTreeController);
+            orderElementTreeController.setReadOnly(readOnly);
             redraw(orderElementsTree);
         }
     }
@@ -443,6 +445,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 checkWritePermissions(order);
                 if(order.getState() == OrderStatusEnum.STORED) {
                     //disable save buttons if state == STORED
+                    readOnly = true;
                     setEditionDisabled(true);
                 }
                 initialStatus = order.getState();
@@ -625,6 +628,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             checkWritePermissions(order);
             if(order.getState() == OrderStatusEnum.STORED) {
                 //disable save buttons if state == STORED
+                readOnly = true;
                 setEditionDisabled(true);
             }
             initialStatus = order.getState();
@@ -1026,22 +1030,23 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    private boolean readOnly = true;
+
     /**
      * Checks the write permissions of the current user on this Order and enables/disables
      * the save buttons accordingly.
      */
     private void checkWritePermissions(Order order) {
-        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())) {
-            setEditionDisabled(false);
-        }
-        else {
-            setEditionDisabled(true);
-        }
+        readOnly = !orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName());
+        setEditionDisabled(readOnly);
     }
 
     private void setEditionDisabled(boolean disabled) {
         ((Button)editWindow.getFellowIfAny("save")).setDisabled(disabled);
         ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(disabled);
+        if(orderElementTreeController != null) {
+            orderElementTreeController.setReadOnly(disabled);
+        }
     }
 
     private OrderStatusEnum initialStatus;
@@ -1052,12 +1057,14 @@ public class OrderCRUDController extends GenericForwardComposer {
                 && order.getState() != OrderStatusEnum.STORED) {
             //Enable the save buttons if the status changes from STORE to
             //any other one
+            readOnly = false;
             setEditionDisabled(false);
         }
         if(initialStatus == OrderStatusEnum.STORED &&
                 order.getState() == OrderStatusEnum.STORED) {
             //Status was STORED, it was changed to a different one and then
             //changed back to STORED, so we have to disable the save buttons
+            readOnly = true;
             setEditionDisabled(true);
         }
     }

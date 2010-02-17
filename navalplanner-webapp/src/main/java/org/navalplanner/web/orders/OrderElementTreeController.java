@@ -550,6 +550,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Override
     protected boolean isNewButtonDisabled() {
+        if(readOnly) {
+            return true;
+        }
         return isPredicateApplied();
     }
 

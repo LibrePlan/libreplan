@@ -38,6 +38,7 @@ import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.orders.SchedulingStateToggler;
 import org.navalplanner.web.tree.TreeComponent.Column;
 import org.zkoss.zk.ui.Component;
@@ -608,6 +609,25 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             modifiedMark.setSclass("modified-mark");
             tc.appendChild(modifiedMark);
         }
+    }
+
+    protected boolean readOnly = true;
+
+    public void setReadOnly(boolean readOnly) {
+        if(this.readOnly != readOnly) {
+            this.readOnly = readOnly;
+            ((Button)orderElementTreeComponent.getFellowIfAny("btnNew")).setDisabled(readOnly);
+            ((Button)orderElementTreeComponent.getFellowIfAny("btnNewFromTemplate")).setDisabled(readOnly);
+            ((Textbox)orderElementTreeComponent.getFellowIfAny("newOrderElementName")).setDisabled(readOnly);
+            ((Intbox)orderElementTreeComponent.getFellowIfAny("newOrderElementHours")).setDisabled(readOnly);
+            Util.reloadBindings(orderElementTreeComponent);
+        }
+    }
+
+    protected TreeComponent orderElementTreeComponent;
+
+    public void setTreeComponent(TreeComponent orderElementsTree) {
+        this.orderElementTreeComponent = orderElementsTree;
     }
 
 }
