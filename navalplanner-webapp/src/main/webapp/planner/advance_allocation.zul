@@ -28,7 +28,7 @@
 </zscript>
 <div>
     <div id="noDataLayout">
-        <n:h4>${i18n:_('No Allocations have been done')}</n:h4>
+        <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
     </div>
 
     <borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">

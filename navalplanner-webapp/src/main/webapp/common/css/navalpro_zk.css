@@ -419,6 +419,17 @@ div.z-errbox {
     width: auto;
 }
 
+h4.message_WARNING {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    padding: 10px 5px;
+    margin: 25px;
+    font-size: 12px;
+    font-weight: normal;
+    width: 400px;
+}
+
+
 .z-window-embedded {
     margin: 10px;
     margin-top: 5px;
