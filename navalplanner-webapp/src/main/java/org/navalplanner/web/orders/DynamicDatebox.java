@@ -49,6 +49,8 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private DateFormat dateFormat;
 
+    private boolean disabled = false;
+
     public DynamicDatebox(final OrderElement orderElement, Getter<Date> getter,
             Setter<Date> setter) {
         this.orderElement = orderElement;
@@ -114,6 +116,7 @@ public class DynamicDatebox extends GenericForwardComposer {
         findComponents((Hbox) component);
         registerListeners();
         updateComponents();
+        applyDisabledToElements(disabled);
     }
 
     private void registerListeners() {
@@ -225,4 +228,21 @@ public class DynamicDatebox extends GenericForwardComposer {
         this.dateTextBox = dateTextBox;
     }
 
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+        applyDisabledToElements(disabled);
+    }
+
+    private void applyDisabledToElements(boolean disabled) {
+        if(dateBox != null) {
+            dateBox.setDisabled(disabled);
+        }
+        if(dateTextBox != null) {
+            dateTextBox.setDisabled(disabled);
+        }
+    }
 }
