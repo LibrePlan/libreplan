@@ -19,12 +19,17 @@
  */
 package org.navalplanner.web.templates;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
@@ -61,6 +66,10 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private Window listWindow;
 
     private Window editWindow;
+
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
 
     @Resource
     private IGlobalViewEntryPoints globalView;
@@ -172,6 +181,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public void saveAndExit() {
         model.confirmSave();
+        messagesForUser.showMessage(Level.INFO, _("Template saved"));
         show(listWindow);
     }
 
@@ -181,11 +191,13 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         model.confirmSave();
+        messagesForUser.showMessage(Level.INFO, _("Template saved"));
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
         TreeComponent treeComponent = (TreeComponent) editWindow.getFellow("orderElementTree");
         treeComponent.useController(new TemplatesTreeController(model, this));
