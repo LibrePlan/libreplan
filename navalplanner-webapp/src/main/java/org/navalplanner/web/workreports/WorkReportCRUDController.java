@@ -784,26 +784,25 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             autocomplete.setSelectedItem(getResource(row));
         }
 
-        // Setter, set worker selected to WorkReportLine.resource
-        autocomplete.addEventListener("onSelect", new EventListener() {
-
+        autocomplete.addEventListener("onChange", new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                final Comboitem comboitem = autocomplete.getSelectedItem();
-                final WorkReportLine workReportLine = (WorkReportLine) row
-                        .getValue();
-                if ((comboitem == null)
-                        || ((Resource) comboitem.getValue() == null)) {
-                    workReportLine.setResource(null);
-                    throw new WrongValueException(autocomplete,
-                            _("Please, select an item"));
-                } else {
-                    workReportLine.setResource((Resource) comboitem.getValue());
-                }
-                reloadWorkReportLines();
+                changeResourceInLines(autocomplete, row);
             }
         });
         row.appendChild(autocomplete);
+    }
+
+    private void changeResourceInLines(final Autocomplete autocomplete, Row row) {
+        final WorkReportLine workReportLine = (WorkReportLine) row.getValue();
+        final Comboitem comboitem = autocomplete.getSelectedItem();
+        if ((comboitem == null) || ((Resource) comboitem.getValue() == null)) {
+            workReportLine.setResource(null);
+            throw new WrongValueException(autocomplete,
+                    _("Please, select an item"));
+        } else {
+            workReportLine.setResource((Resource) comboitem.getValue());
+        }
     }
 
     private Resource getResource(Row listitem) {
@@ -1066,28 +1065,31 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         hoursType.setAutodrop(true);
         hoursType.applyProperties();
         hoursType.setFinder("TypeOfWorkHoursFinder");
-        hoursType.setButtonVisible(true);
 
          if (line.getTypeOfWorkHours() != null) {
              hoursType.setSelectedItem(line.getTypeOfWorkHours());
          }
 
-        hoursType.addEventListener("onSelect", new EventListener() {
+        hoursType.addEventListener("onChange", new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                final Comboitem comboitem = hoursType.getSelectedItem();
-                if( (hoursType.getSelectedItem() == null) || ((TypeOfWorkHours) comboitem.getValue() == null)){
-                    line.setTypeOfWorkHours(null);
-                    throw new WrongValueException(hoursType,
-                            _("Please, select an item"));
-                } else {
-                    line.setTypeOfWorkHours((TypeOfWorkHours) comboitem
-                            .getValue());
-                }
-                reloadWorkReportLines();
+                changeHoursType(hoursType, row);
             }
         });
         row.appendChild(hoursType);
+    }
+
+    private void changeHoursType(final Autocomplete hoursType, final Row row) {
+        final WorkReportLine line = (WorkReportLine) row.getValue();
+        final Comboitem comboitem = hoursType.getSelectedItem();
+        if ((comboitem == null)
+                || ((TypeOfWorkHours) comboitem.getValue() == null)) {
+            line.setTypeOfWorkHours(null);
+            throw new WrongValueException(hoursType,
+                    _("Please, select an item"));
+        } else {
+            line.setTypeOfWorkHours((TypeOfWorkHours) comboitem.getValue());
+        }
     }
 
     /**
