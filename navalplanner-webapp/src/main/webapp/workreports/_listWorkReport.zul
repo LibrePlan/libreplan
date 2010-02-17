@@ -25,8 +25,7 @@
           <label value="${i18n:_('Filter work report by :')}"/>
           <label value="${i18n:_('Type')}"/>
           <listbox id="listType" mold="select" rows="1"
-            model="@{controller.filterWorkReportTypes}" width="150px"
-                selectedItem="@{controller.defaultWorkReportType}">
+            model="@{controller.filterWorkReportTypes}" width="150px">
                 <listitem self="@{each='workReportType'}" value="@{workReportType}">
                   <listcell label="@{workReportType.name}" />
                </listitem>
