@@ -459,7 +459,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
             };
             Button result;
-            if (isPredicateApplied() || isLastItem(currentElement)) {
+            if (isPredicateApplied() || isLastItem(currentElement) || readOnly) {
                 result = createButton("/common/img/ico_bajar_out.png", "",
                         "/common/img/ico_bajar_out.png", "icono",
                         downButtonListener);
@@ -480,7 +480,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
             };
             Button result;
-            if (isPredicateApplied() || isFirstItem(element)) {
+            if (isPredicateApplied() || isFirstItem(element) || readOnly) {
                 result = createButton("/common/img/ico_subir_out.png", "",
                         "/common/img/ico_subir_out.png", "icono",
                         upButtonListener);
@@ -502,7 +502,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
             };
             final Button result;
-            if (isPredicateApplied() || isFirstLevelElement(item)) {
+            if (isPredicateApplied() || isFirstLevelElement(item) || readOnly) {
                 result = createButton("/common/img/ico_izq_out.png", "",
                         "/common/img/ico_izq_out.png", "icono",
                         unindentListener);
@@ -523,7 +523,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
             };
             final Button result;
-            if (isPredicateApplied() || isFirstItem(element)) {
+            if (isPredicateApplied() || isFirstItem(element) || readOnly) {
                 result = createButton("/common/img/ico_derecha_out.png", "",
                         "/common/img/ico_derecha_out.png", "icono",
                         indentListener);
@@ -537,15 +537,25 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         protected Button createRemoveButton(final T currentElement) {
-            final Button result = createButton("/common/img/ico_borrar1.png",
-                    _("Delete"), "/common/img/ico_borrar.png", "icono",
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            remove(currentElement);
-                            filterByPredicateIfAny();
-                        }
-                    });
+            EventListener removeListener = new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    remove(currentElement);
+                    filterByPredicateIfAny();
+                }
+            };
+            final Button result;
+            if(readOnly) {
+                result = createButton("/common/img/ico_borrar_out.png",
+                        _("Delete"), "/common/img/ico_borrar_out.png", "icono",
+                        removeListener);
+                result.setDisabled(readOnly);
+            }
+            else {
+                result = createButton("/common/img/ico_borrar1.png",
+                        _("Delete"), "/common/img/ico_borrar.png", "icono",
+                        removeListener);
+            }
             return result;
         }
 
