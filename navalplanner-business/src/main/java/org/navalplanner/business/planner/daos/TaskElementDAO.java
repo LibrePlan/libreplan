@@ -112,7 +112,7 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     private List<Task> getTasksByOrderAndDate(Order order, LocalDate deadline) {
 
         final List<OrderElement> orders = (order != null) ? order
-                .getOrderElements() : new ArrayList<OrderElement>();
+                .getAllOrderElements() : new ArrayList<OrderElement>();
 
         // Prepare query
         String strQuery =

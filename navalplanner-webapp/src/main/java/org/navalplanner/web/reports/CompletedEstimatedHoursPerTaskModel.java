@@ -56,11 +56,7 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        List<Order> result = orderDAO.getOrders();
-        for (Order each: result) {
-            initializeOrderElements(each.getOrderElements());
-        }
-        return result;
+        return orderDAO.getOrders();
     }
 
     private void initializeOrderElements(List<OrderElement> orderElements) {
@@ -73,10 +69,16 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
         orderElement.getName();
     }
 
+    private void reattachmentOrder(Order order) {
+        orderDAO.reattachUnmodifiedEntity(order);
+        initializeOrderElements(order.getAllOrderElements());
+    }
+
     @Override
     @Transactional(readOnly = true)
     public JRDataSource getCompletedEstimatedHoursReportPerTask(
             Order order, Date deadline) {
+        reattachmentOrder(order);
         final List<CompletedEstimatedHoursPerTaskDTO> completedEstimatedHoursPerTaskList =
             taskDAO.getCompletedEstimatedHoursPerTaskReport(order, new LocalDate(deadline));
 
