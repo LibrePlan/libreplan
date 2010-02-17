@@ -158,11 +158,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public void accept() {
-        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+        applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 stepsBeforeDoingAllocation();
-                applyAllocationResult(allocationRowsHandler.doAllocation());
+                allocationRowsHandler.doAllocation().applyTo(task);
                 return null;
             }
         });
@@ -170,28 +170,29 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public void accept(final AllocationResult modifiedAllocationResult) {
-        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+        applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 stepsBeforeDoingAllocation();
-                applyAllocationResult(modifiedAllocationResult);
+                modifiedAllocationResult.applyTo(task);
                 return null;
             }
         });
     }
 
-    private void stepsBeforeDoingAllocation() {
-        reattachmentsBeforeDoingAllocation();
-        removeDeletedAllocations();
-    }
-
-    private void applyAllocationResult(AllocationResult allocationResult) {
+    private void applyAllocationWithDateChangesNotification(
+            IOnTransaction<?> allocationDoer) {
         org.zkoss.ganttz.data.Task ganttTask = context.getTask();
         Date previousStartDate = ganttTask.getBeginDate();
         long previousLength = ganttTask.getLengthMilliseconds();
-        allocationResult.applyTo(task);
+        transactionService.runOnReadOnlyTransaction(allocationDoer);
         ganttTask.fireChangesForPreviousValues(previousStartDate,
                 previousLength);
+    }
+
+    private void stepsBeforeDoingAllocation() {
+        reattachmentsBeforeDoingAllocation();
+        removeDeletedAllocations();
     }
 
     @Override
