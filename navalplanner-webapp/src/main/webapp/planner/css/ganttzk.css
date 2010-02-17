@@ -884,3 +884,7 @@ body .perspectives-column {
     z-index:3;
     width: 100%;
 }
+
+.orderslayout .z-window-embedded-header {
+    display:none;
+}

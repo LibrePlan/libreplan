@@ -153,13 +153,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void createOrderFromTemplate() {
         showOrderElementFilter();
-        Component fromTemplateButton = listWindow
-                .getFellow("create_from_template_button");
-        templateFinderPopup.openForOrderCreation(fromTemplateButton,
+        templateFinderPopup.openForOrderCreation(createOrderFromTemplateButton,
                 "after_start", new IOnResult<OrderTemplate>() {
 
                     @Override
                     public void found(OrderTemplate template) {
+                        showCreateButtons(false);
                         orderModel.prepareCreationFrom(template);
                         showEditWindow(_("Create order from Template"));
                     }
@@ -180,6 +179,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Hbox orderFilter;
 
     private Vbox orderElementFilter;
+
+    private Button createOrderButton;
+    private Button createOrderFromTemplateButton;
+    private Button saveOrderAndContinueButton;
 
     private Datebox filterStartDate;
 
@@ -208,9 +211,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         comp.setVariable("controller", this, true);
 
         if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            ((Button)listWindow.getFellowIfAny("show_create_form")).setDisabled(false);
-            ((Button)listWindow.getFellowIfAny("create_from_template_button")).setDisabled(false);
-            ((Button)self.getFellowIfAny("ordersTabCreateOrderButton")).setDisabled(false);
+            createOrderButton.setDisabled(false);
+            createOrderFromTemplateButton.setDisabled(false);
         }
 
         // Configuration of the order filter
@@ -436,9 +438,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void saveAndContinue() {
         setCurrentTab();
+        Order order = (Order) orderModel.getOrder();
+        final boolean isNewObject = order.isNewObject();
         final boolean couldSave = save();
         if (couldSave) {
-            Order order = (Order) orderModel.getOrder();
             if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
                 selectTab(getCurrentTab().getId());
                 orderModel.initEdit(order);
@@ -451,6 +454,9 @@ public class OrderCRUDController extends GenericForwardComposer {
                 initialStatus = order.getState();
                 initializeTabs();
                 showWindow(editWindow);
+                if (isNewObject) {
+                    this.planningControllerEntryPoints.goToOrderDetails(order);
+                }
             }
             else {
                 try {
@@ -490,7 +496,14 @@ public class OrderCRUDController extends GenericForwardComposer {
             setSelectedExternalCompany();
             orderModel.save();
             saveOrderAuthorizations();
-            messagesForUser.showMessage(Level.INFO, _("Order saved"));
+
+            try {
+                Messagebox.show(_("Order saved"), _("Information"),
+                        Messagebox.OK, Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             return true;
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
@@ -531,6 +544,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         // load the components of the order list
         listing = (Grid) listWindow.getFellow("listing");
         showOrderFilter();
+        showCreateButtons(true);
         clearFilterDates();
     }
 
@@ -618,6 +632,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToEditForm(Order order) {
         showOrderElementFilter();
+        showCreateButtons(false);
         planningControllerEntryPoints.goToOrderDetails(order);
     }
 
@@ -696,6 +711,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         try {
             showOrderElementFilter();
+            showCreateButtons(false);
             orderModel.prepareForCreate();
             showEditWindow(_("Create order"));
             checkCreationPermissions();
@@ -998,6 +1014,12 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderElementFilter.setVisible(true);
     }
 
+    private void showCreateButtons(boolean showCreate) {
+        createOrderButton.setVisible(showCreate);
+        createOrderFromTemplateButton.setVisible(showCreate);
+        saveOrderAndContinueButton.setVisible(!showCreate);
+    }
+
     public void highLight(OrderElement orderElement) {
         Tab tab = (Tab) editWindow.getFellowIfAny("tabOrderElements");
         if (tab != null) {
@@ -1021,12 +1043,10 @@ public class OrderCRUDController extends GenericForwardComposer {
      */
     private void checkCreationPermissions() {
         if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            ((Button)editWindow.getFellowIfAny("save")).setDisabled(false);
-            ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(false);
+            saveOrderAndContinueButton.setDisabled(false);
         }
         else {
-            ((Button)editWindow.getFellowIfAny("save")).setDisabled(true);
-            ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(true);
+            saveOrderAndContinueButton.setDisabled(true);
         }
     }
 
@@ -1042,11 +1062,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void setEditionDisabled(boolean disabled) {
-        ((Button)editWindow.getFellowIfAny("save")).setDisabled(disabled);
-        ((Button)editWindow.getFellowIfAny("save_and_continue")).setDisabled(disabled);
         if(orderElementTreeController != null) {
             orderElementTreeController.setReadOnly(disabled);
         }
+        saveOrderAndContinueButton.setDisabled(disabled);
     }
 
     private OrderStatusEnum initialStatus;
