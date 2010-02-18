@@ -669,6 +669,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void reloadDefaultTab() {
+        setSelectedExternalCompany();
         Tabpanel tabPanel = (Tabpanel) editWindow
                 .getFellow("tabPanelGeneralData");
         Util.createBindingsFor(tabPanel);

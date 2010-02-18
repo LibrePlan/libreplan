@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -32,7 +30,6 @@ import org.navalplanner.web.common.components.finders.IFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Combobox;
