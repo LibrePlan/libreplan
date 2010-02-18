@@ -21,7 +21,9 @@ package org.navalplanner.business.templates.daos;
 
 import java.util.List;
 
+import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
@@ -33,4 +35,16 @@ public interface IOrderElementTemplateDAO extends
 
     List<OrderElementTemplate> getRootTemplates();
 
+    OrderElementTemplate findUniqueByName(
+            OrderElementTemplate orderElementTemplate)
+            throws InstanceNotFoundException;
+
+    OrderElementTemplate findUniqueByName(String name)
+    throws InstanceNotFoundException, NonUniqueResultException;
+
+    boolean existsOtherOrderElementTemplateByName(
+            OrderElementTemplate orderElementTemplate);
+
+    boolean existsByNameAnotherTransaction(
+            OrderElementTemplate orderElementTemplate);
 }

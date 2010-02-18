@@ -69,7 +69,8 @@
                             <rows>
                                 <row>
                                     <label value="${i18n:_('Name')}" />
-                                    <textbox value="@{templateController.template.name}" width="500px"/>
+                                    <textbox id="name" value="@{templateController.template.name}" width="500px"
+                                        constraint = "@{templateController.validateTemplateName}"/>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Code')}" />

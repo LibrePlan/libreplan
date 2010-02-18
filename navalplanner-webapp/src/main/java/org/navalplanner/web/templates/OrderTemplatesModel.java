@@ -19,6 +19,8 @@
  */
 package org.navalplanner.web.templates;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -210,6 +212,20 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public Set<QualityForm> getAllQualityForms() {
         return new HashSet<QualityForm>(getQualityFormsOnConversation()
                 .getQualityForms());
+    }
+
+    @Transactional(readOnly = true)
+    public void validateTemplateName(String name)
+            throws IllegalArgumentException {
+        if ((name == null) || (name.isEmpty())) {
+            throw new IllegalArgumentException(_("the name must be not empty"));
+        }
+
+        getTemplate().setName(name);
+        if (!getTemplate().checkConstraintUniqueTemplateName()) {
+            throw new IllegalArgumentException(
+                    _("There exists other template with the same name."));
+        }
     }
 
 }

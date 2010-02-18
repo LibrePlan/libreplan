@@ -46,7 +46,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 /**
@@ -66,6 +70,8 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private Window listWindow;
 
     private Window editWindow;
+
+    private Textbox name;
 
     private IMessagesForUser messagesForUser;
 
@@ -180,9 +186,11 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     }
 
     public void saveAndExit() {
-        model.confirmSave();
-        messagesForUser.showMessage(Level.INFO, _("Template saved"));
-        show(listWindow);
+        if (isAllValid()) {
+            model.confirmSave();
+            messagesForUser.showMessage(Level.INFO, _("Template saved"));
+            show(listWindow);
+        }
     }
 
     public void cancel() {
@@ -190,9 +198,37 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     }
 
     public void saveAndContinue() {
-        model.confirmSave();
-        model.initEdit(getTemplate());
-        messagesForUser.showMessage(Level.INFO, _("Template saved"));
+        if (isAllValid()) {
+            model.confirmSave();
+            model.initEdit(getTemplate());
+            messagesForUser.showMessage(Level.INFO, _("Template saved"));
+        }
+    }
+
+    private boolean isAllValid() {
+        // validate template name
+        name = (Textbox) editWindow.getFellowIfAny("name");
+        if ((name != null) && (!name.isValid())) {
+            selectTab("tabGeneralData");
+            showInvalidWorkReportTypeName();
+            return false;
+        }
+        return true;
+    }
+
+    private void selectTab(String str) {
+        Tab tab = (Tab) editWindow.getFellowIfAny(str);
+        if (tab != null) {
+            tab.setSelected(true);
+        }
+    }
+
+    private void showInvalidWorkReportTypeName() {
+        try {
+            model.validateTemplateName(name.getValue());
+        } catch (IllegalArgumentException e) {
+            throw new WrongValueException(name, _(e.getMessage()));
+        }
     }
 
     @Override
@@ -210,4 +246,17 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         handler.registerListener(this, page);
     }
 
+    public Constraint validateTemplateName() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                try {
+                    model.validateTemplateName((String) value);
+                } catch (IllegalArgumentException e) {
+                    throw new WrongValueException(comp, _(e.getMessage()));
+                }
+            }
+        };
+    }
 }

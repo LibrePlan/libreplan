@@ -41,6 +41,7 @@ import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
+import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
@@ -144,6 +145,9 @@ public class Registry {
     @Autowired
     private IResourcesCostCategoryAssignmentDAO
         resourcesCostCategoryAssignmentDAO;
+
+    @Autowired
+    private IOrderElementTemplateDAO orderElementTemplateDAO;
 
     private Registry() {
     }
@@ -258,4 +262,7 @@ public class Registry {
 
     }
 
+    public static IOrderElementTemplateDAO getOrderElementTemplateDAO() {
+        return getInstance().orderElementTemplateDAO;
+    }
 }

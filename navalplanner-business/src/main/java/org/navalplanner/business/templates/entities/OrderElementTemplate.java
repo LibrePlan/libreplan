@@ -31,6 +31,8 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.NonUniqueResultException;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
@@ -39,6 +41,8 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
@@ -50,6 +54,7 @@ import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
+import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.trees.ITreeNode;
 
 /**
@@ -404,4 +409,26 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public boolean isRoot() {
         return getParent() == null;
     }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "template name is already being used")
+    public boolean checkConstraintUniqueTemplateName() {
+        IOrderElementTemplateDAO orderElementTemplateDAO = Registry
+                .getOrderElementTemplateDAO();
+        if (isNewObject()) {
+            return !orderElementTemplateDAO
+                    .existsByNameAnotherTransaction(this);
+        } else {
+            try {
+                OrderElementTemplate template = orderElementTemplateDAO
+                        .findUniqueByName(getName());
+                return template.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            } catch (NonUniqueResultException e) {
+                return false;
+            }
+        }
+    }
+
 }

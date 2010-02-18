@@ -21,12 +21,16 @@ package org.navalplanner.business.templates.daos;
 
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -47,6 +51,55 @@ public class OrderElementTemplateDAO extends
         Query query = getSession().createQuery(
                 "select t from OrderElementTemplate t where t.parent = NULL");
         return query.list();
+    }
+
+    @Override
+    public OrderElementTemplate findUniqueByName(
+            OrderElementTemplate orderElementTemplate)
+            throws InstanceNotFoundException {
+        Validate.notNull(orderElementTemplate);
+        return findUniqueByName(orderElementTemplate.getName());
+    }
+
+    @Override
+    public OrderElementTemplate findUniqueByName(String name)
+            throws InstanceNotFoundException, NonUniqueResultException {
+
+        // Prepare query
+        String strQuery = "Select t " + "from OrderElementTemplate t "
+                + "where t.parent = NULL "
+                + "and  LOWER(t.infoComponent.name) like  LOWER(:name)";
+
+        // Execute query
+        Query query = getSession().createQuery(strQuery);
+        if (name != null && !name.isEmpty()) {
+            query.setParameter("name", name);
+        }
+
+        OrderElementTemplate orderElementTemplate = (OrderElementTemplate) query
+                .uniqueResult();
+        if (orderElementTemplate == null) {
+            throw new InstanceNotFoundException(null, "OrderElemenetTemplate");
+        }
+        return orderElementTemplate;
+    }
+
+    @Override
+    public boolean existsOtherOrderElementTemplateByName(
+            OrderElementTemplate orderElementTemplate) {
+        try {
+            OrderElementTemplate t = findUniqueByName(orderElementTemplate);
+            return (t != null && t != orderElementTemplate);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameAnotherTransaction(
+            OrderElementTemplate orderElementTemplate) {
+        return existsOtherOrderElementTemplateByName(orderElementTemplate);
     }
 
 }
