@@ -191,6 +191,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         model.confirmSave();
+        model.initEdit(getTemplate());
         messagesForUser.showMessage(Level.INFO, _("Template saved"));
     }
 
