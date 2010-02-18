@@ -33,6 +33,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
@@ -82,7 +83,15 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         externalCompanyModel.initCreate();
         getVisibility().showOnly(createWindow);
         setInteractionFieldsActivation(getCompany().getInteractsWithApplications());
+        clearAutocompleteUser();
         Util.reloadBindings(createWindow);
+    }
+
+    private void clearAutocompleteUser() {
+        Autocomplete user = (Autocomplete) createWindow.getFellowIfAny("user");
+        if (user != null) {
+            user.setValue("");
+        }
     }
 
     @Override

@@ -60,6 +60,7 @@
                             <row>
                                 <label value="${i18n:_('User')}:" />
                                 <autocomplete id="user"
+                                    value="@{controller.company.companyUser}"
                                     onChange ="controller.setCompanyUser(self.selectedItem);"
                                     selectedItem="@{controller.company.companyUser}"
                                     autodrop="true" finder="UserFinder" />
