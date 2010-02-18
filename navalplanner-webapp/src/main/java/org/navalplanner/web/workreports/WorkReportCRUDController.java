@@ -816,10 +816,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void appendOrderElementInLines(Row row) {
         final WorkReportLine workReportLine = (WorkReportLine) row.getValue();
 
-        BandboxSearch bandboxSearch = new BandboxSearch();
-        bandboxSearch.setFinder("OrderElementBandboxFinder");
-        bandboxSearch.afterCompose();
-        bandboxSearch.setModel(getOrderElements());
+        BandboxSearch bandboxSearch = BandboxSearch.create(
+                "OrderElementBandboxFinder", getOrderElements());
+
         bandboxSearch.setSelectedElement(workReportLine.getOrderElement());
         bandboxSearch.setListboxWidth("750px");
 

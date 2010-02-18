@@ -51,6 +51,15 @@ import org.zkoss.zul.api.Listbox;
 @SuppressWarnings("serial")
 public class BandboxSearch extends HtmlMacroComponent {
 
+    public static BandboxSearch create(String finderClassName,
+            List<? extends BaseEntity> model) {
+        BandboxSearch bandboxSearch = new BandboxSearch();
+        bandboxSearch.setFinder(finderClassName);
+        bandboxSearch.afterCompose();
+        bandboxSearch.setModel(model);
+        return bandboxSearch;
+    }
+
     private Listbox listbox;
 
     private Listhead listhead;
