@@ -426,29 +426,24 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         private String buildResourcesText() {
             List<String> result = new ArrayList<String>();
-            Set<Resource> alreadyFoundResources = new HashSet<Resource>();
             for (ResourceAllocation<?> each : taskElement
                     .getSatisfiedResourceAllocations()) {
-                result.addAll(extractRepresentations(each,
-                        alreadyFoundResources));
-            }
-            return StringUtils.join(result, ", ");
-        }
-
-        private List<String> extractRepresentations(ResourceAllocation<?> each,
-                Set<Resource> alreadyFoundResources) {
-            List<String> result = new ArrayList<String>();
-            if (each instanceof SpecificResourceAllocation) {
-                for (Resource r : each.getAssociatedResources()) {
-                    if (!alreadyFoundResources.contains(r)) {
-                        result.add(r.getName());
-                        alreadyFoundResources.add(r);
+                if (each instanceof SpecificResourceAllocation) {
+                    for (Resource r : each.getAssociatedResources()) {
+                        String representation = r.getName();
+                        if (!result.contains(representation)) {
+                            result.add(representation);
+                        }
+                    }
+                } else {
+                    String representation =
+                        extractRepresentationForGeneric((GenericResourceAllocation) each);
+                    if (!result.contains(representation)) {
+                        result.add(representation);
                     }
                 }
-            } else {
-                result.add(extractRepresentationForGeneric((GenericResourceAllocation) each));
             }
-            return result;
+            return StringUtils.join(result, ", ");
         }
 
         private String extractRepresentationForGeneric(
