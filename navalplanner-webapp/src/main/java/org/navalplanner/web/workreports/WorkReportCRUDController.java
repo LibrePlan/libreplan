@@ -51,6 +51,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.ganttz.IPredicate;
@@ -59,9 +60,9 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
-import org.zkoss.zul.Bandpopup;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
@@ -71,9 +72,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listhead;
-import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -816,98 +814,28 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @param row
      */
     private void appendOrderElementInLines(Row row) {
-        WorkReportLine workReportLine = (WorkReportLine) row.getValue();
+        final WorkReportLine workReportLine = (WorkReportLine) row.getValue();
 
-        Bandbox bandbox = bindBandboxOrderElement(workReportLine);
+        BandboxSearch bandboxSearch = new BandboxSearch();
+        bandboxSearch.setFinder("OrderElementBandboxFinder");
+        bandboxSearch.afterCompose();
+        bandboxSearch.setModel(getOrderElements());
+        bandboxSearch.setSelectedElement(workReportLine.getOrderElement());
+        bandboxSearch.setListboxWidth("750px");
 
-        Bandpopup bandpopup = new Bandpopup();
-        Listbox listbox = new Listbox();
-        listbox.setFixedLayout(true);
-        listbox.setWidth("750px");
+        bandboxSearch.setListboxEventListener(Events.ON_SELECT,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
+                                .getSelectedItems().iterator().next();
+                        OrderElement orderElement = (OrderElement) selectedItem
+                                .getValue();
+                        workReportLine.setOrderElement(orderElement);
+                    }
+                });
 
-        listbox.appendChild(getOrderElementsHead());
-        appendOrderElementsListitems(listbox);
-
-        addEventListener(bandbox, workReportLine, listbox);
-
-        bandpopup.appendChild(listbox);
-        bandbox.appendChild(bandpopup);
-
-        row.appendChild(bandbox);
-    }
-
-    private Bandbox bindBandboxOrderElement(final WorkReportLine workReportLine) {
-        final Bandbox tempBandbox = new Bandbox();
-        return Util.bind(tempBandbox, new Util.Getter<String>() {
-
-            @Override
-            public String get() {
-                if (workReportLine.getOrderElement() == null) {
-                    return "";
-                } else {
-                    return workReportLine.getOrderElement().getCode();
-                }
-            }
-        }, new Util.Setter<String>() {
-
-            @Override
-            public void set(String value) {
-                try {
-                    OrderElement orderElement = workReportModel
-                            .findOrderElement(value);
-                    workReportLine.setOrderElement(orderElement);
-                } catch (InstanceNotFoundException e) {
-                    workReportLine.setOrderElement(null);
-                    throw new WrongValueException(tempBandbox,
-                            _("Order element not found"));
-                }
-            }
-
-        });
-    }
-
-    private void addEventListener(final Bandbox bandbox,
-            final WorkReportLine workReportLine, Listbox listbox) {
-        listbox.addEventListener(Events.ON_SELECT, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                Listbox listbox = (Listbox) event.getTarget();
-                OrderElement orderElement = (OrderElement) listbox
-                        .getSelectedItem()
-                        .getValue();
-                workReportLine.setOrderElement(orderElement);
-                bandbox.setValue(orderElement.getCode());
-                bandbox.setOpen(false);
-            }
-        });
-    }
-
-    private void appendOrderElementsListitems(Listbox listbox) {
-        for (OrderElement orderElement : getOrderElements()) {
-            Listitem listitem = new Listitem();
-            listitem.setValue(orderElement);
-            listitem
-                    .appendChild(new Listcell(orderElement.getOrder().getName()));
-            listitem
-                    .appendChild(new Listcell(orderElement.getOrder().getCode()));
-            listitem.appendChild(new Listcell(orderElement.getName()));
-            listitem.appendChild(new Listcell(orderElement.getCode()));
-            listbox.appendChild(listitem);
-        }
-    }
-
-    private Listhead getOrderElementsHead() {
-        Listhead listhead = new Listhead();
-        Listheader listheader = new Listheader(_("Order"));
-        listhead.appendChild(listheader);
-        Listheader listheader2 = new Listheader(_("Order code"));
-        listhead.appendChild(listheader2);
-        Listheader listheader3 = new Listheader(_("Order element"));
-        listhead.appendChild(listheader3);
-        Listheader listheader4 = new Listheader(_("Order element code"));
-        listhead.appendChild(listheader4);
-        return listhead;
+        row.appendChild(bandboxSearch);
     }
 
     private void appendFieldsAndLabelsInLines(final Row row){
@@ -1666,4 +1594,5 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         bandboxFilterOrderElement.setValue(orderElement.getCode());
         bandboxFilterOrderElement.setOpen(false);
     }
+
 }

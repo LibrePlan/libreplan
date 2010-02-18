@@ -272,4 +272,11 @@ public class BandboxSearch extends HtmlMacroComponent {
             this.listbox.setWidth(widthListbox);
         }
     }
+
+    public void setListboxWidth(String width) {
+        if (listbox != null) {
+            listbox.setWidth(width);
+        }
+    }
+
 }
