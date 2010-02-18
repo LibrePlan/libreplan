@@ -133,28 +133,11 @@
                                 </row>
                                 <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
                                     <label value="${i18n:_('OrderElement Code')}:" />
-                                    <bandbox id="bandboxSelectOrderElementInHead"
-                                        constraint = "@{controller.checkConstraintOrderElementInHead}">
-                                        <bandpopup>
-                                            <listbox id="selectOrderElement" width="750px" fixedLayout="true"
-                                                model="@{controller.orderElements}"
-                                                onSelect="controller.setOrderElementInComponent(event)"
-                                                selectedItem="@{controller.workReport.orderElement}">
-                                                <listhead>
-                                                    <listheader label="${i18n:_('Order')}"/>
-                                                    <listheader label="${i18n:_('Order code')}"/>
-                                                    <listheader label="${i18n:_('Order element')}"/>
-                                                    <listheader label="${i18n:_('Order element code')}"/>
-                                                </listhead>
-                                                <listitem self="@{each='orderElement'}" value="@{orderElement}">
-                                                    <listcell label="@{orderElement.order.name}"/>
-                                                    <listcell label="@{orderElement.order.code}"/>
-                                                    <listcell label="@{orderElement.name}"/>
-                                                    <listcell label="@{orderElement.code}"/>
-                                                </listitem>
-                                            </listbox>
-                                        </bandpopup>
-                                    </bandbox>
+                                    <bandboxSearch id="bandboxSelectOrderElementInHead"
+                                        finder="OrderElementBandboxFinder"
+                                        model="@{controller.orderElements}"
+                                        selectedElement="@{controller.workReport.orderElement}"
+                                        onSelect="controller.setOrderElementInComponent(event)" />
                                 </row>
                             </rows>
                         </grid>

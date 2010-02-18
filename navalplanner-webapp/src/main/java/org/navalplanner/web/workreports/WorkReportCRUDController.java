@@ -121,7 +121,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Autocomplete autocompleteResource;
 
-    private Bandbox bandboxSelectOrderElementInHead;
+    private BandboxSearch bandboxSelectOrderElementInHead;
 
     private final static String MOLD = "paging";
 
@@ -555,8 +555,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 .getFellow("headingFieldsAndLabels");
         autocompleteResource = (Autocomplete) window
                 .getFellow("autocompleteResource");
-        bandboxSelectOrderElementInHead = (Bandbox) window
+        bandboxSelectOrderElementInHead = (BandboxSearch) window
                 .getFellow("bandboxSelectOrderElementInHead");
+        bandboxSelectOrderElementInHead.setListboxWidth("750px");
+        bandboxSelectOrderElementInHead.setListboxEventListener(Events.ON_SELECT,
+                new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Listitem selectedItem = (Listitem) ((SelectEvent) event)
+                        .getSelectedItems().iterator().next();
+                OrderElement orderElement = (OrderElement) selectedItem
+                        .getValue();
+                getWorkReport().setOrderElement(orderElement);
+            }
+        });
     }
 
     private void loadComponentslist(Component window) {
@@ -1128,39 +1140,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             appendHoursType(row);
             appendDeleteButton(row);
         }
-    }
-
-    /* Operations to manage the fields and labels in the heading */
-
-    public void setOrderElementInComponent(Event event) throws Exception {
-        Listbox listbox = (Listbox) event.getTarget();
-        OrderElement orderElement = (OrderElement) listbox.getSelectedItem()
-                .getValue();
-        bandboxSelectOrderElementInHead.setValue(orderElement.getCode());
-        bandboxSelectOrderElementInHead.setOpen(false);
-    }
-
-    public Constraint checkConstraintOrderElementInHead() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                String code = (String) value;
-                if ((code != null) && (!code.isEmpty())) {
-                    try {
-                        getWorkReport().setOrderElement(
-                                workReportModel.findOrderElement(code));
-                        reloadWorkReportLines();
-                    } catch (InstanceNotFoundException e) {
-                        throw new WrongValueException(
-                                bandboxSelectOrderElementInHead,
-                                _("OrderElement not found"));
-                    }
-                } else {
-                    getWorkReport().setOrderElement(null);
-                }
-            }
-        };
     }
 
     public OrderedFieldsAndLabelsRowRenderer getOrderedFieldsAndLabelsRowRenderer() {
