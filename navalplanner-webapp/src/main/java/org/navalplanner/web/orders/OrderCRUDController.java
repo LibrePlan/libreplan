@@ -493,7 +493,6 @@ public class OrderCRUDController extends GenericForwardComposer {
             return false;
         }
         try {
-            setSelectedExternalCompany();
             orderModel.save();
             saveOrderAuthorizations();
 
@@ -666,10 +665,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         showWindow(editWindow);
         selectDefaultTab();
         reloadDefaultTab();
+        loadCustomerComponent();
     }
 
     public void reloadDefaultTab() {
-        setSelectedExternalCompany();
         Tabpanel tabPanel = (Tabpanel) editWindow
                 .getFellow("tabPanelGeneralData");
         Util.createBindingsFor(tabPanel);
@@ -719,6 +718,20 @@ public class OrderCRUDController extends GenericForwardComposer {
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
+    }
+
+    private void loadCustomerComponent() {
+        bdExternalCompanies = (BandboxSearch) editWindow
+                .getFellow("bdExternalCompanies");
+        bdExternalCompanies.setListboxEventListener(
+                Events.ON_SELECT, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        final Object object = bdExternalCompanies
+                                .getSelectedElement();
+                        orderModel.setExternalCompany((ExternalCompany) object);
+                    }
+                });
     }
 
     public void setPlanningControllerEntryPoints(
@@ -778,13 +791,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public List<ExternalCompany> getExternalCompaniesAreClient() {
         return orderModel.getExternalCompaniesAreClient();
-    }
-
-    private void setSelectedExternalCompany() {
-        this.bdExternalCompanies = (BandboxSearch) editWindow
-                .getFellow("bdExternalCompanies");
-        final Object object = this.bdExternalCompanies.getSelectedElement();
-        orderModel.setExternalCompany((ExternalCompany) object);
     }
 
     public OrdersRowRenderer getOrdersRowRender() {
