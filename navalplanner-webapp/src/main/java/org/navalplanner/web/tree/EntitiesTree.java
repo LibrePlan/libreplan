@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.business.trees.ITreeParentNode;
 import org.zkoss.ganttz.util.MutableTreeModel;
+import org.zkoss.ganttz.util.MutableTreeModel.IChildrenExtractor;
 import org.zkoss.zul.TreeModel;
 
 /**
@@ -231,9 +232,17 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         }
         for (WithPosition each : addings) {
             tree.add(parent.getThis(), each.position, Collections
-                    .singletonList(each.element));
-            addChildren(tree, Collections.singletonList(each.element));
+                    .singletonList(each.element), childrenAdder());
         }
+    }
+
+    private IChildrenExtractor<T> childrenAdder() {
+        return new IChildrenExtractor<T>() {
+            @Override
+            public List<? extends T> getChildren(T parent) {
+                return parent.getChildren();
+            }
+        };
     }
 
     private List<T> getTreeChildren(ITreeParentNode<T> parent) {
