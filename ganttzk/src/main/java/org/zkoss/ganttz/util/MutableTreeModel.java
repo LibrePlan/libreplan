@@ -23,6 +23,7 @@ package org.zkoss.ganttz.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -36,6 +37,12 @@ import org.zkoss.zul.event.TreeDataEvent;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class MutableTreeModel<T> extends AbstractTreeModel {
+
+    public interface IChildrenExtractor<T> {
+
+        public List<? extends T> getChildren(T parent);
+
+    }
 
     private static class Node<T> {
         private T value;
@@ -223,15 +230,40 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     }
 
     private void add(Node<T> parent, Integer position, List<Node<T>> children) {
+        add(parent, position, children, noChildrenExtractor());
+    }
+
+    private IChildrenExtractor<T> noChildrenExtractor() {
+        return new IChildrenExtractor<T>() {
+
+            @Override
+            public List<? extends T> getChildren(T parent) {
+                return Collections.emptyList();
+            }
+        };
+    }
+
+    private void add(Node<T> parent, Integer position, List<Node<T>> children,
+            IChildrenExtractor<T> extractor) {
         if (children.isEmpty()) {
             return;
         }
         int indexFrom = position == null ? parent.children.size() : position;
         int indexTo = indexFrom + children.size() - 1;
-        parent.addAll(position, children);
-        addToNodesAndDomainMapping(children);
+        addWithoutSendingEvents(parent, position, children, extractor);
         fireEvent(unwrap(parent), indexFrom, indexTo,
                 TreeDataEvent.INTERVAL_ADDED);
+    }
+
+    private void addWithoutSendingEvents(Node<T> parent, Integer position,
+            List<Node<T>> children, IChildrenExtractor<T> extractor) {
+        parent.addAll(position, children);
+        addToNodesAndDomainMapping(children);
+        for (Node<T> each : children) {
+            T value = each.value;
+            addWithoutSendingEvents(each, 0,
+                    wrap(extractor.getChildren(value)), extractor);
+        }
     }
 
     private void addToNodesAndDomainMapping(Collection<Node<T>> children) {
@@ -253,6 +285,16 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
     public void add(T parent, Collection<? extends T> children) {
         Node<T> parentNode = find(parent);
         add(parentNode, null, wrap(children));
+    }
+
+    public void add(T parent, int position, Collection<? extends T> children,
+            IChildrenExtractor<T> childrenExtractor) {
+        add(find(parent), position, wrap(children), childrenExtractor);
+    }
+
+    public void add(T parent, Collection<? extends T> children,
+            IChildrenExtractor<T> childrenExtractor) {
+        add(find(parent), null, wrap(children), childrenExtractor);
     }
 
     public void remove(T node) {
@@ -356,5 +398,6 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
             asList(each, result);
         }
     }
+
 
 }

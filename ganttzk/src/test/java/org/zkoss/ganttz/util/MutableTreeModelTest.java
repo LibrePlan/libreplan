@@ -30,9 +30,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+import org.zkoss.ganttz.util.MutableTreeModel.IChildrenExtractor;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.event.TreeDataEvent;
 import org.zkoss.zul.event.TreeDataListener;
@@ -269,6 +271,52 @@ public class MutableTreeModelTest {
         });
         model.add(model.getRoot(), new ArrayList<Prueba>());
         assertThat(events.size(), equalTo(0));
+    }
+
+    @Test
+    public void childrenCanBeAddedAutomaticallyIfAChildrenExtractorIsProvided() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        final Prueba newlyAdded = new Prueba();
+        final Prueba child1 = new Prueba();
+        final Prueba child2 = new Prueba();
+        model.add(model.getRoot(), Collections.singletonList(newlyAdded),
+                childrenFor(newlyAdded, child1, child2));
+        assertThat(model.getChild(model.getRoot(), 0), equalTo(newlyAdded));
+        assertThat(model.getChildCount(newlyAdded), equalTo(2));
+    }
+
+    private IChildrenExtractor<Prueba> childrenFor(final Prueba parent,
+            final Prueba... children) {
+        return new IChildrenExtractor<Prueba>() {
+
+            @Override
+            public List<Prueba> getChildren(Prueba p) {
+                if (parent == p) {
+                    return Arrays.asList(children);
+                } else {
+                    return Collections.emptyList();
+                }
+            }
+        };
+    }
+
+    @Test
+    public void whenChildrenAreAutomaticallyAddedOnlySendsEventForTopInsertion() {
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class);
+        final Prueba newlyAdded = new Prueba();
+        final Prueba child1 = new Prueba();
+        final Prueba child2 = new Prueba();
+        final List<TreeDataEvent> eventsFired = new ArrayList<TreeDataEvent>();
+        model.addTreeDataListener(new TreeDataListener() {
+
+            @Override
+            public void onChange(TreeDataEvent event) {
+                eventsFired.add(event);
+            }
+        });
+        model.add(model.getRoot(), Collections.singletonList(newlyAdded),
+                childrenFor(newlyAdded, child1, child2));
+        assertThat(eventsFired.size(), equalTo(1));
     }
 
     @Test
