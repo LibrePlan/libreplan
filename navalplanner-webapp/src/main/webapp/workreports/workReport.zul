@@ -127,6 +127,7 @@
                                 <row visible = "@{controller.workReport.workReportType.resourceIsSharedInLines}">
                                         <label value="${i18n:_('Resource')}:" />
                                         <autocomplete id="autocompleteResource" buttonVisible="true"
+                                            value = "@{controller.workReport.resource}"
                                             onChange ="controller.changeResource(self.selectedItem);"
                                             finder="ResourceFinder"
                                             selectedItem="@{controller.workReport.resource}"/>

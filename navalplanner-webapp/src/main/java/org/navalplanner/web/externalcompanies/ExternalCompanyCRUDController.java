@@ -90,7 +90,7 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
     private void clearAutocompleteUser() {
         Autocomplete user = (Autocomplete) createWindow.getFellowIfAny("user");
         if (user != null) {
-            user.setValue("");
+            user.clear();
         }
     }
 
@@ -99,6 +99,7 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         externalCompanyModel.initEdit(company);
         getVisibility().showOnly(createWindow);
         setInteractionFieldsActivation(company.getInteractsWithApplications());
+        clearAutocompleteUser();
         Util.reloadBindings(createWindow);
     }
 

@@ -112,6 +112,13 @@ public class Autocomplete extends Combobox {
         }
     }
 
+    public void clear() {
+        this.setValue("");
+        this.setSelectedItem(null);
+        this.setModel(finder.getModel());
+        this.invalidate();
+    }
+
     private Object getBean(String classname) {
         HttpServletRequest servletRequest = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
