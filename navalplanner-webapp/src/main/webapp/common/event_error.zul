@@ -23,7 +23,7 @@
     apply="org.navalplanner.web.error.PageForErrorOnEvent">
     <vbox>
         <i18n id="message"
-            value="Run-time error: {0} . Error was registered and it&#039;ll be fixed as soon as possible." arg0="${requestScope['javax.servlet.error.message']}" />
+            value="Run-time error: {0} . Error was registered and it will be fixed as soon as possible." arg0="${requestScope['javax.servlet.error.message']}" />
         <hbox style="margin-left:auto; margin-right:auto">
             <button id="continueWorking" label="${i18n:_('Continue')}" />
             <button id="reload" label="${i18n:_('Reload')}" />
