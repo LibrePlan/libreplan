@@ -378,7 +378,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
-            if (getDiferenceBetweenTimeStartAndFinish() != numHours) {
+            if (getDiferenceBetweenTimeStartAndFinish().compareTo(numHours) != 0) {
                 return false;
             }
         }

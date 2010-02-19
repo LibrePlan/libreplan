@@ -20,9 +20,9 @@
 
 package org.navalplanner.web.common.typeconverters;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zkplus.databind.TypeConverter;
 
@@ -41,8 +41,8 @@ public class TimeConverter implements TypeConverter {
 
     @Override
     public Object coerceToUi(Object object, Component component) {
-        Date date = ((Date)object);
-        return object != null ? (new SimpleDateFormat("h:mm a"))
-                .format((Date) object) : new String("");
+        LocalTime date = ((LocalTime) object);
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("h:mm a");
+        return object != null ? fmt.print((LocalTime) object) : new String("");
     }
 }

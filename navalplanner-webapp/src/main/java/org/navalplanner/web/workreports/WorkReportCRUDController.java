@@ -251,7 +251,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void showInvalidValues(ValidationException e) {
         for (InvalidValue invalidValue : e.getInvalidValues()) {
             Object value = invalidValue.getBean();
-
             if (value instanceof WorkReport) {
                 validateWorkReport();
             }
@@ -313,8 +312,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             // Find which row contains workReportLine inside listBox
             Row row = findWorkReportLine(listWorkReportLines.getRows().getChildren(),
  workReportLine);
-            workReportLine = (WorkReportLine) row.getValue();
 
+            workReportLine = (WorkReportLine) row.getValue();
             if (row != null) {
                 if (getWorkReportType().getDateIsSharedByLines()) {
                     if (!validateWorkReport()) {
@@ -374,6 +373,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     return false;
                 }
 
+                if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
+                    // Locate TextboxOrder
+                    Intbox txtHours = getIntboxHours(row);
+                    String message = _("number of hours is not properly calculated based on clock");
+                    showInvalidMessage(txtHours, message);
+                    return false;
+                }
+
                 if (workReportLine.getTypeOfWorkHours() == null) {
                     // Locate TextboxOrder
                     Autocomplete autoTypeOfHours = getTypeOfHours(row);
@@ -381,7 +388,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     showInvalidMessage(autoTypeOfHours,message);
                     return false;
                 }
-
             }
         }
         return true;
@@ -615,7 +621,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
          listWorkReportLines.setMold(MOLD);
          listWorkReportLines.setPageSize(PAGING);
 
-         appendColumns(listWorkReportLines);
+        appendColumns(listWorkReportLines);
         listWorkReportLines
                 .setSortedColumn((NewDataSortableColumn) listWorkReportLines
                         .getColumns().getFirstChild());
@@ -924,7 +930,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         timeStart.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                    reloadWorkReportLines();
+                reloadWorkReportLines();
             }
         });
 
@@ -972,7 +978,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         timeFinish.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                    reloadWorkReportLines();
+                reloadWorkReportLines();
             }
         });
 
