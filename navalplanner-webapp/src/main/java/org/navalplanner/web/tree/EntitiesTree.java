@@ -44,17 +44,19 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
             Class<T> type, T tree, List<T> children) {
         MutableTreeModel<T> treeModel = MutableTreeModel.create(type, tree);
         T parent = treeModel.getRoot();
-        treeModel.add(parent, children);
-        addChildren(treeModel, children);
+        treeModel.add(parent, children, EntitiesTree
+                .<T> createChildrenExtractor());
         return treeModel;
     }
 
-    private static <T extends ITreeNode<T>> void addChildren(
-            MutableTreeModel<T> treeModel, List<T> children) {
-        for (T each : children) {
-            treeModel.add(each, each.getChildren());
-            addChildren(treeModel, each.getChildren());
-        }
+    private static <T extends ITreeNode<T>> IChildrenExtractor<T> createChildrenExtractor() {
+        return new IChildrenExtractor<T>() {
+
+            @Override
+            public List<? extends T> getChildren(T parent) {
+                return parent.getChildren();
+            }
+        };
     }
 
     private static <T extends ITreeNode<T>> MutableTreeModel<T> createFilteredTreeFrom(
@@ -122,15 +124,15 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
     }
 
     private void addToTree(ITreeNode<T> parentNode, ITreeNode<T> elementToAdd) {
-        tree.add(parentNode.getThis(), elementToAdd.getThis());
-        addChildren(tree, Collections.singletonList(elementToAdd.getThis()));
+        tree.add(parentNode.getThis(), Collections.singletonList(elementToAdd
+                .getThis()),
+                childrenExtractor());
     }
 
     private void addToTree(ITreeNode<T> parentNode, int position,
             ITreeNode<T> elementToAdd) {
         List<T> children = Collections.singletonList(elementToAdd.getThis());
-        tree.add(parentNode.getThis(), position, children);
-        addChildren(tree, children);
+        tree.add(parentNode.getThis(), position, children, childrenExtractor());
     }
 
     private void addOrderElementAt(ITreeNode<T> parent, ITreeNode<T> element) {
@@ -163,8 +165,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
                 asContainer.getThis());
         asContainer.add(selectedForTurningIntoContainer.getThis());
         tree.replace(selectedForTurningIntoContainer.getThis(), asContainer
-                .getThis());
-        addChildren(tree, Collections.singletonList(asContainer.getThis()));
+                .getThis(), childrenExtractor());
         return asContainer;
     }
 
@@ -232,17 +233,12 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         }
         for (WithPosition each : addings) {
             tree.add(parent.getThis(), each.position, Collections
-                    .singletonList(each.element), childrenAdder());
+                    .singletonList(each.element), childrenExtractor());
         }
     }
 
-    private IChildrenExtractor<T> childrenAdder() {
-        return new IChildrenExtractor<T>() {
-            @Override
-            public List<? extends T> getChildren(T parent) {
-                return parent.getChildren();
-            }
-        };
+    private IChildrenExtractor<T> childrenExtractor() {
+        return EntitiesTree.<T> createChildrenExtractor();
     }
 
     private List<T> getTreeChildren(ITreeParentNode<T> parent) {
