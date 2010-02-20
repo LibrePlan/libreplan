@@ -49,7 +49,6 @@ import org.zkoss.ganttz.extensions.IContext;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -85,15 +84,9 @@ public class ReassignCommand implements IReassignCommand {
                 new IConfigurationResult() {
                     @Override
                     public void result(final ReassignConfiguration configuration) {
-                        transactionService
-                                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-
-                                    @Override
-                                    public Void execute() {
-                                        doReassignation(context, configuration);
-                                        return null;
-                                    }
-                                });
+                        List<WithAssociatedEntity> reassignations = getReassignations(
+                                context, configuration);
+                        doReassignations(reassignations);
                         context.reloadCharts();
                     }
                 });
@@ -117,48 +110,14 @@ public class ReassignCommand implements IReassignCommand {
             this.ganntTask = ganntTask;
         }
 
-
     }
 
-    private void doReassignation(IContext<TaskElement> context,
-            ReassignConfiguration configuration) {
+    private List<WithAssociatedEntity> getReassignations(
+            IContext<TaskElement> context, ReassignConfiguration configuration) {
         Validate.notNull(configuration);
-        planningState.reassociateResourcesWithSession();
         List<Task> taskToReassign = configuration.filterForReassignment(context
                 .getTasksOrderedByStartDate());
-        reassign(reattach(withEntities(context.getMapper(), taskToReassign)));
-    }
-
-    private List<WithAssociatedEntity> reattach(
-            List<WithAssociatedEntity> withEntities) {
-        Set<Long> idsOfTypesAlreadyAttached = new HashSet<Long>();
-        for (WithAssociatedEntity each : withEntities) {
-            taskElementDAO.reattach(each.domainEntity);
-            Set<ResourceAllocation<?>> resourceAllocations = each.domainEntity
-                    .getSatisfiedResourceAllocations();
-            List<GenericResourceAllocation> generic = ResourceAllocation
-                    .getOfType(GenericResourceAllocation.class,
-                            resourceAllocations);
-            reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
-                    idsOfTypesAlreadyAttached, generic);
-        }
-        return withEntities;
-    }
-
-    private void reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
-            Set<Long> idsOfTypesAlreadyAttached,
-            List<GenericResourceAllocation> generic) {
-        for (GenericResourceAllocation eachGenericAllocation : generic) {
-            Set<Criterion> criterions = eachGenericAllocation
-                    .getCriterions();
-            for (Criterion eachCriterion : criterions) {
-                CriterionType type = eachCriterion.getType();
-                if (!idsOfTypesAlreadyAttached.contains(type.getId())) {
-                    idsOfTypesAlreadyAttached.add(type.getId());
-                    criterionTypeDAO.reattachUnmodifiedEntity(type);
-                }
-            }
-        }
+        return withEntities(context.getMapper(), taskToReassign);
     }
 
     private List<WithAssociatedEntity> withEntities(
@@ -171,20 +130,58 @@ public class ReassignCommand implements IReassignCommand {
         return result;
     }
 
-    private void reassign(List<WithAssociatedEntity> list) {
-        for (WithAssociatedEntity each : list) {
-            reassign(each);
+    private void doReassignations(List<WithAssociatedEntity> reassignations) {
+        for (final WithAssociatedEntity each : reassignations) {
+            Date previousBeginDate = each.ganntTask.getBeginDate();
+            long previousLength = each.ganntTask.getLengthMilliseconds();
+            transactionService
+                    .runOnReadOnlyTransaction(reassignmentTransaction(each));
+            each.ganntTask.fireChangesForPreviousValues(previousBeginDate,
+                    previousLength);
+            each.ganntTask.reloadResourcesText();
         }
     }
 
-    private void reassign(WithAssociatedEntity e) {
-        Date previousBeginDate = e.ganntTask.getBeginDate();
-        long previousLength = e.ganntTask.getLengthMilliseconds();
-        reassign(e.domainEntity);
-        e.ganntTask.fireChangesForPreviousValues(previousBeginDate,
-                previousLength);
-        e.ganntTask.reloadResourcesText();
+    private IOnTransaction<Void> reassignmentTransaction(
+            final WithAssociatedEntity withAssociatedEntity) {
+        return new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                reattach(withAssociatedEntity);
+                reassign(withAssociatedEntity.domainEntity);
+                return null;
+            }
+        };
     }
+
+    private void reattach(WithAssociatedEntity each) {
+        planningState.reassociateResourcesWithSession();
+        Set<Long> idsOfTypesAlreadyAttached = new HashSet<Long>();
+        taskElementDAO.reattach(each.domainEntity);
+        Set<ResourceAllocation<?>> resourceAllocations = each.domainEntity
+                .getSatisfiedResourceAllocations();
+        List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
+                GenericResourceAllocation.class, resourceAllocations);
+        reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
+                idsOfTypesAlreadyAttached, generic);
+    }
+
+    private void reattachCriterionTypesToAvoidLazyInitializationExceptionOnType(
+            Set<Long> idsOfTypesAlreadyAttached,
+            List<GenericResourceAllocation> generic) {
+        for (GenericResourceAllocation eachGenericAllocation : generic) {
+            Set<Criterion> criterions = eachGenericAllocation.getCriterions();
+            for (Criterion eachCriterion : criterions) {
+                CriterionType type = eachCriterion.getType();
+                if (!idsOfTypesAlreadyAttached.contains(type.getId())) {
+                    idsOfTypesAlreadyAttached.add(type.getId());
+                    criterionTypeDAO.reattachUnmodifiedEntity(type);
+                }
+            }
+        }
+    }
+
 
     private void reassign(TaskElement taskElement) {
         org.navalplanner.business.planner.entities.Task t = (org.navalplanner.business.planner.entities.Task) taskElement;
