@@ -32,8 +32,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
-import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -148,19 +146,8 @@ public class ReassignController extends GenericForwardComposer {
         final LocalDate associatedDate = this.associatedDate.getValue() != null ? LocalDate
                 .fromDateFields(this.associatedDate.getValue())
                 : null;
-        LongOperationFeedback.execute(window, new ILongOperation() {
-
-            @Override
-            public String getName() {
-                return _("Doing Reassignation");
-            }
-
-            @Override
-            public void doAction() throws Exception {
-                configurationResult.result(ReassignConfiguration.create(
-                        currentType, associatedDate));
-            }
-        });
+        configurationResult.result(ReassignConfiguration.create(currentType,
+                associatedDate));
     }
 
     public void cancel() {

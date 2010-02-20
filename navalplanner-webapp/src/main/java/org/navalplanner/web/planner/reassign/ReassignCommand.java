@@ -46,6 +46,12 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -84,12 +90,96 @@ public class ReassignCommand implements IReassignCommand {
                 new IConfigurationResult() {
                     @Override
                     public void result(final ReassignConfiguration configuration) {
-                        List<WithAssociatedEntity> reassignations = getReassignations(
+                        final List<WithAssociatedEntity> reassignations = getReassignations(
                                 context, configuration);
-                        doReassignations(reassignations);
-                        context.reloadCharts();
+                        LongOperationFeedback.progressive(getDesktop(context),
+                                reassignations(context, reassignations));
                     }
                 });
+    }
+
+    private IBackGroundOperation<IDesktopUpdate> reassignations(
+            final IContext<TaskElement> context,
+            final List<WithAssociatedEntity> reassignations) {
+        return new IBackGroundOperation<IDesktopUpdate>() {
+
+            @Override
+            public void doOperation(
+                    IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
+                updater.doUpdate(showStart(reassignations.size()));
+                try {
+                    doReassignations(reassignations, updater);
+                    updater.doUpdate(reloadCharts(context));
+                } finally {
+                    updater.doUpdate(showEnd());
+                }
+            }
+        };
+    }
+
+    private void doReassignations(
+            final List<WithAssociatedEntity> reassignations,
+            IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
+        int i = 1;
+        final int total = reassignations.size();
+        for (final WithAssociatedEntity each : reassignations) {
+            IDesktopUpdate notifyChanges = changesNotificatorFor(each.ganntTask);
+            transactionService
+                    .runOnReadOnlyTransaction(reassignmentTransaction(each));
+            updater.doUpdate(notifyChanges);
+            updater.doUpdate(showCompleted(i, total));
+            i++;
+        }
+    }
+
+    private IDesktopUpdate changesNotificatorFor(final Task ganttTask) {
+        final Date previousBeginDate = ganttTask.getBeginDate();
+        final long previousLength = ganttTask.getLengthMilliseconds();
+        return new IDesktopUpdate() {
+            @Override
+            public void doUpdate() {
+                ganttTask.fireChangesForPreviousValues(previousBeginDate,
+                        previousLength);
+            }
+        };
+    }
+
+    private IDesktopUpdate showStart(final int total) {
+        return new IDesktopUpdate() {
+            @Override
+            public void doUpdate() {
+                Clients.showBusy(_("Doing {0} reassignations", total), true);
+            }
+        };
+    }
+
+    private IDesktopUpdate showCompleted(final int number, final int total) {
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                Clients.showBusy(_("Done {0} of {1}", number, total), true);
+            }
+        };
+    }
+
+    private IDesktopUpdate reloadCharts(final IContext<?> context) {
+        return new IDesktopUpdate() {
+            @Override
+            public void doUpdate() {
+                context.reloadCharts();
+            }
+        };
+    }
+
+    private IDesktopUpdate showEnd() {
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                Clients.showBusy(null, false);
+            }
+        };
     }
 
     private static class WithAssociatedEntity {
@@ -128,18 +218,6 @@ public class ReassignCommand implements IReassignCommand {
             result.add(WithAssociatedEntity.create(mapper, each));
         }
         return result;
-    }
-
-    private void doReassignations(List<WithAssociatedEntity> reassignations) {
-        for (final WithAssociatedEntity each : reassignations) {
-            Date previousBeginDate = each.ganntTask.getBeginDate();
-            long previousLength = each.ganntTask.getLengthMilliseconds();
-            transactionService
-                    .runOnReadOnlyTransaction(reassignmentTransaction(each));
-            each.ganntTask.fireChangesForPreviousValues(previousBeginDate,
-                    previousLength);
-            each.ganntTask.reloadResourcesText();
-        }
     }
 
     private IOnTransaction<Void> reassignmentTransaction(
@@ -182,7 +260,6 @@ public class ReassignCommand implements IReassignCommand {
         }
     }
 
-
     private void reassign(TaskElement taskElement) {
         org.navalplanner.business.planner.entities.Task t = (org.navalplanner.business.planner.entities.Task) taskElement;
         t.reassignAllocationsWithNewResources(resourceDAO);
@@ -196,6 +273,10 @@ public class ReassignCommand implements IReassignCommand {
     @Override
     public String getImage() {
         return "/common/img/ico_reassign.png";
+    }
+
+    private Desktop getDesktop(final IContext<TaskElement> context) {
+        return context.getRelativeTo().getDesktop();
     }
 
 }
