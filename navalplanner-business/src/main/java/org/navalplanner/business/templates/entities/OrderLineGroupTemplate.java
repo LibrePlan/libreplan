@@ -190,9 +190,10 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
-        OrderLineGroup result = OrderLineGroup.create();
+        OrderLineGroup result = setupSchedulingStateType(OrderLineGroup
+                .create());
         parent.add(result);
-        return setupGroupParts(setupSchedulingStateType(result));
+        return setupGroupParts(result);
     }
 
     @Override
