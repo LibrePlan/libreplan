@@ -19,8 +19,15 @@
  */
 package org.zkoss.ganttz.util;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -31,6 +38,9 @@ import org.zkoss.zk.ui.util.Clients;
  *
  */
 public class LongOperationFeedback {
+
+    private static final Log LOG = LogFactory
+            .getLog(LongOperationFeedback.class);
 
     public interface ILongOperation {
         void doAction() throws Exception;
@@ -64,6 +74,94 @@ public class LongOperationFeedback {
     }
 
     private LongOperationFeedback() {
+    }
+
+    public interface IDesktopUpdatesEmitter<T> {
+        public void doUpdate(T value);
+    }
+
+    public interface IDesktopUpdate {
+        public void doUpdate();
+    }
+
+    public interface IBackGroundOperation<T> {
+        public void doOperation(IDesktopUpdatesEmitter<T> desktopUpdateEmitter);
+    }
+
+    private static final Executor executor = Executors.newCachedThreadPool();
+
+    /**
+     * Executes a long operation. The background operation can send
+     * {@link IDesktopUpdate} objects that can update desktop state. Trying to
+     * update the components in any other way would fail
+     */
+    public static void progressive(final Desktop desktop,
+            final IBackGroundOperation<IDesktopUpdate> operation) {
+        progressive(desktop, operation,
+                new IDesktopUpdatesEmitter<IDesktopUpdate>() {
+
+                    @Override
+                    public void doUpdate(IDesktopUpdate update) {
+                        update.doUpdate();
+                    }
+        });
+    }
+
+    /**
+     * Executes a long operation. The background operation can send
+     * <code>T</code> objects that can update desktop state. A
+     * {@link IDesktopUpdatesEmitter} that handle this objects is necessary.
+     * Trying to update the components in any other way would fail.
+     */
+    public static <T> void progressive(final Desktop desktop,
+            final IBackGroundOperation<T> operation,
+            final IDesktopUpdatesEmitter<T> emitter) {
+        desktop.enableServerPush(true);
+        executor.execute(new Runnable() {
+            public void run() {
+                try {
+                    operation.doOperation(decorateWithActivations(desktop,
+                            emitter));
+                } catch (Exception e) {
+                    LOG.error("error executing background operation", e);
+                } finally {
+                    desktop.enableServerPush(false);
+                }
+            }
+        });
+    }
+
+    private static <T> IDesktopUpdatesEmitter<T> decorateWithActivations(
+            final Desktop desktop, final IDesktopUpdatesEmitter<T> emitter) {
+        return new EmitterWithActivations<T>(desktop, emitter);
+    }
+
+    private static final class EmitterWithActivations<T> implements
+            IDesktopUpdatesEmitter<T> {
+        private final Desktop desktop;
+
+        private final IDesktopUpdatesEmitter<T> emitter;
+
+        private EmitterWithActivations(Desktop desktop,
+                IDesktopUpdatesEmitter<T> emitter) {
+            this.desktop = desktop;
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void doUpdate(T value) {
+            try {
+                Executions.activate(desktop);
+            } catch (Exception e) {
+                LOG.error("unable to access desktop", e);
+                throw new RuntimeException(e);
+            }
+            try {
+                emitter.doUpdate(value);
+            } finally {
+                Executions.deactivate(desktop);
+            }
+        }
     }
 
 }
