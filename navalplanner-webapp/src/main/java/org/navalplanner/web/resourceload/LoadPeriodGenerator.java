@@ -187,7 +187,7 @@ abstract class LoadPeriodGenerator {
         final int totalResourceWorkHours = getTotalWorkHours();
         int assigned = getHoursAssigned();
         if (totalResourceWorkHours == 0) {
-            return Integer.MAX_VALUE;
+            return assigned == 0 ? 0 : Integer.MAX_VALUE;
         }
         double proportion = assigned / (double) totalResourceWorkHours;
         return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
