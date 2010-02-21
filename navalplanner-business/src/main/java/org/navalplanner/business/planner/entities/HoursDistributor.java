@@ -20,9 +20,11 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -33,6 +35,41 @@ import org.navalplanner.business.resources.entities.Resource;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class HoursDistributor {
+
+    public interface IResourceSelector {
+        boolean isSelectable(Resource resource, LocalDate day);
+    }
+
+    private static class CompoundSelector implements IResourceSelector {
+
+        private List<IResourceSelector> selectors;
+
+        public CompoundSelector(IResourceSelector... selectors) {
+            Validate.noNullElements(selectors);
+            this.selectors = Arrays.asList(selectors);
+        }
+
+        @Override
+        public boolean isSelectable(Resource resource, LocalDate day) {
+            for (IResourceSelector each : selectors) {
+                if (!each.isSelectable(resource, day)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    private static class OnlyActive implements IResourceSelector {
+
+        @Override
+        public boolean isSelectable(Resource resource, LocalDate day) {
+            ResourceCalendar resourceCalendar = resource.getCalendar();
+            return resourceCalendar != null ? resourceCalendar.isActive(day)
+                    : true;
+        }
+    }
 
     public static class ResourceWithAssignedHours {
         public final Integer hours;
@@ -99,10 +136,21 @@ public class HoursDistributor {
 
     private final IAssignedHoursForResource assignedHoursForResource;
 
+    private final IResourceSelector resourceSelector;
+
     public HoursDistributor(List<Resource> resources,
             IAssignedHoursForResource assignedHoursForResource) {
+        this(resources, assignedHoursForResource, null);
+    }
+
+    public HoursDistributor(List<Resource> resources,
+            IAssignedHoursForResource assignedHoursForResource,
+            IResourceSelector selector) {
         this.resources = ResourceWithDerivedData.from(resources);
         this.assignedHoursForResource = assignedHoursForResource;
+        this.resourceSelector = selector != null ? new CompoundSelector(
+                new OnlyActive(), selector)
+                : new OnlyActive();
     }
 
 
@@ -120,16 +168,11 @@ public class HoursDistributor {
     private List<ResourceWithDerivedData> resourcesAssignableAt(LocalDate day) {
         List<ResourceWithDerivedData> result = new ArrayList<ResourceWithDerivedData>();
         for (ResourceWithDerivedData each : resources) {
-            if (isActiveAt(day, each)) {
+            if (resourceSelector.isSelectable(each.resource, day)) {
                 result.add(each);
             }
         }
         return result;
-    }
-
-    private boolean isActiveAt(LocalDate day, ResourceWithDerivedData each) {
-        ResourceCalendar resourceCalendar = each.resource.getCalendar();
-        return resourceCalendar != null ? resourceCalendar.isActive(day) : true;
     }
 
     private static final ResourcesPerDay ONE = ResourcesPerDay.amount(1);
