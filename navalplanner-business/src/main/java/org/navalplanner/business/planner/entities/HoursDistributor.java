@@ -44,37 +44,7 @@ public class HoursDistributor {
         }
     }
 
-    private final List<Resource> resources;
-
-    private final List<IWorkHours> workHours;
-
-    private final List<Integer> capacities;
-
-    private final IAssignedHoursForResource assignedHoursForResource;
-
-    public HoursDistributor(List<Resource> resources,
-            IAssignedHoursForResource assignedHoursForResource) {
-        this.resources = resources;
-        this.assignedHoursForResource = assignedHoursForResource;
-        this.workHours = new ArrayList<IWorkHours>();
-        for (Resource resource : resources) {
-            this.workHours.add(generateWorkHoursFor(resource));
-        }
-        this.capacities = new ArrayList<Integer>();
-        for (Resource resource : resources) {
-            this.capacities.add(getCapacityFor(resource));
-        }
-    }
-
-    private Integer getCapacityFor(Resource resource) {
-        if (resource.getCalendar() != null) {
-            return resource.getCalendar().getCapacity();
-        } else {
-            return 1;
-        }
-    }
-
-    private final IWorkHours generateWorkHoursFor(Resource resource) {
+    private static final IWorkHours generateWorkHoursFor(Resource resource) {
         if (resource.getCalendar() != null) {
             return resource.getCalendar();
         } else {
@@ -82,13 +52,67 @@ public class HoursDistributor {
         }
     }
 
+    private static int getCapacityFor(Resource resource) {
+        if (resource.getCalendar() != null) {
+            return resource.getCalendar().getCapacity();
+        } else {
+            return 1;
+        }
+    }
+
+    private static class ResourceWithDerivedData {
+
+        public static List<ResourceWithDerivedData> from(
+                List<Resource> resources) {
+            List<ResourceWithDerivedData> result = new ArrayList<ResourceWithDerivedData>();
+            for (Resource each : resources) {
+                result.add(new ResourceWithDerivedData(each));
+            }
+            return result;
+        }
+
+        public static List<Resource> resources(
+                List<ResourceWithDerivedData> resources) {
+            List<Resource> result = new ArrayList<Resource>();
+            for (ResourceWithDerivedData each : resources) {
+                result.add(each.resource);
+            }
+            return result;
+        }
+
+        public final Resource resource;
+
+        public final int capacityUnits;
+
+        public final IWorkHours workHours;
+
+        public ResourceWithDerivedData(Resource resource) {
+            this.resource = resource;
+            this.capacityUnits = getCapacityFor(resource);
+            this.workHours = generateWorkHoursFor(resource);
+        }
+
+    }
+
+    private final List<ResourceWithDerivedData> resources;
+
+    private final IAssignedHoursForResource assignedHoursForResource;
+
+    public HoursDistributor(List<Resource> resources,
+            IAssignedHoursForResource assignedHoursForResource) {
+        this.resources = ResourceWithDerivedData.from(resources);
+        this.assignedHoursForResource = assignedHoursForResource;
+    }
+
+
     public List<ResourceWithAssignedHours> distributeForDay(LocalDate day,
             int totalHours) {
-        List<ShareSource> shares = divisionAt(day);
+        List<ShareSource> shares = divisionAt(resources, day);
         ShareDivision currentDivision = ShareSource.all(shares);
         ShareDivision newDivison = currentDivision.plus(totalHours);
         int[] differences = currentDivision.to(newDivison);
-        return ShareSource.hoursForEachResource(shares, differences, resources);
+        return ShareSource.hoursForEachResource(shares, differences,
+                ResourceWithDerivedData.resources(resources));
     }
 
     private static final ResourcesPerDay ONE = ResourcesPerDay.amount(1);
@@ -137,16 +161,17 @@ public class HoursDistributor {
 
     }
 
-    public List<ShareSource> divisionAt(LocalDate day) {
+    public List<ShareSource> divisionAt(
+            List<ResourceWithDerivedData> resources, LocalDate day) {
         List<ShareSource> result = new ArrayList<ShareSource>();
         for (int i = 0; i < resources.size(); i++) {
             List<Share> shares = new ArrayList<Share>();
-            Resource resource = resources.get(i);
-            IWorkHours workHoursForResource = workHours.get(i);
+            Resource resource = resources.get(i).resource;
+            IWorkHours workHoursForResource = resources.get(i).workHours;
             int alreadyAssignedHours = assignedHoursForResource
                     .getAssignedHoursAt(resource, day);
             Integer capacityEachOne = workHoursForResource.toHours(day, ONE);
-            final int capacityUnits = capacities.get(i);
+            final int capacityUnits = resources.get(i).capacityUnits;
             assert capacityUnits >= 1;
             final int assignedForEach = alreadyAssignedHours / capacityUnits;
             final int remainder = alreadyAssignedHours % capacityUnits;
