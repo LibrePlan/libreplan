@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
 
@@ -56,6 +57,11 @@ public enum DependencyType {
             return Collections.emptyList();
         }
 
+        @Override
+        public PointType getPointModified() {
+            return PointType.NONE;
+        }
+
     },
     END_START {
         @Override
@@ -77,6 +83,11 @@ public enum DependencyType {
         @Override
         public List<Constraint<Date>> getEndConstraints(Task source) {
             return Collections.emptyList();
+        }
+
+        @Override
+        public PointType getPointModified() {
+            return PointType.BOTH;
         }
 
     },
@@ -101,6 +112,11 @@ public enum DependencyType {
         public List<Constraint<Date>> getStartConstraints(Task source) {
             return Collections.singletonList(biggerThanTaskStartDate(source));
         }
+
+        @Override
+        public PointType getPointModified() {
+            return PointType.BOTH;
+        }
     },
     END_END {
 
@@ -122,6 +138,11 @@ public enum DependencyType {
         @Override
         public List<Constraint<Date>> getStartConstraints(Task source) {
             return Collections.emptyList();
+        }
+
+        @Override
+        public PointType getPointModified() {
+            return PointType.END;
         }
     };
 
@@ -150,4 +171,6 @@ public enum DependencyType {
     public abstract List<Constraint<Date>> getStartConstraints(Task source);
 
     public abstract List<Constraint<Date>> getEndConstraints(Task source);
+
+    abstract PointType getPointModified();
 }

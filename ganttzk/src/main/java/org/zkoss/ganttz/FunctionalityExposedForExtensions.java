@@ -337,7 +337,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     private boolean canAddDependency(Dependency dependency) {
-        return adapter.canAddDependency(toDomainDependency(dependency));
+        return diagramGraph.doesNotProvokeLoop(dependency)
+                && adapter.canAddDependency(toDomainDependency(dependency));
     }
 
     private DependencyList getDependencyList() {

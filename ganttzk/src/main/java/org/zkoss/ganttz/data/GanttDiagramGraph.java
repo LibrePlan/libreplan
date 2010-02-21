@@ -28,11 +28,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
@@ -483,6 +487,109 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
             return container.getTasks().contains(task);
         }
         return false;
+    }
+
+    public boolean doesNotProvokeLoop(Dependency dependency) {
+        Set<TaskPoint> reachableFromDestination = getReachableFrom(dependency
+                .getDestinationPoint());
+        for (TaskPoint each : reachableFromDestination) {
+            if (each.sendsModificationsThrough(dependency)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * It indicates if the task is modified both the start and end, only the end
+     * property or none of the properties
+     * @author Óscar González Fernández <ogonzalez@igalia.com>
+     */
+    enum PointType {
+        BOTH, END, NONE;
+
+        public boolean sendsModificationsThrough(DependencyType type) {
+            switch (this) {
+            case NONE:
+                return false;
+            case BOTH:
+                return true;
+            case END:
+                return type == DependencyType.END_END || type == DependencyType.END_START;
+            default:
+                throw new RuntimeException("unexpected value: " + this);
+            }
+        }
+    }
+
+    static class TaskPoint {
+
+        public static TaskPoint both(Task task){
+            return new TaskPoint(task, PointType.BOTH);
+        }
+
+        public static TaskPoint endOf(Task task) {
+            return new TaskPoint(task, PointType.END);
+        }
+
+        final Task task;
+
+        final PointType pointType;
+
+        TaskPoint(Task task, PointType pointType) {
+            this.task = task;
+            this.pointType = pointType;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof TaskPoint) {
+                TaskPoint other = (TaskPoint) obj;
+                return new EqualsBuilder().append(task, other.task).append(
+                        pointType, other.pointType).isEquals();
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder().append(task).append(pointType).toHashCode();
+        }
+
+        public boolean sendsModificationsThrough(Dependency dependency) {
+            DependencyType type = dependency.getType();
+            return dependency.getSource().equals(task)
+                    && pointType.sendsModificationsThrough(type);
+        }
+    }
+
+    private Set<TaskPoint> getReachableFrom(TaskPoint task) {
+        Set<TaskPoint> result = new HashSet<TaskPoint>();
+        Queue<TaskPoint> pending = new LinkedList<TaskPoint>();
+        result.add(task);
+        pending.offer(task);
+        while (!pending.isEmpty()) {
+            TaskPoint current = pending.poll();
+            Set<TaskPoint> immendiate = getImmendiateReachableFrom(current);
+            for (TaskPoint each : immendiate) {
+                if (!result.contains(each)) {
+                    result.add(each);
+                    pending.offer(each);
+                }
+            }
+        }
+        return result;
+    }
+
+    private Set<TaskPoint> getImmendiateReachableFrom(TaskPoint current) {
+        Set<TaskPoint> result = new HashSet<TaskPoint>();
+        Set<Dependency> outgoingEdgesOf = graph.outgoingEdgesOf(current.task);
+        for (Dependency each : outgoingEdgesOf) {
+            if (current.sendsModificationsThrough(each)) {
+                result.add(each.getDestinationPoint());
+            }
+        }
+        return result;
     }
 
 }
