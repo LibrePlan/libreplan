@@ -133,7 +133,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         for (AggregatedHoursGroup each : hoursGroups) {
             hours[i++] = each.getHours();
             List<Resource> resourcesFound = resourceDAO
-                    .findAllSatisfyingCriterions(each.getCriterions());
+                    .findSatisfyingCriterionsAtSomePoint(each.getCriterions());
             allocationRowsHandler.addGeneric(each.getCriterions(),
                     reloadResources(resourcesFound), each.getHours());
         }
@@ -264,7 +264,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 List<Resource> allSatisfyingCriterions;
                 if (!requiredCriterions.isEmpty()) {
                     allSatisfyingCriterions = resourceDAO
-                            .findAllSatisfyingCriterions(requiredCriterions);
+                            .findSatisfyingCriterionsAtSomePoint(requiredCriterions);
                 } else {
                     allSatisfyingCriterions = new ArrayList<Resource>();
                 }

@@ -48,7 +48,7 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
     /**
      * Returns all {@link Resource} which satisfy a set of {@link Criterion}
      */
-    List<Resource> findAllSatisfyingCriterions(Collection<? extends Criterion> criterions);
+    List<Resource> findSatisfyingCriterionsAtSomePoint(Collection<? extends Criterion> criterions);
 
     List<Resource> findResourcesRelatedTo(List<Task> tasks);
 

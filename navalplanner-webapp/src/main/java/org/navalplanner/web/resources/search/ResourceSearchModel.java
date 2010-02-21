@@ -99,7 +99,7 @@ public class ResourceSearchModel implements IResourceSearchModel {
         Set<Resource> resourcesMatchingCriterions = null;
         if (!criterions.isEmpty()) {
             resourcesMatchingCriterions = new HashSet<Resource>(resourceDAO
-                    .findAllSatisfyingCriterions(criterions));
+                    .findSatisfyingCriterionsAtSomePoint(criterions));
             if (resourcesMatchingCriterions.isEmpty()) {
                 return new ArrayList<Resource>();
             }

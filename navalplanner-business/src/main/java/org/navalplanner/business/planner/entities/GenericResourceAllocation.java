@@ -277,7 +277,7 @@ public class GenericResourceAllocation extends
 
     @Override
     public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
-        return resourceDAO.findAllSatisfyingCriterions(getCriterions());
+        return resourceDAO.findSatisfyingCriterionsAtSomePoint(getCriterions());
     }
 
 }

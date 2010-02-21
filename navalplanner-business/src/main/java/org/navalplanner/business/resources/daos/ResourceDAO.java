@@ -81,15 +81,14 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     }
 
     @Override
-    public List<Resource> findAllSatisfyingCriterions(
+    public List<Resource> findSatisfyingCriterionsAtSomePoint(
             Collection<? extends Criterion> criterions) {
         Validate.notNull(criterions);
         Validate.noNullElements(criterions);
         if (criterions.isEmpty()) {
             return list(Resource.class);
         }
-        return selectSatisfiyingAllCriterions(
-                findRelatedWithSomeOfTheCriterions(criterions), criterions);
+        return findRelatedWithSomeOfTheCriterions(criterions);
     }
 
     @SuppressWarnings("unchecked")
