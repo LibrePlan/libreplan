@@ -157,7 +157,7 @@ public class GenericResourceAllocationTest {
 
     private void givenWorkersWithLoads(int hours1, int hours2, int hours3) {
         ResourceCalendar[] calendars;
-        if(workerCalendars ==null){
+        if (workerCalendars == null) {
             calendars = new ResourceCalendar[] { null, null, null };
         } else {
             calendars = new ResourceCalendar[] { workerCalendars.get(0),
@@ -186,6 +186,8 @@ public class GenericResourceAllocationTest {
                 hoursPerDay).anyTimes();
         expect(baseCalendar.getCapacityAt(isA(LocalDate.class))).andReturn(
                 hoursPerDay).anyTimes();
+        expect(baseCalendar.isActive(isA(LocalDate.class))).andReturn(true)
+                .anyTimes();
         expect(
                 baseCalendar.toHours(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andAnswer(
@@ -519,6 +521,8 @@ public class GenericResourceAllocationTest {
                 capacity * unit).anyTimes();
         expect(calendar.toHours(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andReturn(unit).anyTimes();
+        expect(calendar.isActive(isA(LocalDate.class))).andReturn(true)
+                .anyTimes();
         expect(calendar.getCapacity()).andReturn(capacity).anyTimes();
         replay(calendar);
         return calendar;

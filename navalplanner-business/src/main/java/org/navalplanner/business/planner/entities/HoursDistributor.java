@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -107,12 +108,28 @@ public class HoursDistributor {
 
     public List<ResourceWithAssignedHours> distributeForDay(LocalDate day,
             int totalHours) {
-        List<ShareSource> shares = divisionAt(resources, day);
+        List<ResourceWithDerivedData> resourcesAssignable = resourcesAssignableAt(day);
+        List<ShareSource> shares = divisionAt(resourcesAssignable, day);
         ShareDivision currentDivision = ShareSource.all(shares);
         ShareDivision newDivison = currentDivision.plus(totalHours);
         int[] differences = currentDivision.to(newDivison);
         return ShareSource.hoursForEachResource(shares, differences,
-                ResourceWithDerivedData.resources(resources));
+                ResourceWithDerivedData.resources(resourcesAssignable));
+    }
+
+    private List<ResourceWithDerivedData> resourcesAssignableAt(LocalDate day) {
+        List<ResourceWithDerivedData> result = new ArrayList<ResourceWithDerivedData>();
+        for (ResourceWithDerivedData each : resources) {
+            if (isActiveAt(day, each)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    private boolean isActiveAt(LocalDate day, ResourceWithDerivedData each) {
+        ResourceCalendar resourceCalendar = each.resource.getCalendar();
+        return resourceCalendar != null ? resourceCalendar.isActive(day) : true;
     }
 
     private static final ResourcesPerDay ONE = ResourcesPerDay.amount(1);
