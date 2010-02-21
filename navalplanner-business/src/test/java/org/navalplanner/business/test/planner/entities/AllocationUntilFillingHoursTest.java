@@ -29,6 +29,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -39,6 +40,7 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -199,6 +201,8 @@ public class AllocationUntilFillingHoursTest {
         }
         expect(task.getStartDate()).andReturn(
                 startDate.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getCriterions()).andReturn(
+                Collections.<Criterion> emptySet()).anyTimes();
         replay(task);
     }
 

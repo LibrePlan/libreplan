@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.entities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,11 +33,14 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.planner.entities.HoursDistributor.IResourceSelector;
 import org.navalplanner.business.planner.entities.HoursDistributor.ResourceWithAssignedHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionCompounder;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -129,13 +133,31 @@ public class GenericResourceAllocation extends
         return Collections.unmodifiableSet(criterions);
     }
 
+    private static Date toDate(LocalDate day) {
+        return day.toDateTimeAtStartOfDay().toDate();
+    }
+
+    private final class ResourcesSatisfyingCriterionsSelector implements
+            IResourceSelector {
+
+        @Override
+        public boolean isSelectable(Resource resource, LocalDate day) {
+            ICriterion compoundCriterion = CriterionCompounder.buildAnd(
+                    criterions).getResult();
+            return compoundCriterion.isSatisfiedBy(resource, toDate(day),
+                    toDate(day.plusDays(1)));
+        }
+    }
+
     private class GenericAllocation extends AssignmentsAllocation {
+
 
         private HoursDistributor hoursDistributor;
 
         public GenericAllocation(List<Resource> resources) {
             hoursDistributor = new HoursDistributor(resources,
-                    getAssignedHoursForResource());
+                    getAssignedHoursForResource(),
+                    new ResourcesSatisfyingCriterionsSelector());
         }
 
         @Override

@@ -110,12 +110,20 @@ public class GenericResourceAllocationTest {
     private Set<Criterion> givenPredefinedCriterions() {
         Set<Criterion> result = new HashSet<Criterion>();
         Criterion criterion1 = createNiceMock(Criterion.class);
+        setupIsSatisfiedByAll(criterion1);
         Criterion criterion2 = createNiceMock(Criterion.class);
+        setupIsSatisfiedByAll(criterion2);
         replay(criterion1, criterion2);
         result.add(criterion1);
         result.add(criterion2);
         this.criterions = result;
         return result;
+    }
+
+    private void setupIsSatisfiedByAll(Criterion criterion) {
+        expect(
+                criterion.isSatisfiedBy(isA(Resource.class), isA(Date.class),
+                        isA(Date.class))).andReturn(true).anyTimes();
     }
 
     private void givenWorkersWithoutLoadAndWithoutCalendar() {
