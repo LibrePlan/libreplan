@@ -53,7 +53,7 @@
                      <rows>
                          <row>
                              <label value="${i18n:_('Reference date:')}" />
-                             <datebox id="referenceDate" />
+                             <datebox id="referenceDate" onCreate="self.value = new Date()"/>
                          </row>
                      </rows>
                  </grid>
