@@ -918,7 +918,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 Timebox timeFinish = (Timebox) getTimeboxFinish(row);
                 timeFinish.setFocus(true);
                 timeFinish.select();
-                timeStart.setFocus(true);
                 timeStart.select();
             }
         });
@@ -926,11 +925,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         timeStart.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                reloadWorkReportLines();
+                Timebox timeFinish = (Timebox) getTimeboxFinish(row);
+                checkCannotBeHigher(timeStart, timeFinish);
+                updateNumHours(row);
             }
         });
 
         row.appendChild(timeStart);
+    }
+
+    private void updateNumHours(final Row row) {
+        WorkReportLine line = (WorkReportLine) row.getValue();
+        Intbox txtHours = getIntboxHours(row);
+        txtHours.setValue(line.getNumHours());
+        txtHours.invalidate();
     }
 
     private void appendHourFinish(final Row row) {
@@ -965,8 +973,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 Timebox timeStart = (Timebox) getTimeboxStart(row);
                 timeStart.setFocus(true);
                 timeStart.select();
-
-                timeFinish.setFocus(true);
                 timeFinish.select();
             }
         });
@@ -974,11 +980,28 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         timeFinish.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                reloadWorkReportLines();
+                Timebox timeStart = (Timebox) getTimeboxStart(row);
+                checkCannotBeHigher(timeStart, timeFinish);
+                updateNumHours(row);
+
             }
         });
 
         row.appendChild(timeFinish);
+    }
+
+    public void checkCannotBeHigher(Timebox starting, Timebox ending) {
+        starting.clearErrorMessage(true);
+        ending.clearErrorMessage(true);
+
+        final Date startingDate = (Date) starting.getValue();
+        final Date endingDate = (Date) ending.getValue();
+
+        if (endingDate != null && startingDate != null
+                && startingDate.compareTo(endingDate) > 0) {
+            throw new WrongValueException(starting,
+                    _("Cannot be higher than finish hour"));
+        }
     }
 
     /**
