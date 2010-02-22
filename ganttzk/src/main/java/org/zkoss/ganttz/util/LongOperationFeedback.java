@@ -84,6 +84,18 @@ public class LongOperationFeedback {
         public void doUpdate();
     }
 
+    public static IDesktopUpdate and(final IDesktopUpdate... desktopUpdates) {
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                for (IDesktopUpdate each : desktopUpdates) {
+                    each.doUpdate();
+                }
+            }
+        };
+    }
+
     public interface IBackGroundOperation<T> {
         public void doOperation(IDesktopUpdatesEmitter<T> desktopUpdateEmitter);
     }

@@ -20,6 +20,7 @@
 package org.navalplanner.web.planner.reassign;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.zkoss.ganttz.util.LongOperationFeedback.and;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,9 +110,8 @@ public class ReassignCommand implements IReassignCommand {
                 updater.doUpdate(showStart(reassignations.size()));
                 try {
                     doReassignations(reassignations, updater);
-                    updater.doUpdate(reloadCharts(context));
                 } finally {
-                    updater.doUpdate(showEnd());
+                    updater.doUpdate(and(reloadCharts(context), showEnd()));
                 }
             }
         };
@@ -128,6 +128,7 @@ public class ReassignCommand implements IReassignCommand {
                     .runOnReadOnlyTransaction(reassignmentTransaction(each));
             updater.doUpdate(notifyChanges);
             updater.doUpdate(showCompleted(i, total));
+            updater.doUpdate(and(notifyChanges, showCompleted(i, total)));
             i++;
         }
     }
