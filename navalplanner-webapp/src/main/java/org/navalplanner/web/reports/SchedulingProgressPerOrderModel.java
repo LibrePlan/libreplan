@@ -180,7 +180,11 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
                     .add(new SchedulingProgressPerOrderDTO(each, tasks,
                             advanceType, referenceDate));
         }
+        if (schedulingProgressPerOrderList.isEmpty()) {
+            return new JREmptyDataSource();
+        }
         return new JRBeanCollectionDataSource(schedulingProgressPerOrderList);
+
     }
 
     @Override
