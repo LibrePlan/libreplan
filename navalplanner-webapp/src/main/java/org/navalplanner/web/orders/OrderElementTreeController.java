@@ -65,7 +65,6 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -618,7 +617,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public void showEditionOrderElement(final Treeitem item) {
         OrderElement currentOrderElement = (OrderElement) item.getValue();
-        markModifiedTreeitem((Treerow) item.getFirstChild());
+        markModifiedTreeitem(item.getTreerow());
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
