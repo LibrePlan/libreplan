@@ -12,7 +12,7 @@
     <label value="${i18n:_('name')}"/>
     <textbox id="filterNameOrderElement" width="50px"
         onOK="treeController.onApplyFilter()" />
-    <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+    <button image="/common/img/ico_filter.png" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to order elements satisfying required critera')}"
         onClick="treeController.onApplyFilter()"/>
 </hbox>

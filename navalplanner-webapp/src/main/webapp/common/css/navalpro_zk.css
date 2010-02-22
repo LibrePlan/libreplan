@@ -218,7 +218,7 @@ button.z-button {
 
 .planner-command.clicked .z-button-cm {
     background-color: #A1D586; /* green2 (active background)*/
-    border-right: 1px solid #439e32;
+    border-right: 0px;
     border-bottom: 1px solid #439e32;
     border-top: 2px solid #3f5917;
     border-left: 2px solid #3f5917;
@@ -1181,3 +1181,22 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 .help-tooltip {
     cursor: help;
 }
+
+
+.toolbar-box .z-button-cm  {
+    background-color: transparent;
+    border-color:transparent;
+}
+
+.toolbar-box .z-button-cm:hover  {
+    background-color: #E6F2F9;
+    border-color:#006699 #DFF5FE #DFF5FE #006699;
+}
+
+.toolbar-box {
+    background:transparent url(/navalplanner-webapp/zkau/web/zkex/zul/img/layout/borderlayout-hm.png) repeat-x scroll 0 0;
+    border-bottom:1px solid #9ECAD8;
+    font-size:11px;
+}
+
+

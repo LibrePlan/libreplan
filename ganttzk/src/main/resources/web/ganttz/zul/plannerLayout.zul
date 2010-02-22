@@ -5,8 +5,8 @@ planner = self;
 </zscript>
 
     <borderlayout sclass="plannerlayout" width="auto">
-       <north height="30px" border="0">
-       <hbox align="center" id="toolbar" sclass="toolbar-box">
+       <north height="30px" border="0" sclass="toolbar-box">
+       <hbox align="center" id="toolbar">
         <separator/>
         <!--  Commands -->
         <button onClick="planner.invalidate()"
