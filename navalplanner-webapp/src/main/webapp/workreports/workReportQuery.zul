@@ -42,26 +42,8 @@
           <autocomplete id="filterResource" buttonVisible="true"
                finder="ResourceFinder"/>
           <label value="${i18n:_('order element :')}"/>
-          <bandbox id="bandboxFilterOrderElement">
-            <bandpopup>
-                <listbox id="filterOrderElement" width="750px" fixedLayout="true"
-                    model="@{controller.orderElements}"
-                    onSelect="controller.setFilterOrderElement(event)">
-                        <listhead>
-                            <listheader label="${i18n:_('Order')}"/>
-                            <listheader label="${i18n:_('Order code')}"/>
-                            <listheader label="${i18n:_('Order element')}"/>
-                            <listheader label="${i18n:_('Order element code')}"/>
-                        </listhead>
-                        <listitem self="@{each='orderElement'}" value="@{orderElement}">
-                            <listcell label="@{orderElement.order.name}"/>
-                            <listcell label="@{orderElement.order.code}"/>
-                            <listcell label="@{orderElement.name}"/>
-                            <listcell label="@{orderElement.code}"/>
-                        </listitem>
-                </listbox>
-            </bandpopup>
-          </bandbox>
+          <bandboxSearch id="bandboxFilterOrderElement" widthBandbox="285px" widthListbox="700px"
+              finder="OrderElementBandboxFinder" model="@{controller.orderElements}"/>
           <label value="${i18n:_('from')}"/>
           <datebox id="filterStartDateLine" constraint = "@{controller.checkConstraintStartDateLine}"/>
           <label value="${i18n:_('to')}"/>

@@ -62,7 +62,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
@@ -151,9 +150,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDateLine;
 
-    private Bandbox bandboxFilterOrderElement;
-
-    private Listbox filterOrderElement;
+    private BandboxSearch bandboxFilterOrderElement;
 
     private Autocomplete filterHoursType;
 
@@ -593,9 +590,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         filterStartDateLine = (Datebox) window.getFellow("filterStartDateLine");
         filterFinishDateLine = (Datebox) window
                 .getFellow("filterFinishDateLine");
-        bandboxFilterOrderElement = (Bandbox) window
+        bandboxFilterOrderElement = (BandboxSearch) window
                 .getFellow("bandboxFilterOrderElement");
-        filterOrderElement = (Listbox) window.getFellow("filterOrderElement");
         filterHoursType = (Autocomplete) window.getFellow("filterHoursType");
         clearFilterDatesLines();
     }
@@ -1456,12 +1452,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public OrderElement getSelectedOrderElement() {
-        String code = this.bandboxFilterOrderElement.getValue();
-        if ((code != null) && (!code.isEmpty())) {
+        OrderElement orderElement = (OrderElement) this.bandboxFilterOrderElement
+                .getSelectedElement();
+        if ((orderElement != null)
+                && ((orderElement.getCode() != null) && (!orderElement
+                        .getCode().isEmpty()))) {
             try {
-                return workReportModel.findOrderElement(code);
+                return workReportModel.findOrderElement(orderElement.getCode());
             } catch (InstanceNotFoundException e) {
-                throw new WrongValueException(filterOrderElement,
+                throw new WrongValueException(bandboxFilterOrderElement,
                         _("OrderElement not found"));
             }
         }
@@ -1487,8 +1486,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void clearFilterDatesLines() {
         filterResource.setValue(null);
-        bandboxFilterOrderElement.setValue("");
-        filterOrderElement.clearSelection();
+        bandboxFilterOrderElement.clear();
         filterStartDateLine.setValue(null);
         filterFinishDateLine.setValue(null);
         filterHoursType.setValue(null);
@@ -1569,14 +1567,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             goToCreateForm(workReportModel.getWorkReportType());
             cameBackList = true;
         }
-    }
-
-    public void setFilterOrderElement(Event event) throws Exception {
-        Listbox listbox = (Listbox) event.getTarget();
-        OrderElement orderElement = (OrderElement) listbox.getSelectedItem()
-                .getValue();
-        bandboxFilterOrderElement.setValue(orderElement.getCode());
-        bandboxFilterOrderElement.setOpen(false);
     }
 
 }
