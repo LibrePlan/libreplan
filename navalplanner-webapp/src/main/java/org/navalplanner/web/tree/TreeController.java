@@ -180,6 +180,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
         Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
+
+        if (hours.getValue() == null) {
+            hours.setValue(0);
+        }
+
         // Parse hours
         try {
             if (tree.getSelectedCount() == 1) {
