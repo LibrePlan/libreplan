@@ -46,6 +46,8 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
+import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.ICriterionRequirable;
 import org.navalplanner.business.orders.entities.InfoComponent;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -55,6 +57,9 @@ import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedLis
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.trees.ITreeNode;
 
 /**
@@ -62,10 +67,34 @@ import org.navalplanner.business.trees.ITreeNode;
  *
  */
 public abstract class OrderElementTemplate extends BaseEntity implements
-        ITreeNode<OrderElementTemplate> {
+        ICriterionRequirable, ITreeNode<OrderElementTemplate> {
 
     private static final Log LOG = LogFactory
             .getLog(OrderElementTemplate.class);
+
+    private SchedulingState.Type schedulingStateType;
+
+    private InfoComponent infoComponent;
+
+    private Integer startAsDaysFromBeginning;
+
+    private Integer deadlineAsDaysFromBeginning;
+
+    private OrderLineGroupTemplate parent;
+
+    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
+
+    private Set<MaterialAssignmentTemplate> materialAssignments = new HashSet<MaterialAssignmentTemplate>();
+
+    private Set<Label> labels = new HashSet<Label>();
+
+    private Set<QualityForm> qualityForms = new HashSet<QualityForm>();
+
+    private Set<AdvanceAssignmentTemplate> advanceAssignmentTemplates = new HashSet<AdvanceAssignmentTemplate>();
+
+    private SchedulingState schedulingState;
+
+    private OrderElement origin;
 
     public static <T extends OrderElementTemplate> T create(T beingBuilt,
             OrderElement origin) {
@@ -77,6 +106,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 .getDeadline());
         beingBuilt.materialAssignments = copyMaterialAssignmentsFrom(beingBuilt, origin
                 .getMaterialAssignments());
+        beingBuilt.criterionRequirements = copyDirectCriterionRequirements(
+                beingBuilt, origin.getDirectCriterionRequirement());
         beingBuilt.labels = new HashSet<Label>(origin.getLabels());
         beingBuilt.qualityForms = origin.getQualityForms();
         beingBuilt.advanceAssignmentTemplates = copyDirectAdvanceAssignments(
@@ -84,7 +115,30 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         beingBuilt.infoComponent = infoComponentCopied;
         beingBuilt.schedulingStateType = origin.getSchedulingStateType();
         assignDates(beingBuilt, fromBeginningToStart, fromBeginningToEnd);
+        beingBuilt.origin = origin;
         return create(beingBuilt);
+    }
+
+    /**
+     *
+     * Copy only {@link DirectCriterionRequirement}
+     *
+     * @param beingBuilt
+     * @param criterionRequirements
+     * @return
+     */
+    private static Set<CriterionRequirement> copyDirectCriterionRequirements(OrderElementTemplate beingBuilt,
+            Collection<DirectCriterionRequirement> criterionRequirements) {
+        Set<CriterionRequirement> result = new HashSet<CriterionRequirement>();
+
+        for (DirectCriterionRequirement each: criterionRequirements) {
+            final DirectCriterionRequirement directCriterionRequirement = (DirectCriterionRequirement) each;
+            DirectCriterionRequirement newDirectCriterionRequirement = DirectCriterionRequirement
+                    .copyFrom(directCriterionRequirement, beingBuilt);
+
+            result.add(newDirectCriterionRequirement);
+        }
+        return result;
     }
 
     private static Set<AdvanceAssignmentTemplate> copyDirectAdvanceAssignments(
@@ -142,6 +196,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
         setupInfoComponent(orderElement);
         setupDates(orderElement);
+        setupCriterionRequirements(orderElement);
         setupMaterialAssignments(orderElement);
         setupLabels(orderElement);
         setupQualityForms(orderElement);
@@ -175,6 +230,13 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     private Date plusDays(Date date, Integer days) {
         LocalDate localDate = new LocalDate(date);
         return localDate.plusDays(days).toDateTimeAtStartOfDay().toDate();
+    }
+
+    private void setupCriterionRequirements(OrderElement orderElement) {
+        for (DirectCriterionRequirement each : getDirectCriterionRequirements()) {
+            orderElement.addCriterionRequirement(DirectCriterionRequirement
+                    .copyFrom(each, orderElement));
+        }
     }
 
     private void setupMaterialAssignments(OrderElement orderElement) {
@@ -211,26 +273,6 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public abstract OrderElement createElement();
 
     public abstract OrderElement createElement(OrderLineGroup parent);
-
-    private SchedulingState.Type schedulingStateType;
-
-    private InfoComponent infoComponent;
-
-    private Integer startAsDaysFromBeginning;
-
-    private Integer deadlineAsDaysFromBeginning;
-
-    private OrderLineGroupTemplate parent;
-
-    private Set<MaterialAssignmentTemplate> materialAssignments = new HashSet<MaterialAssignmentTemplate>();
-
-    private Set<Label> labels = new HashSet<Label>();
-
-    private Set<QualityForm> qualityForms = new HashSet<QualityForm>();
-
-    private Set<AdvanceAssignmentTemplate> advanceAssignmentTemplates = new HashSet<AdvanceAssignmentTemplate>();
-
-    private SchedulingState schedulingState;
 
     public SchedulingState getSchedulingState() {
         if (schedulingState == null) {
@@ -425,10 +467,114 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 return template.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
-            } catch (NonUniqueResultException e) {
+            }
+            catch (NonUniqueResultException e) {
                 return false;
             }
         }
+    }
+
+    public List<OrderElementTemplate> getAllChildren() {
+        List<OrderElementTemplate> children = getChildrenTemplates();
+        List<OrderElementTemplate> result = new ArrayList<OrderElementTemplate>();
+        for (OrderElementTemplate orderElement : children) {
+            result.add(orderElement);
+            result.addAll(orderElement.getAllChildren());
+        }
+        return result;
+    }
+
+    @Valid
+    @Override
+    public Set<CriterionRequirement> getCriterionRequirements() {
+        return Collections.unmodifiableSet(criterionRequirements);
+    }
+
+    public abstract List<HoursGroup> getHoursGroups();
+
+    public abstract Integer getWorkHours();
+
+    /**
+     * Operations for manipulating CriterionRequirement
+     */
+
+    protected CriterionRequirementTemplateHandler criterionRequirementHandler =
+        CriterionRequirementTemplateHandler.getInstance();
+
+    public void setValidCriterionRequirement(IndirectCriterionRequirement requirement, boolean valid){
+        requirement.setValid(valid);
+        criterionRequirementHandler.propagateValidCriterionRequirement(this,
+                requirement.getParent(), valid);
+    }
+
+    public void removeDirectCriterionRequirement(DirectCriterionRequirement criterionRequirement){
+        criterionRequirementHandler.propagateRemoveCriterionRequirement(this,
+                criterionRequirement);
+        removeCriterionRequirement(criterionRequirement);
+
+    }
+
+    protected void removeCriterionRequirement(CriterionRequirement requirement) {
+        criterionRequirements.remove(requirement);
+        if (requirement instanceof IndirectCriterionRequirement) {
+            ((IndirectCriterionRequirement)requirement).getParent().
+                    getChildren().remove((IndirectCriterionRequirement)requirement);
+        }
+    }
+    @Override
+    public void addCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+        criterionRequirementHandler.addCriterionRequirement(this,
+                criterionRequirement);
+    }
+
+    public void addDirectCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+        criterionRequirementHandler.addDirectCriterionRequirement(this, criterionRequirement);
+    }
+
+    public void addIndirectCriterionRequirement(
+            IndirectCriterionRequirement criterionRequirement) {
+        criterionRequirementHandler.addIndirectCriterionRequirement(this,
+                criterionRequirement);
+    }
+
+    protected void basicAddCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+            criterionRequirement.setOrderElementTemplate(this);
+            this.criterionRequirements.add(criterionRequirement);
+    }
+
+    public void updateCriterionRequirements() {
+        criterionRequirementHandler.updateMyCriterionRequirements(this);
+        criterionRequirementHandler.propagateUpdateCriterionRequirements(this);
+    }
+
+    public boolean canAddCriterionRequirement(
+            DirectCriterionRequirement newRequirement) {
+        return criterionRequirementHandler.canAddCriterionRequirement(this,
+                newRequirement);
+    }
+
+    protected Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
+        return criterionRequirementHandler.getIndirectCriterionRequirement(criterionRequirements);
+    }
+
+    public Set<DirectCriterionRequirement> getDirectCriterionRequirements() {
+        return criterionRequirementHandler
+                .getDirectCriterionRequirement(criterionRequirements);
+    }
+
+    public Order getOrder() {
+        return (parent != null) ? parent.getOrder() : null;
+    }
+
+    public OrderElement getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(OrderElement origin) {
+        this.origin = origin;
     }
 
 }

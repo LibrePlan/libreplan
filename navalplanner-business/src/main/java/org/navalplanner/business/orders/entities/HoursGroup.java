@@ -22,9 +22,11 @@ package org.navalplanner.business.orders.entities;
 import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,26 +43,12 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.templates.entities.OrderLineTemplate;
 
 public class HoursGroup extends BaseEntity implements Cloneable,
         ICriterionRequirable {
 
     private static final Log LOG = LogFactory.getLog(HoursGroup.class);
-
-    public static HoursGroup create(OrderLine parentOrderLine) {
-        HoursGroup result = new HoursGroup(parentOrderLine);
-        result.setNewObject(true);
-        return result;
-    }
-
-    public static HoursGroup createUnvalidated(String name,
-            ResourceEnum resourceType, Integer workingHours) {
-        HoursGroup result = new HoursGroup();
-        result.setCode(name);
-        result.setResourceType(resourceType);
-        result.setWorkingHours(workingHours);
-        return create(result);
-    }
 
     private String code;
 
@@ -74,20 +62,105 @@ public class HoursGroup extends BaseEntity implements Cloneable,
 
     private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
-    @NotNull
     private OrderLine parentOrderLine;
 
-    protected CriterionRequirementHandler criterionRequirementHandler = CriterionRequirementHandler
-            .getInstance();
+    private OrderLineTemplate orderLineTemplate;
+
+    private HoursGroup origin;
+
+    protected CriterionRequirementOrderElementHandler criterionRequirementHandler =
+        CriterionRequirementOrderElementHandler.getInstance();
+
+
+    public static HoursGroup create(OrderLine parentOrderLine) {
+        HoursGroup result = new HoursGroup(parentOrderLine);
+        result.setNewObject(true);
+        return result;
+    }
+
+    public static HoursGroup create(OrderLineTemplate orderLineTemplate) {
+        HoursGroup result = new HoursGroup(orderLineTemplate);
+        result.setNewObject(true);
+        return result;
+    }
+
+    public static HoursGroup createUnvalidated(String code,
+            ResourceEnum resourceType, Integer workingHours) {
+        HoursGroup result = new HoursGroup();
+        result.setCode(code);
+        result.setResourceType(resourceType);
+        result.setWorkingHours(workingHours);
+        return create(result);
+    }
+
+    /**
+     * Returns a copy of hoursGroup, and sets parent as its parent
+     *
+     * @param hoursGroup
+     * @param parent
+     * @return
+     */
+    public static HoursGroup copyFrom(HoursGroup hoursGroup, OrderLineTemplate parent) {
+        HoursGroup result = copyFrom(hoursGroup);
+        result.setCriterionRequirements(copyDirectCriterionRequirements(
+                result, parent, hoursGroup.getDirectCriterionRequirement()));
+        result.setOrderLineTemplate(parent);
+        result.setParentOrderLine(null);
+        return result;
+    }
+
+    private static Set<CriterionRequirement> copyDirectCriterionRequirements(
+            HoursGroup hoursGroup,
+            Object orderLine,
+            Collection<DirectCriterionRequirement> criterionRequirements) {
+        Set<CriterionRequirement> result = new HashSet<CriterionRequirement>();
+
+        for (DirectCriterionRequirement each: criterionRequirements) {
+            final DirectCriterionRequirement directCriterionRequirement = (DirectCriterionRequirement) each;
+            DirectCriterionRequirement newDirectCriterionRequirement = DirectCriterionRequirement
+                    .copyFrom(directCriterionRequirement, hoursGroup);
+            newDirectCriterionRequirement.setHoursGroup(hoursGroup);
+            result.add(newDirectCriterionRequirement);
+        }
+        return result;
+    }
+
+    public static HoursGroup copyFrom(HoursGroup hoursGroup, OrderLine parent) {
+        HoursGroup result = copyFrom(hoursGroup);
+        result.setCriterionRequirements(copyDirectCriterionRequirements(
+                result, parent, hoursGroup.getDirectCriterionRequirement()));
+        result.setOrderLineTemplate(null);
+        result.setParentOrderLine(parent);
+        return result;
+    }
+
+    private static HoursGroup copyFrom(HoursGroup hoursGroup) {
+        HoursGroup result = createUnvalidated(
+                hoursGroup.getCode(),
+                hoursGroup.getResourceType(),
+                hoursGroup.getWorkingHours());
+        result.setCode(UUID.randomUUID().toString());
+        result.percentage = hoursGroup.getPercentage();
+        result.fixedPercentage = hoursGroup.isFixedPercentage();
+        result.origin = hoursGroup;
+        return result;
+    }
 
     /**
      * Constructor for hibernate. Do not use!
      */
     public HoursGroup() {
+
     }
 
     private HoursGroup(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
+        this.setOrderLineTemplate(null);
+    }
+
+    private HoursGroup(OrderLineTemplate orderLineTemplate) {
+        this.orderLineTemplate = orderLineTemplate;
+        this.setParentOrderLine(null);
     }
 
     @NotEmpty(message = "code not specified")
@@ -139,11 +212,16 @@ public class HoursGroup extends BaseEntity implements Cloneable,
 
         this.percentage = proportion;
 
-        if (!parentOrderLine.isPercentageValid()) {
+        if (!isPercentageValidForParent()) {
             this.percentage = oldPercentage;
             throw new IllegalArgumentException(
                     _("Total percentage should be less than 100%"));
         }
+    }
+
+    private boolean isPercentageValidForParent() {
+        return (parentOrderLine != null) ? parentOrderLine.isPercentageValid()
+                : orderLineTemplate.isPercentageValid();
     }
 
     public BigDecimal getPercentage() {
@@ -231,15 +309,20 @@ public class HoursGroup extends BaseEntity implements Cloneable,
     }
 
     public void updateMyCriterionRequirements() {
-        OrderElement newParent = this.getParentOrderLine();
         Set<CriterionRequirement> requirementsParent = criterionRequirementHandler
-                .getRequirementWithSameResourType(newParent
-                        .getCriterionRequirements(), resourceType);
+                .getRequirementWithSameResourType(
+                        getCriterionRequirementsFromParent(), resourceType);
         Set<IndirectCriterionRequirement> currentIndirects = criterionRequirementHandler
                 .getCurrentIndirectRequirements(
                         getIndirectCriterionRequirement(), requirementsParent);
         criterionRequirementHandler.removeOldIndirects(this, currentIndirects);
         criterionRequirementHandler.addNewsIndirects(this, currentIndirects);
+    }
+
+    private Set<CriterionRequirement> getCriterionRequirementsFromParent() {
+        return (parentOrderLine != null) ? parentOrderLine
+                .getCriterionRequirements() : orderLineTemplate
+                .getCriterionRequirements();
     }
 
     public Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
@@ -302,6 +385,22 @@ public class HoursGroup extends BaseEntity implements Cloneable,
                 return true;
             }
         }
+    }
+
+    public OrderLineTemplate getOrderLineTemplate() {
+        return orderLineTemplate;
+    }
+
+    public void setOrderLineTemplate(OrderLineTemplate orderLineTemplate) {
+        this.orderLineTemplate = orderLineTemplate;
+    }
+
+    public HoursGroup getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(HoursGroup origin) {
+        this.origin = origin;
     }
 
 }

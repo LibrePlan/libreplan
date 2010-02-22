@@ -36,6 +36,8 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
 
 /**
  * Wrapper represents the handled data in the form of assigning criterion
@@ -55,12 +57,24 @@ public class HoursGroupWrapper implements INewObject,
 
     private OrderElement orderElement;
 
+    private OrderElementTemplate template;
+
     private HoursGroup hoursGroup;
 
     public HoursGroupWrapper(HoursGroup hoursGroup, OrderElement orderElement,
             boolean newObject) {
         this.newObject = newObject;
         this.orderElement = orderElement;
+        this.template = null;
+        this.hoursGroup = hoursGroup;
+        initRequirementWrappers(hoursGroup);
+    }
+
+    public HoursGroupWrapper(HoursGroup hoursGroup, OrderElementTemplate template,
+            boolean newObject) {
+        this.newObject = newObject;
+        this.orderElement = null;
+        this.template = template;
         this.hoursGroup = hoursGroup;
         initRequirementWrappers(hoursGroup);
     }
@@ -133,16 +147,34 @@ public class HoursGroupWrapper implements INewObject,
     }
 
     public BigDecimal getPercentage() {
-        if (orderElement instanceof OrderLineGroup) {
-            return getPercentageInOrderLineGroup();
+        if (orderElementIsOrderLineGroup()) {
+            return getPercentageInOrderLineGroup(getWorkHours());
         }
         return hoursGroup.getPercentage().scaleByPowerOfTen(2);
     }
 
-    private BigDecimal getPercentageInOrderLineGroup() {
+    private boolean orderElementIsOrderLineGroup() {
+        return getOrderElement() instanceof OrderLineGroup
+                || getTemplate() instanceof OrderLineGroupTemplate;
+    }
+
+    private Integer getWorkHours() {
+        return (getOrderElement() != null) ? getOrderElement().getWorkHours()
+                : getTemplate().getWorkHours();
+    }
+
+    private OrderElement getOrderElement() {
+        return orderElement;
+    }
+
+    private OrderElementTemplate getTemplate() {
+        return template;
+    }
+
+    private BigDecimal getPercentageInOrderLineGroup(Integer workHours) {
         BigDecimal workingHours = new BigDecimal(hoursGroup.getWorkingHours())
                 .setScale(2);
-        BigDecimal total = new BigDecimal(orderElement.getWorkHours())
+        BigDecimal total = new BigDecimal(workHours)
                 .setScale(2);
         if (total.equals(new BigDecimal(0).setScale(2))) {
             return new BigDecimal(0).setScale(2);
@@ -180,12 +212,12 @@ public class HoursGroupWrapper implements INewObject,
 
     public boolean isPercentageReadOnly() {
         return (!hoursGroup.isFixedPercentage())
-                || ((orderElement instanceof OrderLineGroup));
+                || ((orderElementIsOrderLineGroup()));
     }
 
     public boolean isWorkingHoursReadOnly() {
         return (hoursGroup.isFixedPercentage())
-                || ((orderElement instanceof OrderLineGroup));
+                || ((orderElementIsOrderLineGroup()));
     }
 
     /* Operations to manage the criterions requirements */

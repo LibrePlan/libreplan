@@ -36,6 +36,7 @@ import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
+import org.navalplanner.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
 import org.navalplanner.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent;
 import org.navalplanner.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
@@ -114,6 +115,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private void showEditWindow() {
         bindAdvancesComponentWithCurrentTemplate();
         bindMaterialsControllerWithCurrentTemplate();
+        bindCriterionRequirementControllerWithCurrentTemplate();
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
         bindEditTemplateWindowWithController();
@@ -137,6 +139,13 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 "listOrderElementMaterials",
                 MaterialAssignmentTemplateComponent.class);
         c.getController().openWindow(model.getTemplate());
+    }
+
+    private void bindCriterionRequirementControllerWithCurrentTemplate() {
+        CriterionRequirementTemplateComponent c = findAtEditWindow(
+                "listOrderElementCriterionRequirements",
+                CriterionRequirementTemplateComponent.class);
+        c.getController().openWindow(model);
     }
 
     private void bindLabelsControllerWithCurrentTemplate() {

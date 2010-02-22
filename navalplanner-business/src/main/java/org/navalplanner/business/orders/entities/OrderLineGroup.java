@@ -778,7 +778,7 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     protected void copyRequirementToOrderElement(OrderLine leaf) {
-        criterionRequirementHandler.copyRequirementToOrderElement(this, leaf);
+        criterionRequirementHandler.copyRequirementToOrderLine(this, leaf);
     }
 
     @Override

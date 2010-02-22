@@ -23,19 +23,62 @@ package org.navalplanner.business.requirements.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class DirectCriterionRequirement extends CriterionRequirement{
 
+    private DirectCriterionRequirement origin;
 
     private Set<IndirectCriterionRequirement> children =
             new HashSet<IndirectCriterionRequirement>();
+
+    public static DirectCriterionRequirement copyFrom(
+            DirectCriterionRequirement criterionRequirement,
+            OrderElementTemplate orderElementTemplate) {
+        DirectCriterionRequirement result = copyFrom(criterionRequirement);
+        result.setOrigin(criterionRequirement);
+        result.setOrderElement(null);
+        result.setOrderElementTemplate(orderElementTemplate);
+        return result;
+    }
+
+    public static DirectCriterionRequirement copyFrom(
+            DirectCriterionRequirement criterionRequirement,
+            OrderElement orderElement) {
+        DirectCriterionRequirement result = copyFrom(criterionRequirement);
+        result.setOrigin(criterionRequirement);
+        result.setOrderElement(orderElement);
+        result.setOrderElementTemplate(null);
+        return result;
+    }
+
+    public static DirectCriterionRequirement copyFrom(
+            DirectCriterionRequirement criterionRequirement,
+            HoursGroup hoursGroup) {
+        DirectCriterionRequirement result = copyFrom(criterionRequirement);
+        result.setOrigin(criterionRequirement);
+        result.setHoursGroup(hoursGroup);
+        result.setOrderElement(null);
+        result.setOrderElementTemplate(null);
+        return result;
+    }
+
+    public static DirectCriterionRequirement copyFrom(
+            DirectCriterionRequirement criterionRequirement) {
+        DirectCriterionRequirement result = DirectCriterionRequirement.create();
+        result.setCriterion(criterionRequirement.getCriterion());
+        result.setHoursGroup(criterionRequirement.getHoursGroup());
+        return BaseEntity.create(result);
+    }
 
     public static DirectCriterionRequirement create(){
         DirectCriterionRequirement result = new DirectCriterionRequirement();
@@ -57,8 +100,8 @@ public class DirectCriterionRequirement extends CriterionRequirement{
         return result;
     }
 
+    protected DirectCriterionRequirement() {
 
-    public DirectCriterionRequirement(){
     }
 
     public DirectCriterionRequirement(Criterion criterion,
@@ -70,12 +113,28 @@ public class DirectCriterionRequirement extends CriterionRequirement{
         super(criterion);
     }
 
+    public void addIndirectCriterionRequirement(IndirectCriterionRequirement indirect) {
+        children.add(indirect);
+    }
+
+    public void removeIndirectCriterionRequirement(IndirectCriterionRequirement indirect) {
+        children.remove(indirect);
+    }
+
     public Set<IndirectCriterionRequirement> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<IndirectCriterionRequirement>
-            children) {
+    public void setChildren(Set<IndirectCriterionRequirement> children) {
         this.children = children;
     }
+
+    public DirectCriterionRequirement getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(DirectCriterionRequirement origin) {
+        this.origin = origin;
+    }
+
 }

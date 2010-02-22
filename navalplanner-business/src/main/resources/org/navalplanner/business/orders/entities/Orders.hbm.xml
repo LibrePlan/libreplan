@@ -122,7 +122,14 @@
         <version name="version" access="property" type="long" />
 
         <property name="code" access="field" not-null="true" />
-        <property name="resourceType" access="field" />
+
+        <property name="resourceType" access="field" >
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
+                <param name="type">12</param>
+            </type>
+        </property>
+
         <property name="workingHours" access="field" not-null="true"/>
         <property name="percentage" access="field" />
         <property name="fixedPercentage" access="field" />
@@ -133,8 +140,10 @@
         </set>
 
         <many-to-one name="parentOrderLine" column="PARENT_ORDER_LINE"
-            not-null="true"
-            class="org.navalplanner.business.orders.entities.OrderLine"/>
+            class="org.navalplanner.business.orders.entities.OrderLine" />
+
+        <many-to-one name="orderLineTemplate" column="ORDER_LINE_TEMPLATE"
+            class="org.navalplanner.business.templates.entities.OrderLineTemplate" />
 
     </class>
 

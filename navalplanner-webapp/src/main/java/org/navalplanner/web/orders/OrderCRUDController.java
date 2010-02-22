@@ -39,7 +39,6 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
@@ -53,6 +52,7 @@ import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
+import org.navalplanner.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
@@ -127,15 +127,20 @@ public class OrderCRUDController extends GenericForwardComposer {
             } else if (invalidValue.getBean() instanceof HoursGroup) {
                 Label result = new Label();
                 HoursGroup hoursGroup = (HoursGroup) invalidValue.getBean();
-                OrderLine parentOrderLine = hoursGroup.getParentOrderLine();
                 result.setValue(_("Hours Group at ")
-                        + parentOrderLine.getName() + ". "
+                        + getParentName(hoursGroup) + ". "
                         + invalidValue.getPropertyName() + ": "
                         + invalidValue.getMessage());
                 return result;
             }else {
                 return MessagesForUser.createLabelFor(invalidValue);
             }
+        }
+
+        private String getParentName(HoursGroup hoursGroup) {
+            return (hoursGroup.getParentOrderLine() != null) ? hoursGroup
+                    .getParentOrderLine().getName() : hoursGroup
+                    .getOrderLineTemplate().getName();
         }
     }
 

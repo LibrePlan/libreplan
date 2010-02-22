@@ -22,30 +22,65 @@ package org.navalplanner.business.templates.entities;
 import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
 public class OrderLineTemplate extends OrderElementTemplate {
 
+    @Valid
+    private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
+
+    private Integer lastHoursGroupSequenceCode = 0;
+
     public static OrderLineTemplate create(OrderLine orderLine) {
         OrderLineTemplate beingBuilt = new OrderLineTemplate();
-        beingBuilt.workHours = orderLine.getWorkHours();
+        copyHoursGroup(orderLine.getHoursGroups(), beingBuilt);
         return create(beingBuilt, orderLine);
+    }
+
+    private static void copyHoursGroup(
+            final Collection<HoursGroup> hoursGroups,
+            OrderLineTemplate orderLineTemplate) {
+        for (HoursGroup each: hoursGroups) {
+            orderLineTemplate.addHoursGroup(HoursGroup.copyFrom(each,
+                    orderLineTemplate));
+        }
     }
 
     public static OrderLineTemplate createNew() {
         return createNew(new OrderLineTemplate());
     }
 
-    private Integer workHours;
+    protected <T extends OrderElement> T setupElementParts(T orderElement) {
+        super.setupElementParts(orderElement);
+        setupHoursGroups((OrderLine) orderElement);
+        return orderElement;
+    }
+
+    private void setupHoursGroups(OrderLine orderLine) {
+        Set<HoursGroup> result = new HashSet<HoursGroup>();
+        for (HoursGroup each: getHoursGroups()) {
+            result.add(HoursGroup.copyFrom(each, orderLine));
+        }
+        orderLine.setHoursGroups(result);
+    }
 
     @Override
     public List<OrderElementTemplate> getChildrenTemplates() {
@@ -84,6 +119,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
     public OrderElement createElement(OrderLineGroup parent) {
         OrderLine line = setupSchedulingStateType(OrderLine
                 .createOrderLineWithUnfixedPercentage(getWorkHours()));
+        line.initializeTemplate(this);
         parent.add(line);
         return setupElementParts(line);
     }
@@ -93,11 +129,73 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return _("Line");
     }
 
-    public int getWorkHours() {
-        if (workHours == null) {
-            return 0;
+    public Integer getWorkHours() {
+        return hoursGroupOrderLineTemplateHandler.calculateTotalHours(hoursGroups);
+    }
+
+    public void incrementLastHoursGroupSequenceCode() {
+        if(lastHoursGroupSequenceCode==null){
+            lastHoursGroupSequenceCode = 0;
         }
-        return workHours;
+        lastHoursGroupSequenceCode++;
+    }
+
+    @NotNull(message = "last hours group sequence code not specified")
+    public Integer getLastHoursGroupSequenceCode() {
+        return lastHoursGroupSequenceCode;
+    }
+
+    /**
+     * Operations for manipulating {@link HoursGroup}
+     */
+
+    @Override
+    public List<HoursGroup> getHoursGroups() {
+        return new ArrayList<HoursGroup>(hoursGroups);
+    }
+
+    public Set<HoursGroup> myHoursGroups() {
+        return hoursGroups;
+    }
+
+    public void setHoursGroups(final Set<HoursGroup> hoursGroups) {
+        this.hoursGroups.clear();
+        this.hoursGroups.addAll(hoursGroups);
+    }
+
+    public void addHoursGroup(HoursGroup hoursGroup) {
+        hoursGroup.setOrderLineTemplate(this);
+        hoursGroup.updateMyCriterionRequirements();
+        doAddHoursGroup(hoursGroup);
+        recalculateHoursGroups();
+    }
+
+    public void doAddHoursGroup(HoursGroup hoursGroup) {
+        hoursGroups.add(hoursGroup);
+    }
+
+    public void deleteHoursGroup(HoursGroup hoursGroup) {
+        hoursGroups.remove(hoursGroup);
+        recalculateHoursGroups();
+    }
+
+    private HoursGroupOrderLineTemplateHandler hoursGroupOrderLineTemplateHandler = HoursGroupOrderLineTemplateHandler
+            .getInstance();
+
+    public void setWorkHours(Integer workHours) throws IllegalArgumentException {
+        hoursGroupOrderLineTemplateHandler.setWorkHours(this, workHours);
+    }
+
+    public boolean isTotalHoursValid(Integer total) {
+        return hoursGroupOrderLineTemplateHandler.isTotalHoursValid(total, hoursGroups);
+    }
+
+    public boolean isPercentageValid() {
+        return hoursGroupOrderLineTemplateHandler.isPercentageValid(hoursGroups);
+    }
+
+    public void recalculateHoursGroups() {
+        hoursGroupOrderLineTemplateHandler.recalculateHoursGroups(this);
     }
 
 }

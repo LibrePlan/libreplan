@@ -17,12 +17,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.navalplanner.web.templates;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
@@ -30,11 +34,16 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.orders.QualityFormsOnConversation;
@@ -47,17 +56,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderTemplatesModel implements IOrderTemplatesModel {
 
-    @Autowired
-    private IOrderElementDAO orderElementDAO;
+    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
     @Autowired
-    private IOrderDAO orderDAO;
+    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private IOrderElementTemplateDAO dao;
@@ -67,6 +75,12 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     @Autowired
     private IQualityFormDAO qualityFormDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private IAdHocTransactionService transaction;
@@ -160,7 +174,31 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     private void loadAssociatedData(OrderElementTemplate template) {
         loadAdvanceAssignments(template);
         loadQualityForms(template);
+        loadCriterionRequirements(template);
         getOrderElementsOnConversation().initialize(template);
+    }
+
+    private static void loadCriterionRequirements(OrderElementTemplate orderElement) {
+        orderElement.getHoursGroups().size();
+        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            attachDirectCriterionRequirement(hoursGroup
+                    .getDirectCriterionRequirement());
+        }
+        attachDirectCriterionRequirement(orderElement
+                .getDirectCriterionRequirements());
+
+        for (OrderElementTemplate child : orderElement.getChildren()) {
+            loadCriterionRequirements(child);
+        }
+    }
+
+    private static void attachDirectCriterionRequirement(
+            Set<DirectCriterionRequirement> requirements) {
+        for (DirectCriterionRequirement requirement : requirements) {
+            requirement.getChildren().size();
+            requirement.getCriterion().getName();
+            requirement.getCriterion().getType().getName();
+        }
     }
 
     private void loadQualityForms(OrderElementTemplate template) {
@@ -184,8 +222,21 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     }
 
     private void initializeAcompanyingObjectsOnConversation() {
+        loadCriterions();
         getLabelsOnConversation().initializeLabels();
         getQualityFormsOnConversation().initialize();
+    }
+
+    private void loadCriterions() {
+        mapCriterions.clear();
+        List<CriterionType> criterionTypes = criterionTypeDAO
+                .getCriterionTypes();
+        for (CriterionType criterionType : criterionTypes) {
+            List<Criterion> criterions = new ArrayList<Criterion>(criterionDAO
+                    .findByType(criterionType));
+
+            mapCriterions.put(criterionType, criterions);
+        }
     }
 
     @Override
@@ -226,6 +277,19 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
             throw new IllegalArgumentException(
                     _("There exists other template with the same name."));
         }
+    }
+
+    @Override
+    public List<Criterion> getCriterionsFor(CriterionType criterionType) {
+        return mapCriterions.get(criterionType);
+    }
+
+    @Override
+    public Map<CriterionType, List<Criterion>> getMapCriterions() {
+        final Map<CriterionType, List<Criterion>> result =
+            new HashMap<CriterionType, List<Criterion>>();
+        result.putAll(mapCriterions);
+        return result;
     }
 
 }

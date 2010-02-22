@@ -22,34 +22,34 @@ package org.navalplanner.business.requirements.entities;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 
 /**
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class IndirectCriterionRequirement extends CriterionRequirement{
 
-   private DirectCriterionRequirement parent;
+    private DirectCriterionRequirement parent;
 
-   private Boolean valid = true;
+    private Boolean valid = true;
 
-    public static IndirectCriterionRequirement create(DirectCriterionRequirement
-            parent,Criterion criterion) {
-        IndirectCriterionRequirement result = new IndirectCriterionRequirement(criterion);
-        result.setNewObject(true);
-        result.setParent(parent);
-        return result;
+    public static IndirectCriterionRequirement create(IndirectCriterionRequirement criterionRequirement) {
+        return create(criterionRequirement.getParent(), criterionRequirement.getCriterion());
     }
 
-    public static IndirectCriterionRequirement create(DirectCriterionRequirement
-            parent, Criterion criterion,OrderElement orderElement,HoursGroup hoursGroup){
-        IndirectCriterionRequirement result = new IndirectCriterionRequirement(parent,criterion,
-                orderElement,hoursGroup);
+    public static IndirectCriterionRequirement create(
+            DirectCriterionRequirement parent, Criterion criterion) {
+        IndirectCriterionRequirement result = new IndirectCriterionRequirement(
+                criterion);
         result.setNewObject(true);
+        result.setParent(parent);
         return result;
     }
 
@@ -66,7 +66,12 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
 
     public IndirectCriterionRequirement(DirectCriterionRequirement parent,Criterion criterion,
             OrderElement orderElement,HoursGroup hoursGroup){
-        super(criterion,orderElement,hoursGroup);
+        super(criterion, orderElement, hoursGroup);
+    }
+
+    public IndirectCriterionRequirement(DirectCriterionRequirement parent, Criterion criterion,
+            OrderElementTemplate orderElementTemplate, HoursGroup hoursGroup){
+        super(criterion, orderElementTemplate, hoursGroup);
     }
 
     @NotNull(message = "parent not specified")

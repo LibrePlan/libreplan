@@ -25,6 +25,11 @@
 
         <many-to-one name="parent" access="field" class="org.navalplanner.business.templates.entities.OrderLineGroupTemplate"/>
 
+        <set name="criterionRequirements" cascade="all-delete-orphan" inverse="true">
+            <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
+            <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement" />
+        </set>
+
         <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
             <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignmentTemplate" />
@@ -61,8 +66,14 @@
         </joined-subclass>
 
         <joined-subclass name="OrderLineTemplate">
-            <key column="ORDER_LINE_TEMPLATE_ID"></key>
-            <property name="workHours" />
+            <key column="ORDER_LINE_TEMPLATE_ID" />
+
+            <set name="hoursGroups" access="field" cascade="all-delete-orphan" inverse="true">
+                <key column="ORDER_LINE_TEMPLATE" />
+                <one-to-many class="org.navalplanner.business.orders.entities.HoursGroup" />
+            </set>
+
+            <property name="lastHoursGroupSequenceCode" access="field" />
         </joined-subclass>
     </class>
 

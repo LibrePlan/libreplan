@@ -22,6 +22,7 @@ package org.navalplanner.web.templates;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
+import org.navalplanner.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
 import org.navalplanner.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.navalplanner.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.navalplanner.web.templates.quality.QualityFormAssignerComponent;
@@ -83,6 +84,7 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         }
         bindAdvancesAssignment(template);
         bindOrderElementLabels(template);
+        bindCriterionRequirements(template);
         bindOrderElementMaterials(template);
         bindAssignedQualityForms(template);
         Util.reloadBindings(editTemplateWindow);
@@ -104,6 +106,13 @@ public class EditTemplateWindowController extends GenericForwardComposer {
                 LabelsAssignmentToTemplateComponent.class);
         component.getController().setTemplate(template);
         component.getController().openWindow(model);
+    }
+
+    private void bindCriterionRequirements(OrderElementTemplate template) {
+        CriterionRequirementTemplateComponent component = find(
+                "listOrderElementCriterionRequirements",
+                CriterionRequirementTemplateComponent.class);
+        component.getController().openWindow(model, template);
     }
 
     private void bindOrderElementMaterials(OrderElementTemplate template) {

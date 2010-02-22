@@ -23,8 +23,11 @@
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" class="org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent" macroURI="components/_listOrderElementLabels.zul"?>
-<?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
-<?component name="listOrderElementMaterials" class="org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent"
+<?component name="listOrderElementCriterionRequirements"
+    class="org.navalplanner.web.orders.criterionrequirements.OrderElementCriterionRequirementComponent"
+    macroURI="/orders/_listOrderElementCriterionRequirements.zul"?>
+<?component name="listOrderElementMaterials"
+    class="org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent"
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 <?component name="listOrderElementAuthorizations" inline="true" macroURI="_listOrderElementAuthorizations.zul"?>
@@ -44,7 +47,8 @@
             <tab id="tabLabels" label="${i18n:_('Label')}"
                 onSelect = "controller.setupAssignedLabelsToOrderElementController();"/>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
-                onSelect = "controller.setupAssignedCriterionRequirementsToOrderElementController();"/>
+                onSelect = "controller.setupAssignedCriterionRequirementsToOrderElementController();"
+                onClick="controller.reloadHoursGroupOrder()" />
             <tab id="tabMaterials" label="${i18n:_('Materials')}"
                 onSelect = "controller.setupAssignedMaterialsToOrderElementController();"/>
             <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"

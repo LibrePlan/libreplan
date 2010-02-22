@@ -59,7 +59,6 @@ import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 
@@ -83,13 +82,12 @@ public abstract class OrderElement extends BaseEntity implements
 
     private Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();
 
-
     private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
     protected OrderLineGroup parent;
 
-    protected CriterionRequirementHandler criterionRequirementHandler = CriterionRequirementHandler
-            .getInstance();
+    protected CriterionRequirementOrderElementHandler criterionRequirementHandler =
+        CriterionRequirementOrderElementHandler.getInstance();
 
     private SchedulingState.Type schedulingStateType = Type.NO_SCHEDULED;
 
@@ -576,32 +574,27 @@ public abstract class OrderElement extends BaseEntity implements
 
     protected void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
-        if(requirement instanceof IndirectCriterionRequirement){
+        if (requirement instanceof IndirectCriterionRequirement) {
             ((IndirectCriterionRequirement)requirement).getParent().
                     getChildren().remove((IndirectCriterionRequirement)requirement);
         }
     }
 
-    public void addDirectCriterionRequirement(
-            CriterionRequirement newRequirement) {
-        if (criterionRequirementHandler.canAddCriterionRequirement(this,
-                newRequirement)) {
-            basicAddCriterionRequirement(newRequirement);
-            criterionRequirementHandler
-                    .propagateDirectCriterionRequirementAddition(this,
-                            newRequirement);
-        } else {
-            Criterion criterion = newRequirement.getCriterion();
-            throw new IllegalStateException(_(
-                    " The {0} already exist into other order element",
-                    criterion
-                            .getName()));
-        }
+    @Override
+    public void addCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+        criterionRequirementHandler.addCriterionRequirement(this, criterionRequirement);
     }
 
-    void addIndirectCriterionRequirement(
+    public void addDirectCriterionRequirement(
+            CriterionRequirement criterionRequirement) {
+        criterionRequirementHandler.addDirectCriterionRequirement(this, criterionRequirement);
+    }
+
+    public void addIndirectCriterionRequirement(
             IndirectCriterionRequirement criterionRequirement) {
-        basicAddCriterionRequirement(criterionRequirement);
+        criterionRequirementHandler.addIndirectCriterionRequirement(this,
+                criterionRequirement);
     }
 
     protected void basicAddCriterionRequirement(
@@ -610,32 +603,9 @@ public abstract class OrderElement extends BaseEntity implements
             this.criterionRequirements.add(criterionRequirement);
     }
 
-    @Override
-    public void addCriterionRequirement(
-            CriterionRequirement criterionRequirement) {
-        if (criterionRequirement instanceof DirectCriterionRequirement) {
-            addDirectCriterionRequirement((DirectCriterionRequirement) criterionRequirement);
-        } else { // criterionRequirement instanceof IndirectCriterionRequirement
-            addIndirectCriterionRequirement((IndirectCriterionRequirement) criterionRequirement);
-        }
-    }
-
     public void updateCriterionRequirements() {
-        updateMyCriterionRequirements();
+        criterionRequirementHandler.updateMyCriterionRequirements(this);
         criterionRequirementHandler.propagateUpdateCriterionRequirements(this);
-    }
-
-    void updateMyCriterionRequirements() {
-        OrderElement newParent = this.getParent();
-        Set<CriterionRequirement> requirementsParent = newParent
-                .getCriterionRequirements();
-        Set<IndirectCriterionRequirement> currentIndirects = criterionRequirementHandler
-                .getCurrentIndirectRequirements(
-                        getIndirectCriterionRequirement(), requirementsParent);
-        criterionRequirementHandler.transformDirectToIndirectIfNeeded(this,
-                currentIndirects);
-        criterionRequirementHandler.removeOldIndirects(this, currentIndirects);
-        criterionRequirementHandler.addNewsIndirects(this, currentIndirects);
     }
 
     public boolean canAddCriterionRequirement(
@@ -645,13 +615,7 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     protected Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
-        Set<IndirectCriterionRequirement> list = new HashSet<IndirectCriterionRequirement>();
-        for (CriterionRequirement criterionRequirement : criterionRequirements) {
-            if (criterionRequirement instanceof IndirectCriterionRequirement) {
-                list.add((IndirectCriterionRequirement) criterionRequirement);
-            }
-        }
-        return list;
+        return criterionRequirementHandler.getIndirectCriterionRequirement(criterionRequirements);
     }
 
     public void applyStartConstraintIfNeededTo(Task task) {
@@ -670,13 +634,8 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {
-        Set<DirectCriterionRequirement> list = new HashSet<DirectCriterionRequirement>();
-        for (CriterionRequirement criterionRequirement : criterionRequirements) {
-            if (criterionRequirement instanceof DirectCriterionRequirement) {
-                list.add((DirectCriterionRequirement) criterionRequirement);
-            }
-        }
-        return list;
+        return criterionRequirementHandler
+                .getDirectCriterionRequirement(criterionRequirements);
     }
 
     public SchedulingState.Type getSchedulingStateType() {
@@ -748,13 +707,7 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     public Order getOrder() {
-        Order order;
-        try {
-            order = parent.getOrder();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return order;
+        return parent.getOrder();
     }
 
     @Valid

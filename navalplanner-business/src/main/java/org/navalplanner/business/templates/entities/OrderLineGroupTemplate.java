@@ -25,10 +25,13 @@ import java.util.List;
 
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.i18n.I18nHelper;
+import org.navalplanner.business.orders.entities.CriterionRequirementOrderElementHandler;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.orders.entities.TreeNodeOnListWithSchedulingState;
+import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.trees.ITreeParentNode;
 
 /**
@@ -37,6 +40,9 @@ import org.navalplanner.business.trees.ITreeParentNode;
  */
 public class OrderLineGroupTemplate extends OrderElementTemplate implements
         ITreeParentNode<OrderElementTemplate> {
+
+    private final CriterionRequirementTemplateHandler criterionRequirementTemplateHandler = CriterionRequirementTemplateHandler
+            .getInstance();
 
     private final class ChildrenManipulator extends
             TreeNodeOnListWithSchedulingState<OrderElementTemplate> {
@@ -93,10 +99,19 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
 
     protected static <T extends OrderLineGroupTemplate> T create(T beingBuilt,
             OrderLineGroup group) {
+        OrderElementTemplate.create(beingBuilt, group);
         List<OrderElementTemplate> result = buildChildrenTemplates(beingBuilt,
                 group.getChildren());
         beingBuilt.children = result;
-        return OrderElementTemplate.create(beingBuilt, group);
+        beingBuilt.copyIndirectRequirementsFromOriginalDirectRequirements();
+        return beingBuilt;
+    }
+
+    public void copyIndirectRequirementsFromOriginalDirectRequirements() {
+        for (DirectCriterionRequirement each: getDirectCriterionRequirements()) {
+            criterionRequirementTemplateHandler
+                    .copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(this, each);
+        }
     }
 
     private static List<OrderElementTemplate> buildChildrenTemplates(
@@ -175,23 +190,37 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return false;
     }
 
+    private CriterionRequirementOrderElementHandler criterionRequirementOrderElementHandler = CriterionRequirementOrderElementHandler
+            .getInstance();
+
     protected <T extends OrderLineGroup> T setupGroupParts(T group) {
         T parent = setupElementParts(group);
         for (OrderElementTemplate each : children) {
             each.createElement(parent);
         }
+        copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(parent);
         return parent;
+    }
+
+    private void copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(OrderLineGroup orderElement) {
+        for (DirectCriterionRequirement each: orderElement.getDirectCriterionRequirement()) {
+            criterionRequirementOrderElementHandler.copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(
+                            orderElement, each);
+        }
     }
 
     @Override
     public OrderLineGroup createElement() {
-        return setupGroupParts(setupSchedulingStateType(OrderLineGroup.create()));
+        OrderLineGroup orderLineGroup = OrderLineGroup.create();
+        orderLineGroup.initializeTemplate(this);
+        return setupGroupParts(setupSchedulingStateType(orderLineGroup));
     }
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
         OrderLineGroup result = setupSchedulingStateType(OrderLineGroup
                 .create());
+        result.initializeTemplate(this);
         parent.add(result);
         return setupGroupParts(result);
     }
@@ -199,6 +228,24 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
     @Override
     public String getType() {
         return I18nHelper._("Group");
+    }
+
+    @Override
+    public List<HoursGroup> getHoursGroups() {
+        List<HoursGroup> hoursGroups = new ArrayList<HoursGroup>();
+        for (OrderElementTemplate orderElement : children) {
+            hoursGroups.addAll(orderElement.getHoursGroups());
+        }
+        return hoursGroups;
+    }
+
+    @Override
+    public Integer getWorkHours() {
+        Integer result = 0;
+        for (OrderElementTemplate orderElement : getChildren()) {
+            result += orderElement.getWorkHours();
+        }
+        return result;
     }
 
 }

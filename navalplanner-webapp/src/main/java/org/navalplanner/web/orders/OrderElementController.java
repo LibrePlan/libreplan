@@ -25,6 +25,8 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
+import org.navalplanner.web.orders.criterionrequirements.OrderElementCriterionRequirementComponent;
 import org.navalplanner.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent;
 import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementController;
@@ -71,13 +73,14 @@ public class OrderElementController extends GenericForwardComposer {
 
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormsController;
 
-    private Component orderElementCriterionRequirements;
+    private OrderElementCriterionRequirementComponent orderElementCriterionRequirements;
 
     private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
 
     private OrderElementMaterialAssignmentsComponent orderElementMaterials;
 
     private AssignedMaterialsToOrderElementController assignedMaterialsController;
+
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -132,7 +135,7 @@ public class OrderElementController extends GenericForwardComposer {
             throws Exception {
         if (assignedCriterionRequirementController == null) {
             assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
-                .getVariable("assignedCriterionRequirementController", true);
+                    .getVariable("assignedCriterionRequirementController", true);
             assignedCriterionRequirementController
                     .openWindow(orderElementModel);
         } else {

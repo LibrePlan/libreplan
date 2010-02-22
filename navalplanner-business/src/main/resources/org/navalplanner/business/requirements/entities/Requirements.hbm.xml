@@ -8,12 +8,20 @@
         <param name="max_lo">100</param>
       </generator>
     </id>
+
     <discriminator column="CRITERION_REQUIREMENT_TYPE" type="string"/>
+
     <version access="property" name="version" type="long"/>
+
     <!-- Inverse navigation from CriterionRequirement to HoursGroup -->
     <many-to-one class="org.navalplanner.business.orders.entities.HoursGroup" column="HOURS_GROUP_ID" name="hoursGroup"/>
+
     <!-- Inverse navigation from CriterionRequirement to OrderElement -->
     <many-to-one class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" name="orderElement"/>
+
+    <!-- Inverse navigation from CriterionRequirement to OrderTemplateElement -->
+    <many-to-one class="org.navalplanner.business.templates.entities.OrderElementTemplate" column="ORDER_ELEMENT_TEMPLATE_ID" name="orderElementTemplate"/>
+
     <!-- Inverse navigation from CriterionRequirement to Criterion -->
     <many-to-one class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID" name="criterion"/>
 
@@ -24,9 +32,11 @@
         <one-to-many class="IndirectCriterionRequirement"/>
       </set>
     </subclass>
+
     <subclass discriminator-value="INDIRECT" name="IndirectCriterionRequirement">
       <many-to-one class="DirectCriterionRequirement" column="parent" name="parent"/>
       <property access="field" name="valid"/>
     </subclass>
+
   </class>
 </hibernate-mapping>

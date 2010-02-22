@@ -24,6 +24,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
  *
@@ -31,11 +32,13 @@ import org.navalplanner.business.resources.entities.Criterion;
  */
 public class CriterionRequirement extends BaseEntity{
 
+    private Criterion criterion;
+
     private HoursGroup hoursGroup;
 
     private OrderElement orderElement;
 
-    private Criterion criterion;
+    private OrderElementTemplate orderElementTemplate;
 
     public CriterionRequirement(){
 
@@ -46,9 +49,18 @@ public class CriterionRequirement extends BaseEntity{
     }
 
     public CriterionRequirement(Criterion criterion,
-            OrderElement orderElement,HoursGroup hoursGroup){
+            OrderElement orderElement, HoursGroup hoursGroup){
         this.criterion = criterion;
         this.orderElement = orderElement;
+        this.orderElementTemplate = null;
+        this.hoursGroup = hoursGroup;
+    }
+
+    public CriterionRequirement(Criterion criterion,
+            OrderElementTemplate orderElementTemplate, HoursGroup hoursGroup){
+        this.criterion = criterion;
+        this.orderElementTemplate = orderElementTemplate;
+        this.orderElement = null;
         this.hoursGroup = hoursGroup;
     }
 
@@ -79,5 +91,13 @@ public class CriterionRequirement extends BaseEntity{
 
     public boolean isValid() {
         return true;
+    }
+
+    public OrderElementTemplate getOrderElementTemplate() {
+        return orderElementTemplate;
+    }
+
+    public void setOrderElementTemplate(OrderElementTemplate orderElementTemplate) {
+        this.orderElementTemplate = orderElementTemplate;
     }
 }

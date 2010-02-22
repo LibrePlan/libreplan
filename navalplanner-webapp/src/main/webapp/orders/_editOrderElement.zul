@@ -22,16 +22,20 @@
 <?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
 <?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
 <?component name="listOrderElementLabels" class="org.navalplanner.web.orders.labels.LabelsAssignmentToOrderElementComponent" macroURI="components/_listOrderElementLabels.zul"?>
-<?component name="listOrderElementCriterionRequirements" inline="true" macroURI="_listOrderElementCriterionRequirements.zul"?>
-<?component name="listOrderElementMaterials" class="org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent"
+<?component name="listOrderElementCriterionRequirements"
+    class="org.navalplanner.web.orders.criterionrequirements.OrderElementCriterionRequirementComponent"
+    macroURI="_listOrderElementCriterionRequirements.zul"?>
+<?component name="listOrderElementMaterials"
+    class="org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent"
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 
 <window id="${arg.top_id}" title="${i18n:_('Edit order element')}"
     width="950px" left="50px" top="50px"
     closable="true" visible="false">
-<tabbox height="620px" id="tabboxOrderElement">
-	<tabs>
+
+    <tabbox height="620px" id="tabboxOrderElement">
+        <tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}" selected="true"
                 onSelect="orderElementController.clearAll();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
@@ -47,6 +51,7 @@
             <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"
                 onSelect="orderElementController.setupAssignedTaskQualityFormsToOrderElementController();"/>
         </tabs>
+
         <tabpanels>
             <tabpanel id="tabPanelDetails">
                 <orderElementDetails id="orderElementDetails" />
@@ -70,9 +75,11 @@
                 <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" fulfill="tabTaskQualityForm.onSelect"/>
             </tabpanel>
         </tabpanels>
-  </tabbox>
-  <hbox>
-     <button label="${i18n:_('Back')}" onClick="orderElementController.back()"
-     sclass="back-button global-action"/>
-  </hbox>
+    </tabbox>
+
+    <hbox>
+        <button label="${i18n:_('Back')}" onClick="orderElementController.back()"
+            sclass="back-button global-action"/>
+    </hbox>
+
 </window>

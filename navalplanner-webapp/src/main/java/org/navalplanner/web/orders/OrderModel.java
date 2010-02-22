@@ -50,6 +50,7 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.CriterionRequirementOrderElementHandler;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -382,10 +383,8 @@ public class OrderModel implements IOrderModel {
 
     private OrderElement createOrderElementFrom(OrderLineGroup parent,
             OrderElementTemplate template) {
-        OrderElement result = parent != null ? template.createElement(parent)
-                : template.createElement();
-        result.initializeTemplate(template);
-        return result;
+        return (parent != null) ? template.createElement(parent) : template
+                .createElement();
     }
 
     private void setDefaultOrderCode() throws ConcurrentModificationException {
