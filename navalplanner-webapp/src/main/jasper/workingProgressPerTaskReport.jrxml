@@ -386,7 +386,7 @@
 				<text><![CDATA[Measured]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="0" width="164" height="20"/>
+				<reportElement x="2" y="0" width="494" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>

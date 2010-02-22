@@ -58,7 +58,7 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     public List<Order> getOrders() {
         List<Order> result = orderDAO.getOrders();
         for (Order each: result) {
-            initializeOrderElements(each.getOrderElements());
+            initializeOrderElements(each.getAllOrderElements());
         }
         return result;
     }
