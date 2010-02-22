@@ -299,7 +299,12 @@ public class MultipleTabsPlannerController implements Composer,
 
             @Override
             public String getLabel() {
-                return _("Up");
+                return _("Up to company view");
+            }
+
+            @Override
+            public String getImage() {
+                return _("/common/img/ico_up.png");
             }
         };
     }

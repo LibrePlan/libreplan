@@ -29,7 +29,7 @@ resourcesLoadPanel = self;
 
 
     <borderlayout sclass="resourcesloadlayout" width="auto">
-       <north height="30px" border="0">
+       <north height="30px" border="0" sclass="toolbar-box">
        <hbox align="center" id="toolbar">
         <separator/>
         <label>${i18n:_('Zoom')}:</label>

@@ -22,6 +22,7 @@ package org.zkoss.ganttz.resourceload;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -49,6 +50,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         public void doAction();
 
         public String getLabel();
+
+        public String getImage();
     }
 
     private TimeTrackerComponent timeTrackerComponent;
@@ -108,7 +111,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 c.doAction();
             }
         });
-        result.setLabel(c.getLabel());
+        if (!StringUtils.isEmpty(c.getImage())) {
+            result.setImage(c.getImage());
+            result.setTooltiptext(c.getLabel());
+        } else {
+            result.setLabel(c.getLabel());
+        }
         return result;
     }
 
