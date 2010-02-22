@@ -57,9 +57,6 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
         List<Order> result = orderDAO.getOrders();
-        for (Order each: result) {
-            initializeOrderElements(each.getAllOrderElements());
-        }
         return result;
     }
 
@@ -74,8 +71,12 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     }
 
     @Override
+    @Transactional(readOnly = true)
     public JRDataSource getWorkingProgressPerTaskReport(Order order,
             Date referenceDate) {
+
+        orderDAO.reattachUnmodifiedEntity(order);
+        initializeOrderElements(order.getAllOrderElements());
 
         final List<WorkingProgressPerTaskDTO> workingHoursPerWorkerList =
             taskDAO.getWorkingProgressPerTaskReport(order, new LocalDate(referenceDate));
