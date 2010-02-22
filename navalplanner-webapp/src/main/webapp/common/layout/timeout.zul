@@ -18,8 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
-<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_v01.css"?>
-<?link rel="stylesheet" type="text/css" href="/common/css/navalpro_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
 <zk>
     <window self="@{define(content)}" >
         <vbox apply="org.navalplanner.web.error.PageForErrorOnEvent" sclass="warningbox">
