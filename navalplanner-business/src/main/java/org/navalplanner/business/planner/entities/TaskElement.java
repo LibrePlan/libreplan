@@ -376,6 +376,8 @@ public abstract class TaskElement extends BaseEntity {
 
     public abstract Set<ResourceAllocation<?>> getSatisfiedResourceAllocations();
 
+    public abstract Set<ResourceAllocation<?>> getAllResourceAllocations();
+
     public SortedMap<LocalDate, Integer> getHoursAssignedByDay() {
         SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
         for (ResourceAllocation<?> resourceAllocation : getSatisfiedResourceAllocations()) {

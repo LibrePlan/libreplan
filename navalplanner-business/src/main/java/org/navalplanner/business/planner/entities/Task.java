@@ -136,6 +136,7 @@ public class Task extends TaskElement {
                 filtered));
     }
 
+    @Override
     public Set<ResourceAllocation<?>> getAllResourceAllocations() {
         return Collections.unmodifiableSet(resourceAllocations);
     }

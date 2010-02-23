@@ -56,6 +56,11 @@ public class TaskMilestone extends TaskElement {
         return Collections.emptySet();
     }
 
+    @Override
+    public Set<ResourceAllocation<?>> getAllResourceAllocations() {
+        return Collections.emptySet();
+    }
+
     public int getAssignedHours() {
         return 0;
     }
@@ -129,4 +134,5 @@ public class TaskMilestone extends TaskElement {
     public boolean isMilestone() {
         return true;
     }
+
 }
