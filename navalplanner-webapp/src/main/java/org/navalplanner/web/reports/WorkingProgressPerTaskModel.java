@@ -76,7 +76,7 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
             Date referenceDate) {
 
         orderDAO.reattachUnmodifiedEntity(order);
-        initializeOrderElements(order.getAllOrderElements());
+        initializeOrderElements(order.getAllChildren());
 
         final List<WorkingProgressPerTaskDTO> workingHoursPerWorkerList =
             taskDAO.getWorkingProgressPerTaskReport(order, new LocalDate(referenceDate));

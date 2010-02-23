@@ -103,10 +103,33 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
         List<WorkingProgressPerTaskDTO> result = new ArrayList<WorkingProgressPerTaskDTO>();
 
         final List<Task> tasks = getTasksByOrderAndDate(order, deadline);
-        for (Task task: tasks) {
+        final List<Task> sortTasks = sortTasks(order, tasks);
+        for (Task task : sortTasks) {
             result.add(new WorkingProgressPerTaskDTO(task, deadline));
         }
         return result;
+    }
+
+    private List<Task> sortTasks(Order order, List<Task> tasks) {
+        List<Task> sortTasks = new ArrayList<Task>();
+        final List<OrderElement> orderElements = order.getAllChildren();
+        for (OrderElement orderElement : orderElements) {
+            Task task = findOrderElementInTasks(orderElement, tasks);
+            if (task != null) {
+                sortTasks.add(task);
+            }
+        }
+        return sortTasks;
+    }
+
+    private Task findOrderElementInTasks(OrderElement orderElement,
+            List<Task> tasks) {
+        for (Task task : tasks) {
+            if (task.getOrderElement().getId().equals(orderElement.getId())) {
+                return task;
+            }
+        }
+        return null;
     }
 
     private List<Task> getTasksByOrderAndDate(Order order, LocalDate deadline) {
