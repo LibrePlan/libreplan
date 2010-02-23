@@ -860,7 +860,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private static void forceLoadOfResourceAllocationsResources(
             TaskElement taskElement) {
         Set<ResourceAllocation<?>> resourceAllocations = taskElement
-                .getSatisfiedResourceAllocations();
+                .getAllResourceAllocations();
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
