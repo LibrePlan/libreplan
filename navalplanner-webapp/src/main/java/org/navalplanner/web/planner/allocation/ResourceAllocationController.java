@@ -505,6 +505,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 throws Exception {
             row.setValue(data);
             append(row, data.createDetail());
+            append(row, data.getSatisfiedCheckbox());
             append(row, new Label(data.getName()));
             append(row, data.getHoursInput());
             append(row, data.getResourcesPerDayInput());
@@ -522,6 +523,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private void renderAggregatingRow(Row row) {
             ResourceAllocationController controller = ResourceAllocationController.this;
+            append(row, new Label());
             append(row, new Label());
             append(row, new Label(_("Sum of all rows")));
             append(row, CalculationTypeRadio.NUMBER_OF_HOURS.input(controller));
