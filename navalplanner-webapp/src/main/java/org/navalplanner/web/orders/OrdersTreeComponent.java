@@ -65,6 +65,7 @@ public class OrdersTreeComponent extends TreeComponent {
         List<Column> columns = new ArrayList<Column>();
         columns.add(schedulingStateColumn);
         columns.add(codeColumn);
+        columns.add(nameAndDescriptionColumn);
         columns.add(new OrdersTreeColumn(_("Hours"), "hours",
                 _("Total order element hours")) {
 
@@ -75,7 +76,6 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
-        columns.add(nameAndDescriptionColumn);
         columns.add(new OrdersTreeColumn(_("Must start after"),
                         "estimated_init",
                         _("Date which the task must start after (press enter in textbox to open calendar popup or type in date directly)")) {
