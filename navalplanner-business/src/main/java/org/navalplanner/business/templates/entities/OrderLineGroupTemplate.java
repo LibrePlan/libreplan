@@ -28,10 +28,12 @@ import org.navalplanner.business.i18n.I18nHelper;
 import org.navalplanner.business.orders.entities.CriterionRequirementOrderElementHandler;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.orders.entities.TreeNodeOnListWithSchedulingState;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.trees.ITreeParentNode;
 
 /**
@@ -103,14 +105,40 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         List<OrderElementTemplate> result = buildChildrenTemplates(beingBuilt,
                 group.getChildren());
         beingBuilt.children = result;
-        beingBuilt.copyIndirectRequirementsFromOriginalDirectRequirements();
+        beingBuilt.propagateIndirectCriterionRequirements();
         return beingBuilt;
     }
 
-    public void copyIndirectRequirementsFromOriginalDirectRequirements() {
-        for (DirectCriterionRequirement each: getDirectCriterionRequirements()) {
+    /**
+     * Propagates {@link IndirectCriterionRequirement} for order to template,
+     * preserving the original value of 'valid' field
+     *
+     * This method is meant to be used the first time an
+     * {@link OrderElementTemplate} was created out from an {@link OrderElement}
+     * and it's needed to propagate its criteria while preserving the original
+     * value of 'valid' field in {@link IndirectCriterionRequirement}
+     */
+    private void propagateIndirectCriterionRequirements() {
+        propagateIndirectCriterionRequirementsForOrderLineGroup(this);
+        propagateIndirectCriterionRequirementsForOrderLines(this);
+    }
+
+    private void propagateIndirectCriterionRequirementsForOrderLineGroup(
+            OrderLineGroupTemplate orderLineGroup) {
+        for (DirectCriterionRequirement each : getDirectCriterionRequirements()) {
             criterionRequirementTemplateHandler
-                    .copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(this, each);
+                    .propagateIndirectCriterionRequirementsForOrderLineGroupKeepingValid(
+                            orderLineGroup, each);
+        }
+    }
+
+    private void propagateIndirectCriterionRequirementsForOrderLines(
+            OrderLineGroupTemplate orderLineGroup) {
+        for (OrderElementTemplate each : orderLineGroup.getChildren()) {
+            if (each instanceof OrderLineTemplate) {
+                criterionRequirementTemplateHandler
+                        .propagateIndirectCriterionRequirementsKeepingValid((OrderLineTemplate) each);
+            }
         }
     }
 
@@ -198,14 +226,37 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         for (OrderElementTemplate each : children) {
             each.createElement(parent);
         }
-        copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(parent);
+        propagateIndirectCriterionRequirements(parent);
         return parent;
     }
 
-    private void copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(OrderLineGroup orderElement) {
-        for (DirectCriterionRequirement each: orderElement.getDirectCriterionRequirement()) {
-            criterionRequirementOrderElementHandler.copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(
+    /**
+     * Propagates {@link IndirectCriterionRequirement} from template to order,
+     * preserving the original value of 'valid' field
+     */
+    private void propagateIndirectCriterionRequirements(OrderLineGroup orderLineGroup) {
+        propagateIndirectCriterionRequirementsForOrderLineGroup(orderLineGroup);
+        propagateIndirectCriterionRequirementsForOrderLines(orderLineGroup);
+    }
+
+    private void propagateIndirectCriterionRequirementsForOrderLineGroup(
+            OrderLineGroup orderElement) {
+
+        for (DirectCriterionRequirement each : orderElement
+                .getDirectCriterionRequirement()) {
+            criterionRequirementOrderElementHandler
+                    .propagateIndirectCriterionRequirementsForOrderLineGroupKeepingValid(
                             orderElement, each);
+        }
+    }
+
+    private void propagateIndirectCriterionRequirementsForOrderLines(
+            OrderLineGroup orderLineGroup) {
+        for (OrderElement each : orderLineGroup.getChildren()) {
+            if (each instanceof OrderLine) {
+                criterionRequirementOrderElementHandler
+                        .propagateIndirectCriterionRequirementsKeepingValid((OrderLine) each);
+            }
         }
     }
 

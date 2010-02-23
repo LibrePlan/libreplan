@@ -24,7 +24,9 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -317,6 +319,31 @@ public class HoursGroup extends BaseEntity implements Cloneable,
                         getIndirectCriterionRequirement(), requirementsParent);
         criterionRequirementHandler.removeOldIndirects(this, currentIndirects);
         criterionRequirementHandler.addNewsIndirects(this, currentIndirects);
+    }
+
+    public void propagateIndirectCriterionRequirementsKeepingValid() {
+        updateMyCriterionRequirements();
+
+        // Set valid value as original value for every indirect
+        Map<Criterion, Boolean> mapCriterionToValid = createCriterionToValidMap(origin
+                .getIndirectCriterionRequirement());
+
+        for (CriterionRequirement each : criterionRequirements) {
+            if (each instanceof IndirectCriterionRequirement) {
+                IndirectCriterionRequirement indirect = (IndirectCriterionRequirement) each;
+                indirect.setValid(mapCriterionToValid.get(each.getCriterion()));
+            }
+        }
+    }
+
+    private Map<Criterion, Boolean> createCriterionToValidMap(
+            Set<IndirectCriterionRequirement> indirects) {
+        Map<Criterion, Boolean> result = new HashMap<Criterion, Boolean>();
+
+        for (IndirectCriterionRequirement each : indirects) {
+            result.put(each.getCriterion(), each.isValid());
+        }
+        return result;
     }
 
     private Set<CriterionRequirement> getCriterionRequirementsFromParent() {

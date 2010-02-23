@@ -259,9 +259,15 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
 
     protected abstract List<T> getChildren(T orderElement);
 
-    private void updateCriterionRequirementsIntoOrderLine(S orderLine) {
+    public void updateCriterionRequirementsIntoOrderLine(S orderLine) {
         for (HoursGroup hoursGroup : getHoursGroups(orderLine)) {
             hoursGroup.updateMyCriterionRequirements();
+        }
+    }
+
+    public void propagateIndirectCriterionRequirementsKeepingValid(S orderLine) {
+        for (HoursGroup hoursGroup : getHoursGroups(orderLine)) {
+            hoursGroup.propagateIndirectCriterionRequirementsKeepingValid();
         }
     }
 
@@ -561,7 +567,7 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
      * attribute
      *
      */
-    public void copyIndirectCriterionRequirementFromOriginalToOrderLineGroupChildren(
+    public void propagateIndirectCriterionRequirementsForOrderLineGroupKeepingValid(
             R orderLineGroup,
             DirectCriterionRequirement parent) {
 
