@@ -366,6 +366,7 @@ public class FormBinder {
 
     private void reloadValues() {
         loadHoursValues();
+        loadIsSatisfiedValues();
         loadValueForAssignedHoursComponent();
         loadValueForTaskStartDateBox();
         loadValueForEndDate();
@@ -375,6 +376,12 @@ public class FormBinder {
     private void loadHoursValues() {
         for (AllocationRow each : rows) {
             each.loadHours();
+        }
+    }
+
+    private void loadIsSatisfiedValues() {
+        for (AllocationRow each : rows) {
+            each.loadSatisfied();
         }
     }
 
