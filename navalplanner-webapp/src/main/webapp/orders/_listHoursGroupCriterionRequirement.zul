@@ -30,7 +30,8 @@
             <rows>
                 <row self="@{each='criterionRequirementWrapper'}" value="@{criterionRequirementWrapper}">
                     <hbox>
-                    <bandbox width="500px"
+                    <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
+                        width="480px"
                         visible ="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsWorker}"
                         value = "@{criterionRequirementWrapper.criterionAndType}">
                         <bandpopup>
@@ -49,7 +50,8 @@
                              </listbox>
                         </bandpopup>
                     </bandbox>
-                    <bandbox width="500px"
+                    <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
+                        width="480px"
                         visible ="@{criterionRequirementWrapper.newDirectAndItsHoursGroupIsMachine}"
                         value = "@{criterionRequirementWrapper.criterionAndType}">
                         <bandpopup>
@@ -68,7 +70,8 @@
                              </listbox>
                         </bandpopup>
                     </bandbox>
-                    <bandbox width="500px"
+                    <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
+                        width="480px"
                         visible ="@{criterionRequirementWrapper.newException}"
                         value = "@{criterionRequirementWrapper.criterionAndType}">
                         <bandpopup>

@@ -49,6 +49,8 @@ import org.navalplanner.web.orders.HoursGroupWrapper;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
@@ -56,6 +58,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -64,6 +67,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.SimpleListModel;
 
 /**
  * Controller for showing OrderElement assigned labels
@@ -179,11 +183,13 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
 
     public void selectCriterionAndType(Listitem item, Bandbox bandbox,
             CriterionRequirementWrapper requirementWrapper) {
+        bandbox.close();
+        Listbox listbox = (Listbox) bandbox.getFirstChild().getFirstChild();
+        listbox.setModel(new SimpleListModel(getCriterionWithItsTypes()));
         if (item != null) {
             CriterionWithItsType newCriterionAndType = (CriterionWithItsType) item
                     .getValue();
             try {
-                bandbox.close();
                 bandbox.setValue(newCriterionAndType.getNameAndType());
                 changeCriterionAndType(requirementWrapper, newCriterionAndType);
             } catch (IllegalStateException e) {
@@ -194,6 +200,27 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
         } else {
             bandbox.setValue("");
         }
+    }
+
+    public void onChangingText(Event event) {
+        Bandbox bd = (Bandbox) event.getTarget();
+        final String inputText = ((InputEvent) event).getValue();
+        Listbox listbox = (Listbox) bd.getFirstChild().getFirstChild();
+        listbox.setModel(getSubModel(inputText));
+        listbox.invalidate();
+        bd.open();
+    }
+
+    private ListModel getSubModel(String text) {
+        List<CriterionWithItsType> list = new ArrayList<CriterionWithItsType>();
+        text = text.trim().toLowerCase();
+        for (CriterionWithItsType criterion : this.getCriterionWithItsTypes()) {
+            if ((criterion.getNameHierarchy().toLowerCase().contains(text) || criterion
+                    .getType().getName().toLowerCase().contains(text))) {
+                list.add(criterion);
+            }
+        }
+        return new SimpleListModel(list);
     }
 
     protected abstract void updateCriterionsWithDiferentResourceType(
@@ -419,14 +446,16 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
 
     public void selectCriterionToHoursGroup(Listitem item, Bandbox bandbox,
             CriterionRequirementWrapper requirementWrapper) {
+        bandbox.close();
+        Listbox listbox = (Listbox) bandbox.getFirstChild().getFirstChild();
+        listbox.setModel(new SimpleListModel(getCriterionWithItsTypes()));
+
         if (item != null) {
 
             Row row = (Row) bandbox.getParent().getParent();
             CriterionWithItsType criterionAndType = (CriterionWithItsType) item
                     .getValue();
             HoursGroupWrapper hoursGroupWrapper = getHoursGroupOfRequirementWrapper(row);
-
-            bandbox.close();
             bandbox.setValue(criterionAndType.getNameAndType());
 
             try {

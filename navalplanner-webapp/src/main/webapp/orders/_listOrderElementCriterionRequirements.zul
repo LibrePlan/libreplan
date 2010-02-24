@@ -50,7 +50,8 @@
                 <row self="@{each='criterionRequirementWrapper'}" value="@{criterionRequirementWrapper}">
                     <hbox>
                         <!-- Bandbox select criterion-and-type -->
-                        <bandbox width="500px"
+                        <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
+                            width="400px"
                             visible="@{criterionRequirementWrapper.updatable}"
                             value="@{criterionRequirementWrapper.criterionAndType}">
                             <bandpopup>
