@@ -411,7 +411,7 @@ public class CriterionsController extends GenericForwardComposer {
         List<CriterionWithItsType> list = new ArrayList<CriterionWithItsType>();
         text = text.trim().toLowerCase();
         for (CriterionWithItsType criterion : this.getCriterionWithItsTypes()) {
-            if ((criterion.getCriterion().getName().toLowerCase()
+            if ((criterion.getNameHierarchy().toLowerCase()
                     .contains(text) || criterion.getType().getName()
                     .toLowerCase().contains(text))) {
                 list.add(criterion);
