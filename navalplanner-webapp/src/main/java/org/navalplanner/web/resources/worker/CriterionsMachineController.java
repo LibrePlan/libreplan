@@ -8,6 +8,7 @@ import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.common.InvalidInputsChecker.isInvalid;
 import static org.navalplanner.web.common.InvalidInputsChecker.thereAreInvalidInputsOn;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.resources.machine.IAssignedMachineCriterionsModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Column;
@@ -34,10 +37,13 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelExt;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.SimpleListModel;
 
 /**
  *
@@ -122,6 +128,9 @@ public class CriterionsMachineController extends GenericForwardComposer {
 
     public void selectCriterionAndType(Listitem item, Bandbox bandbox,
         CriterionSatisfactionDTO criterionSatisfactionDTO){
+        bandbox.close();
+        Listbox listbox = (Listbox) bandbox.getFirstChild().getFirstChild();
+        listbox.setModel(new SimpleListModel(getCriterionWithItsTypes()));
         if(item != null){
             CriterionWithItsType criterionAndType = (CriterionWithItsType)item.getValue();
             bandbox.setValue(criterionAndType.getNameAndType());
@@ -129,7 +138,6 @@ public class CriterionsMachineController extends GenericForwardComposer {
         } else {
             bandbox.setValue("");
         }
-        bandbox.close();
     }
 
     public void setCriterionWithItsType(CriterionWithItsType criterionAndType,
@@ -382,5 +390,27 @@ public class CriterionsMachineController extends GenericForwardComposer {
 
     public void validateConstraints() {
         ConstraintChecker.isValid(self);
+    }
+
+    public void onChangingText(Event event) {
+        Bandbox bd = (Bandbox) event.getTarget();
+        final String inputText = ((InputEvent) event).getValue();
+        Listbox listbox = (Listbox) bd.getFirstChild().getFirstChild();
+        listbox.setModel(getSubModel(inputText));
+        listbox.invalidate();
+        bd.open();
+    }
+
+    private ListModel getSubModel(String text) {
+        List<CriterionWithItsType> list = new ArrayList<CriterionWithItsType>();
+        text = text.trim().toLowerCase();
+        for (CriterionWithItsType criterion : this.getCriterionWithItsTypes()) {
+            if ((criterion.getNameHierarchy().toLowerCase()
+                    .contains(text) || criterion.getType().getName()
+                    .toLowerCase().contains(text))) {
+                list.add(criterion);
+            }
+        }
+        return new SimpleListModel(list);
     }
 }

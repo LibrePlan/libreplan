@@ -28,8 +28,8 @@
                 <row self="@{each='criterionSatisfactionDTO'}" value="@{criterionSatisfactionDTO}">
                     <hbox>
                     <!--  Select criterion -->
-                    <bandbox width="300px"
-                        constraint="no empty"
+                    <bandbox onChanging = "assignedCriterionsController.onChangingText(event);"
+                        constraint="no empty" width="400px"
                         visible="@{criterionSatisfactionDTO.newObject}"
                         value = "@{criterionSatisfactionDTO.criterionAndType}">
                         <bandpopup>
