@@ -72,19 +72,6 @@ public class ResourceCalendar extends BaseCalendar {
         return multiplyByCapacity(super.getCapacityAt(date));
     }
 
-    @Override
-    public boolean isActive(LocalDate date) {
-        if (getCalendarAvailabilities().isEmpty()) {
-            return true;
-        }
-        for (CalendarAvailability calendarAvailability : getCalendarAvailabilities()) {
-            if (calendarAvailability.isActive(date)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     protected int multiplyByCapacity(Integer workableHours) {
         if (workableHours == null) {
             return 0;

@@ -748,11 +748,16 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return isActive(new LocalDate(date));
     }
 
-    /**
-     * This method is intended to be overridable
-     */
     public boolean isActive(LocalDate date) {
-        return true;
+        if (getCalendarAvailabilities().isEmpty()) {
+            return true;
+        }
+        for (CalendarAvailability calendarAvailability : getCalendarAvailabilities()) {
+            if (calendarAvailability.isActive(date)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public CalendarAvailability getLastCalendarAvailability() {
