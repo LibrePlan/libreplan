@@ -281,9 +281,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
             Resource resource,
             List<GenericResourceAllocation> allocationsSortedByStartDate) {
+        LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
+                .onResourceSatisfying(resource, criterions);
         return new LoadTimeLine(getName(criterions), PeriodsBuilder.build(
-                LoadPeriodGenerator.onResource(resource),
-                allocationsSortedByStartDate));
+                periodGeneratorFactory, allocationsSortedByStartDate));
     }
 
     public static String getName(Collection<? extends Criterion> criterions) {
