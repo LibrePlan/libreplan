@@ -289,17 +289,19 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     private Set<Resource> getResourcesMatchedByCriterionFromAllocations() {
         Set<Resource> resources = new HashSet<Resource>();
-        for (ResourceAllocation<?> r : getAllocationsOnInterval()) {
-            if (r instanceof GenericResourceAllocation) {
-                GenericResourceAllocation generic = (GenericResourceAllocation) r;
-                Set<GenericDayAssignment> genericDayAssignments = generic
-                        .getGenericDayAssignments();
-                for (GenericDayAssignment genericDayAssignment : genericDayAssignments) {
-                    resources.add(genericDayAssignment.getResource());
-                }
+        for (GenericResourceAllocation each : genericAllocationsOnInterval()) {
+            Set<GenericDayAssignment> genericDayAssignments = each
+                    .getGenericDayAssignments();
+            for (GenericDayAssignment eachAssignment : genericDayAssignments) {
+                resources.add(eachAssignment.getResource());
             }
         }
         return resources;
+    }
+
+    private List<GenericResourceAllocation> genericAllocationsOnInterval() {
+        return ResourceAllocation.getOfType(GenericResourceAllocation.class,
+                getAllocationsOnInterval());
     }
 
     @Override
