@@ -774,7 +774,12 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end) {
-        return getTotalWorkHoursFor(calendarOrDefault(), start, end);
+        return getTotalWorkHoursFor(calendarOrDefault(), start, end, null);
+    }
+
+    public int getTotalWorkHours(LocalDate start, LocalDate end,
+            ICriterion criterion) {
+        return getTotalWorkHoursFor(calendarOrDefault(), start, end, criterion);
     }
 
     private IWorkHours calendarOrDefault() {
@@ -783,17 +788,29 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     private int getTotalWorkHoursFor(IWorkHours calendar, LocalDate start,
-            LocalDate end) {
+            LocalDate end, ICriterion criterionToSatisfy) {
         int sum = 0;
         final int days = Days.daysBetween(start, end).getDays();
         for (int i = 0; i < days; i++) {
             LocalDate current = start.plusDays(i);
             Integer workableHours = calendar.getCapacityAt(current);
-            if (workableHours != null) {
+            if (workableHours != null
+                    && (criterionToSatisfy == null || satisfiesCriterionAt(
+                            criterionToSatisfy, current))) {
                 sum += workableHours;
             }
         }
         return sum;
+    }
+
+    private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,
+            LocalDate current) {
+        return criterionToSatisfy.isSatisfiedBy(this, asDate(current),
+                asDate(current.plusDays(1)));
+    }
+
+    private Date asDate(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDateTime().toDate();
     }
 
     public void addUnvalidatedSatisfaction(CriterionSatisfaction

@@ -313,7 +313,7 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     protected int getTotalWorkHours() {
         int sum = 0;
         for (Resource resource : getResourcesMatchedByCriterionFromAllocations()) {
-            sum += resource.getTotalWorkHours(start, end);
+            sum += resource.getTotalWorkHours(start, end, criterion);
         }
         return sum;
     }
