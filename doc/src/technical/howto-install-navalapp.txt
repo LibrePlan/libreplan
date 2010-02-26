@@ -21,7 +21,7 @@ $ sudo apt-get install libqt4-webkit libqt4-svg xvfb
 
 Descargamos a utilidade CutyCapt
 
-$ wget http://naval.igalia.com/downloads/cutycapt_20100108_i386.deb
+$ wget http://navalplan.org/downloads/cutycapt_20100108_i386.deb
 
 Instalamos CutyCapt
 
@@ -74,7 +74,7 @@ Instalamos a librería de acceso a jdbc a postgresql en tomcat, o jar está no p
 Instalamos a última versión da aplicación no tomcat
 
 $ cd /var/lib/tomcat6/webapps
-$ sudo wget http://naval.igalia.com/downloads/navalplanner-webapp.war
+$ sudo wget http://navalplan.org/downloads/navalplanner-webapp.war
 $ sudo chown tomcat6.tomcat6 navalplanner-webapp.war
 
 Reiniciamos o tomcat para que recolla todas as modificacións da configuración:
@@ -97,7 +97,7 @@ Instalación de scripts de actualización, copiaranse os seguintes scripts no Es
 #!/bin/sh
 set -e
 
-BASE_URL=http://naval.igalia.com/downloads
+BASE_URL=http://navalplan.org/downloads
 
 wget $BASE_URL/navalapp-application-update.txt
 wget $BASE_URL/navalapp-database-update.txt
@@ -118,7 +118,7 @@ read foo
 set -e
 
 CONFIG_FILENAME=navalapp-download-config.txt
-UPDATE_CONFIG_URL=http://naval.igalia.com/downloads/$CONFIG_FILENAME
+UPDATE_CONFIG_URL=http://navalplan.org/downloads/$CONFIG_FILENAME
 
 wget $UPDATE_CONFIG_URL
 . ./$CONFIG_FILENAME
@@ -147,7 +147,7 @@ read foo
 set -e
 
 CONFIG_FILENAME=navalapp-download-config.txt
-UPDATE_CONFIG_URL=http://naval.igalia.com/downloads/$CONFIG_FILENAME
+UPDATE_CONFIG_URL=http://navalplan.org/downloads/$CONFIG_FILENAME
 
 wget $UPDATE_CONFIG_URL
 . ./$CONFIG_FILENAME
