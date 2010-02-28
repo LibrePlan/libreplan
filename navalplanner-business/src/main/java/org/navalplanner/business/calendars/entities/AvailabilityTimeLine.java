@@ -336,6 +336,12 @@ public class AvailabilityTimeLine {
         return new AvailabilityTimeLine();
     }
 
+    public static AvailabilityTimeLine createAllInvalid() {
+        AvailabilityTimeLine result = new AvailabilityTimeLine();
+        result.allInvalid();
+        return result;
+    }
+
     private List<Interval> invalids = new ArrayList<Interval>();
 
     private AvailabilityTimeLine() {

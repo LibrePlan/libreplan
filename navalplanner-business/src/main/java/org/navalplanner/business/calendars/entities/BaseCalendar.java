@@ -910,9 +910,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return last.isEmptyFor(each);
     }
 
-    private AvailabilityTimeLine getAvailabilityFrom(LocalDate start) {
+    public AvailabilityTimeLine getAvailability() {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
-        result.invalidUntil(start);
         addInvaliditiesDerivedFromCalendar(result);
         return result;
     }

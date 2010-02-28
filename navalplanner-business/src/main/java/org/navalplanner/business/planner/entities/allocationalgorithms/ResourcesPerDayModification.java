@@ -23,16 +23,22 @@ package org.navalplanner.business.planner.entities.allocationalgorithms;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
 
 public abstract class ResourcesPerDayModification extends
@@ -68,6 +74,61 @@ public abstract class ResourcesPerDayModification extends
             return genericAllocation.createAssignmentsAtDay(getResources(),
                     day, getGoal(), limit);
         }
+
+        @Override
+        public AvailabilityTimeLine getAvailability() {
+            List<Resource> resources = getResources();
+            AvailabilityTimeLine result = AvailabilityTimeLine
+                    .createAllInvalid();
+            for (Resource each : resources) {
+                result = result.or(buildAvailabilityFor(each));
+            }
+            return result;
+        }
+
+        private AvailabilityTimeLine buildAvailabilityFor(Resource each) {
+            AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+            result = result.and(getCalendarAvailabilityFor(each));
+            return result.and(getCriterionsAvailabilityFor(each));
+        }
+
+        private AvailabilityTimeLine getCriterionsAvailabilityFor(
+                Resource resource) {
+            Set<Criterion> criterions = genericAllocation.getCriterions();
+            AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+            for (Criterion each : criterions) {
+                result = result.and(buildTimeline(resource.query().from(each)
+                        .result()));
+            }
+            return result;
+        }
+
+        private static AvailabilityTimeLine buildTimeline(
+                List<CriterionSatisfaction> satisfactions) {
+            AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+            LocalDate previousEnd = null;
+            for (CriterionSatisfaction each : satisfactions) {
+                LocalDate startDate = asLocal(each.getStartDate());
+                assert startDate != null : "satisfactions start date is not null";
+                if (previousEnd == null) {
+                    result.invalidUntil(startDate);
+                } else {
+                    result.invalidAt(previousEnd, startDate);
+                }
+                previousEnd = asLocal(each.getEndDate());
+                if (previousEnd == null) {
+                    break;
+                }
+            }
+            if (previousEnd != null) {
+                result.invalidFrom(previousEnd);
+            }
+            return result;
+        }
+
+        private static LocalDate asLocal(Date date) {
+            return date != null ? LocalDate.fromDateFields(date) : null;
+        }
     }
 
     private static class OnSpecificAllocation extends
@@ -99,6 +160,23 @@ public abstract class ResourcesPerDayModification extends
             return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
                     limit);
         }
+
+        @Override
+        public AvailabilityTimeLine getAvailability() {
+            Resource resource = getAssociatedResource();
+            return getCalendarAvailabilityFor(resource);
+        }
+
+        private Resource getAssociatedResource() {
+            return getResources().get(0);
+        }
+    }
+
+    protected static AvailabilityTimeLine getCalendarAvailabilityFor(
+            Resource resource) {
+        ResourceCalendar resourceCalendar = resource.getCalendar();
+        return resourceCalendar != null ? resourceCalendar.getAvailability()
+                : AvailabilityTimeLine.allValid();
     }
 
     public static ResourcesPerDayModification create(
@@ -159,6 +237,6 @@ public abstract class ResourcesPerDayModification extends
     public abstract List<DayAssignment> createAssignmentsAtDay(LocalDate day,
             int limit);
 
-
+    public abstract AvailabilityTimeLine getAvailability();
 
 }

@@ -217,8 +217,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             .getBeingModified().getWorkHoursPerDay();
                     ResourcesPerDay resourcesPerDay = resourcesPerDayModification
                             .getGoal();
-                    AvailabilityTimeLine availability = AvailabilityTimeLine
-                            .allValid();
+                    AvailabilityTimeLine availability = resourcesPerDayModification
+                            .getAvailability();
                     availability.invalidUntil(start);
                     return workHoursPerDay.thereAreHoursOn(availability,
                             resourcesPerDay, hoursToAllocate);
