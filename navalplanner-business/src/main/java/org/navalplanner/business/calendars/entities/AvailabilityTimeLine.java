@@ -1,0 +1,393 @@
+/*
+ * This file is part of ###PROJECT_NAME###
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.navalplanner.business.calendars.entities;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
+
+import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
+
+/**
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ *
+ */
+public class AvailabilityTimeLine {
+
+    private static abstract class DatePoint implements Comparable<DatePoint> {
+
+        protected abstract int compareTo(FixedPoint fixedPoint);
+
+        protected abstract int compareTo(EndOfTime endOfTime);
+
+        protected abstract int compareTo(StartOfTime startOfTime);
+
+        protected abstract boolean equalTo(FixedPoint fixedPoint);
+
+        protected abstract boolean equalTo(EndOfTime endOfTime);
+
+        protected abstract boolean equalTo(StartOfTime startOfTime);
+
+        @Override
+        public final int compareTo(DatePoint obj) {
+            Validate.notNull(obj);
+            if (obj instanceof FixedPoint) {
+                return compareTo((FixedPoint) obj);
+            } else if (obj instanceof EndOfTime) {
+                return compareTo((EndOfTime) obj);
+            } else if (obj instanceof StartOfTime) {
+                return compareTo((StartOfTime) obj);
+            } else {
+                throw new RuntimeException("unknown subclass for " + obj);
+            }
+        }
+
+        @Override
+        public abstract int hashCode();
+
+        @Override
+        public final boolean equals(Object obj) {
+            if (!(obj instanceof DatePoint)) {
+                return false;
+            }
+            if (obj instanceof FixedPoint) {
+                return equalTo((FixedPoint) obj);
+            } else if (obj instanceof EndOfTime) {
+                return equalTo((EndOfTime) obj);
+            } else if (obj instanceof StartOfTime) {
+                return equalTo((StartOfTime) obj);
+            } else {
+                throw new RuntimeException("unknown subclass for " + obj);
+            }
+        }
+
+    }
+
+    private static class FixedPoint extends DatePoint {
+        private final LocalDate date;
+
+        private FixedPoint(LocalDate date) {
+            Validate.notNull(date);
+            this.date = date;
+        }
+
+        @Override
+        protected int compareTo(FixedPoint fixedPoint) {
+            return this.date.compareTo(fixedPoint.date);
+        }
+
+        @Override
+        protected int compareTo(EndOfTime endOfTime) {
+            return -1;
+        }
+
+        @Override
+        protected int compareTo(StartOfTime startOfTime) {
+            return 1;
+        }
+
+        @Override
+        protected boolean equalTo(FixedPoint fixedPoint) {
+            return date.equals(fixedPoint.date);
+        }
+
+        @Override
+        protected boolean equalTo(EndOfTime endOfTime) {
+            return false;
+        }
+
+        @Override
+        protected boolean equalTo(StartOfTime startOfTime) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return date.hashCode();
+        }
+    }
+
+    private static class EndOfTime extends DatePoint {
+        private static final EndOfTime INSTANCE = new EndOfTime();
+
+        public static EndOfTime create() {
+            return INSTANCE;
+        }
+
+        @Override
+        protected int compareTo(FixedPoint fixedPoint) {
+            return 1;
+        }
+
+        @Override
+        protected int compareTo(EndOfTime endOfTime) {
+            return 0;
+        }
+
+        @Override
+        protected int compareTo(StartOfTime startOfTime) {
+            return 1;
+        }
+
+        @Override
+        protected boolean equalTo(FixedPoint fixedPoint) {
+            return false;
+        }
+
+        @Override
+        protected boolean equalTo(EndOfTime endOfTime) {
+            return true;
+        }
+
+        @Override
+        protected boolean equalTo(StartOfTime startOfTime) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return EndOfTime.class.hashCode();
+        }
+
+    }
+
+    private static class StartOfTime extends DatePoint {
+        private static final StartOfTime INSTANCE = new StartOfTime();
+
+        public static StartOfTime create() {
+            return INSTANCE;
+        }
+
+        @Override
+        protected int compareTo(FixedPoint fixedPoint) {
+            return -1;
+        }
+
+        @Override
+        protected int compareTo(EndOfTime endOfTime) {
+            return -1;
+        }
+
+        @Override
+        protected int compareTo(StartOfTime startOfTime) {
+            return 0;
+        }
+
+        @Override
+        protected boolean equalTo(FixedPoint fixedPoint) {
+            return false;
+        }
+
+        @Override
+        protected boolean equalTo(EndOfTime endOfTime) {
+            return false;
+        }
+
+        @Override
+        protected boolean equalTo(StartOfTime startOfTime) {
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return StartOfTime.class.hashCode();
+        }
+    }
+
+    private static class Interval implements
+            Comparable<Interval> {
+
+        static Interval create(LocalDate start, LocalDate end) {
+            return new Interval(new FixedPoint(start), new FixedPoint(
+                    end));
+        }
+
+        static Interval from(LocalDate date) {
+            return new Interval(new FixedPoint(date), EndOfTime.create());
+        }
+
+        public static Interval to(LocalDate date) {
+            return new Interval(StartOfTime.create(), new FixedPoint(
+                    date));
+        }
+
+        static Interval point(LocalDate start) {
+            return new Interval(new FixedPoint(start), new FixedPoint(start
+                    .plusDays(1)));
+        }
+
+        private final DatePoint start;
+
+        private final DatePoint end;
+
+        private Interval(DatePoint start, DatePoint end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public int compareTo(Interval other) {
+            return this.start.compareTo(other.start) * 2
+                    - this.end.compareTo(other.end);
+        }
+
+        public boolean includes(LocalDate date) {
+            return includes(new FixedPoint(date));
+        }
+
+        private boolean includes(FixedPoint point) {
+            return start.equals(point) || start.compareTo(point) <= 0
+                    && point.compareTo(end) < 0;
+        }
+
+        public boolean overlaps(Interval other) {
+            return start.compareTo(other.end) <= 0
+                    && end.compareTo(other.start) >= 0;
+        }
+
+        public Interval coalesce(Interval other) {
+            if (!overlaps(other)) {
+                throw new IllegalArgumentException(
+                        "in order to coalesce two intervals must overlap");
+            }
+            return new Interval(min(start, other.start), max(end,
+                    other.end));
+        }
+
+        private DatePoint min(DatePoint... values) {
+            return (DatePoint) Collections.min(Arrays.asList(values));
+        }
+
+        private DatePoint max(DatePoint... values) {
+            return (DatePoint) Collections.max(Arrays.asList(values));
+        }
+
+    }
+
+    public static AvailabilityTimeLine allValid() {
+        return new AvailabilityTimeLine();
+    }
+
+    private List<Interval> invalids = new ArrayList<Interval>();
+
+    private AvailabilityTimeLine() {
+    }
+
+    public boolean isValid(LocalDate date) {
+        if (invalids.isEmpty()) {
+            return true;
+        }
+        Interval point = Interval.point(date);
+        int binarySearch = Collections.binarySearch(invalids, point);
+        if (binarySearch >= 0) {
+            Interval interval = invalids.get(binarySearch);
+            return !interval.includes(date);
+        } else {
+            int insertionPoint = insertionPoint(binarySearch);
+            if (insertionPoint == 0) {
+                return true;
+            }
+            Interval interval = invalids
+                    .get(insertionPoint - 1);
+            return !interval.includes(date);
+        }
+    }
+
+    public void invalidAt(LocalDate date) {
+        Interval point = Interval.point(date);
+        insert(point);
+    }
+
+    private void insert(Interval toBeInserted) {
+        int binarySearch = Collections.binarySearch(invalids, toBeInserted);
+        if (invalids.isEmpty()) {
+            invalids.add(toBeInserted);
+            return;
+        }
+        toBeInserted = coalesceWithAdjacent(insertionPoint(binarySearch),
+                toBeInserted);
+        int insertionPoint = insertBeforeAllAdjacent(toBeInserted);
+        removeAdjacent(insertionPoint, toBeInserted);
+    }
+
+    private int insertBeforeAllAdjacent(Interval toBeInserted) {
+        int n = Collections.binarySearch(invalids, toBeInserted);
+        int insertionPoint = insertionPoint(n);
+        invalids.add(insertionPoint, toBeInserted);
+        return insertionPoint;
+    }
+
+    public Interval coalesceWithAdjacent(int insertionPoint,
+            Interval toBeInserted) {
+        Interval result = toBeInserted;
+        for (int i = insertionPoint; i >= 0
+                && (i == invalids.size() || at(i).overlaps(
+                        toBeInserted)); i--) {
+            if (i < invalids.size()) {
+                result = result.coalesce(at(i));
+            }
+        }
+        for (int i = insertionPoint; i < invalids.size()
+                && at(i).overlaps(toBeInserted); i++) {
+            result = result.coalesce(at(i));
+        }
+        return result;
+    }
+
+    private void removeAdjacent(int insertionPoint, Interval inserted) {
+        ListIterator<Interval> listIterator = invalids
+                .listIterator(insertionPoint + 1);
+        while (listIterator.hasNext()) {
+            Interval next = listIterator.next();
+            if (!next.overlaps(inserted)) {
+                break;
+            }
+            listIterator.remove();
+        }
+    }
+
+    private Interval at(int i) {
+        return i >= 0 && i < invalids.size() ? invalids.get(i) : null;
+    }
+
+    private int insertionPoint(int binarySearchResult) {
+        return binarySearchResult < 0 ? (-binarySearchResult) - 1
+                : binarySearchResult;
+    }
+
+    public void invalidAt(LocalDate intervalStart, LocalDate intervalEnd) {
+        if (intervalStart.isAfter(intervalEnd)) {
+            throw new IllegalArgumentException(
+                    "end must be equal or after start");
+        }
+        insert(Interval.create(intervalStart, intervalEnd));
+    }
+
+    public void invalidFrom(LocalDate date) {
+        insert(Interval.from(date));
+    }
+
+    public void invalidUntil(LocalDate date) {
+        insert(Interval.to(date));
+    }
+}
