@@ -19,6 +19,7 @@
  */
 package org.navalplanner.business.test.calendars.entities;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -178,6 +179,28 @@ public class AvailabilityTimeLineTest {
         assertFalse(timeLine.isValid(contemporaryExample.plusDays(1)));
         assertFalse(timeLine.isValid(contemporaryExample.minusDays(1)));
         assertFalse(timeLine.isValid(earlyExample));
+    }
+
+    @Test
+    public void addingTwoAvailabilityTimeLines() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidAt(contemporaryExample.minusDays(10),
+                contemporaryExample.plusDays(10));
+
+        AvailabilityTimeLine another = AvailabilityTimeLine.allValid();
+        another.invalidAt(contemporaryExample.minusDays(40),
+                contemporaryExample.minusDays(20));
+
+        AvailabilityTimeLine result = timeLine.and(another);
+
+        LocalDate current = contemporaryExample.minusDays(40);
+        LocalDate end = contemporaryExample.plusDays(20);
+        while (current.compareTo(end) < 0) {
+            assertEquals("must give the same value for: " + current, timeLine
+                    .isValid(current)
+                    && another.isValid(current), result.isValid(current));
+            current = current.plusDays(1);
+        }
     }
 
 }

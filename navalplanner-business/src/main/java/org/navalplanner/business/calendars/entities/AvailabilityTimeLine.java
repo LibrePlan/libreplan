@@ -337,7 +337,7 @@ public class AvailabilityTimeLine {
         return insertionPoint;
     }
 
-    public Interval coalesceWithAdjacent(int insertionPoint,
+    private Interval coalesceWithAdjacent(int insertionPoint,
             Interval toBeInserted) {
         Interval result = toBeInserted;
         for (int i = insertionPoint; i >= 0
@@ -389,5 +389,18 @@ public class AvailabilityTimeLine {
 
     public void invalidUntil(LocalDate date) {
         insert(Interval.to(date));
+    }
+
+    public AvailabilityTimeLine and(AvailabilityTimeLine another) {
+        AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+        inserting(result, invalids);
+        inserting(result, another.invalids);
+        return result;
+    }
+
+    private void inserting(AvailabilityTimeLine result, List<Interval> invalid) {
+        for (Interval each : invalid) {
+            result.insert(each);
+        }
     }
 }
