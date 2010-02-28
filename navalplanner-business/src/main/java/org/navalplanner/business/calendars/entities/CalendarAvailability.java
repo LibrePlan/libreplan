@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import java.util.Comparator;
 import java.util.Date;
 
 import org.hibernate.validator.NotNull;
@@ -52,6 +53,14 @@ public class CalendarAvailability extends BaseEntity {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    public static final Comparator<CalendarAvailability> BY_START_DATE_COMPARATOR = new Comparator<CalendarAvailability>() {
+
+        @Override
+        public int compare(CalendarAvailability o1, CalendarAvailability o2) {
+            return o1.getStartDate().compareTo(o2.getStartDate());
+        }
+    };
 
     /**
      * Constructor for hibernate. Do not use!

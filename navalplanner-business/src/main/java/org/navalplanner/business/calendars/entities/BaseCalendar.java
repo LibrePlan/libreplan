@@ -710,6 +710,18 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return Collections.unmodifiableList(calendarAvailabilities);
     }
 
+    /**
+     * Returns a a copy of calendar availabilities sorted by start date.
+     * calendarAvailabilities should already be sorted by start date, this
+     * method is just for extra safety
+     */
+    private List<CalendarAvailability> getCalendarAvailabilitiesSortedByStartDate() {
+        List<CalendarAvailability> result = new ArrayList<CalendarAvailability>(
+                calendarAvailabilities);
+        Collections.sort(result, CalendarAvailability.BY_START_DATE_COMPARATOR);
+        return result;
+    }
+
     public void addNewCalendarAvailability(
             CalendarAvailability calendarAvailability)
             throws IllegalArgumentException {
@@ -764,7 +776,10 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         if (calendarAvailabilities.isEmpty()) {
             return null;
         }
-        return calendarAvailabilities.get(calendarAvailabilities.size() - 1);
+        // Sorting for ensuring the last one is picked. In theory sorting would
+        // not be necessary, doing it for safety
+        List<CalendarAvailability> sorted = getCalendarAvailabilitiesSortedByStartDate();
+        return sorted.get(sorted.size() - 1);
     }
 
     public void setStartDate(CalendarAvailability calendarAvailability,
