@@ -834,13 +834,6 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     }
 
     @Override
-    public boolean thereAreAvailableHoursFrom(LocalDate start,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        AvailabilityTimeLine availability = getAvailabilityFrom(start);
-        return thereAreHoursOn(availability, resourcesPerDay, hoursToAllocate);
-    }
-
-    @Override
     public boolean thereAreHoursOn(AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
         if (hoursToAllocate == 0) {

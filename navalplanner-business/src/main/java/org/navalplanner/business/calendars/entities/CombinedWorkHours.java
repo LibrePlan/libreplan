@@ -75,17 +75,6 @@ public abstract class CombinedWorkHours implements IWorkHours {
             IWorkHours workHour, LocalDate date);
 
     @Override
-    public boolean thereAreAvailableHoursFrom(LocalDate date,
-            ResourcesPerDay resourcesPerDay, int hours) {
-        for (IWorkHours each : workHours) {
-            if (!each.thereAreAvailableHoursFrom(date, resourcesPerDay, hours)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public boolean thereAreHoursOn(AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
         for (IWorkHours each : workHours) {

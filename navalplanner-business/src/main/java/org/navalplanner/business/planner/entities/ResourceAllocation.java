@@ -217,7 +217,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             .getBeingModified().getWorkHoursPerDay();
                     ResourcesPerDay resourcesPerDay = resourcesPerDayModification
                             .getGoal();
-                    return workHoursPerDay.thereAreAvailableHoursFrom(start,
+                    AvailabilityTimeLine availability = AvailabilityTimeLine
+                            .allValid();
+                    availability.invalidUntil(start);
+                    return workHoursPerDay.thereAreHoursOn(availability,
                             resourcesPerDay, hoursToAllocate);
                 }
 
@@ -550,16 +553,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             public Integer toHours(LocalDate day, ResourcesPerDay amount) {
                 final Integer capacity = getCapacityAt(day);
                 return amount.asHoursGivenResourceWorkingDayOf(capacity);
-            }
-
-            @Override
-            public boolean thereAreAvailableHoursFrom(LocalDate date,
-                    ResourcesPerDay resourcesPerDay, int hours) {
-                if (getTaskCalendar() == null) {
-                    return true;
-                }
-                return getTaskCalendar().thereAreAvailableHoursFrom(date,
-                        resourcesPerDay, hours);
             }
 
             @Override

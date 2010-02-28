@@ -45,8 +45,4 @@ public interface IWorkHours {
 
     public boolean thereAreHoursOn(AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate);
-
-    public boolean thereAreAvailableHoursFrom(LocalDate date,
-            ResourcesPerDay resourcesPerDay, int hours);
-
 }
