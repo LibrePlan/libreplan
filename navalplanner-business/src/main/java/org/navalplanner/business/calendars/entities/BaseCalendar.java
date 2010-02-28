@@ -874,14 +874,4 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return last.getEndDate();
     }
 
-    private List<CalendarException> getExceptionsFrom(LocalDate start) {
-        List<CalendarException> result = new ArrayList<CalendarException>();
-        for (CalendarException each : exceptions) {
-            if (each.getDate().compareTo(start) >= 0) {
-                result.add(each);
-            }
-        }
-        return result;
-    }
-
 }
