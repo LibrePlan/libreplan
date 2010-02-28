@@ -78,7 +78,7 @@ public class CalendarException extends BaseEntity {
     }
 
     public Integer getHours() {
-        return hours;
+        return hours != null ? hours : 0;
     }
 
     public CalendarExceptionType getType() {
