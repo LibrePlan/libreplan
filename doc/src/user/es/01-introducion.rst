@@ -50,7 +50,7 @@ Sobre un pedido, la aplicación muestra las siguientes perspectivas:
 * Vista de asignación avanzada de recursos. Vista en la que el usuario puede asignar recursos de manera avanzada, seleccionando las horas por día o las funciones de asignación que desea aplicar. Ver sección de *Asignación de recursos* para más información.
 
 ¿Por que es útil "NavalPlan"?
-==============================
+=============================
 
 "NavalPlan" es un proyecto desarrollado con el objetivo de dotar al usuario de una herramienta de planificación. Dicha herramienta se basa en una serie de conceptos que se detectaron analizando la problemática de la planificación en el sector naval gallego. Los conceptos base implantados sobre la aplicación son los siguientes:
 
