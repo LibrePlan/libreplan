@@ -34,7 +34,7 @@ import org.joda.time.LocalDate;
  */
 public class AvailabilityTimeLine {
 
-    private static abstract class DatePoint implements Comparable<DatePoint> {
+    public static abstract class DatePoint implements Comparable<DatePoint> {
 
         protected abstract int compareTo(FixedPoint fixedPoint);
 
@@ -86,10 +86,10 @@ public class AvailabilityTimeLine {
 
     }
 
-    private static class FixedPoint extends DatePoint {
+    public static class FixedPoint extends DatePoint {
         private final LocalDate date;
 
-        private FixedPoint(LocalDate date) {
+        public FixedPoint(LocalDate date) {
             Validate.notNull(date);
             this.date = date;
         }
@@ -135,7 +135,7 @@ public class AvailabilityTimeLine {
         }
     }
 
-    private static class EndOfTime extends DatePoint {
+    public static class EndOfTime extends DatePoint {
         private static final EndOfTime INSTANCE = new EndOfTime();
 
         public static EndOfTime create() {
@@ -184,7 +184,7 @@ public class AvailabilityTimeLine {
 
     }
 
-    private static class StartOfTime extends DatePoint {
+    public static class StartOfTime extends DatePoint {
         private static final StartOfTime INSTANCE = new StartOfTime();
 
         public static StartOfTime create() {
@@ -232,7 +232,7 @@ public class AvailabilityTimeLine {
         }
     }
 
-    private static class Interval implements
+    public static class Interval implements
             Comparable<Interval> {
 
         static Interval create(LocalDate start, LocalDate end) {
@@ -265,6 +265,14 @@ public class AvailabilityTimeLine {
         private Interval(DatePoint start, DatePoint end) {
             this.start = start;
             this.end = end;
+        }
+
+        public DatePoint getStart() {
+            return start;
+        }
+
+        public DatePoint getEnd() {
+            return end;
         }
 
         @Override
@@ -433,4 +441,22 @@ public class AvailabilityTimeLine {
             result.insert(each);
         }
     }
+
+    public List<Interval> getValidPeriods() {
+        List<Interval> result = new ArrayList<Interval>();
+        DatePoint previous = StartOfTime.create();
+        for (Interval each : invalids) {
+            DatePoint invalidStart = each.start;
+            if (!invalidStart.equals(StartOfTime.create())
+                    && !invalidStart.equals(EndOfTime.create())) {
+                result.add(new Interval(previous, invalidStart));
+            }
+            previous = each.getEnd();
+        }
+        if (!previous.equals(EndOfTime.create())) {
+            result.add(new Interval(previous, EndOfTime.create()));
+        }
+        return result;
+    }
+
 }

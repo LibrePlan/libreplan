@@ -21,15 +21,27 @@ package org.navalplanner.business.test.calendars.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.Validate;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.DatePoint;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTime;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
  */
 public class AvailabilityTimeLineTest {
 
@@ -221,4 +233,127 @@ public class AvailabilityTimeLineTest {
             current = current.plusDays(1);
         }
     }
+
+    @Test
+    public void anAllValidPeriodsGeneratesAnAllEncompassingInterval() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        List<Interval> validPeriods = timeLine.getValidPeriods();
+
+        assertThat(validPeriods, definedBy(StartOfTime.create(), EndOfTime
+                .create()));
+    }
+
+    @Test
+    public void anInvalidPeriodUntilGeneratesAValidIntervalAfterwards() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidUntil(contemporaryExample);
+        List<Interval> validPeriods = timeLine.getValidPeriods();
+
+        assertThat(validPeriods, definedBy(point(contemporaryExample),
+                EndOfTime.create()));
+    }
+
+    @Test
+    public void anInvalidFromPeriodGeneratesAValidIntervalBefore() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidFrom(contemporaryExample);
+        List<Interval> validPeriods = timeLine.getValidPeriods();
+
+        assertThat(validPeriods, definedBy(StartOfTime.create(),
+                new FixedPoint(contemporaryExample)));
+    }
+
+    @Test
+    public void anInvalidityPeriodGeneratesTwoValidIntervals() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidAt(contemporaryExample, lateExample);
+        List<Interval> validPeriods = timeLine.getValidPeriods();
+
+        assertThat(validPeriods, definedBy(StartOfTime.create(),
+                point(contemporaryExample), point(lateExample), EndOfTime
+                        .create()));
+    }
+
+    @Test
+    public void anAllInvalidTimelineGeneratesZeroValidIntervals() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.allInvalid();
+        assertTrue(timeLine.getValidPeriods().isEmpty());
+    }
+
+    @Test
+    public void anInvalidPointGeneratesTwoValidPeriods() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidAt(contemporaryExample);
+        assertThat(timeLine.getValidPeriods(), definedBy(StartOfTime.create(),
+                point(contemporaryExample), point(contemporaryExample
+                        .plusDays(1)), EndOfTime.create()));
+    }
+
+    private static FixedPoint point(LocalDate param) {
+        return new FixedPoint(param);
+    }
+
+    @Test
+    public void aCombinationOfSeveralInvalidPeriods() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidUntil(earlyExample);
+        timeLine.invalidAt(contemporaryExample, lateExample);
+        timeLine.invalidFrom(lateExample.plusDays(10));
+        assertThat(timeLine.getValidPeriods(), definedBy(point(earlyExample),
+                point(contemporaryExample), point(lateExample),
+                point(lateExample.plusDays(10))));
+    }
+
+    private static Matcher<List<Interval>> definedBy(final DatePoint... points) {
+        Validate.isTrue(points.length % 2 == 0,
+                "number of points provided must be even");
+        return new BaseMatcher<List<Interval>>() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public boolean matches(Object object) {
+                if (object instanceof List) {
+                    List<Interval> intervals = (List<Interval>) object;
+                    List<DatePoint[]> pairsOfPoints = pointsAsPairs();
+                    for (int i = 0; i < intervals.size(); i++) {
+                        Interval interval = intervals.get(i);
+                        DatePoint[] pair = pairsOfPoints.get(i);
+                        if (!(pair[0].equals(interval.getStart()) && pair[1]
+                                .equals(interval.getEnd()))) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            private List<DatePoint[]> pointsAsPairs() {
+                List<DatePoint[]> result = new ArrayList<DatePoint[]>();
+                for (int i = 0; i < points.length / 2; i++) {
+                    DatePoint[] pair = { points[i * 2], points[i * 2 + 1] };
+                    result.add(pair);
+                }
+                return result;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                StringBuilder text = new StringBuilder();
+                boolean first = true;
+                for (DatePoint[] each : pointsAsPairs()) {
+                    DatePoint start = each[0];
+                    DatePoint end = each[1];
+                    if (!first) {
+                        text.append(", ");
+                    }
+                    text.append(String.format("[%s, %s]", start, end));
+                    first = false;
+                }
+                description.appendText(text.toString());
+            }
+        };
+    }
+
 }
