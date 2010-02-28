@@ -235,6 +235,90 @@ public class AvailabilityTimeLineTest {
     }
 
     @Test
+    public void doingOROnTwoTimeLinesResultingOnAnAllValidTimeLine() {
+        AvailabilityTimeLine one = AvailabilityTimeLine.allValid();
+        one.invalidAt(contemporaryExample.minusDays(40), contemporaryExample
+                .minusDays(20));
+
+        AvailabilityTimeLine another = AvailabilityTimeLine.allValid();
+        another.invalidAt(contemporaryExample.minusDays(10),
+                contemporaryExample.plusDays(10));
+
+        AvailabilityTimeLine result = one.or(another);
+
+        assertThat(result.getValidPeriods(), definedBy(StartOfTime.create(),
+                EndOfTime.create()));
+    }
+
+    @Test
+    public void doingORonTwoTimeLinesWithSeveralIntersectingInvalidPeriods() {
+        AvailabilityTimeLine one = AvailabilityTimeLine.allValid();
+        one.invalidAt(contemporaryExample.minusDays(40), contemporaryExample
+                .minusDays(20));
+        one.invalidAt(contemporaryExample.plusDays(35), contemporaryExample
+                .plusDays(50));
+
+        AvailabilityTimeLine another = AvailabilityTimeLine.allValid();
+        another.invalidAt(contemporaryExample.minusDays(25),
+                contemporaryExample.plusDays(10));
+        another.invalidAt(contemporaryExample.plusDays(30), contemporaryExample
+                .plusDays(40));
+
+        AvailabilityTimeLine result = one.or(another);
+
+        assertThat(result.getValidPeriods(), definedBy(StartOfTime.create(),
+                point(contemporaryExample.minusDays(25)),
+                point(contemporaryExample.minusDays(20)),
+                point(contemporaryExample.plusDays(35)),
+                point(contemporaryExample.plusDays(40)), EndOfTime.create()));
+    }
+
+    @Test
+    public void doingOROnTheSameTimeLineResultsInTheSameTimeLine() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidAt(earlyExample, contemporaryExample);
+        timeLine.invalidAt(lateExample, lateExample.plusDays(20));
+
+        AvailabilityTimeLine result = timeLine.or(timeLine);
+
+        assertThat(result.getValidPeriods(), definedBy(StartOfTime.create(),
+                point(earlyExample), point(contemporaryExample),
+                point(lateExample), point(lateExample
+                        .plusDays(20)), EndOfTime.create()));
+    }
+
+    @Test
+    public void doingAnAndWithAnAllValidTimeLineProducesTheSameTimeLine() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidAt(earlyExample, contemporaryExample);
+        timeLine.invalidAt(lateExample, lateExample.plusDays(20));
+
+        AvailabilityTimeLine result = timeLine.and(AvailabilityTimeLine
+                .allValid());
+
+        assertThat(result.getValidPeriods(), definedBy(StartOfTime.create(),
+                point(earlyExample), point(contemporaryExample),
+                point(lateExample), point(lateExample
+                        .plusDays(20)), EndOfTime.create()));
+    }
+
+    @Test
+    public void doingAnOrWithANeverValidTimeLineProducesTheSameTimeLine() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidAt(earlyExample, contemporaryExample);
+        timeLine.invalidAt(lateExample, lateExample.plusDays(20));
+        AvailabilityTimeLine another = AvailabilityTimeLine.allValid();
+        another.allInvalid();
+
+        AvailabilityTimeLine result = timeLine.and(another);
+
+        assertThat(result.getValidPeriods(), definedBy(StartOfTime.create(),
+                point(earlyExample), point(contemporaryExample),
+                point(lateExample), point(lateExample.plusDays(20)), EndOfTime
+                        .create()));
+    }
+
+    @Test
     public void anAllValidPeriodsGeneratesAnAllEncompassingInterval() {
         AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
         List<Interval> validPeriods = timeLine.getValidPeriods();

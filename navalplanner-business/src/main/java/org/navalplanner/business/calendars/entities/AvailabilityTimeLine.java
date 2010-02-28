@@ -137,6 +137,11 @@ public class AvailabilityTimeLine {
         public String toString() {
             return date.toString();
         }
+
+        public static LocalDate tryExtract(DatePoint start) {
+            FixedPoint point = (FixedPoint) start;
+            return point.getDate();
+        }
     }
 
     public static class EndOfTime extends DatePoint {
@@ -299,6 +304,11 @@ public class AvailabilityTimeLine {
                     && end.compareTo(other.start) >= 0;
         }
 
+        public Interval intersect(Interval other) {
+            Validate.isTrue(overlaps(other));
+            return new Interval(max(start, other.start), min(end, other.end));
+        }
+
         public Interval coalesce(Interval other) {
             if (!overlaps(other)) {
                 throw new IllegalArgumentException(
@@ -361,37 +371,63 @@ public class AvailabilityTimeLine {
     }
 
     private void insert(Interval toBeInserted) {
-        int binarySearch = Collections.binarySearch(invalids, toBeInserted);
         if (invalids.isEmpty()) {
             invalids.add(toBeInserted);
             return;
         }
-        toBeInserted = coalesceWithAdjacent(insertionPoint(binarySearch),
-                toBeInserted);
+        toBeInserted = coalesceWithAdjacent(toBeInserted);
         int insertionPoint = insertBeforeAllAdjacent(toBeInserted);
         removeAdjacent(insertionPoint, toBeInserted);
     }
 
+    /**
+     * Returns the insertion position for the interval. Inserting the interval
+     * at that position guarantees that interval start is posterior or equal to
+     * any previous interval start. If the next interval start is equal to the
+     * interval, the length of the former is less than the latter
+     */
+    private int findInsertionPosition(Interval interval) {
+        int binarySearch = Collections.binarySearch(invalids, interval);
+        return insertionPoint(binarySearch);
+    }
+
     private int insertBeforeAllAdjacent(Interval toBeInserted) {
-        int n = Collections.binarySearch(invalids, toBeInserted);
-        int insertionPoint = insertionPoint(n);
+        int insertionPoint = findInsertionPosition(toBeInserted);
         invalids.add(insertionPoint, toBeInserted);
         return insertionPoint;
     }
 
-    private Interval coalesceWithAdjacent(int insertionPoint,
-            Interval toBeInserted) {
+    private Interval coalesceWithAdjacent(Interval toBeInserted) {
         Interval result = toBeInserted;
+        List<Interval> adjacent = getAdjacent(toBeInserted);
+        for (Interval each : adjacent) {
+            result = result.coalesce(each);
+        }
+        return result;
+    }
+
+    private List<Interval> getAdjacent(Interval toBeInserted) {
+        final int insertionPoint = findInsertionPosition(toBeInserted);
+        List<Interval> result = new ArrayList<Interval>();
         for (int i = insertionPoint; i >= 0
-                && (i == invalids.size() || at(i).overlaps(
-                        toBeInserted)); i--) {
+                && (i == invalids.size() || at(i).overlaps(toBeInserted)); i--) {
             if (i < invalids.size()) {
-                result = result.coalesce(at(i));
+                result.add(at(i));
             }
         }
         for (int i = insertionPoint; i < invalids.size()
                 && at(i).overlaps(toBeInserted); i++) {
-            result = result.coalesce(at(i));
+            result.add(at(i));
+        }
+        return result;
+    }
+
+    private List<Interval> intersectWithAdjacent(Interval interval) {
+        List<Interval> result = new ArrayList<Interval>();
+        List<Interval> adjacent = getAdjacent(interval);
+        for (Interval each : adjacent) {
+            assert interval.overlaps(each);
+            result.add(interval.intersect(each));
         }
         return result;
     }
@@ -437,6 +473,36 @@ public class AvailabilityTimeLine {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         inserting(result, invalids);
         inserting(result, another.invalids);
+        return result;
+    }
+
+    public AvailabilityTimeLine or(AvailabilityTimeLine another) {
+        List<Interval> intersections = doIntersections(this, another);
+        AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+        for (Interval each : intersections) {
+            boolean fromStartOfTime = each.getStart().equals(
+                    StartOfTime.create());
+            boolean untilEndOfTime = each.getEnd().equals(EndOfTime.create());
+            if (fromStartOfTime && untilEndOfTime) {
+                result.allInvalid();
+            } else if (fromStartOfTime) {
+                result.invalidUntil(FixedPoint.tryExtract(each.getEnd()));
+            } else if (untilEndOfTime) {
+                result.invalidFrom(FixedPoint.tryExtract(each.getStart()));
+            } else {
+                result.invalidAt(FixedPoint.tryExtract(each.getStart()),
+                        FixedPoint.tryExtract(each.getEnd()));
+            }
+        }
+        return result;
+    }
+
+    private static List<Interval> doIntersections(AvailabilityTimeLine one,
+            AvailabilityTimeLine another) {
+        List<Interval> result = new ArrayList<Interval>();
+        for (Interval each : one.invalids) {
+            result.addAll(another.intersectWithAdjacent(each));
+        }
         return result;
     }
 
