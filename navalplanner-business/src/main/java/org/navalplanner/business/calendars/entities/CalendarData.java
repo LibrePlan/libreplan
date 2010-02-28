@@ -98,6 +98,9 @@ public class CalendarData extends BaseEntity {
         setHoursForDay(day, null);
     }
 
+    /**
+     * The expiringDate. It is exclusive.
+     */
     public LocalDate getExpiringDate() {
         return expiringDate;
     }

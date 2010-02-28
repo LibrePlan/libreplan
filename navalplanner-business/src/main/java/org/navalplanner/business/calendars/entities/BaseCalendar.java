@@ -30,18 +30,19 @@ import java.util.Set;
 import org.hibernate.validator.NotEmpty;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTime;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
- * expiring date, when the next calendar starts to be valid.
- *
- * On the other hand, a calendar could be derived, and the derived calendar
- * could add or overwrite some exceptions of its parent calendar.
- *
- *
+ * expiring date, when the next calendar starts to be valid. On the other hand,
+ * a calendar could be derived, and the derived calendar could add or overwrite
+ * some exceptions of its parent calendar.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class BaseCalendar extends BaseEntity implements IWorkHours {
@@ -149,7 +150,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         exceptionDays.addAll(exceptions);
 
         if (getParent(date) != null) {
-            for (CalendarException exceptionDay : getParent(date).getExceptions()) {
+            for (CalendarException exceptionDay : getParent(date)
+                    .getExceptions()) {
                 if (!isExceptionDayAlreadyInExceptions(exceptionDay)) {
                     exceptionDays.add(exceptionDay);
                 }
@@ -159,7 +161,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return Collections.unmodifiableSet(exceptionDays);
     }
 
-    private boolean isExceptionDayAlreadyInExceptions(CalendarException exceptionDay) {
+    private boolean isExceptionDayAlreadyInExceptions(
+            CalendarException exceptionDay) {
         for (CalendarException day : exceptions) {
             if (day.getDate().equals(exceptionDay.getDate())) {
                 return true;
@@ -205,14 +208,12 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     }
 
     public void updateExceptionDay(Date date, Integer hours,
-            CalendarExceptionType type)
-            throws IllegalArgumentException {
+            CalendarExceptionType type) throws IllegalArgumentException {
         updateExceptionDay(new LocalDate(date), hours, type);
     }
 
     public void updateExceptionDay(LocalDate date, Integer hours,
-            CalendarExceptionType type)
-            throws IllegalArgumentException {
+            CalendarExceptionType type) throws IllegalArgumentException {
         removeExceptionDay(date);
         CalendarException day = CalendarException.create(date, hours, type);
         addExceptionDay(day);
@@ -373,7 +374,6 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     /**
      * Creates a new {@link BaseCalendar} derived from the current calendar. The
      * new calendar will be the child of the current calendar.
-     *
      * @return The derived calendar
      */
     public BaseCalendar newDerivedCalendar() {
@@ -402,8 +402,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
      */
-    public void newVersion(LocalDate date)
-            throws IllegalArgumentException {
+    public void newVersion(LocalDate date) throws IllegalArgumentException {
         if (date.compareTo(new LocalDate()) <= 0) {
             throw new IllegalArgumentException(
                     "Date for new version must be greater than current date");
@@ -584,7 +583,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
 
         Integer index = calendarDataVersions.indexOf(calendarData);
         if (index > 0) {
-            CalendarData preivousCalendarData = calendarDataVersions.get(index - 1);
+            CalendarData preivousCalendarData = calendarDataVersions
+                    .get(index - 1);
             if (expiringDate.compareTo(preivousCalendarData.getExpiringDate()) <= 0) {
                 throw new IllegalArgumentException(
                         "This date must be greater than expiring date of previous calendars");
@@ -644,8 +644,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
      * depending on the calendar restrictions.
      */
     public Set<LocalDate> getNonWorkableDays(Date initDate, Date endDate) {
-        return getNonWorkableDays(new LocalDate(initDate),
-                new LocalDate(endDate));
+        return getNonWorkableDays(new LocalDate(initDate), new LocalDate(
+                endDate));
     }
 
     /**
@@ -737,10 +737,10 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
                         }
                     } else {
                         if (lastCalendarAvailability.getEndDate().compareTo(
-                            calendarAvailability.getStartDate()) >= 0) {
-                        throw new IllegalArgumentException(
-                                "New calendar availability should start after the last calendar availability");
-                       }
+                                calendarAvailability.getStartDate()) >= 0) {
+                            throw new IllegalArgumentException(
+                                    "New calendar availability should start after the last calendar availability");
+                        }
                     }
                     lastCalendarAvailability.setEndDate(calendarAvailability
                             .getStartDate().minusDays(1));
@@ -836,17 +836,73 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     @Override
     public boolean thereAreAvailableHoursFrom(LocalDate start,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        LocalDate expiringDate = getAvailabilityExpiringDate();
-        if (expiringDate == null) {
-            return !onlyGivesZeroHours();
+        if (hoursToAllocate == 0) {
+            return true;
         }
-        return thereAreHoursUntil(hoursToAllocate, resourcesPerDay, start,
-                expiringDate);
+        if (resourcesPerDay.isZero()) {
+            return false;
+        }
+        AvailabilityTimeLine availability = getAvailabilityFrom(start);
+        List<Interval> validPeriods = availability.getValidPeriods();
+        if (validPeriods.isEmpty()) {
+            return false;
+        }
+        Interval last = getLast(validPeriods);
+        Interval first = validPeriods.get(0);
+        assert !first.getStart().equals(StartOfTime.create()) : "the start cannot be start of time,"
+                + " since a start is provided";
+
+        boolean isOpenEnded = last.getEnd().equals(EndOfTime.create());
+        return isOpenEnded
+                || thereAreHoursOn(hoursToAllocate, resourcesPerDay,
+                        validPeriods);
+    }
+
+    private boolean thereAreHoursOn(int hoursToAllocate,
+            ResourcesPerDay resourcesPerDay, List<Interval> validPeriods) {
+        int sum = 0;
+        for (Interval each : validPeriods) {
+            FixedPoint start = (FixedPoint) each.getStart();
+            FixedPoint end = (FixedPoint) each.getEnd();
+            int pending = hoursToAllocate - sum;
+            sum += sumHoursUntil(pending, resourcesPerDay, start.getDate(), end
+                    .getDate());
+            if (sum >= hoursToAllocate) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int sumHoursUntil(int maximum, ResourcesPerDay resourcesPerDay,
+            LocalDate start, LocalDate end) {
+        int result = 0;
+        int days = org.joda.time.Days.daysBetween(start, end).getDays();
+        for (int i = 0; i < days; i++) {
+            LocalDate current = start.plusDays(i);
+            result += toHours(current, resourcesPerDay);
+            if (result >= maximum) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private Interval getLast(List<Interval> validPeriods) {
+        return validPeriods.get(validPeriods.size() - 1);
     }
 
     public boolean onlyGivesZeroHours() {
+        return lastDataDoesntGiveOnlyZeros();
+    }
+
+    public boolean lastDataDoesntGiveOnlyZeros() {
         CalendarData last = lastCalendarData();
         return last.isEmpty();
+    }
+
+    private CalendarData lastCalendarData() {
+        return calendarDataVersions.get(calendarDataVersions.size() - 1);
     }
 
     public boolean onlyGivesZeroHours(Days each) {
@@ -854,39 +910,75 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return last.isEmptyFor(each);
     }
 
-    private CalendarData lastCalendarData() {
-        return calendarDataVersions.get(calendarDataVersions.size() - 1);
+    private AvailabilityTimeLine getAvailabilityFrom(LocalDate start) {
+        AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+        result.invalidUntil(start);
+        addInvaliditiesDerivedFromCalendar(result);
+        return result;
     }
 
-    private boolean thereAreHoursUntil(int hoursToAllocate,
-            ResourcesPerDay resourcesPerDay, LocalDate start,
-            LocalDate expiringDate) {
-        int hoursSum = 0;
-        int days = org.joda.time.Days.daysBetween(start, expiringDate)
-                .getDays();
-        for (int i = 0; i < days; i++) {
-            LocalDate current = start.plusDays(i);
-            hoursSum += toHours(current, resourcesPerDay);
-            if (hoursSum >= hoursToAllocate) {
-                return true;
-            }
-        }
-        return false;
+    private void addInvaliditiesDerivedFromCalendar(AvailabilityTimeLine result) {
+        addInvaliditiesFromAvailabilities(result);
+        addInvaliditiesFromExceptions(result);
+        addInvaliditiesFromCalendarDatas(result);
     }
 
-    private LocalDate getAvailabilityExpiringDate() {
-        List<CalendarAvailability> availabilities = getCalendarAvailabilities();
-        if (availabilities.isEmpty()) {
-            return null;
+    private void addInvaliditiesFromCalendarDatas(AvailabilityTimeLine result) {
+        LocalDate previous = null;
+        for (CalendarData each : calendarDataVersions) {
+            addInvalidityIfDataEmpty(result, previous, each);
+            previous = each.getExpiringDate();
         }
-        CalendarAvailability last = availabilities.get(0);
+    }
+
+    private void addInvalidityIfDataEmpty(AvailabilityTimeLine result,
+            LocalDate previous, CalendarData each) {
+        if (!each.isEmpty()) {
+            return;
+        }
+        final boolean hasExpiringDate = each.getExpiringDate() != null;
+        if (previous == null && hasExpiringDate) {
+            result.invalidUntil(each.getExpiringDate());
+        } else if (previous == null && !hasExpiringDate) {
+            result.allInvalid();
+        } else if (hasExpiringDate) {
+            result.invalidAt(previous, each.getExpiringDate());
+        } else {
+            result.invalidFrom(previous);
+        }
+    }
+
+    private void addInvaliditiesFromAvailabilities(AvailabilityTimeLine timeLine) {
+        if (calendarAvailabilities.isEmpty()) {
+            return;
+        }
+        List<CalendarAvailability> availabilities = getCalendarAvailabilitiesSortedByStartDate();
+        CalendarAvailability previous = null;
         for (CalendarAvailability each : availabilities) {
-            LocalDate startDate = each.getStartDate();
-            if (startDate.compareTo(last.getStartDate()) > 0) {
-                last = each;
+            final boolean isFirstOne = previous == null;
+            if (isFirstOne) {
+                timeLine.invalidUntil(each.getStartDate());
+            } else {
+                // CalendarAvailability's end is inclusive
+                LocalDate startOfInvalidPeriod = previous.getEndDate()
+                        .plusDays(1);
+                timeLine.invalidAt(startOfInvalidPeriod, each.getStartDate());
+            }
+            previous = each;
+        }
+        final CalendarAvailability last = previous;
+        if (last.getEndDate() != null) {
+            // CalendarAvailability's end is inclusive
+            timeLine.invalidFrom(last.getEndDate().plusDays(1));
+        }
+    }
+
+    private void addInvaliditiesFromExceptions(AvailabilityTimeLine timeLine) {
+        for (CalendarException each : getExceptions()) {
+            if (each.getHours() == 0 && !each.getType().isOverAssignable()) {
+                timeLine.invalidAt(each.getDate());
             }
         }
-        return last.getEndDate();
     }
 
 }

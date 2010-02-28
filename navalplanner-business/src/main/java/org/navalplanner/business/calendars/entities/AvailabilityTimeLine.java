@@ -94,6 +94,10 @@ public class AvailabilityTimeLine {
             this.date = date;
         }
 
+        public LocalDate getDate() {
+            return date;
+        }
+
         @Override
         protected int compareTo(FixedPoint fixedPoint) {
             return this.date.compareTo(fixedPoint.date);
