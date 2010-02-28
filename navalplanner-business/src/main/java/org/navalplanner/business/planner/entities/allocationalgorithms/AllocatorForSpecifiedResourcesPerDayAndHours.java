@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +178,8 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
                     markUnsatisfied(each.getBeingModified());
                 }
                 allocations.removeAll(unsatisfied);
-            } while (true);
+            } while (!allocations.isEmpty());
+            return Collections.emptyList();
         }
 
         private List<ResourcesPerDayModification> getUnsatisfied(
