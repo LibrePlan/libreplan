@@ -161,6 +161,25 @@ public class AvailabilityTimeLineTest {
     }
 
     @Test
+    public void addingAllInvalidMakesAllInvalid() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+        timeLine.invalidFrom(contemporaryExample);
+        timeLine.invalidUntil(contemporaryExample.minusDays(10));
+
+        assertFalse(timeLine.isValid(earlyExample));
+        assertTrue(timeLine.isValid(contemporaryExample.minusDays(10)));
+
+        assertFalse(timeLine.isValid(contemporaryExample));
+        assertFalse(timeLine.isValid(lateExample));
+
+        timeLine.allInvalid();
+        assertFalse(timeLine.isValid(earlyExample));
+        assertFalse(timeLine.isValid(contemporaryExample.minusDays(10)));
+        assertFalse(timeLine.isValid(contemporaryExample));
+        assertFalse(timeLine.isValid(lateExample));
+    }
+
+    @Test
     public void addingSeveralTypesOfIntervals() {
         AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
         timeLine.invalidFrom(contemporaryExample);
@@ -202,5 +221,4 @@ public class AvailabilityTimeLineTest {
             current = current.plusDays(1);
         }
     }
-
 }

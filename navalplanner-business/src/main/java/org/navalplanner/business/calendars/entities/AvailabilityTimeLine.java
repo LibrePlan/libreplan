@@ -222,6 +222,10 @@ public class AvailabilityTimeLine {
                     end));
         }
 
+        static Interval all() {
+            return new Interval(StartOfTime.create(), EndOfTime.create());
+        }
+
         static Interval from(LocalDate date) {
             return new Interval(new FixedPoint(date), EndOfTime.create());
         }
@@ -281,7 +285,6 @@ public class AvailabilityTimeLine {
         private DatePoint max(DatePoint... values) {
             return (DatePoint) Collections.max(Arrays.asList(values));
         }
-
     }
 
     public static AvailabilityTimeLine allValid() {
@@ -311,6 +314,10 @@ public class AvailabilityTimeLine {
                     .get(insertionPoint - 1);
             return !interval.includes(date);
         }
+    }
+
+    public void allInvalid() {
+        insert(Interval.all());
     }
 
     public void invalidAt(LocalDate date) {
