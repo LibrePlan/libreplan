@@ -81,6 +81,9 @@ public class AvailabilityTimeLine {
             }
         }
 
+        @Override
+        public abstract String toString();
+
     }
 
     private static class FixedPoint extends DatePoint {
@@ -124,6 +127,11 @@ public class AvailabilityTimeLine {
         @Override
         public int hashCode() {
             return date.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return date.toString();
         }
     }
 
@@ -169,6 +177,11 @@ public class AvailabilityTimeLine {
             return EndOfTime.class.hashCode();
         }
 
+        @Override
+        public String toString() {
+            return EndOfTime.class.getSimpleName();
+        }
+
     }
 
     private static class StartOfTime extends DatePoint {
@@ -211,6 +224,11 @@ public class AvailabilityTimeLine {
         @Override
         public int hashCode() {
             return StartOfTime.class.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return StartOfTime.class.getSimpleName();
         }
     }
 
@@ -284,6 +302,11 @@ public class AvailabilityTimeLine {
 
         private DatePoint max(DatePoint... values) {
             return (DatePoint) Collections.max(Arrays.asList(values));
+        }
+
+        @Override
+        public String toString() {
+            return String.format("[%s, %s]", start, end);
         }
     }
 
