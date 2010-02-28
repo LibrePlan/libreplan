@@ -84,6 +84,18 @@ public abstract class CombinedWorkHours implements IWorkHours {
         }
         return true;
     }
+
+    @Override
+    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
+        for (IWorkHours each : workHours) {
+            if (!each.thereAreHoursOn(availability, resourcesPerDay,
+                    hoursToAllocate)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 class Min extends CombinedWorkHours {

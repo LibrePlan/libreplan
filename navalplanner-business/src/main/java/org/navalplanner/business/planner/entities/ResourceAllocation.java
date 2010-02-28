@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
@@ -559,6 +560,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
                 return getTaskCalendar().thereAreAvailableHoursFrom(date,
                         resourcesPerDay, hours);
+            }
+
+            @Override
+            public boolean thereAreHoursOn(AvailabilityTimeLine availability,
+                    ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
+                if (getTaskCalendar() == null) {
+                    return true;
+                }
+                return getTaskCalendar().thereAreHoursOn(availability,
+                        resourcesPerDay, hoursToAllocate);
             }
         };
     }

@@ -836,23 +836,30 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     @Override
     public boolean thereAreAvailableHoursFrom(LocalDate start,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
+        AvailabilityTimeLine availability = getAvailabilityFrom(start);
+        return thereAreHoursOn(availability, resourcesPerDay, hoursToAllocate);
+    }
+
+    @Override
+    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
         if (hoursToAllocate == 0) {
             return true;
         }
         if (resourcesPerDay.isZero()) {
             return false;
         }
-        AvailabilityTimeLine availability = getAvailabilityFrom(start);
+        addInvaliditiesDerivedFromCalendar(availability);
         List<Interval> validPeriods = availability.getValidPeriods();
         if (validPeriods.isEmpty()) {
             return false;
         }
+
         Interval last = getLast(validPeriods);
         Interval first = validPeriods.get(0);
-        assert !first.getStart().equals(StartOfTime.create()) : "the start cannot be start of time,"
-                + " since a start is provided";
+        final boolean isOpenEnded = last.getEnd().equals(EndOfTime.create())
+                || first.getStart().equals(StartOfTime.create());
 
-        boolean isOpenEnded = last.getEnd().equals(EndOfTime.create());
         return isOpenEnded
                 || thereAreHoursOn(hoursToAllocate, resourcesPerDay,
                         validPeriods);
