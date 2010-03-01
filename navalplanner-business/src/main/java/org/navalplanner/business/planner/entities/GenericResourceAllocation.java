@@ -127,6 +127,7 @@ public class GenericResourceAllocation extends
 
     private void clearFieldsCalculatedFromAssignments() {
         this.orderedDayAssignmentsByResource = null;
+        this.orderedDayAssignmentsCached = null;
     }
 
     public Set<Criterion> getCriterions() {
@@ -219,9 +220,15 @@ public class GenericResourceAllocation extends
         }
     }
 
+    private List<GenericDayAssignment> orderedDayAssignmentsCached;
+
     @Override
     public List<GenericDayAssignment> getAssignments() {
-        return DayAssignment.orderedByDay(genericDayAssignments);
+        if (orderedDayAssignmentsCached != null) {
+            return orderedDayAssignmentsCached;
+        }
+        return orderedDayAssignmentsCached = DayAssignment
+                .orderedByDay(genericDayAssignments);
     }
 
     @Override
