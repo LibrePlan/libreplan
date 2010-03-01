@@ -5,12 +5,8 @@
                 <separator bar="false" spacing="20px" orient="vertical"/>
                 <button onClick="assignedCriterionsController.addCriterionSatisfaction();"
                     label="${i18n:_('Add criterion')}" />
-                <label class="subtitulo" value="${i18n:_('Filters')}:" />
-                <combobox id="comboboxfilter"
-                onSelect="assignedCriterionsController.reload();">
-                    <comboitem label="${i18n:_('All')}" />
-                    <comboitem label="${i18n:_('Current')}" />
-                </combobox>
+                <label class="subtitulo" value="${i18n:_('Show only current satisfied criteria')}" />
+                <checkbox id="criterionFilterCheckbox" onCheck="assignedCriterionsController.reload();" />
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </hbox>
         <newdatasortablegrid id="listingCriterions" mold="paging" pageSize="10" fixedLayout="true"

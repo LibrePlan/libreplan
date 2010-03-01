@@ -30,9 +30,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
@@ -52,7 +51,7 @@ import org.zkoss.zul.SimpleListModel;
 public class CriterionsController extends GenericForwardComposer {
 
     private IAssignedCriterionsModel assignedCriterionsModel;
-    private Combobox comboboxfilter;
+    private Checkbox criterionFilterCheckbox;
     private Grid listingCriterions;
     private IMessagesForUser messages;
     private Component messagesContainer;
@@ -86,8 +85,7 @@ public class CriterionsController extends GenericForwardComposer {
 
     public List<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
         List<CriterionSatisfactionDTO> list = new ArrayList<CriterionSatisfactionDTO>();
-        Comboitem comboitem = comboboxfilter.getSelectedItem();
-        if((comboitem != null) && (comboitem.getLabel().equals("Currents"))) {
+        if(criterionFilterCheckbox.isChecked()) {
                 list.addAll(assignedCriterionsModel.getFilterCriterionSatisfactions());
         }else{
             list.addAll(assignedCriterionsModel.getAllCriterionSatisfactions());
