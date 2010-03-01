@@ -131,6 +131,10 @@ class LaTeXStandaloneTranslator(latex2e.LaTeXTranslator):
         #
         if self.d_class.document_class == "igaliabk":
             self.d_class.document_class = "book"
+	try:
+		del self.head_prefix[self.head_prefix.index(self.typearea)]
+	except ValueError:
+		pass
 
 class LaTeXInsertTranslator(LaTeXStandaloneTranslator):
     def astext(self):
