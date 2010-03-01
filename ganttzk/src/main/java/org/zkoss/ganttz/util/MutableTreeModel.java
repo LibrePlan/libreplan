@@ -278,6 +278,14 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         add(parent, children);
     }
 
+    public void sendContentsChangedEventFor(T object) {
+        Node<T> node = find(object);
+        T parent = getParent(object);
+        Node<T> parentNode = find(parent);
+        int position = parentNode.getIndexOf(node);
+        fireEvent(parent, position, position, TreeDataEvent.CONTENTS_CHANGED);
+    }
+
     public void add(T parent, int position, Collection<? extends T> children) {
         add(find(parent), position, wrap(children));
     }

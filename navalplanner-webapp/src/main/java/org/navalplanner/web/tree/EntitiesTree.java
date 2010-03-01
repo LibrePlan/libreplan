@@ -147,6 +147,11 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         ITreeParentNode<T> container = turnIntoContainerIfNeeded(destinationNode);
         container.add(position, elementToAdd.getThis());
         addToTree(container, position, elementToAdd);
+        if (!tree.isRoot(container.getThis())) {
+            // the destination node might have data that depends on its
+            // children, so it should be redrawn
+            tree.sendContentsChangedEventFor(container.getThis());
+        }
         added(destinationNode, elementToAdd, container);
     }
 
@@ -204,6 +209,9 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         T destination = tree.getParent(parent);
         move(nodeToUnindent, destination, getChildren(destination).indexOf(
                 parent) + 1);
+        if (!tree.isRoot(parent)) {
+            tree.sendContentsChangedEventFor(parent);
+        }
     }
 
     private class WithPosition {
