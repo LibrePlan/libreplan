@@ -129,6 +129,11 @@
         <url-pattern>/ws/rest/*</url-pattern>
     </servlet-mapping>
 
+    <session-config>
+        <!-- -1 means session doesn't timeout -->
+        <session-timeout>-1</session-timeout>
+    </session-config>
+
     <welcome-file-list>
         <welcome-file>/planner/index.zul</welcome-file>
     </welcome-file-list>

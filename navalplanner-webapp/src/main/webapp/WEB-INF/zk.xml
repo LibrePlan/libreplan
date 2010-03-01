@@ -2,6 +2,11 @@
     <log>
         <log-base></log-base>
     </log>
+
+    <session-config>
+        <!-- -1 value means session should never timeout -->
+        <session-timeout>-1</session-timeout>
+    </session-config>
     <error-page>
         <exception-type>java.lang.Throwable
         </exception-type>
