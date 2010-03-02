@@ -346,7 +346,9 @@ public class ManageOrderElementAdvancesController extends
 
         final DirectAdvanceAssignment directAdvanceAssignment;
         if ((advanceAssignment instanceof IndirectAdvanceAssignment)
-                || isQualityForm) {
+                || isQualityForm
+                || (advanceAssignment.getAdvanceType() != null && advanceAssignment
+                        .getAdvanceType().getPercentage())) {
             maxValue.setDisabled(true);
         }
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {

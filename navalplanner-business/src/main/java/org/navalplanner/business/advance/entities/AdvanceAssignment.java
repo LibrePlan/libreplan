@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.advance.entities;
 
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
@@ -60,6 +61,7 @@ public abstract class AdvanceAssignment extends BaseEntity {
         this.advanceType = advanceType;
     }
 
+    @NotNull(message = "advance type not specified")
     public AdvanceType getAdvanceType() {
         return this.advanceType;
     }

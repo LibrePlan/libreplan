@@ -25,6 +25,7 @@ import java.math.RoundingMode;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
@@ -156,6 +157,17 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
 
     public boolean isFake() {
         return fake;
+    }
+
+    @AssertTrue(message = "max value of percentage advance type must be 100")
+    public boolean checkConstraintMaxValueMustBe100ForPercentage() {
+        AdvanceType advanceType = getAdvanceType();
+        if ((advanceType != null) && (advanceType.getPercentage())) {
+            if (maxValue.compareTo(new BigDecimal(100)) != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
