@@ -44,16 +44,35 @@ public abstract class DayAssignment extends BaseEntity {
     public static <T extends DayAssignment> List<T> getAtInterval(
             List<T> orderedAssignments, LocalDate startInclusive,
             LocalDate endExclusive) {
+        int position = findFirstAfterOrEqual(orderedAssignments, startInclusive);
+        List<T> couldBeIncluded = orderedAssignments.subList(position, Math
+                .max(
+                orderedAssignments.size(), position));
         List<T> result = new ArrayList<T>();
-        for (T dayAssignment : orderedAssignments) {
-            if (dayAssignment.getDay().compareTo(endExclusive) >= 0) {
+        for (T each : couldBeIncluded) {
+            if (each.getDay().compareTo(endExclusive) >= 0) {
                 break;
             }
-            if (dayAssignment.includedIn(startInclusive, endExclusive)) {
-                result.add(dayAssignment);
-            }
+            assert each.includedIn(startInclusive, endExclusive);
+            result.add(each);
         }
         return result;
+    }
+
+    private static int findFirstAfterOrEqual(
+            List<? extends DayAssignment> orderedAssignments, LocalDate startInclusive) {
+        int start = 0;
+        int end = orderedAssignments.size() - 1;
+        while (start <= end) {
+            int middle = start + (end - start) / 2;
+            if (orderedAssignments.get(middle).getDay().compareTo(
+                    startInclusive) < 0) {
+                start = middle + 1;
+            } else {
+                end = middle - 1;
+            }
+        }
+        return start;
     }
 
     public static int sum(Collection<? extends DayAssignment> assignments) {
