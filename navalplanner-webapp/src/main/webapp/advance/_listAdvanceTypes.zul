@@ -34,19 +34,13 @@
                 <checkbox checked="@{advanceType.active}" disabled="true" />
                 <checkbox checked="@{advanceType.immutable}" disabled="true" />
                 <hbox>
-                    <button visible="@{advanceType.updatable}" sclass="icono" image="/common/img/ico_editar1.png"
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
                         hoverImage="/common/img/ico_editar.png"
                         tooltiptext="${i18n:_('Edit')}" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
                     </button>
-                    <button visible="@{advanceType.immutable}" sclass="icono" image="/common/img/ico_editar_out.png"
-                        tooltiptext="${i18n:_('Not editable')}" disabled="@{advanceType.immutable}" onClick="controller.goToEditForm(self.parent.parent.value);">
-                    </button>
-                    <button visible="@{advanceType.updatable}" sclass="icono" image="/common/img/ico_borrar1.png"
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
                         hoverImage="/common/img/ico_borrar.png"
                         tooltiptext="${i18n:_('Delete')}" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
-                    </button>
-                    <button visible="@{advanceType.immutable}" sclass="icono" image="/common/img/ico_borrar_out.png"
-                        tooltiptext="${i18n:_('Not deletable')}" disabled="@{advanceType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
                     </button>
                 </hbox>
 
