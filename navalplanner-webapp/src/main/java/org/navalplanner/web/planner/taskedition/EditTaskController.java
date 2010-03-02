@@ -279,9 +279,37 @@ public class EditTaskController extends GenericForwardComposer {
             IAdvanceAllocationResultReceiver {
 
         private final AllocationResult allocation;
+        private final IRestrictionSource restrictionSource;
 
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
             this.allocation = allocation;
+            final int totalHours = allocation.getAggregate().getTotalHours();
+            final LocalDate start = allocation.getStart();
+            final LocalDate end = start.plusDays(allocation.getDaysDuration());
+            final CalculatedValue calculatedValue = allocation
+                    .getCalculatedValue();
+            restrictionSource = new IRestrictionSource() {
+
+                @Override
+                public int getTotalHours() {
+                    return totalHours;
+                }
+
+                @Override
+                public LocalDate getStart() {
+                    return start;
+                }
+
+                @Override
+                public LocalDate getEnd() {
+                    return end;
+                }
+
+                @Override
+                public CalculatedValue getCalculatedValue() {
+                    return calculatedValue;
+                }
+            };
         }
 
         @Override
@@ -296,28 +324,7 @@ public class EditTaskController extends GenericForwardComposer {
 
         @Override
         public Restriction createRestriction() {
-            return Restriction.build(new IRestrictionSource() {
-
-                @Override
-                public int getTotalHours() {
-                    return allocation.getAggregate().getTotalHours();
-                }
-
-                @Override
-                public LocalDate getStart() {
-                    return allocation.getStart();
-                }
-
-                @Override
-                public LocalDate getEnd() {
-                    return getStart().plusDays(allocation.getDaysDuration());
-                }
-
-                @Override
-                public CalculatedValue getCalculatedValue() {
-                    return allocation.getCalculatedValue();
-                }
-            });
+            return Restriction.build(restrictionSource);
         }
     }
 
