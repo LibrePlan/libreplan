@@ -287,6 +287,8 @@ public class TaskList extends XulElement implements AfterCompose {
         for (TaskComponent taskComponent : taskComponents) {
             taskComponent.publishTaskComponents(taskComponentByTask);
         }
+
+        reload(false);
     }
 
     private Map<TaskComponent, Menupopup> contextMenus = new HashMap<TaskComponent, Menupopup>();
