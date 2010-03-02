@@ -189,7 +189,8 @@ public class AdvanceType extends BaseEntity {
 
     public void setPercentage(boolean percentage) {
         if (percentage) {
-            if (defaultMaxValue.compareTo(new BigDecimal(100)) > 0) {
+            if ((defaultMaxValue != null)
+                    && (defaultMaxValue.compareTo(new BigDecimal(100)) > 0)) {
                 throw new IllegalArgumentException(
                         "The maximum value for percentage is 100");
             }
