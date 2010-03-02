@@ -62,13 +62,13 @@ public class AdvanceType extends BaseEntity {
     private String unitName;
 
     @NotNull
-    private BigDecimal defaultMaxValue;
+    private BigDecimal defaultMaxValue = BigDecimal.ZERO;
 
     @NotNull
     private boolean updatable = true;
 
     @NotNull
-    private BigDecimal unitPrecision;
+    private BigDecimal unitPrecision = new BigDecimal(0.1);
 
     @NotNull
     private boolean active = true;
