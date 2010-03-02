@@ -196,9 +196,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public static Restriction build(IRestrictionSource restrictionSource) {
             switch (restrictionSource.getCalculatedValue()) {
             case END_DATE:
-                return Restriction
-                        .fixedHours(restrictionSource
-                        .getTotalHours());
+                return Restriction.fixedHours(restrictionSource.getStart(),
+                        restrictionSource.getTotalHours());
             case NUMBER_OF_HOURS:
                 return Restriction.onlyAssignOnInterval(restrictionSource
                         .getStart(), restrictionSource.getEnd());
@@ -219,8 +218,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return new OnlyOnIntervalRestriction(start, end);
         }
 
-        private static Restriction fixedHours(int hours) {
-            return new FixedHoursRestriction(hours);
+        private static Restriction fixedHours(LocalDate start, int hours) {
+            return new FixedHoursRestriction(start, hours);
         }
 
         abstract LocalDate limitStartDate(LocalDate startDate);
@@ -289,8 +288,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private static class FixedHoursRestriction extends Restriction {
         private final int hours;
+        private final LocalDate start;
 
-        private FixedHoursRestriction(int hours) {
+        private FixedHoursRestriction(LocalDate start, int hours) {
+            this.start = start;
             this.hours = hours;
         }
 
@@ -305,8 +306,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        LocalDate limitStartDate(LocalDate startDate) {
-            return startDate;
+        LocalDate limitStartDate(LocalDate argStart) {
+            return start.compareTo(argStart) > 0 ? start : argStart;
         }
 
         @Override
