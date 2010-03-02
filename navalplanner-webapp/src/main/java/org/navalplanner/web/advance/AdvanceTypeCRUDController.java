@@ -158,11 +158,10 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
         return newConstraint;
     }
 
-    public void save() {
+    private void save() {
         try {
             advanceTypeModel.save();
             messagesForUser.showMessage(Level.INFO, _("Advance type saved"));
-            goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         }
@@ -250,6 +249,15 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
 
     public Boolean getPercentage() {
         return advanceTypeModel.getPercentage();
+    }
+
+    public void saveAndExit() {
+        save();
+        goToList();
+    }
+
+    public void saveAndContinue() {
+        save();
     }
 
 }

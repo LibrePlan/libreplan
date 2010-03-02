@@ -65,8 +65,11 @@
         </tabpanels>
     </tabbox>
 
-    <button onClick="controller.save();"
+    <button onClick="controller.saveAndExit();"
         label="${arg.save_button_label}"
+        sclass="save-button global-action"/>
+    <button onClick="controller.saveAndContinue();"
+        label="${arg.save_and_continue_button_label}"
         sclass="save-button global-action"/>
     <button onClick="controller.cancel();"
         label="${arg.cancel_button_label}"
