@@ -323,7 +323,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private BigDecimal getMaxValue(AdvanceType advanceType) {
-        if (advanceType.getPercentage()) {
+        if (advanceType != null) {
             return advanceType.getDefaultMaxValue();
         }
         return BigDecimal.ZERO;
@@ -555,6 +555,7 @@ public class ManageOrderElementAdvancesController extends
                         .getValue();
                 advance.setMaxValue(getMaxValue(advanceType));
                 miBox.setValue(getMaxValue(advanceType));
+                miBox.invalidate();
             }
         }
     }
