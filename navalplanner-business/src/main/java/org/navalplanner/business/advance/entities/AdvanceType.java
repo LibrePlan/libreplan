@@ -189,11 +189,7 @@ public class AdvanceType extends BaseEntity {
 
     public void setPercentage(boolean percentage) {
         if (percentage) {
-            if ((defaultMaxValue != null)
-                    && (defaultMaxValue.compareTo(new BigDecimal(100)) > 0)) {
-                throw new IllegalArgumentException(
-                        "The maximum value for percentage is 100");
-            }
+            defaultMaxValue = new BigDecimal(100);
         }
         this.percentage = percentage;
     }
@@ -215,6 +211,16 @@ public class AdvanceType extends BaseEntity {
     public boolean checkConstraintIfIsQualityFormIsNotUpdatable() {
         if (isQualityForm()) {
             if (isUpdatable()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "default max value of percentage advance type must be 100")
+    public boolean checkConstraintDefaultMaxValueMustBe100ForPercentage() {
+        if (percentage) {
+            if (defaultMaxValue.compareTo(new BigDecimal(100)) != 0) {
                 return false;
             }
         }

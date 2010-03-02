@@ -243,13 +243,9 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     }
 
     public void setPercentage(Boolean percentage) {
-        try {
-            advanceTypeModel.setPercentage(percentage);
-        } catch (IllegalArgumentException e) {
-            Component component = getCurrentWindow().getFellow("percentage");
-            throw new WrongValueException(component
-                    .getFellow("defaultMaxValue"), e.getMessage());
-        }
+        advanceTypeModel.setPercentage(percentage);
+        Util.reloadBindings(getCurrentWindow().getFellow(
+                "defaultMaxValue"));
     }
 
     public Boolean getPercentage() {

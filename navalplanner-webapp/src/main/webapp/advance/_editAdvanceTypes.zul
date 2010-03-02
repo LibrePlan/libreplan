@@ -43,7 +43,8 @@
                         <row>
                             <label value="${i18n:_('Default max value')}" />
                             <decimalbox id="defaultMaxValue" scale="2"
-                                value="@{controller.defaultMaxValue}" constraint="@{controller.greaterThanPrecision}"/>
+                                value="@{controller.defaultMaxValue}" constraint="@{controller.greaterThanPrecision}"
+                                disabled="@{controller.percentage}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Precision')}" />
