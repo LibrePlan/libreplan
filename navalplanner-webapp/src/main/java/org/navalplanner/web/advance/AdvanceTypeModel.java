@@ -78,7 +78,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
     @Transactional(readOnly = true)
     public void prepareForEdit(AdvanceType advanceType) {
         Validate.notNull(advanceType);
-        checkCanBeModified(advanceType);
+        // checkCanBeModified(advanceType);
         this.advanceType = getFromDB(advanceType);
     }
 
@@ -174,6 +174,14 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
         if (advanceType != null) {
             advanceType.setPercentage(percentage);
         }
+    }
+
+    @Override
+    public boolean isImmutable() {
+        if (advanceType == null) {
+            return false;
+        }
+        return advanceType.isImmutable();
     }
 
 }

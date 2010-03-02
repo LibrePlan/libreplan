@@ -123,4 +123,6 @@ public interface IAdvanceTypeModel {
     void setPercentage(Boolean percentage);
 
     Boolean getPercentage();
+
+    boolean isImmutable();
 }

@@ -34,11 +34,13 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Unit name')}" />
-                            <textbox value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"/>
+                            <textbox value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"
+                                disabled="@{controller.immutable}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Active')}" />
-                            <checkbox checked="@{controller.advanceType.active}"/>
+                            <checkbox checked="@{controller.advanceType.active}"
+                                disabled="@{controller.immutable}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Default max value')}" />
@@ -49,7 +51,8 @@
                         <row>
                             <label value="${i18n:_('Precision')}" />
                             <decimalbox id="precision" scale="4"
-                                value = "@{controller.advanceType.unitPrecision}" constraint = "@{controller.lessThanDefaultMaxValue}"/>
+                                value = "@{controller.advanceType.unitPrecision}" constraint = "@{controller.lessThanDefaultMaxValue}"
+                                disabled="@{controller.immutable}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Type')}" />
@@ -57,7 +60,8 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Percentage')}" />
-                            <checkbox id="percentage" checked="@{controller.percentage}" />
+                            <checkbox id="percentage" checked="@{controller.percentage}"
+                                disabled="@{controller.immutable}" />
                         </row>
                     </rows>
                 </grid>
@@ -67,10 +71,12 @@
 
     <button onClick="controller.saveAndExit();"
         label="${arg.save_button_label}"
-        sclass="save-button global-action"/>
+        sclass="save-button global-action"
+        disabled="@{controller.immutable}" />
     <button onClick="controller.saveAndContinue();"
         label="${arg.save_and_continue_button_label}"
-        sclass="save-button global-action"/>
+        sclass="save-button global-action"
+        disabled="@{controller.immutable}" />
     <button onClick="controller.cancel();"
         label="${arg.cancel_button_label}"
         sclass="cancel-button global-action" />

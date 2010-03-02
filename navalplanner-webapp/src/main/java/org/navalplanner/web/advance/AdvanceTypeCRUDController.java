@@ -260,4 +260,8 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
         save();
     }
 
+    public boolean isImmutable() {
+        return advanceTypeModel.isImmutable();
+    }
+
 }
