@@ -1068,6 +1068,7 @@ class Row {
                                    .onInterval(startDate, endDate)
                                    .allocateHours(value);
                 fireCellChanged(item);
+                intbox.setRawValue(getHoursForDetailItem(item));
                 reloadAllHours();
             }
         });
