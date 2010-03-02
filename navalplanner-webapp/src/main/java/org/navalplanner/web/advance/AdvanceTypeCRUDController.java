@@ -107,13 +107,13 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 if (((BigDecimal) value) == null) {
                     throw new WrongValueException(comp,
-                            _("Value is not valid, the default max value must not be null"));
+                            _("Value is not valid, the precision value must not be empty"));
                 }
 
                 if (!(advanceTypeModel.isPrecisionValid((BigDecimal) value))) {
                     throw new WrongValueException(
                             comp,
-                            _("Value is not valid, the Precision value must be less than the defalt max value and not null"));
+                            _("Value is not valid, the Precision value must be less than the defalt max value."));
                 }
             }
         };
@@ -127,13 +127,13 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 if (((BigDecimal) value) == null) {
                     throw new WrongValueException(comp,
-                            _("Value is not valid, the Precision value must not be null "));
+                            _("Value is not valid, the default max value must not be empty "));
                 }
                 if (!(advanceTypeModel
                         .isDefaultMaxValueValid((BigDecimal) value))) {
                     throw new WrongValueException(
                             comp,
-                            _("Value is not valid, the Precision value must be less than the defalt max value "));
+                            _("Value is not valid, the default max value must be greater than the precision value "));
                 }
             }
         };
