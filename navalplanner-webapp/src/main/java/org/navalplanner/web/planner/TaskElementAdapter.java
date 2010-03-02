@@ -266,7 +266,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             if (orderElement != null) {
                 advancePercentage = orderElement
                         .getAdvancePercentage();
-                hours = orderElement.getWorkHours();
+                hours = taskElement.getTotalHoursAssigned();
             } else {
                 advancePercentage = new BigDecimal(0);
                 hours = Integer.valueOf(0);
