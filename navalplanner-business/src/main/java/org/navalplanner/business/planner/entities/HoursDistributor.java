@@ -61,12 +61,12 @@ public class HoursDistributor {
 
     }
 
-    private static class OnlyActive implements IResourceSelector {
+    private static class OnlyCanWork implements IResourceSelector {
 
         @Override
         public boolean isSelectable(Resource resource, LocalDate day) {
             ResourceCalendar resourceCalendar = resource.getCalendar();
-            return resourceCalendar != null ? resourceCalendar.isActive(day)
+            return resourceCalendar != null ? resourceCalendar.canWork(day)
                     : true;
         }
     }
@@ -149,8 +149,7 @@ public class HoursDistributor {
         this.resources = ResourceWithDerivedData.from(resources);
         this.assignedHoursForResource = assignedHoursForResource;
         this.resourceSelector = selector != null ? new CompoundSelector(
-                new OnlyActive(), selector)
-                : new OnlyActive();
+                new OnlyCanWork(), selector) : new OnlyCanWork();
     }
 
 

@@ -772,6 +772,15 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return false;
     }
 
+    public boolean canWork(LocalDate date) {
+        return isActive(date) && canWorkConsideringOnlyException(date);
+    }
+
+
+    private boolean canWorkConsideringOnlyException(LocalDate date) {
+        CalendarException exceptionDay = getExceptionDay(date);
+        return exceptionDay == null || canWorkAt(exceptionDay);
+    }
     public CalendarAvailability getLastCalendarAvailability() {
         if (calendarAvailabilities.isEmpty()) {
             return null;
@@ -974,10 +983,14 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
 
     private void addInvaliditiesFromExceptions(AvailabilityTimeLine timeLine) {
         for (CalendarException each : getExceptions()) {
-            if (each.getHours() == 0 && !each.getType().isOverAssignable()) {
+            if (!canWorkAt(each)) {
                 timeLine.invalidAt(each.getDate());
             }
         }
+    }
+
+    private boolean canWorkAt(CalendarException each) {
+        return each.getHours() != 0 || each.getType().isOverAssignable();
     }
 
 }
