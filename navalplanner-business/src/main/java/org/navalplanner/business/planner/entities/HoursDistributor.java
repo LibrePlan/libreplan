@@ -66,8 +66,7 @@ public class HoursDistributor {
         @Override
         public boolean isSelectable(Resource resource, LocalDate day) {
             ResourceCalendar resourceCalendar = resource.getCalendar();
-            return resourceCalendar != null ? resourceCalendar.canWork(day)
-                    : true;
+            return resourceCalendar == null || resourceCalendar.canWork(day);
         }
     }
 
