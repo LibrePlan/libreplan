@@ -111,7 +111,7 @@
     <n:td></n:td>
   </n:tr>
   <n:tr>
-    <n:td height="100"><div align="right"><n:img src="${contextPath}/common/img/logos_login.gif" width="403" height="50" /></div></n:td>
+    <n:td height="100"><div align="right"><n:img src="${contextPath}/common/img/logos_footer.gif" width="475" height="40" /></div></n:td>
   </n:tr>
 </n:table>
 <n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0">

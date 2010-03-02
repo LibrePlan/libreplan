@@ -78,8 +78,9 @@
 
 <n:table width="100%">
   <n:tr class="footer">
-    <n:td height="52" align="right" valign="bottom">
-        <n:img width="403" height="50" src="${contextPath}/common/img/logos_footer.gif"/>
+    <n:td height="40" align="right" valign="bottom">
+        <n:img width="110" height="40" src="${contextPath}/common/img/logos_footer_fundacion.png"/>
+        <n:img width="253" height="40" src="${contextPath}/common/img/logos_footer_administracion.png"/>
     </n:td>
 
   </n:tr>
