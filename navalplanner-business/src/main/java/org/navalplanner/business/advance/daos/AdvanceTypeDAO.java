@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -61,4 +62,11 @@ public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
     public Collection<? extends AdvanceType> getAll() {
         return list(AdvanceType.class);
     }
+
+    @Override
+    public boolean isAlreadyInUse(AdvanceType advanceType) {
+        return !getSession().createCriteria(AdvanceAssignment.class).add(
+                Restrictions.eq("advanceType", advanceType)).list().isEmpty();
+    }
+
 }

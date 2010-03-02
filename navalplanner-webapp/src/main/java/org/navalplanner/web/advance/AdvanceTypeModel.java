@@ -184,4 +184,17 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
         return advanceType.isImmutable();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isImmutableOrAlreadyInUse(AdvanceType advanceType) {
+        if (advanceType == null) {
+            return false;
+        }
+        if (advanceType.isImmutable()) {
+            return true;
+        }
+
+        return advanceTypeDAO.isAlreadyInUse(advanceType);
+    }
+
 }

@@ -35,9 +35,17 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.api.Window;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 /**
  * Controller for CRUD actions over a {@link AdvanceType}
@@ -57,10 +65,6 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     private Component createWindow;
 
     private Component listWindow;
-
-    private Window confirmRemove;
-
-    private boolean confirmingRemove = false;
 
     private IAdvanceTypeModel advanceTypeModel;
 
@@ -168,41 +172,21 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     }
 
     public void confirmRemove(AdvanceType advanceType) {
-        advanceTypeModel.prepareForRemove(advanceType);
-        showConfirmingWindow();
-    }
-
-    public void cancelRemove() {
-        confirmingRemove = false;
-        confirmRemove.setVisible(false);
-        Util.reloadBindings(confirmRemove);
-    }
-
-    public boolean isConfirmingRemove() {
-        return confirmingRemove;
-    }
-
-    private void hideConfirmingWindow() {
-        confirmingRemove = false;
-        Util.reloadBindings(confirmRemove);
-    }
-
-    private void showConfirmingWindow() {
-        confirmingRemove = true;
         try {
-            Util.reloadBindings(confirmRemove);
-            confirmRemove.doModal();
-        } catch (Exception e) {
+            int status = Messagebox.show(_(
+                    "Confirm deleting {0}. Are you sure?", advanceType
+                            .getUnitName()), "Remove", Messagebox.OK
+                    | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                advanceTypeModel.prepareForRemove(advanceType);
+                advanceTypeModel.remove(advanceType);
+            }
+            Util.reloadBindings(listWindow);
+            messagesForUser.showMessage(Level.INFO, _("Removed {0}",
+                    advanceType.getUnitName()));
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void remove(AdvanceType advanceType) {
-        advanceTypeModel.remove(advanceType);
-        hideConfirmingWindow();
-        Util.reloadBindings(listWindow);
-        messagesForUser.showMessage(
-            Level.INFO, _("Removed {0}", advanceType.getUnitName()));
     }
 
     public void goToCreateForm() {
@@ -262,6 +246,71 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
 
     public boolean isImmutable() {
         return advanceTypeModel.isImmutable();
+    }
+
+    public boolean isImmutableOrAlreadyInUse(AdvanceType advanceType) {
+        return advanceTypeModel.isImmutableOrAlreadyInUse(advanceType);
+    }
+
+    public RowRenderer getAdvanceTypeRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                AdvanceType advanceType = (AdvanceType) data;
+
+                appendLabelName(row, advanceType);
+                appendCheckboxEnabled(row, advanceType);
+                appendCheckboxPredefined(row, advanceType);
+                appendOperations(row, advanceType);
+            }
+
+            private void appendLabelName(Row row, AdvanceType advanceType) {
+                row.appendChild(new Label(advanceType.getUnitName()));
+            }
+
+            private void appendCheckboxEnabled(Row row, AdvanceType advanceType) {
+                Checkbox checkbox = new Checkbox();
+                checkbox.setChecked(advanceType.getActive());
+                checkbox.setDisabled(true);
+                row.appendChild(checkbox);
+            }
+
+            private void appendCheckboxPredefined(Row row,
+                    AdvanceType advanceType) {
+                Checkbox checkbox = new Checkbox();
+                checkbox.setChecked(advanceType.isImmutable());
+                checkbox.setDisabled(true);
+                row.appendChild(checkbox);
+            }
+
+            private void appendOperations(Row row, final AdvanceType advanceType) {
+                Hbox hbox = new Hbox();
+
+                hbox.appendChild(Util.createEditButton(new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(advanceType);
+                    }
+                }));
+
+                Button removeButton = Util
+                        .createRemoveButton(new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        confirmRemove(advanceType);
+                    }
+                });
+                removeButton.setDisabled(advanceTypeModel
+                        .isImmutableOrAlreadyInUse(advanceType));
+                hbox.appendChild(removeButton);
+
+                row.appendChild(hbox);
+            }
+
+        };
     }
 
 }

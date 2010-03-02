@@ -40,4 +40,6 @@ public interface IAdvanceTypeDAO extends IGenericDAO<AdvanceType, Long>{
 
     public Collection<? extends AdvanceType> getAll();
 
+    public boolean isAlreadyInUse(AdvanceType advanceType);
+
 }

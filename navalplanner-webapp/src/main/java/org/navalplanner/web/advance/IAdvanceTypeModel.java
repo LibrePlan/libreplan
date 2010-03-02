@@ -125,4 +125,6 @@ public interface IAdvanceTypeModel {
     Boolean getPercentage();
 
     boolean isImmutable();
+
+    boolean isImmutableOrAlreadyInUse(AdvanceType advanceType);
 }

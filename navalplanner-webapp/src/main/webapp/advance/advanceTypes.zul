@@ -39,22 +39,5 @@
         <edition top_id="editWindow" title="${i18n:_('Edit advance type data')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}"
             save_and_continue_button_label="${i18n:_('Save &amp; Continue')}" />
-        <window visible="@{controller.confirmingRemove}"
-            id="confirmRemove" title="${i18n:_('Confirm')}" sizable="true"
-            position="center">
-            <vbox align = "center">
-                <hbox align = "center">
-                    <label value = "Confirm deleting"/>
-                    <label value ="@{controller.advanceType.unitName}"/>
-                    <label value = "?"/>
-                </hbox>
-                <hbox align = "center">
-                    <button label="${i18n:_('Yes')}"
-                        onClick="controller.remove(controller.advanceType);" />
-                    <button label="${i18n:_('No')}"
-                        onClick="controller.cancelRemove();" />
-                </hbox>
-            </vbox>
-        </window>
     </window>
 </zk>
