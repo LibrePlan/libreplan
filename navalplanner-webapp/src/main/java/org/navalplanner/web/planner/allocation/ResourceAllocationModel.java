@@ -28,8 +28,6 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.ProportionalDistributor;
@@ -191,7 +189,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     private void stepsBeforeDoingAllocation() {
-        reattachmentsBeforeDoingAllocation();
+        ensureResourcesAreReadyForDoingAllocation();
         removeDeletedAllocations();
     }
 
@@ -199,7 +197,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Transactional(readOnly = true)
     public <T> T onAllocationContext(
             IResourceAllocationContext<T> resourceAllocationContext) {
-        reattachmentsBeforeDoingAllocation();
+        ensureResourcesAreReadyForDoingAllocation();
         return resourceAllocationContext.doInsideTransaction();
     }
 
@@ -208,13 +206,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 .getAllocationResources();
         for (Resource each : resources) {
             reattachResource(each);
-        }
-    }
-
-    private void reattachmentsBeforeDoingAllocation() {
-        ensureResourcesAreReadyForDoingAllocation();
-        if (task.getCalendar() != null) {
-            calendarDAO.reattachUnmodifiedEntity(task.getCalendar());
         }
     }
 
@@ -344,27 +335,12 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachResource(Resource resource) {
         resourceDAO.reattach(resource);
         reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
-        if (resource.getCalendar() != null) {
-            loadCalendar(resource.getCalendar());
-        }
         for (DayAssignment dayAssignment : resource.getAssignments()) {
             Hibernate.initialize(dayAssignment);
         }
         if (resource instanceof Machine) {
             loadMachine((Machine) resource);
         }
-    }
-
-    private void loadCalendar(BaseCalendar baseCalendar) {
-        calendarDAO.reattachUnmodifiedEntity(baseCalendar);
-        for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
-            calendarData.getHoursPerDay().size();
-            if (calendarData.getParent() != null) {
-                loadCalendar(calendarData.getParent());
-            }
-        }
-        baseCalendar.getExceptions().size();
-        baseCalendar.getCalendarAvailabilities().size();
     }
 
     private void reattachCriterionSatisfactions(
