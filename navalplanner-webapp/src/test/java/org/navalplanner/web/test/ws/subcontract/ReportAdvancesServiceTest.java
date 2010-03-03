@@ -176,10 +176,9 @@ public class ReportAdvancesServiceTest {
 
         OrderLine orderLine = OrderLine
                 .createOrderLineWithUnfixedPercentage(1000);
+        order.add(orderLine);
         orderLine.setCode(UUID.randomUUID().toString());
         orderLine.setName("Order line name");
-
-        order.add(orderLine);
 
         orderDAO.save(order);
 

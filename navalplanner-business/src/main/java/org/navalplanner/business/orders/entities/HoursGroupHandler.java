@@ -263,7 +263,6 @@ public abstract class HoursGroupHandler<T> implements IHoursGroupHandler<T> {
             HoursGroup hoursGroup = createHoursGroup(orderLine);
             hoursGroup.setWorkingHours(workHours);
             hoursGroup.setPercentage((new BigDecimal(1).setScale(2)));
-            hoursGroup.setCode(OrderLine.INITIAL_HOURS_GROUP_CODE);
             addHoursGroup(orderLine, hoursGroup);
         } else {
 

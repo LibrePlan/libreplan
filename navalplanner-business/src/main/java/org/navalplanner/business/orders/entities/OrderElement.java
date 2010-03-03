@@ -707,6 +707,9 @@ public abstract class OrderElement extends BaseEntity implements
     }
 
     public Order getOrder() {
+        if (parent == null) {
+            return null;
+        }
         return parent.getOrder();
     }
 
