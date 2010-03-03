@@ -47,7 +47,9 @@ public class ShareDivision {
 
         @Override
         public int compareTo(ShareWrapper other) {
-            return share.getHours() - other.share.getHours();
+            long thisHours = share.getHours();
+            long otherHours = other.share.getHours();
+            return Long.signum(thisHours - otherHours);
         }
 
         @Override
@@ -185,16 +187,18 @@ public class ShareDivision {
 
     private static FillingBucket fillingBuckectFor(List<ShareWrapper> wrappers,
             int end, int remaining) {
-        int hoursToDistribute = end == wrappers.size() ? remaining : Math.min(
-                        hoursNeededToBeEqual(wrappers, 0, end), remaining);
+        int hoursToDistribute = end == wrappers.size() ? remaining : (int) Math
+                .min(hoursNeededToBeEqual(wrappers, 0, end), remaining);
         return new FillingBucket(wrappers.subList(0, end), hoursToDistribute);
     }
 
-    private static int hoursNeededToBeEqual(List<ShareWrapper> wrappers,
+    private static long hoursNeededToBeEqual(List<ShareWrapper> wrappers,
             int startInclusive, int endExclusive) {
         ShareWrapper nextLevel = wrappers.get(endExclusive);
         ShareWrapper currentLevel = wrappers.get(startInclusive);
-        int difference = nextLevel.getHours() - currentLevel.getHours();
+        long currentLevelHours = (long) currentLevel.getHours();
+        long difference = nextLevel.getHours() - currentLevelHours;
+        // difference must be long in order to avoid integer overflow
         assert difference > 0;
         return (endExclusive - startInclusive) * difference;
     }

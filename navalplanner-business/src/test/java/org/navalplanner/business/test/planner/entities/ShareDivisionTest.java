@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -141,6 +142,27 @@ public class ShareDivisionTest {
         int[] difference = shareDivision.to(ShareDivision.create(Arrays.asList(
                 new Share(1), new Share(1), new Share(-2))));
         assertTrue(Arrays.equals(difference, new int[] { -1, 6, 1 }));
+    }
+
+    @Test
+    public void canHandleMaximumValueIntegers() {
+        givenDivisionShare(new Share(2), new Share(0), new Share(
+                Integer.MAX_VALUE), new Share(Integer.MAX_VALUE), new Share(
+                Integer.MAX_VALUE));
+        ShareDivision plus = shareDivision.plus(10);
+        int[] difference = shareDivision.to(plus);
+        assertArrayEquals(new int[] { 4, 6, 0, 0, 0 }, difference);
+    }
+
+    @Test
+    public void canHandleMaximumValueIntegersAndMinimumValue() {
+        givenDivisionShare(new Share(Integer.MIN_VALUE), new Share(
+                Integer.MAX_VALUE), new Share(Integer.MAX_VALUE), new Share(
+                Integer.MIN_VALUE), new Share(Integer.MIN_VALUE), new Share(
+                Integer.MAX_VALUE));
+        ShareDivision plus = shareDivision.plus(9);
+        int[] difference = shareDivision.to(plus);
+        assertArrayEquals(new int[] { 3, 0, 0, 3, 3, 0 }, difference);
     }
 
     @Test
