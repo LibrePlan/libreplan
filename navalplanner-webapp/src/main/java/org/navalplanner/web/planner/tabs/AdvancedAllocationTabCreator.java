@@ -31,7 +31,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -54,6 +53,7 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdv
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
+import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
@@ -154,10 +154,9 @@ public class AdvancedAllocationTabCreator {
         private void reattachResources() {
             for (Resource each : associatedResources) {
                 resourceDAO.reattach(each);
-                ResourceCalendar calendar = each.getCalendar();
-                if (calendar != null) {
-                    BaseCalendarModel.forceLoadBaseCalendar(calendar);
-                }
+            }
+            OrderPlanningModel.loadRequiredDataFor(associatedResources);
+            for (Resource each : associatedResources) {
                 loadDayAssignments(each.getAssignments());
             }
         }
