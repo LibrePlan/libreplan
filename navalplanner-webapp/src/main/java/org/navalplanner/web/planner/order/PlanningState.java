@@ -35,7 +35,6 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.calendars.BaseCalendarModel;
 
 public abstract class PlanningState {
 
@@ -66,7 +65,7 @@ public abstract class PlanningState {
 
     public abstract TaskGroup getRootTask();
 
-    private static class WithDataPlanningState extends PlanningState {
+    static class WithDataPlanningState extends PlanningState {
 
         private final ArrayList<TaskElement> initial;
 
@@ -92,7 +91,8 @@ public abstract class PlanningState {
             this.initial = new ArrayList<TaskElement>(initialState);
             this.toSave = new HashSet<TaskElement>(initialState);
             this.toRemove = new HashSet<TaskElement>();
-            this.resources = doReattachments(new HashSet<Resource>(
+            this.resources = OrderPlanningModel
+                    .loadRequiredDataFor(new HashSet<Resource>(
                     initialResources));
         }
 
@@ -135,32 +135,8 @@ public abstract class PlanningState {
 
         private void addingNewlyCreated(IResourceDAO resourceDAO) {
             Set<Resource> newResources = getNewResources(resourceDAO);
-            doReattachments(newResources);
+            OrderPlanningModel.loadRequiredDataFor(newResources);
             resources.addAll(newResources);
-        }
-
-        private <T extends Collection<Resource>> T doReattachments(T result) {
-            for (Resource each : result) {
-                reattachCalendarFor(each);
-                // loading criterions so there are no repeated instances
-                forceLoadOfCriterions(each);
-            }
-            return result;
-        }
-
-        private void reattachCalendarFor(Resource each) {
-            if (each.getCalendar() != null) {
-                BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
-            }
-        }
-
-        private void forceLoadOfCriterions(Resource resource) {
-            Set<CriterionSatisfaction> criterionSatisfactions = resource
-                    .getCriterionSatisfactions();
-            for (CriterionSatisfaction each : criterionSatisfactions) {
-                each.getCriterion().getName();
-                each.getCriterion().getType();
-            }
         }
 
         private Set<Resource> getNewResources(IResourceDAO resourceDAO) {

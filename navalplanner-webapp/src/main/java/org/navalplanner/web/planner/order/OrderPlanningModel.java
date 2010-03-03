@@ -65,6 +65,7 @@ import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -151,6 +152,31 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
 
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
+
+    public static <T extends Collection<Resource>> T loadRequiredDataFor(
+            T resources) {
+        for (Resource each : resources) {
+            reattachCalendarFor(each);
+            // loading criterions so there are no repeated instances
+            forceLoadOfCriterions(each);
+        }
+        return resources;
+    }
+
+    private static void reattachCalendarFor(Resource each) {
+        if (each.getCalendar() != null) {
+            BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+        }
+    }
+
+    static void forceLoadOfCriterions(Resource resource) {
+        Set<CriterionSatisfaction> criterionSatisfactions = resource
+                .getCriterionSatisfactions();
+        for (CriterionSatisfaction each : criterionSatisfactions) {
+            each.getCriterion().getName();
+            each.getCriterion().getType();
+        }
+    }
 
     public static void configureInitialZoomLevelFor(Planner planner,
             ZoomLevel defaultZoomLevel) {
