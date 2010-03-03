@@ -38,6 +38,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
+import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -360,6 +361,33 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
             }
         }
         return min;
+    }
+
+    private boolean isAlreadyInUse(OrderElement orderElement) {
+        boolean usedInWorkReports = !getSession().createCriteria(
+                WorkReport.class).add(
+                Restrictions.eq("orderElement", orderElement)).list().isEmpty();
+        boolean usedInWorkReportLines = !getSession().createCriteria(
+                WorkReportLine.class).add(
+                Restrictions.eq("orderElement", orderElement)).list().isEmpty();
+
+        return usedInWorkReports || usedInWorkReportLines;
+    }
+
+    @Override
+    public boolean isAlreadyInUseThisOrAnyOfItsChildren(
+            OrderElement orderElement) {
+        if (isAlreadyInUse(orderElement)) {
+            return true;
+        }
+
+        for (OrderElement child : orderElement.getChildren()) {
+            if (isAlreadyInUseThisOrAnyOfItsChildren(child)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

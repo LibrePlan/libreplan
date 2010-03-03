@@ -50,7 +50,6 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
-import org.navalplanner.business.orders.entities.CriterionRequirementOrderElementHandler;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -752,6 +751,12 @@ public class OrderModel implements IOrderModel {
             //anyway, if it happenned we don't allow the user to pass
         }
         return false;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAlreadyInUse(OrderElement element) {
+        return orderElementDAO.isAlreadyInUseThisOrAnyOfItsChildren(element);
     }
 
 }

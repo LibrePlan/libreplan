@@ -113,4 +113,6 @@ public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
 
     BigDecimal calculateMinWorkedHours(final List<OrderElement> list);
 
+    boolean isAlreadyInUseThisOrAnyOfItsChildren(OrderElement orderElement);
+
 }

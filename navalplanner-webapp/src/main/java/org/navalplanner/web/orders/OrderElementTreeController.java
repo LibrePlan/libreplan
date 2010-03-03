@@ -38,6 +38,8 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
@@ -97,6 +99,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     @Resource
     private IOrderTemplatesControllerEntryPoints orderTemplates;
 
+    private final IMessagesForUser messagesForUser;
+
     public List<org.navalplanner.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
     }
@@ -107,10 +111,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     public OrderElementTreeController(IOrderModel orderModel,
-            OrderElementController orderElementController) {
+            OrderElementController orderElementController,
+            IMessagesForUser messagesForUser) {
         super(OrderElement.class);
         this.orderModel = orderModel;
         this.orderElementController = orderElementController;
+        this.messagesForUser = messagesForUser;
     }
 
     public OrderElementController getOrderElementController() {
@@ -671,6 +677,21 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 }
             }
         };
+    }
+
+    @Override
+    protected void remove(OrderElement element) {
+        boolean alreadyInUse = orderModel.isAlreadyInUse(element);
+        if (alreadyInUse) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _(
+                                    "You can not remove the order element \"{0}\" because of this or any of its children are already in use in some work reports",
+                                    element.getName()));
+        } else {
+            super.remove(element);
+        }
     }
 
 }

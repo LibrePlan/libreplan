@@ -277,7 +277,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderElementController.doAfterCompose(self
                     .getFellow("editOrderElement"));
             orderElementTreeController = new OrderElementTreeController(
-                    orderModel, orderElementController);
+                    orderModel, orderElementController, messagesForUser);
 
             TreeComponent orderElementsTree = (TreeComponent) editWindow
                     .getFellow("orderElementTree");

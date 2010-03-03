@@ -119,4 +119,6 @@ public interface IOrderModel {
 
     boolean userCanWrite(Order order, String loginName);
 
+    boolean isAlreadyInUse(OrderElement element);
+
 }
