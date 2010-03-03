@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
@@ -141,6 +142,11 @@ public class SpecificResourceAllocation extends
                 LocalDate day, int totalHours) {
             return Arrays.asList(SpecificDayAssignment.create(day,
                     totalHours, resource));
+        }
+
+        @Override
+        protected AvailabilityTimeLine getResourcesAvailability() {
+            return AvailabilityCalculator.getCalendarAvailabilityFor(resource);
         }
     }
 

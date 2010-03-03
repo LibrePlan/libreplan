@@ -46,6 +46,7 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.junit.Test;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
@@ -54,6 +55,8 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
@@ -151,6 +154,8 @@ public class GenericResourceAllocationTest {
         expect(
                 result.getAssignedHoursDiscounting(isA(Object.class),
                         isA(LocalDate.class))).andReturn(hours).anyTimes();
+        expect(result.getSatisfactionsFor(isA(ICriterion.class))).andReturn(
+                new ArrayList<CriterionSatisfaction>()).anyTimes();
         replay(result);
         return result;
     }
@@ -210,6 +215,8 @@ public class GenericResourceAllocationTest {
                 }).anyTimes();
         expect(baseCalendar.canWork(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
+        expect(baseCalendar.getAvailability()).andReturn(
+                AvailabilityTimeLine.allValid()).anyTimes();
         if (baseCalendar instanceof ResourceCalendar) {
             ResourceCalendar resourceCalendar = (ResourceCalendar) baseCalendar;
             expect(resourceCalendar.getCapacity()).andReturn(1);

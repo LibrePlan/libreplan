@@ -40,6 +40,7 @@ import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
@@ -74,6 +75,8 @@ public class SpecificResourceAllocationTest {
         expect(this.calendar.toHours(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andAnswer(
                 toHoursAnswer(hours)).anyTimes();
+        expect(this.calendar.getAvailability()).andReturn(
+                AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);
     }
 
@@ -120,6 +123,8 @@ public class SpecificResourceAllocationTest {
                         return toHoursAnswer(hours).answer();
                     }
                 }).anyTimes();
+        expect(this.calendar.getAvailability()).andReturn(
+                AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);
     }
 

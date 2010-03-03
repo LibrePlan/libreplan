@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.planner.entities.HoursDistributor.IResourceSelector;
 import org.navalplanner.business.planner.entities.HoursDistributor.ResourceWithAssignedHours;
@@ -152,10 +153,11 @@ public class GenericResourceAllocation extends
 
     private class GenericAllocation extends AssignmentsAllocation {
 
-
         private HoursDistributor hoursDistributor;
+        private final List<Resource> resources;
 
         public GenericAllocation(List<Resource> resources) {
+            this.resources = resources;
             hoursDistributor = new HoursDistributor(resources,
                     getAssignedHoursForResource(),
                     new ResourcesSatisfyingCriterionsSelector());
@@ -171,6 +173,12 @@ public class GenericResourceAllocation extends
                         each.resource));
             }
             return result;
+        }
+
+        @Override
+        protected AvailabilityTimeLine getResourcesAvailability() {
+            return AvailabilityCalculator.buildSumOfAvailabilitiesFor(
+                    getCriterions(), resources);
         }
 
     }

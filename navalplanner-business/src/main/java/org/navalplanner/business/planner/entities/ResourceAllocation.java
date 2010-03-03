@@ -445,20 +445,40 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             setResourcesPerDay(calculateResourcesPerDayFromAssignments());
         }
 
+        protected abstract AvailabilityTimeLine getResourcesAvailability();
+
         private List<T> createAssignments(LocalDate startInclusive,
                 LocalDate endExclusive, int hours) {
             Validate.isTrue(hours >= 0);
             List<T> assignmentsCreated = new ArrayList<T>();
             if (hours > 0) {
+                AvailabilityTimeLine availability = getAvailability();
+
                 List<LocalDate> days = getDays(startInclusive, endExclusive);
-                int[] hoursEachDay = hoursDistribution(days, hours);
+                int[] hoursEachDay = hoursDistribution(availability, days,
+                        hours);
                 int i = 0;
                 for (LocalDate day : days) {
-                    assignmentsCreated.addAll(distributeForDay(day,
-                            hoursEachDay[i++]));
+                    // if all days are not available, it would try to assign
+                    // them anyway, preventing it with a check
+                    if (availability.isValid(day)) {
+                        assignmentsCreated.addAll(distributeForDay(day,
+                                hoursEachDay[i]));
+                    }
+                    i++;
                 }
             }
             return onlyNonZeroHours(assignmentsCreated);
+        }
+
+        private AvailabilityTimeLine getAvailability() {
+            AvailabilityTimeLine resourcesAvailability = getResourcesAvailability();
+            if (getTaskCalendar() != null) {
+                return getTaskCalendar().getAvailability().and(
+                        resourcesAvailability);
+            } else {
+                return resourcesAvailability;
+            }
         }
 
         private List<T> onlyNonZeroHours(List<T> assignmentsCreated) {
@@ -471,15 +491,26 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return result;
         }
 
-        private int[] hoursDistribution(List<LocalDate> days, int hoursToSum) {
+        private int[] hoursDistribution(AvailabilityTimeLine availability,
+                List<LocalDate> days, int hoursToSum) {
             List<Share> shares = new ArrayList<Share>();
             for (LocalDate day : days) {
-                shares.add(new Share(-getWorkHoursPerDay()
-                        .getCapacityAt(day)));
+                shares.add(getShareAt(day, availability));
             }
             ShareDivision original = ShareDivision.create(shares);
             ShareDivision newShare = original.plus(hoursToSum);
             return original.to(newShare);
+        }
+
+        private Share getShareAt(LocalDate day,
+                AvailabilityTimeLine availability) {
+            if (availability.isValid(day)) {
+                Integer capacityAtDay = getWorkHoursPerDay()
+                        .getCapacityAt(day);
+                return new Share(-capacityAtDay);
+            } else {
+                return new Share(Integer.MAX_VALUE);
+            }
         }
 
         protected abstract List<T> distributeForDay(LocalDate day,

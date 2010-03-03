@@ -67,8 +67,8 @@ public class AvailabilityCalculator {
             Collection<? extends Criterion> criterions, Resource resource) {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         for (Criterion each : criterions) {
-            result = result.and(buildTimeline(resource.query().from(each)
-                    .result()));
+            result = result.and(buildTimeline(resource
+                    .getSatisfactionsFor(each)));
         }
         return result;
     }
