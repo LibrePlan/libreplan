@@ -415,11 +415,9 @@ public class AvailabilityTimeLine {
     private List<Interval> getAdjacent(Interval toBeInserted) {
         final int insertionPoint = findInsertionPosition(toBeInserted);
         List<Interval> result = new ArrayList<Interval>();
-        for (int i = insertionPoint; i >= 0
-                && (i == invalids.size() || at(i).overlaps(toBeInserted)); i--) {
-            if (i < invalids.size()) {
-                result.add(at(i));
-            }
+        assert insertionPoint <= invalids.size();
+        for (int i = insertionPoint - 1; i >= 0 && at(i).overlaps(toBeInserted); i--) {
+            result.add(at(i));
         }
         for (int i = insertionPoint; i < invalids.size()
                 && at(i).overlaps(toBeInserted); i++) {

@@ -129,6 +129,18 @@ public class AvailabilityTimeLineTest {
         }
     }
 
+    @Test
+    public void pointsAreMergedCorrectly() {
+        AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
+
+        timeLine.invalidAt(new LocalDate(2010, 4, 7));
+        timeLine.invalidAt(new LocalDate(2010, 4, 11));
+        timeLine.invalidAt(new LocalDate(2010, 4, 8));
+        timeLine.invalidAt(new LocalDate(2010, 4, 6));
+
+        assertFalse(timeLine.isValid(new LocalDate(2010, 4, 8)));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void endMustBeAfterStart() {
         AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
