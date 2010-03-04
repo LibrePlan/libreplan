@@ -611,9 +611,20 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void remove(Order order) {
-        orderModel.remove(order);
-        Util.reloadBindings(self);
-        messagesForUser.showMessage(Level.INFO, _("Removed {0}", order.getName()));
+        boolean alreadyInUse = orderModel.isAlreadyInUse(order);
+        if (alreadyInUse) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _(
+                                    "You can not remove the order element \"{0}\" because of any of its order elements are already in use in some work reports",
+                                    order.getName()));
+        } else {
+            orderModel.remove(order);
+            Util.reloadBindings(self);
+            messagesForUser.showMessage(Level.INFO, _("Removed {0}", order
+                    .getName()));
+        }
     }
 
     public void schedule(Order order) {
