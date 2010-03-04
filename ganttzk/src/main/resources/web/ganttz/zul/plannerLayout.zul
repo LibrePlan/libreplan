@@ -48,26 +48,9 @@ planner = self;
 
         <center border="0">
             <borderlayout sclass="plannerlayout_center">
-                <west flex="true" collapsible="true"
-                    splittable="true" autoscroll="true" sclass="taskheaders-border">
-                    <borderlayout >
-                        <north border="0" height="32px" flex="true" collapsible="true" sclass="taskheadersgap">
-                            <vbox pack="center" align="center">
-                            <tree fixedLayout="false">
-                                <treecols sizable="false">
-                                    <treecol label="Name" height="32px" sclass="tree-text" />
-                                    <treecol label="Start" sclass="tree-datecolumn" />
-                                    <treecol label="End" sclass="tree-datecolumn" />
-                                </treecols>
-                            </tree>
-                            </vbox>
-                        </north>
-                        <center border="0" sclass="leftpanelcontainer">
+                <west flex="false" collapsible="true" splittable="true" autoscroll="true" width="300px">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
-                        </center>
-                    </borderlayout>
                 </west>
-
                 <center sclass="taskspanel">
                     <borderlayout>
                         <north border="0"><div sclass="timetrackergap" height="31px" id="insertionPointTimetracker"></div></north>

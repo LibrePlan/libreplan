@@ -124,8 +124,8 @@ function scrolledpannel() {
 	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
 }
 
-function leftpanel() {
-	return YAHOO.util.Selector.query('.leftpanelgap')[0];
+function taskdetailsBody() {
+	return YAHOO.util.Selector.query('.listdetails .z-tree-body')[0];
 }
 
 function plannergraph() {
@@ -167,7 +167,6 @@ function timeplotcontainer_all() {
 zkTasklist.init = function(cmp) {
 	zkTasklist.adjust_height();
 	listenToScroll();
-	listenToTaskDetailsScroll();
 }
 
 /* Resizes ganttpanel heigh to fit window size */
@@ -182,7 +181,7 @@ function listenToScroll() {
 
 	timetrackergap_ = timetrackergap();
 	scrolledpannel_ = scrolledpannel();
-	leftpanel_ = leftpanel();
+	leftpanel_ = taskdetailsBody();
 	rightpanellayout_ = rightpanellayout();
 	plannergraph_ = plannergraph();
 
@@ -203,18 +202,6 @@ function listenToScroll() {
 	rightpanellayout_.onscroll = onScroll;
 
 }
-
-function listenToTaskDetailsScroll() {
-	timetrackergap_ = timetrackergap();
-	taskheaderscontainer_ = taskheaderscontainer();
-
-	var onScrollTaskDetails = function() {
-		taskheaderscontainer__.style["left"] = "-" + leftpanel_.scrollLeft + "px";
-	};
-	leftpanel_.onscroll = onScrollTaskDetails;
-
-}
-
 
 /*
  * Move scrollbars to locate them on left and bottom window borders

@@ -623,7 +623,10 @@ div.z-grid {
 .listdetails .z-textbox, .listdetails .z-decimalbox,
 .listdetails .z-intbox, .listdetails .z-longbox,
 .listdetails .z-doublebox {
-    height: 17px;
+    height: 15px;
+}
+.listdetails input {
+    padding-top: 6px;
 }
 
 .z-tree .z-datebox-inp {
@@ -685,6 +688,10 @@ div.z-grid {
     height: 17px;
     font-size: 11px !important;
     font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.taskTreeCols div.z-tree-header, .taskTreeCols div.z-tree-header tr {
+    overflow: visible;
 }
 
 .advance-measurement {

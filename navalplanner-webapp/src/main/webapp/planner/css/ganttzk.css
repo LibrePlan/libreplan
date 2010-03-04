@@ -26,15 +26,22 @@
 */
 
 /* -------------- Listdetails -------------- */
-    /* External listdetails box */
 .listdetails {
     margin-top: 0px;
     font-size: 10px !important;
-    margin-top: 0px;
 }
 
-#listdetails_container {
-    position: relative;
+#listdetails_container .z-tree-header table {
+    position:relative;
+    z-index: 4;
+}
+
+.listdetails .z-tree-body {
+    margin-top: -18px;
+}
+
+.listdetails div.z-tree {
+    background: #FFFFFF;
 }
 
 .listdetails img {
@@ -51,8 +58,13 @@
     padding: 0px;
 }
 
+.listdetails th.z-tree-col .z-tree-col-cnt {
+    font-size:11px;
+    font-weight:bold;
+}
+
 .listdetails input {
-    width: 65px;
+    width: 100%;
     font-size: 10px !important;
     border-bottom: 0px;
     border-right: 0px;
@@ -69,9 +81,8 @@
     border-right: 0px;
 }
 
-.listdetails input
 .listdetails input {
-    min-width: 90px;
+    /* min-width: 90px; */
     height: 19px;
 }
 
@@ -92,7 +103,7 @@
 }
 
 .listdetails {
-min-width:200px;
+    min-width:200px;
 }
 
 .listdetails div.z-tree-header th.z-tree-col {
@@ -798,7 +809,7 @@ div.z-tree {
 }
 
 .listdetails .z-tree-header table {
-    display:none;
+    /* display:none; */
 }
 
 .plannerlayout div.z-tree, .plannerlayout div.z-grid,
