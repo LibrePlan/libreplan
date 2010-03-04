@@ -29,12 +29,23 @@ public class LoadTimeLine {
 
     private final String conceptName;
     private final List<LoadPeriod> loadPeriods;
+    private final String type;
 
     public LoadTimeLine(String conceptName, List<LoadPeriod> loadPeriods) {
         Validate.notEmpty(conceptName);
         Validate.notNull(loadPeriods);
         this.loadPeriods = LoadPeriod.sort(loadPeriods);
         this.conceptName = conceptName;
+        this.type = "";
+    }
+
+    public LoadTimeLine(String conceptName, List<LoadPeriod> loadPeriods,
+            String type) {
+        Validate.notEmpty(conceptName);
+        Validate.notNull(loadPeriods);
+        this.loadPeriods = LoadPeriod.sort(loadPeriods);
+        this.conceptName = conceptName;
+        this.type = type;
     }
 
     public List<LoadPeriod> getLoadPeriods() {
@@ -69,5 +80,9 @@ public class LoadTimeLine {
             return null;
         }
         return getLast().getEnd();
+    }
+
+    public String getType() {
+        return this.type;
     }
 }

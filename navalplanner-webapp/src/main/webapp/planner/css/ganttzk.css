@@ -482,9 +482,15 @@ tr.z-vbox-sep {
     height: 10px;
     border: 1px;
     margin-bottom: 10px;
-    margin-top: 10px;
+    margin-top: 8px;
     width: 100%;
     border-bottom: 1px dotted #CCCCCC;
+}
+
+.resourceloadleftpane .z-tree-row .z-label {
+    height:18px;
+    padding-bottom:0;
+    vertical-align:bottom;
 }
 
 .resourceload_name {
@@ -565,8 +571,32 @@ tr.z-vbox-sep {
 }
 
 .resourceloadlist {
-    margin-top: 15px;
+    margin-top: 13px;
 }
+
+.resourceload-resource div {
+    border: solid 1px;
+}
+
+.resourceload-global-generic div {
+    border: solid 1px;
+}
+
+.row_resourceload.resourceload-global-generic,
+.row_resourceload.resourceload-resource {
+    margin-bottom: 8px;
+    margin-top: 6px;
+    padding-bottom: 2px;
+}
+
+.resourceloadleftpane .z-tree-ico + .secondlevel span {
+    font-weight: bold;
+}
+
+.resourceloadleftpane .z-label {
+    font-size: 10px;
+}
+
 
 .timetrackergap #zoom_buttons {
     display:none;

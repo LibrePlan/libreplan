@@ -178,7 +178,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine createPrincipal(Criterion criterion,
             List<GenericResourceAllocation> orderedAllocations) {
         return new LoadTimeLine(criterion.getName(), createPeriods(criterion,
-                orderedAllocations));
+                orderedAllocations), "global-generic");
     }
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
@@ -263,11 +263,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
         for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
             Task task = entry.getKey();
-            LoadTimeLine timeLine = buildTimeLine(resource, getTaskName(task),
-                    entry.getValue());
+            LoadTimeLine timeLine = buildTimeLine(resource,
+ getTaskName(task),
+                    entry.getValue(), "specific");
             if (!timeLine.isEmpty()) {
                 secondLevel.add(timeLine);
             }
+
         }
         return secondLevel;
     }
@@ -284,7 +286,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
         LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
                 .onResourceSatisfying(resource, criterions);
         return new LoadTimeLine(getName(criterions), PeriodsBuilder.build(
-                periodGeneratorFactory, allocationsSortedByStartDate));
+                periodGeneratorFactory, allocationsSortedByStartDate),
+                "generic");
     }
 
     public static String getName(Collection<? extends Criterion> criterions) {
@@ -302,7 +305,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine buildTimeLine(Resource resource, String name,
             List<ResourceAllocation<?>> sortedByStartDate) {
         return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
-                .onResource(resource), sortedByStartDate));
+                .onResource(resource), sortedByStartDate), "resource");
+    }
+
+    private LoadTimeLine buildTimeLine(Resource resource, String name,
+            List<ResourceAllocation<?>> sortedByStartDate, String type) {
+        return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
+                .onResource(resource), sortedByStartDate), type);
     }
 
     @Override

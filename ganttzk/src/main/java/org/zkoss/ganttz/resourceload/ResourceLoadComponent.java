@@ -77,6 +77,11 @@ public class ResourceLoadComponent extends XulElement {
         return loadLine.getConceptName();
     }
 
+    public String getResourceLoadType() {
+        return loadLine.getType();
+    }
+
+
     private static List<Div> createDivsForPeriods(IDatesMapper datesMapper,
             List<LoadPeriod> loadPeriods) {
         List<Div> result = new ArrayList<Div>();
