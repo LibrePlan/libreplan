@@ -162,12 +162,14 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
         return newConstraint;
     }
 
-    private void save() {
+    private boolean save() {
         try {
             advanceTypeModel.save();
             messagesForUser.showMessage(Level.INFO, _("Advance type saved"));
+            return true;
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
+            return false;
         }
     }
 
@@ -236,12 +238,15 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndExit() {
-        save();
-        goToList();
+        if (save()) {
+            goToList();
+        }
     }
 
     public void saveAndContinue() {
-        save();
+        if (save()) {
+            goToEditForm(getAdvanceType());
+        }
     }
 
     public boolean isImmutable() {
