@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<label-type-list xmlns="http://rest.ws.navalplanner.org">
+  <label-type name="Centro de coste"
+  code="a3636840-33ed-4e25-8ffd-6f98aa72df2a">
+    <label-list>
+      <label name="CC Coruña"
+      code="b2b9cdee-2785-4c03-8e01-cec0a93b61aa" />
+      <label name="CC Cadiz-Malaga"
+      code="e725226b-94f3-41df-88fe-a1855cedc808" />
+    </label-list>
+  </label-type>
+  <label-type name="Producto" code="a3636840-33ed-4e25-8ffd-6f98aa72dfxx">
+    <label-list>
+      <label name="Modelo" code="b2b9cdee-2785-4c03-8e01-cec0a93b61xt"/>
+      <label name="Serie" code="e725226b-94f3-41df-88fe-a1855cedc8x4"/>
+    </label-list>
+  </label-type>
+</label-type-list>

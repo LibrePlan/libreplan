@@ -20,10 +20,15 @@
 
 package org.navalplanner.ws.labels.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.ws.labels.api.LabelDTO;
@@ -81,6 +86,33 @@ public final class LabelConverter {
         Label label = Label.create(labelDTO.code, labelDTO.name);
 
         return label;
+    }
+
+    public final static void updateLabelType(LabelType labelType,
+            LabelTypeDTO labelTypeDTO) throws ValidationException {
+
+        /*
+         * 1: Update basic properties in existing label or add new label.
+         */
+        List<LabelDTO> labelDTOs = labelTypeDTO.labels;
+        for (LabelDTO labelDTO : labelDTOs) {
+
+            /* Step 1.1: requires each label DTO to have a code. */
+            if (StringUtils.isBlank(labelDTO.code)) {
+                throw new ValidationException(_("missing code in a label"));
+            }
+
+            try {
+                Label label = labelType.getLabelByCode(labelDTO.code);
+                label.updateUnvalidated(StringUtils.trim(labelDTO.name));
+            } catch (InstanceNotFoundException e) {
+                labelType.addLabel(toEntity(labelDTO));
+            }
+        }
+
+        /* 2: Update label type basic properties. */
+        labelType.updateUnvalidated(StringUtils.trim(labelTypeDTO.name));
+
     }
 
 }

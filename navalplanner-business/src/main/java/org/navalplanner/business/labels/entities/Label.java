@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -113,6 +114,12 @@ public class Label extends IntegrationEntity {
     @Override
     protected ILabelDAO getIntegrationEntityDAO() {
         return Registry.getLabelDAO();
+    }
+
+    public void updateUnvalidated(String name) {
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
     }
 
 }

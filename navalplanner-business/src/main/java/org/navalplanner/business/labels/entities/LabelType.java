@@ -141,4 +141,26 @@ public class LabelType extends IntegrationEntity implements Comparable {
         return !StringUtils.isBlank(name);
     }
 
+    public void updateUnvalidated(String name) {
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
+    }
+
+    public Label getLabelByCode(String code) throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code, Label.class.getName());
+        }
+
+        for (Label l : labels) {
+            if (l.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return l;
+            }
+        }
+
+        throw new InstanceNotFoundException(code, Label.class.getName());
+
+    }
+
 }

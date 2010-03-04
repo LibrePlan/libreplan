@@ -30,6 +30,18 @@
 
     - export-criterion-types.sh (authenticate with wsreader/wsreader)
 
+  * Import label types:
+
+    - import-label-types.sh label-sample.xml
+      (authenticate with wswriter/wswriter)
+
+    - Check the returned errors are consistent with the comments in
+      label-sample.xml.
+
+  * Export label types:
+
+    - export-label-types.sh (authenticate with wsreader/wsreader)
+
   * Import resources:
 
     - import-resources.sh resources-sample-mini.xml (or resources-sample.xml)

@@ -20,26 +20,19 @@
 
 package org.navalplanner.ws.labels.impl;
 
-import static org.navalplanner.web.I18nHelper._;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.LabelType;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
-import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
-import org.navalplanner.ws.common.impl.Util;
+import org.navalplanner.ws.common.impl.GenericRESTService;
+import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.navalplanner.ws.labels.api.ILabelService;
 import org.navalplanner.ws.labels.api.LabelTypeDTO;
 import org.navalplanner.ws.labels.api.LabelTypeListDTO;
@@ -55,7 +48,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Path("/labels/")
 @Produces("application/xml")
 @Service("labelServiceREST")
-public class LabelServiceREST implements ILabelService {
+public class LabelServiceREST extends
+        GenericRESTService<LabelType, LabelTypeDTO> implements ILabelService {
 
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
@@ -64,7 +58,7 @@ public class LabelServiceREST implements ILabelService {
     @GET
     @Transactional(readOnly = true)
     public LabelTypeListDTO getLabelTypes() {
-        return LabelConverter.toDTO(labelTypeDAO.getAll());
+        return new LabelTypeListDTO(findAll());
     }
 
     @Override
@@ -73,51 +67,29 @@ public class LabelServiceREST implements ILabelService {
     @Transactional
     public InstanceConstraintViolationsListDTO addLabelTypes(
             LabelTypeListDTO labelTypes) {
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
-        Long numItem = new Long(1);
-        Set<String> labelTypeNames = new HashSet<String>();
+        return save(labelTypes.labelTypes);
+    }
 
-        for (LabelTypeDTO labelTypeDTO : labelTypes.labelTypes) {
-            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
+    @Override
+    protected IIntegrationEntityDAO<LabelType> getIntegrationEntityDAO() {
+        return labelTypeDAO;
+    }
 
-            LabelType labelType = LabelConverter.toEntity(labelTypeDTO);
+    @Override
+    protected LabelTypeDTO toDTO(LabelType entity) {
+        return LabelConverter.toDTO(entity);
+    }
 
-            if (labelType.getName() != null
-                    && labelTypeNames.contains(labelType.getName()
-                            .toLowerCase())) {
+    @Override
+    protected LabelType toEntity(LabelTypeDTO entityDTO)
+            throws ValidationException, RecoverableErrorException {
+        return LabelConverter.toEntity(entityDTO);
+    }
 
-                instanceConstraintViolationsDTO = InstanceConstraintViolationsDTO
-                        .create(Util.generateInstanceConstraintViolationsDTOId(
-                                numItem, labelTypeDTO),
-                                _("label type name is used by another label "
-                                        + "type being imported"));
-            } else {
-                try {
-                    labelType.validate();
-                    labelTypeDAO.save(labelType);
-
-                    if (labelType.getName() != null) {
-                        labelTypeNames.add(labelType.getName().toLowerCase());
-                    }
-                } catch (ValidationException e) {
-                    instanceConstraintViolationsDTO = ConstraintViolationConverter
-                            .toDTO(Util
-                                    .generateInstanceConstraintViolationsDTOId(
-                                            numItem, labelTypeDTO), e
-                                    .getInvalidValues());
-                }
-            }
-
-            if (instanceConstraintViolationsDTO != null) {
-                instanceConstraintViolationsList
-                        .add(instanceConstraintViolationsDTO);
-            }
-
-            numItem++;
-        }
-
-        return new InstanceConstraintViolationsListDTO(
-                instanceConstraintViolationsList);
+    @Override
+    protected void updateEntity(LabelType entity, LabelTypeDTO entityDTO)
+            throws ValidationException, RecoverableErrorException {
+        LabelConverter.updateLabelType(entity, entityDTO);
     }
 
 }

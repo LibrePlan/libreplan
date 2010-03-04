@@ -32,6 +32,7 @@ import static org.navalplanner.web.test.ws.common.Util.mustEnd;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -57,6 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
@@ -78,7 +80,8 @@ public class LabelServiceTest {
     private LabelType givenLabelTypeStored() {
         Label label1 = Label.create("label-name-1");
         Label label2 = Label.create("label-name-2");
-        final LabelType labelType = LabelType.create("label-type-name");
+        final LabelType labelType = LabelType.create("label-type-name"
+                + UUID.randomUUID());
 
         labelType.addLabel(label1);
         labelType.addLabel(label2);
@@ -135,7 +138,7 @@ public class LabelServiceTest {
     public void importValidLabelType() {
         int previous = labelTypeDAO.getAll().size();
 
-        LabelTypeDTO labelTypeDTO = new LabelTypeDTO("label-type-name",
+        LabelTypeDTO labelTypeDTO = new LabelTypeDTO("label-type-name1",
                 new ArrayList<LabelDTO>());
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = labelService
@@ -153,21 +156,24 @@ public class LabelServiceTest {
     public void importTwoValidLabelType() {
         int previous = labelTypeDAO.getAll().size();
 
-        LabelTypeDTO labelTypeDTO1 = new LabelTypeDTO("label-type-name1",
+        LabelTypeDTO labelTypeDTO1 = new LabelTypeDTO("label-type-A",
                 new ArrayList<LabelDTO>());
-        LabelTypeDTO labelTypeDTO2 = new LabelTypeDTO("label-type-name2",
+        LabelTypeDTO labelTypeDTO2 = new LabelTypeDTO("label-type-B",
                 new ArrayList<LabelDTO>());
 
+        LabelTypeListDTO labelTypeDTOs = createLabelTypeListDTO(labelTypeDTO1,
+                labelTypeDTO2);
+
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = labelService
-                .addLabelTypes(new LabelTypeListDTO(Arrays.asList(
-                        labelTypeDTO1, labelTypeDTO2))).instanceConstraintViolationsList;
+                .addLabelTypes(labelTypeDTOs).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
         List<LabelType> labelTypes = labelTypeDAO.getAll();
         assertThat(labelTypes.size(), equalTo(previous + 2));
         for (LabelType labelType : labelTypes) {
             assertThat(labelType.getName(), anyOf(equalTo(labelTypeDTO1.name),
-                    equalTo(labelTypeDTO2.name)));
+                    equalTo(labelTypeDTO2.name), equalTo("label-type-name1")));
             assertThat(labelType.getLabels().size(), equalTo(0));
         }
     }
@@ -176,7 +182,7 @@ public class LabelServiceTest {
     public void importTwoLabelTypeWithRepeatedName() {
         int previous = labelTypeDAO.getAll().size();
 
-        String labelTypeName = "label-type-name";
+        String labelTypeName = "label-type-nameX";
         LabelTypeDTO labelTypeDTO1 = new LabelTypeDTO(labelTypeName,
                 new ArrayList<LabelDTO>());
         LabelTypeDTO labelTypeDTO2 = new LabelTypeDTO(labelTypeName,
@@ -201,7 +207,7 @@ public class LabelServiceTest {
         LabelDTO labelDTO2 = new LabelDTO("label-name-2");
         List<LabelDTO> labelDTOs = Arrays.asList(labelDTO1, labelDTO2);
 
-        LabelTypeDTO labelTypeDTO = new LabelTypeDTO("label-type-name",
+        LabelTypeDTO labelTypeDTO = new LabelTypeDTO("label-type-nameY",
                 labelDTOs);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = labelService
@@ -210,7 +216,7 @@ public class LabelServiceTest {
 
         assertThat(labelTypeDAO.getAll().size(), equalTo(previous + 1));
 
-        LabelType labelType = labelTypeDAO.getAll().get(0);
+        LabelType labelType = labelTypeDAO.getAll().get(previous);
         assertThat(labelType.getName(), equalTo(labelTypeDTO.name));
         assertThat(labelType.getLabels().size(), equalTo(2));
         for (Label label : labelType.getLabels()) {
@@ -261,6 +267,14 @@ public class LabelServiceTest {
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
         assertThat(labelTypeDAO.getAll().size(), equalTo(previous));
+    }
+
+    private LabelTypeListDTO createLabelTypeListDTO(LabelTypeDTO... labelTypes) {
+        List<LabelTypeDTO> labelTypeList = new ArrayList<LabelTypeDTO>();
+        for (LabelTypeDTO c : labelTypes) {
+            labelTypeList.add(c);
+        }
+        return new LabelTypeListDTO(labelTypeList);
     }
 
 }
