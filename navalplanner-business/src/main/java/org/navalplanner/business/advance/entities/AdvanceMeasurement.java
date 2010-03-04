@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
@@ -134,4 +135,34 @@ public class AdvanceMeasurement extends BaseEntity {
         communicationDate = null;
     }
 
+    @AssertTrue(message = "The current value must be less than the max value.")
+    public boolean checkConstraintValueIsLessThanMaxValue() {
+        if ((this.value == null) || (this.advanceAssignment == null)){
+            return true;
+        }
+
+        if (this.advanceAssignment instanceof DirectAdvanceAssignment) {
+            BigDecimal defaultMaxValue = ((DirectAdvanceAssignment) this.advanceAssignment)
+                    .getMaxValue();
+            return (this.value.compareTo(defaultMaxValue) <= 0);
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "The current value must be less than the max value.")
+    public boolean checkConstraintValidPrecision() {
+        if ((this.value == null) || (this.advanceAssignment == null)
+                || (this.advanceAssignment.getAdvanceType() == null)) {
+            return true;
+        }
+
+        BigDecimal precision = this.advanceAssignment.getAdvanceType()
+                .getUnitPrecision();
+        BigDecimal result[] = value.divideAndRemainder(precision);
+        BigDecimal zero = (BigDecimal.ZERO).setScale(4);
+        if (result[1].compareTo(zero) == 0) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -64,9 +64,9 @@ public interface IManageOrderElementAdvancesModel {
 
     public void cleanAdvance();
 
-    public boolean isPrecisionValid(BigDecimal value);
+    public boolean isPrecisionValid(AdvanceMeasurement advanceMeasurement);
 
-    public boolean greatThanMaxValue(BigDecimal value);
+    public boolean greatThanMaxValue(AdvanceMeasurement advanceMeasurement);
 
     public boolean isDistinctValidDate(Date value,
             AdvanceMeasurement newAdvanceMeasurement);
@@ -98,4 +98,5 @@ public interface IManageOrderElementAdvancesModel {
 
     public boolean isQualityForm(AdvanceAssignment advance);
 
+    public boolean lessThanPreviousMeasurements();
 }

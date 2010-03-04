@@ -380,30 +380,30 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean isPrecisionValid(BigDecimal value){
+    public boolean isPrecisionValid(AdvanceMeasurement advanceMeasurement) {
         if ((this.advanceAssignment != null)
                 && (this.advanceAssignment.getAdvanceType() != null)) {
-            BigDecimal precision = this.advanceAssignment.getAdvanceType()
-                    .getUnitPrecision();
-            BigDecimal result[] = value.divideAndRemainder(precision);
-            if(result[1].compareTo(BigDecimal.ZERO) == 0) {
-                return true;
-            }
-            return false;
+            return advanceMeasurement.checkConstraintValidPrecision();
         }
         return true;
     }
 
     @Override
-    public boolean greatThanMaxValue(BigDecimal value){
+    public boolean greatThanMaxValue(AdvanceMeasurement advanceMeasurement) {
         if (this.advanceAssignment == null
                 || this.advanceAssignment.getMaxValue() == null) {
             return false;
         }
-        if (value.compareTo(this.advanceAssignment.getMaxValue()) > 0) {
-             return true;
+        return !(advanceMeasurement.checkConstraintValueIsLessThanMaxValue());
+    }
+
+    @Override
+    public boolean lessThanPreviousMeasurements() {
+        if (this.advanceAssignment == null) {
+            return false;
         }
-        return false;
+        return !(this.advanceAssignment
+                .checkConstraintValidAdvanceMeasurements());
     }
 
     @Override

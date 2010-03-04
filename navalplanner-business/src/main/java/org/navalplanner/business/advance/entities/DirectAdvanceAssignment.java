@@ -22,6 +22,7 @@ package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -79,7 +80,9 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
 
     public void setMaxValue(BigDecimal maxValue) {
         this.maxValue = maxValue;
-        this.maxValue.setScale(2);
+        if (maxValue != null) {
+            this.maxValue.setScale(2);
+        }
     }
 
     public SortedSet<AdvanceMeasurement> getAdvanceMeasurements() {
@@ -150,6 +153,28 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return null;
     }
 
+    @AssertTrue(message = "The previous advance measurements must have a value less than the value of the posterior advance measurements.")
+    public boolean checkConstraintValidAdvanceMeasurements() {
+        if (advanceMeasurements.isEmpty()) {
+            return true;
+        }
+
+        Iterator<AdvanceMeasurement> iterator = advanceMeasurements.iterator();
+        AdvanceMeasurement currentAdvance = iterator.next();
+        while (iterator.hasNext()) {
+            AdvanceMeasurement nextAdvance = iterator.next();
+            if ((currentAdvance.getValue() != null)
+                    && (nextAdvance.getValue() != null)
+                    && (currentAdvance.getDate() != null)
+                    && (nextAdvance.getDate() != null)
+                    && (currentAdvance.getValue().compareTo(
+                            nextAdvance.getValue()) < 0)) {
+                return false;
+            }
+            currentAdvance = nextAdvance;
+        }
+        return true;
+    }
 
     public void setFake(boolean fake) {
         this.fake = fake;

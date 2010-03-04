@@ -448,7 +448,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         final boolean couldSave = save();
         if (couldSave) {
             if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-                selectTab(getCurrentTab().getId());
                 orderModel.initEdit(order);
                 checkWritePermissions(order);
                 if(order.getState() == OrderStatusEnum.STORED) {
@@ -459,6 +458,12 @@ public class OrderCRUDController extends GenericForwardComposer {
                 initialStatus = order.getState();
                 initializeTabs();
                 showWindow(editWindow);
+
+                // come back to the current tab after initialize all tabs.
+                selectTab(getCurrentTab().getId());
+                Events.sendEvent(new SelectEvent(Events.ON_SELECT,
+                        getCurrentTab(), null));
+
                 if (isNewObject) {
                     this.planningControllerEntryPoints.goToOrderDetails(order);
                 }
@@ -476,6 +481,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndExit() {
+        setCurrentTab();
         final boolean couldSave = save();
         if (couldSave) {
             goToList();
@@ -483,20 +489,28 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private boolean save() {
-
-        if ((manageOrderElementAdvancesController != null)
-                && (!manageOrderElementAdvancesController.save())) {
+        if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
+            if (!manageOrderElementAdvancesController.save()) {
+                return false;
+            }
         }
-        if ((assignedCriterionRequirementController != null)
-                && (!assignedCriterionRequirementController.close())) {
+        if (assignedCriterionRequirementController != null) {
             selectTab("tabRequirements");
+            if (!assignedCriterionRequirementController.close()) {
+                return false;
+            }
         }
-        if ((assignedTaskQualityFormController != null)
-                && (!assignedTaskQualityFormController.confirm())) {
+        if (assignedTaskQualityFormController != null) {
             selectTab("tabTaskQualityForm");
+            if (!assignedTaskQualityFormController.confirm()) {
             return false;
         }
+        }
+
+        // come back to the current tab after validate other tabs.
+        selectTab(getCurrentTab().getId());
+
         try {
             orderModel.save();
             saveOrderAuthorizations();
@@ -507,7 +521,6 @@ public class OrderCRUDController extends GenericForwardComposer {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
             return true;
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
@@ -553,8 +566,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void reloadHoursGroupOrder() {
-        assignedCriterionRequirementController
-                .openWindow(getOrderElementModel());
         assignedCriterionRequirementController.reload();
     }
 

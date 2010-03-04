@@ -167,6 +167,7 @@ public class ManageOrderElementAdvancesController extends
     private Listbox editAdvances;
 
     public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment) {
+        validateListAdvanceMeasurement();
         manageOrderElementAdvancesModel
                 .prepareEditAdvanceMeasurements(advanceAssignment);
         this.indexSelectedItem = editAdvances.getIndexOfItem(editAdvances.getSelectedItem());
@@ -382,6 +383,7 @@ public class ManageOrderElementAdvancesController extends
         Listcell listCell = new Listcell();
         listCell.appendChild(maxValue);
         listItem.appendChild(listCell);
+        maxValue.setConstraint(checkMaxValue());
     }
 
     private void appendDecimalBoxValue(final Listitem listItem){
@@ -562,6 +564,25 @@ public class ManageOrderElementAdvancesController extends
         }
     }
 
+    private Constraint checkMaxValue() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Listitem item = (Listitem) comp.getParent().getParent();
+                DirectAdvanceAssignment advance = (DirectAdvanceAssignment) item
+                        .getValue();
+                if (value == null) {
+                    ((Decimalbox) comp).setValue(advance.getMaxValue());
+                    ((Decimalbox) comp).invalidate();
+                    throw new WrongValueException(
+                            comp,
+                            _("The max value must be not empty"));
+                }
+            }
+        };
+    }
+
     private void setPercentage(){
         if ((this.indexSelectedItem < editAdvances.getItemCount())
                 && (this.indexSelectedItem >= 0)) {
@@ -586,6 +607,7 @@ public class ManageOrderElementAdvancesController extends
                                 .getPercentageAdvanceMeasurement(
                                         greatAdvanceMeasurement).toString()
                                 + " %");
+                ((Label) percentage.getFirstChild()).invalidate();
             }
         }
     }
@@ -609,6 +631,7 @@ public class ManageOrderElementAdvancesController extends
                 Listcell value = (Listcell)selectedItem.getChildren().get(2);
                 ((Decimalbox) value.getFirstChild())
                         .setValue(greatAdvanceMeasurement.getValue());
+                ((Decimalbox) value.getFirstChild()).invalidate();
             }
         }
 
@@ -691,7 +714,8 @@ public class ManageOrderElementAdvancesController extends
                 AdvanceAssignment advance = (AdvanceAssignment) listItem
                         .getValue();
                 if (advance.getAdvanceType() == null) {
-                    return false;
+                    throw new WrongValueException(getComboboxTypeBy(listItem),
+                            _("Value is not valid, the type must be not empty"));
                 }
 
                 DirectAdvanceAssignment directAdvanceAssignment;
@@ -703,7 +727,9 @@ public class ManageOrderElementAdvancesController extends
                 }
                 if (directAdvanceAssignment != null
                         && directAdvanceAssignment.getMaxValue() == null) {
-                    return false;
+                    throw new WrongValueException(
+                            getDecimalboxMaxValueBy(listItem),
+                            _("Value is not valid, the current value must be not empty"));
                 }
             }
         }
@@ -716,12 +742,41 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) editAdvancesMeasurement.getChildren().get(i);
                 AdvanceMeasurement advance = (AdvanceMeasurement) listItem
                         .getValue();
-                if (advance.getValue() == null || advance.getDate() == null) {
-                    return false;
+
+                // Validate the value of the advance measurement
+                Decimalbox valueBox = getDecimalboxBy(listItem);
+                valueBox.setValue(advance.getValue());
+
+                // Validate the value of the advance measurement
+                Datebox dateBox = getDateboxBy(listItem);
+                if (advance.getDate() == null) {
+                    dateBox.setValue(null);
+                } else {
+                dateBox.setValue(advance.getDate().toDateTimeAtStartOfDay()
+                        .toDate());
                 }
             }
         }
         return true;
+    }
+
+    private Combobox getComboboxTypeBy(Listitem item) {
+        return (Combobox) ((Listcell) item.getChildren().get(0))
+                .getFirstChild();
+    }
+
+    private Combobox getDecimalboxMaxValueBy(Listitem item) {
+        return (Combobox) ((Listcell) item.getChildren().get(1))
+                .getFirstChild();
+    }
+
+    private Decimalbox getDecimalboxBy(Listitem item) {
+        return (Decimalbox) ((Listcell) item.getChildren().get(0))
+                .getFirstChild();
+    }
+
+    private Datebox getDateboxBy(Listitem item) {
+        return (Datebox) ((Listcell) item.getChildren().get(2)).getFirstChild();
     }
 
     private boolean validateReportGlobalAdvance(){
@@ -767,7 +822,7 @@ public class ManageOrderElementAdvancesController extends
             listcell.appendChild(value);
             listitem.appendChild(listcell);
 
-            value.setScale(2);
+            value.setScale(4);
             value.setDisabled(isReadOnlyAdvanceMeasurements());
             value.addEventListener(Events.ON_CHANGE, new EventListener() {
 
@@ -776,7 +831,6 @@ public class ManageOrderElementAdvancesController extends
                     updatesValue(value);
                 }
             });
-            value.setConstraint(checkValidValue());
 
             Util.bind(value, new Util.Getter<BigDecimal>() {
 
@@ -793,6 +847,7 @@ public class ManageOrderElementAdvancesController extends
                     Util.reloadBindings(editAdvances);
                 }
             });
+            value.setConstraint(checkValidValue());
         }
 
         private void appendLabelPercentage(final Listitem listitem) {
@@ -825,7 +880,6 @@ public class ManageOrderElementAdvancesController extends
                     setCurrentDate(listitem);
                 }
             });
-            date.setConstraint(checkValidDate());
 
             Util.bind(date, new Util.Getter<Date>() {
 
@@ -847,6 +901,7 @@ public class ManageOrderElementAdvancesController extends
                     Util.reloadBindings(self);
                 }
             });
+            date.setConstraint(checkValidDate());
         }
 
         private Constraint checkValidValue() {
@@ -854,20 +909,34 @@ public class ManageOrderElementAdvancesController extends
                 @Override
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
-                    if (((BigDecimal) value) != null) {
-                        if (manageOrderElementAdvancesModel
-                                .greatThanMaxValue((BigDecimal) value)) {
+                    AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
+                    if (advanceMeasurement != null) {
+                        advanceMeasurement.setValue((BigDecimal) value);
+                        if (((BigDecimal) value) == null) {
                             throw new WrongValueException(
                                     comp,
-                                    _("Value is not valid, the current value must be less than max value"));
-                        }
-                        if (!(manageOrderElementAdvancesModel
-                                .isPrecisionValid((BigDecimal) value))) {
-                            throw new WrongValueException(
-                                    comp,
-                                    _("Value is not valid, the Precision value must be exact "
+                                    _("Value is not valid, the current value must be not empty"));
+                        } else {
+                            if (manageOrderElementAdvancesModel
+                                    .greatThanMaxValue(advanceMeasurement)) {
+                                throw new WrongValueException(
+                                        comp,
+                                        _("Value is not valid, the current value must be less than max value"));
+                            }
+                            if (!manageOrderElementAdvancesModel
+                                    .isPrecisionValid(advanceMeasurement)) {
+                                throw new WrongValueException(
+                                        comp,
+                                        _("Value is not valid, the Precision value must be exact "
                                             + manageOrderElementAdvancesModel
                                                     .getUnitPrecision()));
+                            }
+                            if (manageOrderElementAdvancesModel
+                                .lessThanPreviousMeasurements()) {
+                                throw new WrongValueException(
+                                    comp,
+                                        _("Value is not valid, the value must be greater than the value of the previous advances."));
+                            }
                         }
                     }
                 }
@@ -875,22 +944,46 @@ public class ManageOrderElementAdvancesController extends
             return newConstraint;
         }
 
+        private AdvanceMeasurement getAdvanceMeasurementByComponent(
+                Component comp) {
+            try {
+                Listitem item = (Listitem) comp.getParent().getParent();
+                return (AdvanceMeasurement) item.getValue();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
         private Constraint checkValidDate() {
             Constraint newConstraint = new Constraint() {
                 @Override
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
-                    if (((Date) value) != null) {
-                        Listitem listitem = (Listitem) comp.getParent()
-                                .getParent();
-                        AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) listitem
-                                .getValue();
+                    AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
+                    if (((Date) value) == null) {
+                        advanceMeasurement.setDate(null);
+                        throw new WrongValueException(
+                                comp,
+                                _("The date is not valid, the date must be not empty"));
+                    } else {
                         if (!manageOrderElementAdvancesModel
                                 .isDistinctValidDate((Date) value,
                                         advanceMeasurement)) {
                             throw new WrongValueException(
                                     comp,
                                     _("The date is not valid, the date must be unique for this advanced assignment"));
+                        }
+                        if (advanceMeasurement != null) {
+                            advanceMeasurement.setDate(new LocalDate(
+                                    (Date) value));
+                            manageOrderElementAdvancesModel
+                                    .sortListAdvanceMeasurement();
+                            if (manageOrderElementAdvancesModel
+                                    .lessThanPreviousMeasurements()) {
+                                throw new WrongValueException(
+                                        comp,
+                                        _("Value is not valid, the value must be greater than the value of the previous advances."));
+                            }
                         }
                     }
                 }
