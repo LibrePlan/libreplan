@@ -541,10 +541,21 @@ public abstract class ChartFiller implements IChartFiller {
     @Override
     public Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval) {
-        String uri = getServletUri(map, interval.getStart(), interval
+        return createPlotinfo(map, interval, false);
+    }
+
+    @Override
+    public Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+            Interval interval, boolean justDaysWithInformation) {
+        String uri;
+        if (justDaysWithInformation) {
+            uri = getServletUri(map, interval.getStart(), interval
                 .getFinish(),
                 new JustDaysWithInformationGraphicSpecificationCreator(interval
                         .getFinish(), map, interval.getStart()));
+        } else {
+            uri = getServletUri(map, interval.getStart(), interval.getFinish());
+        }
 
         PlotDataSource pds = new PlotDataSource();
         pds.setDataSourceUri(uri);

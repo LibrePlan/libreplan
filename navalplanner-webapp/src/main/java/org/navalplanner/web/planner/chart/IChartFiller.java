@@ -63,6 +63,9 @@ public interface IChartFiller {
     Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval);
 
+    Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+            Interval interval, boolean justDaysWithInformation);
+
     void appendPlotinfo(Timeplot chart, Plotinfo plotinfo, ValueGeometry valueGeometry,
             TimeGeometry timeGeometry);
 

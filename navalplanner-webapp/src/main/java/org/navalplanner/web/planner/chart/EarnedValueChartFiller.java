@@ -95,7 +95,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     protected Plotinfo createPlotInfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, String lineColor) {
-        Plotinfo plotInfo = createPlotinfo(map, interval);
+        Plotinfo plotInfo = createPlotinfo(map, interval, true);
         plotInfo.setLineColor(lineColor);
         return plotInfo;
     }
