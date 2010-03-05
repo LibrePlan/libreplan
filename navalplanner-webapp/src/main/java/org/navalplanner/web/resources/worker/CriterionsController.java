@@ -68,6 +68,7 @@ public class CriterionsController extends GenericForwardComposer {
         }
         messages = new MessagesForUser(messagesContainer);
         comp.setVariable("assignedCriterionsController", this, true);
+        criterionFilterCheckbox.setChecked(false);
     }
 
     public IAssignedCriterionsModel getModel(){
