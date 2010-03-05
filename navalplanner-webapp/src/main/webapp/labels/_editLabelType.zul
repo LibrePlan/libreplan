@@ -42,6 +42,10 @@
                                     width="500px" value="@{controller.labelType.name}"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                             </row>
+                            <row>
+                                <label value="${i18n:_('Code')}" />
+                                <label value="@{controller.labelType.code}" />
+                            </row>
                         </rows>
                     </grid>
                 </vbox>
