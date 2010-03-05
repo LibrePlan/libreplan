@@ -43,7 +43,7 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Code')}" />
-                            <label value="@{controller.worker.code}" />
+                            <textbox value="@{controller.worker.code}" constraint="no empty" width="500px" />
                         </row>
                         <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('First name')}" />
