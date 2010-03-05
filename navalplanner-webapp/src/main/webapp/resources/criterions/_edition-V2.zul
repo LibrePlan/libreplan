@@ -62,7 +62,8 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Code')}" />
-                            <label value="@{controller.criterionType.code}"/>
+                            <textbox value="@{controller.criterionType.code}" width="390px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
                         </row>
                     </rows>
                 </grid>

@@ -178,9 +178,21 @@ public class CriterionTreeController extends GenericForwardComposer {
             // Treecell with the code of the Criterion
             Treecell cellForCode = new Treecell();
             cellForCode.setStyle("center");
-            Label codeLabel = new Label();
-            codeLabel.setValue(criterionForThisRow.getCriterion().getCode());
-            cellForCode.appendChild(codeLabel);
+            Textbox codeLabel = new Textbox();
+            cellForCode.appendChild(Util.bind(codeLabel,
+                    new Util.Getter<String>() {
+
+                @Override
+                public String get() {
+                    return criterionForThisRow.getCriterion().getCode();
+                }
+            }, new Util.Setter<String>() {
+
+                @Override
+                public void set(String value) {
+                    criterionForThisRow.getCriterion().setCode(value);
+                }
+            }));
 
             cellForName.setParent(tr);
             cellForCode.setParent(tr);
