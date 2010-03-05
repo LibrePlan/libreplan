@@ -58,16 +58,19 @@
                         <grid id="gridLabels" height="320px"
                             model="@{controller.labels}" fixedLayout="true">
                             <columns sizable="true">
-                                <column label="${i18n:_('Name')}"
+                                <column label="${i18n:_('Name')}" width="400px"
                                     sort="auto(name)" sortDirection="ascending" />
-                                <column label="${i18n:_('Operations')}" />
+                                <column label="${i18n:_('Code')}" width="400px" />
+                                <column label="${i18n:_('Operations')}" width="100px" />
                             </columns>
                             <rows>
                                 <row self="@{each='label'}"
                                     value="@{label}">
-                                    <textbox value="@{label.name}" width="500px"
+                                    <textbox value="@{label.name}" width="95%"
                                         onChange="controller.onChangeLabelName(event)"
                                         constraint="no empty:${i18n:_('cannot be null or empty')}" />
+
+                                    <label value="@{label.code}" width="95%" />
 
                                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
