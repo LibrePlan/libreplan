@@ -41,6 +41,10 @@
                         <column  />
                     </columns>
                     <rows>
+                        <row>
+                            <label value="${i18n:_('Code')}" />
+                            <label value="@{controller.worker.code}" />
+                        </row>
                         <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('First name')}" />
                             <textbox
