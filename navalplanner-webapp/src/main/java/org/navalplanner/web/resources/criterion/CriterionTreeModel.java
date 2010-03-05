@@ -119,6 +119,8 @@ public class CriterionTreeModel implements ICriterionTreeModel{
     private CriterionDTO createNewCriterion(String name) {
         CriterionDTO newCriterion = new CriterionDTO();
         newCriterion.setName(_(name));
+        Criterion criterion = Criterion.create(criterionType);
+        newCriterion.setCriterion(criterion);
         return newCriterion;
     }
 
@@ -409,10 +411,6 @@ public class CriterionTreeModel implements ICriterionTreeModel{
 
     private void updateDataCriterion(CriterionDTO criterionDTO){
         Criterion criterion = criterionDTO.getCriterion();
-        if(criterion == null){
-            criterion = Criterion.create(criterionType);
-            criterionDTO.setCriterion(criterion);
-        }
         criterion.setName(criterionDTO.getName());
         criterion.setActive(criterionDTO.isActive());
     }
