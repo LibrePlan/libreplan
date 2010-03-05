@@ -22,30 +22,17 @@
 ADVANCE_ALLOCATIONS = {};
 
 ADVANCE_ALLOCATIONS.listenToScroll = function() {
-//     var timetrackergap_ = YAHOO.util.Selector.query('#timeTracker .z-vbox')[0];
-//    var taskspanel_ = YAHOO.util.Selector.query('.rightpanellayout .z-grid-body')[0];
+	var scrollableArea_ = YAHOO.util.Selector.query('.advanced-assignment-area')[0];
+	var innerScrollableArea_ = YAHOO.util.Selector.query('.advanced-assignment-area .z-center-body')[0];
     var taskdetails_ = YAHOO.util.Selector.query('.advancedassignmentdetails .z-grid-body')[0];
-    var taskspanelcenter_ = YAHOO.util.Selector.query('.rightpanellayout')[0];
+    var timetrackergap_ = YAHOO.util.Selector.query('.timetrackergap')[0];
+    var timetracker_ = YAHOO.util.Selector.query('#timeTracker .z-vbox')[0];
 
-    var onVerticalScroll = function() {
-        taskdetails_.style["top"] = "-" + taskspanelcenter_.scrollTop + "px";
+    var onScroll = function() {
+        taskdetails_.style["top"] = "-" + scrollableArea_.scrollTop + "px";
+        timetrackergap_.style["left"] = "-" + scrollableArea_.scrollLeft + "px";
     };
-    taskspanelcenter_.onscroll = onVerticalScroll;
-};
+	scrollableArea_.onscroll = onScroll;
 
-
-ADVANCE_ALLOCATIONS.listenToHorizontalScroll = function() {
-	var horizontalScroll_ = YAHOO.util.Selector.query('.horizontalscroller')[0];
-    var timeTrackedTable_ = YAHOO.util.Selector.query('.timeTrackedTableWithLeftPane .z-grid-body table')[0];
-    var timetrackergap_ = YAHOO.util.Selector.query('#timeTracker .z-vbox')[0];
-    var innerScroll_ = YAHOO.util.Selector.query('#horizontalScrollContainer')[0];
-
-	var onHorizontalScroll = function() {
-		timeTrackedTable_.style["left"] = "-" + horizontalScroll_.scrollLeft + "px";
-        timetrackergap_.style["left"] = "-" + horizontalScroll_.scrollLeft + "px";
-    };
-
-    innerScroll_.style["width"] = (timeTrackedTable_.clientWidth + 10 ) +"px";
-    horizontalScroll_.scrollLeft = "0";
-    horizontalScroll_.onscroll = onHorizontalScroll;
+	innerScrollableArea_.style["width"] = timetracker_.clientWidth + "px";
 };

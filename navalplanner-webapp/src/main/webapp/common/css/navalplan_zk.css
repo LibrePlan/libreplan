@@ -1231,10 +1231,8 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 .timeTrackedTableWithLeftPane .z-grid-body table {
    position:relative;
 }
-
-/* Test*/
 .timeTrackedTableWithLeftPane div.z-grid-body {
-overflow: hidden;
+overflow: visible;
 }
 
 .advancedallocationlayout #timeTracker .z-vbox {
@@ -1249,3 +1247,17 @@ overflow: hidden;
     background-color: #CDE6F5;
 }
 
+
+/* Advanced allocation */
+
+.advancedallocationlayout #timeTrackedTableWithLeftPane div.z-grid {
+    overflow:auto;
+}
+
+.advancedallocationlayout .timetrackergap {
+     overflow: visible;
+}
+
+.timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+    background-color: #E8E8E8;
+}

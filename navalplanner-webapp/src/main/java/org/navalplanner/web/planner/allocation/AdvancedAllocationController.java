@@ -73,6 +73,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkex.zul.LayoutRegion;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -369,9 +370,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private IMessagesForUser messages;
-    private Div insertionPointTimetracker;
+    private LayoutRegion insertionPointTimetracker;
     private Div insertionPointLeftPanel;
-    private Div insertionPointRightPanel;
+    private LayoutRegion insertionPointRightPanel;
 
     private Button paginationDownButton;
     private Button paginationUpButton;
@@ -416,7 +417,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
     }
 
-
     private void loadAndInitializeComponents() {
         messages = new MessagesForUser(associatedComponent
                 .getFellow("messages"));
@@ -446,13 +446,13 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             case DETAIL_ONE:
                 return Period.years(5);
             case DETAIL_TWO:
-                return Period.years(3);
+                return Period.years(5);
             case DETAIL_THREE:
                 return Period.years(2);
             case DETAIL_FOUR:
                 return Period.months(6);
             case DETAIL_FIVE:
-                return Period.months(2);
+                return Period.weeks(6);
             }
             return Period.years(5);
         }
@@ -544,8 +544,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorFilter.setZoomLevel(detailLevel);
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);
-                Clients
-                        .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
+                Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
             }
         });
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
@@ -558,8 +557,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         leftPane = timeTrackedTableWithLeftPane.getLeftPane();
         leftPane.setFixedLayout(true);
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
-        Clients
-                .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
     }
 
     public void paginationDown() {
@@ -582,12 +579,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorFilter.setZoomLevel(detailLevel);
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);
-                Clients
-                        .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
+                Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
             }
         });
-        Clients
-                .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
+        Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
     }
 
     public boolean isFirstPage() {

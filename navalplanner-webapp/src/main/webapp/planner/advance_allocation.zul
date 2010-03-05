@@ -56,7 +56,7 @@
    </north>
 
     <center border="0">
-        <borderlayout sclass="resourcesload">
+        <borderlayout>
             <west size="400px" flex="true" collapsible="true"
                 splittable="true" sclass="advancedassignmentdetails">
                         <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
@@ -64,13 +64,8 @@
 
             <center sclass="taskspanel">
                 <borderlayout>
-                    <north border="0"><div sclass="timetrackergap" height="31px" id="insertionPointTimetracker"></div></north>
-                    <center style="overflow-y:auto;overflow-x:hidden;" border="0" sclass="rightpanellayout">
-                        <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
-                    </center>
-                    <south border="0" sclass="horizontalscroller" height="16px" style="overflow-x:auto;overflow-y:hidden;">
-                        <n:div id="horizontalScrollContainer" style="height:10px;" />
-                    </south>
+                    <north border="0" sclass="timetrackergap" height="31px" id="insertionPointTimetracker" />
+                    <center style="overflow-y:auto;overflow-x:auto;" border="0" sclass="advanced-assignment-area rightpanellayout taskspanelgap" id="insertionPointRightPanel" />
                 </borderlayout>
             </center>
         </borderlayout>
