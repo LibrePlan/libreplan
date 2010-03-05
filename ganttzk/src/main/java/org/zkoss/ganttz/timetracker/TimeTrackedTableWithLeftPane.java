@@ -51,6 +51,7 @@ public class TimeTrackedTableWithLeftPane<A, B> {
         timeTrackedTable = new TimeTrackedTable<B>(
                 dataForTimeTracker(dataSource), cellRendererForTimeTracker,
                 timeTracker);
+        timeTrackedTable.setSclass("inner-timetracked-table");
         leftPane = new Grid();
         zoomLevelListener = new IZoomLevelChangedListener() {
             @Override
@@ -131,6 +132,10 @@ public class TimeTrackedTableWithLeftPane<A, B> {
 
     public Grid getLeftPane() {
         return leftPane;
+    }
+
+    public void reload() {
+        timeTrackedTable.recreate();
     }
 
 }

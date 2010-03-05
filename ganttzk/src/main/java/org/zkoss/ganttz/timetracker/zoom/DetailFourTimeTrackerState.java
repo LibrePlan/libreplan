@@ -56,7 +56,8 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
             @Override
             public DetailItem create(DateTime dateTime) {
                 return new DetailItem(FIRST_LEVEL_SIZE, dateTime
-                        .toString("MMMM,YYYY"));
+                        .toString("MMMM,YYYY"), dateTime, dateTime
+                        .plusMonths(1));
             }
         };
     }

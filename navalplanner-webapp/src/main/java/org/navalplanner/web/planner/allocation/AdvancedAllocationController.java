@@ -39,6 +39,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.CalculatedValue;
@@ -60,6 +61,7 @@ import org.zkoss.ganttz.timetracker.TimeTrackedTable;
 import org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
+import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -151,6 +153,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             }
             return end;
         }
+
 
         private static ArrayList<ResourceAllocation<?>> reverse(
                 List<ResourceAllocation<?>> all) {
@@ -370,7 +373,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Div insertionPointLeftPanel;
     private Div insertionPointRightPanel;
 
+    private Button paginationDownButton;
+    private Button paginationUpButton;
+
     private TimeTracker timeTracker;
+
+    private PaginatorFilter paginatorFilter;
 
     private TimeTrackerComponentWithoutColumns timeTrackerComponent;
     private Grid leftPane;
@@ -405,6 +413,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         onlyOneVisible = new OnlyOneVisible(normalLayout, noDataLayout);
         this.associatedComponent = comp;
         loadAndInitializeComponents();
+        Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
     }
 
 
@@ -422,24 +431,171 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
     }
 
+    private class PaginatorFilter implements IDetailItemFilter {
+
+        private DateTime intervalStart;
+        private DateTime intervalEnd;
+
+        private DateTime paginatorStart;
+        private DateTime paginatorEnd;
+
+        private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
+
+        private Period intervalIncrease() {
+            switch (zoomLevel) {
+            case DETAIL_ONE:
+                return Period.years(5);
+            case DETAIL_TWO:
+                return Period.years(3);
+            case DETAIL_THREE:
+                return Period.years(2);
+            case DETAIL_FOUR:
+                return Period.months(6);
+            case DETAIL_FIVE:
+                return Period.months(2);
+            }
+            return Period.years(5);
+        }
+
+        @Override
+        public Collection<DetailItem> selectsFirstLevel(
+                Collection<DetailItem> firstLevelDetails) {
+            ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+            for (DetailItem each : firstLevelDetails) {
+                if ((each.getStartDate() == null)
+                        || !(each.getStartDate().isBefore(paginatorStart))
+                        && (each.getStartDate().isBefore(paginatorEnd))) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public Collection<DetailItem> selectsSecondLevel(
+                Collection<DetailItem> secondLevelDetails) {
+            ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+            for (DetailItem each : secondLevelDetails) {
+                if ((each.getStartDate() == null)
+                        || !(each.getStartDate().isBefore(paginatorStart))
+                        && (each.getStartDate().isBefore(paginatorEnd))) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        public void next() {
+            paginatorStart = paginatorStart.plus(intervalIncrease());
+            paginatorEnd = paginatorEnd.plus(intervalIncrease());
+            // Avoid reduced last intervals
+            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+                paginatorEnd = paginatorEnd.plus(intervalIncrease());
+            }
+            updatePaginationButtons();
+        }
+
+        public void previous() {
+            paginatorStart = paginatorStart.minus(intervalIncrease());
+            paginatorEnd = paginatorEnd.minus(intervalIncrease());
+            updatePaginationButtons();
+        }
+
+        private void updatePaginationButtons() {
+            paginationDownButton.setDisabled(isFirstPage());
+            paginationUpButton.setDisabled(isLastPage());
+        }
+
+        public boolean isFirstPage() {
+            return !(paginatorStart.isAfter(intervalStart));
+        }
+
+        public boolean isLastPage() {
+            return ((paginatorEnd.isAfter(intervalEnd)) || (paginatorEnd
+                    .isEqual(intervalEnd)));
+        }
+
+        public void setZoomLevel(ZoomLevel detailLevel) {
+            zoomLevel = detailLevel;
+        }
+
+        public void setInterval(Interval realInterval) {
+            intervalStart = new DateTime(realInterval.getStart());
+            intervalEnd = new DateTime(realInterval.getFinish());
+            paginatorStart = intervalStart;
+            paginatorEnd = intervalStart.plus(intervalIncrease());
+            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+                paginatorEnd = intervalEnd;
+            }
+            updatePaginationButtons();
+        }
+    }
+
     private void createComponents() {
         timeTracker = new TimeTracker(addMarginTointerval(), self);
-        timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
-                timeTracker, "timeTracker");
-        TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
-                getDataSource(), getColumnsForLeft(), getLeftRenderer(),
-                getRightRenderer(), timeTracker);
-        Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
+        paginatorFilter = new PaginatorFilter();
+        paginatorFilter.setZoomLevel(timeTracker.getDetailLevel());
+        paginatorFilter.setInterval(timeTracker.getRealInterval());
+        paginationUpButton.setDisabled(isLastPage());
+        timeTracker.setFilter(paginatorFilter);
         timeTracker.addZoomListener(new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
+                paginatorFilter.setZoomLevel(detailLevel);
+                paginatorFilter.setInterval(timeTracker.getRealInterval());
+                timeTracker.setFilter(paginatorFilter);
+                Clients
+                        .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
             }
         });
+        timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
+                timeTracker, "timeTracker");
+        timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
+                getDataSource(), getColumnsForLeft(), getLeftRenderer(),
+                getRightRenderer(), timeTracker);
         table = timeTrackedTableWithLeftPane.getRightPane();
         table.setSclass("timeTrackedTableWithLeftPane");
         leftPane = timeTrackedTableWithLeftPane.getLeftPane();
         leftPane.setFixedLayout(true);
+        Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
+        Clients
+                .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
+    }
+
+    public void paginationDown() {
+        paginatorFilter.previous();
+        reloadComponent();
+    }
+
+    public void paginationUp() {
+        paginatorFilter.next();
+        reloadComponent();
+    }
+
+    private void reloadComponent() {
+        timeTrackedTableWithLeftPane.reload();
+        timeTrackerComponent.recreate();
+        // Reattach listener for zoomLevel changes. May be optimized
+        timeTracker.addZoomListener(new IZoomLevelChangedListener() {
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                paginatorFilter.setZoomLevel(detailLevel);
+                paginatorFilter.setInterval(timeTracker.getRealInterval());
+                timeTracker.setFilter(paginatorFilter);
+                Clients
+                        .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
+            }
+        });
+        Clients
+                .evalJavaScript("ADVANCE_ALLOCATIONS.listenToHorizontalScroll();");
+    }
+
+    public boolean isFirstPage() {
+        return paginatorFilter.isFirstPage();
+    }
+
+    public boolean isLastPage() {
+        return paginatorFilter.isLastPage();
     }
 
     private void insertComponentsInLayout() {
@@ -497,6 +653,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private OnlyOneVisible onlyOneVisible;
     private Component normalLayout;
     private Component noDataLayout;
+    private TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane;
 
     private List<Row> getRows() {
         if (rowsCached != null) {

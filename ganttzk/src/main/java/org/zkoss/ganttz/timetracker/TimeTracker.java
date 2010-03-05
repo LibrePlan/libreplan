@@ -47,6 +47,16 @@ import org.zkoss.zk.ui.Component;
 
 public class TimeTracker {
 
+    public interface IDetailItemFilter {
+
+        public Collection<DetailItem> selectsFirstLevel(
+                Collection<DetailItem> firstLevelDetails);
+
+        public Collection<DetailItem> selectsSecondLevel(
+                Collection<DetailItem> secondLevelDetails);
+
+    }
+
     private ZoomLevel detailLevel = ZoomLevel.DETAIL_ONE;
 
     private WeakReferencedListeners<IZoomLevelChangedListener> zoomListeners = WeakReferencedListeners
@@ -67,6 +77,8 @@ public class TimeTracker {
     private final Component componentOnWhichGiveFeedback;
 
     private boolean registeredFirstTask = false;
+
+    private IDetailItemFilter filter = null;
 
     public TimeTracker(Interval interval, ZoomLevel zoomLevel, Component parent) {
         this(interval, zoomLevel, SeveralModificators.empty(),
@@ -101,6 +113,10 @@ public class TimeTracker {
         detailLevel = zoomLevel;
     }
 
+    public void setFilter(IDetailItemFilter filter) {
+        this.filter = filter;
+    }
+
     public ZoomLevel getDetailLevel() {
         return detailLevel;
     }
@@ -114,7 +130,15 @@ public class TimeTracker {
             detailsFirstLevelCached = getTimeTrackerState()
                     .getFirstLevelDetails(interval);
         }
-        return detailsFirstLevelCached;
+        return filterFirstLevel(detailsFirstLevelCached);
+    }
+
+    private Collection<DetailItem> filterFirstLevel(
+            Collection<DetailItem> firstLevelDetails) {
+        if (filter == null) {
+            return firstLevelDetails;
+        }
+        return filter.selectsFirstLevel(firstLevelDetails);
     }
 
     public Collection<DetailItem> getDetailsSecondLevel() {
@@ -122,7 +146,15 @@ public class TimeTracker {
             detailsSecondLevelCached = getTimeTrackerState()
                     .getSecondLevelDetails(interval);
         }
-        return detailsSecondLevelCached;
+        return filterSecondLevel(detailsSecondLevelCached);
+    }
+
+    private Collection<DetailItem> filterSecondLevel(
+            Collection<DetailItem> secondLevelDetails) {
+        if (filter == null) {
+            return secondLevelDetails;
+        }
+        return filter.selectsSecondLevel(secondLevelDetails);
     }
 
     private Interval realIntervalCached;

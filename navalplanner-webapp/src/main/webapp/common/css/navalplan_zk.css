@@ -171,10 +171,14 @@ button.z-button {
 
 .z-button-cm:active {
     background-color: #A1D586; /* green2 (active background)*/
-    border-right: 1px solid #439e32;
+    border-right: 0 solid #439e32;
     border-bottom: 1px solid #439e32;
     border-top: 2px solid #3f5917;
     border-left: 2px solid #3f5917;
+}
+
+.z-button.z-button-disd .z-button-cm:active {
+    border: inherit;
 }
 
 .z-button.z-button-disd .z-button-cm {
@@ -900,7 +904,7 @@ span.z-dottree-line {
 }
 
 
-/* --- START -- menubar --
+/* --- START -- menus and toolbar --
 =================================================== */
 
 .z-menubar-hor, .z-menubar-ver {
@@ -1050,8 +1054,63 @@ span.z-dottree-line {
     background-image: url(../img/ico_advanced-allocation.png);
 }
 
+.perspectives-column {
+    display:none;
+}
 
-/* End perspectives */
+/* ---- Toolbar ------ */
+
+.toolbar-box .z-button-cm {
+    height: 24px;
+}
+
+.toolbar-box .z-label {
+    color:#0068B1;
+    padding-left:4px;
+}
+
+.toolbar-box span.z-button {
+    margin: 0 0 0 0;
+}
+
+.toolbar-box .planner-icon,
+.toolbar-box  .planner-command {
+   padding-top: 1px;
+   padding-right: 1px;
+}
+
+.toolbar-box .z-button-cm  {
+    background-color: transparent;
+    border-color:transparent;
+}
+
+.toolbar-box .z-button-cm:hover  {
+    background-color: #E6F2F9;
+    border-color:#006699 #DFF5FE #DFF5FE #006699;
+}
+
+.toolbar-box .z-button.z-button-disd .z-button-cm {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.toolbar-box {
+    background:transparent url(../img/toolbar-hm.png) repeat-x scroll 0 0;
+    border-bottom:1px solid #9ECAD8;
+    font-size:11px;
+}
+
+.toolbar-box table.z-button-disd:active  {
+    margin-top: 1px;
+    margin-right: 1px;
+    border-top: 0;
+    border-left: 0;
+    padding-left: 2px;
+}
+
+
+
+/* =================================================== */
 
 .vertical-separator {
     display:none;
@@ -1109,31 +1168,6 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 	padding: 10px;
 }
 
-.perspectives-column {
-    display:none;
-}
-
-.toolbar-box .z-button-cm {
-    height: 24px;
-}
-
-.toolbar-box .z-label {
-    color:#0068B1;
-    padding-left:4px;
-}
-
-.toolbar-box span.z-button {
-    margin: 0 0 0 0;
-}
-
-.toolbar-box .planner-icon,
-.toolbar-box  .planner-command {
-   padding-top: 1px;
-   padding-right: 1px;
-}
-
-
-
 
 .z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
     -moz-background-clip:border;
@@ -1189,21 +1223,29 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
     cursor: help;
 }
 
-
-.toolbar-box .z-button-cm  {
-    background-color: transparent;
-    border-color:transparent;
+.timeTrackedTableWithLeftPane input[value="0"] {
+  color: #DDDDDD;
 }
 
-.toolbar-box .z-button-cm:hover  {
-    background-color: #E6F2F9;
-    border-color:#006699 #DFF5FE #DFF5FE #006699;
+/* for horizontal scrolling */
+.timeTrackedTableWithLeftPane .z-grid-body table {
+   position:relative;
 }
 
-.toolbar-box {
-    background:transparent url(/navalplanner-webapp/zkau/web/zkex/zul/img/layout/borderlayout-hm.png) repeat-x scroll 0 0;
-    border-bottom:1px solid #9ECAD8;
-    font-size:11px;
+/* Test*/
+.timeTrackedTableWithLeftPane div.z-grid-body {
+overflow: hidden;
 }
 
+.advancedallocationlayout #timeTracker .z-vbox {
+    position:relative;
+}
+
+.z-button-disd {
+    opacity:0.3;
+}
+
+.advancedallocationlayout #timeTracker {
+    background-color: #CDE6F5;
+}
 

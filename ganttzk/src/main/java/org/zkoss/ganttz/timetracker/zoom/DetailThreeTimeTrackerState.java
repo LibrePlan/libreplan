@@ -103,7 +103,8 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
             @Override
             public DetailItem create(DateTime dateTime) {
                 return new DetailItem(FIRST_LEVEL_SIZE,
-                        getYearWithSemesterString(dateTime));
+                        getYearWithSemesterString(dateTime), dateTime, dateTime
+                                .plusMonths(6));
             }
         };
     }

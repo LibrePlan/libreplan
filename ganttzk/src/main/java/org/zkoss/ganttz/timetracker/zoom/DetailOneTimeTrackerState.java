@@ -52,7 +52,8 @@ public class DetailOneTimeTrackerState extends TimeTrackerState {
 
         for (int i = initialYear; i <= endYear; i++) {
             DetailItem d = new DetailItem(FIRST_LEVEL_ITEM_SIZE, String
-                    .valueOf(i));
+                    .valueOf(i), new DateTime(i, 1, 1, 0, 0, 0, 0),
+                    new DateTime(i, 12, 31, 0, 0, 0, 0));
             detailsVector.add(d);
         }
 

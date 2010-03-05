@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('Navalpro: Scheduling')}"?>
+<?page title="${i18n:_('NavalPlan: Advanced allocation')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
@@ -26,55 +26,55 @@
     advancedAllocationController = arg.get("advancedAllocationController");
 ]]>
 </zscript>
-<div>
-    <div id="noDataLayout">
-        <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
-    </div>
 
-    <borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
-       <north height="30px" border="0" sclass="toolbar-box">
-       <hbox align="center">
-        <button label="${i18n:_('Accept')}" id="acceptButton" class="save-button global-action"
-            if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
-        <button label="${i18n:_('Cancel')}" id="cancelButton" class="cancel-button global-action"
-            if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
-        <button image="/common/img/ico_save.png" tooltiptext="${i18n:_('Accept')}" id="acceptButton" class="planner-command"
-        if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}" />
-        <separator/>
-        <label>${i18n:_('Zoom level')}:</label>
-        <listbox mold="select" rows="1"
-            model="${advancedAllocationController.zoomLevels}"
-            onSelect="advancedAllocationController.setZoomLevel(self.selectedItem.value);" >
-        </listbox>
-        <separator/>
-        <div id="messages" />
-       </hbox>
-       </north>
-
-        <center border="0">
-            <borderlayout sclass="resourcesload">
-                <west size="400px" flex="true" collapsible="true"
-                    splittable="true" autoscroll="true">
-
-                    <borderlayout >
-                        <north border="0" height="0px" flex="true" collapsible="true" autoscroll="true">
-                        </north>
-                        <center border="0" sclass="advancedassignmentdetails">
-                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
-                        </center>
-                    </borderlayout>
-                </west>
-
-                <center sclass="taskspanel">
-                    <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" height="31px" id="insertionPointTimetracker"></div></north>
-                        <center autoscroll="true" border="0" sclass="rightpanellayout">
-                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
-                        </center>
-                    </borderlayout>
-                </center>
-            </borderlayout>
-        </center>
-    </borderlayout>
+<n:div>
+<div id="noDataLayout">
+    <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
 </div>
+
+<borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
+    <north height="30px" border="0" sclass="toolbar-box">
+        <hbox align="center">
+            <button label="${i18n:_('Accept')}" id="acceptButton" class="save-button global-action"
+                if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
+            <button label="${i18n:_('Cancel')}" id="cancelButton" class="cancel-button global-action"
+                if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
+            <button image="/common/img/ico_save.png" tooltiptext="${i18n:_('Accept')}" id="acceptButton" class="planner-command"
+                if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}" />
+            <separator/>
+            <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
+            onClick="advancedAllocationController.paginationDown();" disabled="true" />
+            <label>${i18n:_('Zoom level')}:</label>
+            <listbox mold="select" rows="1"
+                model="${advancedAllocationController.zoomLevels}"
+                onSelect="advancedAllocationController.setZoomLevel(self.selectedItem.value);" >
+            </listbox>
+            <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton" onClick="advancedAllocationController.paginationUp();" />
+            <separator/>
+            <div id="messages" />
+        </hbox>
+   </north>
+
+    <center border="0">
+        <borderlayout sclass="resourcesload">
+            <west size="400px" flex="true" collapsible="true"
+                splittable="true" sclass="advancedassignmentdetails">
+                        <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+            </west>
+
+            <center sclass="taskspanel">
+                <borderlayout>
+                    <north border="0"><div sclass="timetrackergap" height="31px" id="insertionPointTimetracker"></div></north>
+                    <center style="overflow-y:auto;overflow-x:hidden;" border="0" sclass="rightpanellayout">
+                        <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                    </center>
+                    <south border="0" sclass="horizontalscroller" height="16px" style="overflow-x:auto;overflow-y:hidden;">
+                        <n:div id="horizontalScrollContainer" style="height:10px;" />
+                    </south>
+                </borderlayout>
+            </center>
+        </borderlayout>
+    </center>
+</borderlayout>
+</n:div>
 </zk>

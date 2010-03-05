@@ -53,7 +53,8 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
             public DetailItem create(DateTime dateTime) {
                 return new DetailItem(FIRST_LEVEL_SIZE, dateTime
                         .getWeekOfWeekyear()
-                        + dateTime.toString(", MMM YYYY"));
+                        + dateTime.toString(", MMM YYYY"), dateTime, dateTime
+                        .plusDays(7));
             }
         };
     }

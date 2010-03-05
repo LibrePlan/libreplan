@@ -82,11 +82,14 @@ public class DetailTwoTimeTrackerState extends TimeTrackerState {
         int quarter = calculateInQuarterPeriodDateInYear(initialDate,
                 initialYear);
         detailsVector.add(new DetailItem((4 - (quarter - 1))
-                * FIRST_LEVEL_ITEM_SIZE / 4, String.valueOf(initialYear)));
+                * FIRST_LEVEL_ITEM_SIZE / 4, String.valueOf(initialYear),
+                new DateTime(initialYear, 1, 1, 0, 0, 0, 0), new DateTime(
+                        initialYear, 1, 1, 0, 0, 0, 0)));
 
         for (int i = (initialYear + 1); i < endYear; i++) {
             DetailItem d = new DetailItem(FIRST_LEVEL_ITEM_SIZE, String
-                    .valueOf(i));
+                    .valueOf(i), new DateTime(i, 1, 1, 0, 0, 0, 0),
+                    new DateTime(i, 12, 31, 0, 0, 0, 0));
             detailsVector.add(d);
         }
 
