@@ -128,7 +128,8 @@
                                     </row>
                                     <row>
                                         <label value="${i18n:_('Code')}:" />
-                                        <label value="@{controller.workReport.code}" />
+                                        <textbox value="@{controller.workReport.code}" width="500px"
+                                            constraint="no empty:${i18n:_('cannot be null or empty')}" />
                                     </row>
                                 </rows>
                             </grid>

@@ -126,4 +126,7 @@ public class WorkReportDTO {
         return workReport.getCode();
     }
 
+    public void setCode(String code) {
+        workReport.setCode(code);
+    }
 }
