@@ -305,7 +305,7 @@ public class OrderModelTest {
         result.setCode("code-" + UUID.randomUUID());
 
         HoursGroup hoursGroup = HoursGroup.create(result);
-        hoursGroup.setCode("hoursGroupName");
+        hoursGroup.setCode("hoursGroupCode-" + UUID.randomUUID());
         hoursGroup.setWorkingHours(0);
         result.addHoursGroup(hoursGroup);
 
