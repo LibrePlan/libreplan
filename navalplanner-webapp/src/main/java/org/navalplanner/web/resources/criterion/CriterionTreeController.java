@@ -40,6 +40,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -174,7 +175,15 @@ public class CriterionTreeController extends GenericForwardComposer {
             tr.setDraggable("true");
             tr.setDroppable("true");
 
+            // Treecell with the code of the Criterion
+            Treecell cellForCode = new Treecell();
+            cellForCode.setStyle("center");
+            Label codeLabel = new Label();
+            codeLabel.setValue(criterionForThisRow.getCriterion().getCode());
+            cellForCode.appendChild(codeLabel);
+
             cellForName.setParent(tr);
+            cellForCode.setParent(tr);
             cellForActive.setParent(tr);
 
             Treecell tcOperations = new Treecell();

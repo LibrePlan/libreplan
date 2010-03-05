@@ -36,6 +36,7 @@
             sclass="orderTree" fixedLayout="true">
             <treecols sizable="true">
                 <treecol label="${i18n:_('Name')}" />
+                <treecol width="250px" label="${i18n:_('Code')}" />
                 <treecol width="60px" align="center" label="${i18n:_('Active')}" />
                 <treecol width="150px" align="center" label="${i18n:_('Operations')}" />
             </treecols>
