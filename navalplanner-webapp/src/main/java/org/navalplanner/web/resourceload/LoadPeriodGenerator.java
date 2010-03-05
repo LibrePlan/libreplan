@@ -196,7 +196,8 @@ abstract class LoadPeriodGenerator {
     }
 
     public LoadPeriod build() {
-        return new LoadPeriod(start, end, new LoadLevel(
+        return new LoadPeriod(start, end, getTotalWorkHours(),
+                getHoursAssigned(), new LoadLevel(
                 calculateLoadPercentage()));
     }
 

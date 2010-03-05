@@ -42,15 +42,23 @@ public class LoadPeriod {
 
     private final LoadLevel loadLevel;
 
+    private final int totalResourceWorkHours;
 
-    public LoadPeriod(LocalDate start, LocalDate end, LoadLevel loadLevel) {
+    private final int assignedHours;
+
+    public LoadPeriod(LocalDate start, LocalDate end,
+            int totalResourceWorkHours, int assignedHours, LoadLevel loadLevel) {
         Validate.notNull(start);
         Validate.notNull(end);
         Validate.notNull(loadLevel);
+        Validate.notNull(totalResourceWorkHours);
+        Validate.notNull(assignedHours);
         Validate.isTrue(!start.isAfter(end));
         this.start = start;
         this.end = end;
         this.loadLevel = loadLevel;
+        this.totalResourceWorkHours = totalResourceWorkHours;
+        this.assignedHours = assignedHours;
     }
 
     public LocalDate getStart() {
@@ -114,4 +122,11 @@ public class LoadPeriod {
         return loadLevel;
     }
 
+    public int getTotalResourceWorkHours() {
+        return totalResourceWorkHours;
+    }
+
+    public int getAssignedHours() {
+        return assignedHours;
+    }
 }

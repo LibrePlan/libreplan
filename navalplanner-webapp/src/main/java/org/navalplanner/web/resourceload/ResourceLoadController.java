@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.resourceload;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +38,7 @@ import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Messagebox;
 
 /**
  * Controller for global resourceload view
@@ -69,16 +72,28 @@ public class ResourceLoadController implements Composer {
     }
 
     public void reload() {
-        if (filterBy == null) {
-            resourceLoadModel.initGlobalView();
-        } else {
-            resourceLoadModel.initGlobalView(filterBy);
+        try {
+            if (filterBy == null) {
+                resourceLoadModel.initGlobalView();
+            } else {
+                resourceLoadModel.initGlobalView(filterBy);
+            }
+
+            ResourcesLoadPanel resourcesLoadPanel = buildResourcesLoadPanel();
+            this.parent.getChildren().clear();
+            this.parent.appendChild(resourcesLoadPanel);
+            resourcesLoadPanel.afterCompose();
+            addCommands(resourcesLoadPanel);
+        } catch (IllegalArgumentException e) {
+            try {
+                Messagebox
+                        .show(
+                                _("Some lines have not allocation periods.\nBelow it shows the load all company resources"),
+                                _("Error"), Messagebox.OK, Messagebox.ERROR);
+            } catch (InterruptedException o) {
+                throw new RuntimeException(e);
+            }
         }
-        ResourcesLoadPanel resourcesLoadPanel = buildResourcesLoadPanel();
-        this.parent.getChildren().clear();
-        this.parent.appendChild(resourcesLoadPanel);
-        resourcesLoadPanel.afterCompose();
-        addCommands(resourcesLoadPanel);
     }
 
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {

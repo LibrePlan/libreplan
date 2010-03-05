@@ -70,15 +70,6 @@ public class ResourceLoadList extends HtmlMacroComponent implements
         }
     }
 
-    private List<LoadTimeLine> getChildrenOf(LoadTimeLine parent) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        final int length = timelinesTree.getChildCount(parent);
-        for (int i = 0; i < length; i++) {
-            result.add(timelinesTree.getChild(parent, i));
-        }
-        return result;
-    }
-
     private IZoomLevelChangedListener adjustTimeTrackerSizeListener() {
         return new IZoomLevelChangedListener() {
 
@@ -103,7 +94,7 @@ public class ResourceLoadList extends HtmlMacroComponent implements
     }
 
     public void collapse(LoadTimeLine line) {
-        for (LoadTimeLine l : getChildrenOf(line)) {
+        for (LoadTimeLine l : line.getAllChildren()) {
             getComponentFor(l).detach();
         }
     }
@@ -114,10 +105,14 @@ public class ResourceLoadList extends HtmlMacroComponent implements
         return resourceLoadComponent;
     }
 
-    public void expand(LoadTimeLine line) {
+    public void expand(LoadTimeLine line, List<LoadTimeLine> closed) {
         ResourceLoadComponent parentComponent = getComponentFor(line);
         Component nextSibling = parentComponent.getNextSibling();
-        for (LoadTimeLine loadTimeLine : getChildrenReverseOrderFor(line)) {
+
+        List<LoadTimeLine> childrenToOpen = getChildrenReverseOrderFor(line);
+        childrenToOpen.removeAll(closed);
+
+        for (LoadTimeLine loadTimeLine : childrenToOpen) {
             ResourceLoadComponent child = getComponentFor(loadTimeLine);
             insertBefore(child, nextSibling);
             nextSibling = child;
@@ -126,7 +121,7 @@ public class ResourceLoadList extends HtmlMacroComponent implements
     }
 
     private List<LoadTimeLine> getChildrenReverseOrderFor(LoadTimeLine line) {
-        List<LoadTimeLine> childrenOf = getChildrenOf(line);
+        List<LoadTimeLine> childrenOf = line.getAllChildren();
         Collections.reverse(childrenOf);
         return childrenOf;
     }

@@ -54,13 +54,19 @@ public class LoadPeriodTest {
 
     private void givenExampleLoadPeriod(LocalDate start, LocalDate end,
             LoadLevel loadLevel) {
-        loadPeriod = new LoadPeriod(start, end, loadLevel);
+        loadPeriod = new LoadPeriod(start, end, totalHours, assignedHours,
+                loadLevel);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadPeriodMustHaveAStartDate() {
-        new LoadPeriod(null, new LocalDate(), correctLoadLevel());
+        new LoadPeriod(null, new LocalDate(), totalHours, assignedHours,
+                correctLoadLevel());
     }
+
+    private static final int totalHours = 100;
+
+    private static final int assignedHours = 40;
 
     private static LoadLevel correctLoadLevel() {
         return new LoadLevel(40);
@@ -68,21 +74,24 @@ public class LoadPeriodTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadPeriodMustHaveAnEndDate() {
-        new LoadPeriod(new LocalDate(), null, correctLoadLevel());
+        new LoadPeriod(new LocalDate(), null, totalHours, assignedHours,
+                correctLoadLevel());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void theEndDateCantBeBeforeTheStartDate() {
         LocalDate start = new LocalDate(2009, 10, 4);
         LocalDate end = new LocalDate(2009, 10, 3);
-        new LoadPeriod(start, end, correctLoadLevel());
+        new LoadPeriod(start, end, totalHours, assignedHours,
+                correctLoadLevel());
     }
 
     @Test
     public void theEndDateCanBeTheSameThanTheStartDate() {
         LocalDate start = new LocalDate(2009, 10, 4);
         LocalDate end = new LocalDate(2009, 10, 4);
-        new LoadPeriod(start, end, correctLoadLevel());
+        new LoadPeriod(start, end, totalHours, assignedHours,
+                correctLoadLevel());
     }
 
     @Test
@@ -128,7 +137,8 @@ public class LoadPeriodTest {
     private static LoadPeriod create(int startYear, int startMonth,
             int startDay, int endYear, int endMonth, int endDay) {
         return new LoadPeriod(new LocalDate(startYear, startMonth, startDay),
-                new LocalDate(endYear, endMonth, endDay), correctLoadLevel());
+                new LocalDate(endYear, endMonth, endDay), totalHours,
+                assignedHours, correctLoadLevel());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -178,7 +188,7 @@ public class LoadPeriodTest {
     @Test(expected = IllegalArgumentException.class)
     public void aLoadPeriodMustHaveANotNullLoadLevel() {
         givenExampleLoadPeriod();
-        new LoadPeriod(start, end, null);
+        new LoadPeriod(start, end, totalHours, assignedHours, null);
     }
 
     @Test

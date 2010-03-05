@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
-import org.zkoss.ganttz.data.resourceload.LoadTimelinesGroup;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -60,7 +59,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private ResourceLoadList resourceLoadList;
 
-    private final List<LoadTimelinesGroup> groups;
+    private final List<LoadTimeLine> groups;
 
     private MutableTreeModel<LoadTimeLine> treeModel;
 
@@ -68,7 +67,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private Listbox listZoomLevels;
 
-    public ResourcesLoadPanel(List<LoadTimelinesGroup> groups,
+    public ResourcesLoadPanel(List<LoadTimeLine> groups,
             TimeTracker timeTracker) {
         this.groups = groups;
         this.timeTracker = timeTracker;
@@ -145,18 +144,28 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private MutableTreeModel<LoadTimeLine> createModelForTree() {
         MutableTreeModel<LoadTimeLine> result = MutableTreeModel
                 .create(LoadTimeLine.class);
-        for (LoadTimelinesGroup loadTimelinesGroup : this.groups) {
-            LoadTimeLine principal = loadTimelinesGroup.getPrincipal();
-            result.addToRoot(principal);
-            result.add(principal, loadTimelinesGroup.getChildren());
+        for (LoadTimeLine loadTimeLine : this.groups) {
+            result.addToRoot(loadTimeLine);
+            result = addNodes(result, loadTimeLine);
         }
         return result;
+    }
+
+
+    private MutableTreeModel<LoadTimeLine> addNodes(
+            MutableTreeModel<LoadTimeLine> tree, LoadTimeLine parent) {
+        if (!parent.getChildren().isEmpty()) {
+            tree.add(parent, parent.getChildren());
+            for (LoadTimeLine loadTimeLine : parent.getChildren()) {
+                tree = addNodes(tree, loadTimeLine);
+            }
+        }
+        return tree;
     }
 
     private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
             TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
-
             @Override
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
                 response("", new AuInvoke(resourceLoadList,

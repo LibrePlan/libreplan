@@ -96,8 +96,15 @@ public class ResourceLoadComponent extends XulElement {
         Div result = new Div();
         result.setClass(String.format("taskassignmentinterval %s", loadPeriod
                 .getLoadLevel().getCategory()));
-        result.setTooltiptext("Load: "
-                + loadPeriod.getLoadLevel().getPercentage() + "%");
+
+        String load = "Load: " + loadPeriod.getLoadLevel().getPercentage()
+                + "% , ";
+        if (loadPeriod.getLoadLevel().getPercentage() == Integer.MAX_VALUE) {
+            load = "";
+        }
+        result.setTooltiptext(load
+                + "total work hours: " + loadPeriod.getTotalResourceWorkHours()
+                + " , " + "assigned hours: " + loadPeriod.getAssignedHours());
 
         result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));

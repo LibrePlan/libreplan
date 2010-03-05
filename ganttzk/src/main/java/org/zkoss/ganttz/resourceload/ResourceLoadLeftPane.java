@@ -20,6 +20,10 @@
 
 package org.zkoss.ganttz.resourceload;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
@@ -31,6 +35,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
@@ -41,7 +46,8 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
     private MutableTreeModel<LoadTimeLine> modelForTree;
     private final ResourceLoadList resourceLoadList;
 
-    public ResourceLoadLeftPane(MutableTreeModel<LoadTimeLine> modelForTree,
+    public ResourceLoadLeftPane(
+MutableTreeModel<LoadTimeLine> modelForTree,
             ResourceLoadList resourceLoadList) {
         this.resourceLoadList = resourceLoadList;
         this.modelForTree = modelForTree;
@@ -58,26 +64,31 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
     private TreeitemRenderer getRendererForTree() {
         return new TreeitemRenderer() {
             @Override
-            public void render(Treeitem item, Object data) throws Exception {
+            public void render(Treeitem item, Object data)
+                    throws Exception {
                 LoadTimeLine line = (LoadTimeLine) data;
-                item.setOpen(true);
+                item.setOpen(false);
+                item.setValue(line);
+
                 Treerow row = new Treerow();
                 Treecell cell = new Treecell();
                 Component component = createComponent(line);
                 item.appendChild(row);
                 row.appendChild(cell);
                 cell.appendChild(component);
+                collapse(line);
                 addExpandedListener(item, line);
             }
 
-            private void addExpandedListener(Treeitem item,
+            private void addExpandedListener(final Treeitem item,
                     final LoadTimeLine line) {
                 item.addEventListener("onOpen", new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         OpenEvent openEvent = (OpenEvent) event;
                         if (openEvent.isOpen()) {
-                            expand(line);
+                            List<LoadTimeLine> closed = calculatedClosedItems(item);
+                            expand(line, closed);
                         } else {
                             collapse(line);
                         }
@@ -101,8 +112,46 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
         resourceLoadList.collapse(line);
     }
 
-    private void expand(LoadTimeLine line) {
-        resourceLoadList.expand(line);
+    private void expand(LoadTimeLine line, List<LoadTimeLine> closed) {
+        resourceLoadList.expand(line, closed);
+    }
+
+    private List<LoadTimeLine> calculatedClosedItems(Treeitem item) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        Treechildren treeChildren = item.getTreechildren();
+        if (treeChildren != null) {
+            List<Treeitem> myTreeItems = (List<Treeitem>) treeChildren
+                    .getChildren();
+            Iterator<Treeitem> iterator = myTreeItems.iterator();
+            while (iterator.hasNext()) {
+                Treeitem child = (Treeitem) iterator.next();
+                if (!child.isOpen()) {
+                    result.addAll(getLineChildrenBy(child));
+                } else {
+                    result.addAll(calculatedClosedItems(child));
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<LoadTimeLine> getLineChildrenBy(Treeitem item) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        LoadTimeLine line = getLineByTreeitem(item);
+        if (line != null) {
+            result.addAll(line.getAllChildren());
+        }
+        return result;
+    }
+
+    private LoadTimeLine getLineByTreeitem(Treeitem child) {
+        LoadTimeLine line = null;
+        try {
+            line = (LoadTimeLine) child.getValue();
+        } catch (Exception e) {
+            return null;
+        }
+        return line;
     }
 
     private Tree getContainerTree() {
@@ -114,7 +163,6 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
         result.setSclass("firstlevel");
         return result;
     }
-
 
     private Component createSecondLevel(LoadTimeLine loadTimeLine) {
         Div result = createLabelWithName(loadTimeLine);

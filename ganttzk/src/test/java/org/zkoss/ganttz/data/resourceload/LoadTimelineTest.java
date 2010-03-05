@@ -62,7 +62,8 @@ public class LoadTimelineTest {
         conceptName = "bla";
         loadTimeLine = new LoadTimeLine(conceptName, Arrays
                 .asList(new LoadPeriod(new LocalDate(2009, 10, 5),
-                        new LocalDate(2009, 10, 11), new LoadLevel(20))));
+                                new LocalDate(2009, 10, 11), 100, 20,
+                                new LoadLevel(20))));
     }
 
     @Test
@@ -75,9 +76,9 @@ public class LoadTimelineTest {
     @Test
     public void aLoadTimelineSortsItsReceivedPeriods() {
         LoadPeriod l1 = new LoadPeriod(new LocalDate(2009, 10, 5),
-                new LocalDate(2009, 10, 11), new LoadLevel(20));
+                new LocalDate(2009, 10, 11), 100, 20, new LoadLevel(20));
         LoadPeriod l2 = new LoadPeriod(new LocalDate(2009, 5, 3),
-                new LocalDate(2009, 6, 3), new LoadLevel(20));
+                new LocalDate(2009, 6, 3), 100, 20, new LoadLevel(20));
         LoadTimeLine loadTimeLine = new LoadTimeLine("bla", Arrays.asList(l1, l2));
 
         List<LoadPeriod> loadPeriods = loadTimeLine.getLoadPeriods();
@@ -88,9 +89,9 @@ public class LoadTimelineTest {
     @Test(expected = IllegalArgumentException.class)
     public void theLoadPeriodsMustNotOverlap() {
         LoadPeriod l1 = new LoadPeriod(new LocalDate(2009, 10, 5),
-                new LocalDate(2009, 10, 11), new LoadLevel(20));
+                new LocalDate(2009, 10, 11), 100, 20, new LoadLevel(20));
         LoadPeriod l2 = new LoadPeriod(new LocalDate(2009, 5, 3),
-                new LocalDate(2009, 10, 10), new LoadLevel(20));
+                new LocalDate(2009, 10, 10), 100, 20, new LoadLevel(20));
         new LoadTimeLine("bla", Arrays.asList(l1, l2));
     }
 
