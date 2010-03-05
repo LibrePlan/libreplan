@@ -657,14 +657,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     }
                 });
 
-                columnDate.setWidth("100px");
+                columnDate.setWidth("75px");
                 columns.appendChild(columnDate);
             }
             if (!getWorkReport().getWorkReportType()
                     .getResourceIsSharedInLines()) {
                 NewDataSortableColumn columnResource = new NewDataSortableColumn();
                 columnResource.setLabel(_("Resource"));
-                columnResource.setWidth("100px");
+                columnResource.setWidth("75px");
                 columns.appendChild(columnResource);
             }
             if (!getWorkReport().getWorkReportType()
@@ -705,16 +705,21 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
         NewDataSortableColumn columnNumHours = new NewDataSortableColumn();
         columnNumHours.setLabel(_("Hours"));
-        columnNumHours.setWidth("50px");
+        columnNumHours.setWidth("25px");
         columns.appendChild(columnNumHours);
         NewDataSortableColumn columnHoursType = new NewDataSortableColumn();
         columnHoursType.setLabel(_("Hours type"));
-        columnHoursType.setWidth("100px");
+        columnHoursType.setWidth("75px");
         columns.appendChild(columnHoursType);
+        NewDataSortableColumn columnCode = new NewDataSortableColumn();
+        columnCode.setLabel(_("Code"));
+        columnCode.setAlign("center");
+        columnCode.setWidth("100px");
+        columns.appendChild(columnCode);
         NewDataSortableColumn columnOperations = new NewDataSortableColumn();
         columnOperations.setLabel(_("Operations"));
         columnOperations.setAlign("center");
-        columnOperations.setWidth("50px");
+        columnOperations.setWidth("25px");
         columns.appendChild(columnOperations);
 
         columns.setParent(grid);
@@ -1056,6 +1061,26 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
+    private void appendCode(final Row row) {
+        final WorkReportLine line = (WorkReportLine) row.getValue();
+        final Textbox code = new Textbox();
+        code.setWidth("150px");
+        code.applyProperties();
+
+         if (line.getCode() != null) {
+             code.setValue(line.getCode());
+         }
+
+        code.addEventListener("onChange", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                final WorkReportLine line = (WorkReportLine) row.getValue();
+                line.setCode(code.getValue());
+            }
+        });
+        row.appendChild(code);
+    }
+
     /**
      * Append a delete {@link Button} to {@link Row}
      *
@@ -1163,6 +1188,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
             appendNumHours(row);
             appendHoursType(row);
+            appendCode(row);
             appendDeleteButton(row);
         }
     }
