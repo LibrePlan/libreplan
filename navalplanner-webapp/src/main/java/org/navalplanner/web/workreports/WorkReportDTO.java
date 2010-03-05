@@ -122,4 +122,8 @@ public class WorkReportDTO {
         return null;
     }
 
+    public String getCode() {
+        return workReport.getCode();
+    }
+
 }
