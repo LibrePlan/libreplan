@@ -44,7 +44,8 @@
                             </row>
                             <row>
                                 <label value="${i18n:_('Code')}" />
-                                <label value="@{controller.labelType.code}" />
+                                <textbox width="500px" value="@{controller.labelType.code}"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}" />
                             </row>
                         </rows>
                     </grid>
@@ -74,7 +75,8 @@
                                         onChange="controller.onChangeLabelName(event)"
                                         constraint="no empty:${i18n:_('cannot be null or empty')}" />
 
-                                    <label value="@{label.code}" width="95%" />
+                                    <textbox value="@{label.code}" width="95%"
+                                        constraint="no empty:${i18n:_('cannot be null or empty')}" />
 
                                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
