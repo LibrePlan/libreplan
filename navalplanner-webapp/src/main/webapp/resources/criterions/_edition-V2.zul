@@ -60,6 +60,10 @@
                             <label value="${i18n:_('Description')}" />
                             <textbox value="@{controller.criterionType.description}" rows="3" width="390px"/>
                         </row>
+                        <row>
+                            <label value="${i18n:_('Code')}" />
+                            <label value="@{controller.criterionType.code}"/>
+                        </row>
                     </rows>
                 </grid>
                 <separator bar="false" spacing="40px" orient="vertical"/>
