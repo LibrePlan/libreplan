@@ -111,6 +111,24 @@
                     <tabpanel>
                         <vbox>
 
+                    <panel title="${i18n:_('General data')}" border="normal"
+                            style="overflow:auto">
+                        <panelchildren>
+                            <grid fixedLayout="false">
+                                <columns>
+                                    <column width="200px" />
+                                    <column />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="${i18n:_('Type')}:" />
+                                        <label value="@{controller.workReport.workReportType.name}" />
+                                    </row>
+                                </rows>
+                            </grid>
+                        </panelchildren>
+                    </panel>
+
                     <panel title="${i18n:_('Heading Fields')}" border="normal"
                             style="overflow:auto">
                         <panelchildren>
