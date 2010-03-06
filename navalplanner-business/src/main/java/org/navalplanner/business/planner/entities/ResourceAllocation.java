@@ -39,6 +39,7 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForSpecifiedResourcesPerDayAndHours;
@@ -591,11 +592,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             @Override
             public boolean thereAreHoursOn(AvailabilityTimeLine availability,
                     ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-                if (getTaskCalendar() == null) {
-                    return true;
-                }
-                return getTaskCalendar().thereAreHoursOn(availability,
-                        resourcesPerDay, hoursToAllocate);
+                return ThereAreHoursOnWorkHoursCalculator.thereAreHoursOn(this,
+                        availability, resourcesPerDay,
+                        hoursToAllocate);
             }
 
             @Override

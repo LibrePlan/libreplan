@@ -30,10 +30,6 @@ import java.util.Set;
 import org.hibernate.validator.NotEmpty;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTime;
-import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
-import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
-import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
@@ -845,60 +841,8 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
     @Override
     public boolean thereAreHoursOn(AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        if (hoursToAllocate == 0) {
-            return true;
-        }
-        if (resourcesPerDay.isZero()) {
-            return false;
-        }
-        addInvaliditiesDerivedFromCalendar(availability);
-        List<Interval> validPeriods = availability.getValidPeriods();
-        if (validPeriods.isEmpty()) {
-            return false;
-        }
-
-        Interval last = getLast(validPeriods);
-        Interval first = validPeriods.get(0);
-        final boolean isOpenEnded = last.getEnd().equals(EndOfTime.create())
-                || first.getStart().equals(StartOfTime.create());
-
-        return isOpenEnded
-                || thereAreHoursOn(hoursToAllocate, resourcesPerDay,
-                        validPeriods);
-    }
-
-    private boolean thereAreHoursOn(int hoursToAllocate,
-            ResourcesPerDay resourcesPerDay, List<Interval> validPeriods) {
-        int sum = 0;
-        for (Interval each : validPeriods) {
-            FixedPoint start = (FixedPoint) each.getStart();
-            FixedPoint end = (FixedPoint) each.getEnd();
-            int pending = hoursToAllocate - sum;
-            sum += sumHoursUntil(pending, resourcesPerDay, start.getDate(), end
-                    .getDate());
-            if (sum >= hoursToAllocate) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private int sumHoursUntil(int maximum, ResourcesPerDay resourcesPerDay,
-            LocalDate start, LocalDate end) {
-        int result = 0;
-        int days = org.joda.time.Days.daysBetween(start, end).getDays();
-        for (int i = 0; i < days; i++) {
-            LocalDate current = start.plusDays(i);
-            result += toHours(current, resourcesPerDay);
-            if (result >= maximum) {
-                return result;
-            }
-        }
-        return result;
-    }
-
-    private Interval getLast(List<Interval> validPeriods) {
-        return validPeriods.get(validPeriods.size() - 1);
+        return ThereAreHoursOnWorkHoursCalculator.thereAreHoursOn(this,
+                availability, resourcesPerDay, hoursToAllocate);
     }
 
     public boolean onlyGivesZeroHours() {
