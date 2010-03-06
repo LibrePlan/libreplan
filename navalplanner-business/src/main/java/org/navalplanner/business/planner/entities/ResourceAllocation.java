@@ -572,18 +572,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new IWorkHours() {
             @Override
             public Integer getCapacityAt(LocalDate day) {
+                return getSubyacent().getCapacityAt(day);
+            }
+
+            private IWorkHours getSubyacent() {
                 if (getTaskCalendar() == null) {
-                    return SameWorkHoursEveryDay.getDefaultWorkingDay()
-                            .getCapacityAt(day);
+                    return SameWorkHoursEveryDay.getDefaultWorkingDay();
                 } else {
-                    return getTaskCalendar().getCapacityAt(day);
+                    return getTaskCalendar();
                 }
             }
 
             @Override
             public Integer toHours(LocalDate day, ResourcesPerDay amount) {
-                final Integer capacity = getCapacityAt(day);
-                return amount.asHoursGivenResourceWorkingDayOf(capacity);
+                return getSubyacent().toHours(day, amount);
             }
 
             @Override
