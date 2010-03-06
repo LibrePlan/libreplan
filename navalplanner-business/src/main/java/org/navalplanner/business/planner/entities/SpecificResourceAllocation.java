@@ -157,9 +157,6 @@ public class SpecificResourceAllocation extends
 
     @Override
     protected IWorkHours getWorkHoursGivenTaskHours(IWorkHours taskWorkHours) {
-        if (getResource().getCalendar() == null) {
-            return taskWorkHours;
-        }
         return CombinedWorkHours.minOf(taskWorkHours, getResource()
                 .getCalendar());
     }

@@ -35,9 +35,21 @@ public abstract class CombinedWorkHours implements IWorkHours {
 
     public CombinedWorkHours(Collection<? extends IWorkHours> workHours) {
         Validate.notNull(workHours);
-        Validate.noNullElements(workHours);
         Validate.isTrue(!workHours.isEmpty());
-        this.workHours = new ArrayList<IWorkHours>(workHours);
+        this.workHours = notNull(workHours);
+        Validate.isTrue(!this.workHours.isEmpty(),
+                "there should be at least one workHours not null");
+    }
+
+    private static List<IWorkHours> notNull(
+            Collection<? extends IWorkHours> workHours) {
+        List<IWorkHours> result = new ArrayList<IWorkHours>();
+        for (IWorkHours each : workHours) {
+            if (each != null) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     public static CombinedWorkHours minOf(IWorkHours... workHours) {

@@ -25,6 +25,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import org.joda.time.LocalDate;
@@ -35,14 +36,15 @@ import org.navalplanner.business.calendars.entities.IWorkHours;
 public class CombinedWorkHoursTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void cannotAcceptNull() {
+    public void cannotAcceptOnlyNullElements() {
         IWorkHours[] nullWorkHours = null;
         CombinedWorkHours.minOf(nullWorkHours);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void noElementIsNull() {
-        CombinedWorkHours.minOf(null, createNiceMock(IWorkHours.class));
+    public void someElementsCanBeNull() {
+        CombinedWorkHours minOf = CombinedWorkHours.minOf(null,
+                createNiceMock(IWorkHours.class));
+        assertNotNull(minOf);
     }
 
     @Test(expected = IllegalArgumentException.class)
