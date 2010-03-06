@@ -47,8 +47,8 @@ public abstract class CombinedWorkHours implements IWorkHours {
     public Integer getCapacityAt(LocalDate date) {
         Integer current = null;
         for (IWorkHours workHour : workHours) {
-            current = current == null ? capacity(workHour, date)
-                    : updateCapacity(current, workHour, date);
+            current = current == null ? workHour.getCapacityAt(date)
+                    : updateCapacity(current, workHour.getCapacityAt(date));
         }
         return current;
     }
@@ -57,8 +57,8 @@ public abstract class CombinedWorkHours implements IWorkHours {
     public Integer toHours(LocalDate day, ResourcesPerDay amount) {
         Integer current = null;
         for (IWorkHours each : workHours) {
-            current = current == null ? initialHours(each, day, amount)
-                    : updateHours(current, each, day, amount);
+            current = current == null ? each.toHours(day, amount)
+                    : updateHours(current, each.toHours(day, amount));
         }
         return current;
     }
@@ -75,16 +75,9 @@ public abstract class CombinedWorkHours implements IWorkHours {
     protected abstract AvailabilityTimeLine compoundAvailability(
             AvailabilityTimeLine accumulated, AvailabilityTimeLine each);
 
-    protected abstract Integer updateHours(Integer current,
-            IWorkHours workHours, LocalDate day, ResourcesPerDay amount);
+    protected abstract Integer updateHours(Integer current, Integer each);
 
-    protected abstract Integer initialHours(IWorkHours workHours,
-            LocalDate day, ResourcesPerDay amount);
-
-    protected abstract Integer capacity(IWorkHours workHour, LocalDate date);
-
-    protected abstract Integer updateCapacity(Integer current,
-            IWorkHours workHour, LocalDate date);
+    protected abstract Integer updateCapacity(Integer current, Integer each);
 
     @Override
     public boolean thereAreHoursOn(AvailabilityTimeLine availability,
@@ -101,26 +94,13 @@ class Min extends CombinedWorkHours {
     }
 
     @Override
-    protected Integer updateCapacity(Integer current, IWorkHours workHour,
-            LocalDate date) {
-        return Math.min(current, workHour.getCapacityAt(date));
+    protected Integer updateCapacity(Integer current, Integer each) {
+        return Math.min(current, each);
     }
 
     @Override
-    protected Integer capacity(IWorkHours workHour, LocalDate date) {
-        return workHour.getCapacityAt(date);
-    }
-
-    @Override
-    protected Integer initialHours(IWorkHours workHours, LocalDate day,
-            ResourcesPerDay amount) {
-        return workHours.toHours(day, amount);
-    }
-
-    @Override
-    protected Integer updateHours(Integer current, IWorkHours workHours,
-            LocalDate day, ResourcesPerDay amount) {
-        return Math.min(workHours.toHours(day, amount), current);
+    protected Integer updateHours(Integer current, Integer each) {
+        return Math.min(current, each);
     }
 
     @Override
