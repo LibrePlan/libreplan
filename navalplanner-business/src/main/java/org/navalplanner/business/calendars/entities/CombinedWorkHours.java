@@ -20,7 +20,9 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -31,16 +33,25 @@ public abstract class CombinedWorkHours implements IWorkHours {
 
     private final List<IWorkHours> workHours;
 
-    public CombinedWorkHours(List<IWorkHours> workHours) {
+    public CombinedWorkHours(Collection<? extends IWorkHours> workHours) {
         Validate.notNull(workHours);
         Validate.noNullElements(workHours);
         Validate.isTrue(!workHours.isEmpty());
-        this.workHours = workHours;
+        this.workHours = new ArrayList<IWorkHours>(workHours);
     }
 
     public static CombinedWorkHours minOf(IWorkHours... workHours) {
         Validate.notNull(workHours);
         return new Min(Arrays.asList(workHours));
+    }
+
+    public static CombinedWorkHours maxOf(IWorkHours... workHours) {
+        return maxOf(Arrays.asList(workHours));
+    }
+
+    public static CombinedWorkHours maxOf(
+            Collection<? extends IWorkHours> workHours) {
+        return new Max(workHours);
     }
 
     @Override
@@ -109,4 +120,27 @@ class Min extends CombinedWorkHours {
         return accumulated.and(each);
     }
 
+}
+
+class Max extends CombinedWorkHours {
+
+    public Max(Collection<? extends IWorkHours> workHours) {
+        super(workHours);
+    }
+
+    @Override
+    protected Integer updateCapacity(Integer current, Integer each) {
+        return Math.max(current, each);
+    }
+
+    @Override
+    protected Integer updateHours(Integer current, Integer each) {
+        return Math.max(current, each);
+    }
+
+    @Override
+    protected AvailabilityTimeLine compoundAvailability(
+            AvailabilityTimeLine accumulated, AvailabilityTimeLine each) {
+        return accumulated.or(each);
+    }
 }
