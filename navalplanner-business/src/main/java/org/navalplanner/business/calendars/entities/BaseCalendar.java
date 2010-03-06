@@ -919,6 +919,7 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
         return last.isEmptyFor(each);
     }
 
+    @Override
     public AvailabilityTimeLine getAvailability() {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         addInvaliditiesDerivedFromCalendar(result);

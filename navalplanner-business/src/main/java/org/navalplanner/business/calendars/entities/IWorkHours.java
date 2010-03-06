@@ -43,6 +43,8 @@ public interface IWorkHours {
      */
     public Integer getCapacityAt(LocalDate date);
 
+    public AvailabilityTimeLine getAvailability();
+
     public boolean thereAreHoursOn(AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, int hoursToAllocate);
 }

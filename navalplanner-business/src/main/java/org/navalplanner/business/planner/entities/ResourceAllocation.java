@@ -597,6 +597,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 return getTaskCalendar().thereAreHoursOn(availability,
                         resourcesPerDay, hoursToAllocate);
             }
+
+            @Override
+            public AvailabilityTimeLine getAvailability() {
+                return getSubyacent().getAvailability();
+            }
         };
     }
 

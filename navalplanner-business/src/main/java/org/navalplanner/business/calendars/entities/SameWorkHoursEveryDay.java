@@ -55,4 +55,9 @@ public class SameWorkHoursEveryDay implements IWorkHours {
             ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
         return true;
     }
+
+    @Override
+    public AvailabilityTimeLine getAvailability() {
+        return AvailabilityTimeLine.allValid();
+    }
 }

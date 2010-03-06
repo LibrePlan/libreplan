@@ -63,6 +63,18 @@ public abstract class CombinedWorkHours implements IWorkHours {
         return current;
     }
 
+    @Override
+    public AvailabilityTimeLine getAvailability() {
+        AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
+        for (IWorkHours each : workHours) {
+            result = compoundAvailability(result, each.getAvailability());
+        }
+        return result;
+    }
+
+    protected abstract AvailabilityTimeLine compoundAvailability(
+            AvailabilityTimeLine accumulated, AvailabilityTimeLine each);
+
     protected abstract Integer updateHours(Integer current,
             IWorkHours workHours, LocalDate day, ResourcesPerDay amount);
 
@@ -114,6 +126,12 @@ class Min extends CombinedWorkHours {
     protected Integer updateHours(Integer current, IWorkHours workHours,
             LocalDate day, ResourcesPerDay amount) {
         return Math.min(workHours.toHours(day, amount), current);
+    }
+
+    @Override
+    protected AvailabilityTimeLine compoundAvailability(
+            AvailabilityTimeLine accumulated, AvailabilityTimeLine each) {
+        return accumulated.and(each);
     }
 
 }
