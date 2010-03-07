@@ -124,9 +124,8 @@ public class GenericResourceAllocationTest {
     }
 
     private void setupIsSatisfiedByAll(Criterion criterion) {
-        expect(
-                criterion.isSatisfiedBy(isA(Resource.class), isA(Date.class),
-                        isA(Date.class))).andReturn(true).anyTimes();
+        expect(criterion.isSatisfiedBy(isA(Resource.class), isA(Date.class)))
+                .andReturn(true).anyTimes();
     }
 
     private void givenWorkersWithoutLoadAndWithoutCalendar() {

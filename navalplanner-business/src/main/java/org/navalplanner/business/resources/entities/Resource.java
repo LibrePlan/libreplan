@@ -805,8 +805,7 @@ public abstract class Resource extends IntegrationEntity {
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,
             LocalDate current) {
-        return criterionToSatisfy.isSatisfiedBy(this, asDate(current),
-                asDate(current.plusDays(1)));
+        return criterionToSatisfy.isSatisfiedBy(this, asDate(current));
     }
 
     private Date asDate(LocalDate date) {

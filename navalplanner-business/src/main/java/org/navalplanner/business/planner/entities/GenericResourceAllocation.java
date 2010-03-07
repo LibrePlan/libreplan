@@ -146,8 +146,7 @@ public class GenericResourceAllocation extends
         public boolean isSelectable(Resource resource, LocalDate day) {
             ICriterion compoundCriterion = CriterionCompounder.buildAnd(
                     criterions).getResult();
-            return compoundCriterion.isSatisfiedBy(resource, toDate(day),
-                    toDate(day.plusDays(1)));
+            return compoundCriterion.isSatisfiedBy(resource, toDate(day));
         }
     }
 
