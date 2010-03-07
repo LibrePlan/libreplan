@@ -28,6 +28,10 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
+import org.navalplanner.business.calendars.entities.CombinedWorkHours;
+import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -79,6 +83,19 @@ public abstract class ResourcesPerDayModification extends
                             .getCriterions(), getResources());
         }
 
+        @Override
+        public IWorkHours getResourcesWorkHoursPerDay() {
+            return CombinedWorkHours.maxOf(resourcesWorkHours());
+        }
+
+        private List<IWorkHours> resourcesWorkHours() {
+            List<IWorkHours> workHours = new ArrayList<IWorkHours>();
+            for (Resource each : getResources()) {
+                workHours.add(workHoursFor(each));
+            }
+            return workHours;
+        }
+
     }
 
     private static class OnSpecificAllocation extends
@@ -120,6 +137,12 @@ public abstract class ResourcesPerDayModification extends
         private Resource getAssociatedResource() {
             return getResources().get(0);
         }
+
+        @Override
+        public IWorkHours getResourcesWorkHoursPerDay() {
+            return workHoursFor(getAssociatedResource());
+        }
+
     }
 
     public static ResourcesPerDayModification create(
@@ -159,6 +182,12 @@ public abstract class ResourcesPerDayModification extends
         return result;
     }
 
+    protected static IWorkHours workHoursFor(Resource associatedResource) {
+        ResourceCalendar calendar = associatedResource.getCalendar();
+        return calendar != null ? calendar : SameWorkHoursEveryDay
+                .getDefaultWorkingDay();
+    }
+
     private final ResourcesPerDay goal;
 
     private ResourcesPerDayModification(
@@ -173,6 +202,8 @@ public abstract class ResourcesPerDayModification extends
         return goal;
     }
 
+    public abstract IWorkHours getResourcesWorkHoursPerDay();
+
     public abstract void applyAllocationOnAllTaskLength();
 
     public abstract void applyAllocationUntil(LocalDate endExclusive);
@@ -181,5 +212,6 @@ public abstract class ResourcesPerDayModification extends
             int limit);
 
     public abstract AvailabilityTimeLine getAvailability();
+
 
 }

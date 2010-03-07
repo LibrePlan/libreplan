@@ -37,6 +37,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
@@ -214,8 +215,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         LocalDate start,
                         ResourcesPerDayModification resourcesPerDayModification,
                         int hoursToAllocate) {
-                    IWorkHours workHoursPerDay = resourcesPerDayModification
-                            .getBeingModified().getWorkHoursPerDay();
+                    IWorkHours workHoursPerDay = getWorkHoursPerDay(resourcesPerDayModification);
                     ResourcesPerDay resourcesPerDay = resourcesPerDayModification
                             .getGoal();
                     AvailabilityTimeLine availability = resourcesPerDayModification
@@ -223,6 +223,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     availability.invalidUntil(start);
                     return workHoursPerDay.thereAreHoursOn(availability,
                             resourcesPerDay, hoursToAllocate);
+                }
+
+                private CombinedWorkHours getWorkHoursPerDay(
+                        ResourcesPerDayModification resourcesPerDayModification) {
+                    return CombinedWorkHours.minOf(resourcesPerDayModification
+                            .getBeingModified().getTaskWorkHours(),
+                            resourcesPerDayModification
+                                    .getResourcesWorkHoursPerDay());
                 }
 
                 @Override
@@ -566,10 +574,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private IWorkHours getWorkHoursPerDay() {
-        return getWorkHoursGivenTaskHours(getTaskWorkHoursLimit());
+        return getWorkHoursGivenTaskHours(getTaskWorkHours());
     }
 
-    private IWorkHours getTaskWorkHoursLimit() {
+    private IWorkHours getTaskWorkHours() {
         return new IWorkHours() {
             @Override
             public Integer getCapacityAt(LocalDate day) {
