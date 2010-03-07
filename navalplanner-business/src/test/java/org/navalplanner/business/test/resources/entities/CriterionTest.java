@@ -210,6 +210,11 @@ public class CriterionTest {
             public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
                 return isSatisfiedBy(resource);
             }
+
+            @Override
+            public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+                return isSatisfiedBy(resource);
+            }
         };
     }
 

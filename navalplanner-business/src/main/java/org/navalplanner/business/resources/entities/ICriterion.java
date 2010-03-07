@@ -32,4 +32,6 @@ public interface ICriterion {
 
     boolean isSatisfiedBy(Resource resource, Date start, Date end);
 
+    boolean isSatisfiedBy(Resource resource, Date atThisDate);
+
 }

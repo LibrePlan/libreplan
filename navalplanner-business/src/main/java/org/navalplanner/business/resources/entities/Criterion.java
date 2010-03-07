@@ -138,6 +138,12 @@ public class Criterion extends IntegrationEntity implements ICriterion {
                 Interval.range(start, end)).result().isEmpty();
     }
 
+    @Override
+    public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+        return !resource.query().from(this).enforcedInAll(
+                Interval.point(atThisDate)).result().isEmpty();
+    }
+
     @NotEmpty(message="criterion name not specified")
     public String getName() {
         return name;

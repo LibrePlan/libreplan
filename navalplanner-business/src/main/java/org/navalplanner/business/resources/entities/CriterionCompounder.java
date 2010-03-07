@@ -73,6 +73,11 @@ public class CriterionCompounder {
         public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
             return !criterion.isSatisfiedBy(resource, start, end);
         }
+
+        @Override
+        public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+            return !criterion.isSatisfiedBy(resource, atThisDate);
+        }
     }
 
     private static class OrClause implements ICriterion {
@@ -96,6 +101,16 @@ public class CriterionCompounder {
         public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
             for (ICriterion criterion : criterions) {
                 if (criterion.isSatisfiedBy(resource, start, end)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+            for (ICriterion criterion : criterions) {
+                if (criterion.isSatisfiedBy(resource, atThisDate)) {
                     return true;
                 }
             }
@@ -140,6 +155,16 @@ public class CriterionCompounder {
         public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
             for (ICriterion criterion : criterions) {
                 if (!criterion.isSatisfiedBy(resource, start, end)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+            for (ICriterion criterion : criterions) {
+                if (!criterion.isSatisfiedBy(resource, atThisDate)) {
                     return false;
                 }
             }
