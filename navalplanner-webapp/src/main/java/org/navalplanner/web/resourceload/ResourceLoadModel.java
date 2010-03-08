@@ -124,7 +124,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
                             .getAllChildrenAssociatedTaskElements()));
         } else {
             return resourceAllocationDAO.findGenericAllocationsByCriterion();
-
         }
     }
 
@@ -141,8 +140,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesForActiveTasks() {
-        return resourcesDAO
-                .findResourcesRelatedTo(justTasks(filterBy
+        return resourcesDAO.findResourcesRelatedTo(justTasks(filterBy
                 .getAllChildrenAssociatedTaskElements()));
     }
 
@@ -167,9 +165,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .entrySet()) {
             List<GenericResourceAllocation> allocations = ResourceAllocation
                     .sortedByStartDate(entry.getValue());
-            LoadTimeLine group = new LoadTimeLine(createPrincipal(
-                    entry.getKey(), allocations),
- new ArrayList<LoadTimeLine>());
+            LoadTimeLine group = new LoadTimeLine(createPrincipal(entry
+                    .getKey(), allocations), new ArrayList<LoadTimeLine>());
             if (!group.isEmpty()) {
                 result.add(group);
             }
@@ -186,8 +183,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadPeriod> createPeriods(Criterion criterion,
             List<GenericResourceAllocation> value) {
         return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(
-                resourceAllocationDAO, criterion),
-                value);
+                resourceAllocationDAO, criterion), value);
     }
 
     private List<LoadTimeLine> groupsFor(List<Resource> allResources) {
@@ -205,9 +201,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
                         .findAllocationsRelatedTo(resource));
-        LoadTimeLine result = new LoadTimeLine(buildTimeLine(
-                resource, resource.getShortDescription(), sortedByStartDate),
-                buildSecondLevel(resource, sortedByStartDate));
+        LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
+                .getShortDescription(), sortedByStartDate), buildSecondLevel(
+                resource, sortedByStartDate));
         return result;
 
     }
@@ -240,20 +236,19 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (resourceAllocations.isEmpty()) {
             return null;
         }
-        LoadTimeLine group = new LoadTimeLine(buildTimeLine(
-                resource, "Others ordes", resourceAllocations),
+        LoadTimeLine group = new LoadTimeLine(buildTimeLine(resource,
+                "Others ordes", resourceAllocations),
                 buildTimeLinesGroupForOrder(resource, byOrder));
         return group;
     }
 
-    private List<LoadTimeLine> buildTimeLinesGroupForOrder(
-            Resource resource, Map<Order, List<ResourceAllocation<?>>> byOrder) {
+    private List<LoadTimeLine> buildTimeLinesGroupForOrder(Resource resource,
+            Map<Order, List<ResourceAllocation<?>>> byOrder) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for (Order order : byOrder.keySet()) {
             result.add(new LoadTimeLine(buildTimeLine(resource,
-                    order
-                    .getName(), byOrder.get(order)), buildTimeLinesForOrder(
-                    resource, byOrder.get(order))));
+                    order.getName(), byOrder.get(order)),
+                    buildTimeLinesForOrder(resource, byOrder.get(order))));
         }
         return result;
     }
@@ -323,8 +318,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .entrySet()) {
 
             Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
-            .byTask(entry.getValue());
-            for (Entry<Task, List<ResourceAllocation<?>>> entryTask : byTask.entrySet()) {
+                    .byTask(entry.getValue());
+            for (Entry<Task, List<ResourceAllocation<?>>> entryTask : byTask
+                    .entrySet()) {
 
                 Task task = entryTask.getKey();
                 List<GenericResourceAllocation> resouceAllocations = getGenericResourceAllocation(entryTask
@@ -351,8 +347,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return result;
     }
 
-    private List<LoadTimeLine> buildTimeLinesForEachTask(
-            Resource resource,
+    private List<LoadTimeLine> buildTimeLinesForEachTask(Resource resource,
             List<SpecificResourceAllocation> sortedByStartDate) {
         Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
                 .byTask(sortedByStartDate);
@@ -370,8 +365,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
-            Task task,
-            Resource resource,
+            Task task, Resource resource,
             List<GenericResourceAllocation> allocationsSortedByStartDate) {
         LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
                 .onResourceSatisfying(resource, criterions);
@@ -380,7 +374,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 "generic");
     }
 
-    public static String getName(Collection<? extends Criterion> criterions,Task task) {
+    public static String getName(Collection<? extends Criterion> criterions,
+            Task task) {
         String prefix = task.getName();
         return (prefix + " :: " + getName(criterions));
     }
@@ -475,8 +470,8 @@ class PeriodsBuilder {
                 List<LoadPeriodGenerator> generated = current.join(next);
                 final LoadPeriodGenerator positionToComeBack = generated.get(0);
                 final List<LoadPeriodGenerator> remaining = loadPeriodsGenerators
-                        .subList(iterator
-                        .nextIndex(), loadPeriodsGenerators.size());
+                        .subList(iterator.nextIndex(), loadPeriodsGenerators
+                                .size());
                 List<LoadPeriodGenerator> generatorsSortedByStartDate = mergeListsKeepingByStartSortOrder(
                         generated, remaining);
                 final int takenFromRemaining = generatorsSortedByStartDate
