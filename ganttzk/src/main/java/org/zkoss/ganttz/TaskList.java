@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -298,7 +300,7 @@ public class TaskList extends XulElement implements AfterCompose {
             MenuBuilder<TaskComponent> menuBuilder = MenuBuilder.on(getPage(),
                     getTaskComponents());
             if (disabilityConfiguration.isAddingDependenciesEnabled()) {
-                menuBuilder.item("Add Dependency",
+                menuBuilder.item(_("Add Dependency"),
                         "/common/img/ico_dependency.png",
                         new ItemAction<TaskComponent>() {
 
