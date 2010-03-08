@@ -146,16 +146,12 @@ Para xestionar a asignación avanzada os pasos a dar son os seguintes:
 * O usuario pode elixir deseñar unha función de asignación avanzada. Para realizalo:
 
    * Elixir a función na lista de selección que aparece ó lado de cada recurso e premer en "Configurar".
-   * O sistema amosa unha nova ventá se a función elixida require de configuración específica. As funcións soportadas son:
+   * O sistema amosa unha nova ventá se a función elixida require de configuración específica. As funcións soportadas son e a por Tramos. Esta función permite definir tramos nos que se aplica unha función polinómica. A función por tramos configúrase do seguinte xeito:
 
-      * Tramos: Función que permite definir tramos nos que se aplica unha función polinómica. A función por tramos configúrase do seguinte xeito:
-
-
-         * Data. Data na que finaliza o tramo. Se se establece o seguinte valor (lonxitude) a data é calculada, en caso contrario, calcúlase a lonxitude.
-         * Definición da lonxitude de cada tramo. Indica que porcentaxe de duración da tarefa compre ese tramo.
-         * Definición da cantidade de traballo. Indica que porcentaxe de carga de traballo se espera ter feito nese tramo. A cantidade de traballo debe ser incremental, de xeito que se hai un tramo de 10% o seguinte tramo debe ser superior (por exemplo, 20%).
-         * Gráficas de tramos e carga acumulada.
-
+      * Data. Data na que finaliza o tramo. Se se establece o seguinte valor (lonxitude) a data é calculada, en caso contrario, calcúlase a lonxitude.
+      * Definición da lonxitude de cada tramo. Indica que porcentaxe de duración da tarefa compre ese tramo.
+      * Definición da cantidade de traballo. Indica que porcentaxe de carga de traballo se espera ter feito nese tramo. A cantidade de traballo debe ser incremental, de xeito que se hai un tramo de 10% o seguinte tramo debe ser superior (por exemplo, 20%).
+      * Gráficas de tramos e carga acumulada.
 
    * O usuario preme en "Aceptar".
    * A aplicación almacena a función e aplícaa nas asignacións diarias do recurso.
