@@ -18,6 +18,7 @@ if [ ! -f $WEBAPP_KEYS ]
 fi
 ./gettext-keys-generator.pl -d $NAVALPLANNER_WEBAPP -k $WEBAPP_KEYS 2> /dev/null
 ./gettext-keys-generator.pl --java -d $NAVALPLANNER_BUSINESS -k $WEBAPP_KEYS 2> /dev/null
+find $NAVALPLANNER_BUSINESS/src -name "*.java" -exec xgettext -j --from-code=utf-8 -k_ -o $WEBAPP_KEYS '{}' \;
 
 # Parse ganttzk java and zul
 cd $NAVALPLANNER_GANTTZK
