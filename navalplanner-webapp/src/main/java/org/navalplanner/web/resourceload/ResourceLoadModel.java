@@ -303,24 +303,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<GenericResourceAllocation> onlyGeneric(
             List<ResourceAllocation<?>> sortedByStartDate) {
-        List<GenericResourceAllocation> result = new ArrayList<GenericResourceAllocation>();
-        for (ResourceAllocation<?> r : sortedByStartDate) {
-            if (r instanceof GenericResourceAllocation) {
-                result.add((GenericResourceAllocation) r);
-            }
-        }
-        return result;
+        return ResourceAllocation.getOfType(GenericResourceAllocation.class,
+                sortedByStartDate);
     }
 
     private List<SpecificResourceAllocation> onlySpecific(
             List<ResourceAllocation<?>> sortedByStartDate) {
-        List<SpecificResourceAllocation> result = new ArrayList<SpecificResourceAllocation>();
-        for (ResourceAllocation<?> r : sortedByStartDate) {
-            if (r instanceof SpecificResourceAllocation) {
-                result.add((SpecificResourceAllocation) r);
-            }
-        }
-        return result;
+        return ResourceAllocation.getOfType(SpecificResourceAllocation.class,
+                sortedByStartDate);
     }
 
     private List<LoadTimeLine> buildTimeLinesForEachCriterion(
