@@ -192,7 +192,7 @@ public class HoursGroup extends BaseEntity implements Cloneable,
             throws IllegalArgumentException {
         if ((workingHours != null) && (workingHours < 0)) {
             throw new IllegalArgumentException(
-                    _("Working hours shouldn't be neagtive"));
+                    _("Working hours shouldn't be negative"));
         }
 
         this.workingHours = workingHours;

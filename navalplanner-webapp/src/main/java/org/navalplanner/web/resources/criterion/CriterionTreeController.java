@@ -282,7 +282,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             unindentbutton.setTooltiptext(_("Unindent"));
         }else{
             unindentbutton = new Button("", "/common/img/ico_izq_out.png");
-            unindentbutton.setTooltiptext(_("Not Unindent"));
+            unindentbutton.setTooltiptext(_("Not indentable"));
         }
         unindentbutton.setSclass("icono");
         return unindentbutton;
@@ -296,7 +296,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             indentbutton.setTooltiptext(_("Indent"));
         }else{
             indentbutton = new Button("", "/common/img/ico_derecha_out.png");
-            indentbutton.setTooltiptext(_("Not indent"));
+            indentbutton.setTooltiptext(_("Not indentable"));
         }
         indentbutton.setSclass("icono");
         return indentbutton;

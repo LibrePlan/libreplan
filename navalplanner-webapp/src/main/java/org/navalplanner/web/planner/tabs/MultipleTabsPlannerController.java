@@ -304,7 +304,7 @@ public class MultipleTabsPlannerController implements Composer,
 
             @Override
             public String getImage() {
-                return _("/common/img/ico_up.png");
+                return "/common/img/ico_up.png";
             }
         };
     }

@@ -458,7 +458,7 @@ public abstract class OrderElement extends BaseEntity implements
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        _("Duplicate Value True ReportGlobalAdvance For Order Element"),
+                        _("Cannot spread two advances in the same order element"),
                         this, OrderElement.class);
             }
         }
