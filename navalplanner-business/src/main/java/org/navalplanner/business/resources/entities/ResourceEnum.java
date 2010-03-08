@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.resources.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 
 /**
@@ -28,18 +29,24 @@ package org.navalplanner.business.resources.entities;
  */
 public enum ResourceEnum {
 
-    RESOURCE(Resource.class),
-    WORKER(Worker.class),
-    MACHINE(Machine.class);
+    RESOURCE(Resource.class, _("RESOURCE")),
+    WORKER(Worker.class, _("WORKER")),
+    MACHINE(Machine.class, _("MACHINE"));
 
     private Class<?> klass;
+    private final String displayName;
 
-    private ResourceEnum(Class<?> clase) {
+    private ResourceEnum(Class<?> clase, String displayName) {
         this.klass = clase;
+        this.displayName = displayName;
     }
 
     public Class<?> asClass() {
         return klass;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public static ResourceEnum getDefault() {
