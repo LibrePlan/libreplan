@@ -118,7 +118,6 @@ public class WorkerModel implements IWorkerModel {
             assignedCriterionsModel.confirm();
         }
         resourceDAO.save(worker);
-        worker = null;
         localizationsAssigner = null;
     }
 

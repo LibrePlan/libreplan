@@ -151,7 +151,19 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         return localizationsForEditionController;
     }
 
-    public void save() {
+    public void saveAndExit() {
+        if (save()) {
+            goToList();
+        }
+    }
+
+    public void saveAndContinue() {
+        if (save()) {
+            goToEditForm(getWorker());
+        }
+    }
+
+    public boolean save() {
         validateConstraints();
         try {
             if (baseCalendarEditionController != null) {
@@ -159,7 +171,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             }
             if(criterionsController != null){
                 if(!criterionsController.validate()){
-                    return;
+                    return false;
                 }
             }
             if (workerModel.getWorker().isVirtual()) {
@@ -169,12 +181,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 createCalendar();
             }
             workerModel.save();
-            goToList();
-            Util.reloadBindings(listWindow);
             messages.showMessage(Level.INFO, _("Worker saved"));
+            return true;
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
         }
+        return false;
     }
 
     private void validateConstraints() {
@@ -203,6 +215,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void goToList() {
         getVisibility().showOnly(listWindow);
+        Util.reloadBindings(listWindow);
     }
 
     public void goToEditForm(Worker worker) {
