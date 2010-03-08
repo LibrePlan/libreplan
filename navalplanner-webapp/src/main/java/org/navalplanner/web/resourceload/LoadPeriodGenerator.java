@@ -25,15 +25,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -91,14 +93,12 @@ abstract class LoadPeriodGenerator {
     }
 
     public static LoadPeriodGeneratorFactory onCriterion(
-            final IResourceAllocationDAO resourceAllocationDAO,
             final Criterion criterion) {
         return new LoadPeriodGeneratorFactory() {
 
             @Override
             public LoadPeriodGenerator create(ResourceAllocation<?> allocation) {
-                return new LoadPeriodGeneratorOnCriterion(
-                        resourceAllocationDAO, criterion, allocation);
+                return new LoadPeriodGeneratorOnCriterion(criterion, allocation);
             }
         };
     }
@@ -284,32 +284,26 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     private final Criterion criterion;
 
-    private IResourceAllocationDAO resourceAllocationDAO;
-
-    public LoadPeriodGeneratorOnCriterion(
-            IResourceAllocationDAO resourceAllocationDAO, Criterion criterion,
+    public LoadPeriodGeneratorOnCriterion(Criterion criterion,
             ResourceAllocation<?> allocation) {
-        this(resourceAllocationDAO, criterion, allocation.getStartDate(),
-                allocation.getEndDate(),
-                Arrays
-                .<ResourceAllocation<?>> asList(allocation));
+        this(criterion, allocation.getStartDate(), allocation.getEndDate(),
+                Arrays.<ResourceAllocation<?>> asList(allocation));
     }
 
-    public LoadPeriodGeneratorOnCriterion(
-            IResourceAllocationDAO resourceAllocationDAO, Criterion criterion,
+    public LoadPeriodGeneratorOnCriterion(Criterion criterion,
             LocalDate startDate, LocalDate endDate,
             List<ResourceAllocation<?>> allocations) {
         super(startDate, endDate, allocations);
-        this.resourceAllocationDAO = resourceAllocationDAO;
         this.criterion = criterion;
     }
 
     @Override
     protected LoadPeriodGenerator create(LocalDate start, LocalDate end,
             List<ResourceAllocation<?>> allocationsOnInterval) {
-        return new LoadPeriodGeneratorOnCriterion(resourceAllocationDAO,
-                criterion, start, end,
-                allocationsOnInterval);
+        LoadPeriodGeneratorOnCriterion result = new LoadPeriodGeneratorOnCriterion(
+                        criterion, start, end, allocationsOnInterval);
+        result.specificByResourceCached = specificByResourceCached;
+        return result;
     }
 
     private Set<Resource> getResourcesMatchedByCriterionFromAllocations() {
@@ -349,10 +343,30 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     }
 
     private int calculateSumOfSpecific() {
-        List<SpecificDayAssignment> specific = resourceAllocationDAO
-                .getSpecificAssignmentsBetween(
-                getResourcesMatchedByCriterionFromAllocations(), start, end);
+        Set<Resource> resources = getResourcesMatchedByCriterionFromAllocations();
+        List<SpecificDayAssignment> specific = new ArrayList<SpecificDayAssignment>();
+        for (Resource each : resources) {
+            specific.addAll(specificAssignmentsAtInterval(each));
+        }
         return sum(specific);
+    }
+
+    private List<SpecificDayAssignment> specificAssignmentsAtInterval(
+            Resource each) {
+        return DayAssignment.getAtInterval(
+                getSpecificOrderedAssignmentsFor(each), start, end);
+    }
+
+    private Map<Resource, List<SpecificDayAssignment>> specificByResourceCached = new HashMap<Resource, List<SpecificDayAssignment>>();
+
+    private List<SpecificDayAssignment> getSpecificOrderedAssignmentsFor(
+            Resource resource) {
+        if (!specificByResourceCached.containsKey(resource)) {
+            specificByResourceCached.put(resource, DayAssignment
+                    .specific(DayAssignment.orderedByDay(resource
+                            .getAssignments())));
+        }
+        return specificByResourceCached.get(resource);
     }
 
     private int sum(List<SpecificDayAssignment> specific) {
