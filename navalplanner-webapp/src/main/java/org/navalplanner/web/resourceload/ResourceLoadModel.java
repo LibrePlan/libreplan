@@ -41,7 +41,6 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
-import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -72,9 +71,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private ITaskSourceDAO taskSourceDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
