@@ -32,6 +32,7 @@
 use File::Spec;
 use Getopt::Long qw(:config gnu_getopt no_ignore_case);
 use Date::Format;
+use HTML::Entities;
 
 my $DEBUG = 0;
 my $TOKEN = 'i18n:_';
@@ -162,10 +163,10 @@ sub parse_KEYS()
         }
         if (/^msgid "(.*?)"$/) {
 # &debug("msgid: $1");
-            $key = "\"$1\"";
+            $key = "\"".decode_entities($1)."\"";
         }
         if (/^"(.*?)"$/) {
-            $key .= "\n"."\"$1\"";
+            $key .= "\n"."\"".decode_entities($1)."\"";
         }
         if (/^msgstr/) {
             &debug("msgid: $key");
@@ -205,7 +206,7 @@ sub parse_ZUL()
             ($msgid) = $line =~ /$regexp/;
 
             if ($msgid ne "") {
-                $msgid = "\"$msgid\"";
+                $msgid = '"'.decode_entities($msgid).'"';
                 &addEntry($msgid, &to_relative_path($filename).":".$numline);
             }
         }
