@@ -8,19 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-03 13:36+0100\n"
-"PO-Revision-Date: 2010-02-03 13:57+0100\n"
+"POT-Creation-Date: 2010-03-08 19:27+0100\n"
+"PO-Revision-Date: 2010-03-02 14:13+0100\n"
 "Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:21
-msgid "Zoom"
-msgstr "Zoom"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:195
 msgid "Erase"
@@ -30,17 +25,30 @@ msgstr "Borrar"
 msgid "0% - 100%"
 msgstr "0% - 100%"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:30
+#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:303
+msgid "Add Dependency"
+msgstr "Añadir dependencia"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:37
+msgid "Expand/Collapse all"
+msgstr "Expandir/plegar todo"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
 msgid "Year"
 msgstr "Año"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:46
+#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
 msgid "Month"
 msgstr "Mes"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:34
 msgid "Show/Hide resources"
 msgstr "Mostrar/ocultar recursos"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:21
+msgid "Zoom"
+msgstr "Zoom"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:206
 msgid "Set End-Start"
@@ -50,11 +58,11 @@ msgstr "Asignar Fin-Inicio"
 msgid "Set End-End"
 msgstr "Asignar Fin-Fin"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:225
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:232
 msgid "decreasing zoom"
 msgstr "reduciendo zoom"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:409
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:443
 msgid "Hide critical path"
 msgstr "Ocultar camino crítico"
 
@@ -62,7 +70,7 @@ msgstr "Ocultar camino crítico"
 msgid "+ 100%"
 msgstr "+ 100%"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:62
+#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
 msgid "Day"
 msgstr "Día"
 
@@ -82,27 +90,27 @@ msgstr "Mostrar/ocultar etiquetas"
 msgid "Print"
 msgstr "Imprimir"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:210
-msgid "Set Start-Start"
-msgstr "Definir Inicio-Inicio"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:101
 msgid "Assignation percentage"
 msgstr "Porcentaje asignado"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:54
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:210
+msgid "Set Start-Start"
+msgstr "Definir Inicio-Inicio"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:71
 msgid "Week"
 msgstr "Semana"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:208
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:215
 msgid "increasing zoom"
 msgstr "aumentando zoom"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:188
+#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:221
 msgid "changing zoom"
 msgstr "cambiando zoom"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:38
+#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
 msgid "Quarter"
 msgstr "Cuarto"
 
@@ -110,7 +118,7 @@ msgstr "Cuarto"
 msgid "Refresh"
 msgstr "Actualizar"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:404
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:438
 msgid "Show critical path"
 msgstr "Mostrar camino crítico"
 
