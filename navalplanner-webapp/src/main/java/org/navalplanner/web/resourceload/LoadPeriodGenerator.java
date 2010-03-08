@@ -26,20 +26,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -93,12 +91,20 @@ abstract class LoadPeriodGenerator {
     }
 
     public static LoadPeriodGeneratorFactory onCriterion(
-            final Criterion criterion) {
+            final Criterion criterion, final IResourceDAO resourcesDAO) {
         return new LoadPeriodGeneratorFactory() {
 
             @Override
             public LoadPeriodGenerator create(ResourceAllocation<?> allocation) {
-                return new LoadPeriodGeneratorOnCriterion(criterion, allocation);
+                return new LoadPeriodGeneratorOnCriterion(criterion,
+                        allocation, findResources(criterion, resourcesDAO));
+            }
+
+            private List<Resource> findResources(final Criterion criterion,
+                    final IResourceDAO resourcesDAO) {
+                return resourcesDAO
+                        .findSatisfyingCriterionsAtSomePoint(Collections
+                                .singletonList(criterion));
             }
         };
     }
@@ -283,39 +289,33 @@ class LoadPeriodGeneratorOnResource extends LoadPeriodGenerator {
 class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     private final Criterion criterion;
+    private final List<Resource> resourcesSatisfyingCriterionAtSomePoint;
 
     public LoadPeriodGeneratorOnCriterion(Criterion criterion,
-            ResourceAllocation<?> allocation) {
+            ResourceAllocation<?> allocation,
+            List<Resource> resourcesSatisfyingCriterionAtSomePoint) {
         this(criterion, allocation.getStartDate(), allocation.getEndDate(),
-                Arrays.<ResourceAllocation<?>> asList(allocation));
+                Arrays.<ResourceAllocation<?>> asList(allocation),
+                resourcesSatisfyingCriterionAtSomePoint);
     }
 
     public LoadPeriodGeneratorOnCriterion(Criterion criterion,
             LocalDate startDate, LocalDate endDate,
-            List<ResourceAllocation<?>> allocations) {
+            List<ResourceAllocation<?>> allocations,
+            List<Resource> resourcesSatisfyingCriterionAtSomePoint) {
         super(startDate, endDate, allocations);
         this.criterion = criterion;
+        this.resourcesSatisfyingCriterionAtSomePoint = resourcesSatisfyingCriterionAtSomePoint;
     }
 
     @Override
     protected LoadPeriodGenerator create(LocalDate start, LocalDate end,
             List<ResourceAllocation<?>> allocationsOnInterval) {
         LoadPeriodGeneratorOnCriterion result = new LoadPeriodGeneratorOnCriterion(
-                        criterion, start, end, allocationsOnInterval);
+                criterion, start, end, allocationsOnInterval,
+                resourcesSatisfyingCriterionAtSomePoint);
         result.specificByResourceCached = specificByResourceCached;
         return result;
-    }
-
-    private Set<Resource> getResourcesMatchedByCriterionFromAllocations() {
-        Set<Resource> resources = new HashSet<Resource>();
-        for (GenericResourceAllocation each : genericAllocationsOnInterval()) {
-            Set<GenericDayAssignment> genericDayAssignments = each
-                    .getGenericDayAssignments();
-            for (GenericDayAssignment eachAssignment : genericDayAssignments) {
-                resources.add(eachAssignment.getResource());
-            }
-        }
-        return resources;
     }
 
     private List<GenericResourceAllocation> genericAllocationsOnInterval() {
@@ -331,7 +331,7 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     @Override
     protected int getTotalWorkHours() {
         int sum = 0;
-        for (Resource resource : getResourcesMatchedByCriterionFromAllocations()) {
+        for (Resource resource : resourcesSatisfyingCriterionAtSomePoint) {
             sum += resource.getTotalWorkHours(start, end, criterion);
         }
         return sum;
@@ -343,9 +343,8 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     }
 
     private int calculateSumOfSpecific() {
-        Set<Resource> resources = getResourcesMatchedByCriterionFromAllocations();
         List<SpecificDayAssignment> specific = new ArrayList<SpecificDayAssignment>();
-        for (Resource each : resources) {
+        for (Resource each : resourcesSatisfyingCriterionAtSomePoint) {
             specific.addAll(specificAssignmentsAtInterval(each));
         }
         return sum(specific);
