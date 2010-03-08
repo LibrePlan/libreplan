@@ -38,8 +38,9 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Type')}" />
-                            <zscript>Object[] resourceTypes = org.navalplanner.business.resources.entities.ResourceEnum.values();</zscript>
-                            <listbox id="lbResource" mold="select" model="@{resourceTypes}" selectedItem="@{controller.criterionType.resource}"/>
+                            <combobox id="resourceCombobox" autodrop="true"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                onChange="controller.setResource(self.selectedItem)" />
                         </row>
                         <row>
                             <label value="${i18n:_('Multiple values per resource')}"/>

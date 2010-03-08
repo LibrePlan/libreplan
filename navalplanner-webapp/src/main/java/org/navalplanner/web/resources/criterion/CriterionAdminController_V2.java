@@ -31,6 +31,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -39,6 +40,8 @@ import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 
@@ -89,6 +92,7 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
             setupCriterionTreeController(createComponent);
             onlyOneVisible.showOnly(createComponent);
             criterionsModel_V2.prepareForCreate();
+            setResourceComboboxValue((Combobox) createComponent.getFellowIfAny("resourceCombobox"));
             Util.reloadBindings(createComponent);
         }catch(Exception e){}
     }
@@ -98,6 +102,7 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
             setupCriterionTreeController(editComponent);
             onlyOneVisible.showOnly(editComponent);
             criterionsModel_V2.prepareForEdit(criterionType);
+            setResourceComboboxValue((Combobox) editComponent.getFellowIfAny("resourceCombobox"));
             Util.reloadBindings(editComponent);
         }catch(Exception e){}
     }
@@ -287,6 +292,32 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
         onlyOneVisible.showOnly(listing);
         comp.setVariable("controller", this, false);
         messagesForUser = new MessagesForUser(messagesContainer);
+        setupResourceCombobox((Combobox) createComponent.getFellowIfAny("resourceCombobox"));
+        setupResourceCombobox((Combobox) editComponent.getFellowIfAny("resourceCombobox"));
+    }
+
+    private void setupResourceCombobox(Combobox combo) {
+        for(ResourceEnum resource : ResourceEnum.values()) {
+            Comboitem item = combo.appendItem(resource.getDisplayName());
+            item.setValue(resource);
+        }
+    }
+
+    private void setResourceComboboxValue(Combobox combo) {
+        CriterionType criterionType = (CriterionType) getCriterionType();
+        for(Object object : combo.getItems()) {
+            Comboitem item = (Comboitem) object;
+            if(criterionType != null &&
+                    item.getValue().equals(criterionType.getResource())) {
+                combo.setSelectedItem(item);
+            }
+        }
+    }
+
+    public void setResource(Comboitem item) {
+        if (item != null) {
+            ((CriterionType)getCriterionType()).setResource((ResourceEnum) item.getValue());
+        }
     }
 
     private void setupCriterionTreeController(Component comp)throws Exception {
