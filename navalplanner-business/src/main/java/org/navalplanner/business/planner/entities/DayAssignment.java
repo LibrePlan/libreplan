@@ -121,6 +121,27 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
+    public static <T extends DayAssignment> List<T> getOfType(Class<T> klass,
+            Collection<? extends DayAssignment> dayAssignments) {
+        List<T> result = new ArrayList<T>();
+        for (DayAssignment each : dayAssignments) {
+            if (klass.isInstance(each)) {
+                result.add(klass.cast(each));
+            }
+        }
+        return result;
+    }
+
+    public static List<SpecificDayAssignment> specific(
+            Collection<? extends DayAssignment> dayAssignments) {
+        return getOfType(SpecificDayAssignment.class, dayAssignments);
+    }
+
+    public static List<GenericDayAssignment> generic(
+            Collection<? extends DayAssignment> dayAssignments) {
+        return getOfType(GenericDayAssignment.class, dayAssignments);
+    }
+
     @Min(0)
     private int hours;
 
