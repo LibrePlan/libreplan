@@ -349,6 +349,7 @@ public class TaskList extends XulElement implements AfterCompose {
         ArrayList<Task> tasksPendingToAdd = new ArrayList<Task>();
         reload(originalTasks, tasksPendingToAdd, relocate);
         addPendingTasks(tasksPendingToAdd, null, relocate);
+        getGanttPanel().getDependencyList().redrawDependencies();
     }
 
     private void reload(List<Task> tasks, List<Task> tasksPendingToAdd,
