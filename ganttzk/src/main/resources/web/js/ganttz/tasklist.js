@@ -308,30 +308,6 @@ zkTask.getDD = function(cmp) {
 	return cmp.created_dd;
 }
 
-zkTask.relocateAfterAdding = function(cmp) {
-	var row = cmp.parentNode;
-	var taskList = row.parentNode.parentNode;
-	var nextTask = row.parentNode.nextSibling;
-	row.parentNode.removeChild(row);
-	taskList.insertBefore(row, nextTask);
-}
-/*
- * relocateAfterAdding works for all but in the case that the task added would
- * be the first one, so we create another method for that case
- */
-zkTask.relocateFirstAfterAdding = function(cmp) {
-	var row = cmp.parentNode;
-	var taskList = row.parentNode.parentNode;
-	var nextTask = row.parentNode.previousSibling;
-	row.parentNode.removeChild(row);
-	taskList.insertBefore(row, nextTask);
-}
-
-zkTask.cleanup = function(cmp) {
-	var row = cmp.parentNode;
-	row.parentNode.removeChild(row);
-}
-
 zkTask.init = function(cmp) {
     function addDragSupport() {
         // Configure the drag&drop over the component

@@ -42,7 +42,6 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.au.out.AuInvoke;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -118,18 +117,13 @@ public class TaskList extends XulElement implements AfterCompose {
         return asDependencyComponents(Arrays.asList(dependency)).get(0);
     }
 
-    public synchronized void addTaskComponent(Component beforeThis,
+    public synchronized void addTaskComponent(TaskRow beforeThis,
             final TaskComponent taskComponent, boolean relocate) {
-        final boolean isFirst = getFirstTopTaskComponent() == null
-                || getFirstTopTaskComponent().equals(beforeThis);
-        insertBefore(taskComponent, beforeThis);
+        insertBefore(taskComponent.getRow(), beforeThis);
         addContextMenu(taskComponent);
         addListenerForTaskComponentEditForm(taskComponent);
         taskComponent.afterCompose();
         if (relocate) {
-            response(null, new AuInvoke(taskComponent,
-                    isFirst ? "relocateFirstAfterAdding"
-                            : "relocateAfterAdding"));
             setHeight(getHeight());// forcing smart update
             adjustZoomColumnsHeight();
             getGanttPanel().getDependencyList().redrawDependencies();
@@ -139,14 +133,6 @@ public class TaskList extends XulElement implements AfterCompose {
     public synchronized void addTaskComponent(
             final TaskComponent taskComponent, boolean relocate) {
         addTaskComponent(null, taskComponent, relocate);
-    }
-
-    private TaskComponent getFirstTopTaskComponent() {
-        List<TaskComponent> taskComponents = getTopLevelTaskComponents();
-        if (taskComponents.isEmpty()) {
-            return null;
-        }
-        return taskComponents.get(0);
     }
 
     public void addTasks(Position position, Collection<? extends Task> newTasks) {
@@ -160,14 +146,14 @@ public class TaskList extends XulElement implements AfterCompose {
         } else if (position.isAtTop()) {
             final int insertionPosition = position.getInsertionPosition();
             List<TaskComponent> topTaskComponents = getTopLevelTaskComponents();
-            Component beforeThis = insertionPosition < topTaskComponents.size() ? topTaskComponents
-                    .get(insertionPosition)
+            TaskRow beforeThis = insertionPosition < topTaskComponents.size() ? topTaskComponents
+                    .get(insertionPosition).getRow()
                     : null;
             for (Task t : newTasks) {
                 TaskComponent toAdd = TaskComponent.asTaskComponent(t, this);
                 addTaskComponent(beforeThis, toAdd, true);
                 toAdd.publishTaskComponents(taskComponentByTask);
-                beforeThis = toAdd.getNextSibling();
+                beforeThis = (TaskRow) toAdd.getRow().getNextSibling();
             }
         } else {
             Task mostRemoteAncestor = position.getMostRemoteAncestor();
@@ -250,8 +236,9 @@ public class TaskList extends XulElement implements AfterCompose {
     private List<TaskComponent> getTaskComponents() {
         ArrayList<TaskComponent> result = new ArrayList<TaskComponent>();
         for (Object child : getChildren()) {
-            if (child instanceof TaskComponent) {
-                result.add((TaskComponent) child);
+            if (child instanceof TaskRow) {
+                TaskRow row = (TaskRow) child;
+                result.add(row.getChild());
             }
         }
         return result;
@@ -333,8 +320,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void hideTaskComponent(TaskComponent subtaskComponent) {
-        removeChild(subtaskComponent);
-        subtaskComponent.setParent(null);
+        removeChild(subtaskComponent.getRow());
     }
 
     public void redrawDependencies() {
@@ -369,7 +355,8 @@ public class TaskList extends XulElement implements AfterCompose {
             boolean relocate) {
         for (Task task : tasks) {
             if (visibleTasks.contains(task)) {
-                addPendingTasks(tasksPendingToAdd, find(task), relocate);
+                addPendingTasks(tasksPendingToAdd, rowFor(task),
+                        relocate);
             }
 
             if (predicate.accepts(task)) {
@@ -392,8 +379,13 @@ public class TaskList extends XulElement implements AfterCompose {
         }
     }
 
+    private TaskRow rowFor(Task task) {
+        TaskComponent taskComponent = find(task);
+        return taskComponent == null ? null : taskComponent.getRow();
+    }
+
     private void addPendingTasks(List<Task> tasksPendingToAdd,
-            TaskComponent insertBefore, boolean relocate) {
+            TaskRow insertBefore, boolean relocate) {
         if (tasksPendingToAdd.isEmpty()) {
             return;
         }

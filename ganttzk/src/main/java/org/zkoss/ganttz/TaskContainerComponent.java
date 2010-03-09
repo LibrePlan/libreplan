@@ -31,7 +31,6 @@ import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskContainer.IExpandListener;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ext.AfterCompose;
 
 /**
@@ -111,16 +110,16 @@ public class TaskContainerComponent extends TaskComponent implements
         if (isExpanded()) {
             TaskComponent previous = insertionPosition == 0 ? this
                     : subtaskComponents.get(insertionPosition - 1);
-            addAllAt(previous, taskComponents, true);
+            addAllAt(previous.getRow(), taskComponents, true);
         }
     }
 
-    private void addAllAt(Component previous, List<TaskComponent> toAdd,
+    private void addAllAt(TaskRow previous, List<TaskComponent> toAdd,
             boolean recolate) {
         for (TaskComponent subtaskComponent : toAdd) {
-            taskList.addTaskComponent(previous.getNextSibling(),
+            taskList.addTaskComponent((TaskRow) previous.getNextSibling(),
                     subtaskComponent, recolate);
-            previous = subtaskComponent;
+            previous = subtaskComponent.getRow();
         }
     }
 

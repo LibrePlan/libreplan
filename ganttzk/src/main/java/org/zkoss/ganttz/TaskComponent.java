@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
@@ -168,7 +169,7 @@ public class TaskComponent extends Div implements AfterCompose {
                     .getDisabilityConfiguration());
         }
         result.isTopLevel = isTopLevel;
-        return result;
+        return TaskRow.wrapInRow(result);
     }
 
     public static TaskComponent asTaskComponent(Task task, TaskList taskList) {
@@ -304,6 +305,15 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private IConstraintViolationListener<Date> taskViolationListener;
 
+    public TaskRow getRow() {
+        if (getParent() == null) {
+            throw new IllegalStateException(
+                    "the TaskComponent should have been wraped by a "
+                            + TaskRow.class.getName());
+        }
+        return (TaskRow) getParent();
+    }
+
     public Task getTask() {
         return task;
     }
@@ -401,14 +411,12 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public TaskList getTaskList() {
-        return (TaskList) getParent();
+        return getRow().getTaskList();
     }
 
     @Override
     public void setParent(Component parent) {
-        if (parent != null && !(parent instanceof TaskList)) {
-            throw new UiException("Unsupported parent for rows: " + parent);
-        }
+        Validate.isTrue(parent == null || parent instanceof TaskRow);
         super.setParent(parent);
     }
 
@@ -503,7 +511,7 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     protected void remove() {
-        this.detach();
+        this.getRow().detach();
         task.removeReloadListener(reloadResourcesTextRequested);
     }
 
