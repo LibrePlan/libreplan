@@ -533,11 +533,5 @@ public class Planner extends HtmlMacroComponent  {
         leftPane.setPredicate(predicate);
         getTaskList().setPredicate(predicate);
         getDependencyList().redrawDependencies();
-
-        // TODO Call invalidate() should not be needed in the future if we
-        // change Task and TaskContainer DSPs in order to use the UUID component
-        // in a div tag that wraps the component
-        ganttPanel.invalidate();
     }
-
 }
