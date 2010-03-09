@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
@@ -72,7 +74,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private FilterAndParentExpandedPredicates predicate;
 
-    private List<Task> visibleTasks = new ArrayList<Task>();
+    private Set<Task> visibleTasks = new HashSet<Task>();
 
     private Map<Task, TaskComponent> taskComponentByTask;
 
