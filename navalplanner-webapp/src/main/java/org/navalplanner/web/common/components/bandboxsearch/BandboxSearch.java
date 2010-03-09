@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.ListModel;
@@ -103,22 +104,60 @@ public class BandboxSearch extends HtmlMacroComponent {
             }
         });
 
-        /**
-         * Pick element from list when selecting
-         */
-        listbox.addEventListener("onSelect", new EventListener() {
+        bandbox.setCtrlKeys("#down");
+        bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                final Object object = getSelectedItem().getValue();
-                bandbox.setValue(finder.objectToString(object));
-                setSelectedElement(object);
+                int selectedItemIndex = listbox.getSelectedIndex();
+                if (selectedItemIndex != -1) {
+                    listbox.getItemAtIndexApi(selectedItemIndex).setFocus(true);
+                } else {
+                    List<Listitem> items = listbox.getItems();
+                    if (!items.isEmpty()) {
+                        listbox.setSelectedIndex(0);
+                        pickElementFromList();
+                        items.get(0).setFocus(true);
+                    }
+                }
+            }
+        });
+
+        /**
+         * Pick element from list when selecting
+         */
+        listbox.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                pickElementFromList();
+            }
+        });
+
+        // Close bandbox for events onClick and onOK
+        listbox.addEventListener(Events.ON_CLICK, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                bandbox.close();
+            }
+        });
+        listbox.addEventListener(Events.ON_OK, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
                 bandbox.close();
             }
         });
 
         addHeaders();
         updateWidth();
+    }
+
+    public void pickElementFromList() {
+        final Object object = getSelectedItem().getValue();
+        bandbox.setValue(finder.objectToString(object));
+        setSelectedElement(object);
     }
 
     private void clearSelectedElement() {

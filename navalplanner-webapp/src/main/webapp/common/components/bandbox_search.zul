@@ -18,15 +18,35 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<zk>
+<zk id="bandboxsearch" xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+    <zscript>
+        <![CDATA[
+            top = self;
+        ]]>
+    </zscript>
+
+    <n:script language="javascript">
+
+    function closeBandbox(listbox) {
+        zkau.send({
+           uuid : listbox.id,
+           cmd : "onClick"
+       });
+    }
+
+    </n:script>
+
     <bandbox id="bandbox" autodrop="true">
         <bandpopup>
             <vbox height="50px">
                <listbox id="listbox" width="200px" height="100px"
-                      vflex="true" model="${arg.model}">
+                      vflex="true" model="${arg.model}"
+                      action="onClick: closeBandbox(#{listbox})">
                <listhead id="listhead" />
                </listbox>
             </vbox>
             </bandpopup>
     </bandbox>
+
 </zk>
