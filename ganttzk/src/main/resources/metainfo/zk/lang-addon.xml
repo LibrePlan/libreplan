@@ -80,6 +80,15 @@
 	</component>
 
 	<component>
+        <component-name>taskRow</component-name>
+        <component-class>org.zkoss.ganttz.TaskRow</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/row.dsp</mold-uri>
+        </mold>
+    </component>
+
+	<component>
 		<component-name>task</component-name>
 		<component-class>org.zkoss.ganttz.TaskComponent</component-class>
 		<mold>
