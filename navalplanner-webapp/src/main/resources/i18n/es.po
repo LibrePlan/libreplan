@@ -2687,7 +2687,7 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:127
 #: navalplanner-webapp/src/main/webapp/users/_editUser.zul:137
 #: navalplanner-webapp/src/main/webapp/users/_editProfile.zul:82
-msgid "Save &amp; Continue"
+msgid "Save & Continue"
 msgstr "Guardar y continuar"
 
 #: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:109
