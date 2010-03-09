@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Dependency;
@@ -35,6 +36,7 @@ import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.data.TaskContainer.IExpandListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -131,7 +133,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void addTasks(Position position, Collection<? extends Task> newTasks) {
-        publishAsComponents(newTasks);
+        createAndPublishComponentsIfNeeded(newTasks);
         if (position.isAppendToTop()) {
             currentTotalTasks.addAll(newTasks);
         } else if (position.isAtTop()) {
@@ -222,15 +224,42 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private void publishOriginalTasksAsComponents() {
         taskComponentByTask = new HashMap<Task, TaskComponent>();
-        publishAsComponents(currentTotalTasks);
+        createAndPublishComponentsIfNeeded(currentTotalTasks);
     }
 
-    private void publishAsComponents(Collection<? extends Task> newTasks) {
+    private List<TaskComponent> createAndPublishComponentsIfNeeded(
+            Collection<? extends Task> newTasks) {
+        List<TaskComponent> result = new ArrayList<TaskComponent>();
         for (Task task : newTasks) {
-            TaskComponent taskComponent = TaskComponent.asTaskComponent(task,
-                    this);
-            taskComponent.publishTaskComponents(taskComponentByTask);
+            TaskComponent taskComponent = taskComponentByTask.get(task);
+            if (taskComponent == null) {
+                taskComponent = TaskComponent.asTaskComponent(
+                        task, this);
+                taskComponent.publishTaskComponents(taskComponentByTask);
+            }
+            if (task.isContainer()) {
+                addExpandListenerTo((TaskContainer) task);
+            }
+            result.add(taskComponent);
         }
+        return result;
+    }
+
+    private Map<TaskContainer, IExpandListener> autoRemovedListers = new WeakHashMap<TaskContainer, IExpandListener>();
+
+    private void addExpandListenerTo(TaskContainer container) {
+        if (autoRemovedListers.containsKey(container)) {
+            return;
+        }
+        IExpandListener expandListener = new IExpandListener() {
+
+            @Override
+            public void expandStateChanged(boolean isNowExpanded) {
+                reload(true);
+            }
+        };
+        container.addExpandListener(expandListener);
+        autoRemovedListers.put(container, expandListener);
     }
 
     private void registerZoomLevelChangedListener() {
@@ -314,7 +343,7 @@ public class TaskList extends XulElement implements AfterCompose {
         return disabilityConfiguration;
     }
 
-    public void reload(boolean relocate) {
+    private void reload(boolean relocate) {
         ArrayList<Task> tasksPendingToAdd = new ArrayList<Task>();
         reload(currentTotalTasks, tasksPendingToAdd, relocate);
         addPendingTasks(tasksPendingToAdd, null, relocate);
@@ -359,16 +388,10 @@ public class TaskList extends XulElement implements AfterCompose {
         if (tasksPendingToAdd.isEmpty()) {
             return;
         }
-
-        for (Task taskToAdd : tasksPendingToAdd) {
-            TaskComponent taskComponent = taskComponentByTask.get(taskToAdd);
-            if (taskComponent == null) {
-                taskComponent = TaskComponent.asTaskComponent(taskToAdd, this);
-                taskComponent.publishTaskComponents(taskComponentByTask);
-            }
-            addTaskComponent(insertBefore, taskComponent, relocate);
-            visibleTasks.add(taskToAdd);
-            taskToAdd.setVisible(true);
+        for (TaskComponent each : createAndPublishComponentsIfNeeded(tasksPendingToAdd)) {
+            addTaskComponent(insertBefore, each, relocate);
+            visibleTasks.add(each.getTask());
+            each.getTask().setVisible(true);
         }
         tasksPendingToAdd.clear();
     }

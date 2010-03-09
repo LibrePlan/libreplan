@@ -60,7 +60,6 @@ public class TaskContainerComponent extends TaskComponent implements
 
             @Override
             public void expandStateChanged(boolean isNowExpanded) {
-                taskList.reload(true);
                 updateClass();
             }
         };
