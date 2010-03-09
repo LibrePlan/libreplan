@@ -302,7 +302,7 @@ zkTask.getDD = function(cmp) {
 
 		// Create the laned drag&drop component
 		cmp.created_dd = new YAHOO.example.DDRegion(cmp.id, '', {
-			cont : 'row' + cmp.id
+			cont : cmp.parentNode.id
 		});
 	}
 	return cmp.created_dd;
