@@ -25,12 +25,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
@@ -232,6 +235,85 @@ public class WorkReport extends IntegrationEntity {
             return (getOrderElement() != null);
         }
         return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "label type:the work report have not assigned this label type")
+    public boolean checkConstraintAssignedLabelTypes() {
+        if (this.workReportType == null) {
+            return true;
+        }
+
+        if (this.workReportType.getHeadingLabels().size() != this.labels.size()) {
+            return false;
+        }
+
+        for (WorkReportLabelTypeAssigment typeAssigment : this.workReportType
+                .getHeadingLabels()) {
+            try {
+                getLabelByType(typeAssigment.getLabelType());
+            } catch (InstanceNotFoundException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "description value:the work report have not assigned the description field")
+    public boolean checkConstraintAssignedDescriptionValues() {
+        if (this.workReportType == null) {
+            return true;
+        }
+
+        if (this.workReportType.getHeadingFields().size() != this.descriptionValues
+                .size()) {
+            return false;
+        }
+
+        for(DescriptionField field : this.workReportType.getHeadingFields()){
+            try{
+                getDescriptionValueByFieldName(field.getFieldName());
+            }
+            catch(InstanceNotFoundException e){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public DescriptionValue getDescriptionValueByFieldName(String fieldName)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(fieldName)) {
+            throw new InstanceNotFoundException(fieldName,
+                    DescriptionValue.class.getName());
+        }
+
+        for (DescriptionValue v : this.descriptionValues) {
+            if (v.getFieldName().equalsIgnoreCase(StringUtils.trim(fieldName))) {
+                return v;
+            }
+        }
+
+        throw new InstanceNotFoundException(fieldName, DescriptionValue.class
+                .getName());
+    }
+
+    public Label getLabelByType(LabelType type)
+            throws InstanceNotFoundException {
+
+        if (type == null) {
+            throw new InstanceNotFoundException(type, LabelType.class.getName());
+        }
+
+        for (Label l : this.labels) {
+            if (l.getType().getId().equals(type.getId())) {
+                return l;
+            }
+        }
+
+        throw new InstanceNotFoundException(type, LabelType.class.getName());
     }
 
     private void updateItsFieldsAndLabels(WorkReportType workReportType) {
