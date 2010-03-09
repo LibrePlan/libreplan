@@ -250,13 +250,21 @@ public class TaskList extends XulElement implements AfterCompose {
 
     @Override
     public void afterCompose() {
+        publishOriginalTasksAsComponents();
+        registerZoomLevelChangedListener();
+        reload(false);
+    }
+
+    private void publishOriginalTasksAsComponents() {
         taskComponentByTask = new HashMap<Task, TaskComponent>();
         for (Task task : originalTasks) {
             TaskComponent taskComponent = TaskComponent.asTaskComponent(task,
                     this);
             taskComponent.publishTaskComponents(taskComponentByTask);
         }
+    }
 
+    private void registerZoomLevelChangedListener() {
         if (zoomLevelChangedListener == null) {
             zoomLevelChangedListener = new IZoomLevelChangedListener() {
                 @Override
@@ -269,7 +277,6 @@ public class TaskList extends XulElement implements AfterCompose {
             };
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
         }
-        reload(false);
     }
 
     private Map<TaskComponent, Menupopup> contextMenus = new HashMap<TaskComponent, Menupopup>();
