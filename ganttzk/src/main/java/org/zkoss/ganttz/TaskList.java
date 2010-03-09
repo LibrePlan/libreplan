@@ -58,7 +58,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private transient IZoomLevelChangedListener zoomLevelChangedListener;
 
-    private List<Task> originalTasks;
+    private List<Task> currentTotalTasks;
 
     private final CommandOnTaskContextualized<?> doubleClickCommand;
 
@@ -83,7 +83,7 @@ public class TaskList extends XulElement implements AfterCompose {
             FilterAndParentExpandedPredicates predicate) {
         this.context = context;
         this.doubleClickCommand = doubleClickCommand;
-        this.originalTasks = tasks;
+        this.currentTotalTasks = tasks;
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
         this.disabilityConfiguration = disabilityConfiguration;
         this.predicate = predicate;
@@ -257,7 +257,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private void publishOriginalTasksAsComponents() {
         taskComponentByTask = new HashMap<Task, TaskComponent>();
-        for (Task task : originalTasks) {
+        for (Task task : currentTotalTasks) {
             TaskComponent taskComponent = TaskComponent.asTaskComponent(task,
                     this);
             taskComponent.publishTaskComponents(taskComponentByTask);
@@ -327,7 +327,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void remove(Task task) {
-        originalTasks.remove(task);
+        currentTotalTasks.remove(task);
         for (TaskComponent taskComponent : getTaskComponents()) {
             if (taskComponent.getTask().equals(task)) {
                 taskComponent.remove();
@@ -347,7 +347,7 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public void reload(boolean relocate) {
         ArrayList<Task> tasksPendingToAdd = new ArrayList<Task>();
-        reload(originalTasks, tasksPendingToAdd, relocate);
+        reload(currentTotalTasks, tasksPendingToAdd, relocate);
         addPendingTasks(tasksPendingToAdd, null, relocate);
         getGanttPanel().getDependencyList().redrawDependencies();
     }
