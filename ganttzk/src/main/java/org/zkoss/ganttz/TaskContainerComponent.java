@@ -21,13 +21,10 @@
 package org.zkoss.ganttz;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.apache.commons.lang.Validate;
-import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskContainer.IExpandListener;
@@ -94,35 +91,6 @@ public class TaskContainerComponent extends TaskComponent implements
         super.remove();
     }
 
-    private void add(Integer insertionPosition,
-            Collection<? extends Task> newTasks) {
-        List<TaskComponent> taskComponents = new ArrayList<TaskComponent>();
-        for (Task task : newTasks) {
-            taskComponents.add(createChild(task));
-        }
-
-        if (insertionPosition == null) {
-            subtaskComponents.addAll(taskComponents);
-        } else {
-            subtaskComponents.addAll(insertionPosition, taskComponents);
-        }
-
-        if (isExpanded()) {
-            TaskComponent previous = insertionPosition == 0 ? this
-                    : subtaskComponents.get(insertionPosition - 1);
-            addAllAt(previous.getRow(), taskComponents, true);
-        }
-    }
-
-    private void addAllAt(TaskRow previous, List<TaskComponent> toAdd,
-            boolean recolate) {
-        for (TaskComponent subtaskComponent : toAdd) {
-            taskList.addTaskComponent((TaskRow) previous.getNextSibling(),
-                    subtaskComponent, recolate);
-            previous = subtaskComponent.getRow();
-        }
-    }
-
     private List<TaskComponent> getCurrentComponents() {
         ListIterator<TaskComponent> listIterator = subtaskComponents
                 .listIterator();
@@ -134,17 +102,6 @@ public class TaskContainerComponent extends TaskComponent implements
             }
         }
         return subtaskComponents;
-    }
-
-    private static int find(List<TaskComponent> currentComponents, Task task) {
-        int i = 0;
-        for (TaskComponent t : currentComponents) {
-            if (t.getTask().equals(task)) {
-                return i;
-            }
-            i++;
-        }
-        return -1;
     }
 
     public boolean isExpanded() {
@@ -160,26 +117,4 @@ public class TaskContainerComponent extends TaskComponent implements
         return super.calculateClass() + " "
                 + (getTaskContainer().isExpanded() ? "expanded" : "closed");
     }
-
-    public void insert(Position position, Collection<? extends Task> newTasks) {
-        if (position.getParent().equals(getTask())) {
-            add(position.getInsertionPosition(), newTasks);
-        } else {
-            Task mostRemoteAncestor = position.getMostRemoteAncestor();
-            Validate.isTrue(mostRemoteAncestor.equals(getTask()));
-            position = position.pop();
-            Task next = position.getMostRemoteAncestor();
-            List<TaskComponent> currentComponents = getCurrentComponents();
-            int find = find(currentComponents, next);
-            TaskComponent taskComponent = currentComponents.get(find);
-            if (taskComponent instanceof TaskContainerComponent) {
-                TaskContainerComponent container = (TaskContainerComponent) taskComponent;
-                container.insert(position, newTasks);
-            } else {
-                // TODO turn TaskComponent into container
-            }
-        }
-
-    }
-
 }

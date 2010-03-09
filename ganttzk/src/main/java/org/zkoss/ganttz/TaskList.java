@@ -117,7 +117,7 @@ public class TaskList extends XulElement implements AfterCompose {
         return asDependencyComponents(Arrays.asList(dependency)).get(0);
     }
 
-    public synchronized void addTaskComponent(TaskRow beforeThis,
+    private synchronized void addTaskComponent(TaskRow beforeThis,
             final TaskComponent taskComponent, boolean relocate) {
         insertBefore(taskComponent.getRow(), beforeThis);
         addContextMenu(taskComponent);
@@ -130,42 +130,17 @@ public class TaskList extends XulElement implements AfterCompose {
         }
     }
 
-    public synchronized void addTaskComponent(
-            final TaskComponent taskComponent, boolean relocate) {
-        addTaskComponent(null, taskComponent, relocate);
-    }
-
     public void addTasks(Position position, Collection<? extends Task> newTasks) {
+        publishAsComponents(newTasks);
         if (position.isAppendToTop()) {
-            for (Task t : newTasks) {
-                TaskComponent taskComponent = TaskComponent.asTaskComponent(t,
-                        this);
-                addTaskComponent(taskComponent, true);
-                taskComponent.publishTaskComponents(taskComponentByTask);
-            }
+            currentTotalTasks.addAll(newTasks);
         } else if (position.isAtTop()) {
             final int insertionPosition = position.getInsertionPosition();
-            List<TaskComponent> topTaskComponents = getTopLevelTaskComponents();
-            TaskRow beforeThis = insertionPosition < topTaskComponents.size() ? topTaskComponents
-                    .get(insertionPosition).getRow()
-                    : null;
-            for (Task t : newTasks) {
-                TaskComponent toAdd = TaskComponent.asTaskComponent(t, this);
-                addTaskComponent(beforeThis, toAdd, true);
-                toAdd.publishTaskComponents(taskComponentByTask);
-                beforeThis = (TaskRow) toAdd.getRow().getNextSibling();
-            }
-        } else {
-            Task mostRemoteAncestor = position.getMostRemoteAncestor();
-            TaskComponent taskComponent = find(mostRemoteAncestor);
-            if (taskComponent instanceof TaskContainerComponent) {
-                TaskContainerComponent container = (TaskContainerComponent) taskComponent;
-                container.insert(position, newTasks);
-            } else {
-                // TODO turn taskComponent into container
-            }
-
+            currentTotalTasks.addAll(insertionPosition, newTasks);
         }
+        // if the position is children of some already existent task when
+        // reloading it will be added if the predicate tells so
+        reload(true);
     }
 
     TaskComponent find(Task task) {
@@ -223,16 +198,6 @@ public class TaskList extends XulElement implements AfterCompose {
         return getTimeTrackerComponent().getTimeTracker();
     }
 
-    private List<TaskComponent> getTopLevelTaskComponents() {
-        List<TaskComponent> result = new ArrayList<TaskComponent>();
-        for (TaskComponent taskComponent : getTaskComponents()) {
-            if (taskComponent.isTopLevel()) {
-                result.add(taskComponent);
-            }
-        }
-        return result;
-    }
-
     private List<TaskComponent> getTaskComponents() {
         ArrayList<TaskComponent> result = new ArrayList<TaskComponent>();
         for (Object child : getChildren()) {
@@ -257,7 +222,11 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private void publishOriginalTasksAsComponents() {
         taskComponentByTask = new HashMap<Task, TaskComponent>();
-        for (Task task : currentTotalTasks) {
+        publishAsComponents(currentTotalTasks);
+    }
+
+    private void publishAsComponents(Collection<? extends Task> newTasks) {
+        for (Task task : newTasks) {
             TaskComponent taskComponent = TaskComponent.asTaskComponent(task,
                     this);
             taskComponent.publishTaskComponents(taskComponentByTask);
