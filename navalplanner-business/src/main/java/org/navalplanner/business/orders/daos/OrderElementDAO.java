@@ -364,6 +364,9 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     private boolean isAlreadyInUse(OrderElement orderElement) {
+        if (orderElement.isNewObject()) {
+            return false;
+        }
         boolean usedInWorkReports = !getSession().createCriteria(
                 WorkReport.class).add(
                 Restrictions.eq("orderElement", orderElement)).list().isEmpty();
