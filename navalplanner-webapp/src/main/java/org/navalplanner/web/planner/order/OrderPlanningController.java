@@ -217,7 +217,8 @@ public class OrderPlanningController implements Composer {
                                 TaskElement taskElement = (TaskElement) context
                                         .getMapper()
                                         .findAssociatedDomainObject(task);
-                                return predicate.accepts(taskElement
+                                return taskElement.isMilestone()
+                                        || predicate.accepts(taskElement
                                         .getOrderElement());
                             }
 
