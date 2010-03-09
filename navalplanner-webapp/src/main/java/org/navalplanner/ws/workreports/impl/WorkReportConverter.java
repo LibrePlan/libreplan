@@ -20,32 +20,43 @@
 
 package org.navalplanner.ws.workreports.impl;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
+import org.navalplanner.ws.common.api.LabelReferenceDTO;
 import org.navalplanner.ws.common.impl.LabelReferenceConverter;
 import org.navalplanner.ws.workreports.api.DescriptionValueDTO;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
 import org.navalplanner.ws.workreports.api.WorkReportLineDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Converter from/to work report related entities to/from DTOs.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public final class WorkReportConverter {
 
     public static WorkReport toEntity(WorkReportDTO workReportDTO)
             throws InstanceNotFoundException {
+
         WorkReport workReport = WorkReport.create();
 
         // Mandatory fields
@@ -66,19 +77,28 @@ public final class WorkReportConverter {
         }
 
         if (workReportDTO.orderElement != null) {
-            OrderElement orderElement = Registry.getOrderElementDAO()
+            try {
+                OrderElement orderElement = Registry.getOrderElementDAO()
                     .findUniqueByCode(workReportDTO.orderElement);
-            workReport.setOrderElement(orderElement);
+                workReport.setOrderElement(orderElement);
+            } catch (InstanceNotFoundException e) {
+                workReport.setOrderElement(null);
+            }
         }
 
         if (workReportDTO.resource != null) {
-            Worker worker = Registry.getWorkerDAO().findUniqueByNif(
-                    workReportDTO.resource);
-            workReport.setResource(worker);
+            try {
+                Worker worker = Registry.getWorkerDAO().findUniqueByNif(
+                        workReportDTO.resource);
+                workReport.setResource(worker);
+            } catch (InstanceNotFoundException e) {
+                workReport.setResource(null);
+            }
         }
 
         if (workReportDTO.labels != null) {
-            workReport.setLabels(LabelReferenceConverter.toEntity(workReportDTO.labels));
+                workReport.setLabels(LabelReferenceConverter
+                        .toEntity(workReportDTO.labels));
         }
 
         if (workReportDTO.descriptionValues != null) {
@@ -92,14 +112,24 @@ public final class WorkReportConverter {
     private static WorkReportLine toEntity(WorkReportLineDTO workReportLineDTO,
             WorkReport workReport)
             throws InstanceNotFoundException {
+
         WorkReportLine workReportLine = WorkReportLine.create(workReport);
 
         // Mandatory fields
+        workReportLine.setCode(workReportLineDTO.code);
         workReportLine.setNumHours(workReportLineDTO.numHours);
 
-        TypeOfWorkHours typeOfWorkHours = Registry.getTypeOfWorkHoursDAO()
-                .findUniqueByCode(workReportLineDTO.typeOfWorkHours);
-        workReportLine.setTypeOfWorkHours(typeOfWorkHours);
+        if (workReportLineDTO.typeOfWorkHours != null) {
+            try {
+                TypeOfWorkHours typeOfWorkHours = Registry
+                        .getTypeOfWorkHoursDAO().findUniqueByCode(
+                                workReportLineDTO.typeOfWorkHours);
+                workReportLine.setTypeOfWorkHours(typeOfWorkHours);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("There is no type of work hours with this code"));
+            }
+        }
 
         // Optional fields
         if (workReportLineDTO.date != null) {
@@ -107,15 +137,23 @@ public final class WorkReportConverter {
         }
 
         if (workReportLineDTO.orderElement != null) {
-            OrderElement orderElement = Registry.getOrderElementDAO()
+            try {
+                OrderElement orderElement = Registry.getOrderElementDAO()
                     .findUniqueByCode(workReportLineDTO.orderElement);
-            workReportLine.setOrderElement(orderElement);
+                workReportLine.setOrderElement(orderElement);
+            } catch (InstanceNotFoundException e) {
+                workReportLine.setOrderElement(null);
+            }
         }
 
         if (workReportLineDTO.resource != null) {
+            try {
             Worker worker = Registry.getWorkerDAO().findUniqueByNif(
                     workReportLineDTO.resource);
             workReportLine.setResource(worker);
+            } catch (InstanceNotFoundException e) {
+                workReportLine.setResource(null);
+            }
         }
 
         if (workReportLineDTO.clockStart != null) {
@@ -138,6 +176,7 @@ public final class WorkReportConverter {
         return workReportLine;
     }
 
+
     private static Set<DescriptionValue> toEntity(
             Set<DescriptionValueDTO> descriptionValues) {
         Set<DescriptionValue> result = new HashSet<DescriptionValue>();
@@ -151,6 +190,384 @@ public final class WorkReportConverter {
             DescriptionValueDTO descriptionValueDTO) {
         return DescriptionValue.create(descriptionValueDTO.fieldName,
                 descriptionValueDTO.value);
+    }
+
+    public final static WorkReportDTO toDTO(WorkReport workReport) {
+
+        String code = workReport.getCode();
+
+        String workReportTypeCode = null;
+        if (workReport.getWorkReportType() != null) {
+            workReportTypeCode = workReport.getWorkReportType()
+                    .getCode();
+        } else {
+            throw new ValidationException(
+                    _("missing work report code in a work report"));
+        }
+
+        // Optional fields
+        Date date = null;
+        if (workReport.getDate() != null) {
+            date = workReport.getDate();
+        }
+
+        String orderElementCode = null;
+        if (workReport.getOrderElement() != null) {
+            orderElementCode = workReport.getOrderElement().getCode();
+        }
+
+        String resourceNif = null;
+        if ((workReport.getResource() != null)) {
+            try {
+                Worker worker = Registry.getWorkerDAO().findByCode(
+                        workReport.getResource().getCode());
+                resourceNif = worker.getNif();
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("missing worker code in the work report"));
+            }
+        }
+
+        Set<LabelReferenceDTO> labelDTOs = LabelReferenceConverter
+                .toDTO(workReport.getLabels());
+        if (labelDTOs.isEmpty()) {
+            labelDTOs = null;
+        }
+
+        Set<DescriptionValueDTO> descriptionValuesDTOs = toDTO(workReport
+                .getDescriptionValues());
+        if (descriptionValuesDTOs.isEmpty()) {
+            descriptionValuesDTOs = null;
+        }
+
+        Set<WorkReportLineDTO> workReportLineDTOs = new HashSet<WorkReportLineDTO>();
+
+        for (WorkReportLine line : workReport.getWorkReportLines()) {
+            workReportLineDTOs.add(toDTO(line));
+        }
+        if (workReportLineDTOs.isEmpty()) {
+            workReportLineDTOs = null;
+        }
+
+        return new WorkReportDTO(code, workReportTypeCode, date, resourceNif,
+                orderElementCode, labelDTOs, descriptionValuesDTOs,
+                workReportLineDTOs);
+
+    }
+
+    public final static WorkReportLineDTO toDTO(WorkReportLine line){
+        String code = line.getCode();
+        Date date = line.getDate();
+
+        String resource = null;
+        if((line.getResource() != null) && (line.getResource() instanceof Worker)){
+            resource = ((Worker)line.getResource()).getNif();
+        }
+
+        String orderElement = null;
+        if(line.getOrderElement() != null){
+            orderElement = line.getOrderElement().getCode();
+        }
+
+        String typeOfWorkHours = null;
+        if(line.getTypeOfWorkHours() != null){
+            typeOfWorkHours = line.getTypeOfWorkHours().getCode();
+        }
+
+        Date clockStart = null;
+        if(line.getClockStart() != null){
+            clockStart = line.getClockStart().toDateTimeToday().toDate();
+        }
+
+        Date clockFinish = null;
+        if(line.getClockFinish() != null){
+            clockFinish = line.getClockFinish().toDateTimeToday().toDate();
+        }
+
+        Integer numHours = null;
+        if(line.getNumHours() != null){
+            numHours = line.getNumHours();
+        }
+
+        Set<LabelReferenceDTO> labelDTOs = LabelReferenceConverter.toDTO(line
+                .getLabels());
+        if(labelDTOs.isEmpty()){
+            labelDTOs = null;
+        }
+
+        Set<DescriptionValueDTO> descriptionValuesDTOs = toDTO(line
+                .getDescriptionValues());
+        if (descriptionValuesDTOs.isEmpty()) {
+            descriptionValuesDTOs = null;
+        }
+
+        WorkReportLineDTO workReportLineDTO = new WorkReportLineDTO(code, date,
+                resource, orderElement, typeOfWorkHours, clockStart,
+                clockFinish, numHours, labelDTOs, descriptionValuesDTOs);
+
+        return workReportLineDTO;
+    }
+
+    private static Set<DescriptionValueDTO> toDTO(
+            Set<DescriptionValue> descriptionValues) {
+        Set<DescriptionValueDTO> result = new HashSet<DescriptionValueDTO>();
+        for (DescriptionValue descriptionValue : descriptionValues) {
+            result.add(toDTO(descriptionValue));
+        }
+        return result;
+    }
+
+    private static DescriptionValueDTO toDTO(DescriptionValue descriptionValue) {
+        return new DescriptionValueDTO(descriptionValue.getFieldName(),
+                descriptionValue.getValue());
+    }
+
+
+    public final static void updateWorkReport(WorkReport workReport,
+            WorkReportDTO workReportDTO) throws ValidationException {
+
+        WorkReportType type = workReport.getWorkReportType();
+        /*
+         * 1: Update the existing work report line or add new
+         * work report line.
+         */
+        for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
+
+            System.out.println(" line:: " + lineDTO.code);
+            /* Step 1.1: requires each work report line DTO to have a code. */
+            if (StringUtils.isBlank(lineDTO.code)) {
+                throw new ValidationException(
+                        _("missing code in a work report line"));
+            }
+
+            try {
+                WorkReportLine line = workReport
+                        .getWorkReportLineByCode(lineDTO.code);
+                updateWorkReportLine(line, lineDTO);
+            } catch (InstanceNotFoundException e) {
+                try {
+                    workReport.addWorkReportLine(toEntity(lineDTO, workReport));
+                } catch (InstanceNotFoundException o) {
+                    throw new ValidationException(
+                            _("missing type of work hours in a work report line"));
+                }
+            }
+        }
+
+        /*
+         * 2: Update the existing labels
+         */
+        for (LabelReferenceDTO labelDTO : workReportDTO.labels) {
+
+            /* Step 2.1: requires each label reference DTO to have a code. */
+            if (StringUtils.isBlank(labelDTO.code)) {
+                throw new ValidationException(
+                        _("missing code in a label"));
+            }
+
+            try {
+                Set<Label> labels = workReport.getLabels();
+                updateLabel(labelDTO, labels);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("work report have not this label type assigned"));
+            }
+        }
+
+        /*
+         * 3: Update the existing description values
+         */
+        for (DescriptionValueDTO valueDTO : workReportDTO.descriptionValues) {
+
+            /* Step 3.1: requires each description value DTO to have a code. */
+            if (StringUtils.isBlank(valueDTO.fieldName)) {
+                throw new ValidationException(
+                        _("missing field name in a description value"));
+            }
+
+            try {
+                DescriptionValue value = workReport
+                        .getDescriptionValueByFieldName(valueDTO.fieldName);
+                value.setValue(StringUtils.trim(valueDTO.value));
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("work report have not any description value with this field name"));
+            }
+        }
+
+        /*
+         * 4: Update basic properties in existing work report
+         */
+
+        /* Step 4.1: Update the date. */
+        Date date = workReportDTO.date;
+        workReport.setDate(date);
+
+        /* Step 4.2: Update the resource. */
+        String resourceNif = workReportDTO.resource;
+        if ((resourceNif != null) && (!resourceNif.isEmpty())) {
+            try {
+                Resource resource = Registry.getWorkerDAO().findUniqueByNif(
+                        resourceNif);
+                workReport.setResource(resource);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("There is no resource with this nif"));
+            }
+        }
+
+        /* Step 4.3: Update the order element. */
+        String orderElementCode = workReportDTO.orderElement;
+        if ((orderElementCode != null) && (!orderElementCode.isEmpty())) {
+            try {
+                OrderElement orderElement = Registry.getOrderElementDAO()
+                    .findUniqueByCode(orderElementCode);
+                workReport.setOrderElement(orderElement);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("There is no order element with this code"));
+            }
+        }
+    }
+
+    public final static void updateWorkReportLine(
+            WorkReportLine workReportLine, WorkReportLineDTO workReportLineDTO)
+            throws ValidationException {
+
+        /*
+         * 1: Update the existing labels
+         */
+        for (LabelReferenceDTO labelDTO : workReportLineDTO.labels) {
+
+            /* Step 2.1: requires each label reference DTO to have a code. */
+            if (StringUtils.isBlank(labelDTO.code)) {
+                throw new ValidationException(_("missing code in a label"));
+            }
+
+            try {
+                Set<Label> labels = workReportLine.getLabels();
+                updateLabel(labelDTO, labels);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("work report line have not this label type assigned"));
+            }
+        }
+
+        /*
+         * 2: Update the existing description values
+         */
+        updateDescriptionValues(workReportLineDTO.descriptionValues,
+                workReportLine);
+
+        /*
+         * 3: Update basic properties in existing work report line
+         */
+
+        /* Step 3.1: Update the date. */
+        Date date = workReportLineDTO.date;
+        workReportLine.setDate(date);
+
+        /* Step 3.2: Update the resource. */
+        String resourceNif = workReportLineDTO.resource;
+        try {
+            Resource resource = Registry.getWorkerDAO().findUniqueByNif(
+                    resourceNif);
+            workReportLine.setResource(resource);
+        } catch (InstanceNotFoundException e) {
+            throw new ValidationException(
+                    _("There is no resource with this nif"));
+        }
+
+        /* Step 3.3: Update the order element. */
+        String orderElementCode = workReportLineDTO.orderElement;
+        try {
+            OrderElement orderElement = Registry.getOrderElementDAO()
+                    .findUniqueByCode(orderElementCode);
+            workReportLine.setOrderElement(orderElement);
+        } catch (InstanceNotFoundException e) {
+            throw new ValidationException(
+                    _("There is no order element with this code"));
+        }
+
+        /* Step 3.4: Update the type of work hours. */
+        if(workReportLineDTO.typeOfWorkHours != null){
+            try{
+                TypeOfWorkHours typeOfWorkHours = Registry.getTypeOfWorkHoursDAO().findUniqueByCode(workReportLineDTO.typeOfWorkHours);
+                workReportLine.setTypeOfWorkHours(typeOfWorkHours);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("There is no type of work hours with this code"));
+            }
+        }
+
+        /*
+         * Step 3.4: Update the clock start and the clock end and the number of
+         * hours.
+         */
+        if (workReportLineDTO.clockStart != null) {
+            workReportLine.setClockStart(workReportLineDTO.clockStart);
+        }
+        if (workReportLineDTO.clockFinish != null) {
+            workReportLine.setClockFinish(workReportLineDTO.clockFinish);
+        }
+
+        if (workReportLineDTO.numHours != null) {
+            workReportLine.setNumHours(workReportLineDTO.numHours);
+        }
+
+    }
+
+    private static void updateDescriptionValues(
+            Set<DescriptionValueDTO> descriptionValues,
+            WorkReportLine workReportLine) {
+        for (DescriptionValueDTO valueDTO : descriptionValues) {
+
+            /* Step 3.1: requires each description value DTO to have a code. */
+            if (StringUtils.isBlank(valueDTO.fieldName)) {
+                throw new ValidationException(
+                        _("missing field name in a description value"));
+            }
+
+            try {
+                DescriptionValue value = workReportLine
+                        .getDescriptionValueByFieldName(valueDTO.fieldName);
+                value.setValue(StringUtils.trim(valueDTO.value));
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("work report have not any description value with this field name"));
+            }
+        }
+    }
+
+    @Transactional
+    private static void updateLabel(LabelReferenceDTO labelDTO,
+            Set<Label> labels)
+            throws InstanceNotFoundException {
+        Label labelToAdd = Registry.getLabelDAO().findByCode(labelDTO.code);
+        LabelType labelType = labelToAdd.getType();
+
+        Label labelToChange = getLabelByLabelType(labels, labelType);
+        if (labelToAdd.getCode() != labelToChange.getCode()) {
+            labels.remove(labelToChange);
+            labels.add(labelToAdd);
+        }
+    }
+
+    private static Label getLabelByLabelType(Set<Label> labels, LabelType type)
+            throws InstanceNotFoundException {
+
+        if (type == null) {
+            throw new InstanceNotFoundException(type, LabelType.class.getName());
+        }
+
+        for (Label l : labels) {
+            if (l.getType().equals(type)) {
+                return l;
+            }
+        }
+
+        throw new InstanceNotFoundException(type, LabelType.class.getName());
+
     }
 
 }

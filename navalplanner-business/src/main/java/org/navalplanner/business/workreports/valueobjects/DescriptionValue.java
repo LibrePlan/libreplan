@@ -86,5 +86,4 @@ public class DescriptionValue implements INewObject {
             value = "";
         this.value = value;
     }
-
 }

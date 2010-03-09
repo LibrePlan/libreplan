@@ -20,22 +20,19 @@
 
 package org.navalplanner.ws.workreports.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
-import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
-import org.navalplanner.ws.common.impl.Util;
+import org.navalplanner.ws.common.impl.GenericRESTService;
 import org.navalplanner.ws.workreports.api.IWorkReportService;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
 import org.navalplanner.ws.workreports.api.WorkReportListDTO;
@@ -51,50 +48,53 @@ import org.springframework.transaction.annotation.Transactional;
 @Path("/workreports/")
 @Produces("application/xml")
 @Service("workReportServiceREST")
-public class WorkReportServiceREST implements IWorkReportService {
+public class WorkReportServiceREST extends
+        GenericRESTService<WorkReport, WorkReportDTO> implements
+        IWorkReportService {
 
     @Autowired
     private IWorkReportDAO workReportDAO;
 
     @Override
+    @GET
+    @Transactional(readOnly = true)
+    public WorkReportListDTO getWorkReports() {
+        return new WorkReportListDTO(findAll());
+    }
+
+    @Override
     @POST
     @Consumes("application/xml")
-    @Transactional
     public InstanceConstraintViolationsListDTO addWorkReports(
             WorkReportListDTO workReportListDTO) {
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
-        Long numItem = new Long(1);
+        return save(workReportListDTO.workReports);
+    }
 
-        for (WorkReportDTO workReportDTO : workReportListDTO.workReports) {
-            InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
-
-            try {
-                WorkReport workReport = WorkReportConverter
-                        .toEntity(workReportDTO);
-
-                workReport.validate();
-                workReportDAO.save(workReport);
-            } catch (InstanceNotFoundException e) {
-                instanceConstraintViolationsDTO = InstanceConstraintViolationsDTO
-                        .create(
-                                Util.generateInstanceConstraintViolationsDTOId(
-                                        numItem, workReportDTO), e.getMessage());
-            } catch (ValidationException e) {
-                instanceConstraintViolationsDTO = ConstraintViolationConverter
-                        .toDTO(Util.generateInstanceConstraintViolationsDTOId(
-                                numItem, workReportDTO), e.getInvalidValues());
-            }
-
-            if (instanceConstraintViolationsDTO != null) {
-                instanceConstraintViolationsList
-                        .add(instanceConstraintViolationsDTO);
-            }
-
-            numItem++;
+    @Override
+    protected WorkReport toEntity(WorkReportDTO entityDTO) {
+        try {
+            return WorkReportConverter.toEntity(entityDTO);
+        } catch (InstanceNotFoundException e) {
+            return null;
         }
+    }
 
-        return new InstanceConstraintViolationsListDTO(
-                instanceConstraintViolationsList);
+    @Override
+    protected WorkReportDTO toDTO(WorkReport entity) {
+        return WorkReportConverter.toDTO(entity);
+    }
+
+    @Override
+    protected IIntegrationEntityDAO<WorkReport> getIntegrationEntityDAO() {
+        return workReportDAO;
+    }
+
+    @Override
+    protected void updateEntity(WorkReport entity, WorkReportDTO entityDTO)
+            throws ValidationException {
+
+        WorkReportConverter.updateWorkReport(entity, entityDTO);
+
     }
 
 }

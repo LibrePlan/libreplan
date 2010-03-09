@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<work-report-list xmlns="http://rest.ws.navalplanner.org">
+<work-report work-order="proxecto-00006-00009"
+  resource="30303030D" date="2010-03-09T00:00:00+01:00"
+  work-report-type="codeXX"
+  code="c3573671-1245-4b49-91b2-2f0914a5cf8b">
+    <label-list>
+      <label code="b2b9cdee-2785-4c03-8e01-cec0a93b61aa" />
+    </label-list>
+    <work-report-line-list>
+      <work-report-line hours="4"
+      finish-hour="2010-03-08T05:00:00+01:00"
+      start-hour="2010-03-08T01:00:00+01:00" hour-type="Normal"
+      work-order="proxecto-00006-00009" resource="30303030D"
+      date="2010-03-09T00:00:00+01:00"
+      code="77011765-2d77-4350-b315-84435d065a60">
+        <label-list>
+          <label code="774e42b9-c35c-4de2-a20b-487ff1c413ef" />
+        </label-list>
+      </work-report-line>
+       <work-report-line hours="6"
+      finish-hour="2010-03-08T07:00:00+01:00"
+      start-hour="2010-03-08T01:00:00+01:00" hour-type="Normal"
+      work-order="proxecto-00006-00009" resource="30303030D"
+      date="2010-03-09T00:00:00+01:00"
+      code="77011765-2d77-4350-b315-84435d065555">
+        <label-list>
+          <label code="a6256552-5ac7-46a7-95d6-8b8c8b415c65" />
+        </label-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+  <work-report work-order="proxecto-00001-00002"
+  resource="66666666F" date="2010-03-18T00:00:00+01:00"
+  work-report-type="codeXY"
+  code="e230a3b4-3848-4ea9-9e7b-2c21e246200e">
+    <text-field-list>
+      <text-field value="oooh!" name="campoH" />
+    </text-field-list>
+    <work-report-line-list>
+      <work-report-line hours="12" hour-type="Normal"
+      work-order="proxecto-00001-00002" resource="66666666F"
+      date="2010-03-18T00:00:00+01:00"
+      code="89ec8b66-5c21-4076-a06f-22f8e190dd36">
+        <text-field-list>
+          <text-field value="aaaaa" name="campoA" />
+        </text-field-list>
+      </work-report-line>
+      <work-report-line hours="15" hour-type="Normal"
+      work-order="proxecto-00001-00002" resource="66666666F"
+      date="2010-03-18T00:00:00+01:00"
+      code="89ec8b66-5c21-4076-a06f-22f8e190dd98">
+        <text-field-list>
+          <text-field value="xxxxx" name="campoA" />
+        </text-field-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+</work-report-list>

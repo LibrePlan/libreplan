@@ -373,4 +373,23 @@ public class WorkReport extends IntegrationEntity {
         return (workReportType != null);
     }
 
+    public WorkReportLine getWorkReportLineByCode(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code, WorkReportLine.class
+                    .getName());
+        }
+
+        for (WorkReportLine l : this.workReportLines) {
+            if (l.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return l;
+            }
+        }
+
+        throw new InstanceNotFoundException(code, WorkReportLine.class
+                .getName());
+
+    }
+
 }

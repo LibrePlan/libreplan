@@ -280,24 +280,48 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
     }
 
     private void assignItsLabels(WorkReportType workReportType) {
+        Set<Label> updatedLabels = new HashSet<Label>();
         if (workReportType != null) {
-            labels.clear();
             for (WorkReportLabelTypeAssigment labelTypeAssigment : workReportType
                     .getLineLabels()) {
-                labels.add(labelTypeAssigment.getDefaultLabel());
+                Label label = getLabelBy(labelTypeAssigment);
+                if (label != null) {
+                    updatedLabels.add(label);
+                } else {
+                    updatedLabels.add(labelTypeAssigment.getDefaultLabel());
+                }
             }
+            this.labels = updatedLabels;
         }
     }
 
+    private Label getLabelBy(WorkReportLabelTypeAssigment labelTypeAssigment) {
+        LabelType type = labelTypeAssigment.getLabelType();
+        for (Label label : labels) {
+            if (label.getType().getId().equals(type.getId())) {
+                return label;
+            }
+        }
+        return null;
+    }
+
     private void assignItsDescriptionValues(WorkReportType workReportType) {
+        Set<DescriptionValue> updatedDescriptionValues = new HashSet<DescriptionValue>();
         if (workReportType != null) {
-            descriptionValues.clear();
             for (DescriptionField descriptionField : workReportType
                     .getLineFields()) {
-                DescriptionValue descriptionValue = DescriptionValue.create(
+                DescriptionValue descriptionValue;
+                try {
+                    descriptionValue = this
+                            .getDescriptionValueByFieldName(descriptionField
+                                    .getFieldName());
+                } catch (InstanceNotFoundException e) {
+                    descriptionValue = DescriptionValue.create(
                         descriptionField.getFieldName(), null);
-                descriptionValues.add(descriptionValue);
+                }
+                updatedDescriptionValues.add(descriptionValue);
             }
+            this.descriptionValues = updatedDescriptionValues;
         }
     }
 

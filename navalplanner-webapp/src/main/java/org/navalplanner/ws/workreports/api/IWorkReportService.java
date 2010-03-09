@@ -29,7 +29,9 @@ import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
  */
 public interface IWorkReportService {
 
-    InstanceConstraintViolationsListDTO addWorkReports(
+    public WorkReportListDTO getWorkReports();
+
+    public InstanceConstraintViolationsListDTO addWorkReports(
             WorkReportListDTO workReportListDTO);
 
 }

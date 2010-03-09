@@ -38,6 +38,14 @@ public final class LabelReferenceConverter {
     private LabelReferenceConverter() {
     }
 
+    public final static Set<LabelReferenceDTO> toDTO(Set<Label> labels) {
+        Set<LabelReferenceDTO> labelDTOs = new HashSet<LabelReferenceDTO>();
+        for (Label label : labels) {
+            labelDTOs.add(toDTO(label));
+        }
+        return labelDTOs;
+    }
+
     public final static LabelReferenceDTO toDTO(Label label) {
         return new LabelReferenceDTO(label.getCode());
     }
