@@ -318,10 +318,6 @@ public class TaskList extends XulElement implements AfterCompose {
         response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
     }
 
-    public void hideTaskComponent(TaskComponent subtaskComponent) {
-        removeChild(subtaskComponent.getRow());
-    }
-
     public void redrawDependencies() {
         getGanttPanel().getDependencyList().redrawDependencies();
     }
@@ -359,25 +355,25 @@ public class TaskList extends XulElement implements AfterCompose {
                 addPendingTasks(tasksPendingToAdd, rowFor(task),
                         relocate);
             }
-
-            if (predicate.accepts(task)) {
-                if (!visibleTasks.contains(task)) {
+            final boolean isShown = visibleTasks.contains(task);
+            if (predicate.accepts(task) != isShown) {
+                if (isShown) {
+                    makeDisappear(task);
+                } else {
                     tasksPendingToAdd.add(task);
                 }
-            } else {
-                if (visibleTasks.contains(task)) {
-                    TaskComponent taskComponent = find(task);
-                    hideTaskComponent(taskComponent);
-
-                    visibleTasks.remove(task);
-                    task.setVisible(false);
-                }
             }
-
             if (task instanceof TaskContainer) {
                 reload(task.getTasks(), tasksPendingToAdd, relocate);
             }
         }
+    }
+
+    private void makeDisappear(Task task) {
+        TaskComponent taskComponent = find(task);
+        removeChild(taskComponent.getRow());
+        visibleTasks.remove(task);
+        task.setVisible(false);
     }
 
     private TaskRow rowFor(Task task) {
