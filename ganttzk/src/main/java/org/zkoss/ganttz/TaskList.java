@@ -327,6 +327,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     public void remove(Task task) {
+        originalTasks.remove(task);
         for (TaskComponent taskComponent : getTaskComponents()) {
             if (taskComponent.getTask().equals(task)) {
                 taskComponent.remove();
