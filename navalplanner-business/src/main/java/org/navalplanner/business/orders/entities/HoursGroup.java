@@ -157,7 +157,8 @@ public class HoursGroup extends BaseEntity implements Cloneable,
 
     private HoursGroup(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
-        this.code = parentOrderLine.getCode();
+        String code = parentOrderLine.getCode();
+        this.code = code != null ? code : "";
         this.setOrderLineTemplate(null);
     }
 
