@@ -56,7 +56,8 @@ public final class WorkReportConverter {
         workReport.setWorkReportType(workReportType);
 
         for (WorkReportLineDTO workReportLineDTO : workReportDTO.workReportLines) {
-            workReport.addWorkReportLine(toEntity(workReportLineDTO));
+            workReport
+                    .addWorkReportLine(toEntity(workReportLineDTO, workReport));
         }
 
         // Optional fields
@@ -88,9 +89,10 @@ public final class WorkReportConverter {
         return workReport;
     }
 
-    private static WorkReportLine toEntity(WorkReportLineDTO workReportLineDTO)
+    private static WorkReportLine toEntity(WorkReportLineDTO workReportLineDTO,
+            WorkReport workReport)
             throws InstanceNotFoundException {
-        WorkReportLine workReportLine = WorkReportLine.create();
+        WorkReportLine workReportLine = WorkReportLine.create(workReport);
 
         // Mandatory fields
         workReportLine.setNumHours(workReportLineDTO.numHours);

@@ -78,8 +78,7 @@ public abstract class AbstractWorkReportTest {
         WorkReport workReport = createValidWorkReport();
         workReportDAO.save(workReport);
 
-        WorkReportLine workReportLine = WorkReportLine.create();
-        workReportLine.setWorkReport(workReport);
+        WorkReportLine workReportLine = WorkReportLine.create(workReport);
         workReport.addWorkReportLine(workReportLine);
         workReportLine.setDate(new Date());
         workReportLine.setNumHours(100);

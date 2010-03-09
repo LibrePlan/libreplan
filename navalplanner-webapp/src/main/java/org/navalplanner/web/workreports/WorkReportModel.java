@@ -330,9 +330,12 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     public WorkReportLine addWorkReportLine() {
-        WorkReportLine workReportLine = WorkReportLine.create();
-        workReport.addWorkReportLine(workReportLine);
-        return workReportLine;
+        if (workReport != null) {
+            WorkReportLine workReportLine = WorkReportLine.create(workReport);
+            workReport.addWorkReportLine(workReportLine);
+            return workReportLine;
+        }
+        return null;
     }
 
     @Transactional

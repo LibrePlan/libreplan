@@ -144,7 +144,6 @@ public class WorkReport extends IntegrationEntity {
 
     public void addWorkReportLine(WorkReportLine workReportLine) {
         workReportLines.add(workReportLine);
-        workReportLine.setWorkReport(this);
     }
 
     public void removeWorkReportLine(WorkReportLine workReportLine) {

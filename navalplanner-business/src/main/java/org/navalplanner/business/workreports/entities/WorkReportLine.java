@@ -56,13 +56,14 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public static final String HOURS = "numHours";
 
-    public static WorkReportLine create() {
-        return create(new WorkReportLine());
+    public static WorkReportLine create(WorkReport workReport) {
+        return create(new WorkReportLine(workReport));
     }
 
     public static WorkReportLine create(Integer numHours, Resource resource,
-            OrderElement orderElement) {
-        return create(new WorkReportLine(numHours, resource, orderElement));
+            OrderElement orderElement, WorkReport workReport) {
+        return create(new WorkReportLine(numHours, resource, orderElement,
+                workReport));
     }
 
     private Integer numHours;
@@ -89,11 +90,15 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
      * Constructor for hibernate. Do not use!
      */
     public WorkReportLine() {
+    }
 
+    public WorkReportLine(WorkReport workReport) {
+        this.setWorkReport(workReport);
     }
 
     private WorkReportLine(Integer numHours, Resource resource,
-            OrderElement orderElement) {
+            OrderElement orderElement, WorkReport workReport) {
+        this(workReport);
         this.numHours = numHours;
         this.resource = resource;
         this.orderElement = orderElement;
@@ -199,7 +204,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return workReport;
     }
 
-    public void setWorkReport(WorkReport workReport) {
+    private void setWorkReport(WorkReport workReport) {
         this.workReport = workReport;
 
         // update and copy the fields and label for each line

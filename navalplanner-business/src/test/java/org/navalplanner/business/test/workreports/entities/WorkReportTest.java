@@ -65,8 +65,8 @@ public class WorkReportTest {
                 .create("Firstname", "Surname", "NIF-" + UUID.randomUUID());
     }
 
-    private WorkReportLine givenBasicWorkReportLine() {
-        WorkReportLine workReportLine = WorkReportLine.create();
+    private WorkReportLine givenBasicWorkReportLine(WorkReport workReport) {
+        WorkReportLine workReportLine = WorkReportLine.create(workReport);
         workReportLine.setCode("work-report-line-code-" + UUID.randomUUID());
 
         return workReportLine;
@@ -166,7 +166,7 @@ public class WorkReportTest {
         WorkReport workReport = givenBasicWorkReport();
         workReport.setWorkReportType(workReportType);
 
-        WorkReportLine workReportLine1 = givenBasicWorkReportLine();
+        WorkReportLine workReportLine1 = givenBasicWorkReportLine(workReport);
         workReport.addWorkReportLine(workReportLine1);
 
         workReport.setDate(new Date());
@@ -177,7 +177,7 @@ public class WorkReportTest {
         assertNotNull(workReportLine1.getOrderElement());
         assertNotNull(workReportLine1.getResource());
 
-        WorkReportLine workReportLine2 = givenBasicWorkReportLine();
+        WorkReportLine workReportLine2 = givenBasicWorkReportLine(workReport);
         workReport.addWorkReportLine(workReportLine2);
 
         assertNotNull(workReportLine2.getDate());
@@ -201,7 +201,7 @@ public class WorkReportTest {
                 .setHoursManagement(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK);
 
         WorkReport workReport = WorkReport.create(workReportType);
-        WorkReportLine workReportLine = givenBasicWorkReportLine();
+        WorkReportLine workReportLine = givenBasicWorkReportLine(workReport);
 
         workReport.addWorkReportLine(workReportLine);
 
@@ -223,21 +223,22 @@ public class WorkReportTest {
 
     @Test
     public void checkHoursCalculatedByClock2() {
-        WorkReportLine workReportLine = givenBasicWorkReportLine();
-        workReportLine.setNumHours(10);
-
-        LocalTime start = new LocalTime(8, 0);
-        LocalTime end = start.plusHours(8);
-
-        workReportLine.setClockStart(start);
-        workReportLine.setClockFinish(end);
 
         WorkReportType workReportType = givenBasicWorkReportType();
         workReportType
                 .setHoursManagement(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK);
 
         WorkReport workReport = WorkReport.create(workReportType);
+
+        WorkReportLine workReportLine = givenBasicWorkReportLine(workReport);
         workReport.addWorkReportLine(workReportLine);
+
+        workReportLine.setNumHours(10);
+        LocalTime start = new LocalTime(8, 0);
+        LocalTime end = start.plusHours(8);
+
+        workReportLine.setClockStart(start);
+        workReportLine.setClockFinish(end);
 
         assertThat(workReportLine.getNumHours(), equalTo(8));
     }

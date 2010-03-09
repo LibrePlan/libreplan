@@ -784,7 +784,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @param rows
      */
     public void addWorkReportLine() {
-        WorkReportLine workReportLine = workReportModel.addWorkReportLine();
+        workReportModel.addWorkReportLine();
         reloadWorkReportLines();
     }
 
