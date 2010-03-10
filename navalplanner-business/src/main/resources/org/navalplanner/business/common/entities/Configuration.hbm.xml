@@ -17,6 +17,11 @@
 
         <property name="companyCode" />
 
+        <property name="generateCodeForCriterion" />
+        <property name="generateCodeForLabel" />
+        <property name="generateCodeForWorkReport" />
+        <property name="generateCodeForResources" />
+
     </class>
 
 </hibernate-mapping>

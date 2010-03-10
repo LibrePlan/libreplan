@@ -41,6 +41,14 @@ public class Configuration extends BaseEntity {
 
     private String companyCode;
 
+    private Boolean generateCodeForCriterion;
+
+    private Boolean generateCodeForLabel;
+
+    private Boolean generateCodeForWorkReport;
+
+    private Boolean generateCodeForResources;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -69,6 +77,38 @@ public class Configuration extends BaseEntity {
         }
 
         return !companyCode.contains(" ");
+    }
+
+    public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
+        this.generateCodeForCriterion = generateCodeForCriterion;
+    }
+
+    public Boolean getGenerateCodeForCriterion() {
+        return generateCodeForCriterion;
+    }
+
+    public void setGenerateCodeForLabel(Boolean generateCodeForLabel) {
+        this.generateCodeForLabel = generateCodeForLabel;
+    }
+
+    public Boolean getGenerateCodeForLabel() {
+        return generateCodeForLabel;
+    }
+
+    public void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport) {
+        this.generateCodeForWorkReport = generateCodeForWorkReport;
+    }
+
+    public Boolean getGenerateCodeForWorkReport() {
+        return generateCodeForWorkReport;
+    }
+
+    public void setGenerateCodeForResources(Boolean generateCodeForResources) {
+        this.generateCodeForResources = generateCodeForResources;
+    }
+
+    public Boolean getGenerateCodeForResources() {
+        return generateCodeForResources;
     }
 
 }
