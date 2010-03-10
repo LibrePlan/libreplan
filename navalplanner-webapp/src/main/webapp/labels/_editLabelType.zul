@@ -44,8 +44,13 @@
                             </row>
                             <row>
                                 <label value="${i18n:_('Code')}" />
-                                <textbox width="500px" value="@{controller.labelType.code}"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                <hbox>
+                                    <textbox width="350px" value="@{controller.labelType.code}"
+                                        constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                        disabled="@{controller.codeGenerated}" />
+                                    <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                        checked="@{controller.codeGenerated}" />
+                                </hbox>
                             </row>
                         </rows>
                     </grid>
@@ -76,6 +81,7 @@
                                         constraint="no empty:${i18n:_('cannot be null or empty')}" />
 
                                     <textbox value="@{label.code}" width="95%"
+                                        disabled="@{controller.codeGenerated}"
                                         constraint="no empty:${i18n:_('cannot be null or empty')}" />
 
                                     <button sclass="icono" image="/common/img/ico_borrar1.png"

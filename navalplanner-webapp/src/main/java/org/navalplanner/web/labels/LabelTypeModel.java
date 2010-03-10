@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
@@ -49,7 +50,12 @@ public class LabelTypeModel implements ILabelTypeModel {
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     private LabelType labelType;
+
+    private boolean codeGenerated;
 
     public LabelTypeModel() {
 
@@ -72,8 +78,15 @@ public class LabelTypeModel implements ILabelTypeModel {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public void initCreate() {
-        labelType = LabelType.create("");
+        codeGenerated = configurationDAO.getConfiguration().getGenerateCodeForLabel();
+        if(codeGenerated) {
+            labelType = LabelType.create("");
+        }
+        else {
+            labelType = LabelType.create("", "");
+        }
     }
 
     @Override
@@ -134,6 +147,7 @@ public class LabelTypeModel implements ILabelTypeModel {
     public void initEdit(LabelType labelType) {
         Validate.notNull(labelType);
         this.labelType = getFromDB(labelType);
+        codeGenerated = configurationDAO.getConfiguration().getGenerateCodeForLabel();
     }
 
     private LabelType getFromDB(LabelType labelType) {
@@ -169,7 +183,13 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     @Override
     public void addLabel(String value) {
-        Label label = Label.create(value);
+        Label label;
+        if(codeGenerated) {
+            label = Label.create(value);
+        }
+        else {
+            label =  Label.create("", value);
+        }
         label.setType(labelType);
         labelType.addLabel(label);
     }
@@ -189,6 +209,16 @@ public class LabelTypeModel implements ILabelTypeModel {
             }
         }
         return (count == 1);
+    }
+
+    @Override
+    public boolean isCodeGenerated() {
+        return codeGenerated;
+    }
+
+    @Override
+    public void setCodeGenerated(boolean codeGenerated) {
+        this.codeGenerated = codeGenerated;
     }
 
 }

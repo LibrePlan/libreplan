@@ -340,4 +340,11 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         }
     }
 
+    public boolean isCodeGenerated() {
+        return labelTypeModel.isCodeGenerated();
+    }
+
+    public void setCodeGenerated(boolean codeGenerated) {
+        labelTypeModel.setCodeGenerated(codeGenerated);
+    }
 }
