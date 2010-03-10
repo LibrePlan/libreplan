@@ -239,7 +239,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         loadResources(this.task.getSatisfiedResourceAllocations());
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(this.task
-                .getAllResourceAllocations());
+                .getAllResourceAllocations(), resourceDAO);
         allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
                 createWorkerFinder());
         return allocationRowsHandler;

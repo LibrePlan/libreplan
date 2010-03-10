@@ -35,6 +35,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
@@ -153,10 +154,10 @@ public abstract class AllocationRow {
     }
 
     public static List<AllocationRow> toRows(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+            Collection<? extends ResourceAllocation<?>> resourceAllocations, IResourceDAO resourceDAO) {
         List<AllocationRow> result = new ArrayList<AllocationRow>();
         result.addAll(GenericAllocationRow
-                .toGenericAllocations(resourceAllocations));
+                .toGenericAllocations(resourceAllocations, resourceDAO));
         result.addAll(SpecificAllocationRow
                 .toSpecificAllocations(resourceAllocations));
         return result;

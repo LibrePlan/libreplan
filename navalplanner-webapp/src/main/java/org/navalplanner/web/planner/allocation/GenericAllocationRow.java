@@ -34,9 +34,11 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -63,12 +65,12 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     public static GenericAllocationRow from(
-            GenericResourceAllocation resourceAllocation) {
+            GenericResourceAllocation resourceAllocation, IResourceDAO resourceDAO) {
         GenericAllocationRow result = createDefault();
         result.setResourcesPerDay(resourceAllocation.getResourcesPerDay());
         result.setOrigin(resourceAllocation);
         result.criterions = resourceAllocation.getCriterions();
-        result.resources = resourceAllocation.getAssociatedResources();
+        result.resources = resourceDAO.findSatisfyingCriterionsAtSomePoint(result.criterions);
         result.setName(ResourceLoadModel.getName(result.criterions));
         return result;
     }
@@ -82,11 +84,11 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     public static Collection<GenericAllocationRow> toGenericAllocations(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
+            Collection<? extends ResourceAllocation<?>> resourceAllocations, IResourceDAO resourceDAO) {
         ArrayList<GenericAllocationRow> result = new ArrayList<GenericAllocationRow>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
-                result.add(from((GenericResourceAllocation) resourceAllocation));
+                result.add(from((GenericResourceAllocation) resourceAllocation, resourceDAO));
             }
         }
         return result;
