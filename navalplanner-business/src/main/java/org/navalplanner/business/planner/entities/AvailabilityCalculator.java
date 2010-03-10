@@ -75,6 +75,9 @@ public class AvailabilityCalculator {
 
     private static AvailabilityTimeLine buildTimeline(
             List<CriterionSatisfaction> satisfactions) {
+        if (satisfactions.isEmpty()) {
+            return AvailabilityTimeLine.createAllInvalid();
+        }
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         LocalDate previousEnd = null;
         for (CriterionSatisfaction each : satisfactions) {

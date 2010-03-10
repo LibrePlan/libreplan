@@ -154,9 +154,24 @@ public class GenericResourceAllocationTest {
                 result.getAssignedHoursDiscounting(isA(Object.class),
                         isA(LocalDate.class))).andReturn(hours).anyTimes();
         expect(result.getSatisfactionsFor(isA(ICriterion.class))).andReturn(
-                new ArrayList<CriterionSatisfaction>()).anyTimes();
+                satisfactionsForPredefinedCriterions(result)).anyTimes();
         replay(result);
         return result;
+    }
+
+    private List<CriterionSatisfaction> satisfactionsForPredefinedCriterions(
+            Resource resource) {
+        List<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
+        for (Criterion each : criterions) {
+            result.add(CriterionSatisfaction.create(each, resource,
+                    fromVeryEarlyTime()));
+        }
+        return result;
+    }
+
+    private org.navalplanner.business.resources.entities.Interval fromVeryEarlyTime() {
+        return org.navalplanner.business.resources.entities.Interval
+                .from(new Date(0));
     }
 
     private void givenCalendarsForResources(int capacity1, int capacity2,
