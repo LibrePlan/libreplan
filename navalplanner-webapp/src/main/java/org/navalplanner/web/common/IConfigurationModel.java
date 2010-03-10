@@ -51,6 +51,9 @@ public interface IConfigurationModel {
     String getCompanyCode();
     void setCompanyCode(String companyCode);
 
+    Boolean getGenerateCodeForCriterion();
+    void setGenerateCodeForCriterion(Boolean generateCodeForCriterion);
+
     List<OrderSequence> getOrderSequences();
     void addOrderSequence();
     void removeOrderSequence(OrderSequence orderSequence)

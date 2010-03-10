@@ -207,6 +207,21 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForCriterion() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForCriterion();
+    }
+
+    @Override
+    public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForCriterion(generateCodeForCriterion);
+        }
+    }
+
+    @Override
     public List<OrderSequence> getOrderSequences() {
         return Collections.unmodifiableList(orderSequences);
     }

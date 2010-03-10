@@ -61,6 +61,10 @@
                                 model="@{configurationController.calendars}"
                                 selectedElement="@{configurationController.defaultCalendar}" />
                         </row>
+                        <row>
+                            <label value="${i18n:_('Generate code for Criterion')}" />
+                            <checkbox checked="@{configurationController.generateCodeForCriterion}" />
+                        </row>
                     </rows>
                 </grid>
 
