@@ -54,6 +54,9 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForCriterion();
     void setGenerateCodeForCriterion(Boolean generateCodeForCriterion);
 
+    Boolean getGenerateCodeForLabel();
+    void setGenerateCodeForLabel(Boolean generateCodeForLabel);
+
     List<OrderSequence> getOrderSequences();
     void addOrderSequence();
     void removeOrderSequence(OrderSequence orderSequence)

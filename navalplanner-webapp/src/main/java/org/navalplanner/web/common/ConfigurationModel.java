@@ -222,6 +222,21 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForLabel() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForLabel();
+    }
+
+    @Override
+    public void setGenerateCodeForLabel(Boolean generateCodeForLabel) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForLabel(generateCodeForLabel);
+        }
+    }
+
+    @Override
     public List<OrderSequence> getOrderSequences() {
         return Collections.unmodifiableList(orderSequences);
     }
