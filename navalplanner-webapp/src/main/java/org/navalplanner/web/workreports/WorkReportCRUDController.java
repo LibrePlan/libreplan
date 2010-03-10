@@ -318,8 +318,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     }
                 } else if (workReportLine.getDate() == null) {
                     Datebox date = getDateboxDate(row);
-                    String message = _("The date cannot be null");
-                    showInvalidMessage(date, message);
+                    if (date != null) {
+                        String message = _("The date cannot be null");
+                        showInvalidMessage(date, message);
+                    }
                     return false;
                 }
 
@@ -329,8 +331,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     }
                 } else if (workReportLine.getResource() == null) {
                     Autocomplete autoResource = getTextboxResource(row);
-                    String message = _("The resource cannot be null");
-                    showInvalidMessage(autoResource, message);
+                    if (autoResource != null) {
+                        String message = _("The resource cannot be null");
+                        showInvalidMessage(autoResource, message);
+                    }
                     return false;
                 }
 
@@ -340,49 +344,61 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     }
                 } else if (workReportLine.getOrderElement() == null) {
                     Textbox txtOrder = getTextboxOrder(row);
-                    String message = _("The order element code cannot be null");
-                    txtOrder.setValue("");
-                    showInvalidMessage(txtOrder, message);
+                    if (txtOrder != null) {
+                        String message = _("The order element code cannot be null");
+                        txtOrder.setValue("");
+                        showInvalidMessage(txtOrder, message);
+                    }
                     return false;
                 }
 
                 if (!workReportLine
                         .checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock()) {
                     Timebox timeStart = getTimeboxStart(row);
-                    String message = _("Time Start cannot be null");
-                    showInvalidMessage(timeStart, message);
+                    if (timeStart != null) {
+                        String message = _("Time Start cannot be null");
+                        showInvalidMessage(timeStart, message);
+                    }
                     return false;
                 }
 
                 if (!workReportLine
                         .checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock()) {
                     Timebox timeFinish = getTimeboxFinish(row);
-                    String message = _("Time finish cannot be null");
-                    showInvalidMessage(timeFinish, message);
+                    if (timeFinish != null) {
+                        String message = _("Time finish cannot be null");
+                        showInvalidMessage(timeFinish, message);
+                    }
                     return false;
                 }
 
                 if (workReportLine.getNumHours() == null) {
                     // Locate TextboxOrder
                     Intbox txtHours = getIntboxHours(row);
-                    String message = _("Hours cannot be null");
-                    showInvalidMessage(txtHours, message);
+                    if (txtHours != null) {
+                        String message = _("Hours cannot be null");
+                        showInvalidMessage(txtHours, message);
+                    }
                     return false;
                 }
 
                 if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
                     // Locate TextboxOrder
                     Intbox txtHours = getIntboxHours(row);
-                    String message = _("number of hours is not properly calculated based on clock");
-                    showInvalidMessage(txtHours, message);
+                    if (txtHours != null) {
+                        String message = _("number of hours is not properly calculated based on clock");
+                        showInvalidMessage(txtHours, message);
+                    }
                     return false;
                 }
 
                 if (workReportLine.getTypeOfWorkHours() == null) {
                     // Locate TextboxOrder
                     Autocomplete autoTypeOfHours = getTypeOfHours(row);
-                    String message = _("The type of hours cannot be null.");
-                    showInvalidMessage(autoTypeOfHours,message);
+                    if (autoTypeOfHours != null) {
+                        String message = _("The type of hours cannot be null.");
+                        showInvalidMessage(autoTypeOfHours, message);
+                    }
                     return false;
                 }
             }
@@ -418,8 +434,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @return
      */
     private Timebox getTimeboxFinish(Row row) {
-        int position = row.getChildren().size() - 4;
-        return (Timebox) row.getChildren().get(position);
+        try {
+            int position = row.getChildren().size() - 5;
+            return (Timebox) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -428,8 +448,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @return
      */
     private Timebox getTimeboxStart(Row row) {
-        int position = row.getChildren().size() - 5;
-        return (Timebox) row.getChildren().get(position);
+        try {
+            int position = row.getChildren().size() - 6;
+            return (Timebox) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -438,8 +462,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @return
      */
     private Autocomplete getTypeOfHours(Row row) {
-        int position = row.getChildren().size() - 2;
-        return (Autocomplete) row.getChildren().get(position);
+        try {
+            int position = row.getChildren().size() - 3;
+            return (Autocomplete) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -448,8 +476,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @return
      */
     private Intbox getIntboxHours(Row row) {
-        int position = row.getChildren().size() - 3;
-        return (Intbox) row.getChildren().get(position);
+        try {
+            int position = row.getChildren().size() - 4;
+            return (Intbox) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -458,7 +490,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @return
      */
     private Datebox getDateboxDate(Row row) {
-        return (Datebox) row.getChildren().get(0);
+        try {
+            return (Datebox) row.getChildren().get(0);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -471,7 +507,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         if (!getWorkReportType().getDateIsSharedByLines()) {
             position++;
         }
-        return (Autocomplete) row.getChildren().get(position);
+        try {
+            return (Autocomplete) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -488,7 +528,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         if (!getWorkReportType().getResourceIsSharedInLines()) {
             position++;
         }
-        return (Textbox) row.getChildren().get(position);
+        try {
+            return (Textbox) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -921,9 +965,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             public void onEvent(Event event) throws Exception {
                 // force the binding
                 Timebox timeFinish = (Timebox) getTimeboxFinish(row);
-                timeFinish.setFocus(true);
-                timeFinish.select();
-                timeStart.select();
+                if (timeFinish != null) {
+                    timeFinish.setFocus(true);
+                    timeFinish.select();
+                    timeStart.select();
+                }
             }
         });
 
@@ -931,8 +977,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             @Override
             public void onEvent(Event event) throws Exception {
                 Timebox timeFinish = (Timebox) getTimeboxFinish(row);
-                checkCannotBeHigher(timeStart, timeFinish);
-                updateNumHours(row);
+                if (timeFinish != null) {
+                    checkCannotBeHigher(timeStart, timeFinish);
+                    updateNumHours(row);
+                }
             }
         });
 
@@ -942,8 +990,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void updateNumHours(final Row row) {
         WorkReportLine line = (WorkReportLine) row.getValue();
         Intbox txtHours = getIntboxHours(row);
-        txtHours.setValue(line.getNumHours());
-        txtHours.invalidate();
+        if (txtHours != null) {
+            txtHours.setValue(line.getNumHours());
+            txtHours.invalidate();
+        }
     }
 
     private void appendHourFinish(final Row row) {
@@ -976,9 +1026,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             @Override
             public void onEvent(Event event) throws Exception {
                 Timebox timeStart = (Timebox) getTimeboxStart(row);
-                timeStart.setFocus(true);
-                timeStart.select();
-                timeFinish.select();
+                if (timeStart != null) {
+                    timeStart.setFocus(true);
+                    timeStart.select();
+                    timeFinish.select();
+                }
             }
         });
 
@@ -986,8 +1038,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             @Override
             public void onEvent(Event event) throws Exception {
                 Timebox timeStart = (Timebox) getTimeboxStart(row);
-                checkCannotBeHigher(timeStart, timeFinish);
-                updateNumHours(row);
+                if (timeStart != null) {
+                    checkCannotBeHigher(timeStart, timeFinish);
+                    updateNumHours(row);
+                }
 
             }
         });
