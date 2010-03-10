@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskContainer.IExpandListener;
@@ -39,23 +40,21 @@ public class TaskContainerComponent extends TaskComponent implements
         AfterCompose {
 
     public static TaskContainerComponent asTask(Task taskContainerBean,
-            TaskList taskList) {
+            IDisabilityConfiguration disabilityConfiguration) {
         return new TaskContainerComponent((TaskContainer) taskContainerBean,
-                taskList);
+                disabilityConfiguration);
     }
 
     private List<TaskComponent> subtaskComponents = new ArrayList<TaskComponent>();
-    private final TaskList taskList;
 
     private transient IExpandListener expandListener;
 
     public TaskContainerComponent(final TaskContainer taskContainer,
-            final TaskList taskList) {
-        super(taskContainer, taskList.getDisabilityConfiguration());
+            final IDisabilityConfiguration disabilityConfiguration) {
+        super(taskContainer, disabilityConfiguration);
         if (!taskContainer.isContainer()) {
             throw new IllegalArgumentException();
         }
-        this.taskList = taskList;
         this.expandListener = new IExpandListener() {
 
             @Override
@@ -70,7 +69,8 @@ public class TaskContainerComponent extends TaskComponent implements
     }
 
     private TaskComponent createChild(Task task) {
-        return TaskComponent.asTaskComponent(task, this.taskList, false);
+        return TaskComponent.asTaskComponent(task, disabilityConfiguration,
+                false);
     }
 
     @Override

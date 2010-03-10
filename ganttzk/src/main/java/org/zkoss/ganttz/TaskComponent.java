@@ -151,29 +151,29 @@ public class TaskComponent extends Div implements AfterCompose {
         }
     };
 
-    private final IDisabilityConfiguration disabilityConfiguration;
+    protected final IDisabilityConfiguration disabilityConfiguration;
 
     private PropertyChangeListener criticalPathPropertyListener;
 
-    public static TaskComponent asTaskComponent(Task task, TaskList taskList,
+    public static TaskComponent asTaskComponent(Task task,
+            IDisabilityConfiguration disabilityConfiguration,
             boolean isTopLevel) {
         final TaskComponent result;
         if (task.isContainer()) {
             result = TaskContainerComponent.asTask((TaskContainer) task,
-                    taskList);
+                    disabilityConfiguration);
         } else if (task instanceof Milestone) {
-            result = new MilestoneComponent(task, taskList
-                    .getDisabilityConfiguration());
+            result = new MilestoneComponent(task, disabilityConfiguration);
         } else {
-            result = new TaskComponent(task, taskList
-                    .getDisabilityConfiguration());
+            result = new TaskComponent(task, disabilityConfiguration);
         }
         result.isTopLevel = isTopLevel;
         return TaskRow.wrapInRow(result);
     }
 
-    public static TaskComponent asTaskComponent(Task task, TaskList taskList) {
-        return asTaskComponent(task, taskList, true);
+    public static TaskComponent asTaskComponent(Task task,
+            IDisabilityConfiguration disabilityConfiguration) {
+        return asTaskComponent(task, disabilityConfiguration, true);
     }
 
     private IReloadResourcesTextRequested reloadResourcesTextRequested;

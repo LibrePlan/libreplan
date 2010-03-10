@@ -235,8 +235,8 @@ public class TaskList extends XulElement implements AfterCompose {
         for (Task task : newTasks) {
             TaskComponent taskComponent = taskComponentByTask.get(task);
             if (taskComponent == null) {
-                taskComponent = TaskComponent.asTaskComponent(
-                        task, this);
+                taskComponent = TaskComponent.asTaskComponent(task,
+                        disabilityConfiguration);
                 taskComponent.publishTaskComponents(taskComponentByTask);
             }
             if (task.isContainer()) {
