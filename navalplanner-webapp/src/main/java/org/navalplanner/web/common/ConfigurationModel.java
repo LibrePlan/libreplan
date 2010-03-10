@@ -252,6 +252,21 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForResources() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForResources();
+    }
+
+    @Override
+    public void setGenerateCodeForResources(Boolean generateCodeForResources) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForResources(generateCodeForResources);
+        }
+    }
+
+    @Override
     public List<OrderSequence> getOrderSequences() {
         return Collections.unmodifiableList(orderSequences);
     }

@@ -60,6 +60,9 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForWorkReport();
     void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport);
 
+    Boolean getGenerateCodeForResources();
+    void setGenerateCodeForResources(Boolean generateCodeForResources);
+
     List<OrderSequence> getOrderSequences();
     void addOrderSequence();
     void removeOrderSequence(OrderSequence orderSequence)

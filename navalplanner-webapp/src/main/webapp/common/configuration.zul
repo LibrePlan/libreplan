@@ -73,6 +73,10 @@
                             <label value="${i18n:_('Generate code for Work Report')}" />
                             <checkbox checked="@{configurationController.generateCodeForWorkReport}" />
                         </row>
+                        <row>
+                            <label value="${i18n:_('Generate code for Resources')}" />
+                            <checkbox checked="@{configurationController.generateCodeForResources}" />
+                        </row>
                     </rows>
                 </grid>
 
