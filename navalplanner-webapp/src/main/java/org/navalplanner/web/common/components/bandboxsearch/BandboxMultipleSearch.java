@@ -38,6 +38,7 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.ListModel;
@@ -98,24 +99,47 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
                 }
             });
 
-            /**
-             * Pick element from list when selecting
-             */
-            listbox.addEventListener("onSelect", new EventListener() {
+            bandbox.setCtrlKeys("#down");
+            bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    final Object object = getSelectedItem().getValue();
-                    if (multipleFiltersFinder.isValidNewFilter(object)) {
-                        addSelectedElement(object);
-                        clearListbox();
+                    int selectedItemIndex = listbox.getSelectedIndex();
+                    List<Listitem> items = listbox.getItems();
+                    if (!items.isEmpty()) {
+                        listbox.setSelectedIndex(0);
+                        items.get(0).setFocus(true);
                     }
-                    bandbox.close();
+                }
+            });
+
+            // Close bandbox for events onClick and onOK
+            listbox.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    pickElementFromListAndCloseBandbox();
+                }
+            });
+            listbox.addEventListener(Events.ON_OK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    pickElementFromListAndCloseBandbox();
                 }
             });
         }
 
         updateWidth();
+    }
+
+    private void pickElementFromListAndCloseBandbox() {
+        final Object object = getSelectedItem().getValue();
+        if (multipleFiltersFinder.isValidNewFilter(object)) {
+            addSelectedElement(object);
+            clearListbox();
+        }
+        bandbox.close();
     }
 
     private void searchMultipleFilters() {
