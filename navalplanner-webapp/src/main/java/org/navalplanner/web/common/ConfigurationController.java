@@ -147,6 +147,14 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setGenerateCodeForLabel(generateCodeForLabel);
     }
 
+    public Boolean getGenerateCodeForWorkReport() {
+        return configurationModel.getGenerateCodeForWorkReport();
+    }
+
+    public void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport) {
+        configurationModel.setGenerateCodeForWorkReport(generateCodeForWorkReport);
+    }
+
     public List<OrderSequence> getOrderSequences() {
         return configurationModel.getOrderSequences();
     }

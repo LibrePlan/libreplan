@@ -237,6 +237,21 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForWorkReport() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForWorkReport();
+    }
+
+    @Override
+    public void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForWorkReport(generateCodeForWorkReport);
+        }
+    }
+
+    @Override
     public List<OrderSequence> getOrderSequences() {
         return Collections.unmodifiableList(orderSequences);
     }

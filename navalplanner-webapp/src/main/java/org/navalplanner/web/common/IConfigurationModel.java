@@ -57,6 +57,9 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForLabel();
     void setGenerateCodeForLabel(Boolean generateCodeForLabel);
 
+    Boolean getGenerateCodeForWorkReport();
+    void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport);
+
     List<OrderSequence> getOrderSequences();
     void addOrderSequence();
     void removeOrderSequence(OrderSequence orderSequence)
