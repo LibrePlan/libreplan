@@ -49,6 +49,7 @@
                                         constraint="no empty:${i18n:_('cannot be null or empty')}"
                                         disabled="@{controller.codeGenerated}" />
                                     <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                        onCheck="controller.onCheckGenerateCode(event)"
                                         checked="@{controller.codeGenerated}" />
                                 </hbox>
                             </row>
