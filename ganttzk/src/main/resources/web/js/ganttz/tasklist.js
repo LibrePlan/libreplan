@@ -643,12 +643,6 @@ zkTaskContainer = {};
  * clearly specified zkTaskContainer.getDD = function(cmp) { zkTask.getDD(cmp); };
  */
 
-zkTaskContainer.relocateAfterAdding = function(cmp) {
-	zkTask.relocateAfterAdding(cmp);
-};
-
-zkTaskContainer.relocateFirstAfterAdding = zkTask.relocateFirstAfterAdding;
-
 
 zkTaskContainer.init = function(cmp) {
 	/*
