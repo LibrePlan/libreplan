@@ -28,6 +28,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Checkbox;
@@ -130,9 +132,6 @@ public class CriterionsController extends GenericForwardComposer {
 
     public void selectCriterionAndType(Listitem item,Bandbox bandbox,
         CriterionSatisfactionDTO criterionSatisfactionDTO){
-        bandbox.close();
-        Listbox listbox = (Listbox) bandbox.getFirstChild().getFirstChild();
-        listbox.setModel(new SimpleListModel(getCriterionWithItsTypes()));
         if(item != null){
             CriterionWithItsType criterionAndType = (CriterionWithItsType)item.getValue();
             bandbox.setValue(criterionAndType.getNameAndType());
@@ -406,6 +405,16 @@ public class CriterionsController extends GenericForwardComposer {
         bd.open();
     }
 
+    public void onCtrlKey(Event event) {
+        Bandbox bd = (Bandbox) event.getTarget();
+        Listbox listbox = (Listbox) bd.getFirstChild().getFirstChild();
+        List<Listitem> items = listbox.getItems();
+        if (!items.isEmpty()) {
+            listbox.setSelectedIndex(0);
+            items.get(0).setFocus(true);
+        }
+    }
+
     private ListModel getSubModel(String text) {
         List<CriterionWithItsType> list = new ArrayList<CriterionWithItsType>();
         text = text.trim().toLowerCase();
@@ -418,4 +427,29 @@ public class CriterionsController extends GenericForwardComposer {
         }
         return new SimpleListModel(list);
     }
+
+    public void onOK(KeyEvent event) {
+        Component listitem = event.getReference();
+        if (listitem instanceof Listitem) {
+            Bandbox bandbox = (Bandbox) listitem.getParent().getParent()
+                    .getParent();
+            CriterionSatisfactionDTO criterionSatisfactionDTO = (CriterionSatisfactionDTO) ((Row) bandbox
+                    .getParent().getParent()).getValue();
+
+            selectCriterionAndType((Listitem) listitem, bandbox,
+                    criterionSatisfactionDTO);
+
+            bandbox.close();
+        }
+    }
+
+    public void onClick(MouseEvent event) {
+        Component listitem = event.getTarget();
+        if (listitem instanceof Listitem) {
+            Bandbox bandbox = (Bandbox) listitem.getParent().getParent()
+                    .getParent();
+            bandbox.close();
+        }
+    }
+
 }
