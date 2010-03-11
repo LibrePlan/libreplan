@@ -1,0 +1,18 @@
+#
+# First word:
+#   Identifier of the section to include. It cannot contain spaces. For
+#   a section named “foo”, a file “foo/foo.rst” must exist.
+#
+# Rest of the line:
+#   Free form text for specifying who is in charge. It will be passed to
+#   docutils as-is, so you can add markup if needed.
+#
+#
+
+
+01-exercicios-sesion1-grupo1      Javier Morán (jmoran@igalia.com)
+02-exercicios-sesion1-grupo2      Javier Morán (jmoran@igalia.com)
+03-exercicios-sesion1-grupo3      Javier Morán (jmoran@igalia.com)
+04-exercicios-sesion1-grupo4      Javier Morán (jmoran@igalia.com)
+05-exercicios-sesion1-grupo5      Javier Morán (jmoran@igalia.com)
+99-licencia			  José María Casanova (jcasanova@igalia.com>
