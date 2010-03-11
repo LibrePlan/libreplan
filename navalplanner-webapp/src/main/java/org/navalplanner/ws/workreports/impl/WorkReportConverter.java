@@ -333,7 +333,6 @@ public final class WorkReportConverter {
          */
         for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
 
-            System.out.println(" line:: " + lineDTO.code);
             /* Step 1.1: requires each work report line DTO to have a code. */
             if (StringUtils.isBlank(lineDTO.code)) {
                 throw new ValidationException(

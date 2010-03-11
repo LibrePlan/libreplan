@@ -22,6 +22,7 @@ package org.navalplanner.web.test.ws.workreports;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
@@ -38,8 +39,13 @@ import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.daos.ILabelTypeDAO;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
@@ -48,9 +54,14 @@ import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.HoursManagementEnum;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
+import org.navalplanner.business.workreports.valueobjects.DescriptionField;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.api.LabelReferenceDTO;
+import org.navalplanner.ws.workreports.api.DescriptionValueDTO;
 import org.navalplanner.ws.workreports.api.IWorkReportService;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
 import org.navalplanner.ws.workreports.api.WorkReportLineDTO;
@@ -97,19 +108,41 @@ public class WorkReportServiceTest {
     @Autowired
     private IWorkReportDAO workReportDAO;
 
+    @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
+    private ILabelTypeDAO labelTypeDAO;
+
     private final String workReportTypeCode = "TypeCode-A";
 
     private final String workReportTypeCode2 = "TypeCode-B";
 
     private final String workReportTypeCode3 = "TypeCode-C";
 
-    private final String workReportTypeCode4 = "TypeCode-C";
+    private final String workReportTypeCode4 = "TypeCode-D";
+
+    private final String workReportTypeCode5 = "TypeCode-E";
 
     private final String resourceCode = "ResourceCode-A";
 
     private final String orderElementCode = "OrderElementCode-A";
 
     private final String typeOfWorkHoursCode = "TypeOfWorkHoursCode-A";
+
+    private final String field1 = "field1";
+
+    private final String field2 = "field2";
+
+    private final String labelTypeA = "labelTypeA";
+
+    private final String labelTypeB = "labelTypeB";
+
+    private final String labelA1 = "labelA1";
+
+    private final String labelA2 = "labelA2";
+
+    private final String labelB1 = "labelB1";
 
     @Test
     @Rollback(false)
@@ -134,6 +167,29 @@ public class WorkReportServiceTest {
         sessionFactory.getCurrentSession().evict(orderLine);
 
         orderLine.dontPoseAsTransientObjectAnymore();
+    }
+
+    @Test
+    @Rollback(false)
+    public void createAPairOfLabelTypes() {
+        LabelType labelType_A = LabelType.create(labelTypeA, labelTypeA);
+        LabelType labelType_B = LabelType.create(labelTypeB, labelTypeB);
+
+        Label label_A1 = Label.create(labelA1, labelA1);
+        Label label_A2 = Label.create(labelA2, labelA2);
+        Label label_B1 = Label.create(labelB1, labelB1);
+
+        labelType_A.addLabel(label_A1);
+        labelType_A.addLabel(label_A2);
+        labelType_B.addLabel(label_B1);
+
+        labelTypeDAO.save(labelType_A);
+        labelTypeDAO.save(labelType_B);
+        labelTypeDAO.flush();
+        sessionFactory.getCurrentSession().evict(labelType_A);
+        sessionFactory.getCurrentSession().evict(labelType_B);
+        labelType_A.dontPoseAsTransientObjectAnymore();
+        labelType_B.dontPoseAsTransientObjectAnymore();
     }
 
     @Test
@@ -170,6 +226,52 @@ public class WorkReportServiceTest {
                 workReportTypeCode3);
     }
 
+    @Test
+    @Rollback(false)
+    public void givenWorkReportTypeStored4() {
+        WorkReportType type = givenWorkReportTypeStored(false, false, false,
+                null,workReportTypeCode4);
+        type.addDescriptionFieldToEndHead(DescriptionField.create(field1, 10));
+        type.addDescriptionFieldToEndLine(DescriptionField.create(field2, 10));
+
+        workReportTypeDAO.save(type);
+        workReportTypeDAO.flush();
+        sessionFactory.getCurrentSession().evict(type);
+        type.dontPoseAsTransientObjectAnymore();
+    }
+
+    @Test
+    @Rollback(false)
+    public void givenWorkReportTypeStored5() {
+        WorkReportType type = givenWorkReportTypeStored(false, false, false,
+                null, workReportTypeCode5);
+        WorkReportLabelTypeAssigment labelAssigment1 = WorkReportLabelTypeAssigment
+                .create(true);
+        WorkReportLabelTypeAssigment labelAssigment2 = WorkReportLabelTypeAssigment
+                .create(false);
+
+        try {
+            labelAssigment1.setLabelType(labelTypeDAO.findByCode(labelTypeA));
+            labelAssigment1.setDefaultLabel(labelDAO.findByCode(labelA1));
+            labelAssigment1.setPositionNumber(0);
+
+            labelAssigment2.setLabelType(labelTypeDAO.findByCode(labelTypeB));
+            labelAssigment2.setDefaultLabel(labelDAO.findByCode(labelB1));
+            labelAssigment2.setPositionNumber(0);
+
+            type.addLabelAssigmentToEndHead(labelAssigment1);
+            type.addLabelAssigmentToEndLine(labelAssigment2);
+
+            workReportTypeDAO.save(type);
+            workReportTypeDAO.flush();
+            sessionFactory.getCurrentSession().evict(type);
+            type.dontPoseAsTransientObjectAnymore();
+
+        } catch (InstanceNotFoundException e) {
+            assertTrue(false);
+        }
+    }
+
     private WorkReportType givenWorkReportTypeStored(boolean dateShared,
             boolean orderElementShared, boolean resourceShared,
             HoursManagementEnum hoursManagement, String workReportTypeCode) {
@@ -188,7 +290,6 @@ public class WorkReportServiceTest {
         workReportTypeDAO.save(workReportType);
         workReportTypeDAO.flush();
         sessionFactory.getCurrentSession().evict(workReportType);
-
         workReportType.dontPoseAsTransientObjectAnymore();
 
         return workReportType;
@@ -213,6 +314,116 @@ public class WorkReportServiceTest {
         workReportDTO.workReportType = type;
         workReportDTO.workReportLines.add(createWorkReportLineDTO());
         return workReportDTO;
+    }
+
+    @Test
+    @Transactional
+    public void importInvalidLabelsToWorkReport() {
+        // create work report with a work report line
+        WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode5);
+
+        // create invalid description value to add into head and lines.
+        LabelReferenceDTO labelDTO1 = new LabelReferenceDTO("codeLabelNoexiste");
+        LabelReferenceDTO labelDTO2 = new LabelReferenceDTO(labelA1);
+
+        // it assigne a label type LabelTypeA, but it should be a label type
+        // LabelTypeB
+        workReportDTO.labels.add(labelDTO1);
+        for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
+            lineDTO.labels.add(labelDTO2);
+        }
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(workReportDTO));
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
+                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        // Test
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
+    @Test
+    @Transactional
+    public void importValidLabelsToWorkReport() {
+        // create work report with a work report line
+        WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode5);
+
+        // create invalid description value to add into head and lines.
+        LabelReferenceDTO labelDTO1 = new LabelReferenceDTO(labelA1);
+        LabelReferenceDTO labelDTO2 = new LabelReferenceDTO(labelB1);
+
+        // it assigne a label type LabelTypeA, but it should be a label type
+        // LabelTypeB
+        workReportDTO.labels.add(labelDTO1);
+        for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
+            lineDTO.labels.add(labelDTO2);
+        }
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(workReportDTO));
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
+                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        // Test
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+    }
+
+    @Test
+    @Transactional
+    public void importInvalidDescriptionValuesToWorkReport() {
+        // create work report with a work report line
+        WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode4);
+
+        // create invalid description value to add into head and lines.
+        DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1 + "X",
+                "incorrecto");
+        DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2 + "X",
+                "incorrecto");
+        workReportDTO.descriptionValues.add(valueDTO1);
+        for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
+            lineDTO.descriptionValues.add(valueDTO2);
+        }
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(workReportDTO));
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
+                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        // Test
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+        assertTrue(instanceConstraintViolationsList.get(0).constraintViolations
+                .toString(),
+                instanceConstraintViolationsList.get(0).constraintViolations
+                        .size() == 2);
+    }
+
+    @Test
+    @Transactional
+    public void importValidDescriptionValuesToWorkReport() {
+        // create work report with a work report line
+        WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode4);
+
+        // create invalid description value to add into head and lines.
+        DescriptionValueDTO valueDTO1 = new DescriptionValueDTO(field1,
+                "correcto");
+        DescriptionValueDTO valueDTO2 = new DescriptionValueDTO(field2,
+                "correcto");
+        workReportDTO.descriptionValues.add(valueDTO1);
+        for (WorkReportLineDTO lineDTO : workReportDTO.workReportLines) {
+            lineDTO.descriptionValues.add(valueDTO2);
+        }
+
+        WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
+                .asList(workReportDTO));
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = workReportService
+                .addWorkReports(workReportListDTO).instanceConstraintViolationsList;
+
+        // Test
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
     }
 
     @Test
