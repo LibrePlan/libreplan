@@ -1,5 +1,5 @@
-Grupo 1
-#######
+Exercicios Grupo 1
+##################
 
 .. _grupo1:
 .. contents::
