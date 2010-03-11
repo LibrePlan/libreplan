@@ -31,17 +31,20 @@
                     <bandbox onChanging = "assignedCriterionsController.onChangingText(event);"
                         constraint="no empty" width="400px"
                         visible="@{criterionSatisfactionDTO.newObject}"
-                        value = "@{criterionSatisfactionDTO.criterionAndType}">
+                        value = "@{criterionSatisfactionDTO.criterionAndType}"
+                        ctrlKeys="#down" onCtrlKey="assignedCriterionsController.onCtrlKey(event);">
                         <bandpopup>
                             <listbox width="500px" height="150px" fixedLayout="true"
                              model="@{assignedCriterionsController.criterionWithItsTypes}"
                              onSelect="assignedCriterionsController.selectCriterionAndType(self.selectedItem,
-                                    self.parent.parent,self.parent.parent.parent.parent.value);">
+                                    self.parent.parent,self.parent.parent.parent.parent.value);"
+                             onOk="assignedCriterionsController.onOK(event);">
                                 <listhead>
                                     <listheader label="Type" />
                                     <listheader label="Criterion" />
                                 </listhead>
-                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}"
+                                    onClick="assignedCriterionsController.onClick(event);">
                                     <listcell label="@{criterionWithItsType.type.name}" />
                                     <listcell label="@{criterionWithItsType.nameHierarchy}" />
                                 </listitem>
