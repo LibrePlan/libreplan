@@ -51,6 +51,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
@@ -183,9 +185,6 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
 
     public void selectCriterionAndType(Listitem item, Bandbox bandbox,
             CriterionRequirementWrapper requirementWrapper) {
-        bandbox.close();
-        Listbox listbox = (Listbox) bandbox.getFirstChild().getFirstChild();
-        listbox.setModel(new SimpleListModel(getCriterionWithItsTypes()));
         if (item != null) {
             CriterionWithItsType newCriterionAndType = (CriterionWithItsType) item
                     .getValue();
@@ -209,6 +208,16 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
         listbox.setModel(getSubModel(inputText));
         listbox.invalidate();
         bd.open();
+    }
+
+    public void onCtrlKey(Event event) {
+        Bandbox bd = (Bandbox) event.getTarget();
+        Listbox listbox = (Listbox) bd.getFirstChild().getFirstChild();
+        List<Listitem> items = listbox.getItems();
+        if (!items.isEmpty()) {
+            listbox.setSelectedIndex(0);
+            items.get(0).setFocus(true);
+        }
     }
 
     private ListModel getSubModel(String text) {
@@ -657,6 +666,30 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             return workingHoursLabel;
         }
 
+    }
+
+    public void onOK(KeyEvent event) {
+        Component listitem = event.getReference();
+        if (listitem instanceof Listitem) {
+            Bandbox bandbox = (Bandbox) listitem.getParent().getParent()
+                    .getParent();
+            CriterionRequirementWrapper criterionRequirementWrapper = (CriterionRequirementWrapper) ((Row) bandbox
+                    .getParent().getParent()).getValue();
+
+            selectCriterionAndType((Listitem) listitem, bandbox,
+                    criterionRequirementWrapper);
+
+            bandbox.close();
+        }
+    }
+
+    public void onClick(MouseEvent event) {
+        Component listitem = event.getTarget();
+        if (listitem instanceof Listitem) {
+            Bandbox bandbox = (Bandbox) listitem.getParent().getParent()
+                    .getParent();
+            bandbox.close();
+        }
     }
 
 }

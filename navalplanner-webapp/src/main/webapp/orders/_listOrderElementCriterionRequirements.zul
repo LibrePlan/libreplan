@@ -53,17 +53,20 @@
                         <bandbox onChanging = "criterionRequirementsController.onChangingText(event);"
                             width="400px"
                             visible="@{criterionRequirementWrapper.updatable}"
-                            value="@{criterionRequirementWrapper.criterionAndType}">
+                            value="@{criterionRequirementWrapper.criterionAndType}"
+                            ctrlKeys="#down" onCtrlKey="criterionRequirementsController.onCtrlKey(event);">
                             <bandpopup>
                                     <listbox width="500px" height="150px" fixedLayout="true"
                                         model="@{criterionRequirementsController.criterionWithItsTypes}"
                                         onSelect="criterionRequirementsController.selectCriterionAndType(self.selectedItem,
-                                            self.parent.parent,self.parent.parent.parent.parent.value);">
+                                            self.parent.parent,self.parent.parent.parent.parent.value);"
+                                        onOk="criterionRequirementsController.onOK(event);">
                                     <listhead>
                                         <listheader label="Type" />
                                         <listheader label="Criterion" />
                                     </listhead>
-                                    <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}">
+                                    <listitem self="@{each='criterionWithItsType'}" value="@{criterionWithItsType}"
+                                        onClick="criterionRequirementsController.onClick(event);">
                                         <listcell label="@{criterionWithItsType.type.name}" />
                                         <listcell label="@{criterionWithItsType.nameHierarchy}" />
                                     </listitem>
