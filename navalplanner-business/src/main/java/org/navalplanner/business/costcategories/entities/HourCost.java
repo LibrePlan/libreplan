@@ -25,30 +25,49 @@ import java.math.BigDecimal;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.costcategories.daos.IHourCostDAO;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public class HourCost extends BaseEntity {
+public class HourCost extends IntegrationEntity {
 
-    @NotNull
     private BigDecimal priceCost;
 
-    @NotNull
     private LocalDate initDate;
 
     private LocalDate endDate;
 
-    @NotNull
     private TypeOfWorkHours type;
 
-    @NotNull
     private CostCategory category;
 
     // Default constructor, needed by Hibernate
     protected HourCost() {
 
+    }
+
+    public static HourCost createUnvalidated(String code, BigDecimal priceCost,
+            LocalDate initDate) {
+        HourCost hourCost = create(new HourCost(), code);
+        if (priceCost != null) {
+            hourCost.setPriceCost(priceCost);
+        }
+        if (initDate != null) {
+            hourCost.setInitDate(initDate);
+        }
+        return hourCost;
+    }
+
+    public void updateUnvalidated(BigDecimal priceCost, LocalDate initDate) {
+        if (priceCost != null) {
+            this.priceCost = priceCost;
+        }
+        if (initDate != null) {
+            this.initDate = initDate;
+        }
     }
 
     public static HourCost create(BigDecimal priceCost, LocalDate initDate) {
@@ -64,6 +83,7 @@ public class HourCost extends BaseEntity {
         this.initDate = initDate;
     }
 
+    @NotNull(message = "price cost not specified")
     public BigDecimal getPriceCost() {
         return priceCost;
     }
@@ -72,6 +92,7 @@ public class HourCost extends BaseEntity {
         this.priceCost = priceCost;
     }
 
+    @NotNull(message = "init date not specified")
     public LocalDate getInitDate() {
         return initDate;
     }
@@ -88,6 +109,7 @@ public class HourCost extends BaseEntity {
         this.endDate = endDate;
     }
 
+    @NotNull(message = "type of work hours not specified")
     public TypeOfWorkHours getType() {
         return type;
     }
@@ -96,6 +118,7 @@ public class HourCost extends BaseEntity {
         this.type = type;
     }
 
+    @NotNull(message = "cost category not specified")
     public CostCategory getCategory() {
         return category;
     }
@@ -123,5 +146,10 @@ public class HourCost extends BaseEntity {
             return true;
         }
         return (endDate.isAfter(initDate) || initDate.equals(endDate));
+    }
+
+    @Override
+    protected IHourCostDAO getIntegrationEntityDAO() {
+        return Registry.getHourCostDAO();
     }
 }

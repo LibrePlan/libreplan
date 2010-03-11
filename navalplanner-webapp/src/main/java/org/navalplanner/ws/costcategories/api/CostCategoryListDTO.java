@@ -18,23 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.costcategories.daos;
+package org.navalplanner.ws.costcategories.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.costcategories.entities.CostCategory;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
- * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * DTO for a list of <code>CostCategory</code> entities.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface ICostCategoryDAO extends IIntegrationEntityDAO<CostCategory> {
+@XmlRootElement(name = "cost-category-list")
+public class CostCategoryListDTO {
 
-    List<CostCategory> findActive();
+    @XmlElement(name = "cost-category")
+    public List<CostCategoryDTO> costCategories = new ArrayList<CostCategoryDTO>();
 
-    CostCategory findUniqueByName(String name) throws InstanceNotFoundException;
+    public CostCategoryListDTO() {
+    }
 
-    CostCategory findUniqueByCode(String code) throws InstanceNotFoundException;
+    public CostCategoryListDTO(List<CostCategoryDTO> costCategories) {
+        this.costCategories = costCategories;
+    }
+
 }

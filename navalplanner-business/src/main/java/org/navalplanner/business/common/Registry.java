@@ -24,6 +24,7 @@ import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
+import org.navalplanner.business.costcategories.daos.IHourCostDAO;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
@@ -149,6 +150,9 @@ public class Registry {
     @Autowired
     private IOrderElementTemplateDAO orderElementTemplateDAO;
 
+    @Autowired
+    private IHourCostDAO hourCostDAO;
+
     private Registry() {
     }
 
@@ -264,5 +268,9 @@ public class Registry {
 
     public static IOrderElementTemplateDAO getOrderElementTemplateDAO() {
         return getInstance().orderElementTemplateDAO;
+    }
+
+    public static IHourCostDAO getHourCostDAO() {
+        return getInstance().hourCostDAO;
     }
 }

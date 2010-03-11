@@ -11,6 +11,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
+    <property name="code" access="property" not-null="true" unique="true"/>
     <property name="name" unique="true"/>
 
     <property name="enabled"/>
@@ -30,6 +31,7 @@
     </id>
     <version name="version" access="property" type="long" />
 
+    <property name="code" access="property" not-null="true" unique="true"/>
     <property name="priceCost"/>
 
     <property name="initDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>

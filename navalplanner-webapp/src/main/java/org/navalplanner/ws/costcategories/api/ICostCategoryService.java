@@ -18,23 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.costcategories.daos;
+package org.navalplanner.ws.costcategories.api;
 
-import java.util.List;
-
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
- * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
- * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * Service for managing cost categories.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface ICostCategoryDAO extends IIntegrationEntityDAO<CostCategory> {
+public interface ICostCategoryService {
 
-    List<CostCategory> findActive();
+    InstanceConstraintViolationsListDTO addCostCategories(
+            CostCategoryListDTO costCategoryListDTO);
 
-    CostCategory findUniqueByName(String name) throws InstanceNotFoundException;
-
-    CostCategory findUniqueByCode(String code) throws InstanceNotFoundException;
+    public CostCategoryListDTO getCostCotegories();
 }

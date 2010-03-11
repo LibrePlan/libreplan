@@ -25,16 +25,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public class CostCategory extends BaseEntity {
+public class CostCategory extends IntegrationEntity {
 
     @NotEmpty
     private String name;
@@ -46,6 +50,26 @@ public class CostCategory extends BaseEntity {
     // Default constructor, needed by Hibernate
     protected CostCategory() {
 
+    }
+
+    public static CostCategory createUnvalidated(String code, String name,
+            Boolean enabled) {
+        CostCategory costCategory = create(new CostCategory(), code);
+        costCategory.name = name;
+        if (enabled != null) {
+            costCategory.enabled = enabled;
+        }
+        return costCategory;
+
+    }
+
+    public void updateUnvalidated(String name, Boolean enabled) {
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
+        if (enabled != null) {
+            this.enabled = enabled;
+        }
     }
 
     public static CostCategory create() {
@@ -118,6 +142,22 @@ public class CostCategory extends BaseEntity {
         return !overlap;
     }
 
+    public HourCost getHourCostByCode(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code, HourCost.class.getName());
+        }
+
+        for (HourCost c : this.hourCosts) {
+            if (c.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return c;
+            }
+        }
+
+        throw new InstanceNotFoundException(code, HourCost.class.getName());
+    }
+
     @AssertFalse(message="Two hour costs with the same type overlap in time")
     public boolean checkHourCostsOverlap() {
         List<HourCost> listHourCosts = new ArrayList<HourCost>();
@@ -157,4 +197,10 @@ public class CostCategory extends BaseEntity {
         }
         return false;
     }
+
+    @Override
+    protected ICostCategoryDAO getIntegrationEntityDAO() {
+        return Registry.getCostCategoryDAO();
+    }
+
 }

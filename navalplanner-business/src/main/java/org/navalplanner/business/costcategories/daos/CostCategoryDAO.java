@@ -27,7 +27,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class CostCategoryDAO extends GenericDAOHibernate<CostCategory, Long>
+public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
         implements ICostCategoryDAO {
 
     @Override
@@ -71,6 +71,27 @@ public class CostCategoryDAO extends GenericDAOHibernate<CostCategory, Long>
         } else {
             return costCategory;
         }
+    }
+
+    @Override
+    public CostCategory findUniqueByCode(String code)
+            throws InstanceNotFoundException {
+        if (code == null) {
+            throw new InstanceNotFoundException(code, CostCategory.class
+                    .getName());
+        }
+
+        Criteria c = getSession().createCriteria(CostCategory.class).add(
+                Restrictions.eq("code", code).ignoreCase());
+        CostCategory costCategory = (CostCategory) c.uniqueResult();
+
+        if (costCategory == null) {
+            throw new InstanceNotFoundException(code, CostCategory.class
+                    .getName());
+        } else {
+            return costCategory;
+        }
+
     }
 
     @Transactional(readOnly = true)

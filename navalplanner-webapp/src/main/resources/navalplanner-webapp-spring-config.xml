@@ -65,6 +65,7 @@
             <ref bean="resourceHoursServiceREST"/>
             <ref bean="workReportServiceREST"/>
             <ref bean="labelServiceREST"/>
+            <ref bean="costCategoryServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />

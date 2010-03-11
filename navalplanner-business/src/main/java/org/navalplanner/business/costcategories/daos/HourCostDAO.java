@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.costcategories.daos;
 
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class HourCostDAO extends GenericDAOHibernate<HourCost, Long> implements
+public class HourCostDAO extends IntegrationEntityDAO<HourCost> implements
         IHourCostDAO {
 
     @Override
