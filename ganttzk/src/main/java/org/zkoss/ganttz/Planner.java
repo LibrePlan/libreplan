@@ -127,6 +127,10 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isShowingCriticalPath = false;
 
+    private boolean isShowingLabels = false;
+
+    private boolean isShowingResources = false;
+
     private ZoomLevel initialZoomLevel = null;
 
     private Listbox listZoomLevels = null;
@@ -448,28 +452,28 @@ public class Planner extends HtmlMacroComponent  {
 
     public void showAllLabels() {
         Button showAllLabelsButton = (Button) getFellow("showAllLabels");
-        if (showAllLabelsButton.getSclass().equals(
-                "planner-command show-labels")) {
+        if (isShowingLabels) {
+            Clients.evalJavaScript("zkTasklist.hideAllTooltips();");
+            showAllLabelsButton.setSclass("planner-command show-labels");
+        } else {
             Clients.evalJavaScript("zkTasklist.showAllTooltips();");
             showAllLabelsButton
                     .setSclass("planner-command show-labels clicked");
-        } else {
-            Clients.evalJavaScript("zkTasklist.hideAllTooltips();");
-            showAllLabelsButton.setSclass("planner-command show-labels");
         }
+        isShowingLabels = !isShowingLabels;
     }
 
     public void showAllResources() {
         Button showAllLabelsButton = (Button) getFellow("showAllResources");
-        if (showAllLabelsButton.getSclass().equals(
-                "planner-command show-resources")) {
-            Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
-            showAllLabelsButton
-                    .setSclass("planner-command show-resources clicked");
-        } else {
+        if (isShowingResources) {
             Clients.evalJavaScript("zkTasklist.hideResourceTooltips();");
             showAllLabelsButton.setSclass("planner-command show-resources");
+        } else {
+            Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
+            showAllLabelsButton
+            .setSclass("planner-command show-resources clicked");
         }
+        isShowingResources = !isShowingResources;
     }
 
     public void print() {
@@ -533,5 +537,13 @@ public class Planner extends HtmlMacroComponent  {
         leftPane.setPredicate(predicate);
         getTaskList().setPredicate(predicate);
         getDependencyList().redrawDependencies();
+
+        if (isShowingLabels) {
+            Clients.evalJavaScript("zkTasklist.showAllTooltips();");
+        }
+
+        if (isShowingResources) {
+            Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
+        }
     }
 }
