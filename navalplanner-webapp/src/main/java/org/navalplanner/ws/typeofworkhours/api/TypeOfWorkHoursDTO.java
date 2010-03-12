@@ -18,46 +18,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.costcategories.api;
+package org.navalplanner.ws.typeofworkhours.api;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
- * DTO for {@link CostCategory} entity.
+ * DTO for {@link TypeOfWorkHours} entity.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class CostCategoryDTO extends IntegrationEntityDTO {
+public class TypeOfWorkHoursDTO extends IntegrationEntityDTO {
 
-    public final static String ENTITY_TYPE = "cost-category";
+    public final static String ENTITY_TYPE = "type-work-hours";
 
     @XmlAttribute
     public String name;
 
     @XmlAttribute
+    public BigDecimal defaultPrice;
+
+    @XmlAttribute
     public Boolean enabled;
 
-    @XmlElementWrapper(name = "hour-cost-list")
-    @XmlElement(name = "hour-cost")
-    public Set<HourCostDTO> hourCostDTOs = new HashSet<HourCostDTO>();
-
-    public CostCategoryDTO() {
+    public TypeOfWorkHoursDTO() {
     }
 
-    public CostCategoryDTO(String code, String name, Boolean enabled,
-            Set<HourCostDTO> hourCostDTOs) {
+    public TypeOfWorkHoursDTO(String code, String name, Boolean enabled,
+            BigDecimal defaultPrice) {
 
         super(code);
         this.name = name;
         this.enabled = enabled;
-        this.hourCostDTOs = hourCostDTOs;
+        this.defaultPrice = defaultPrice;
     }
 
     /**
@@ -65,10 +61,10 @@ public class CostCategoryDTO extends IntegrationEntityDTO {
      * facilitate the implementation of test cases that add new instances (such
      * instances will have a unique code).
      */
-    public CostCategoryDTO(String name, Boolean enabled,
-            Set<HourCostDTO> hourCostDTOs) {
+    public TypeOfWorkHoursDTO(String name, Boolean enabled,
+            BigDecimal defaultPrice) {
 
-        this(generateCode(), name, enabled, hourCostDTOs);
+        this(generateCode(), name, enabled, defaultPrice);
 
     }
 

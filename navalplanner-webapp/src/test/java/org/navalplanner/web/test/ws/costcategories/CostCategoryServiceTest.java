@@ -132,7 +132,7 @@ public class CostCategoryServiceTest {
         cc4_HourCostDTOs.add(cc4_1_HourCostDTO);
         CostCategoryDTO cc4 = new CostCategoryDTO("cc4", true, cc4_HourCostDTOs);
 
-        /* Criterion type list. */
+        /* Cost category type list. */
         CostCategoryListDTO costCategoryListDTO = createCostCategoryListDTO(
                 cc1, cc2, cc3, cc4);
 
@@ -178,7 +178,6 @@ public class CostCategoryServiceTest {
          cc1_HourCostDTOs.add(cc1_1_HourCostDTO);
          CostCategoryDTO cc1 = new CostCategoryDTO(costCategoryCode,"newCC1", true, cc1_HourCostDTOs);
 
-         /* Criterion type list. */
          CostCategoryListDTO costCategoryListDTO = createCostCategoryListDTO(cc1);
 
          List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = costCategoryService
@@ -209,20 +208,19 @@ public class CostCategoryServiceTest {
         cc2_HourCostDTOs.add(cc2_1_HourCostDTO);
          CostCategoryDTO cc2 = new CostCategoryDTO(costCategoryCode,"updateCC1", false, cc2_HourCostDTOs);
 
-         /* Criterion type list. */
+        /* Cost category type list. */
          costCategoryListDTO = createCostCategoryListDTO(cc2);
 
         instanceConstraintViolationsList = costCategoryService
                  .addCostCategories(costCategoryListDTO).instanceConstraintViolationsList;
 
          /* Test. */
-        // the end date cannot be before the initDate
          assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
          assertTrue(costCategoryDAO.existsByCode(cc1.code));
         assertTrue(hourCostDAO.existsByCode(cc1_1_HourCostDTO.code));
 
-        // Check if the changes was updated
+         // Check if the changes was updated
          try {
             costCategory = costCategoryDAO
                     .findByCode(costCategoryCode);

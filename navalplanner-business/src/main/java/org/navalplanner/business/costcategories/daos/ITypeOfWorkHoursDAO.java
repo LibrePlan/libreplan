@@ -22,14 +22,15 @@ package org.navalplanner.business.costcategories.daos;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public interface ITypeOfWorkHoursDAO extends IGenericDAO<TypeOfWorkHours, Long> {
+public interface ITypeOfWorkHoursDAO extends
+        IIntegrationEntityDAO<TypeOfWorkHours> {
 
     TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
         throws InstanceNotFoundException;

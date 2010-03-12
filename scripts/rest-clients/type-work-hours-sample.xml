@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<type-work-hours-list xmlns="http://rest.ws.navalplanner.org">
+  <type-work-hours enabled="true" defaultPrice="8.00" name="Hora Extra"
+  code="code-E" />
+  <type-work-hours enabled="false" defaultPrice="5.00" name="Normal"
+  code="code-N" />
+  <type-work-hours enabled="true" defaultPrice="9.50"
+  name="Plus Nocturnidad" code="code-P" />
+</type-work-hours-list>

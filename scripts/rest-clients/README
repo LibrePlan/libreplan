@@ -42,6 +42,15 @@
 
     - export-label-types.sh (authenticate with wsreader/wsreader)
 
+  * Import type of work hours:
+
+    - import-type-work-hours.sh type-work-hours-sample.xml
+      (authenticate with wswriter/wswriter)
+
+  * Export type of work hours:
+
+    - export-type-work-hours.sh (authenticate with wsreader/wsreader)
+
   * Import resources:
 
     - import-resources.sh resources-sample-mini.xml (or resources-sample.xml)

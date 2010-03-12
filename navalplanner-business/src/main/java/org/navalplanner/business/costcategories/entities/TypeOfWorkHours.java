@@ -22,9 +22,10 @@ package org.navalplanner.business.costcategories.entities;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
@@ -32,12 +33,10 @@ import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public class TypeOfWorkHours extends BaseEntity {
+public class TypeOfWorkHours extends IntegrationEntity {
 
-    @NotEmpty
     private String code;
 
-    @NotEmpty
     private String name;
 
     private BigDecimal defaultPrice;
@@ -57,11 +56,40 @@ public class TypeOfWorkHours extends BaseEntity {
         return (TypeOfWorkHours) create(new TypeOfWorkHours(code, name));
     }
 
+    public static TypeOfWorkHours createUnvalidated(String code, String name,
+            Boolean enabled, BigDecimal defaultPrice) {
+
+        TypeOfWorkHours typeOfWorkHours = create(
+                new TypeOfWorkHours(code, name), code);
+
+        if (enabled != null) {
+            typeOfWorkHours.enabled = enabled;
+        }
+        if (defaultPrice != null) {
+            typeOfWorkHours.defaultPrice = defaultPrice;
+        }
+        return typeOfWorkHours;
+    }
+
+    public void updateUnvalidated(String name, Boolean enabled,
+            BigDecimal defaultPrice) {
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
+        if (enabled != null) {
+            this.enabled = enabled;
+        }
+        if (defaultPrice != null) {
+            this.defaultPrice = defaultPrice;
+        }
+    }
+
     protected TypeOfWorkHours(String code, String name) {
         this.code = code;
         this.name = name;
     }
 
+    @NotEmpty(message = "name not specified")
     public String getName() {
         return name;
     }
@@ -70,6 +98,7 @@ public class TypeOfWorkHours extends BaseEntity {
         this.name = name;
     }
 
+    @NotEmpty(message = "code not specified")
     public String getCode() {
         return code;
     }
@@ -96,6 +125,11 @@ public class TypeOfWorkHours extends BaseEntity {
 
     @AssertTrue(message="type code has to be unique. It is already used")
     public boolean checkConstraintUniqueCode() {
+
+        if (code == null) {
+            return true;
+        }
+
         boolean result;
         if (isNewObject()) {
             result = !existsTypeWithTheCode();
@@ -119,5 +153,10 @@ public class TypeOfWorkHours extends BaseEntity {
         } catch (InstanceNotFoundException e) {
             return true;
         }
+    }
+
+    @Override
+    protected ITypeOfWorkHoursDAO getIntegrationEntityDAO() {
+        return Registry.getTypeOfWorkHoursDAO();
     }
 }

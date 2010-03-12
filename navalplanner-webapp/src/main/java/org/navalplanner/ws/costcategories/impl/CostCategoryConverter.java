@@ -136,7 +136,7 @@ public class CostCategoryConverter {
     public final static void updateCostCategory(CostCategory costCategory,
             CostCategoryDTO costCategoryDTO) throws ValidationException {
         /*
-         * 1: Update the existing work report line or add newwork report line.
+         * 1: Update the existing hour cost or add new hour cost.
          */
         for (HourCostDTO hourCostDTO : costCategoryDTO.hourCostDTOs) {
 
