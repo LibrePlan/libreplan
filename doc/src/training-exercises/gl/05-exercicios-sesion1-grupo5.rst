@@ -4,6 +4,7 @@ Exercicios Grupo 5
 .. contents::
 
 
+
 Exercicio  1. Criterios
 =======================
 
@@ -146,22 +147,22 @@ Crear un pedido cada grupo cos seguintes datos e poñerlle, os puntos de planifi
 
       * Elementos de  pedido:
 
-         * 1.   Coordinación -  *Punto de planificación* - Grupo 5
+         * 1. Coordinación -  **Punto de planificación** - Criterio Grupo 5
 
-            * 1.1 Reunións con  cliente - 100h
+            * 1.1 Reunións con  cliente        - 100h
             * 1.2  Reunións  con traballadores - 100h
 
-         * 2   Bloque 1   *Punto de planificación* - Grupo 5
+         * 2. Bloque 1  - Criterio Grupo 5
 
-            * 2.1  Pintar  camarotes  A e B- 350 h - Pintor
-            * 2.2 Pintar sala de  máquinas - 200 h - Pintor
-            * 2.3 Pintas  cociña de buque - 100 h - Pintor
+            * 2.1 Pintar  camarotes  A e B  - 350 h - **Punto de planificación** - Criterio Pintor
+            * 2.2 Pintar sala de  máquinas  - 200 h - **Punto de planificación** - Criterio Pintor
+            * 2.3 Pintas  cociña de buque   - 100 h - **Punto de planificación** - Criterio Pintor
 
-         * 3 Bloque  2 - Grupo 5
+         * 3. Bloque  2 - Criterio Grupo 5
 
-            * 3.1 Illar camarote A - 300 h *Punto de planificación* - Califugador
-            * 3.2 Illar camarote B - 250 h *Punto de planificación* - Califugador
-            * 3.3 Illar camarote C - 200 h *Punto de planificación* - Califugador
+            * 3.1 Illar camarote A - 300 h **Punto de planificación** - Criterio Califugador
+            * 3.2 Illar camarote B - 250 h **Punto de planificación** - Criterio Califugador
+            * 3.3 Illar camarote C - 200 h **Punto de planificación** - Criterio Califugador
 
 Exercicio  9 - Planificando dependencias
 ========================================
@@ -193,9 +194,9 @@ Realizar as seguintes asignacións
 
       * Tarefa: Pintar camarotes A e B
 
-         *  Asignación   xenérica
+         * Asignación   xenérica
          * Estratexia  recomendada
-         *  Número   de recursos por dia: 1
+         * Número   de recursos por dia: 1
 
       *  Tarefa: Pintar sa de maquinas
 
@@ -206,7 +207,7 @@ Realizar as seguintes asignacións
       *  Tarefa: Pintar cociñas de buque
 
          *  Asignación   xenérica
-         * Estratexia  recomendada
+         *  Estratexia  recomendada
          *  Número   de recursos por dia: 1
 
       *  Tarefa: Illar camarote A
@@ -218,8 +219,8 @@ Realizar as seguintes asignacións
 
       * Tarefa: Illar camarote B
 
-         *   Asignación  xenérica con criterios [Grupo  4, Carpinteiro]
-         *   Estratexia:  Calcular número de horas
+         *  Asignación  xenérica con criterios [Grupo  4, Carpinteiro]
+         *  Estratexia:  Calcular número de horas
          *  Número de    recursos por dia: 0.5
          *  Data  de fin: 1 de Setembro 2010
 

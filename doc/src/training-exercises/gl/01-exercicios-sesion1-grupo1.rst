@@ -151,22 +151,22 @@ Crear un pedido cada grupo cos seguintes datos e poñerlle, os puntos de planifi
 
    * Elementos de pedido:
 
-      * 1  Coordinacion - *Punto de planificación* - Grupo 1
+      * 1  Coordinacion - **Punto de planificación** - Criterio Grupo 1
 
          * 1.1 Reunións con  cliente - 100h
          * 1.2  Reunións con traballadores - 100h
 
       * 2  Bloque 1   - Grupo 1
 
-         * 2.1  Soldar  unions do teito - 200 h  *Punto de planificación* - Soldador
-         * 2.2 Soldar  unions do  chan - 200 h *Punto de planificación* - Soldador
-         * 2.3 Repasar  soldaduras ocos - 100 h *Punto de planificación* - Soldador
+         * 2.1  Soldar  unions do teito - 200 h -  **Punto de planificación** - Criterio Soldador
+         * 2.2 Soldar  unions do  chan - 200 h - **Punto de planificación** - Criterio Soldador
+         * 2.3 Repasar  soldaduras ocos - 100 h - **Punto de planificación** - Criterio Soldador
 
       * 3 Bloque  2 - Grupo 1
 
-         * 3.1 Teito de  madeira de camarote A - 300 h *Punto de planificación* - Carpinteiro
-         * 3.2 Cama e  mesilla de camarote A - 250 h *Punto de planificación* - Carpinteiro
-         * 3.3 Poñer  escotillas  camarote A - 200 h *Punto de planificación* - Carpinteiro
+         * 3.1 Teito de  madeira de camarote A - 300 h - **Punto de planificación** - Criterio Carpinteiro
+         * 3.2 Cama e  mesilla de camarote A - 250 h - **Punto de planificación** - Criterio Carpinteiro
+         * 3.3 Poñer  escotillas  camarote A - 200 h - **Punto de planificación** - Criterio Carpinteiro
 
 Exercicio  9 - Planificando dependencias
 ========================================

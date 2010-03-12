@@ -11,14 +11,16 @@ Crear cada grupo o tipo de criterio cos criterios asociados  detallados:
 
 
 
-      * Nome do tipo de  criterio: Capacitación de soldadura.
+      * Nome do tipo de  criterio: Grupo
       * Permite valores  simultáneos: Non.
       * Xerárquico: Non.
       * Criterios:
 
-         * Soldadura  primeiro nivel.
-         * Soldadura segundo nivel.
-         * Soldadura terceiro nivel.
+         * Grupo 1
+         * Grupo 2
+         * Grupo 3
+         * Grupo 4
+         * Grupo 5
 
 Exercicio 2. Calendarios
 ========================
@@ -148,22 +150,22 @@ Crear un pedido cada grupo cos seguintes datos e poñerlle, os puntos de planifi
 
       * Elementos de pedido:
 
-         * 1.   Coordinacion - Grupo 3
+         * 1.   Coordinacion - Criterio Grupo 3 - **Punto de  planificación**
 
-            * 1.1 Reunións con cliente - 100h *Punto de  planificación*
-            * 1.2  Reunións con traballadores - 100h *Punto  de planificación*
+            * 1.1 Reunións con cliente - 100h
+            * 1.2  Reunións con traballadores - 100h
 
-         * 2  Bloque 1   *Punto de planificación* - Grupo 3
+         * 2  Bloque 1   *Punto de planificación* - Criterio Grupo 3
 
-            * 2.1 Pintar camarotes A e B- 350 h - Pintor
-            * 2.2 Pintar sala de  máquinas - 200 h - Pintor
-            * 2.3 Pintas cociña de buque - 100 h - Pintor
+            * 2.1 Pintar camarotes A e B- 350 h - **Punto de  planificación** - Criterio Pintor 
+            * 2.2 Pintar sala de  máquinas - 200 h - **Punto de  planificación** - Criterio Pintor
+            * 2.3 Pintas cociña de buque - 100 h - **Punto de  planificación** - Criterio Pintor
 
          * 3 Bloque  2 - Grupo 3
 
-            * 3.1 Teito de  madeira de camarote A - 300 h *Punto de planificación* - Carpinteiro
-            * 3.2  Cama e  mesilla de camarote A - 250 h *Punto de planificación* - Carpinteiro
-            * 3.3  Poñer  escotillas  camarote A - 200 h *Punto de planificación* - Carpinteiro
+            * 3.1 Teito de  madeira de camarote A - 300 h **Punto de planificación** - Criterio Carpinteiro
+            * 3.2  Cama e  mesilla de camarote A - 250 h **Punto de planificación** - Criterio Carpinteiro
+            * 3.3  Poñer  escotillas  camarote A - 200 h **Punto de planificación** - Criterio Carpinteiro
 
 Exercicio  9 - Planificando dependencias
 ========================================
