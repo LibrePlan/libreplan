@@ -87,7 +87,7 @@ public class TaskList extends XulElement implements AfterCompose {
             FilterAndParentExpandedPredicates predicate) {
         this.context = context;
         this.doubleClickCommand = doubleClickCommand;
-        this.currentTotalTasks = tasks;
+        this.currentTotalTasks = new ArrayList<Task>(tasks);
         this.commandsOnTasksContextualized = commandsOnTasksContextualized;
         this.disabilityConfiguration = disabilityConfiguration;
         this.predicate = predicate;
