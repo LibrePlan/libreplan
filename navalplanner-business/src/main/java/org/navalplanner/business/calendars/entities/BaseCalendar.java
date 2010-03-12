@@ -820,14 +820,14 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
                 .asHoursGivenResourceWorkingDayOf(workableHours), workableHours);
     }
 
-    private Integer limitOverAssignability(LocalDate day, int workableHours,
-            int hoursInitiallyCalculated) {
+    private Integer limitOverAssignability(LocalDate day,
+            int hoursInitiallyCalculated, int workableHoursAtDay) {
         boolean overAssignable = isOverAssignable(day);
         if (overAssignable) {
             return hoursInitiallyCalculated;
         } else {
             return Math.min(hoursInitiallyCalculated,
-                    multiplyByCapacity(workableHours));
+                    multiplyByCapacity(workableHoursAtDay));
         }
     }
 
