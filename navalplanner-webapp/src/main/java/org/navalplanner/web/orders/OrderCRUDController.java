@@ -766,6 +766,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         this.planningControllerEntryPoints = planningControllerEntryPoints;
     }
 
+    public IOrderPlanningGate getPlanningControllerEntryPoints() {
+        return this.planningControllerEntryPoints;
+    }
+
     public void setActionOnUp(Runnable onUp) {
         this.onUp = onUp;
     }
@@ -1044,8 +1048,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void showOrderElementFilter() {
-        orderFilter.setVisible(false);
-        orderElementFilter.setVisible(true);
+        if (orderFilter != null)
+            orderFilter.setVisible(false);
+        if (orderElementFilter != null)
+            orderElementFilter.setVisible(true);
     }
 
     private void showCreateButtons(boolean showCreate) {

@@ -60,6 +60,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
@@ -68,6 +69,7 @@ import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
+import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.navalplanner.web.print.CutyPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +86,9 @@ import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
+import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
+import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -145,7 +149,17 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private ICostCalculator hoursCostCalculator;
 
+    @Autowired
+    private OrderCRUDController orderCRUDController;
+
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
+
+    private MultipleTabsPlannerController tabs;
+
+    public void setPlanningControllerEntryPoints(
+            MultipleTabsPlannerController entryPoints) {
+        this.tabs = entryPoints;
+    }
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -176,6 +190,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     @Override
+    public void setTabsController(MultipleTabsPlannerController tabsController) {
+        this.tabs = tabsController;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
@@ -192,6 +211,27 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         if (doubleClickCommand != null) {
             configuration.setDoubleClickCommand(doubleClickCommand);
         }
+
+        ICommand<TaskElement> createNewOrderCommand = new ICommand<TaskElement>() {
+
+            @Override
+            public String getName() {
+                return _("Create new order");
+            }
+
+            @Override
+            public String getImage() {
+                return "/common/img/ico_add.png";
+            }
+
+            @Override
+            public void doAction(IContext<TaskElement> context) {
+                tabs.goToCreateForm();
+            }
+
+        };
+
+        configuration.addGlobalCommand(createNewOrderCommand);
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);

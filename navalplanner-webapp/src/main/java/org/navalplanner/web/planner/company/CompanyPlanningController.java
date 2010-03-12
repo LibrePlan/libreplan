@@ -33,6 +33,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.planner.CompanyPredicate;
+import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -78,6 +79,8 @@ public class CompanyPlanningController implements Composer{
     private ICommandOnTask<TaskElement> doubleClickCommand;
 
     private Map<String, String[]> parameters;
+
+    private MultipleTabsPlannerController tabsController;
 
     public CompanyPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
@@ -126,6 +129,7 @@ public class CompanyPlanningController implements Composer{
         model
                 .setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, createPredicate());
+        model.setTabsController(tabsController);
         planner.updateSelectedZoomLevel();
         planner.invalidate();
     }
@@ -207,6 +211,10 @@ public class CompanyPlanningController implements Composer{
                 doubleClickCommand, predicate);
         planner.updateSelectedZoomLevel();
         planner.invalidate();
+    }
+
+    public void setTabsController(MultipleTabsPlannerController tabsController) {
+        this.tabsController = tabsController;
     }
 
 }

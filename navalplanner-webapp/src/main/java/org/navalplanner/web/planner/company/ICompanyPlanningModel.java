@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.company;
 import java.util.Collection;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
@@ -44,5 +45,7 @@ public interface ICompanyPlanningModel {
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand, IPredicate predicate);
+
+    public void setTabsController(MultipleTabsPlannerController tabsController);
 
 }

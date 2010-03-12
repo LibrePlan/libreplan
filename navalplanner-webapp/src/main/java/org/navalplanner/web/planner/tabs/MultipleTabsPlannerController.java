@@ -166,7 +166,8 @@ public class MultipleTabsPlannerController implements Composer,
 
         planningTab = doFeedbackOn(PlanningTabCreator.create(mode,
                 companyPlanningController, orderPlanningController, orderDAO,
-                breadcrumbs, parameters));
+                breadcrumbs, parameters, this));
+
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
                 resourceLoadController, upCommand(),
                 resourceLoadControllerGlobal,
@@ -185,6 +186,7 @@ public class MultipleTabsPlannerController implements Composer,
                         mode.goToOrderMode(order);
                         getTabsRegistry().show(ordersTab);
                     }
+
 
                 }, parameters);
         final State<Void> typeChanged = typeChangedState();
@@ -321,7 +323,13 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrdersList() {
-        ordersTab.show();
+        // ordersTab.show();
+        getTabsRegistry().show(ordersTab);
+    }
+
+    public void goToCreateForm() {
+        getTabsRegistry().show(ordersTab);
+        orderCRUDController.goToCreateForm();
     }
 
     @Override

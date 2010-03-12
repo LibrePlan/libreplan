@@ -66,14 +66,18 @@ public class PlanningTabCreator {
 
     private final Map<String, String[]> parameters;
 
+    private MultipleTabsPlannerController tabsController;
+
     public static ITab create(Mode mode,
             CompanyPlanningController companyPlanningController,
             OrderPlanningController orderPlanningController,
             IOrderDAO orderDAO,
             Component breadcrumbs,
-            Map<String, String[]> parameters) {
+            Map<String, String[]> parameters,
+            MultipleTabsPlannerController tabsController) {
         return new PlanningTabCreator(mode, companyPlanningController,
-                orderPlanningController, breadcrumbs, orderDAO, parameters)
+                orderPlanningController, breadcrumbs, orderDAO, parameters,
+                tabsController)
                 .create();
     }
 
@@ -81,13 +85,15 @@ public class PlanningTabCreator {
             CompanyPlanningController companyPlanningController,
             OrderPlanningController orderPlanningController,
             Component breadcrumbs, IOrderDAO orderDAO,
-            Map<String, String[]> parameters) {
+            Map<String, String[]> parameters,
+            MultipleTabsPlannerController tabsController) {
         this.mode = mode;
         this.companyPlanningController = companyPlanningController;
         this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
         this.orderDAO = orderDAO;
         this.parameters = parameters;
+        this.tabsController = tabsController;
     }
 
     private ITab create() {
@@ -134,6 +140,7 @@ public class PlanningTabCreator {
                 };
                 commands.add(scheduleCommand);
                 companyPlanningController.setAdditional(commands);
+                companyPlanningController.setTabsController(tabsController);
                 companyPlanningController
                         .setDoubleClickCommand(scheduleCommand);
                 HashMap<String, Object> args = new HashMap<String, Object>();

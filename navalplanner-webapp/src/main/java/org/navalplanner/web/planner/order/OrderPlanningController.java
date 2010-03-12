@@ -35,6 +35,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
+import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.orders.OrderElementPredicate;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
@@ -84,6 +85,9 @@ public class OrderPlanningController implements Composer {
 
     @Autowired
     private EditTaskController editTaskController;
+
+    @Autowired
+    private OrderCRUDController orderCRUDController;
 
     private Order order;
 
@@ -169,6 +173,10 @@ public class OrderPlanningController implements Composer {
 
     public EditTaskController getEditTaskController() {
         return editTaskController;
+    }
+
+    public OrderCRUDController getOrderCRUDController() {
+        return orderCRUDController;
     }
 
     public void setURLParameters(Map<String, String[]> parameters) {
