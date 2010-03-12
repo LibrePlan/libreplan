@@ -67,6 +67,15 @@ dentro dos permisos de "tomcat-juli.jar"
 
 -------------------------------------------------------------------
 
+Incluimos no ficheiro /etc/default/tomcat6 a seguinte directiva para que o sistema reserve unha cantidade axeitada de memoria para a execución da aplicación:
+
+----------------------- /etc/default/tomcat6 ---------------------------
+
+JAVA_OPTS="-Xms1024m -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=1024m"
+
+------------------------------------------------------------------------
+
+
 Instalamos a librería de acceso a jdbc a postgresql en tomcat, o jar está no paquete libpg-java:
 
 # sudo ln -s /usr/share/java/postgresql-jdbc3-8.2.jar /usr/share/tomcat6/lib
