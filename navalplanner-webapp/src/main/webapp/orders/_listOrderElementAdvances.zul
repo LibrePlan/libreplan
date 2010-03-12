@@ -34,7 +34,7 @@
             <listbox id="editAdvances" height="200px"
                      model="@{manageOrderElementAdvancesController.advanceAssignments}"
                      itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
-                     onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem.value);"
+                     onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem);"
                      pageSize="10">
                     <listhead sizable="true">
                          <listheader label="${i18n:_('Type')}" tooltiptext="Advance unit type" />

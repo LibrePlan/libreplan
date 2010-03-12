@@ -166,12 +166,23 @@ public class ManageOrderElementAdvancesController extends
 
     private Listbox editAdvances;
 
-    public void prepareEditAdvanceMeasurements(AdvanceAssignment advanceAssignment) {
+    public void prepareEditAdvanceMeasurements(Listitem selectedItem) {
+        AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
+                .getValue();
+        if (advanceAssignment.getAdvanceType() != null) {
         validateListAdvanceMeasurement();
         manageOrderElementAdvancesModel
                 .prepareEditAdvanceMeasurements(advanceAssignment);
         this.indexSelectedItem = editAdvances.getIndexOfItem(editAdvances.getSelectedItem());
         Util.reloadBindings(self);
+        } else {
+            Component comboAdvanceType = selectedItem.getFirstChild()
+                    .getFirstChild();
+            if (comboAdvanceType instanceof Combobox) {
+                throw new WrongValueException(comboAdvanceType,
+                    _("should select a advance type"));
+            }
+        }
     }
 
     public void goToCreateLineAdvanceAssignment() {
