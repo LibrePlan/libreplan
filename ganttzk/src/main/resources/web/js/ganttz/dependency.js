@@ -26,7 +26,7 @@
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 
-webapp_context_path = "/navalplanner-webapp"
+webapp_context_path = window.location.pathname.split( '/' )[1];
 
 zkPlanner = {};
 zkPlanner.constants = {
@@ -36,7 +36,7 @@ zkPlanner.constants = {
 };
 
 zkPlanner.getImagesDir = function() {
-    return webapp_context_path + "/zkau/web/ganttz/img/";
+    return "/" + webapp_context_path + "/zkau/web/ganttz/img/";
 }
 
 zkPlanner.init = function(planner){
