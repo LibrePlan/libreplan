@@ -38,6 +38,7 @@ import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.web.common.Util;
@@ -1139,6 +1140,15 @@ public abstract class BaseCalendarEditionController extends
 
     private void reloadActivationPeriods() {
         Util.reloadBindings(window.getFellow("calendarAvailabilities"));
+    }
+
+    public boolean isNotResourceCalendar() {
+        BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendar();
+        if ((baseCalendar == null)
+                || (baseCalendar instanceof ResourceCalendar)) {
+            return false;
+        }
+        return true;
     }
 
 }

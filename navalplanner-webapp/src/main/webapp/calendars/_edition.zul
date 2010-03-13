@@ -33,7 +33,7 @@
                 <column/>
             </columns>
             <rows>
-                <row>
+                <row visible="@{calendarController.editionController.isNotResourceCalendar}">
                     <label value="${i18n:_('Name')}" />
                     <textbox value="@{calendarController.editionController.baseCalendar.name}" width="300px"
                         constraint="no empty:${i18n:_('cannot be null or empty')}" />
