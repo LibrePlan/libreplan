@@ -37,7 +37,7 @@ public class SchedulingState {
     public enum Type {
         SCHEDULING_POINT {
             @Override
-            public boolean belongsToSchedulingPoint() {
+            public boolean belongsToOrIsSchedulingPoint() {
                 return true;
             }
 
@@ -53,7 +53,7 @@ public class SchedulingState {
         },
         SCHEDULED_SUBELEMENT {
             @Override
-            public boolean belongsToSchedulingPoint() {
+            public boolean belongsToOrIsSchedulingPoint() {
                 return true;
             }
 
@@ -69,7 +69,7 @@ public class SchedulingState {
         },
         PARTIALY_SCHEDULED_SUPERELEMENT {
             @Override
-            public boolean belongsToSchedulingPoint() {
+            public boolean belongsToOrIsSchedulingPoint() {
                 return false;
             }
 
@@ -86,7 +86,7 @@ public class SchedulingState {
         },
         COMPLETELY_SCHEDULED_SUPERELEMENT {
             @Override
-            public boolean belongsToSchedulingPoint() {
+            public boolean belongsToOrIsSchedulingPoint() {
                 return false;
             }
 
@@ -103,7 +103,7 @@ public class SchedulingState {
         },
         NO_SCHEDULED {
             @Override
-            public boolean belongsToSchedulingPoint() {
+            public boolean belongsToOrIsSchedulingPoint() {
                 return false;
             }
 
@@ -118,7 +118,7 @@ public class SchedulingState {
             }
         };
 
-        public abstract boolean belongsToSchedulingPoint();
+        public abstract boolean belongsToOrIsSchedulingPoint();
 
         public abstract boolean isPartiallyScheduled();
 
@@ -188,7 +188,7 @@ public class SchedulingState {
 
     private void changingParentTo(SchedulingState parent) {
         this.parent = parent;
-        if (parent.getType().belongsToSchedulingPoint()) {
+        if (parent.getType().belongsToOrIsSchedulingPoint()) {
             setTypeWithoutNotifyingParent(Type.SCHEDULED_SUBELEMENT);
             for (SchedulingState each : getDescendants()) {
                 each.setTypeWithoutNotifyingParent(Type.SCHEDULED_SUBELEMENT);
@@ -272,7 +272,7 @@ public class SchedulingState {
     }
 
     private Type calculateTypeFromChildren() {
-        if (getType().belongsToSchedulingPoint()) {
+        if (getType().belongsToOrIsSchedulingPoint()) {
             return getType();
         }
         if (children.isEmpty()) {
