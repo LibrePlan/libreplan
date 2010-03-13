@@ -124,6 +124,10 @@ public class SchedulingState {
 
         public abstract boolean isCompletelyScheduled();
 
+        public final Type newTypeWhenDetachedFromParent() {
+            return this == SCHEDULED_SUBELEMENT ? NO_SCHEDULED : this;
+        }
+
         public boolean isSomewhatScheduled() {
             return isPartiallyScheduled() || isCompletelyScheduled();
         }
@@ -323,9 +327,14 @@ public class SchedulingState {
     public void removeChild(SchedulingState schedulingState) {
         boolean removed = children.remove(schedulingState);
         if (removed) {
-            schedulingState.parent = null;
+            schedulingState.detachFromParent();
         }
         setType(calculateTypeFromChildren());
+    }
+
+    private void detachFromParent() {
+        this.parent = null;
+        setType(type.newTypeWhenDetachedFromParent());
     }
 
     @Override

@@ -336,6 +336,16 @@ public class SchedulingStateTest {
         assertThat(grandChild, hasType(Type.SCHEDULED_SUBELEMENT));
     }
 
+    @Test
+    public void movingAScheduledSubelementToAScheduledSuperElementMakesItNoScheduled() {
+        grandChildA1.schedule();
+        grandChildA2.schedule();
+        childB.schedule();
+        childB.removeChild(grandChildB1);
+        childA.add(grandChildB1);
+        assertThat(grandChildB1, hasType(Type.NO_SCHEDULED));
+    }
+
     abstract static class SchedulingStateMatcher extends
             BaseMatcher<SchedulingState> {
         @Override
