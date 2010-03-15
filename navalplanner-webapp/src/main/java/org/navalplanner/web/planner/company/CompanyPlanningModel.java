@@ -252,10 +252,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 chartEarnedValueTimeplot, earnedValueChartFiller);
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner
-                .getTimeTracker(), defaultZoomLevel);
+                .getTimeTracker(), planner.getZoomLevel());
         Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
                 earnedValueChartFiller, planner.getTimeTracker(),
-                defaultZoomLevel);
+                planner.getZoomLevel());
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 

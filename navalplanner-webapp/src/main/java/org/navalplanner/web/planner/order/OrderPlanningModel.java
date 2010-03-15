@@ -315,13 +315,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Chart loadChart = setupChart(orderReloaded,
                 new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
                 planner.getTimeTracker(),
-                defaultZoomLevel);
+                planner.getZoomLevel());
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 loadChart);
         Chart earnedValueChart = setupChart(orderReloaded,
                 earnedValueChartFiller,
                 chartEarnedValueTimeplot, planner
-                        .getTimeTracker(), defaultZoomLevel);
+                        .getTimeTracker(), planner.getZoomLevel());
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
