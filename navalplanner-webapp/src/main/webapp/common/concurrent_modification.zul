@@ -29,8 +29,8 @@
         </caption-->
         <vbox apply="org.navalplanner.web.common.ConcurrentModificationController"
             sclass="errorbox">
-            Another user has modified the same data, so the operation couldn't be completed.
-
+            <label value="${i18n:_('Another user has modified the same data, so the operation can\'t be safely completed.')}" />
+            <label value="${i18n:_('Please try it again.')}" />
             <hbox style="margin-left:auto; margin-right:auto">
                 <button id="continue" label="${i18n:_('Continue')}" />
             </hbox>
