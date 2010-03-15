@@ -21,6 +21,7 @@
 package org.navalplanner.business.materials.entities;
 
 public enum UnitTypeEnum {
+    UNITS("units"),
     KILOGRAMS("kg"),
     KILOMETERS("km"),
     LITER("l"),
