@@ -234,29 +234,85 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         }
 
         private void enforceStartDate(Set<Dependency> incoming) {
-            List<Constraint<Date>> dependencyConstraints = Dependency
-                    .getStartConstraints(incoming);
-            Date newStart;
-            if (dependenciesConstraintsHavePriority) {
-                newStart = Constraint.<Date> initialValue(null)
-                                     .withConstraints(task
-                                             .getStartConstraints())
-                                     .withConstraints(dependencyConstraints)
-                                     .withConstraints(globalStartConstraints)
-                                     .apply();
-
-            } else {
-                newStart = Constraint.<Date> initialValue(null)
-                                     .withConstraints(dependencyConstraints)
-                                     .withConstraints(task
-                                             .getStartConstraints())
-                                     .withConstraints(globalStartConstraints)
-                                     .apply();
-            }
+            Date newStart = calculateStartDateFor(task, incoming);
+            Date childrenEarliest = getEarliestStartDateOfChildren(task);
+            newStart = maxNotNull(newStart, childrenEarliest);
             if (!task.getBeginDate().equals(newStart)) {
                 task.setBeginDate(newStart);
             }
         }
+
+        private Date getEarliestStartDateOfChildren(Task task) {
+            if (!task.isContainer()) {
+                return null;
+            }
+            List<Date> startDates = getChildrenStartDates((TaskContainer) task);
+            if (!startDates.isEmpty()) {
+                return Collections.min(startDates);
+            }
+            return null;
+        }
+
+        private List<Date> getChildrenStartDates(TaskContainer container) {
+            List<Task> children = container.getTasks();
+            List<Date> startDates = new ArrayList<Date>();
+            for (Task each : children) {
+                Set<Dependency> incomingDependencies = withoutDependencyFrom(
+                        container, graph.incomingEdgesOf(each));
+                Date dateWithoutContainerInfluence = calculateStartDateFor(
+                        each, incomingDependencies);
+                if (dateWithoutContainerInfluence != null) {
+                    startDates.add(dateWithoutContainerInfluence);
+                }
+            }
+            return startDates;
+        }
+
+        private Set<Dependency> withoutDependencyFrom(TaskContainer container,
+                Set<Dependency> incoming) {
+            Set<Dependency> result = new HashSet<Dependency>();
+            for (Dependency each : incoming) {
+                if (!each.getSource().equals(container)) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        private Date maxNotNull(Date... dates) {
+            List<Date> list = new ArrayList<Date>();
+            for (Date each : dates) {
+                if (each != null) {
+                    list.add(each);
+                }
+            }
+            if (list.isEmpty()) {
+                return null;
+            }
+            return Collections.max(list);
+        }
+    }
+
+    private Date calculateStartDateFor(Task task,
+            Set<Dependency> withDependencies) {
+        List<Constraint<Date>> dependencyConstraints = Dependency
+                .getStartConstraints(withDependencies);
+        Date newStart;
+        if (dependenciesConstraintsHavePriority) {
+            newStart = Constraint.<Date> initialValue(null)
+                                 .withConstraints(task.getStartConstraints())
+                                 .withConstraints(dependencyConstraints)
+                                 .withConstraints(globalStartConstraints)
+                                 .apply();
+
+        } else {
+            newStart = Constraint.<Date> initialValue(null)
+                                 .withConstraints(dependencyConstraints)
+                                 .withConstraints(task.getStartConstraints())
+                                 .withConstraints(globalStartConstraints)
+                                 .apply();
+        }
+        return newStart;
     }
 
     public void enforceAllRestrictions() {
@@ -300,11 +356,17 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
             ParentShrinkingEnforcer parentShrinkingEnforcer = new ParentShrinkingEnforcer(
                     (TaskContainer) task);
             parentShrinkingEnforcerByTask.put(task, parentShrinkingEnforcer);
+            List<Dependency> dependenciesToAdd = new ArrayList<Dependency>();
             for (Task child : task.getTasks()) {
                 addTask(child);
-                add(new Dependency(child, task, DependencyType.END_END, false));
-                add(new Dependency(task, child, DependencyType.START_START,
+                dependenciesToAdd.add(new Dependency(child, task,
+                        DependencyType.END_END, false));
+                dependenciesToAdd.add(new Dependency(task, child,
+                        DependencyType.START_START,
                         false));
+            }
+            for (Dependency each : dependenciesToAdd) {
+                add(each);
             }
         }
     }

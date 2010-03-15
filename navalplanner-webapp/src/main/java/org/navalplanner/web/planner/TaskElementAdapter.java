@@ -504,9 +504,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 default:
                     throw new RuntimeException("can't handle " + constraintType);
                 }
-            } else {
+            } else if (taskElement.isMilestone()) {
                 return Collections.singletonList(DateConstraint
                         .biggerOrEqualThan(taskElement.getStartDate()));
+            } else {
+                return Collections.emptyList();
             }
         }
 
