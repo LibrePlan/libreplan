@@ -912,3 +912,13 @@ body .perspectives-column {
 .orderslayout .z-window-embedded-header {
     display:none;
 }
+
+
+.timeTrackedTableWithLeftPane .z-grid-body table {
+    width: 1px !important;
+}
+
+#timeTracker .second_level_ {
+    border-left: solid 2px #9EB6CE;
+    border-right: solid 2px #9EB6CE;
+}
