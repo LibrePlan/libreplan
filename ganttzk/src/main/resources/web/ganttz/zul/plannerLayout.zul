@@ -36,6 +36,10 @@ planner = self;
             image="/common/img/ico_expand.png"
             tooltiptext="${i18n:_('Expand/Collapse all')}"
             sclass="planner-command" />
+        <button id="flattenTree" onClick="planner.flattenTree();"
+            image="/common/img/ico_flatten.png"
+            tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
+            sclass="planner-command" />
         <separator />
 
         <!--  Filtering -->

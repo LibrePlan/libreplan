@@ -481,6 +481,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setResizingTasksEnabled(false);
         configuration.setCriticalPathEnabled(false);
         configuration.setExpandAllEnabled(false);
+        configuration.setFlattenTreeEnabled(false);
     }
 
     private void addAdditionalCommands(

@@ -210,4 +210,13 @@ public class TaskContainer extends Task {
         return false;
     }
 
+    @Override
+    public List<Task> getAllTaskLeafs() {
+        List<Task> result = new ArrayList<Task>();
+        for (Task task : tasks) {
+            result.addAll(task.getAllTaskLeafs());
+        }
+        return result;
+    }
+
 }

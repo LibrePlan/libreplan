@@ -291,6 +291,10 @@ public class Planner extends HtmlMacroComponent  {
             Button expandAllButton = (Button) getFellow("expandAll");
             expandAllButton.setVisible(false);
         }
+        if (!configuration.isFlattenTreeEnabled()) {
+            Button flattenTree = (Button) getFellow("flattenTree");
+            flattenTree.setVisible(false);
+        }
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
     }
 
@@ -341,25 +345,20 @@ public class Planner extends HtmlMacroComponent  {
 
     private void setupComponents() {
         insertGlobalCommands();
-        this.leftPane = new LeftPane(disabilityConfiguration, this.diagramGraph
-                .getTopLevelTasks(),
-                new FilterAndParentExpandedPredicates(context) {
 
-                    @Override
-                    public boolean accpetsFilterPredicate(Task task) {
-                        return true;
-                    }
-                });
+        predicate = new FilterAndParentExpandedPredicates(context) {
+
+            @Override
+            public boolean accpetsFilterPredicate(Task task) {
+                return true;
+            }
+        };
+        this.leftPane = new LeftPane(disabilityConfiguration, this.diagramGraph
+                .getTopLevelTasks(), predicate);
         this.ganttPanel = new GanttPanel(this.context,
                 commandsOnTasksContextualized, doubleClickCommand,
-                disabilityConfiguration,
-                new FilterAndParentExpandedPredicates(
-                        context) {
-                    @Override
-                    public boolean accpetsFilterPredicate(Task task) {
-                        return true;
-                    }
-                });
+                disabilityConfiguration, predicate);
+
         Button button = (Button) getFellow("btnPrint");
         button.setDisabled(!context.isPrintEnabled());
     }
@@ -431,6 +430,8 @@ public class Planner extends HtmlMacroComponent  {
     };
 
     private boolean containersExpandedByDefault = false;
+
+    private FilterAndParentExpandedPredicates predicate;
 
     public void showCriticalPath() {
         Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
@@ -534,6 +535,7 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void setTaskListPredicate(FilterAndParentExpandedPredicates predicate) {
+        this.predicate = predicate;
         leftPane.setPredicate(predicate);
         getTaskList().setPredicate(predicate);
         getDependencyList().redrawDependencies();
@@ -546,4 +548,23 @@ public class Planner extends HtmlMacroComponent  {
             Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
         }
     }
+
+    public void flattenTree() {
+        Button flattenTreeButton = (Button) getFellow("flattenTree");
+        if (disabilityConfiguration.isFlattenTreeEnabled()) {
+            if (flattenTreeButton.getSclass().equals("planner-command")) {
+                predicate.setFilterContainers(true);
+                flattenTreeButton.setSclass("planner-command clicked");
+            } else {
+                predicate.setFilterContainers(false);
+                flattenTreeButton.setSclass("planner-command");
+            }
+            setTaskListPredicate(predicate);
+        }
+    }
+
+    public FilterAndParentExpandedPredicates getPredicate() {
+        return predicate;
+    }
+
 }

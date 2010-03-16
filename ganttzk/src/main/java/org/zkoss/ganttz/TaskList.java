@@ -231,6 +231,14 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private List<TaskComponent> createAndPublishComponentsIfNeeded(
             Collection<? extends Task> newTasks) {
+        if (predicate.isFilterContainers()) {
+            List<Task> taskLeafs = new ArrayList<Task>();
+            for (Task task : newTasks) {
+                taskLeafs.addAll(task.getAllTaskLeafs());
+            }
+            newTasks = taskLeafs;
+        }
+
         List<TaskComponent> result = new ArrayList<TaskComponent>();
         for (Task task : newTasks) {
             TaskComponent taskComponent = taskComponentByTask.get(task);

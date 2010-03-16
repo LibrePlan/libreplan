@@ -336,9 +336,13 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private void fillModel(Task parent, Integer insertionPosition,
             Collection<? extends Task> children, final boolean firstTime) {
+        if (predicate.isFilterContainers()) {
+            parent = this.tasksTreeModel.getRoot();
+        }
+
         if (firstTime) {
             for (Task node : children) {
-                if (predicate.accpetsFilterPredicate(node)) {
+                if (predicate.accpetsFilterPredicateAndContainers(node)) {
                     if (!visibleTasks.contains(node)) {
                         this.tasksTreeModel.add(parent, node);
                         visibleTasks.add(node);
@@ -358,7 +362,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
         } else {
             for (Task node : children) {
                 if (node.isContainer()) {
-                    if (predicate.accpetsFilterPredicate(node)) {
+                    if (predicate.accpetsFilterPredicateAndContainers(node)) {
                         if (!visibleTasks.contains(node)) {
                             this.deferredFiller.addParentOfPendingToAdd(node);
                         }
@@ -368,9 +372,8 @@ public class LeftTasksTree extends HtmlMacroComponent {
             // the node must be added after, so the multistepTreeFiller is
             // ready
             for (Task node : children) {
-                if (predicate.accpetsFilterPredicate(node)) {
+                if (predicate.accpetsFilterPredicateAndContainers(node)) {
                     if (!visibleTasks.contains(node)) {
-                        // this.tasksTreeModel.add(parent, node);
                         this.tasksTreeModel.add(parent, insertionPosition,
                                 Arrays.asList(node));
                         visibleTasks.add(node);
@@ -453,7 +456,11 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     public void setPredicate(FilterAndParentExpandedPredicates predicate) {
         this.predicate = predicate;
-        fillModel(tasks, false);
+
+        visibleTasks.clear();
+        tasksTreeModel = MutableTreeModel.create(Task.class);
+        fillModel(tasks, true);
+        tasksTree.setModel(tasksTreeModel);
     }
 
 }

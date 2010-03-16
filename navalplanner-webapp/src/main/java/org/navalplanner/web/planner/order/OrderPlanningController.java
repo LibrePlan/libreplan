@@ -214,23 +214,25 @@ public class OrderPlanningController implements Composer {
                 model.forceLoadLabelsAndCriterionRequirements();
 
                 final IContext<?> context = planner.getContext();
-                planner
-                        .setTaskListPredicate(new FilterAndParentExpandedPredicates(
-                                context) {
-                            @Override
-                            public boolean accpetsFilterPredicate(Task task) {
-                                if (predicate == null) {
-                                    return true;
-                                }
-                                TaskElement taskElement = (TaskElement) context
-                                        .getMapper()
-                                        .findAssociatedDomainObject(task);
-                                return taskElement.isMilestone()
-                                        || predicate.accepts(taskElement
-                                        .getOrderElement());
-                            }
+                FilterAndParentExpandedPredicates newPredicate = new FilterAndParentExpandedPredicates(
+                        context) {
+                    @Override
+                    public boolean accpetsFilterPredicate(Task task) {
+                        if (predicate == null) {
+                            return true;
+                        }
+                        TaskElement taskElement = (TaskElement) context
+                                .getMapper()
+                                .findAssociatedDomainObject(task);
+                        return taskElement.isMilestone()
+                                || predicate.accepts(taskElement
+                                .getOrderElement());
+                    }
 
-                        });
+                };
+                newPredicate.setFilterContainers(planner.getPredicate()
+                        .isFilterContainers());
+                planner.setTaskListPredicate(newPredicate);
             }
 
             @Override

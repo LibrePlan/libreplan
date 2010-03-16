@@ -36,6 +36,8 @@ public abstract class FilterAndParentExpandedPredicates implements IPredicate {
 
     private final IContext<?> context;
 
+    private boolean filterContainers = false;
+
     public FilterAndParentExpandedPredicates(IContext<?> context) {
         this.context = context;
     }
@@ -46,8 +48,28 @@ public abstract class FilterAndParentExpandedPredicates implements IPredicate {
     }
 
     private boolean accepts(Task task) {
-        return accpetsFilterPredicate(task)
-                && getParentExpandedPredicate().accepts(task);
+        boolean result = true;
+        if (filterContainers) {
+            result &= acceptsContainers(task);
+        } else {
+            result &= getParentExpandedPredicate().accepts(task);
+        }
+
+        return result && accpetsFilterPredicate(task);
+    }
+
+    public boolean acceptsContainers(Task task) {
+        if (filterContainers) {
+            if (task.isContainer()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public boolean accpetsFilterPredicateAndContainers(Task task) {
+        return acceptsContainers(task) && accpetsFilterPredicate(task);
     }
 
     public abstract boolean accpetsFilterPredicate(Task task);
@@ -75,6 +97,14 @@ public abstract class FilterAndParentExpandedPredicates implements IPredicate {
             }
 
         };
+    }
+
+    public void setFilterContainers(boolean filterContainers) {
+        this.filterContainers = filterContainers;
+    }
+
+    public boolean isFilterContainers() {
+        return filterContainers;
     }
 
 }

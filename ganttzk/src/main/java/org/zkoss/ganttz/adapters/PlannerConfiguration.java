@@ -132,6 +132,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean expandAllEnabled = true;
 
+    private boolean flattenTreeEnabled = true;
+
     // private String identifier = null;
 
     private IDetailItemModificator firstLevelModificators = SeveralModificators
@@ -285,6 +287,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isExpandAllEnabled() {
         return expandAllEnabled;
+    }
+
+    public void setFlattenTreeEnabled(boolean flattenTreeEnabled) {
+        this.flattenTreeEnabled = flattenTreeEnabled;
+    }
+
+    @Override
+    public boolean isFlattenTreeEnabled() {
+        return flattenTreeEnabled;
     }
 
     public IDetailItemModificator getSecondLevelModificators() {

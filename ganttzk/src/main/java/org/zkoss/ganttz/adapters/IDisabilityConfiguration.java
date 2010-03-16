@@ -37,4 +37,6 @@ public interface IDisabilityConfiguration {
 
     public boolean isExpandAllEnabled();
 
+    public boolean isFlattenTreeEnabled();
+
 }
