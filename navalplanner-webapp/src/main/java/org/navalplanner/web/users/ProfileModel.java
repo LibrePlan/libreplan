@@ -28,6 +28,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -41,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/users/profiles.zul")
 public class ProfileModel implements IProfileModel {
 
     private Profile profile;

@@ -39,6 +39,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -51,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component("criterionsModel_V2")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/resources/criterions/criterions-V2.zul")
 public class CriterionsModel_V2 implements ICriterionsModel_V2 {
 
     private static final Log log = LogFactory.getLog(CriterionsModel.class);
