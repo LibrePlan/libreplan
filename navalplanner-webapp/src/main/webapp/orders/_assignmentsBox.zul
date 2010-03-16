@@ -1,4 +1,4 @@
-<panel title="${i18n:_('Materials')}" border="normal">
+<panel title="${i18n:_('Materials')}" border="normal" width="600px">
     <panelchildren>
         <newdatasortablegrid id="gridMaterials"
             fixedLayout="false"
