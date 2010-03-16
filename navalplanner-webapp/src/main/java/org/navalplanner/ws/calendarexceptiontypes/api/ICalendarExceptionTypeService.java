@@ -18,19 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.calendarexceptiontypes.api;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 
 /**
- * Contract for {@link CalendarExceptionTypeDAO}
+ * Service for managing {@link CalendarExceptionType} entities.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICalendarExceptionTypeDAO extends
-        IIntegrationEntityDAO<CalendarExceptionType> {
+public interface ICalendarExceptionTypeService {
 
-    boolean existsByName(CalendarExceptionType type);
+    CalendarExceptionTypeListDTO getCalendarExceptionType();
 
 }

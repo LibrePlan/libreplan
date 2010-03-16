@@ -84,6 +84,10 @@
     - export-resources-hours.sh 21654685 2010-01-01 2010-12-31 (authenticate
       with wsreader/wsreader)
 
+  * Export calendar exception types:
+
+    - export-calendar-exception-types.sh (authenticate with wsreader/wsreader)
+
 + When working with the online demo add "--prod" argument to every command.
 Example:
 

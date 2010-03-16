@@ -18,19 +18,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.calendarexceptiontypes.impl;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeDTO;
 
 /**
- * Contract for {@link CalendarExceptionTypeDAO}
+ * Converter from/to {@link CalendarExceptionType} related entities to/from
+ * DTOs.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICalendarExceptionTypeDAO extends
-        IIntegrationEntityDAO<CalendarExceptionType> {
+public final class CalendarExceptionTypeConverter {
 
-    boolean existsByName(CalendarExceptionType type);
+    private CalendarExceptionTypeConverter() {
+    }
+
+    public final static CalendarExceptionTypeDTO toDTO(
+            CalendarExceptionType calendarExceptionType) {
+        return new CalendarExceptionTypeDTO(calendarExceptionType.getCode(),
+                calendarExceptionType.getName(), calendarExceptionType
+                        .getColor(), calendarExceptionType.isOverAssignable());
+    }
 
 }

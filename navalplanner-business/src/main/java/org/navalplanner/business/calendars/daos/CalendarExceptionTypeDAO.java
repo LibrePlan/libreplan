@@ -25,7 +25,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class CalendarExceptionTypeDAO extends
-        GenericDAOHibernate<CalendarExceptionType, Long> implements
+        IntegrationEntityDAO<CalendarExceptionType> implements
         ICalendarExceptionTypeDAO {
 
     @Override

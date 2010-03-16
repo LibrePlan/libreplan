@@ -21,14 +21,16 @@
 package org.navalplanner.business.calendars.entities;
 
 import org.apache.commons.lang.BooleanUtils;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 
 /**
  * Type of an exception day.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CalendarExceptionType extends BaseEntity {
+public class CalendarExceptionType extends IntegrationEntity {
 
     public static CalendarExceptionType create(String name, String color,
             Boolean notAssignable) {
@@ -68,5 +70,10 @@ public class CalendarExceptionType extends BaseEntity {
      */
     public boolean isOverAssignable() {
         return BooleanUtils.isFalse(notAssignable);
+    }
+
+    @Override
+    protected ICalendarExceptionTypeDAO getIntegrationEntityDAO() {
+        return Registry.getCalendarExceptionTypeDAO();
     }
 }

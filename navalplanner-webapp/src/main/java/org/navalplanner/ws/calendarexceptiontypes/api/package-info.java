@@ -18,19 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
-
-import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-
 /**
- * Contract for {@link CalendarExceptionTypeDAO}
+ * Specification of namespace for REST-based services.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICalendarExceptionTypeDAO extends
-        IIntegrationEntityDAO<CalendarExceptionType> {
+@javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, namespace = WSCommonGlobalNames.REST_NAMESPACE)
+package org.navalplanner.ws.calendarexceptiontypes.api;
 
-    boolean existsByName(CalendarExceptionType type);
-
-}
+import org.navalplanner.ws.common.api.WSCommonGlobalNames;

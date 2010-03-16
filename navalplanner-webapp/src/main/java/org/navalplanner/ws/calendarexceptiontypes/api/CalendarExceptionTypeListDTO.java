@@ -18,19 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.calendarexceptiontypes.api;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 
 /**
- * Contract for {@link CalendarExceptionTypeDAO}
+ * DTO for {@link CalendarExceptionType} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICalendarExceptionTypeDAO extends
-        IIntegrationEntityDAO<CalendarExceptionType> {
+@XmlRootElement(name = "calendar-exception-type-list")
+public class CalendarExceptionTypeListDTO {
 
-    boolean existsByName(CalendarExceptionType type);
+    @XmlElement(name = "calendar-exception-type")
+    public List<CalendarExceptionTypeDTO> calendarExceptionTypes = new ArrayList<CalendarExceptionTypeDTO>();
+
+    public CalendarExceptionTypeListDTO() {
+    }
+
+    public CalendarExceptionTypeListDTO(
+            List<CalendarExceptionTypeDTO> calendarExceptionTypes) {
+        this.calendarExceptionTypes = calendarExceptionTypes;
+    }
 
 }

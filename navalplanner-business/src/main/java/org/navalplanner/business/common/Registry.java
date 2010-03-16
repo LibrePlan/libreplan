@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IHourCostDAO;
@@ -153,6 +154,9 @@ public class Registry {
     @Autowired
     private IHourCostDAO hourCostDAO;
 
+    @Autowired
+    private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
+
     private Registry() {
     }
 
@@ -273,4 +277,9 @@ public class Registry {
     public static IHourCostDAO getHourCostDAO() {
         return getInstance().hourCostDAO;
     }
+
+    public static ICalendarExceptionTypeDAO getCalendarExceptionTypeDAO() {
+        return getInstance().calendarExceptionTypeDAO;
+    }
+
 }

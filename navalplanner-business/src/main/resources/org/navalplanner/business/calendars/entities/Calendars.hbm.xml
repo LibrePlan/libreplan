@@ -66,6 +66,8 @@
         </id>
         <version name="version" access="property" type="long" />
 
+        <property name="code" access="property" not-null="true" unique="true"/>
+
         <property name="name" access="field" unique="true" />
         <property name="color" access="field"/>
         <property name="notAssignable" access="field"/>
