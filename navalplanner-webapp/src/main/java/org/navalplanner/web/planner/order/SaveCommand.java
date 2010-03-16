@@ -42,6 +42,7 @@ import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -56,6 +57,7 @@ import org.zkoss.zul.Messagebox;
  * It can be considered the final step in the conversation <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
+@OnConcurrentModification(goToPage = "/planner/index.zul;company_scheduling")
 public class SaveCommand implements ISaveCommand {
 
     private static final Log LOG = LogFactory.getLog(SaveCommand.class);
