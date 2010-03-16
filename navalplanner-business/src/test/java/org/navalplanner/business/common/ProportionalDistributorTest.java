@@ -125,5 +125,16 @@ public class ProportionalDistributorTest {
         };
     }
 
+    @Test
+    public void notThrowDivisionByZeroException() {
+        ProportionalDistributor.create(0);
+    }
+
+    @Test
+    public void notThrowDivisionByZeroExceptionAtDistributeMehtod() {
+        ProportionalDistributor distributor = ProportionalDistributor
+                .create(100);
+        distributor.distribute(0);
+    }
 
 }

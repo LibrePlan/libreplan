@@ -47,8 +47,9 @@ public class ProportionalDistributor {
         BigDecimal total = new BigDecimal(initialTotal);
         BigDecimal[] result = new BigDecimal[shares.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = new BigDecimal(shares[i]).divide(total, 4,
-                    RoundingMode.DOWN);
+            result[i] = (total.equals(BigDecimal.ZERO)) ? BigDecimal.ZERO
+                    : new BigDecimal(shares[i]).divide(total, 4,
+                            RoundingMode.DOWN);
         }
         return result;
     }
