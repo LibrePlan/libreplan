@@ -31,10 +31,6 @@ function addResourcesLoadListMethods(object) {
 		return document.getElementById('timetracker');
 	}
 
-	function zoom_buttons() {
-		return document.getElementById('zoom_buttons');
-	}
-
 	function resourceloadlist() {
 		return YAHOO.util.Selector.query('.resourceloadlist')[0];
 	}
@@ -66,9 +62,6 @@ function addResourcesLoadListMethods(object) {
 		YAHOO.util.Event.addListener(window, 'resize',
 				zkResourcesLoadList.adjustTimeTrackerSize, cmp);
 		scrollSync = new ScrollSync(cmp);
-		scrollSync.notifyXChangeTo(function(scroll) {
-			zoom_buttons().style["left"] = scroll + "px";
-		});
 		scrollSync.synchXChangeTo(timetracker);
 
 		listenToScroll();

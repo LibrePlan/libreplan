@@ -367,18 +367,6 @@ table {
     width: 600px;
 }
 
-#zoom_buttons {
-    position: relative;
-}
-
-#zoom_buttons .z-button-cm {
-    border: 0px;
-}
-
-#zoom_buttons td.z-hbox-sep {
-    width: 0px;
-}
-
 tr.z-vbox-sep {
     height: 0px;
     padding: 0px;
@@ -524,11 +512,6 @@ tr.z-vbox-sep {
     padding: 0px;
 }
 
-.taskspanelgap #zoom_buttons {
-    display: none;
-    margin: 0px;
-}
-
 #ganttpanel #timetracker th {
     display:none;
 }
@@ -597,10 +580,6 @@ tr.z-vbox-sep {
     font-size: 10px;
 }
 
-
-.timetrackergap #zoom_buttons {
-    display:none;
-}
 
 .timetrackergap {
     position: relative;
