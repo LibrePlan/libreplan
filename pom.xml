@@ -328,6 +328,19 @@
                 <artifactId>spring-security-core-tiger</artifactId>
                 <version>2.0.5.RELEASE</version>
             </dependency>
+            <!--  AspectJ -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>2.5.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjtools</artifactId>
+                <version>1.5.4</version>
+            </dependency>
+
             <!--  AspectJ (required by Spring Security) -->
             <dependency>
                 <groupId>org.aspectj</groupId>
