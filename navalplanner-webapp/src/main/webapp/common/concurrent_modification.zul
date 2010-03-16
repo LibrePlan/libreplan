@@ -27,7 +27,7 @@
         <!--caption>
             Erro ${requestScope['javax.servlet.error.status_code']}
         </caption-->
-        <vbox apply="org.navalplanner.web.common.ConcurrentModificationController"
+        <vbox apply="org.navalplanner.web.common.concurrentdetection.ConcurrentModificationController"
             sclass="errorbox">
             <label value="${i18n:_('Another user has modified the same data, so the operation can\'t be safely completed.')}" />
             <label value="${i18n:_('Please try it again.')}" />

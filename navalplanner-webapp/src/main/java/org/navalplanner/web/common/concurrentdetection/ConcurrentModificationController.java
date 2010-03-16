@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.common;
+package org.navalplanner.web.common.concurrentdetection;
 
 import javax.servlet.http.HttpServletRequest;
 
