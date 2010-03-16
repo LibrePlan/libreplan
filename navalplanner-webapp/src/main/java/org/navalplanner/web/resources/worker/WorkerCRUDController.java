@@ -21,7 +21,6 @@
 package org.navalplanner.web.resources.worker;
 
 import static org.navalplanner.web.I18nHelper._;
-import static org.navalplanner.web.common.ConcurrentModificationDetector.addAutomaticHandlingOfConcurrentModification;
 
 import java.util.Date;
 import java.util.List;
@@ -269,9 +268,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        this.workerModel = addAutomaticHandlingOfConcurrentModification(
-                IWorkerModel.class, this.workerModel,
-                "/resources/worker/worker.zul");
         localizationsForEditionController = createLocalizationsController(comp,
                 "editWindow");
         localizationsForCreationController = createLocalizationsController(
