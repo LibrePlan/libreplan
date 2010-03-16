@@ -37,6 +37,7 @@ import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -46,6 +47,7 @@ import org.zkoss.ganttz.util.MutableTreeModel;
 
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/materials/materials.zul")
 public class MaterialsModel implements IMaterialsModel {
 
     @Autowired
