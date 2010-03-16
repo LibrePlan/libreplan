@@ -624,6 +624,28 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
     }
 
+    public void onClick$saveButton() {
+        for (AllocationInput allocationInput : allocationInputs) {
+            int totalHours = allocationInput.getTotalHours();
+            Restriction restriction = allocationInput.getResultReceiver()
+                    .createRestriction();
+            if (restriction.isInvalidTotalHours(totalHours)) {
+                Row groupingRow = groupingRows.get(allocationInput);
+                restriction.markInvalidTotalHours(groupingRow, totalHours);
+            }
+        }
+        try {
+            Messagebox.show(_("Advanced assignment saved"), _("Information"),
+                    Messagebox.OK, Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        for (AllocationInput allocationInput : allocationInputs) {
+            allocationInput.getResultReceiver().accepted(
+                    allocationInput.getAggregate());
+        }
+    }
+
     public void onClick$cancelButton() {
         back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
