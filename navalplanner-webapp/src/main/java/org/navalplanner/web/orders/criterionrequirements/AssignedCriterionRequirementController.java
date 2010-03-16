@@ -57,6 +57,8 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Detail;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -418,7 +420,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
         final HoursGroupWrapper hoursGroupWrapper = getHoursGroupWrapper(self);
         if (hoursGroupWrapper != null) {
             addCriterionToHoursGroupWrapper(hoursGroupWrapper);
-            Util.reloadBindings(listHoursGroups);
+            repaint(self, hoursGroupWrapper);
         }
     }
 
@@ -429,7 +431,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
         final HoursGroupWrapper hoursGroupWrapper = getHoursGroupWrapper(self);
         if (hoursGroupWrapper != null) {
             addExceptionToHoursGroupWrapper(hoursGroupWrapper);
-            Util.reloadBindings(listHoursGroups);
+            repaint(self, hoursGroupWrapper);
         }
     }
 
@@ -443,7 +445,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
                     .getValue();
             HoursGroupWrapper hoursGroupWrapper = getHoursGroupOfRequirementWrapper(row);
             deleteCriterionToHoursGroup(hoursGroupWrapper, requirementWrapper);
-            Util.reloadBindings(listHoursGroups);
+            repaint(self, hoursGroupWrapper);
         } catch (Exception e) {
 
         }
@@ -455,6 +457,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
 
     public void selectCriterionToHoursGroup(Listitem item, Bandbox bandbox,
             CriterionRequirementWrapper requirementWrapper) {
+
         bandbox.close();
         Listbox listbox = (Listbox) bandbox.getFirstChild().getFirstChild();
         listbox.setModel(new SimpleListModel(getCriterionWithItsTypes()));
@@ -689,6 +692,28 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             Bandbox bandbox = (Bandbox) listitem.getParent().getParent()
                     .getParent();
             bandbox.close();
+        }
+    }
+
+    private void repaint(Component self, HoursGroupWrapper hoursGroupWrapper) {
+        Grid grid = getHoursGroupDetailsGrid(self);
+        if (grid != null) {
+            grid.setModel(new SimpleListModel(hoursGroupWrapper
+                    .getCriterionRequirementWrappersView().toArray()));
+            grid.invalidate();
+        } else {
+            Util.reloadBindings(listHoursGroups);
+        }
+    }
+
+    private Grid getHoursGroupDetailsGrid(Component self) {
+        try {
+            Detail detail = ((Detail) ((Row) self.getParent().getParent())
+                    .getFirstChild());
+            Panel panel = (Panel) detail.getFirstChild();
+            return (Grid) panel.getFirstChild().getFirstChild();
+        } catch (Exception e) {
+            return null;
         }
     }
 
