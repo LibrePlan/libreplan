@@ -21,6 +21,10 @@
         required for "@Autowired")
     -->
     <context:annotation-config />
+
+    <bean id="aspect" class="org.navalplanner.web.common.concurrentdetection.ConcurrentModificationHandling">
+    </bean>
+
     <bean class="org.navalplanner.web.common.entrypoints.RedirectorSynthetiser"></bean>
 
     <bean class="org.navalplanner.web.planner.order.OrderPlanningModel" scope="prototype">
