@@ -922,3 +922,8 @@ body .perspectives-column {
     border-left: solid 2px #9EB6CE;
     border-right: solid 2px #9EB6CE;
 }
+
+.advanced-assignment-area .timeTrackedTableWithLeftPane div.z-grid {
+    overflow: visible;
+}
+

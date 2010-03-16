@@ -42,15 +42,32 @@
             <button image="/common/img/ico_save.png" tooltiptext="${i18n:_('Accept')}" id="saveButton" class="planner-command"
                 if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}" />
             <separator/>
-            <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
-            onClick="advancedAllocationController.paginationDown();" disabled="true" />
             <label>${i18n:_('Zoom level')}:</label>
             <listbox mold="select" rows="1" id="advancedAllocationZoomLevel"
                 model="${advancedAllocationController.zoomLevels}"
                 onSelect="advancedAllocationController.setZoomLevel(self.selectedItem.value);" >
             </listbox>
-            <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton" onClick="advancedAllocationController.paginationUp();" />
+
             <separator/>
+            <label>${i18n:_('Pagination')}:</label>
+            <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
+            onClick="advancedAllocationController.paginationDown();" disabled="true" />
+            <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination">
+                <listitem><listcell label="${i18n:_('Dates range')}" /><listcell label="Date Range 2" /><listcell label="Date Range 3 ..." /></listitem>
+            </listbox>
+            <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
+            onClick="advancedAllocationController.paginationUp();" />
+
+            <separator/>
+
+            <button tooltiptext="Vertical Page up" image="/common/img/ico_up.png" id="verticalPaginationUpButton"
+            onClick="advancedAllocationController.verticalPageup();" disabled="true" />
+            <listbox mold="select" rows="1" visible="false" id="advancedAllocationVerticalPagination">
+                <listitem><listcell label="${i18n:_('Vertical interval')}" /><listcell label="21-40" /><listcell label="40-" /></listitem>
+            </listbox>
+            <button tooltiptext="Vertical Page down" image="/common/img/ico_down.png" id="verticalPaginationDownButton"
+            onClick="advancedAllocationController.verticalPagedown();" disabled="true" />
+
             <div id="messages" />
         </hbox>
    </north>

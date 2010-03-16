@@ -370,6 +370,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
     }
 
+    private static final int VERTICAL_MAX_ELEMENTS = 25;
+
     private IMessagesForUser messages;
     private LayoutRegion insertionPointTimetracker;
     private Div insertionPointLeftPanel;
@@ -377,6 +379,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Button paginationDownButton;
     private Button paginationUpButton;
+
+    private Button verticalPaginationUpButton;
+    private Button verticalPaginationDownButton;
 
     private TimeTracker timeTracker;
 
@@ -676,10 +681,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Component normalLayout;
     private Component noDataLayout;
     private TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane;
+    private int verticalIndex = 0;
 
     private List<Row> getRows() {
         if (rowsCached != null) {
-            return rowsCached;
+            return filterRows(rowsCached);
         }
         rowsCached = new ArrayList<Row>();
         for (AllocationInput allocationInput : allocationInputs) {
@@ -693,8 +699,32 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             groupingRow.listenTo(specificRows);
             rowsCached.addAll(specificRows);
         }
-        return rowsCached;
+        return filterRows(rowsCached);
     }
+
+    private List<Row> filterRows(List<Row> rows) {
+        verticalPaginationUpButton.setDisabled(verticalIndex <= 0);
+        verticalPaginationDownButton
+                .setDisabled((verticalIndex + VERTICAL_MAX_ELEMENTS) >= rows
+                        .size());
+        return rows.subList(verticalIndex, Math.min(rows.size(),
+                verticalIndex + VERTICAL_MAX_ELEMENTS));
+    }
+
+    public void verticalPagedown() {
+        verticalIndex = verticalIndex + VERTICAL_MAX_ELEMENTS;
+        timeTrackedTableWithLeftPane.reload();
+    }
+
+    public void setVerticalPagedownButtonDisabled(boolean disabled) {
+        verticalPaginationUpButton.setDisabled(disabled);
+    }
+
+    public void verticalPageup() {
+        verticalIndex = Math.max(verticalIndex - VERTICAL_MAX_ELEMENTS, 0);
+        timeTrackedTableWithLeftPane.reload();
+    }
+
 
     private List<Row> specificRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
@@ -980,8 +1010,10 @@ class Row {
         if (isGroupingRow()) {
             Label label = (Label) allHoursInput;
             int totalHours = aggregate.getTotalHours();
-            label.setValue(totalHours + "");
-            Clients.closeErrorBox(label);
+            if (label != null) {
+                label.setValue(totalHours + "");
+                Clients.closeErrorBox(label);
+            }
             if (restriction.isInvalidTotalHours(totalHours)) {
                 restriction.showInvalidHours(messages, totalHours);
             }

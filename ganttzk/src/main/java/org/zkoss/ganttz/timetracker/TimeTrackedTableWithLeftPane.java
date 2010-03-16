@@ -136,6 +136,7 @@ public class TimeTrackedTableWithLeftPane<A, B> {
 
     public void reload() {
         timeTrackedTable.recreate();
+        loadModelForLeftPane();
     }
 
 }
