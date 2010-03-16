@@ -20,18 +20,30 @@
 
 package org.navalplanner.ws.orders.api;
 
-import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.navalplanner.ws.common.api.OrderDTO;
 
 /**
- * Service for managing {@link OrderElement} entities.
- *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * DTO for a list of <code>Order</code> entities.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IOrderElementService {
 
-    InstanceConstraintViolationsListDTO addOrders(OrderListDTO orderListDTO);
+@XmlRootElement(name = "order-list")
+public class OrderListDTO {
 
-    OrderListDTO getOrders();
+    @XmlElement(name = "order")
+    public List<OrderDTO> orderDTOs = new ArrayList<OrderDTO>();
+
+    public OrderListDTO() {
+    }
+
+    public OrderListDTO(List<OrderDTO> orderDTOs) {
+        this.orderDTOs = orderDTOs;
+    }
 
 }

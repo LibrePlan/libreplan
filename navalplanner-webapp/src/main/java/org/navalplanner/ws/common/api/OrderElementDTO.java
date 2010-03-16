@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -37,14 +36,13 @@ import org.navalplanner.business.orders.entities.OrderElement;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "order-element")
-public class OrderElementDTO {
+
+public class OrderElementDTO extends IntegrationEntityDTO {
+
+    public final static String ENTITY_TYPE = "order-element";
 
     @XmlAttribute
     public String name;
-
-    @XmlAttribute
-    public String code;
 
     @XmlAttribute(name = "init-date")
     public Date initDate;
@@ -90,6 +88,11 @@ public class OrderElementDTO {
         this.materialAssignments = materialAssignments;
         this.advanceMeasurements = advanceMeasurements;
         this.criterionRequirements = criterionRequirements;
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
     }
 
 }

@@ -64,17 +64,11 @@
 
   * Export order elements:
 
-    - export-order-element.sh ORDER-ELEMENT-CODE (authenticate with
-      wsreader/wsreader)
+    - export-order-element.sh (authenticate with wsreader/wsreader)
 
   * Import orders:
 
-    - import-order.sh order-sample.xml (authenticate with wswriter/wswriter)
-
-  * Update orders:
-
-    - update-order.sh order-update-sample.xml (authenticate with
-      wswriter/wswriter)
+    - import-order-elements.sh order-elements-sample.xml (authenticate with wswriter/wswriter)
 
   * Export resources hours:
 

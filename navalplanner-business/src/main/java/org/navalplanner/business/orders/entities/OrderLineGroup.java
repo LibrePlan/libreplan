@@ -109,6 +109,12 @@ public class OrderLineGroup extends OrderElement implements
         return result;
     }
 
+    public static OrderLineGroup createUnvalidated(String code) {
+        OrderLineGroup orderLineGroup = create(new OrderLineGroup(), code);
+        setupOrderLineGroup(orderLineGroup);
+        return orderLineGroup;
+    }
+
     protected static void setupOrderLineGroup(OrderLineGroup result) {
         IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
                 .create(true);

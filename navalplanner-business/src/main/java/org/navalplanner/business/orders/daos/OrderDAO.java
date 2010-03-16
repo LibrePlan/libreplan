@@ -25,9 +25,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.CostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
@@ -48,7 +50,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 /**
  * Dao for {@link Order}
  * 
@@ -58,7 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
+public class OrderDAO extends IntegrationEntityDAO<Order> implements
         IOrderDAO {
 
     @Autowired
@@ -230,4 +231,32 @@ public class OrderDAO extends GenericDAOHibernate<Order, Long> implements
         }
     }
 
+    @Override
+    public List<Order> findAll() {
+        return getSession().createCriteria(getEntityClass()).addOrder(
+                org.hibernate.criterion.Order.asc("infoComponent.code")).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Order findByCode(String code) throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(null, getEntityClass()
+                    .getName());
+        }
+
+        Order entity = (Order) getSession().createCriteria(getEntityClass())
+                .add(
+                        Restrictions.eq("infoComponent.code", code.trim())
+                                .ignoreCase()).uniqueResult();
+
+        if (entity == null) {
+            throw new InstanceNotFoundException(code, getEntityClass()
+                    .getName());
+        } else {
+            return entity;
+        }
+
+    }
 }

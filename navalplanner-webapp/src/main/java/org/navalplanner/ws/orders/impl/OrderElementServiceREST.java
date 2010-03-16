@@ -20,32 +20,24 @@
 
 package org.navalplanner.ws.orders.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.ws.common.api.IncompatibleTypeException;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.api.OrderDTO;
-import org.navalplanner.ws.common.api.OrderElementDTO;
 import org.navalplanner.ws.common.impl.ConfigurationOrderElementConverter;
-import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
+import org.navalplanner.ws.common.impl.GenericRESTService;
 import org.navalplanner.ws.common.impl.OrderElementConverter;
-import org.navalplanner.ws.common.impl.Util;
+import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.navalplanner.ws.orders.api.IOrderElementService;
+import org.navalplanner.ws.orders.api.OrderListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,91 +50,51 @@ import org.springframework.transaction.annotation.Transactional;
 @Path("/orderelements/")
 @Produces("application/xml")
 @Service("orderElementServiceREST")
-public class OrderElementServiceREST implements IOrderElementService {
+public class OrderElementServiceREST extends
+        GenericRESTService<Order, OrderDTO> implements
+        IOrderElementService {
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
+    private IOrderDAO orderDAO;
 
     @Override
     @GET
-    @Path("/{code}")
     @Transactional(readOnly = true)
-    public OrderElementDTO getOrderElement(@PathParam("code") String code)
-            throws InstanceNotFoundException {
-        return OrderElementConverter.toDTO(orderElementDAO
-                .findUniqueByCode(code), ConfigurationOrderElementConverter
-                .noAdvanceMeasurements());
+    public OrderListDTO getOrders() {
+        return new OrderListDTO(findAll());
     }
 
     @Override
     @POST
     @Consumes("application/xml")
-    @Transactional
-    public InstanceConstraintViolationsListDTO addOrder(OrderDTO orderDTO) {
-
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
-
-        InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
-        try {
-            OrderElement orderElement = OrderElementConverter.toEntity(
-                    orderDTO, ConfigurationOrderElementConverter
-                            .all());
-
-            orderElement.validate();
-            orderElementDAO.save(orderElement);
-        } catch (ValidationException e) {
-            instanceConstraintViolationsDTO = ConstraintViolationConverter
-                    .toDTO(Util.generateInstanceId(1, orderDTO.code), e
-                            .getInvalidValues());
-        } catch (InstanceNotFoundException e) {
-            instanceConstraintViolationsDTO = InstanceConstraintViolationsDTO
-                    .create(Util.generateInstanceId(1, orderDTO.code), e
-                            .getMessage());
-        }
-
-        if (instanceConstraintViolationsDTO != null) {
-            instanceConstraintViolationsList
-                    .add(instanceConstraintViolationsDTO);
-        }
-
-        return new InstanceConstraintViolationsListDTO(
-                instanceConstraintViolationsList);
+    public InstanceConstraintViolationsListDTO addOrders(
+            OrderListDTO orderListDTO) {
+        return save(orderListDTO.orderDTOs);
     }
 
     @Override
-    @PUT
-    @Consumes("application/xml")
-    @Transactional
-    public InstanceConstraintViolationsListDTO updateOrder(OrderDTO orderDTO)
-            throws InstanceNotFoundException, IncompatibleTypeException {
-        OrderElement orderElement = orderElementDAO
-                .findUniqueByCode(orderDTO.code);
-        if (!(orderElement instanceof Order)) {
-            throw new IncompatibleTypeException(orderElement.getCode(),
-                    Order.class, orderElement.getClass());
-        }
+    protected OrderDTO toDTO(Order entity) {
+        return (OrderDTO) OrderElementConverter.toDTO(entity,
+                ConfigurationOrderElementConverter.all());
+    }
 
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
+    @Override
+    protected IIntegrationEntityDAO<Order> getIntegrationEntityDAO() {
+        return orderDAO;
+    }
 
-        InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
-        try {
-            OrderElementConverter.update((Order) orderElement, orderDTO,
+    @Override
+    protected Order toEntity(OrderDTO entityDTO) throws ValidationException,
+            RecoverableErrorException {
+        return (Order) OrderElementConverter.toEntity(entityDTO,
+                ConfigurationOrderElementConverter.all());
+    }
+
+    @Override
+    protected void updateEntity(Order entity, OrderDTO entityDTO)
+            throws ValidationException, RecoverableErrorException {
+            OrderElementConverter.update(entity, entityDTO,
                     ConfigurationOrderElementConverter.all());
-            orderElement.validate();
-            orderElementDAO.save(orderElement);
-        } catch (ValidationException e) {
-            instanceConstraintViolationsDTO = ConstraintViolationConverter
-                    .toDTO(Util.generateInstanceId(1, orderDTO.code), e
-                            .getInvalidValues());
-        }
-
-        if (instanceConstraintViolationsDTO != null) {
-            instanceConstraintViolationsList
-                    .add(instanceConstraintViolationsDTO);
-        }
-
-        return new InstanceConstraintViolationsListDTO(
-                instanceConstraintViolationsList);
     }
 
 }
