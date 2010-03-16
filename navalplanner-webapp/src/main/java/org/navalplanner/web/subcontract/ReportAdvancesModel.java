@@ -38,9 +38,7 @@ import javax.xml.bind.Marshaller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
-import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -109,13 +107,10 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     }
 
     private void forceLoadAdvanceAssignments(Order order) {
-        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
-                .getType();
         for (DirectAdvanceAssignment directAdvanceAssignment : order
-                .getAllDirectAdvanceAssignments(advanceType)) {
+                .getDirectAdvanceAssignmentsOfSubcontractedOrderElements()) {
             directAdvanceAssignment.getAdvanceMeasurements().size();
         }
-        order.getAllIndirectAdvanceAssignments(advanceType).size();
     }
 
     @Override
