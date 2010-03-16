@@ -45,7 +45,7 @@
             <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
             onClick="advancedAllocationController.paginationDown();" disabled="true" />
             <label>${i18n:_('Zoom level')}:</label>
-            <listbox mold="select" rows="1"
+            <listbox mold="select" rows="1" id="advancedAllocationZoomLevel"
                 model="${advancedAllocationController.zoomLevels}"
                 onSelect="advancedAllocationController.setZoomLevel(self.selectedItem.value);" >
             </listbox>

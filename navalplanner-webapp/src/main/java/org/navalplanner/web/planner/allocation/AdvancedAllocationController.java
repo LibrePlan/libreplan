@@ -83,6 +83,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Column;
@@ -381,6 +382,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private PaginatorFilter paginatorFilter;
 
+    private Listbox advancedAllocationZoomLevel;
+
     private TimeTrackerComponentWithoutColumns timeTrackerComponent;
     private Grid leftPane;
     private TimeTrackedTable<Row> table;
@@ -537,6 +540,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         paginatorFilter.setZoomLevel(timeTracker.getDetailLevel());
         paginatorFilter.setInterval(timeTracker.getRealInterval());
         paginationUpButton.setDisabled(isLastPage());
+        advancedAllocationZoomLevel.setSelectedIndex(timeTracker
+                .getDetailLevel().ordinal());
         timeTracker.setFilter(paginatorFilter);
         timeTracker.addZoomListener(new IZoomLevelChangedListener() {
             @Override
