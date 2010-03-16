@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.List;
 
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -74,8 +75,11 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String objectToString(Object obj) {
-        return ((OrderElement) obj).getName();
+        OrderElement orderElement = (OrderElement) obj;
+        Order order = orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
+        return orderElement.getName() + " :: " + order.getName();
     }
 
     @Override
