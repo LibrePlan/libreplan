@@ -43,6 +43,7 @@ import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -156,6 +157,9 @@ public class Registry {
 
     @Autowired
     private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
 
     private Registry() {
     }
@@ -280,6 +284,10 @@ public class Registry {
 
     public static ICalendarExceptionTypeDAO getCalendarExceptionTypeDAO() {
         return getInstance().calendarExceptionTypeDAO;
+    }
+
+    public static IScenarioDAO getScenarioDAO() {
+        return getInstance().scenarioDAO;
     }
 
 }
