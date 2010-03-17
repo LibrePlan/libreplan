@@ -52,9 +52,8 @@
             <label>${i18n:_('Pagination')}:</label>
             <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
             onClick="advancedAllocationController.paginationDown();" disabled="true" />
-            <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination">
-                <listitem><listcell label="${i18n:_('Dates range')}" /><listcell label="Date Range 2" /><listcell label="Date Range 3 ..." /></listitem>
-            </listbox>
+            <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
+            onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
             <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
             onClick="advancedAllocationController.paginationUp();" />
 

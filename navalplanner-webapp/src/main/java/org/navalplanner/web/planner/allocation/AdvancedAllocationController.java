@@ -40,6 +40,8 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.CalculatedValue;
@@ -84,6 +86,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Column;
@@ -396,6 +399,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private List<AllocationInput> allocationInputs;
     private Component associatedComponent;
 
+    private Listbox advancedAllocationHorizontalPagination;
+
     public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs) {
         setInputData(back, allocationInputs);
@@ -463,6 +468,44 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return Period.weeks(6);
             }
             return Period.years(5);
+        }
+
+        public void populateHorizontalListbox() {
+            advancedAllocationHorizontalPagination.getItems().clear();
+            DateTimeFormatter df = DateTimeFormat.forPattern("dd/MMM/yyyy");
+            if (intervalStart != null) {
+                DateTime itemStart = intervalStart;
+                DateTime itemEnd = intervalStart.plus(intervalIncrease());
+                while (intervalEnd.isAfter(itemStart)) {
+                    if (intervalEnd.isBefore(itemEnd)
+                            || !intervalEnd.isAfter(itemEnd
+                                    .plus(intervalIncrease()))) {
+                        itemEnd = intervalEnd;
+                    }
+                    Listitem item = new Listitem(df.print(itemStart) + " - "
+                            + df.print(itemEnd.minusDays(1)));
+                    advancedAllocationHorizontalPagination.appendChild(item);
+                    itemStart = itemEnd;
+                    itemEnd = itemEnd.plus(intervalIncrease());
+                }
+            }
+            advancedAllocationHorizontalPagination
+                    .setDisabled(advancedAllocationHorizontalPagination
+                            .getItems().size() < 2);
+        }
+
+        public void goToHorizontalPage(int interval) {
+            if (interval >= 0) {
+                paginatorStart = intervalStart;
+                for (int i = 0; i < interval; i++) {
+                    paginatorStart = paginatorStart.plus(intervalIncrease());
+                }
+                paginatorEnd = paginatorStart.plus(intervalIncrease());
+                if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+                    paginatorEnd = paginatorEnd.plus(intervalIncrease());
+                }
+                updatePaginationButtons();
+            }
         }
 
         @Override
@@ -554,6 +597,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorFilter.setZoomLevel(detailLevel);
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);
+                populateHorizontalListbox();
                 Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
             }
         });
@@ -567,16 +611,36 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         leftPane = timeTrackedTableWithLeftPane.getLeftPane();
         leftPane.setFixedLayout(true);
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
+        populateHorizontalListbox();
     }
 
     public void paginationDown() {
         paginatorFilter.previous();
         reloadComponent();
+
+        advancedAllocationHorizontalPagination
+                .setSelectedIndex(advancedAllocationHorizontalPagination
+                        .getSelectedIndex() - 1);
+
     }
 
     public void paginationUp() {
         paginatorFilter.next();
         reloadComponent();
+        advancedAllocationHorizontalPagination.setSelectedIndex(Math.max(0,
+                advancedAllocationHorizontalPagination.getSelectedIndex()) + 1);
+    }
+
+    public void goToSelectedHorizontalPage() {
+        paginatorFilter
+                .goToHorizontalPage(advancedAllocationHorizontalPagination
+                        .getSelectedIndex());
+        reloadComponent();
+    }
+
+    private void populateHorizontalListbox() {
+        advancedAllocationHorizontalPagination.setVisible(true);
+        paginatorFilter.populateHorizontalListbox();
     }
 
     private void reloadComponent() {
@@ -589,6 +653,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorFilter.setZoomLevel(detailLevel);
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);
+                populateHorizontalListbox();
                 Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
             }
         });
