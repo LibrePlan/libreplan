@@ -22,8 +22,11 @@ package org.navalplanner.business.orders.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
@@ -36,6 +39,8 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 
@@ -86,11 +91,17 @@ public class Order extends OrderLineGroup {
 
     private String customerReference;
 
+    private Map<Scenario, OrderVersion> scenarios = new HashMap<Scenario, OrderVersion>();
+
     private Set<OrderAuthorization> orderAuthorizations = new HashSet<OrderAuthorization>();
 
     public void addOrderAuthorization(OrderAuthorization orderAuthorization) {
         orderAuthorization.setOrder(this);
         orderAuthorizations.add(orderAuthorization);
+    }
+
+    public Map<Scenario, OrderVersion> getScenarios() {
+        return Collections.unmodifiableMap(scenarios);
     }
 
     public BigDecimal getWorkBudget() {

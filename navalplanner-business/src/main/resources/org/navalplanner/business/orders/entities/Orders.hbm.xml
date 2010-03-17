@@ -97,6 +97,13 @@
                     <one-to-many class="org.navalplanner.business.users.entities.OrderAuthorization" />
                 </set>
 
+                <map name="scenarios" table="SCENARIO_ORDERS" inverse="true">
+                    <key column="ORDER_ID" />
+                    <map-key-many-to-many column="SCENARIO_ID"
+                        class="org.navalplanner.business.scenarios.entities.Scenario" />
+                    <many-to-many column="ORDER_VERSION_ID"
+                        class="org.navalplanner.business.scenarios.entities.OrderVersion"/>
+                </map>
             </joined-subclass>
 
         </joined-subclass>
