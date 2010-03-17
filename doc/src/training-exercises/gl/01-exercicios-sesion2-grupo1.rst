@@ -1,7 +1,6 @@
 Exercicios Grupo 1 - Sesión 2
 #############################
 
-.. _grupo1:
 .. contents::
 
 
@@ -11,6 +10,7 @@ Exercicio  1. Visualización de camiño crítico e conclusións
 Este exercicio consiste en familiarizarse coa asignación de recursos avanzada. O exercicio está composto en varios puntos:
 
     *  Ir ao pedido correspondente ao grupo 1, acceder a súa vista de planificación, identificar a tarefa 1 (*Coordinación*) e cambiar a súa asignación de 0.6 recursos por día a 1 recurso por día mantendo a asignación específica empregada. ¿Cantos días de adianto se conseguiu co incremento de asignación de recursos de 0.6 a 1 recurso por día?
+
        * Data de fin con asignación 0.6 recursos por día: ___________
        * Data de fin con asignación 1 recurso por día: _____________
        * Adianto: __________

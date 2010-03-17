@@ -1,5 +1,5 @@
-Exercicios Grupo 5
-##################
+Exercicios Grupo 5 - Sesión 1
+#############################
 
 .. contents::
 

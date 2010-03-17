@@ -1,5 +1,5 @@
-Exercicios Grupo 3
-##################
+Exercicios Grupo 3 - Sesión 1
+#############################
 
 .. contents::
 

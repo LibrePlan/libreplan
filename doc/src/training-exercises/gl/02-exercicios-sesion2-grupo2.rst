@@ -1,7 +1,6 @@
 Exercicios Grupo 2 - Sesión 2
 #############################
 
-.. _grupo1:
 .. contents::
 
 
@@ -11,6 +10,7 @@ Exercicio  1. Visualización de camiño crítico e conclusións
 Este exercicio consiste en familiarizarse coa asignación de recursos avanzada. O exercicio está composto en varios puntos:
 
     *  Ir ao pedido correspondente ao grupo 2, acceder a súa vista de planificación, identificar a tarefa 1 (*Coordinación*) e cambiar a súa asignación de 0.6 recursos por día a 1 recurso por día mantendo a asignación específica empregada. ¿Cantos días de adianto se conseguiu co incremento de asignación de recursos de 0.6 a 1 recurso por día?
+
        * Data de fin con asignación 0.6 recursos por día: ___________
        * Data de fin con asignación 1 recurso por día: _____________
        * Adianto: __________
@@ -299,7 +299,7 @@ Os datos da subcontratación serán:
    * Código da subcontratación: ped_gr1_cu1
    * Data de fin pedido: 1 de Decembro de 2010.
 
-Unha vez marcada a tarefa como subcontratada realizar o envío do pedido a empresa curso__.
+Unha vez marcada a tarefa como subcontratada realizar o envío do pedido a empresa curso___.
 
 Exercicio 16 .- Reporte de avances sobre tarefas subcontratadas
 ===============================================================

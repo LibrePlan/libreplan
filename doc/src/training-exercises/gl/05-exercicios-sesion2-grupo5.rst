@@ -1,7 +1,6 @@
 Exercicios Grupo 5 - Sesión 2
 #############################
 
-.. _grupo1:
 .. contents::
 
 
@@ -11,6 +10,7 @@ Exercicio  1. Visualización de camiño crítico e conclusións
 Este exercicio consiste en familiarizarse coa asignación de recursos avanzada. O exercicio está composto en varios puntos:
 
     *  Ir ao pedido correspondente ao grupo 5, acceder a súa vista de planificación, identificar a tarefa 1 (*Coordinación*) e cambiar a súa asignación de 0.6 recursos por día a 1 recurso por día mantendo a asignación específica empregada. ¿Cantos días de adianto se conseguiu co incremento de asignación de recursos de 0.6 a 1 recurso por día?
+
        * Data de fin con asignación 0.6 recursos por día: ___________
        * Data de fin con asignación 1 recurso por día: _____________
        * Adianto: __________
@@ -18,7 +18,6 @@ Este exercicio consiste en familiarizarse coa asignación de recursos avanzada. 
   Co adianto que se consegue coa tarefa de coordinación, ¿conséguese acabar o pedido *grupo 5* con adianto debido a?
 
     * Visualizar o camiño crítico do pedido *grupo 5*. ¿Está a tarefa de coordinación no camiño crítico? ___________
-
     * Ir a tarefa 2.1 do pedido (*Pintar camarotes A e B*) e aumentar a asignación de recursos existente a 2 recursos por día mantendo a estratexia de asignación empregada *Calcular data fin*
 
        * Data de fin con asignación 1 recurso por día: __________
@@ -222,10 +221,14 @@ Exercicio 9 .- Administración de materiais
 Crear as seguintes categorías de materiais cos materiais que se indican en cada unha delas:
 
    1.- (Categoría) Tubos
+
       1.1.- (Categoría) Tubos metálicos
+
            -  (Material) Código: tb1, Descrición: Tubo metálico tipo 1, Prezo: 100, Unidades: unidades
            -  (Material) Código: tb2, Descrición: Tubo metálico tipo 2, Prezo: 120, Unidades: unidades
+
       1.2.- (Categoría) Tubo plástico
+
            -  (Material) Código: tb3, Descrición: Tubo plático tipo 1, Prezo: 90, Unidades: metros
            -  (Material) Código: tb4, Descrición: Tubo plástico tipo 2, Prezo: 80, Unidades: metros.
 
@@ -293,13 +296,13 @@ Subcontratar a tarefa do pedido *grupo 5*, *terceira do bloque 2*, é dicir, a t
 
 Os datos da subcontratación serán:
 
-   * Empresa externa: curso__
+   * Empresa externa: curso___
    * Descrición do traballo: pedido do grupo 5 do curso _____.
    * Prezo da subcontratación: 10000
    * Código da subcontratación: ped_gr1_cu1
    * Data de fin pedido: 1 de Decembro de 2010.
 
-Unha vez marcada a tarefa como subcontratada realizar o envío do pedido a empresa curso__.
+Unha vez marcada a tarefa como subcontratada realizar o envío do pedido a empresa curso___.
 
 Exercicio 16 .- Reporte de avances sobre tarefas subcontratadas
 ===============================================================

@@ -1,5 +1,5 @@
-Exercicios Grupo 2
-##################
+Exercicios Grupo 2 - Sesión 1
+#############################
 
 .. contents::
 
