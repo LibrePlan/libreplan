@@ -22,9 +22,12 @@ package org.navalplanner.ws.resources.impl;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -34,7 +37,6 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.common.impl.InstanceNotFoundRecoverableErrorException;
 import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
@@ -158,9 +160,8 @@ public class ResourceConverter {
                 StringUtils.trim(criterionSatisfactionDTO.code),
                 StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
                 StringUtils.trim(criterionSatisfactionDTO.criterionName),
-                resource,
-                DateConverter.toDate(criterionSatisfactionDTO.startDate),
-                DateConverter.toDate(criterionSatisfactionDTO.endDate));
+                resource, criterionSatisfactionDTO.startDate,
+                    criterionSatisfactionDTO.endDate);
 
         } catch (InstanceNotFoundException e) {
 
@@ -216,11 +217,14 @@ public class ResourceConverter {
         }
 
         try {
+            LocalDate startDate = (assignmentDTO.startDate == null) ? null
+                    : LocalDate.fromDateFields(assignmentDTO.startDate);
+            LocalDate endDate = (assignmentDTO.endDate == null) ? null
+                    : LocalDate.fromDateFields(assignmentDTO.endDate);
             return ResourcesCostCategoryAssignment.createUnvalidated(
-                assignmentDTO.code,
-                StringUtils.trim(assignmentDTO.costCategoryName), resource,
-                DateConverter.toLocalDate(assignmentDTO.startDate),
-                DateConverter.toLocalDate(assignmentDTO.endDate));
+                    assignmentDTO.code, StringUtils
+                            .trim(assignmentDTO.costCategoryName), resource,
+                    startDate, endDate);
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundRecoverableErrorException(
                 COST_CATEGORY_ENTITY_TYPE, e.getKey().toString());
@@ -302,8 +306,8 @@ public class ResourceConverter {
             criterionSatisfaction.updateUnvalidated(
                 StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
                 StringUtils.trim(criterionSatisfactionDTO.criterionName),
-                DateConverter.toDate(criterionSatisfactionDTO.startDate),
-                DateConverter.toDate(criterionSatisfactionDTO.endDate));
+                criterionSatisfactionDTO.startDate,
+                criterionSatisfactionDTO.endDate);
 
         } catch (InstanceNotFoundException e) {
 
@@ -351,10 +355,13 @@ public class ResourceConverter {
         ResourcesCostCategoryAssignmentDTO i) {
 
         try {
+            LocalDate startDate = (i.startDate == null) ? null : LocalDate
+                    .fromDateFields(i.startDate);
+            LocalDate endDate = (i.endDate == null) ? null : LocalDate
+                    .fromDateFields(i.endDate);
             assignment.updateUnvalidated(
                 StringUtils.trim(i.costCategoryName),
-                DateConverter.toLocalDate(i.startDate),
-                DateConverter.toLocalDate(i.endDate));
+                startDate, endDate);
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundRecoverableErrorException(
                 COST_CATEGORY_ENTITY_TYPE, e.getKey().toString());
@@ -373,6 +380,68 @@ public class ResourceConverter {
 
         }
 
+    }
+
+    public static ResourceDTO toDTO(Resource resource) {
+        ResourceDTO resourceDTO;
+        if (resource instanceof Worker) {
+            resourceDTO = toDTO((Worker) resource);
+        } else if (resource instanceof Machine) {
+            resourceDTO = toDTO((Machine) resource);
+        } else {
+            return null;
+        }
+
+        List<CriterionSatisfactionDTO> criterionSatisfactionDTOs = new ArrayList<CriterionSatisfactionDTO>();
+        for (CriterionSatisfaction criterionSatisfaction : resource
+                .getCriterionSatisfactions()) {
+            criterionSatisfactionDTOs.add(toDTO(criterionSatisfaction));
+        }
+        resourceDTO.criterionSatisfactions = criterionSatisfactionDTOs;
+
+        List<ResourcesCostCategoryAssignmentDTO> resourcesCostCategoryAssignmentDTOs = new ArrayList<ResourcesCostCategoryAssignmentDTO>();
+        for (ResourcesCostCategoryAssignment resourcesCostCategoryAssignment : resource
+                .getResourcesCostCategoryAssignments()) {
+            resourcesCostCategoryAssignmentDTOs
+                    .add(toDTO(resourcesCostCategoryAssignment));
+        }
+        resourceDTO.resourcesCostCategoryAssignments = resourcesCostCategoryAssignmentDTOs;
+
+        return resourceDTO;
+    }
+
+    private static WorkerDTO toDTO(Worker worker) {
+        return new WorkerDTO(worker.getCode(), worker.getFirstName(), worker
+                .getSurname(), worker.getNif());
+    }
+
+    private static MachineDTO toDTO(Machine machine) {
+        return new MachineDTO(machine.getCode(), machine.getName(), machine
+                .getDescription());
+    }
+
+    private static CriterionSatisfactionDTO toDTO(
+            CriterionSatisfaction criterionSatisfaction) {
+        return new CriterionSatisfactionDTO(criterionSatisfaction.getCode(),
+                criterionSatisfaction.getCriterion().getType().getName(),
+                criterionSatisfaction.getCriterion().getName(),
+                criterionSatisfaction.getStartDate(), criterionSatisfaction
+                        .getEndDate());
+    }
+
+    private static ResourcesCostCategoryAssignmentDTO toDTO(
+            ResourcesCostCategoryAssignment resourcesCostCategoryAssignment) {
+        Date initDate = (resourcesCostCategoryAssignment.getInitDate() == null) ? null
+                : resourcesCostCategoryAssignment.getInitDate()
+                        .toDateTimeAtStartOfDay().toDate();
+        Date endDate = (resourcesCostCategoryAssignment.getEndDate() == null) ? null
+                : resourcesCostCategoryAssignment.getEndDate()
+                        .toDateTimeAtStartOfDay().toDate();
+
+        return new ResourcesCostCategoryAssignmentDTO(
+                resourcesCostCategoryAssignment.getCode(),
+                resourcesCostCategoryAssignment.getCostCategory().getName(),
+                initDate, endDate);
     }
 
 }

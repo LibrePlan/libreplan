@@ -35,6 +35,8 @@ import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
  */
 public interface IResourceService {
 
+    public ResourceListDTO getResources();
+
     public InstanceConstraintViolationsListDTO addResources(
         ResourceListDTO resources);
 
