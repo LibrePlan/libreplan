@@ -343,11 +343,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                         return false;
                     }
                 } else if (workReportLine.getOrderElement() == null) {
-                    Textbox txtOrder = getTextboxOrder(row);
-                    if (txtOrder != null) {
+                    BandboxSearch bandboxOrder = getTextboxOrder(row);
+                    if (bandboxOrder != null) {
                         String message = _("The order element code cannot be null");
-                        txtOrder.setValue("");
-                        showInvalidMessage(txtOrder, message);
+                        bandboxOrder.clear();
+                        showInvalidMessage(bandboxOrder, message);
                     }
                     return false;
                 }
@@ -520,7 +520,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @param row
      * @return
      */
-    private Textbox getTextboxOrder(Row row) {
+    private BandboxSearch getTextboxOrder(Row row) {
         int position = 0;
         if (!getWorkReportType().getDateIsSharedByLines()) {
             position++;
@@ -529,7 +529,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             position++;
         }
         try {
-            return (Textbox) row.getChildren().get(position);
+            return (BandboxSearch) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
         }
