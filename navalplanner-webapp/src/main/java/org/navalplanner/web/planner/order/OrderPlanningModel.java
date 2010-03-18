@@ -267,10 +267,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             EditTaskController editTaskController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
-        orderReloaded = reload(order);
-        PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
+        PlannerConfiguration<TaskElement> configuration = setupStateFor(order);
         addAdditional(additional, configuration);
-
         ZoomLevel defaultZoomLevel = OrderPlanningModel
                 .calculateDefaultLevel(configuration);
         configureInitialZoomLevelFor(planner, defaultZoomLevel);
@@ -325,6 +323,19 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+    }
+
+    private PlannerConfiguration<TaskElement> setupStateFor(Order order) {
+        PlanningStateTracker tracker = PlanningStateTracker.retrieve(order);
+        if (tracker != null) {
+            orderReloaded = tracker.getOriginalOrder();
+            planningState = tracker.getPlanningState();
+        } else {
+            orderReloaded = reload(order);
+            planningState = createPlanningStateFor(orderReloaded);
+            PlanningStateTracker.storeInSession(orderReloaded, planningState);
+        }
+        return createConfiguration(planningState, orderReloaded);
     }
 
     private void addPrintSupport(
@@ -814,10 +825,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
-            Order orderReloaded) {
+            PlanningState planningState, Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setOrder(orderReloaded);
-        planningState = createPlanningStateFor(orderReloaded);
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
