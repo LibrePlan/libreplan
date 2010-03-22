@@ -873,8 +873,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             }
 
             for (WorkReportLine workReportLine : workReportLines) {
-                LocalDate day = new LocalDate(workReportLine.getWorkReport()
-                        .getDate());
+                LocalDate day = new LocalDate(workReportLine.getDate());
                 BigDecimal cost = new BigDecimal(workReportLine.getNumHours());
 
                 if (!result.containsKey(day)) {

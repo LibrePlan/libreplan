@@ -74,7 +74,6 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
-import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
@@ -1178,36 +1177,23 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         protected void calculateActualCostWorkPerformed(Interval interval) {
-            SortedMap<LocalDate, BigDecimal> workReportCost = getWorkReportCost();
+            List<TaskElement> list = order
+                    .getAllChildrenAssociatedTaskElements();
+            list.add(order.getAssociatedTaskElement());
+
+            SortedMap<LocalDate, BigDecimal> workReportCost = new TreeMap<LocalDate, BigDecimal>();
+
+            for (TaskElement taskElement : list) {
+                if (taskElement instanceof Task) {
+                    addCost(workReportCost, hoursCostCalculator
+                            .getWorkReportCost((Task) taskElement));
+                }
+            }
 
             workReportCost = accumulateResult(workReportCost);
             addZeroBeforeTheFirstValue(workReportCost);
             indicators.put(EarnedValueType.ACWP, calculatedValueForEveryDay(
                     workReportCost, interval.getStart(), interval.getFinish()));
-        }
-
-        public SortedMap<LocalDate, BigDecimal> getWorkReportCost() {
-            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-
-            List<WorkReportLine> workReportLines = workReportLineDAO
-                    .findByOrderElementAndChildren(order);
-
-            if (workReportLines.isEmpty()) {
-                return result;
-            }
-
-            for (WorkReportLine workReportLine : workReportLines) {
-                LocalDate day = new LocalDate(workReportLine.getWorkReport()
-                        .getDate());
-                BigDecimal cost = new BigDecimal(workReportLine.getNumHours());
-
-                if (!result.containsKey(day)) {
-                    result.put(day, BigDecimal.ZERO);
-                }
-                result.put(day, result.get(day).add(cost));
-            }
-
-            return result;
         }
 
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
