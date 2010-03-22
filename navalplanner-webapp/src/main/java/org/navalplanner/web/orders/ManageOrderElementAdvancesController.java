@@ -554,6 +554,12 @@ public class ManageOrderElementAdvancesController extends
             }
         });
 
+        if (advance instanceof IndirectAdvanceAssignment) {
+            removeButton.setDisabled(true);
+            removeButton
+                    .setTooltiptext(_("Calculated advances can not be removed"));
+        }
+
         Listcell listCell = new Listcell();
         listCell.appendChild(removeButton);
         listItem.appendChild(listCell);
