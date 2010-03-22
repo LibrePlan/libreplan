@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -235,7 +236,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     public List<FilterPair> getMatching(String filter) {
         getListMatching().clear();
         if ((filter != null) && (!filter.isEmpty())) {
-            filter = filter.toLowerCase();
+
+            filter = StringUtils.deleteWhitespace(filter.toLowerCase());
+
             if (filter.indexOf("rc:") == 0) {
                 searchInCustomerReferences(filter);
             } else if (filter.indexOf("cod:") == 0) {
@@ -255,7 +258,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInCriterionTypes(String filter) {
         boolean limited = (filter.length() < 3);
         for (CriterionType type : mapCriterions.keySet()) {
-            if (type.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(type.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 setFilterPairCriterionType(type, limited);
             } else {
                 searchInCriterions(type, filter);
@@ -265,7 +270,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCriterions(CriterionType type, String filter) {
         for (Criterion criterion : mapCriterions.get(type)) {
-            if (criterion.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(criterion.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 addCriterion(type, criterion);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
@@ -286,7 +293,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInLabelTypes(String filter) {
         boolean limited = (filter.length() < 3);
         for (LabelType type : mapLabels.keySet()) {
-            if (type.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(type.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 setFilterPairLabelType(type, limited);
             } else {
                 searchInLabels(type, filter);
@@ -296,7 +305,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInLabels(LabelType type, String filter) {
         for (Label label : mapLabels.get(type)) {
-            if (label.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(label.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 addLabel(type, label);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
@@ -316,8 +327,11 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInExternalCompanies(String filter){
         for(ExternalCompany externalCompany : externalCompanies){
-            if ((externalCompany.getName().toLowerCase().contains(filter))
-                    || (externalCompany.getNif().toLowerCase().contains(filter))) {
+            String name = StringUtils.deleteWhitespace(externalCompany
+                    .getName().toLowerCase());
+            String nif = StringUtils.deleteWhitespace(externalCompany.getNif()
+                    .toLowerCase());
+            if ((name.contains(filter)) || (nif.contains(filter))) {
                 addExternalCompany(externalCompany);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
@@ -328,7 +342,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInOrderStatus(String filter) {
         for (OrderStatusEnum state : ordersStatusEnums) {
-            if (state.name().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(state.name()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 addState(state);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
@@ -340,9 +356,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInOrderCodes(String filter) {
         if (filter.indexOf("cod:") == 0) {
             String codeFilter = filter.replaceFirst("cod:", "");
-            codeFilter = codeFilter.replace(" ", "");
             for (String code : ordersCodes) {
-                if (code.toLowerCase().equals(codeFilter)) {
+                code = StringUtils.deleteWhitespace(code.toLowerCase());
+                if (code.equals(codeFilter)) {
                     addCode(code);
                     return;
                 }
@@ -353,9 +369,10 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInCustomerReferences(String filter) {
         if (filter.indexOf("rc:") == 0) {
             String referenceFilter = filter.replaceFirst("rc:", "");
-            referenceFilter = referenceFilter.replace(" ", "");
             for (String reference : customerReferences) {
-                if (reference.toLowerCase().equals(referenceFilter)) {
+                reference = StringUtils.deleteWhitespace(reference
+                        .toLowerCase());
+                if (reference.equals(referenceFilter)) {
                     addCustomerReference(reference);
                     return;
                 }

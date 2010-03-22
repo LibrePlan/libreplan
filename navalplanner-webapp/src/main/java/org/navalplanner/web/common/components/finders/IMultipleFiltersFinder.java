@@ -33,12 +33,22 @@ public interface IMultipleFiltersFinder {
 
     void init();
 
+    /**
+     * Return the FilterPair list match with filter.
+     * @param filter
+     * @return List<FilterPair>
+     */
     List<FilterPair> getMatching(String filter);
 
     List<FilterPair> getFirstTenFilters();
 
     String objectToString(Object obj);
 
+    /**
+     * Return the new filter that is lower case and without white spaces.
+     * @param inputText
+     * @return
+     */
     String getNewFilterText(String inputText);
 
     boolean isValidNewFilter(Object obj);

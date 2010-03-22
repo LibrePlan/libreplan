@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
@@ -151,7 +152,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     public List<FilterPair> getMatching(String filter) {
         getListMatching().clear();
         if ((filter != null) && (!filter.isEmpty())) {
-            filter = filter.toLowerCase();
+            filter = StringUtils.deleteWhitespace(filter.toLowerCase());
             searchInCriterionTypes(filter);
             searchInLabelTypes(filter);
         }
@@ -163,7 +164,9 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInCriterionTypes(String filter) {
         boolean limited = (filter.length() < 3);
         for (CriterionType type : mapCriterions.keySet()) {
-            if (type.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(type.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 setFilterPairCriterionType(type, limited);
             } else {
                 searchInCriterions(type, filter);
@@ -173,7 +176,9 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCriterions(CriterionType type, String filter) {
         for (Criterion criterion : mapCriterions.get(type)) {
-            if (criterion.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(criterion.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 addCriterion(type, criterion);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
@@ -194,7 +199,9 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInLabelTypes(String filter) {
         boolean limited = (filter.length() < 3);
         for (LabelType type : mapLabels.keySet()) {
-            if (type.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(type.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 setFilterPairLabelType(type, limited);
             } else {
                 searchInLabels(type, filter);
@@ -204,7 +211,9 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInLabels(LabelType type, String filter) {
         for (Label label : mapLabels.get(type)) {
-            if (label.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(label.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 addLabel(type, label);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
