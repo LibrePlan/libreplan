@@ -18,31 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.calendars.api;
+package org.navalplanner.business.calendars.daos;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 
 /**
- * DTO for a list of {@link BaseCalendar} entities.
+ * Contract for {@link CalendarDataDAO}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "base-calendar-list")
-public class BaseCalendarListDTO {
-
-    @XmlElement(name = "base-calendar")
-    public List<BaseCalendarDTO> baseCalendars = new ArrayList<BaseCalendarDTO>();
-
-    public BaseCalendarListDTO() {}
-
-    public BaseCalendarListDTO(List<BaseCalendarDTO> baseCalendars) {
-        this.baseCalendars = baseCalendars;
-    }
+public interface ICalendarDataDAO extends
+        IIntegrationEntityDAO<CalendarData> {
 
 }

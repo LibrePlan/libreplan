@@ -20,13 +20,14 @@
 
 package org.navalplanner.ws.calendars.impl;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 import org.navalplanner.ws.calendars.api.BaseCalendarListDTO;
@@ -54,7 +55,7 @@ public class CalendarServiceREST extends
     private IBaseCalendarDAO baseCalendarDAO;
 
     @Override
-    protected IIntegrationEntityDAO<BaseCalendar> getIntegrationEntityDAO() {
+    protected IBaseCalendarDAO getIntegrationEntityDAO() {
         return baseCalendarDAO;
     }
 
@@ -81,7 +82,10 @@ public class CalendarServiceREST extends
     @GET
     @Transactional(readOnly = true)
     public BaseCalendarListDTO getBaseCalendars() {
-        return new BaseCalendarListDTO(findAll());
+        // Avoid ResourceCalendar entities
+        List<BaseCalendar> justBaseCalendars = getIntegrationEntityDAO()
+                .getBaseCalendars();
+        return new BaseCalendarListDTO(toDTO(justBaseCalendars));
     }
 
 }

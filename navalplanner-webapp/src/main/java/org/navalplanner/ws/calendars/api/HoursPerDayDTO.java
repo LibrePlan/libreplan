@@ -20,29 +20,29 @@
 
 package org.navalplanner.ws.calendars.api;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 
 /**
- * DTO for a list of {@link BaseCalendar} entities.
+ * DTO for represent hours per day of {@link CalendarData} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "base-calendar-list")
-public class BaseCalendarListDTO {
+public class HoursPerDayDTO {
 
-    @XmlElement(name = "base-calendar")
-    public List<BaseCalendarDTO> baseCalendars = new ArrayList<BaseCalendarDTO>();
+    @XmlAttribute
+    public String day;
 
-    public BaseCalendarListDTO() {}
+    @XmlAttribute
+    public Integer hours;
 
-    public BaseCalendarListDTO(List<BaseCalendarDTO> baseCalendars) {
-        this.baseCalendars = baseCalendars;
+    public HoursPerDayDTO() {
+    }
+
+    public HoursPerDayDTO(String day, Integer hours) {
+        this.day = day;
+        this.hours = hours;
     }
 
 }

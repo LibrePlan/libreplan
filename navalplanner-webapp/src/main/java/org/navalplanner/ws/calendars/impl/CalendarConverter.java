@@ -20,8 +20,18 @@
 
 package org.navalplanner.ws.calendars.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
+import org.navalplanner.ws.calendars.api.CalendarDataDTO;
+import org.navalplanner.ws.calendars.api.CalendarExceptionDTO;
+import org.navalplanner.ws.calendars.api.HoursPerDayDTO;
 
 /**
  * Converter from/to {@link BaseCalendar} related entities to/from DTOs.
@@ -34,8 +44,46 @@ public final class CalendarConverter {
     }
 
     public final static BaseCalendarDTO toDTO(BaseCalendar baseCalendar) {
+        List<CalendarExceptionDTO> calendarExceptionDTOs = new ArrayList<CalendarExceptionDTO>();
+        for (CalendarException calendarException : baseCalendar.getExceptions()) {
+            calendarExceptionDTOs.add(toDTO(calendarException));
+        }
+
+        List<CalendarDataDTO> calendarDataDTOs = new ArrayList<CalendarDataDTO>();
+        for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
+            calendarDataDTOs.add(toDTO(calendarData));
+        }
+
         return new BaseCalendarDTO(baseCalendar.getCode(), baseCalendar
-                .getName());
+                .getName(), calendarExceptionDTOs, calendarDataDTOs);
+    }
+
+    private final static CalendarExceptionDTO toDTO(
+            CalendarException calendarException) {
+        return new CalendarExceptionDTO(calendarException.getCode(),
+                calendarException.getDate().toDateTimeAtStartOfDay().toDate(),
+                calendarException.getHours(), calendarException.getType()
+                        .getName());
+    }
+
+    private final static CalendarDataDTO toDTO(CalendarData calendarData) {
+        List<HoursPerDayDTO> hoursPerDayDTOs = new ArrayList<HoursPerDayDTO>();
+        Days[] days = CalendarData.Days.values();
+        for (Integer day : calendarData.getHoursPerDay().keySet()) {
+            String dayName = days[day].name();
+            Integer hours = calendarData.getHoursPerDay().get(day);
+            hoursPerDayDTOs.add(new HoursPerDayDTO(dayName, hours));
+        }
+
+        Date expiringDate = (calendarData.getExpiringDate() != null) ? calendarData
+                .getExpiringDate().toDateTimeAtStartOfDay().toDate()
+                : null;
+        String parentCalendar = (calendarData.getParent() != null) ? calendarData
+                .getParent().getCode()
+                : null;
+
+        return new CalendarDataDTO(hoursPerDayDTOs, expiringDate,
+                parentCalendar);
     }
 
 }

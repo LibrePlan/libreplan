@@ -21,51 +21,49 @@
 package org.navalplanner.ws.calendars.api;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
- * DTO for {@link BaseCalendar} entity.
+ * DTO for {@link CalendarData} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendarDTO extends IntegrationEntityDTO {
+public class CalendarDataDTO extends IntegrationEntityDTO {
 
-    public final static String ENTITY_TYPE = "base-calendar";
+    public final static String ENTITY_TYPE = "calendar-data";
 
-    @XmlAttribute
-    public String name;
+    @XmlElementWrapper(name = "hors-per-day-list")
+    @XmlElement(name = "hors-per-day")
+    public List<HoursPerDayDTO> hoursPerDays = new ArrayList<HoursPerDayDTO>();
 
-    @XmlElementWrapper(name = "calendar-exception-list")
-    @XmlElement(name = "calendar-exception")
-    public List<CalendarExceptionDTO> calendarExceptions = new ArrayList<CalendarExceptionDTO>();
+    @XmlAttribute(name = "expiring-date")
+    public Date expiringDate;
 
-    @XmlElementWrapper(name = "calendar-data-list")
-    @XmlElement(name = "calendar-data")
-    public List<CalendarDataDTO> calendarDatas = new ArrayList<CalendarDataDTO>();
+    @XmlAttribute(name = "parent-calendar")
+    public String parentCalendar;
 
-    public BaseCalendarDTO() {
+    public CalendarDataDTO() {
     }
 
-    public BaseCalendarDTO(String code, String name,
-            List<CalendarExceptionDTO> calendarExceptions,
-            List<CalendarDataDTO> calendarDatas) {
+    public CalendarDataDTO(String code, List<HoursPerDayDTO> hoursPerDays,
+            Date expiringDate, String parentCalendar) {
         super(code);
-        this.name = name;
-        this.calendarExceptions = calendarExceptions;
-        this.calendarDatas = calendarDatas;
+        this.hoursPerDays = hoursPerDays;
+        this.expiringDate = expiringDate;
+        this.parentCalendar = parentCalendar;
     }
 
-    public BaseCalendarDTO(String name,
-            List<CalendarExceptionDTO> calendarExceptions,
-            List<CalendarDataDTO> calendarDatas) {
-        this(generateCode(), name, calendarExceptions, calendarDatas);
+    public CalendarDataDTO(List<HoursPerDayDTO> hoursPerDays,
+            Date expiringDate, String parentCalendar) {
+        this(generateCode(), hoursPerDays, expiringDate, parentCalendar);
     }
 
     @Override

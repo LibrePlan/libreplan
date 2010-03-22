@@ -82,6 +82,10 @@
 
     - export-calendar-exception-types.sh (authenticate with wsreader/wsreader)
 
+  * Export calendars:
+
+    - export-calendars.sh (authenticate with wsreader/wsreader)
+
 + When working with the online demo add "--prod" argument to every command.
 Example:
 

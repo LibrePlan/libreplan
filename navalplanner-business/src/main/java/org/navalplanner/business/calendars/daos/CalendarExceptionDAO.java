@@ -18,31 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.calendars.api;
+package org.navalplanner.business.calendars.daos;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 /**
- * DTO for a list of {@link BaseCalendar} entities.
+ * DAO for {@link CalendarException}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "base-calendar-list")
-public class BaseCalendarListDTO {
-
-    @XmlElement(name = "base-calendar")
-    public List<BaseCalendarDTO> baseCalendars = new ArrayList<BaseCalendarDTO>();
-
-    public BaseCalendarListDTO() {}
-
-    public BaseCalendarListDTO(List<BaseCalendarDTO> baseCalendars) {
-        this.baseCalendars = baseCalendars;
-    }
+@Repository
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class CalendarExceptionDAO extends
+        IntegrationEntityDAO<CalendarException> implements
+        ICalendarExceptionDAO {
 
 }
