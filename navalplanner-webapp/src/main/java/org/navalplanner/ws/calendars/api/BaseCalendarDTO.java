@@ -18,29 +18,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
+package org.navalplanner.ws.calendars.api;
 
-import java.util.List;
+import javax.xml.bind.annotation.XmlAttribute;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * DTO for {@link BaseCalendar} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends
-        IIntegrationEntityDAO<BaseCalendar> {
+public class BaseCalendarDTO extends IntegrationEntityDTO {
 
-    List<BaseCalendar> getBaseCalendars();
+    public final static String ENTITY_TYPE = "base-calendar";
 
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
+    @XmlAttribute
+    public String name;
 
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
+    public BaseCalendarDTO() {
+    }
 
-    List<BaseCalendar> findByName(String name);
+    public BaseCalendarDTO(String code, String name) {
+        super(code);
+        this.name = name;
+    }
 
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    public BaseCalendarDTO(String name) {
+        this(generateCode(), name);
+    }
+
+    @Override
+    public String getEntityType() {
+        return ENTITY_TYPE;
+    }
 
 }

@@ -72,6 +72,7 @@
             <ref bean="costCategoryServiceREST"/>
             <ref bean="typeOfWorkHoursServiceREST"/>
             <ref bean="calendarExceptionTypeServiceREST"/>
+            <ref bean="calendarServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />

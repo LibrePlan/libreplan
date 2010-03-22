@@ -30,8 +30,9 @@ import java.util.Set;
 import org.hibernate.validator.NotEmpty;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 /**
@@ -41,14 +42,12 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
  * some exceptions of its parent calendar.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendar extends BaseEntity implements IWorkHours {
+public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
     private static final Integer DEFAULT_VALUE = 0;
 
     public static BaseCalendar create() {
-        BaseCalendar baseCalendar = new BaseCalendar(CalendarData.create());
-        baseCalendar.setNewObject(true);
-        return baseCalendar;
+        return create(new BaseCalendar(CalendarData.create()));
     }
 
     @NotEmpty
@@ -936,6 +935,11 @@ public class BaseCalendar extends BaseEntity implements IWorkHours {
 
     private boolean canWorkAt(CalendarException each) {
         return each.getHours() != 0 || each.getType().isOverAssignable();
+    }
+
+    @Override
+    protected IBaseCalendarDAO getIntegrationEntityDAO() {
+        return org.navalplanner.business.common.Registry.getBaseCalendarDAO();
     }
 
 }

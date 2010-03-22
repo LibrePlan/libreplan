@@ -18,29 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.calendars.daos;
-
-import java.util.List;
+package org.navalplanner.ws.calendars.impl;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 
 /**
- * Contract for {@link BaseCalendarDAO}
+ * Converter from/to {@link BaseCalendar} related entities to/from DTOs.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IBaseCalendarDAO extends
-        IIntegrationEntityDAO<BaseCalendar> {
+public final class CalendarConverter {
 
-    List<BaseCalendar> getBaseCalendars();
+    private CalendarConverter() {
+    }
 
-    List<BaseCalendar> findByParent(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(BaseCalendar baseCalendar);
-
-    List<BaseCalendar> findByName(String name);
-
-    boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+    public final static BaseCalendarDTO toDTO(BaseCalendar baseCalendar) {
+        return new BaseCalendarDTO(baseCalendar.getCode(), baseCalendar
+                .getName());
+    }
 
 }
