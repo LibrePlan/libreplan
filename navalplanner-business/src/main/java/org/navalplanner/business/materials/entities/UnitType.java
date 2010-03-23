@@ -33,6 +33,10 @@ import org.navalplanner.business.materials.daos.IUnitTypeDAO;
  */
 public class UnitType extends IntegrationEntity{
 
+    public static UnitType create(String code, String measure) {
+        return (UnitType) create(new UnitType(measure), code);
+    }
+
     public static UnitType create(String measure) {
         return (UnitType) create(new UnitType(measure));
     }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<material-category-list xmlns="http://rest.ws.navalplanner.org">
+  <material-category name="tornillos" code="60600">
+    <subcategories>
+      <material-category parent="60600" name="tornillos 10m"
+      code="60602" />
+      <material-category parent="60600" name="tornillos 12m"
+      code="60603" unitType="ff5fd2a7-b11e-490a-a340-b2a1e2f00726"/>
+    </subcategories>
+    <material-list>
+      <material disabled="false"
+      unitType="ff5fd2a7-b11e-490a-a340-b2a1e2f00726"
+      defaultPrice="30.00" description="asdfsdf" code="dafasd" />
+    </material-list>
+  </material-category>
+  <material-category name="tuercas" code="60601" />
+  <material-category name="Imported materials without category"
+  code="808" />
+</material-category-list>

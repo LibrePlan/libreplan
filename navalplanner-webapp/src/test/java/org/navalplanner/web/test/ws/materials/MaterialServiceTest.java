@@ -1,0 +1,384 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.navalplanner.web.test.ws.materials;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.hibernate.SessionFactory;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
+import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.materials.daos.IUnitTypeDAO;
+import org.navalplanner.business.materials.entities.Material;
+import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.materials.api.IMaterialService;
+import org.navalplanner.ws.materials.api.MaterialCategoryDTO;
+import org.navalplanner.ws.materials.api.MaterialCategoryListDTO;
+import org.navalplanner.ws.materials.api.MaterialDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Tests for <code>IMaterialService</code>.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
+@Transactional
+public class MaterialServiceTest {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    private IMaterialService materialService;
+
+    @Autowired
+    private IMaterialCategoryDAO materialCategoryDAO;
+
+    @Autowired
+    private IMaterialDAO materialDAO;
+
+    @Autowired
+    private IUnitTypeDAO unitTypeDAO;
+
+    @Resource
+    private IDataBootstrap materialCategoryBootstrap;
+
+    @Resource
+    private IDataBootstrap unitTypeBootstrap;
+
+    private String unitTypeCodeA = "unitTypeA";
+    private String unitTypeCodeB = "unitTypeB";
+
+    @Test
+    @Rollback(false)
+    public void CreateUnitType() {
+        UnitType entityA = UnitType.create(unitTypeCodeA, "uninewUnitTypeA");
+        UnitType entityB = UnitType.create(unitTypeCodeB, "uninewUnitTypeB");
+        unitTypeDAO.save(entityA);
+        unitTypeDAO.save(entityB);
+        unitTypeDAO.flush();
+        sessionFactory.getCurrentSession().evict(entityA);
+        sessionFactory.getCurrentSession().evict(entityB);
+    }
+
+    @Test
+    @Rollback(false)
+    public void loadRequiredaData() {
+        materialCategoryBootstrap.loadRequiredData();
+        unitTypeBootstrap.loadRequiredData();
+    }
+
+    @Test
+    public void testAddAndGetMaterialCategories() {
+        /* Build materialCategory (0 constraint violations). */
+        // Missing material name and the unit type.
+        MaterialDTO m1 = new MaterialDTO(null, new BigDecimal(13),
+                unitTypeCodeA, true);
+        // Missing default unit price
+        MaterialDTO m2 = new MaterialDTO("material 2", null, unitTypeCodeA,
+                true);
+        // Missing unit type
+        MaterialDTO m3 = new MaterialDTO("material 3", new BigDecimal(13),
+                null, true);
+        // Missing unit type, same name
+        MaterialDTO m4 = new MaterialDTO("material 3", new BigDecimal(13),
+                unitTypeCodeA, null);
+
+        List<MaterialDTO> materialDTOs = new ArrayList<MaterialDTO>();
+        materialDTOs.add(m1);
+        materialDTOs.add(m2);
+        materialDTOs.add(m3);
+        materialDTOs.add(m4);
+
+        MaterialCategoryDTO materialCategoryDTO = new MaterialCategoryDTO(
+                "categoryA", null, null, materialDTOs);
+
+        MaterialCategoryListDTO materialCategoryListDTO = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+    }
+
+    @Test
+    public void testAddMaterialRepeatedCodes() {
+        /* Build material with same code (1 constraint violations). */
+        MaterialDTO m1 = new MaterialDTO("CodeA", "material1", new BigDecimal(
+                13), unitTypeCodeA, true);
+        MaterialDTO m2 = new MaterialDTO("CodeA", "material2", new BigDecimal(
+                13), unitTypeCodeA, true);
+
+        List<MaterialDTO> materialDTOs = new ArrayList<MaterialDTO>();
+        materialDTOs.add(m1);
+        materialDTOs.add(m2);
+
+        MaterialCategoryDTO materialCategoryDTO = new MaterialCategoryDTO(
+                "category1", null, null, materialDTOs);
+
+        MaterialCategoryListDTO materialCategoryListDTO = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
+    @Test
+    public void testAddValidMaterialCategory() {
+        /* Build material (0 constraint violations). */
+        MaterialDTO m1 = new MaterialDTO("CodeM1", "material1", new BigDecimal(
+                13), unitTypeCodeA, true);
+        MaterialDTO m2 = new MaterialDTO("CodeM2", "material2", new BigDecimal(
+                13), unitTypeCodeA, true);
+
+        List<MaterialDTO> materialDTOs1 = new ArrayList<MaterialDTO>();
+        List<MaterialDTO> materialDTOs2 = new ArrayList<MaterialDTO>();
+        materialDTOs1.add(m1);
+        materialDTOs2.add(m2);
+
+        /* Build material (0 constraint violations). */
+        MaterialCategoryDTO mc1 = new MaterialCategoryDTO("CodeMC1",
+                "subCategory1", "mainMaterialCode", null, materialDTOs1);
+        MaterialCategoryDTO mc2 = new MaterialCategoryDTO("CodeMC2",
+                "subCategory2", null, null, materialDTOs2);
+        MaterialCategoryListDTO subCategoryListDTO = createMaterialCategoryListDTO(
+                mc1, mc2);
+
+        /* Build main material category */
+        MaterialCategoryDTO materialCategoryDTO = new MaterialCategoryDTO(
+                "mainMaterialCode", "mainCategory1", null, subCategoryListDTO,
+                null);
+
+        MaterialCategoryListDTO materialCategoryListDTO = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+    }
+
+    @Test
+    public void testAddMaterialCategoryWithSameName() {
+        /* Build material (0 constraint violations). */
+        MaterialCategoryDTO mc1 = new MaterialCategoryDTO("subMC1",
+                "subCategory", "subMC2", null, null);
+        MaterialCategoryListDTO subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
+
+        MaterialCategoryDTO mc2 = new MaterialCategoryDTO("subMC2",
+                "subCategory", null, subCategoryListDTOC, null);
+        MaterialCategoryListDTO subCategoryListDTOB = createMaterialCategoryListDTO(mc2);
+
+        /* Build main material category */
+        MaterialCategoryDTO materialCategoryDTO = new MaterialCategoryDTO(
+                "mainMaterialCode", "mainCategory1", null, subCategoryListDTOB,
+                null);
+
+        MaterialCategoryListDTO materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
+    @Test
+    public void testAddMaterialCategoryWithInconsistentParent() {
+        /* Build material (0 constraint violations). */
+        MaterialCategoryDTO mc1 = new MaterialCategoryDTO("subMCX1",
+                "subCategoryC", "mainMaterialCode", null, null);
+        MaterialCategoryListDTO subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
+
+        MaterialCategoryDTO mc2 = new MaterialCategoryDTO("subMCX2",
+                "subCategoryB", null, subCategoryListDTOC, null);
+        MaterialCategoryListDTO subCategoryListDTOB = createMaterialCategoryListDTO(mc2);
+
+        /* Build main material category */
+        MaterialCategoryDTO materialCategoryDTO = new MaterialCategoryDTO(
+                "mainMaterialCodeX", "mainCategory1", null,
+                subCategoryListDTOB,
+                null);
+
+        MaterialCategoryListDTO materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
+    @Test
+    public void testAddAndUpdateMaterialCategory() {
+        /* Build material (0 constraint violations). */
+        MaterialDTO m1 = new MaterialDTO("M-1", "tornillos",
+                new BigDecimal(13), unitTypeCodeA, true);
+
+        List<MaterialDTO> materialDTOs1 = new ArrayList<MaterialDTO>();
+        materialDTOs1.add(m1);
+
+        MaterialCategoryDTO mc1 = new MaterialCategoryDTO("MC-C", "MC-C",
+                "MC-B",
+                null, null);
+        MaterialCategoryListDTO subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
+
+        MaterialCategoryDTO mc2 = new MaterialCategoryDTO("MC-B", "MC-B", null,
+                subCategoryListDTOC, materialDTOs1);
+        MaterialCategoryListDTO subCategoryListDTOB = createMaterialCategoryListDTO(mc2);
+
+        /* Build main material category */
+        MaterialCategoryDTO materialCategoryDTO = new MaterialCategoryDTO(
+                "C-A", "C-A", null, subCategoryListDTOB, null);
+
+        MaterialCategoryListDTO materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+
+        try {
+            MaterialCategory mc = materialCategoryDAO.findByCode("MC-B");
+            assertTrue(mc.getMaterials().size() == 1);
+            assertTrue(mc.getSubcategories().size() == 1);
+            assertTrue(mc.getName().equalsIgnoreCase("MC-B"));
+            materialCategoryDAO.flush();
+            sessionFactory.getCurrentSession().evict(mc);
+        } catch (InstanceNotFoundException e) {
+            fail();
+        }
+
+        // Update data
+        m1 = new MaterialDTO("M-1", "update-tornillos", new BigDecimal(20),
+                unitTypeCodeB, false);
+
+        materialDTOs1 = new ArrayList<MaterialDTO>();
+        materialDTOs1.add(m1);
+
+        mc1 = new MaterialCategoryDTO("MC-C", "update-MC-C", "MC-B", null, null);
+        subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
+
+        mc2 = new MaterialCategoryDTO("MC-B", "update-MC-B", null,
+                subCategoryListDTOC, materialDTOs1);
+        subCategoryListDTOB = createMaterialCategoryListDTO(mc2);
+
+        /* Build main material category */
+        materialCategoryDTO = new MaterialCategoryDTO("C-A", "update-C-A",
+                null, subCategoryListDTOB, null);
+
+        materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+
+        try {
+            MaterialCategory mc = materialCategoryDAO.findByCode("C-A");
+            MaterialCategory mcb = materialCategoryDAO.findByCode("MC-B");
+            MaterialCategory mcc = materialCategoryDAO.findByCode("MC-C");
+
+            assertTrue(mcb.getMaterials().size() == 1);
+            assertTrue(mcb.getSubcategories().size() == 1);
+            assertTrue(mc.getName().equalsIgnoreCase("update-C-A"));
+            assertTrue(mcb.getName().equalsIgnoreCase("update-MC-B"));
+            assertTrue(mcc.getName().equalsIgnoreCase("update-MC-C"));
+
+            Material m = materialDAO.findByCode("M-1");
+            assertTrue(m.getDescription().equalsIgnoreCase("update-tornillos"));
+            assertTrue(m.getDefaultUnitPrice().compareTo(new BigDecimal(20)) == 0);
+            assertTrue(m.getUnitType().getCode().equals(unitTypeCodeB));
+            assertTrue(!m.getDisabled());
+        } catch (InstanceNotFoundException e) {
+            fail();
+        }
+
+        // invalid parent code. The parent not is updatable
+        mc1 = new MaterialCategoryDTO("MC-C", "update-MC-C", "C-A", null, null);
+        subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
+
+        /* Build main material category */
+        materialCategoryDTO = new MaterialCategoryDTO("C-A", "update-C-A",
+                null, subCategoryListDTOC, null);
+
+        materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+
+        /* Build main material category */
+        materialCategoryDTO = new MaterialCategoryDTO("C-A", "update-C-A",
+                "XXX", subCategoryListDTOC, null);
+
+        materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
+
+        instanceConstraintViolationsList = materialService
+                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+
+    }
+
+    private MaterialCategoryListDTO createMaterialCategoryListDTO(
+            MaterialCategoryDTO... materialCategoryDTOs) {
+
+        List<MaterialCategoryDTO> materialCategoryList = new ArrayList<MaterialCategoryDTO>();
+
+        for (MaterialCategoryDTO c : materialCategoryDTOs) {
+            materialCategoryList.add(c);
+        }
+
+        return new MaterialCategoryListDTO(materialCategoryList);
+
+    }
+
+}

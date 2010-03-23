@@ -69,6 +69,32 @@ public class CriterionServiceTest {
     private ICriterionTypeDAO criterionTypeDAO;
 
     @Test
+    public void testAddCriterionWithSameCodeDistinctTypes() {
+
+        /* Build criterion type "ct1" (5 constraint violations). */
+        CriterionDTO c1 = new CriterionDTO("new_c1_code", "new_c1", true,
+                new ArrayList<CriterionDTO>());
+
+        List<CriterionDTO> ct1Criterions = new ArrayList<CriterionDTO>();
+        ct1Criterions.add(c1);
+
+        CriterionTypeDTO ct1 = new CriterionTypeDTO("new_type_A", "desc",
+                false, true, true, ResourceEnumDTO.RESOURCE, ct1Criterions);
+
+        CriterionTypeDTO ct2 = new CriterionTypeDTO("new_type_B", "desc", true,
+                true, false, ResourceEnumDTO.RESOURCE, null);
+
+        /* Criterion type list. */
+        CriterionTypeListDTO criterionTypes = createCriterionTypeListDTO(ct1,
+                ct2);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = criterionService
+                .addCriterionTypes(criterionTypes).instanceConstraintViolationsList;
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
+    @Test
     public void testAddAndGetCriterionTypes() {
 
         /* Build criterion type "ct1" (5 constraint violations). */

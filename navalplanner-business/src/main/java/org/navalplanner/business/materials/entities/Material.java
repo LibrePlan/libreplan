@@ -22,24 +22,18 @@ package org.navalplanner.business.materials.entities;
 
 import java.math.BigDecimal;
 
-import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.NotEmpty;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 
 /**
  * Material entity
- *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
 public class Material extends IntegrationEntity implements Comparable {
-
-    @NotEmpty(message = "code not specified")
-    private String code;
 
     private String description;
 
@@ -47,7 +41,7 @@ public class Material extends IntegrationEntity implements Comparable {
 
     private UnitType unitType;
 
-    private boolean disabled;
+    private Boolean disabled;
 
     @NotNull
     private MaterialCategory category = null;
@@ -58,11 +52,38 @@ public class Material extends IntegrationEntity implements Comparable {
     }
 
     public static Material create(String code) {
-        return (Material) create(new Material(code));
+        return (Material) create(new Material(), code);
+    }
+
+    public static Material createUnvalidated(String code, String description,
+            BigDecimal defaultPrice, Boolean disabled) {
+        Material material = create(new Material(), code);
+        material.description = description;
+        material.defaultUnitPrice = defaultPrice;
+        material.disabled = disabled;
+        return material;
+    }
+
+    public void updateUnvalidated(String description,
+            BigDecimal defaultUnitPrice,
+            Boolean disabled) {
+
+        if (!StringUtils.isBlank(description)) {
+            this.description = description;
+        }
+
+        if (defaultUnitPrice != null) {
+            this.defaultUnitPrice = defaultUnitPrice;
+        }
+
+        if (disabled != null) {
+            this.disabled = disabled;
+        }
+
     }
 
     protected Material(String code) {
-        this.code = code;
+        this.setCode(code);
     }
 
     public MaterialCategory getCategory() {
@@ -73,14 +94,6 @@ public class Material extends IntegrationEntity implements Comparable {
         this.category = category;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -89,11 +102,11 @@ public class Material extends IntegrationEntity implements Comparable {
         this.description = description;
     }
 
-    public boolean getDisabled() {
-        return disabled;
+    public Boolean getDisabled() {
+        return disabled == null ? false : disabled;
     }
 
-    public void setDisabled(boolean disabled) {
+    public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
 
@@ -116,34 +129,7 @@ public class Material extends IntegrationEntity implements Comparable {
     @Override
     public int compareTo(Object arg0) {
       final Material material = (Material) arg0;
-      return code.compareTo(material.getCode());
-    }
-
-    @AssertTrue(message="materialcode has to be unique. It is already used")
-    public boolean checkConstraintUniqueCode() {
-        boolean result;
-        if (isNewObject()) {
-            result = !existsMaterialWithTheCode();
-        } else {
-            result = isIfExistsTheExistentMaterialThisOne();
-        }
-        return result;
-    }
-
-    private boolean existsMaterialWithTheCode() {
-        IMaterialDAO materialDAO = Registry.getMaterialDAO();
-        return materialDAO.existsMaterialWithCodeInAnotherTransaction(code);
-    }
-
-    private boolean isIfExistsTheExistentMaterialThisOne() {
-        IMaterialDAO materialDAO = Registry.getMaterialDAO();
-        try {
-            Material material =
-                materialDAO.findUniqueByCodeInAnotherTransaction(code);
-            return material.getId().equals(getId());
-        } catch (InstanceNotFoundException e) {
-            return true;
-        }
+        return getCode().compareTo(material.getCode());
     }
 
     @Override

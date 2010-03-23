@@ -23,6 +23,7 @@ package org.navalplanner.business.materials.daos;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -88,4 +89,10 @@ public class MaterialCategoryDAO extends IntegrationEntityDAO<MaterialCategory>
         return findUniqueByName(name);
     }
 
+    @Override
+    public List<MaterialCategory> findAll() {
+        return getSession().createCriteria(MaterialCategory.class).add(
+                Restrictions.isNull("parent")).addOrder(Order.asc("code"))
+                .list();
+    }
 }
