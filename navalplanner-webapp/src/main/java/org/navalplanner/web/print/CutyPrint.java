@@ -53,6 +53,8 @@ public class CutyPrint {
     private static final Log LOG = LogFactory.getLog(CutyPrint.class);
 
     private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
+    // Estimated maximum execution time (ms)
+    private static final int CUTYCAPT_TIMEOUT = 20000;
 
     // Taskdetails left padding
     private static int TASKDETAILS_WIDTH = 310;
@@ -183,34 +185,36 @@ public class CutyPrint {
         // Destination complete absolute path
         captureString += " --out=" + absolutePath + filename;
 
-
         try {
             // CutyCapt command execution
             LOG.warn(captureString);
 
-            Process print;
-            Process server = null;
-
-            // Ensure cleanup of unfinished CutyCapt processes and CSS
-            Runtime.getRuntime().exec("killall CutyCapt");
+            Process printProcess;
+            Process serverProcess = null;
 
             // If there is a not real X server environment then use Xvfb
             if ((System.getenv("DISPLAY") == null)
                     || (System.getenv("DISPLAY").equals(""))) {
                 String[] serverEnvironment = { "PATH=$PATH" };
-                server = Runtime.getRuntime().exec("env - Xvfb :99",
+                serverProcess = Runtime.getRuntime().exec("env - Xvfb :99",
                         serverEnvironment);
                 String[] environment = { "DISPLAY=:99.0" };
-                print = Runtime.getRuntime().exec(captureString, environment);
+                printProcess = Runtime.getRuntime().exec(captureString,
+                        environment);
             } else {
-                print = Runtime.getRuntime().exec(captureString);
+                printProcess = Runtime.getRuntime().exec(captureString);
             }
             try {
-                print.waitFor();
-                print.destroy();
+                // Ensure CutyCapt process finalization
+                CutyCaptTimeout timeoutThread = new CutyCaptTimeout( CUTYCAPT_TIMEOUT );
+                new Thread(timeoutThread).start();
+
+                printProcess.waitFor();
+                printProcess.destroy();
+
                 if ((System.getenv("DISPLAY") == null)
                         || (System.getenv("DISPLAY").equals(""))) {
-                    server.destroy();
+                    serverProcess.destroy();
                 }
                 Executions.getCurrent().sendRedirect(filename, "_blank");
             } catch (Exception e) {
