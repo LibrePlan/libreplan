@@ -78,8 +78,12 @@ public class Scenario extends BaseEntity {
     }
 
     public void addOrder(Order order) {
-        if (!orders.values().contains(order)) {
-            orders.put(order, OrderVersion.createInitialVersion());
+        addOrder(order, OrderVersion.createInitialVersion());
+    }
+
+    public void addOrder(Order order, OrderVersion orderVersion) {
+        if (!orders.keySet().contains(order)) {
+            orders.put(order, orderVersion);
         }
     }
 
@@ -134,7 +138,11 @@ public class Scenario extends BaseEntity {
     }
 
     public Scenario newDerivedScenario() {
-        return new Scenario(_("Derived from {0}", name), this);
+        Scenario result = new Scenario(_("Derived from {0}", name), this);
+        for (Order order : orders.keySet()) {
+            result.addOrder(order, orders.get(order));
+        }
+        return result;
     }
 
     public boolean isPredefined() {
