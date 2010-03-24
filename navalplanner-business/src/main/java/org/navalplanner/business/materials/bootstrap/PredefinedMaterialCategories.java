@@ -18,10 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.entities;
+package org.navalplanner.business.materials.bootstrap;
 
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.entities.MaterialCategory;
 
 
 /**

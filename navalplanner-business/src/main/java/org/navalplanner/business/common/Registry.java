@@ -35,6 +35,7 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -165,11 +166,18 @@ public class Registry {
     @Autowired
     private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
 
+    @Autowired
+    private IUnitTypeDAO unitTypeDAO;
+
     private Registry() {
     }
 
     public static Registry getInstance() {
         return singleton;
+    }
+
+    public static IUnitTypeDAO getUnitTypeDAO() {
+        return getInstance().unitTypeDAO;
     }
 
     public static IAdvanceTypeDAO getAdvanceTypeDao() {

@@ -35,8 +35,10 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -56,8 +58,13 @@ public class MaterialsModel implements IMaterialsModel {
     @Autowired
     IMaterialDAO materialDAO;
 
+    @Autowired
+    IUnitTypeDAO unitTypeDAO;
+
     MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
             .create(MaterialCategory.class);
+
+    private List<UnitType> unitTypes = new ArrayList<UnitType>();
 
     @Override
     @Transactional(readOnly=true)
@@ -87,6 +94,9 @@ public class MaterialsModel implements IMaterialsModel {
     private void initializeMaterials(Set<Material> materials) {
         for (Material each: materials) {
             each.getDescription();
+            if (each.getUnitType() != null) {
+                each.getUnitType().getMeasure();
+            }
         }
     }
 
@@ -231,4 +241,18 @@ public class MaterialsModel implements IMaterialsModel {
         return result;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void loadUnitTypes() {
+        List<UnitType> result = new ArrayList<UnitType>();
+        for (UnitType each : unitTypeDAO.findAll()) {
+            each.getMeasure();
+            result.add(each);
+        }
+        this.unitTypes = result;
+    }
+
+    public List<UnitType> getUnitTypes() {
+        return this.unitTypes;
+    }
 }

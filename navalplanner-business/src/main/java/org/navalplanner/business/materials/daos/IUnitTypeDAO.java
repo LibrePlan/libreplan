@@ -18,25 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.entities;
+package org.navalplanner.business.materials.daos;
 
-public enum UnitTypeEnum {
-    UNITS("units"),
-    KILOGRAMS("kg"),
-    KILOMETERS("km"),
-    LITER("l"),
-    METER("m"),
-    SQUARE_METER("m2"),
-    CUBIC_METER("m3"),
-    TONS("tn");
+import java.util.List;
 
-    private String measure;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.entities.UnitType;
 
-    private UnitTypeEnum(String measure) {
-        this.measure = measure;
-    }
+/**
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+public interface IUnitTypeDAO extends IIntegrationEntityDAO<UnitType> {
 
-    public String toString() {
-        return measure;
-    }
+    List<UnitType> getAll();
+
+    UnitType findByName(String measure) throws InstanceNotFoundException;
+
+    boolean existsUnitTypeByName(String measure);
+
 }

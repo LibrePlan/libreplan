@@ -22,8 +22,10 @@
                     <datebox value="@{assignedMaterial.estimatedAvailability}" />
                     <doublebox value="@{assignedMaterial.units}"
                         onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
-                    <listbox mold="select" model="@{unitTypes}"
-                        selectedItem="@{assignedMaterial.material.unitType}" disabled="true" />
+                     <listbox mold="select"  model="@{assignedMaterialsController.unitTypes}"
+                        onSelect = "assignedMaterialsController.selectUnitType(self)"
+                        itemRenderer="@{assignedMaterialsController.renderer}"
+                        disabled="true"/>
                     <doublebox value="@{assignedMaterial.unitPrice}"
                         onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
                     <doublebox value="@{assignedMaterial.totalPrice}" disabled="${true}"/>

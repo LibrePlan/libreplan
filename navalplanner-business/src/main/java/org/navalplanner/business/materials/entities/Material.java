@@ -45,7 +45,7 @@ public class Material extends BaseEntity implements Comparable {
 
     private BigDecimal defaultUnitPrice = new BigDecimal(0);
 
-    private UnitTypeEnum unitType;
+    private UnitType unitType;
 
     private boolean disabled;
 
@@ -105,11 +105,11 @@ public class Material extends BaseEntity implements Comparable {
         this.defaultUnitPrice = defaultUnitPrice;
     }
 
-    public UnitTypeEnum getUnitType() {
+    public UnitType getUnitType() {
         return unitType;
     }
 
-    public void setUnitType(UnitTypeEnum unitType) {
+    public void setUnitType(UnitType unitType) {
         this.unitType = unitType;
     }
 

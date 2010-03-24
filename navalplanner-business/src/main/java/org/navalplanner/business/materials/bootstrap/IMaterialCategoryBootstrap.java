@@ -17,22 +17,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navalplanner.web.templates.materials;
 
-import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
-import org.navalplanner.business.materials.entities.UnitType;
-import org.navalplanner.business.templates.entities.OrderElementTemplate;
-import org.navalplanner.web.orders.materials.IAssignedMaterialsModel;
+package org.navalplanner.business.materials.bootstrap;
+
+import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.materials.entities.MaterialCategory;
 
 /**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * Contratct for {@link MaterialCategory}.
  *
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IAssignedMaterialsToOrderElementTemplateModel extends
-        IAssignedMaterialsModel<OrderElementTemplate, MaterialAssignmentTemplate> {
+public interface IMaterialCategoryBootstrap extends IDataBootstrap {
 
-    public boolean isCurrentUnitType(Object assigment, UnitType unitType);
-
-    OrderElementTemplate getTemplate();
+    void loadRequiredData();
 
 }

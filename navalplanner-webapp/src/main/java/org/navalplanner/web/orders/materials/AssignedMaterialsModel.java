@@ -26,8 +26,10 @@ import java.util.List;
 
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.util.MutableTreeModel;
@@ -46,6 +48,9 @@ public abstract class AssignedMaterialsModel<T, A> implements
     @Autowired
     private IMaterialDAO materialDAO;
 
+    @Autowired
+    private IUnitTypeDAO unitTypeDAO;
+
     private MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
             .create(MaterialCategory.class);
 
@@ -53,6 +58,8 @@ public abstract class AssignedMaterialsModel<T, A> implements
             .create(MaterialCategory.class);
 
     private List<Material> matchingMaterials = new ArrayList<Material>();
+
+    private List<UnitType> unitTypes = new ArrayList<UnitType>();
 
     @Transactional(readOnly = true)
     public void initEdit(T element) {
@@ -246,4 +253,14 @@ public abstract class AssignedMaterialsModel<T, A> implements
 
     protected abstract BigDecimal getTotalPrice(A each);
 
+    @Override
+    @Transactional(readOnly = true)
+    public void loadUnitTypes() {
+        unitTypes = unitTypeDAO.findAll();
+    }
+
+    @Override
+    public List<UnitType> getUnitTypes() {
+        return unitTypes;
+    }
 }
