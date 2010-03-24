@@ -1,0 +1,6 @@
+grant codeBase "file:/var/lib/tomcat6/webapps/navalplanner-webapp/-" {
+	permission java.security.AllPermission;
+};
+grant codeBase "file:/var/lib/tomcat6/webapps/navalplanner-webapp.war" {
+	permission java.security.AllPermission;
+};

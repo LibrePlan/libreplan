@@ -1,0 +1,5 @@
+jta-*.zip
+maven-repo/
+*-stamp
+*.log
+tmp/
