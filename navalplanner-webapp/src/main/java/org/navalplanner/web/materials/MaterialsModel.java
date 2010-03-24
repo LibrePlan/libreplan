@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -123,7 +124,7 @@ public class MaterialsModel implements IMaterialsModel {
     public void addMaterialCategory(MaterialCategory parent, MaterialCategory child) throws ValidationException {
         Validate.notNull(child);
 
-        final MaterialCategory materialCategory = findMaterialCategory(parent, child);
+        final MaterialCategory materialCategory = findMaterialCategory(child);
         if (materialCategory != null) {
             final InvalidValue invalidValue = new InvalidValue(_("{0} already exists", materialCategory.getName()),
                     MaterialCategory.class, "name", materialCategory.getName(), materialCategory);
@@ -138,18 +139,22 @@ public class MaterialsModel implements IMaterialsModel {
         }
     }
 
-    private MaterialCategory findMaterialCategory(final MaterialCategory parent, final MaterialCategory category) {
-        for (int i = 0; i < materialCategories.getChildCount(parent); i++) {
-            final MaterialCategory each = materialCategories.getChild(parent, i);
-            if (equalsMaterialCategory(each, category)) {
-                return each;
+    private MaterialCategory findMaterialCategory(
+            final MaterialCategory category) {
+        for (MaterialCategory mc : materialCategories.asList()) {
+            if (equalsMaterialCategory(mc, category)) {
+                return mc;
             }
         }
         return null;
     }
 
     private boolean equalsMaterialCategory(MaterialCategory obj1, MaterialCategory obj2) {
-        return obj1.getName().equals(obj2.getName());
+        String name1 = StringUtils.deleteWhitespace(obj1.getName()
+                .toLowerCase());
+        String name2 = StringUtils.deleteWhitespace(obj2.getName()
+                .toLowerCase());
+        return name1.equals(name2);
     }
 
     @Override

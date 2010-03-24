@@ -227,8 +227,7 @@ public class MaterialCategory extends IntegrationEntity {
     }
 
     private Set<MaterialCategory> getAllSubcategories() {
-        Set<MaterialCategory> result = new HashSet<MaterialCategory>(
-                subcategories);
+        Set<MaterialCategory> result = new HashSet<MaterialCategory>(subcategories);
         for (MaterialCategory subcategory : subcategories) {
             result.addAll(subcategory.getAllSubcategories());
         }
