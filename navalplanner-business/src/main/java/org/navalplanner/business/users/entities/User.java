@@ -28,6 +28,7 @@ import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 
 /**
@@ -49,6 +50,8 @@ public class User extends BaseEntity {
     private String email;
 
     private Boolean disabled = false;
+
+    private Scenario lastConnectedScenario;
 
     /**
      * Necessary for Hibernate. Please, do not call it.
@@ -151,6 +154,14 @@ public class User extends BaseEntity {
 
         }
 
+    }
+
+    public void setLastConnectedScenario(Scenario lastConnectedScenario) {
+        this.lastConnectedScenario = lastConnectedScenario;
+    }
+
+    public Scenario getLastConnectedScenario() {
+        return lastConnectedScenario;
     }
 
 }
