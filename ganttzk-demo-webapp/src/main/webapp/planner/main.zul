@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="Navalpro: Scheduling"?>
+<?page title="NavalPlan: Scheduling"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template_ganttzk_demo.zul"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>

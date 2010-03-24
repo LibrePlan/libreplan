@@ -758,8 +758,8 @@ msgid "percentage cannot be duplicated"
 msgstr "el porcentaje no puede estar duplicado"
 
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:21
-msgid "Navalpro: Configuration"
-msgstr "Navalpro: Configuración"
+msgid "NavalPlan: Configuration"
+msgstr "NavalPlan: Configuración"
 
 #: navalplanner-webapp/src/main/webapp/workreports/_sortFieldsAndLabels.zul:26
 msgid "Heading"
@@ -1680,8 +1680,8 @@ msgid "Hours invested"
 msgstr "Horas invertidas"
 
 #: navalplanner-webapp/src/main/webapp/calendars/calendars.zul:21
-msgid "Navalpro: Calendars"
-msgstr "Navalpro: Calendarios"
+msgid "NavalPlan: Calendars"
+msgstr "NavalPlan: Calendarios"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:472
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:639
@@ -1751,8 +1751,8 @@ msgid "Confirm deleting this profile. Are you sure?"
 msgstr "Confirmar el borrado de este perfil. ¿Está seguro?"
 
 #: navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:21
-msgid "Navalpro: AdvanceTypes"
-msgstr "Navalpro: AdvanceTypes"
+msgid "NavalPlan: AdvanceTypes"
+msgstr "NavalPlan: AdvanceTypes"
 
 #: navalplanner-webapp/src/main/webapp/orders/_edition.zul:147
 msgid "Total hours"
@@ -2161,8 +2161,8 @@ msgid "Statistics list "
 msgstr "Lista de estadísticas "
 
 #: navalplanner-webapp/src/main/webapp/qualityforms/qualityForms.zul:21
-msgid "Navalpro: QualityForms"
-msgstr "Navalpro: Formularios de calidad"
+msgid "NavalPlan: QualityForms"
+msgstr "NavalPlan: Formularios de calidad"
 
 #: navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:39
 msgid "Edit advance type data"
@@ -2493,8 +2493,8 @@ msgstr "No se han hecho asignaciones"
 #: navalplanner-webapp/src/main/webapp/planner/resources_use.zul:21
 #: navalplanner-webapp/src/main/webapp/planner/index.zul:21
 #: navalplanner-webapp/src/main/webapp/planner/order.zul:21
-msgid "Navalpro: Scheduling"
-msgstr "Navalpro: planificación"
+msgid "NavalPlan: Scheduling"
+msgstr "NavalPlan: planificación"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:187
 msgid "Removed calendar \"{0}\""

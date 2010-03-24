@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('Navalpro: Scheduling')}"?>
+<?page title="${i18n:_('NavalPlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
