@@ -47,6 +47,8 @@ DRAGABLE_PADDING = 20; // Drag padding for dependency creation
 
 PERSPECTIVES_WIDTH = 90;
 
+LEGEND_CONTAINER_OFFSET = 75; // Taskdetail width - legend container width
+
 zkTasklist.tooltipTimeout = "";
 
 zkTasklist.showTooltip = function(elem) {
@@ -630,6 +632,7 @@ initConstraints : function() {
 }
 });
 
+
 /**
  *
  * taskContainer.js
@@ -697,6 +700,12 @@ zkTaskContainer.getElementsByAttribute = function(oElm, strTagName,
 
 zkTaskContainer.setClass = function(cmp, newclass) {
 	cmp.className = newclass;
+};
+
+zkTaskContainer.legendResize = function(cmp) {
+	var taskdetailsContainer = YAHOO.util.Selector.query('.taskdetailsContainer')[0];
+	var legendContainer = YAHOO.util.Selector.query('.legend-container')[0];
+	legendContainer.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
 };
 
 zkTaskContainer.resizeCompletionAdvance = zkTask.resizeCompletionAdvance;
