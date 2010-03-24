@@ -28,6 +28,7 @@
 <zscript>
 <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
+    customUser = (org.navalplanner.web.users.services.CustomUser) org.springframework.security.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 ]]>
 </zscript>
 
@@ -55,6 +56,7 @@
       <n:div class="user-area">
           <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
             <n:tr>
+              <n:td class="usuario">${i18n:_('scenario')}: ${customUser.scenario}</n:td>
               <n:td class="usuario">${i18n:_('user')}: ${desktop.execution.userPrincipal.name}</n:td>
               <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
             </n:tr>
