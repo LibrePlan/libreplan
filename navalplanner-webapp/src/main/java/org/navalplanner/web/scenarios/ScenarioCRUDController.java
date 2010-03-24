@@ -22,7 +22,11 @@ package org.navalplanner.web.scenarios;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -186,6 +190,14 @@ public class ScenarioCRUDController extends GenericForwardComposer {
             item.setOpen(true);
         }
 
+    }
+
+    public Set<Order> getOrders() {
+        Scenario scenario = scenarioModel.getScenario();
+        if (scenario == null) {
+            return Collections.emptySet();
+        }
+        return scenario.getOrders().keySet();
     }
 
 }

@@ -41,6 +41,19 @@
                 <textbox value="@{scenarioController.scenario.description}"
                     rows="5" width="300px" />
             </row>
+            <row>
+                <label value="${i18n:_('Orders')}" />
+                <listbox model="@{scenarioController.orders}">
+                    <listhead>
+                        <listheader label="${i18n:_('Code')}" />
+                        <listheader label="${i18n:_('Name')}" />
+                    </listhead>
+                    <listitem self="@{each='order'}" value="@{order}">
+                        <listcell label="@{order.code}" />
+                        <listcell label="@{order.name}" />
+                    </listitem>
+                </listbox>
+            </row>
         </rows>
     </grid>
 

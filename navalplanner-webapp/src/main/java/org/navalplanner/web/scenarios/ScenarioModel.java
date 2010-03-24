@@ -23,11 +23,13 @@ package org.navalplanner.web.scenarios;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
@@ -80,7 +82,10 @@ public class ScenarioModel implements IScenarioModel {
 
     private void forceLoad(Scenario scenario) {
         scenarioDAO.reattach(scenario);
-        scenario.getOrders().keySet();
+        Set<Order> orders = scenario.getOrders().keySet();
+        for (Order order : orders) {
+            order.getName();
+        }
     }
 
     @Override
