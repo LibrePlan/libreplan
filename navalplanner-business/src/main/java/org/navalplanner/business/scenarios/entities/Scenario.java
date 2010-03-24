@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.scenarios.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 
 /**
@@ -51,6 +54,8 @@ public class Scenario extends BaseEntity {
      */
     private Map<Order, OrderVersion> orders = new HashMap<Order, OrderVersion>();
 
+    private Scenario predecessor = null;
+
     public static Scenario create(String name) {
         return create(new Scenario(name));
     }
@@ -65,6 +70,11 @@ public class Scenario extends BaseEntity {
 
     private Scenario(String name) {
         this.name = name;
+    }
+
+    public Scenario(String name, Scenario predecessor) {
+        this.name = name;
+        this.predecessor = predecessor;
     }
 
     public void addOrder(Order order) {
@@ -94,6 +104,10 @@ public class Scenario extends BaseEntity {
         this.description = description;
     }
 
+    public Scenario getPredecessor() {
+        return predecessor;
+    }
+
     @AssertTrue(message = "name is already used")
     public boolean checkConstraintUniqueName() {
         if (StringUtils.isBlank(name)) {
@@ -113,6 +127,28 @@ public class Scenario extends BaseEntity {
                 return true;
             }
         }
+    }
+
+    public boolean isDerived() {
+        return predecessor != null;
+    }
+
+    public Scenario newDerivedScenario() {
+        return new Scenario(_("Derived from {0}", name), this);
+    }
+
+    public boolean isPredefined() {
+        if (name == null) {
+            return false;
+        }
+
+        for (PredefinedScenarios predefinedScenario : PredefinedScenarios
+                .values()) {
+            if (predefinedScenario.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

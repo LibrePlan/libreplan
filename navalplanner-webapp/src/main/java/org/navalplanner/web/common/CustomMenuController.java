@@ -228,7 +228,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Quality forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
                 subItem(_("Manage user profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles"),
                 subItem(_("Manage user accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
-                subItem(_("Manage external companies"), "/externalcompanies/externalcompanies.zul",""));
+                subItem(_("Manage external companies"), "/externalcompanies/externalcompanies.zul",""),
+                subItem(_("Manage scenarios"), "/scenarios/scenarios.zul",""));
             }
 
         topItem(_("Reports"), "", "",

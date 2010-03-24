@@ -115,4 +115,22 @@ public class ScenarioDAO extends GenericDAOHibernate<Scenario, Long> implements
         return list(Scenario.class);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @Override
+    public boolean thereIsOtherWithSameName(Scenario scenario) {
+        try {
+            Scenario withSameName = findByName(scenario.getName());
+            return areDifferentInDB(withSameName, scenario);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    private boolean areDifferentInDB(Scenario one, Scenario other) {
+        if ((one.getId() == null) || (other.getId() == null)) {
+            return true;
+        }
+        return !one.getId().equals(other.getId());
+    }
+
 }

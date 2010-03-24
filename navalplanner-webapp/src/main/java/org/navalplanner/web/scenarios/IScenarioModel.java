@@ -18,29 +18,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.scenarios.daos;
+package org.navalplanner.web.scenarios;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
- * Contract for {@link ScenarioDAO}.
+ * Contract for {@link ScenarioModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IScenarioDAO extends IGenericDAO<Scenario, Long> {
+public interface IScenarioModel {
 
-    Scenario findByName(String name) throws InstanceNotFoundException;
+    /*
+     * Non conversational steps
+     */
+    List<Scenario> getScenarios();
 
-    boolean existsByName(String name);
+    /*
+     * Initial conversation steps
+     */
+    void initEdit(Scenario scenario);
 
-    boolean existsByNameAnotherTransaction(String name);
+    void initCreateDerived(Scenario scenario);
 
-    List<Scenario> getAll();
+    /*
+     * Intermediate conversation steps
+     */
+    Scenario getScenario();
 
-    boolean thereIsOtherWithSameName(Scenario scenario);
+    /*
+     * Final conversation steps
+     */
+    void confirmSave() throws ValidationException;
+
+    void cancel();
 
 }
