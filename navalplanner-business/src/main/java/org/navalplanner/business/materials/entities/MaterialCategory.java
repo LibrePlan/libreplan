@@ -26,10 +26,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
@@ -40,7 +42,7 @@ import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-public class MaterialCategory extends BaseEntity {
+public class MaterialCategory extends IntegrationEntity {
 
     public static List<Material> getAllMaterialsFrom(
             Collection<? extends MaterialCategory> categories) {
@@ -142,6 +144,28 @@ public class MaterialCategory extends BaseEntity {
         } catch (InstanceNotFoundException e) {
             return true;
         }
+    }
+
+    public Material getMaterialByCode(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code, Material.class.getName());
+        }
+
+        for (Material m : this.materials) {
+            if (m.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return m;
+            }
+        }
+
+        throw new InstanceNotFoundException(code, Material.class.getName());
+
+    }
+
+    @Override
+    protected IMaterialCategoryDAO getIntegrationEntityDAO() {
+        return Registry.getMaterialCategoryDAO();
     }
 
 }

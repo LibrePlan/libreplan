@@ -110,6 +110,9 @@ public class OrderElementServiceTest {
     private IDataBootstrap materialCategoryBootstrap;
 
     @Resource
+    private IDataBootstrap unitTypeBootstrap;
+
+    @Resource
     private IDataBootstrap criterionsBootstrap;
 
     @Test
@@ -119,6 +122,7 @@ public class OrderElementServiceTest {
         configurationBootstrap.loadRequiredData();
         materialCategoryBootstrap.loadRequiredData();
         criterionsBootstrap.loadRequiredData();
+        unitTypeBootstrap.loadRequiredData();
     }
 
     @Autowired
@@ -471,7 +475,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
         // Mandatory fields: material code
-        assertThat(constraintViolations.size(), equalTo(1));
+        assertThat(constraintViolations.size(), equalTo(2));
         assertThat(constraintViolations.get(0).fieldName, mustEnd("code"));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));

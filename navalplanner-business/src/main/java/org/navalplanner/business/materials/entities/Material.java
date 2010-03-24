@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
@@ -36,7 +36,7 @@ import org.navalplanner.business.materials.daos.IMaterialDAO;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-public class Material extends BaseEntity implements Comparable {
+public class Material extends IntegrationEntity implements Comparable {
 
     @NotEmpty(message = "code not specified")
     private String code;
@@ -144,6 +144,11 @@ public class Material extends BaseEntity implements Comparable {
         } catch (InstanceNotFoundException e) {
             return true;
         }
+    }
+
+    @Override
+    protected IMaterialDAO getIntegrationEntityDAO() {
+        return Registry.getMaterialDAO();
     }
 
 }

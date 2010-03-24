@@ -22,7 +22,7 @@ package org.navalplanner.business.materials.daos;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
@@ -33,7 +33,8 @@ import org.navalplanner.business.materials.entities.MaterialCategory;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface IMaterialCategoryDAO extends IGenericDAO<MaterialCategory, Long> {
+public interface IMaterialCategoryDAO extends
+        IIntegrationEntityDAO<MaterialCategory> {
 
     /**
      * Returns true if {@link MaterialCategory} exists
