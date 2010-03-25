@@ -18,37 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.users.services;
+package org.navalplanner.web.common;
+
+import java.util.List;
 
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.User;
 
 /**
- * Extended {@link User} class in order to add information about the current
- * {@link Scenario} of the logged user.
+ * Contract for {@link TemplateModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CustomUser extends User {
+public interface ITemplateModel {
 
-    private String scenario;
+    List<Scenario> getScenarios();
 
-    public CustomUser(String username, String password, boolean enabled,
-            boolean accountNonExpired, boolean credentialsNonExpired,
-            boolean accountNonLocked, GrantedAuthority[] authorities,
-            String scenario) throws IllegalArgumentException {
-        super(username, password, enabled, accountNonExpired,
-                credentialsNonExpired, accountNonLocked, authorities);
-        this.scenario = scenario;
-    }
+    Scenario getScenarioByName(String name);
 
-    public String getScenario() {
-        return scenario;
-    }
-
-    public void setScenario(String scenario) {
-        this.scenario = scenario;
-    }
+    void setScenario(String loginName, Scenario scenario);
 
 }
