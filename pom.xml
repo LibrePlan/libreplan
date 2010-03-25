@@ -218,6 +218,17 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate</artifactId>
                 <version>3.2.7.ga</version>
+                <exclusions>
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>jta</artifactId>
+                </exclusion>
+            </exclusions>
+            </dependency>
+            <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
