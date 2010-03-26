@@ -30,4 +30,4 @@ authorization=`./base64.sh $loginName:$password`
 curl -sv -X POST $certificate -d @$file \
     --header "Content-type: application/xml" \
     --header "Authorization: Basic $authorization" \
-    $baseServiceURL/unittypesp | tidy -xml -i -q -utf8
+    $baseServiceURL/unittypes | tidy -xml -i -q -utf8
