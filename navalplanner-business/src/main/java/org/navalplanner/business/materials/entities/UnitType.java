@@ -20,9 +20,12 @@
 
 package org.navalplanner.business.materials.entities;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 
 /**
@@ -39,6 +42,12 @@ public class UnitType extends IntegrationEntity{
 
     public static UnitType create(String measure) {
         return (UnitType) create(new UnitType(measure));
+    }
+
+    public void updateUnvalidated(String measure) {
+        if (!StringUtils.isBlank(measure)) {
+            this.measure = measure;
+        }
     }
 
     private String measure;
@@ -59,6 +68,33 @@ public class UnitType extends IntegrationEntity{
 
     public void setMeasure(String measure) {
         this.measure = measure;
+    }
+
+    @AssertTrue(message = "the measure unit type has to be unique. It is already used")
+    public boolean checkConstraintUniqueName() {
+        boolean result;
+        if (isNewObject()) {
+            result = !existsUnitTypeWithTheName();
+        } else {
+            result = isIfExistsTheExistentUnitTypeThisOne();
+        }
+        return result;
+    }
+
+    private boolean existsUnitTypeWithTheName() {
+        IUnitTypeDAO unitTypeDAO = Registry.getUnitTypeDAO();
+        return unitTypeDAO.existsUnitTypeByNameInAnotherTransaction(measure);
+    }
+
+    private boolean isIfExistsTheExistentUnitTypeThisOne() {
+        IUnitTypeDAO unitTypeDAO = Registry.getUnitTypeDAO();
+        try {
+            UnitType unitType = unitTypeDAO
+                    .findUniqueByNameInAnotherTransaction(measure);
+            return unitType.getId().equals(getId());
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
     }
 
     @Override

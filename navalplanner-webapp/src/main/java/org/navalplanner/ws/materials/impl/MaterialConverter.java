@@ -176,7 +176,8 @@ public final class MaterialConverter {
 
         if (materialDTO.unitType != null) {
             try {
-                UnitType unitType = Registry.getUnitTypeDAO().findByCode(
+                UnitType unitType = Registry.getUnitTypeDAO()
+                        .findByCodeAnotherTransaction(
                         materialDTO.unitType);
                 material.setUnitType(unitType);
             } catch (InstanceNotFoundException e) {
@@ -259,7 +260,8 @@ public final class MaterialConverter {
             MaterialDTO materialDTO) throws ValidationException {
         if (materialDTO.unitType != null) {
             try {
-                UnitType type = Registry.getUnitTypeDAO().findByCode(
+                UnitType type = Registry.getUnitTypeDAO()
+                        .findByCodeAnotherTransaction(
                         materialDTO.unitType);
                 material.setUnitType(type);
             } catch (InstanceNotFoundException e) {

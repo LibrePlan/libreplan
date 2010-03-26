@@ -18,25 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.daos;
+package org.navalplanner.ws.unittypes.impl;
 
-import java.util.List;
-
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.UnitType;
+import org.navalplanner.ws.unittypes.api.UnitTypeDTO;
 
 /**
+ * Service for managing unit-types-related entities.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IUnitTypeDAO extends IIntegrationEntityDAO<UnitType> {
+public class UnitTypeConverter {
 
-    List<UnitType> getAll();
+    private UnitTypeConverter() {
+    }
 
-    UnitType findByName(String measure) throws InstanceNotFoundException;
+    public final static UnitTypeDTO toDTO(UnitType unitType) {
+        return new UnitTypeDTO(unitType.getCode(), unitType.getMeasure());
+    }
 
-    UnitType findUniqueByNameInAnotherTransaction(String measure)
-            throws InstanceNotFoundException;
+    public final static UnitType toEntity(UnitTypeDTO unitTypeDTO) {
+        return UnitType.create(unitTypeDTO.code, unitTypeDTO.measure);
+    }
 
-    boolean existsUnitTypeByNameInAnotherTransaction(String measure);
+    public final static void updateUnitType(UnitType unitType,
+            UnitTypeDTO unitTypeDTO) throws ValidationException {
+        /* 1: Update unit type basic properties. */
+        unitType.updateUnvalidated(StringUtils.trim(unitTypeDTO.measure));
+    }
+
 }

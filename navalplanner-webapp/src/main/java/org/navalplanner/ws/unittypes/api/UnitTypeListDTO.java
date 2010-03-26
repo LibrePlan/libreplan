@@ -18,25 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.daos;
+package org.navalplanner.ws.unittypes.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.materials.entities.UnitType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * DTO for a list of <code>UnitType</code> entities.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IUnitTypeDAO extends IIntegrationEntityDAO<UnitType> {
+@XmlRootElement(name = "unit-type-list")
+public class UnitTypeListDTO {
 
-    List<UnitType> getAll();
+    @XmlElement(name = "unit-type")
+    public List<UnitTypeDTO> unitTypeDTOs = new ArrayList<UnitTypeDTO>();
 
-    UnitType findByName(String measure) throws InstanceNotFoundException;
+    public UnitTypeListDTO() {
+    }
 
-    UnitType findUniqueByNameInAnotherTransaction(String measure)
-            throws InstanceNotFoundException;
+    public UnitTypeListDTO(List<UnitTypeDTO> unitTypeDTOs) {
+        if (unitTypeDTOs != null) {
+            this.unitTypeDTOs = unitTypeDTOs;
+        }
+    }
 
-    boolean existsUnitTypeByNameInAnotherTransaction(String measure);
 }

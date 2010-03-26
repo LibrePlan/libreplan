@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.ws.common.Util.getUniqueName;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
-import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
@@ -91,8 +91,8 @@ public class MaterialServiceTest {
     @Test
     @Rollback(false)
     public void CreateUnitType() {
-        UnitType entityA = UnitType.create(unitTypeCodeA, "uninewUnitTypeA");
-        UnitType entityB = UnitType.create(unitTypeCodeB, "uninewUnitTypeB");
+        UnitType entityA = UnitType.create(unitTypeCodeA, "UnitTypeA");
+        UnitType entityB = UnitType.create(unitTypeCodeB, "UnitTypeB");
         unitTypeDAO.save(entityA);
         unitTypeDAO.save(entityB);
         unitTypeDAO.flush();
@@ -253,6 +253,17 @@ public class MaterialServiceTest {
 
     @Test
     public void testAddAndUpdateMaterialCategory() {
+
+        String unitTypeCodeA = getUniqueName();
+        String unitTypeCodeB = getUniqueName();
+        UnitType entityA = UnitType.create(unitTypeCodeA, "UnitTypeA");
+        UnitType entityB = UnitType.create(unitTypeCodeB, "UnitTypeB");
+        unitTypeDAO.save(entityA);
+        unitTypeDAO.save(entityB);
+        unitTypeDAO.flush();
+        sessionFactory.getCurrentSession().evict(entityA);
+        sessionFactory.getCurrentSession().evict(entityB);
+
         /* Build material (0 constraint violations). */
         MaterialDTO m1 = new MaterialDTO("M-1", "tornillos",
                 new BigDecimal(13), unitTypeCodeA, true);
@@ -265,7 +276,8 @@ public class MaterialServiceTest {
                 null, null);
         MaterialCategoryListDTO subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
 
-        MaterialCategoryDTO mc2 = new MaterialCategoryDTO("MC-B", "MC-B", null,
+        MaterialCategoryDTO mc2 = new MaterialCategoryDTO("MC-B", "MC-B",
+                "C-A",
                 subCategoryListDTOC, materialDTOs1);
         MaterialCategoryListDTO subCategoryListDTOB = createMaterialCategoryListDTO(mc2);
 
@@ -291,80 +303,6 @@ public class MaterialServiceTest {
         } catch (InstanceNotFoundException e) {
             fail();
         }
-
-        // Update data
-        m1 = new MaterialDTO("M-1", "update-tornillos", new BigDecimal(20),
-                unitTypeCodeB, false);
-
-        materialDTOs1 = new ArrayList<MaterialDTO>();
-        materialDTOs1.add(m1);
-
-        mc1 = new MaterialCategoryDTO("MC-C", "update-MC-C", "MC-B", null, null);
-        subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
-
-        mc2 = new MaterialCategoryDTO("MC-B", "update-MC-B", null,
-                subCategoryListDTOC, materialDTOs1);
-        subCategoryListDTOB = createMaterialCategoryListDTO(mc2);
-
-        /* Build main material category */
-        materialCategoryDTO = new MaterialCategoryDTO("C-A", "update-C-A",
-                null, subCategoryListDTOB, null);
-
-        materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
-
-        instanceConstraintViolationsList = materialService
-                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
-
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
-
-        try {
-            MaterialCategory mc = materialCategoryDAO.findByCode("C-A");
-            MaterialCategory mcb = materialCategoryDAO.findByCode("MC-B");
-            MaterialCategory mcc = materialCategoryDAO.findByCode("MC-C");
-
-            assertTrue(mcb.getMaterials().size() == 1);
-            assertTrue(mcb.getSubcategories().size() == 1);
-            assertTrue(mc.getName().equalsIgnoreCase("update-C-A"));
-            assertTrue(mcb.getName().equalsIgnoreCase("update-MC-B"));
-            assertTrue(mcc.getName().equalsIgnoreCase("update-MC-C"));
-
-            Material m = materialDAO.findByCode("M-1");
-            assertTrue(m.getDescription().equalsIgnoreCase("update-tornillos"));
-            assertTrue(m.getDefaultUnitPrice().compareTo(new BigDecimal(20)) == 0);
-            assertTrue(m.getUnitType().getCode().equals(unitTypeCodeB));
-            assertTrue(!m.getDisabled());
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
-
-        // invalid parent code. The parent not is updatable
-        mc1 = new MaterialCategoryDTO("MC-C", "update-MC-C", "C-A", null, null);
-        subCategoryListDTOC = createMaterialCategoryListDTO(mc1);
-
-        /* Build main material category */
-        materialCategoryDTO = new MaterialCategoryDTO("C-A", "update-C-A",
-                null, subCategoryListDTOC, null);
-
-        materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
-
-        instanceConstraintViolationsList = materialService
-                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
-
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
-
-        /* Build main material category */
-        materialCategoryDTO = new MaterialCategoryDTO("C-A", "update-C-A",
-                "XXX", subCategoryListDTOC, null);
-
-        materialCategoryListDTOA = createMaterialCategoryListDTO(materialCategoryDTO);
-
-        instanceConstraintViolationsList = materialService
-                .addMaterials(materialCategoryListDTOA).instanceConstraintViolationsList;
-
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
 
     }
 

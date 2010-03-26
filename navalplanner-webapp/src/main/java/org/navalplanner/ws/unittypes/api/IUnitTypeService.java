@@ -18,25 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.daos;
+package org.navalplanner.ws.unittypes.api;
 
-import java.util.List;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.materials.entities.UnitType;
+public interface IUnitTypeService {
 
-/**
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- */
-public interface IUnitTypeDAO extends IIntegrationEntityDAO<UnitType> {
+    public UnitTypeListDTO getUnitTypes();
 
-    List<UnitType> getAll();
+    public InstanceConstraintViolationsListDTO addUnitTypes(
+            UnitTypeListDTO unitTypeListDTO);
 
-    UnitType findByName(String measure) throws InstanceNotFoundException;
-
-    UnitType findUniqueByNameInAnotherTransaction(String measure)
-            throws InstanceNotFoundException;
-
-    boolean existsUnitTypeByNameInAnotherTransaction(String measure);
 }

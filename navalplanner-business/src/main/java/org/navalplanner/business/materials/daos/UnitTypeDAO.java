@@ -30,6 +30,8 @@ import org.navalplanner.business.materials.entities.UnitType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link UnitType}
@@ -65,7 +67,15 @@ public class UnitTypeDAO extends IntegrationEntityDAO<UnitType> implements
     }
 
     @Override
-    public boolean existsUnitTypeByName(String measure) {
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public UnitType findUniqueByNameInAnotherTransaction(String measure)
+            throws InstanceNotFoundException {
+        return findByName(measure);
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsUnitTypeByNameInAnotherTransaction(String measure) {
         try {
             findByName(measure);
         } catch (InstanceNotFoundException e) {

@@ -18,46 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.materials.api;
-
-import java.math.BigDecimal;
+package org.navalplanner.ws.unittypes.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
- * DTO for <code>Material</code> entity.
+ * DTO for <code>UnitType</code> entity.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class MaterialDTO extends IntegrationEntityDTO {
+public class UnitTypeDTO extends IntegrationEntityDTO {
 
-    public final static String ENTITY_TYPE = "material";
-
-    @XmlAttribute
-    public String description;
+    public final static String ENTITY_TYPE = "unit type";
 
     @XmlAttribute
-    public BigDecimal defaultPrice;
+    public String measure;
 
-    @XmlAttribute
-    public String unitType;
-
-    @XmlAttribute
-    public Boolean disabled;
-
-    public MaterialDTO() {
+    public UnitTypeDTO() {
     }
 
-    public MaterialDTO(String code, String description,
-            BigDecimal defaultPrice, String unitType, Boolean disabled) {
-
+    public UnitTypeDTO(String code, String measure) {
         super(code);
-        this.description = description;
-        this.defaultPrice = defaultPrice;
-        this.unitType = unitType;
-        this.disabled = disabled;
-
+        this.measure = measure;
     }
 
     /**
@@ -65,11 +48,8 @@ public class MaterialDTO extends IntegrationEntityDTO {
      * facilitate the implementation of test cases that add new instances (such
      * instances will have a unique code).
      */
-    public MaterialDTO(String description, BigDecimal defaultPrice,
-            String unitType, Boolean disabled) {
-
-        this(generateCode(), description, defaultPrice, unitType, disabled);
-
+    public UnitTypeDTO(String measure) {
+        this(generateCode(), measure);
     }
 
     @Override

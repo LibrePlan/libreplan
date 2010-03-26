@@ -45,7 +45,8 @@ public class UnitTypeBootstrap implements IDataBootstrap {
     public void loadRequiredData() {
         for (PredefinedUnitTypes predefinedUnitType : PredefinedUnitTypes
                 .values()) {
-            if (!unitTypeDAO.existsUnitTypeByName(predefinedUnitType
+            if (!unitTypeDAO
+                    .existsUnitTypeByNameInAnotherTransaction(predefinedUnitType
                     .getMeasure())) {
                 unitTypeDAO.save(predefinedUnitType.createUnitType());
             }

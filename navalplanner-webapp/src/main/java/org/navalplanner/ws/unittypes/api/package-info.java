@@ -18,25 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.daos;
-
-import java.util.List;
-
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.materials.entities.UnitType;
-
 /**
+ * Specification of namespace for REST-based services.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IUnitTypeDAO extends IIntegrationEntityDAO<UnitType> {
+@javax.xml.bind.annotation.XmlSchema(elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, namespace = WSCommonGlobalNames.REST_NAMESPACE)
+package org.navalplanner.ws.unittypes.api;
 
-    List<UnitType> getAll();
-
-    UnitType findByName(String measure) throws InstanceNotFoundException;
-
-    UnitType findUniqueByNameInAnotherTransaction(String measure)
-            throws InstanceNotFoundException;
-
-    boolean existsUnitTypeByNameInAnotherTransaction(String measure);
-}
+import org.navalplanner.ws.common.api.WSCommonGlobalNames;
