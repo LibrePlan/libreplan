@@ -28,6 +28,7 @@ import org.navalplanner.business.materials.entities.UnitType;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public interface IUnitTypeDAO extends IIntegrationEntityDAO<UnitType> {
 
@@ -39,4 +40,9 @@ public interface IUnitTypeDAO extends IIntegrationEntityDAO<UnitType> {
             throws InstanceNotFoundException;
 
     boolean existsUnitTypeByNameInAnotherTransaction(String measure);
+
+    UnitType findByNameCaseInsensitive(String measure)
+        throws InstanceNotFoundException;
+
+    boolean isUnitTypeUsedInAnyMaterial(UnitType unitType);
 }

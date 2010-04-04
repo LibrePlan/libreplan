@@ -222,6 +222,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
                 subItem(_("Label types"), "/labels/labelTypes.zul","10-etiquetas.html"),
                 subItem(_("Materials"), "/materials/materials.zul", "11-materiales.html#administraci-n-de-materiais"),
+                subItem(_("Unit types"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
                 subItem(_("Manage cost categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
                 subItem(_("Manage types of work hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
                 subItem(_("Configuration"), "/common/configuration.zul","03-calendarios.html#calendario-por-defecto"),

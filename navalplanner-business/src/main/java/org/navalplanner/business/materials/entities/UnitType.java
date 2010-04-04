@@ -32,16 +32,26 @@ import org.navalplanner.business.materials.daos.IUnitTypeDAO;
  * UnitType entity
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- *
+ * @author Javier Moran Rua <jmoran@ialia.com>
  */
 public class UnitType extends IntegrationEntity{
 
     public static UnitType create(String code, String measure) {
-        return (UnitType) create(new UnitType(measure), code);
+        UnitType unitType = new UnitType(measure);
+        unitType.setNewObject(true);
+        return (UnitType) create(unitType, code);
     }
 
     public static UnitType create(String measure) {
-        return (UnitType) create(new UnitType(measure));
+        UnitType unitType = new UnitType(measure);
+        unitType.setNewObject(true);
+        return (UnitType) create(unitType);
+    }
+
+    public static UnitType create() {
+        UnitType unitType = new UnitType();
+        unitType.setNewObject(true);
+        return create(unitType);
     }
 
     public void updateUnvalidated(String measure) {
