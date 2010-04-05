@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,6 +62,7 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
+import org.navalplanner.web.resources.worker.WorkerCRUDController.LimitedResourceEnum;
 
 /**
  * Controller for {@link Machine} resource <br />
@@ -538,4 +540,23 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .toArray()));
         listing.invalidate();
     }
+
+    public Set<LimitedResourceEnum> getLimitedResourceOptionList() {
+        return LimitedResourceEnum.getLimitedResourceOptionList();
+    }
+
+    public Object getLimitedResource() {
+        final Machine machine = getMachine();
+        return (machine != null) ? LimitedResourceEnum.valueOf(machine
+                .isLimitedResource())
+                : LimitedResourceEnum.NON_LIMITED_RESOURCE;         // Default option
+    }
+
+    public void setLimitedResource(LimitedResourceEnum option) {
+        Machine machine = getMachine();
+        if (machine != null) {
+            machine.setLimitedResource(LimitedResourceEnum.LIMITED_RESOURCE.equals(option));
+        }
+    }
+
 }

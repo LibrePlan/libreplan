@@ -628,7 +628,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         listing.invalidate();
     }
 
-    private enum LimitedResourceEnum {
+    public enum LimitedResourceEnum {
         ALL(""),
         LIMITED_RESOURCE(_("LIMITED RESOURCE")),
         NON_LIMITED_RESOURCE(_("NON LIMITED RESOURCE"));
