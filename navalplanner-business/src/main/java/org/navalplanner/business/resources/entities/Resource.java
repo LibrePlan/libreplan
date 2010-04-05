@@ -19,6 +19,9 @@
  */
 
 package org.navalplanner.business.resources.entities;
+
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1049,6 +1052,10 @@ public abstract class Resource extends IntegrationEntity {
 
     public void setLimitedResource(Boolean limitedResource) {
         this.limitedResource = limitedResource;
+    }
+
+    public String getLimitedResourceAsString() {
+        return (Boolean.TRUE.equals(isLimitedResource())) ? _("yes") : _("no");
     }
 
 }
