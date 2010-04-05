@@ -64,6 +64,13 @@
                             <label value="${i18n:_('NIF')}" />
                             <textbox value="@{controller.worker.nif}" constraint="no empty"/>
                         </row>
+                        <row visible="@{controller.isRealWorker}">
+                            <label value="${i18n:_('Limted resource')}" />
+                            <combobox id="cbLimitedResource" width="200px"
+                                model="@{controller.limitedResourceOptionList}"
+                                selectedItem="@{controller.limitedResource}"
+                                onSelect="controller.setLimitedResource(self.selectedItem.value);" />
+                        </row>
                         <row visible="@{controller.isVirtualWorker}">
                             <label value="${i18n:_('Capacity')}" />
                             <intbox value="@{controller.virtualWorkerCapacity}" width="100px" constraint="no negative,no zero,no empty" />

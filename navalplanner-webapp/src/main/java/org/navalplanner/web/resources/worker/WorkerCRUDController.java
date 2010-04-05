@@ -23,7 +23,9 @@ package org.navalplanner.web.resources.worker;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -625,4 +627,49 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .toArray()));
         listing.invalidate();
     }
+
+    private enum LimitedResourceEnum {
+        ALL(""),
+        LIMITED_RESOURCE(_("LIMITED RESOURCE")),
+        NON_LIMITED_RESOURCE(_("NON LIMITED RESOURCE"));
+
+        private String option;
+
+        private LimitedResourceEnum(String option) {
+            this.option = option;
+        }
+
+        public String toString() {
+            return option;
+        }
+
+        public static LimitedResourceEnum valueOf(Boolean isLimitedResource) {
+            return (isLimitedResource != null) ? LIMITED_RESOURCE : NON_LIMITED_RESOURCE;
+        }
+
+        public static Set<LimitedResourceEnum> getLimitedResourceOptionList() {
+            return EnumSet.of(
+                    LimitedResourceEnum.LIMITED_RESOURCE,
+                    LimitedResourceEnum.NON_LIMITED_RESOURCE);
+        }
+    }
+
+    public Set<LimitedResourceEnum> getLimitedResourceOptionList() {
+        return LimitedResourceEnum.getLimitedResourceOptionList();
+    }
+
+    public Object getLimitedResource() {
+        final Worker worker = getWorker();
+        return (worker != null) ? LimitedResourceEnum.valueOf(worker
+                .isLimitedResource())
+                : LimitedResourceEnum.NON_LIMITED_RESOURCE;         // Default option
+    }
+
+    public void setLimitedResource(LimitedResourceEnum option) {
+        Worker worker = getWorker();
+        if (worker != null) {
+            worker.setLimitedResource(LimitedResourceEnum.LIMITED_RESOURCE.equals(option));
+        }
+    }
+
 }
