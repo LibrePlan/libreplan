@@ -91,6 +91,8 @@ public abstract class Resource extends IntegrationEntity {
     private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
         new HashSet<ResourcesCostCategoryAssignment>();
 
+    private Boolean limitedResource;
+
     private void clearCachedData() {
         assignmentsByDayCached = null;
     }
@@ -1039,6 +1041,14 @@ public abstract class Resource extends IntegrationEntity {
 
     protected IResourceDAO getIntegrationEntityDAO() {
         return Registry.getResourceDAO();
+    }
+
+    public Boolean isLimitedResource() {
+        return limitedResource;
+    }
+
+    public void setLimitedResource(Boolean limitedResource) {
+        this.limitedResource = limitedResource;
     }
 
 }
