@@ -1,14 +1,26 @@
 <hbox align="end" sclass="filtering-area">
+
+    <!-- Multiple filter -->
     <label value="${i18n:_('Filter by')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
     <bandboxMultipleSearch id="bdFilters" widthBandbox="285px" widthListbox="300px"
         finder="resourcesMultipleFiltersFinder"/>
+
+    <!-- Personal details -->
     <label value="${i18n:_('Personal details')}"/>
     <textbox id="txtfilter" width="200px"/>
+
+    <!-- Limited resource -->
+    <label value="${i18n:_('Limited resource')}"/>
+    <combobox id="filterLimitedResource"
+        model="@{controller.limitedResourceFilterOptionList}" />
+
+    <!-- Filter by date -->
     <label value="${i18n:_('Active period from')}"/>
     <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
     <label value="${i18n:_('to')}"/>
     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
+
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to machines satisfying required criteria')}"
         onClick="controller.onApplyFilter()"/>

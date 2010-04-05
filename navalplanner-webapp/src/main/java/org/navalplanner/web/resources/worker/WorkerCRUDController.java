@@ -22,8 +22,10 @@ package org.navalplanner.web.resources.worker;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -108,6 +110,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private Datebox filterStartDate;
 
     private Datebox filterFinishDate;
+
+    private Combobox filterLimitedResource;
 
     private BandboxMultipleSearch bdFilters;
 
@@ -293,6 +297,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
+        this.filterLimitedResource = (Combobox) listWindow
+            .getFellowIfAny("filterLimitedResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -601,13 +607,18 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             finishDate = LocalDate.fromDateFields(filterFinishDate.getValue());
         }
 
+        final Comboitem item = filterLimitedResource.getSelectedItem();
+        Boolean isLimitedResource = (item != null) ? LimitedResourceEnum
+                .valueOf((LimitedResourceEnum) item.getValue()) : null;
+
         if (listFilters.isEmpty()
                 && (personalFilter == null || personalFilter.isEmpty())
-                && startDate == null && finishDate == null) {
+                && startDate == null && finishDate == null
+                && isLimitedResource == null) {
             return null;
         }
         return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate);
+                finishDate, isLimitedResource);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
@@ -629,7 +640,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public enum LimitedResourceEnum {
-        ALL(""),
+        ALL(_("ALL")),
         LIMITED_RESOURCE(_("LIMITED RESOURCE")),
         NON_LIMITED_RESOURCE(_("NON LIMITED RESOURCE"));
 
@@ -647,11 +658,32 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             return (isLimitedResource != null) ? LIMITED_RESOURCE : NON_LIMITED_RESOURCE;
         }
 
+        public static Boolean valueOf(LimitedResourceEnum option) {
+            if (LIMITED_RESOURCE.equals(option)) {
+                return true;
+            } else if (NON_LIMITED_RESOURCE.equals(option)) {
+                return false;
+            } else {
+                return null;
+            }
+        }
+
         public static Set<LimitedResourceEnum> getLimitedResourceOptionList() {
             return EnumSet.of(
                     LimitedResourceEnum.LIMITED_RESOURCE,
                     LimitedResourceEnum.NON_LIMITED_RESOURCE);
         }
+
+        public static Set<LimitedResourceEnum> getLimitedResourceFilterOptionList() {
+            return EnumSet.of(LimitedResourceEnum.ALL,
+                    LimitedResourceEnum.LIMITED_RESOURCE,
+                    LimitedResourceEnum.NON_LIMITED_RESOURCE);
+        }
+
+    }
+
+    public Set<LimitedResourceEnum> getLimitedResourceFilterOptionList() {
+        return LimitedResourceEnum.getLimitedResourceFilterOptionList();
     }
 
     public Set<LimitedResourceEnum> getLimitedResourceOptionList() {

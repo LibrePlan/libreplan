@@ -52,6 +52,8 @@ public class ResourcePredicate implements IPredicate {
 
     private String[] personalFilters;
 
+    private Boolean isLimitedResource;
+
     private List<Resource> assignedResourcesInIntervalDates;
 
     public ResourcePredicate(List<FilterPair> filters, String personalFilters,
@@ -61,6 +63,14 @@ public class ResourcePredicate implements IPredicate {
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.personalFilters = personalFilters.split(" ");
+    }
+
+    public ResourcePredicate(List<FilterPair> filters, String personalFilters,
+            LocalDate startDate,
+            LocalDate finishDate,
+            Boolean isLimitedResource) {
+        this(filters, personalFilters, startDate, finishDate);
+        this.isLimitedResource = isLimitedResource;
     }
 
     @Override
@@ -74,10 +84,14 @@ public class ResourcePredicate implements IPredicate {
             return false;
         }
         if (acceptFilters(resource) && acceptPersonalFilters(resource)
-                && acceptFiltersDates(resource)) {
+                && acceptFiltersDates(resource) && acceptFilterIsLimitedResource(resource)) {
             return true;
         }
         return false;
+    }
+
+    private boolean acceptFilterIsLimitedResource(Resource resource) {
+        return (isLimitedResource != null) ? isLimitedResource.equals(resource.isLimitedResource()) : true;
     }
 
     private boolean acceptFilters(Resource resource) {
