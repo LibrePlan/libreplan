@@ -58,19 +58,13 @@ public class ResourcePredicate implements IPredicate {
 
     public ResourcePredicate(List<FilterPair> filters, String personalFilters,
             LocalDate startDate,
-            LocalDate finishDate) {
+            LocalDate finishDate,
+            Boolean isLimitedResource) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
-        this.personalFilters = personalFilters.split(" ");
-    }
-
-    public ResourcePredicate(List<FilterPair> filters, String personalFilters,
-            LocalDate startDate,
-            LocalDate finishDate,
-            Boolean isLimitedResource) {
-        this(filters, personalFilters, startDate, finishDate);
         this.isLimitedResource = isLimitedResource;
+        this.personalFilters = personalFilters.split(" ");
     }
 
     @Override

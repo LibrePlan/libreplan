@@ -99,6 +99,8 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private Datebox filterFinishDate;
 
+    private Combobox filterLimitedResource;
+
     private Textbox txtfilter;
 
     private BandboxMultipleSearch bdFilters;
@@ -141,6 +143,8 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
+        this.filterLimitedResource = (Combobox) listWindow
+                .getFellowIfAny("filterLimitedResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -514,13 +518,18 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getValue());
         }
 
+        final Comboitem item = filterLimitedResource.getSelectedItem();
+        Boolean isLimitedResource = (item != null) ? LimitedResourceEnum
+                .valueOf((LimitedResourceEnum) item.getValue()) : null;
+
         if (listFilters.isEmpty()
                 && (personalFilter == null || personalFilter.isEmpty())
-                && startDate == null && finishDate == null) {
+                && startDate == null && finishDate == null
+                && isLimitedResource == null) {
             return null;
         }
         return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate);
+                finishDate, isLimitedResource);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
@@ -539,6 +548,10 @@ public class MachineCRUDController extends GenericForwardComposer {
         listing.setModel(new SimpleListModel(machineModel.getAllMachines()
                 .toArray()));
         listing.invalidate();
+    }
+
+    public Set<LimitedResourceEnum> getLimitedResourceFilterOptionList() {
+        return LimitedResourceEnum.getLimitedResourceFilterOptionList();
     }
 
     public Set<LimitedResourceEnum> getLimitedResourceOptionList() {
