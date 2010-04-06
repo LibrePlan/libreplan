@@ -34,6 +34,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
@@ -49,7 +50,6 @@ import org.navalplanner.ws.materials.api.MaterialCategoryDTO;
 import org.navalplanner.ws.materials.api.MaterialCategoryListDTO;
 import org.navalplanner.ws.materials.api.MaterialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,22 +86,8 @@ public class MaterialServiceTest {
     private IDataBootstrap unitTypeBootstrap;
 
     private String unitTypeCodeA = "unitTypeA";
-    private String unitTypeCodeB = "unitTypeB";
 
-    @Test
-    @Rollback(false)
-    public void CreateUnitType() {
-        UnitType entityA = UnitType.create(unitTypeCodeA, "UnitTypeA");
-        UnitType entityB = UnitType.create(unitTypeCodeB, "UnitTypeB");
-        unitTypeDAO.save(entityA);
-        unitTypeDAO.save(entityB);
-        unitTypeDAO.flush();
-        sessionFactory.getCurrentSession().evict(entityA);
-        sessionFactory.getCurrentSession().evict(entityB);
-    }
-
-    @Test
-    @Rollback(false)
+    @Before
     public void loadRequiredaData() {
         materialCategoryBootstrap.loadRequiredData();
         unitTypeBootstrap.loadRequiredData();
