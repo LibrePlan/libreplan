@@ -56,7 +56,7 @@
                         </row>
                        <row>
                             <label value="${i18n:_('Limted resource')}" />
-                            <combobox id="cbLimitingResource" width="200px"
+                            <listbox mold="select" width="200px"
                                 model="@{controller.limitingResourceOptionList}"
                                 selectedItem="@{controller.limitingResource}"
                                 onSelect="controller.setLimitingResource(self.selectedItem.value);"
