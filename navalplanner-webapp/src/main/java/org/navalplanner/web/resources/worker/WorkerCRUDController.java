@@ -704,4 +704,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         }
     }
 
+    public boolean isEditing() {
+        return (getWorker() != null && !getWorker().isNewObject());
+    }
+
 }

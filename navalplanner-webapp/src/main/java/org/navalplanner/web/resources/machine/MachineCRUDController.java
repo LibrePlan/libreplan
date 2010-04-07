@@ -572,4 +572,8 @@ public class MachineCRUDController extends GenericForwardComposer {
         }
     }
 
+    public boolean isEditing() {
+        return (getMachine() != null && !getMachine().isNewObject());
+    }
+
 }

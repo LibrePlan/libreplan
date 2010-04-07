@@ -59,7 +59,8 @@
                             <combobox id="cbLimitedResource" width="200px"
                                 model="@{controller.limitedResourceOptionList}"
                                 selectedItem="@{controller.limitedResource}"
-                                onSelect="controller.setLimitedResource(self.selectedItem.value);" />
+                                onSelect="controller.setLimitedResource(self.selectedItem.value);"
+                                disabled="@{controller.isEditing}" />
                         </row>
                     </rows>
                 </grid>
