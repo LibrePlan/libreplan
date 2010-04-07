@@ -655,7 +655,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         }
 
         public static LimitedResourceEnum valueOf(Boolean isLimitedResource) {
-            return (isLimitedResource != null) ? LIMITED_RESOURCE : NON_LIMITED_RESOURCE;
+            return (Boolean.TRUE.equals(isLimitedResource)) ? LIMITED_RESOURCE : NON_LIMITED_RESOURCE;
         }
 
         public static Boolean valueOf(LimitedResourceEnum option) {
