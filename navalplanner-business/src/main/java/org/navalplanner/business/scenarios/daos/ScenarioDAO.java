@@ -76,6 +76,7 @@ public class ScenarioDAO extends GenericDAOHibernate<Scenario, Long> implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Scenario findByName(String name) throws InstanceNotFoundException {
         if (StringUtils.isBlank(name)) {
             throw new InstanceNotFoundException(null, Scenario.class.getName());
