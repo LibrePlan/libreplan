@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.users.services;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.User;
@@ -32,22 +33,25 @@ import org.springframework.security.userdetails.User;
  */
 public class CustomUser extends User {
 
-    private String scenario;
+    private Scenario scenario;
 
     public CustomUser(String username, String password, boolean enabled,
             boolean accountNonExpired, boolean credentialsNonExpired,
             boolean accountNonLocked, GrantedAuthority[] authorities,
-            String scenario) throws IllegalArgumentException {
+            Scenario scenario) throws IllegalArgumentException {
         super(username, password, enabled, accountNonExpired,
                 credentialsNonExpired, accountNonLocked, authorities);
+        Validate.notNull(scenario);
         this.scenario = scenario;
+        // force name load
+        scenario.getName();
     }
 
-    public String getScenario() {
+    public Scenario getScenario() {
         return scenario;
     }
 
-    public void setScenario(String scenario) {
+    public void setScenario(Scenario scenario) {
         this.scenario = scenario;
     }
 

@@ -29,8 +29,12 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.users.bootstrap.IUsersBootstrapInDB;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
@@ -44,7 +48,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests for <code>DBUserDetailsService</code>.
- *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,9 +63,32 @@ public class DBUserDetailsServiceTest {
     @Autowired
     private IUsersBootstrapInDB usersBootstrap;
 
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Before
+    public void loadScenariosBootsrap() {
+        /*
+         * the required data is loaded in another transaction because if it's
+         * loaded on the same transaction the added scenario could not be
+         * retrieved from PredefinedScenario. This happened when executing all
+         * tests. If you execute this test in isolation this problem doesn't
+         * happen
+         */
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                scenariosBootstrap.loadRequiredData();
+                return null;
+            }
+        });
+    }
+
     @Test
     public void testLoadUserByUsername() {
-
         usersBootstrap.loadRequiredData();
 
         for (MandatoryUser u : MandatoryUser.values()) {

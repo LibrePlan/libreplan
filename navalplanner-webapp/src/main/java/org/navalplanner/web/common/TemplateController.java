@@ -23,6 +23,7 @@ package org.navalplanner.web.common;
 import java.util.Collections;
 import java.util.List;
 
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.security.SecurityUtils;
@@ -58,10 +59,10 @@ public class TemplateController extends GenericForwardComposer {
         window = (Window) comp.getFellow("changeScenarioWindow");
     }
 
-    public String getScenario() {
+    public Scenario getScenario() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return "";
+            return PredefinedScenarios.MASTER.getScenario();
         }
         CustomUser customUser = (CustomUser) authentication.getPrincipal();
         return customUser.getScenario();
@@ -83,7 +84,7 @@ public class TemplateController extends GenericForwardComposer {
         if (templateModel == null) {
             return null;
         }
-        return templateModel.getScenarioByName(getScenario());
+        return getScenario();
     }
 
     public void accept() {
@@ -97,7 +98,7 @@ public class TemplateController extends GenericForwardComposer {
 
         CustomUser customUser = (CustomUser) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-        customUser.setScenario(scenario.getName());
+        customUser.setScenario(scenario);
 
         window.setVisible(false);
         Executions.sendRedirect("/");

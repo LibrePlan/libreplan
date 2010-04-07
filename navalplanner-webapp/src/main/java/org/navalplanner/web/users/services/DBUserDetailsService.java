@@ -75,12 +75,9 @@ public class DBUserDetailsService implements UserDetailsService {
             allRoles.addAll(eachProfile.getRoles());
         }
 
-        String scenarioName;
         Scenario scenario = user.getLastConnectedScenario();
         if (scenario == null) {
-            scenarioName =  PredefinedScenarios.MASTER.getName();
-        } else {
-            scenarioName = scenario.getName();
+            scenario = PredefinedScenarios.MASTER.getScenario();
         }
 
         return new CustomUser(
@@ -91,8 +88,7 @@ public class DBUserDetailsService implements UserDetailsService {
             true, // credentialsNonExpired
             true, // accountNonLocked
             getGrantedAuthorities(allRoles),
-            scenarioName);
-
+            scenario);
     }
 
     private GrantedAuthority[] getGrantedAuthorities(Set<UserRole> roles) {

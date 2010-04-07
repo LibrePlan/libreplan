@@ -67,7 +67,7 @@
               <n:td class="usuario">
                 ${i18n:_('scenario')}:
                 <button onClick="templateCtrl.changeScenario();"
-                    label="${templateCtrl.scenario}" />
+                    label="${templateCtrl.scenario.name}" />
                 <window id="changeScenarioWindow" visible="false"
                     title="${i18n:_('Change scenario')}">
                     <grid>
