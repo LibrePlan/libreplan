@@ -44,6 +44,8 @@ public class ScenariosBootstrap implements IScenariosBootstrap {
     @Autowired
     private IOrderDAO orderDAO;
 
+    private Scenario mainScenario;
+
     @Override
     @Transactional
     public void loadRequiredData() {
@@ -51,16 +53,34 @@ public class ScenariosBootstrap implements IScenariosBootstrap {
                 .values()) {
             if (!scenarioDAO.existsByNameAnotherTransaction(predefinedScenario
                     .getName())) {
-                createAtDB(predefinedScenario);
+                Scenario scenario = createAtDB(predefinedScenario);
+                if (predefinedScenario == PredefinedScenarios.MASTER) {
+                    mainScenario = scenario;
+                }
             }
+        }
+        if (mainScenario == null) {
+            mainScenario = PredefinedScenarios.MASTER.getScenario();
         }
     }
 
-    private void createAtDB(PredefinedScenarios predefinedScenario) {
+    private Scenario createAtDB(PredefinedScenarios predefinedScenario) {
         Scenario scenario = predefinedScenario.createScenario();
         for (Order each : orderDAO.getOrders()) {
             scenario.addOrder(each);
         }
         scenarioDAO.save(scenario);
+        scenario.dontPoseAsTransientObjectAnymore();
+        return scenario;
+    }
+
+    @Override
+    public Scenario getMain() {
+        if (mainScenario == null) {
+            throw new IllegalStateException(
+                    "loadRequiredData should have been called on "
+                            + ScenariosBootstrap.class.getName());
+        }
+        return mainScenario;
     }
 }

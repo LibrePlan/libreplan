@@ -17,28 +17,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.navalplanner.business.scenarios;
 
-package org.navalplanner.business.scenarios.bootstrap;
-
-import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
- * Contratct for {@link ScenariosBootstrap}.
+ * Implementations of this interface are responsible of returning the current
+ * scenario
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface IScenariosBootstrap extends IDataBootstrap {
-
-    void loadRequiredData();
+public interface IScenarioManager {
 
     /**
-     * The main scenario.
+     * Retrieves the current scenario
      *
-     * @return
-     * @throws IllegalStateException
-     *             if loadRequiredaData has not been called
+     * @return a not <code>null</code> scenario
      */
-    Scenario getMain() throws IllegalStateException;
+    public Scenario getCurrent();
 
 }

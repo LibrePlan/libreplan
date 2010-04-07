@@ -17,28 +17,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.navalplanner.business.scenarios;
 
-package org.navalplanner.business.scenarios.bootstrap;
-
-import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Contratct for {@link ScenariosBootstrap}.
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IScenariosBootstrap extends IDataBootstrap {
+public class OnlyMainScenarioAwareManager implements IScenarioManager {
 
-    void loadRequiredData();
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
 
-    /**
-     * The main scenario.
-     *
-     * @return
-     * @throws IllegalStateException
-     *             if loadRequiredaData has not been called
-     */
-    Scenario getMain() throws IllegalStateException;
+    @Override
+    public Scenario getCurrent() {
+        return scenariosBootstrap.getMain();
+    }
 
 }
