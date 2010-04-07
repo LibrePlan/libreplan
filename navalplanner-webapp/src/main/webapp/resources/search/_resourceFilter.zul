@@ -12,7 +12,8 @@
 
     <!-- Limited resource -->
     <label value="${i18n:_('Limited resource')}"/>
-    <combobox id="filterLimitedResource"
+    <listbox id="filterLimitedResource"
+        mold="select"
         model="@{controller.limitedResourceFilterOptionList}" />
 
     <!-- Filter by date -->

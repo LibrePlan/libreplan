@@ -49,6 +49,7 @@ import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentContro
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.navalplanner.web.resources.worker.CriterionsController;
 import org.navalplanner.web.resources.worker.CriterionsMachineController;
+import org.navalplanner.web.resources.worker.WorkerCRUDController.LimitedResourceEnum;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -58,11 +59,12 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
-import org.navalplanner.web.resources.worker.WorkerCRUDController.LimitedResourceEnum;
 
 /**
  * Controller for {@link Machine} resource <br />
@@ -99,7 +101,7 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private Datebox filterFinishDate;
 
-    private Combobox filterLimitedResource;
+    private Listbox filterLimitedResource;
 
     private Textbox txtfilter;
 
@@ -143,7 +145,7 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
-        this.filterLimitedResource = (Combobox) listWindow
+        this.filterLimitedResource = (Listbox) listWindow
                 .getFellowIfAny("filterLimitedResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
@@ -518,7 +520,7 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getValue());
         }
 
-        final Comboitem item = filterLimitedResource.getSelectedItem();
+        final Listitem item = filterLimitedResource.getSelectedItem();
         Boolean isLimitedResource = (item != null) ? LimitedResourceEnum
                 .valueOf((LimitedResourceEnum) item.getValue()) : null;
 

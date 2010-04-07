@@ -22,10 +22,8 @@ package org.navalplanner.web.resources.worker;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,6 +56,8 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -111,7 +111,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDate;
 
-    private Combobox filterLimitedResource;
+    private Listbox filterLimitedResource;
 
     private BandboxMultipleSearch bdFilters;
 
@@ -297,7 +297,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
-        this.filterLimitedResource = (Combobox) listWindow
+        this.filterLimitedResource = (Listbox) listWindow
             .getFellowIfAny("filterLimitedResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
@@ -607,7 +607,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             finishDate = LocalDate.fromDateFields(filterFinishDate.getValue());
         }
 
-        final Comboitem item = filterLimitedResource.getSelectedItem();
+        final Listitem item = filterLimitedResource.getSelectedItem();
         Boolean isLimitedResource = (item != null) ? LimitedResourceEnum
                 .valueOf((LimitedResourceEnum) item.getValue()) : null;
 
