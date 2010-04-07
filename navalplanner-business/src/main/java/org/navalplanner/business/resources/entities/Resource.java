@@ -94,7 +94,7 @@ public abstract class Resource extends IntegrationEntity {
     private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
         new HashSet<ResourcesCostCategoryAssignment>();
 
-    private Boolean limitedResource;
+    private Boolean limitedResource = Boolean.FALSE;
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
