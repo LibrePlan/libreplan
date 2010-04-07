@@ -10,11 +10,11 @@
     <label value="${i18n:_('Personal details')}"/>
     <textbox id="txtfilter" width="200px"/>
 
-    <!-- Limited resource -->
-    <label value="${i18n:_('Limited resource')}"/>
-    <listbox id="filterLimitedResource"
+    <!-- Limiting resource -->
+    <label value="${i18n:_('Limiting resource')}"/>
+    <listbox id="filterLimitingResource"
         mold="select"
-        model="@{controller.limitedResourceFilterOptionList}" />
+        model="@{controller.limitingResourceFilterOptionList}" />
 
     <!-- Filter by date -->
     <label value="${i18n:_('Active period from')}"/>

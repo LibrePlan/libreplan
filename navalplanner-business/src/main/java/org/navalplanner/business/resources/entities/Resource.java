@@ -94,7 +94,7 @@ public abstract class Resource extends IntegrationEntity {
     private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
         new HashSet<ResourcesCostCategoryAssignment>();
 
-    private Boolean limitedResource = Boolean.FALSE;
+    private Boolean limitingResource = Boolean.FALSE;
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
@@ -1046,16 +1046,16 @@ public abstract class Resource extends IntegrationEntity {
         return Registry.getResourceDAO();
     }
 
-    public Boolean isLimitedResource() {
-        return limitedResource;
+    public Boolean isLimitingResource() {
+        return limitingResource;
     }
 
-    public void setLimitedResource(Boolean limitedResource) {
-        this.limitedResource = limitedResource;
+    public void setLimitingResource(Boolean limitingResource) {
+        this.limitingResource = limitingResource;
     }
 
-    public String getLimitedResourceAsString() {
-        return (Boolean.TRUE.equals(isLimitedResource())) ? _("yes") : _("no");
+    public String getLimitingResourceAsString() {
+        return (Boolean.TRUE.equals(isLimitingResource())) ? _("yes") : _("no");
     }
 
 }

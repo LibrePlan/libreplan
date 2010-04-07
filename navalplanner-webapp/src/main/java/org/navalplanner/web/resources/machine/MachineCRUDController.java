@@ -49,7 +49,7 @@ import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentContro
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.navalplanner.web.resources.worker.CriterionsController;
 import org.navalplanner.web.resources.worker.CriterionsMachineController;
-import org.navalplanner.web.resources.worker.WorkerCRUDController.LimitedResourceEnum;
+import org.navalplanner.web.resources.worker.WorkerCRUDController.LimitingResourceEnum;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -101,7 +101,7 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private Datebox filterFinishDate;
 
-    private Listbox filterLimitedResource;
+    private Listbox filterLimitingResource;
 
     private Textbox txtfilter;
 
@@ -145,8 +145,8 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
-        this.filterLimitedResource = (Listbox) listWindow
-                .getFellowIfAny("filterLimitedResource");
+        this.filterLimitingResource = (Listbox) listWindow
+                .getFellowIfAny("filterLimitingResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -520,18 +520,18 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getValue());
         }
 
-        final Listitem item = filterLimitedResource.getSelectedItem();
-        Boolean isLimitedResource = (item != null) ? LimitedResourceEnum
-                .valueOf((LimitedResourceEnum) item.getValue()) : null;
+        final Listitem item = filterLimitingResource.getSelectedItem();
+        Boolean isLimitingResource = (item != null) ? LimitingResourceEnum
+                .valueOf((LimitingResourceEnum) item.getValue()) : null;
 
         if (listFilters.isEmpty()
                 && (personalFilter == null || personalFilter.isEmpty())
                 && startDate == null && finishDate == null
-                && isLimitedResource == null) {
+                && isLimitingResource == null) {
             return null;
         }
         return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate, isLimitedResource);
+                finishDate, isLimitingResource);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
@@ -552,25 +552,25 @@ public class MachineCRUDController extends GenericForwardComposer {
         listing.invalidate();
     }
 
-    public Set<LimitedResourceEnum> getLimitedResourceFilterOptionList() {
-        return LimitedResourceEnum.getLimitedResourceFilterOptionList();
+    public Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
+        return LimitingResourceEnum.getLimitingResourceFilterOptionList();
     }
 
-    public Set<LimitedResourceEnum> getLimitedResourceOptionList() {
-        return LimitedResourceEnum.getLimitedResourceOptionList();
+    public Set<LimitingResourceEnum> getLimitingResourceOptionList() {
+        return LimitingResourceEnum.getLimitingResourceOptionList();
     }
 
-    public Object getLimitedResource() {
+    public Object getLimitingResource() {
         final Machine machine = getMachine();
-        return (machine != null) ? LimitedResourceEnum.valueOf(machine
-                .isLimitedResource())
-                : LimitedResourceEnum.NON_LIMITED_RESOURCE;         // Default option
+        return (machine != null) ? LimitingResourceEnum.valueOf(machine
+                .isLimitingResource())
+                : LimitingResourceEnum.NON_LIMITING_RESOURCE;         // Default option
     }
 
-    public void setLimitedResource(LimitedResourceEnum option) {
+    public void setLimitingResource(LimitingResourceEnum option) {
         Machine machine = getMachine();
         if (machine != null) {
-            machine.setLimitedResource(LimitedResourceEnum.LIMITED_RESOURCE.equals(option));
+            machine.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
         }
     }
 

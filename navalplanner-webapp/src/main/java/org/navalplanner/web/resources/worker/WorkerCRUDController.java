@@ -111,7 +111,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDate;
 
-    private Listbox filterLimitedResource;
+    private Listbox filterLimitingResource;
 
     private BandboxMultipleSearch bdFilters;
 
@@ -297,8 +297,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
-        this.filterLimitedResource = (Listbox) listWindow
-            .getFellowIfAny("filterLimitedResource");
+        this.filterLimitingResource = (Listbox) listWindow
+            .getFellowIfAny("filterLimitingResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -607,18 +607,18 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             finishDate = LocalDate.fromDateFields(filterFinishDate.getValue());
         }
 
-        final Listitem item = filterLimitedResource.getSelectedItem();
-        Boolean isLimitedResource = (item != null) ? LimitedResourceEnum
-                .valueOf((LimitedResourceEnum) item.getValue()) : null;
+        final Listitem item = filterLimitingResource.getSelectedItem();
+        Boolean isLimitingResource = (item != null) ? LimitingResourceEnum
+                .valueOf((LimitingResourceEnum) item.getValue()) : null;
 
         if (listFilters.isEmpty()
                 && (personalFilter == null || personalFilter.isEmpty())
                 && startDate == null && finishDate == null
-                && isLimitedResource == null) {
+                && isLimitingResource == null) {
             return null;
         }
         return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate, isLimitedResource);
+                finishDate, isLimitingResource);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
@@ -639,14 +639,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         listing.invalidate();
     }
 
-    public enum LimitedResourceEnum {
+    public enum LimitingResourceEnum {
         ALL(_("ALL")),
-        LIMITED_RESOURCE(_("LIMITED RESOURCE")),
-        NON_LIMITED_RESOURCE(_("NON LIMITED RESOURCE"));
+        LIMITING_RESOURCE(_("LIMITING RESOURCE")),
+        NON_LIMITING_RESOURCE(_("NON LIMITING RESOURCE"));
 
         private String option;
 
-        private LimitedResourceEnum(String option) {
+        private LimitingResourceEnum(String option) {
             this.option = option;
         }
 
@@ -654,53 +654,53 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             return option;
         }
 
-        public static LimitedResourceEnum valueOf(Boolean isLimitedResource) {
-            return (Boolean.TRUE.equals(isLimitedResource)) ? LIMITED_RESOURCE : NON_LIMITED_RESOURCE;
+        public static LimitingResourceEnum valueOf(Boolean isLimitingResource) {
+            return (Boolean.TRUE.equals(isLimitingResource)) ? LIMITING_RESOURCE : NON_LIMITING_RESOURCE;
         }
 
-        public static Boolean valueOf(LimitedResourceEnum option) {
-            if (LIMITED_RESOURCE.equals(option)) {
+        public static Boolean valueOf(LimitingResourceEnum option) {
+            if (LIMITING_RESOURCE.equals(option)) {
                 return true;
-            } else if (NON_LIMITED_RESOURCE.equals(option)) {
+            } else if (NON_LIMITING_RESOURCE.equals(option)) {
                 return false;
             } else {
                 return null;
             }
         }
 
-        public static Set<LimitedResourceEnum> getLimitedResourceOptionList() {
+        public static Set<LimitingResourceEnum> getLimitingResourceOptionList() {
             return EnumSet.of(
-                    LimitedResourceEnum.LIMITED_RESOURCE,
-                    LimitedResourceEnum.NON_LIMITED_RESOURCE);
+                    LimitingResourceEnum.LIMITING_RESOURCE,
+                    LimitingResourceEnum.NON_LIMITING_RESOURCE);
         }
 
-        public static Set<LimitedResourceEnum> getLimitedResourceFilterOptionList() {
-            return EnumSet.of(LimitedResourceEnum.ALL,
-                    LimitedResourceEnum.LIMITED_RESOURCE,
-                    LimitedResourceEnum.NON_LIMITED_RESOURCE);
+        public static Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
+            return EnumSet.of(LimitingResourceEnum.ALL,
+                    LimitingResourceEnum.LIMITING_RESOURCE,
+                    LimitingResourceEnum.NON_LIMITING_RESOURCE);
         }
 
     }
 
-    public Set<LimitedResourceEnum> getLimitedResourceFilterOptionList() {
-        return LimitedResourceEnum.getLimitedResourceFilterOptionList();
+    public Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
+        return LimitingResourceEnum.getLimitingResourceFilterOptionList();
     }
 
-    public Set<LimitedResourceEnum> getLimitedResourceOptionList() {
-        return LimitedResourceEnum.getLimitedResourceOptionList();
+    public Set<LimitingResourceEnum> getLimitingResourceOptionList() {
+        return LimitingResourceEnum.getLimitingResourceOptionList();
     }
 
-    public Object getLimitedResource() {
+    public Object getLimitingResource() {
         final Worker worker = getWorker();
-        return (worker != null) ? LimitedResourceEnum.valueOf(worker
-                .isLimitedResource())
-                : LimitedResourceEnum.NON_LIMITED_RESOURCE;         // Default option
+        return (worker != null) ? LimitingResourceEnum.valueOf(worker
+                .isLimitingResource())
+                : LimitingResourceEnum.NON_LIMITING_RESOURCE;         // Default option
     }
 
-    public void setLimitedResource(LimitedResourceEnum option) {
+    public void setLimitingResource(LimitingResourceEnum option) {
         Worker worker = getWorker();
         if (worker != null) {
-            worker.setLimitedResource(LimitedResourceEnum.LIMITED_RESOURCE.equals(option));
+            worker.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
         }
     }
 

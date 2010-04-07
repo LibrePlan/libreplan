@@ -65,11 +65,11 @@
                             <textbox value="@{controller.worker.nif}" constraint="no empty"/>
                         </row>
                         <row visible="@{controller.isRealWorker}">
-                            <label value="${i18n:_('Limited resource')}" />
-                            <combobox id="cbLimitedResource" width="200px"
-                                model="@{controller.limitedResourceOptionList}"
-                                selectedItem="@{controller.limitedResource}"
-                                onSelect="controller.setLimitedResource(self.selectedItem.value);"
+                            <label value="${i18n:_('Limiting resource')}" />
+                            <combobox id="cbLimitingResource" width="200px"
+                                model="@{controller.limitingResourceOptionList}"
+                                selectedItem="@{controller.limitingResource}"
+                                onSelect="controller.setLimitingResource(self.selectedItem.value);"
                                 disabled="@{controller.isEditing}" />
                         </row>
                         <row visible="@{controller.isVirtualWorker}">
