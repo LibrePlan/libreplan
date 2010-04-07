@@ -43,6 +43,7 @@ import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
@@ -68,6 +69,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class Registry {
 
     private static final Registry singleton = new Registry();
+
 
     @Autowired
     private IAdvanceTypeDAO advanceTypeDao;
@@ -160,6 +162,9 @@ public class Registry {
 
     @Autowired
     private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private Registry() {
     }
@@ -288,6 +293,10 @@ public class Registry {
 
     public static IScenarioDAO getScenarioDAO() {
         return getInstance().scenarioDAO;
+    }
+
+    public static IScenarioManager getScenarioManager() {
+        return getInstance().scenarioManager;
     }
 
 }

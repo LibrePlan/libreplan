@@ -31,6 +31,7 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_T
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
@@ -107,6 +108,12 @@ public class CurrentUserScenarioAwareManagerTest {
         expect(result.getPrincipal()).andReturn(customUser).anyTimes();
         replay(result);
         return result;
+    }
+
+    @Test
+    public void registryHoldsCurrentUserScenarioAwareTest() {
+        IScenarioManager fromRegistry = Registry.getScenarioManager();
+        assertEquals(scenarioManager, fromRegistry);
     }
 
 }
