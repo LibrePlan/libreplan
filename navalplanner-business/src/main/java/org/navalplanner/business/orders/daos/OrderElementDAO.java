@@ -22,8 +22,10 @@ package org.navalplanner.business.orders.daos;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -37,6 +39,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -61,6 +64,9 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
@@ -187,7 +193,19 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
             each.detachAssociatedTaskFromParent();
             taskSourceDAO.remove(each.getId());
         }
+        for (WorkReport each : getWorkReportsPointingTo(orderElement)) {
+            workReportDAO.remove(each.getId());
+        }
         super.remove(id);
+    }
+
+    private Set<WorkReport> getWorkReportsPointingTo(OrderElement orderElement) {
+        Set<WorkReport> result = new HashSet<WorkReport>();
+        for (WorkReportLine each : workReportLineDAO
+                        .findByOrderElementAndChildren(orderElement)) {
+            result.add(each.getWorkReport());
+        }
+        return result;
     }
 
     @Override
