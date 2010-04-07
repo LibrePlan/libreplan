@@ -52,6 +52,10 @@
     <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton"
         init-method="init" />
 
+    <bean id="scenarioManager"
+        class="org.navalplanner.web.scenarios.CurrentUserScenarioAwareManager"
+        scope="singleton"/>
+
     <context:component-scan base-package="org.navalplanner"/>
 
     <!-- CXF -->
