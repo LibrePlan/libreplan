@@ -32,14 +32,14 @@
 <zscript>
 <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
-    controller = templateController;
+    templateCtrl = templateController;
 ]]>
 </zscript>
 
 <scripts />
 
-<div id="controller" xmlns:n="http://www.zkoss.org/2005/zk/native"
-    apply="${controller}">
+<div xmlns:n="http://www.zkoss.org/2005/zk/native"
+    apply="${templateCtrl}">
 
 <n:div>
 <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -66,8 +66,8 @@
             <n:tr>
               <n:td class="usuario">
                 ${i18n:_('scenario')}:
-                <button onClick="controller.changeScenario();"
-                    label="${controller.scenario}" />
+                <button onClick="templateCtrl.changeScenario();"
+                    label="${templateCtrl.scenario}" />
                 <window id="changeScenarioWindow" visible="false"
                     title="${i18n:_('Change scenario')}">
                     <grid>
@@ -77,14 +77,14 @@
                                 <bandboxSearch
                                     id="scenarioBandboxSearch"
                                     finder="ScenarioBandboxFinder"
-                                    model="@{controller.scenarios}"
-                                    selectedElement="@{controller.currentScenario}" />
+                                    model="@{templateCtrl.scenarios}"
+                                    selectedElement="@{templateCtrl.currentScenario}" />
                             </row>
                         </rows>
                     </grid>
-                    <button onClick="controller.accept();"
+                    <button onClick="templateCtrl.accept();"
                         label="${i18n:_('Accept')}" />
-                    <button onClick="controller.cancel();"
+                    <button onClick="templateCtrl.cancel();"
                         label="${i18n:_('Cancel')}" />
                 </window>
               </n:td>
