@@ -22,9 +22,11 @@ package org.navalplanner.business.scenarios.daos;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -132,6 +134,31 @@ public class ScenarioDAO extends GenericDAOHibernate<Scenario, Long> implements
             return true;
         }
         return !one.getId().equals(other.getId());
+    }
+
+    @Override
+    public List<Scenario> findByPredecessor(Scenario scenario) {
+        if (scenario == null) {
+            return Collections.emptyList();
+        }
+
+        Criteria c = getSession().createCriteria(Scenario.class).add(
+                Restrictions.eq("predecessor", scenario));
+        return (List<Scenario>) c.list();
+    }
+
+    @Override
+    public List<Scenario> getDerivedScenarios(Scenario scenario) {
+        List<Scenario> result = new ArrayList<Scenario>();
+
+        List<Scenario> children = findByPredecessor(scenario);
+        result.addAll(children);
+
+        for (Scenario child : children) {
+            result.addAll(getDerivedScenarios(child));
+        }
+
+        return result;
     }
 
 }

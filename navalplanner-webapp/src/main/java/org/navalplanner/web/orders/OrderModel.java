@@ -65,6 +65,9 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderTemplate;
@@ -152,6 +155,11 @@ public class OrderModel implements IOrderModel {
 
     private List<Order> orderList = new ArrayList<Order>();
 
+    @Autowired
+    private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     @Override
     @Transactional(readOnly = true)
@@ -170,6 +178,10 @@ public class OrderModel implements IOrderModel {
     }
 
     private QualityFormsOnConversation qualityFormsOnConversation;
+
+    private Scenario currentScenario;
+
+    private List<Scenario> derivedScenarios = new ArrayList<Scenario>();
 
     private QualityFormsOnConversation getQualityFormsOnConversation() {
         if (qualityFormsOnConversation == null) {
@@ -353,6 +365,17 @@ public class OrderModel implements IOrderModel {
         this.order = Order.create();
         initializeOrder();
         initializeCalendar();
+        addOrderToCurrentScenario(this.order);
+    }
+
+    private void addOrderToCurrentScenario(Order order) {
+        currentScenario = scenarioManager.getCurrent();
+        currentScenario.addOrder(order);
+
+        derivedScenarios = scenarioDAO.getDerivedScenarios(currentScenario);
+        for (Scenario scenario : derivedScenarios) {
+            scenario.addOrder(order);
+        }
     }
 
     private void initializeOrder() {
@@ -430,6 +453,20 @@ public class OrderModel implements IOrderModel {
         reattachCurrentTaskSources();
         deleteOrderElementWithoutParent();
         synchronizeWithSchedule(order);
+
+        order.dontPoseAsTransientObjectAnymore();
+        saveCurrentScenario();
+    }
+
+    private void saveCurrentScenario() {
+        if (currentScenario != null) {
+            scenarioDAO.save(currentScenario);
+        }
+        if (derivedScenarios != null) {
+            for (Scenario scenario : derivedScenarios) {
+                scenarioDAO.save(scenario);
+            }
+        }
     }
 
     private void calculateAndSetTotalHours() {

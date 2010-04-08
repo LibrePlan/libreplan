@@ -92,10 +92,17 @@ public class OrderModelTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
+    @Resource
+    private IDataBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
+        scenariosBootstrap.loadRequiredData();
     }
 
     public static Date year(int year) {

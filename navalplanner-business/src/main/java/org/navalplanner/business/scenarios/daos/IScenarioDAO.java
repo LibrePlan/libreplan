@@ -43,4 +43,8 @@ public interface IScenarioDAO extends IGenericDAO<Scenario, Long> {
 
     boolean thereIsOtherWithSameName(Scenario scenario);
 
+    List<Scenario> findByPredecessor(Scenario scenario);
+
+    List<Scenario> getDerivedScenarios(Scenario scenario);
+
 }
