@@ -78,7 +78,7 @@
                                     id="scenarioBandboxSearch"
                                     finder="ScenarioBandboxFinder"
                                     model="@{templateCtrl.scenarios}"
-                                    selectedElement="@{templateCtrl.currentScenario}" />
+                                    selectedElement="@{templateCtrl.scenario}" />
                             </row>
                         </rows>
                     </grid>

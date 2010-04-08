@@ -23,7 +23,7 @@ package org.navalplanner.web.common;
 import java.util.Collections;
 import java.util.List;
 
-import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.security.SecurityUtils;
@@ -31,7 +31,6 @@ import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -51,6 +50,9 @@ public class TemplateController extends GenericForwardComposer {
     @Autowired
     private ITemplateModel templateModel;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private Window window;
 
     @Override
@@ -60,12 +62,7 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public Scenario getScenario() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return PredefinedScenarios.MASTER.getScenario();
-        }
-        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-        return customUser.getScenario();
+        return scenarioManager.getCurrent();
     }
 
     public void changeScenario() throws SuspendNotAllowedException,
@@ -78,13 +75,6 @@ public class TemplateController extends GenericForwardComposer {
             return Collections.emptyList();
         }
         return templateModel.getScenarios();
-    }
-
-    public Scenario getCurrentScenario() {
-        if (templateModel == null) {
-            return null;
-        }
-        return getScenario();
     }
 
     public void accept() {
