@@ -38,22 +38,14 @@ resourcesLoadPanel = self;
             onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
         </listbox>
         <separator/>
-        From: <datebox /> to: <datebox />
-        <separator/>
         Filter:
-        <combobox>
-            <comboitem label="Orders"
-                description="Show full orders and company view" />
-            <comboitem label="Tasks"
-                description="Tasks inside orders or filtered" />
-        </combobox>
-        <combobox>
-            <comboitem label="Filter by Label" />
-            <comboitem label="Filter by criterion" />
-            <comboitem label="Filter by resources" />
-            <comboitem label="Critical way" />
-        </combobox>
-        <textbox/>
+        <listbox id="listFilters" mold="select" rows="1" width="200px"
+            model="${resourcesLoadPanel.filters}"
+            onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);" >
+        </listbox>
+	<button image="/common/img/ico_filter.png" style="margin-top: -4px"
+        tooltiptext="${i18n:_('Apply filtering to resource load satisfying required criteria')}"
+        onClick="resourcesLoadPanel.onApplyFilter()"/>
 
        </hbox>
        </north>

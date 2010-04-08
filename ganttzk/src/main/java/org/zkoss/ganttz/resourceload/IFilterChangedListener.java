@@ -18,24 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.resourceload;
+package org.zkoss.ganttz.resourceload;
 
-import java.util.List;
+public interface IFilterChangedListener {
 
-import org.navalplanner.business.orders.entities.Order;
-import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
-import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.Interval;
+    public void filterChanged(boolean filter);
 
-public interface IResourceLoadModel {
-
-    void initGlobalView(boolean filterByResources);
-
-    void initGlobalView(Order filterBy, boolean filterByResources);
-
-    List<LoadTimeLine> getLoadTimeLines();
-
-    Interval getViewInterval();
-
-    ZoomLevel calculateInitialZoomLevel();
 }

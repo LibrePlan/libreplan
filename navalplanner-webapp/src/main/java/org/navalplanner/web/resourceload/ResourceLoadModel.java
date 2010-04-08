@@ -80,17 +80,21 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private Order filterBy;
 
+    private boolean filterByResources = true;
+
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView() {
+    public void initGlobalView(boolean filterByResources) {
         filterBy = null;
+        this.filterByResources = filterByResources;
         doGlobalView();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView(Order filterBy) {
+    public void initGlobalView(Order filterBy, boolean filterByResources) {
         this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
+        this.filterByResources = filterByResources;
         doGlobalView();
     }
 
@@ -112,8 +116,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<LoadTimeLine> calculateLoadTimeLines() {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        result.addAll(groupsFor(resourcesToShow()));
-        result.addAll(groupsFor(genericAllocationsByCriterion()));
+        if (filterByResources) {
+            result.addAll(groupsFor(resourcesToShow()));
+        } else {
+            result.addAll(groupsFor(genericAllocationsByCriterion()));
+        }
         return result;
     }
 

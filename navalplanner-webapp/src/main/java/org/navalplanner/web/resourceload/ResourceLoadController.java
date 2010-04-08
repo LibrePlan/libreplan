@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -57,6 +58,12 @@ public class ResourceLoadController implements Composer {
 
     private org.zkoss.zk.ui.Component parent;
 
+    private ResourcesLoadPanel resourcesLoadPanel;
+
+    private TimeTracker timeTracker;
+
+    private transient IFilterChangedListener filterChangedListener;
+
     public ResourceLoadController() {
     }
 
@@ -72,14 +79,22 @@ public class ResourceLoadController implements Composer {
     }
 
     public void reload() {
+        // by default show the task by resources
+        boolean filterByResources = true;
+        reload(filterByResources);
+    }
+
+    private void reload(boolean filterByResources) {
         try {
             if (filterBy == null) {
-                resourceLoadModel.initGlobalView();
+                resourceLoadModel.initGlobalView(filterByResources);
             } else {
-                resourceLoadModel.initGlobalView(filterBy);
+                resourceLoadModel.initGlobalView(filterBy, filterByResources);
             }
+            timeTracker = buildTimeTracker();
+            resourcesLoadPanel = buildResourcesLoadPanel();
+            addListeners();
 
-            ResourcesLoadPanel resourcesLoadPanel = buildResourcesLoadPanel();
             this.parent.getChildren().clear();
             this.parent.appendChild(resourcesLoadPanel);
             resourcesLoadPanel.afterCompose();
@@ -96,16 +111,36 @@ public class ResourceLoadController implements Composer {
         }
     }
 
+    private void addListeners() {
+        filterChangedListener = new IFilterChangedListener() {
+
+            @Override
+            public void filterChanged(boolean filter) {
+                onApplyFilter(filter);
+            }
+        };
+        this.resourcesLoadPanel.addFilterListener(filterChangedListener);
+    }
+
+    public void onApplyFilter(boolean filterByResources) {
+        resourcesLoadPanel.clearComponents();
+        reload(filterByResources);
+    }
+
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
         resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[0]));
     }
 
+    private TimeTracker buildTimeTracker() {
+        return timeTracker = new TimeTracker(resourceLoadModel
+                .getViewInterval(), resourceLoadModel
+                .calculateInitialZoomLevel(), SeveralModificators.create(),
+                SeveralModificators.create(new BankHolidaysMarker()), parent);
+    }
+
     private ResourcesLoadPanel buildResourcesLoadPanel() {
         return new ResourcesLoadPanel(resourceLoadModel.getLoadTimeLines(),
-                new TimeTracker(resourceLoadModel.getViewInterval(),
-                        resourceLoadModel.calculateInitialZoomLevel(),
-                        SeveralModificators.create(), SeveralModificators
-                                .create(new BankHolidaysMarker()), parent));
+                timeTracker);
     }
 
     public void filterBy(Order order) {

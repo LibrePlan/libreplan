@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.resourceload;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +32,8 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
@@ -42,7 +46,6 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Listbox;
-
 public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public interface IToolbarCommand {
@@ -59,16 +62,28 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private ResourceLoadList resourceLoadList;
 
-    private final List<LoadTimeLine> groups;
+    private List<LoadTimeLine> groups;
 
     private MutableTreeModel<LoadTimeLine> treeModel;
 
-    private final TimeTracker timeTracker;
+    private TimeTracker timeTracker;
+
+    private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners
+            .create();
 
     private Listbox listZoomLevels;
 
+    private static final String filterResources = _("Filter by resources");
+    private static final String filterCriterions = _("Filter by criterions");
+    private boolean filterbyResources = true;
+
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
             TimeTracker timeTracker) {
+        init(groups, timeTracker);
+
+    }
+
+    public void init(List<LoadTimeLine> groups, TimeTracker timeTracker) {
         this.groups = groups;
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();
@@ -76,6 +91,37 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
         registerNeededScripts();
+    }
+
+    public ListModel getFilters() {
+        String[] filters = new String[] { filterResources, filterCriterions };
+        return new SimpleListModel(filters);
+    }
+
+    public void setFilter(String filterby) {
+        if (filterby.equals(filterResources)) {
+            this.filterbyResources = true;
+        } else {
+            this.filterbyResources = false;
+        }
+    }
+
+    public boolean getFilter() {
+        return filterbyResources;
+    }
+
+    public void onApplyFilter() {
+        zoomListeners
+                .fireEvent(new IListenerNotification<IFilterChangedListener>() {
+                    @Override
+                    public void doNotify(IFilterChangedListener listener) {
+                        listener.filterChanged(getFilter());
+                    }
+                });
+    }
+
+    public void addFilterListener(IFilterChangedListener listener) {
+        zoomListeners.addListener(listener);
     }
 
     public ListModel getZoomLevels() {
@@ -190,6 +236,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         timeTrackerComponent.afterCompose();
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
+    }
+
+    public void clearComponents() {
+        getFellow("insertionPointLeftPanel").getChildren().clear();
+        getFellow("insertionPointRightPanel").getChildren().clear();
+        getFellow("insertionPointTimetracker").getChildren().clear();
     }
 
     private TimeTrackerComponent createTimeTrackerHeader() {
