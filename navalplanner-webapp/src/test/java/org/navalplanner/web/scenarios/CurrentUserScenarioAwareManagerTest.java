@@ -29,6 +29,7 @@ import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONF
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,6 +82,11 @@ public class CurrentUserScenarioAwareManagerTest {
         givenUserAuthenticatedWith(customScenario);
         Scenario current = scenarioManager.getCurrent();
         assertEquals(customScenario, current);
+    }
+
+    @After
+    public void cleanAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     private Scenario mockScenario() {
