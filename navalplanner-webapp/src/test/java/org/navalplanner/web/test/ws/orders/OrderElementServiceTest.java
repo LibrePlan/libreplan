@@ -47,6 +47,7 @@ import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
@@ -124,6 +125,10 @@ public class OrderElementServiceTest {
         configurationBootstrap.loadRequiredData();
         materialCategoryBootstrap.loadRequiredData();
         criterionsBootstrap.loadRequiredData();
+    }
+
+    @Before
+    public void loadRequiredUnitTypeData() {
         unitTypeBootstrap.loadRequiredData();
     }
 
@@ -147,7 +152,8 @@ public class OrderElementServiceTest {
     @Test
     @Rollback(false)
     public void givenLabelStored() {
-        Label label = Label.create(labelCode, "labelName");
+        Label label = Label.create(labelCode, "labelName "
+                + UUID.randomUUID().toString());
 
         LabelType labelType = LabelType.create("label-type-"
                 + UUID.randomUUID());
@@ -191,7 +197,7 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.code = "order-code";
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
@@ -214,7 +220,7 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
@@ -256,10 +262,10 @@ public class OrderElementServiceTest {
 
     @Test
     public void validOrder() {
-        String code = "order-code";
+        String code = "order-code " + UUID.randomUUID().toString();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -277,8 +283,8 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
@@ -303,13 +309,13 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.name = "Order line";
-        orderLineDTO.code = "order-line-code";
+        orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
+        orderLineDTO.code = "order-line-code " + UUID.randomUUID().toString();
         HoursGroupDTO hoursGroupDTO = new HoursGroupDTO();
         hoursGroupDTO.resourceType = ResourceEnumDTO.WORKER;
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
@@ -334,16 +340,16 @@ public class OrderElementServiceTest {
 
     @Test
     public void validOrderWithOrderLine() {
-        String code = "order-code";
+        String code = "order-code " + UUID.randomUUID().toString();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.name = "Order line";
-        orderLineDTO.code = "order-line-code";
+        orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
+        orderLineDTO.code = "order-line-code " + UUID.randomUUID().toString();
         HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group",
                 ResourceEnumDTO.WORKER, 1000,
                 new HashSet<CriterionRequirementDTO>());
@@ -368,8 +374,8 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
@@ -395,13 +401,15 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
-        orderLineGroupDTO.name = "Order line group";
-        orderLineGroupDTO.code = "order-line-group-code";
+        orderLineGroupDTO.name = "Order line group "
+                + UUID.randomUUID().toString();
+        orderLineGroupDTO.code = "order-line-group-code "
+                + UUID.randomUUID().toString();
         orderDTO.children.add(orderLineGroupDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -423,20 +431,21 @@ public class OrderElementServiceTest {
         String code = UUID.randomUUID().toString();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name A";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
-        orderLineGroupDTO.name = "Order line group A";
-        orderLineGroupDTO.code = "order-line-group-code-A";
+        orderLineGroupDTO.name = "Order line group "
+                + UUID.randomUUID().toString();
+        orderLineGroupDTO.code = "order-line-group-code "
+                + UUID.randomUUID().toString();
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.name = "Order line A";
-        orderLineDTO.code = "order-line-code-A";
+        orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
+        orderLineDTO.code = "order-line-code " + UUID.randomUUID().toString();
         HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group-"
-                + UUID.randomUUID().toString(),
-                ResourceEnumDTO.WORKER, 1000,
+                + UUID.randomUUID().toString(), ResourceEnumDTO.WORKER, 1000,
                 new HashSet<CriterionRequirementDTO>());
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         orderLineGroupDTO.children.add(orderLineDTO);
@@ -462,8 +471,8 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
@@ -488,12 +497,13 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
-        materialAssignmentDTO.materialCode = "material-code";
+        materialAssignmentDTO.materialCode = "material-code "
+                + UUID.randomUUID().toString();
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -515,15 +525,16 @@ public class OrderElementServiceTest {
 
     @Test
     public void validOrderWithMaterialAssignment() {
-        String code = "order-code";
+        String code = "order-code " + UUID.randomUUID().toString();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
-        materialAssignmentDTO.materialCode = "material-code";
+        materialAssignmentDTO.materialCode = "material-code "
+                + UUID.randomUUID().toString();
         materialAssignmentDTO.unitPrice = BigDecimal.TEN;
         materialAssignmentDTO.units = 100.0;
         orderDTO.materialAssignments.add(materialAssignmentDTO);
@@ -531,7 +542,8 @@ public class OrderElementServiceTest {
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
-        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
 
         try {
             orderElementDAO.findByCode(code);
@@ -546,8 +558,8 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
@@ -567,10 +579,10 @@ public class OrderElementServiceTest {
 
     @Test
     public void validOrderWithLabel() {
-        String code = "order-code";
+        String code = "order-code " + UUID.randomUUID().toString();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -596,8 +608,8 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
-        orderDTO.code = "order-code";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = new Date();
 
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
@@ -635,12 +647,11 @@ public class OrderElementServiceTest {
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
-        LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO(
-labelCode);
+        LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO(labelCode);
         orderDTO.labels.add(labelReferenceDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -655,8 +666,7 @@ labelCode);
         orderElementDAO.flush();
         sessionFactory.getCurrentSession().evict(orderElement);
 
-        LabelReferenceDTO labelReferenceDTO2 = new LabelReferenceDTO(
-labelCode);
+        LabelReferenceDTO labelReferenceDTO2 = new LabelReferenceDTO(labelCode);
         orderDTO.labels.add(labelReferenceDTO2);
 
         orderListDTO = createOrderListDTO(orderDTO);
@@ -674,6 +684,11 @@ labelCode);
     public void updateMaterialAssignment() throws InstanceNotFoundException,
             IncompatibleTypeException {
         String code = "order-code" + UUID.randomUUID().toString();
+        String materialcode1 = "material-code-1-"
+                + UUID.randomUUID().toString();
+        String materialcode2 = "material-code-2-"
+                + UUID.randomUUID().toString();
+
         try {
             orderElementDAO.findUniqueByCode(code);
             fail("Order with code " + code + " already exists");
@@ -682,12 +697,12 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO(
-                "material-code", 100.0, BigDecimal.TEN, null);
+                materialcode1, 100.0, BigDecimal.TEN, null);
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -705,7 +720,7 @@ labelCode);
         orderDTO.materialAssignments.iterator().next().units = 150.0;
 
         MaterialAssignmentDTO materialAssignmentDTO2 = new MaterialAssignmentDTO(
-                "material-code2", 200.0, BigDecimal.ONE, null);
+                materialcode2, 200.0, BigDecimal.ONE, null);
         orderDTO.materialAssignments.add(materialAssignmentDTO);
         orderDTO.materialAssignments.add(materialAssignmentDTO2);
 
@@ -720,12 +735,11 @@ labelCode);
         for (MaterialAssignment materialAssignment : orderElement
                 .getMaterialAssignments()) {
             assertThat(materialAssignment.getMaterial().getCode(), anyOf(
-                    equalTo("material-code"), equalTo("material-code2")));
+                    equalTo(materialcode1), equalTo(materialcode2)));
             assertThat(materialAssignment.getUnits(), anyOf(equalTo(150.0),
                     equalTo(200.0)));
             assertThat(materialAssignment.getUnitPrice(), anyOf(
-                    equalTo(BigDecimal.TEN.setScale(2)),
- equalTo(BigDecimal.ONE
+                    equalTo(BigDecimal.TEN.setScale(2)), equalTo(BigDecimal.ONE
                             .setScale(2))));
         }
     }
@@ -742,12 +756,12 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.name = "Order line";
+        orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
         orderLineDTO.code = "order-line-code" + UUID.randomUUID().toString();
         HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-groupYY",
                 ResourceEnumDTO.WORKER, 1000,
@@ -815,7 +829,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -857,7 +871,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -892,7 +906,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -957,7 +971,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -987,7 +1001,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -1021,7 +1035,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -1033,11 +1047,10 @@ labelCode);
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.name = "Order line";
+        orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
         orderLineDTO.code = "order-line-code-AX";
         HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group"
-                + UUID.randomUUID().toString(),
-                ResourceEnumDTO.WORKER, 1000,
+                + UUID.randomUUID().toString(), ResourceEnumDTO.WORKER, 1000,
                 new HashSet<CriterionRequirementDTO>());
         orderLineDTO.hoursGroups.add(hoursGroupDTO);
         IndirectCriterionRequirementDTO indirectCriterionRequirementDTO = new IndirectCriterionRequirementDTO(
@@ -1073,7 +1086,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 
@@ -1134,7 +1147,7 @@ labelCode);
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name";
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
         orderDTO.initDate = new Date();
 

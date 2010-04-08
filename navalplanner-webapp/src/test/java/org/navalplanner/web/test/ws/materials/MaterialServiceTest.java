@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.bootstrap.UnitTypeBootstrap;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
@@ -52,10 +53,10 @@ import org.navalplanner.ws.materials.api.MaterialCategoryDTO;
 import org.navalplanner.ws.materials.api.MaterialCategoryListDTO;
 import org.navalplanner.ws.materials.api.MaterialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
 /**
  * Tests for <code>IMaterialService</code>.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -89,7 +90,21 @@ public class MaterialServiceTest {
     @Resource
     private IDataBootstrap unitTypeBootstrap;
 
-    private String unitTypeCodeA = "unitTypeA";
+    private String unitTypeCodeA = "unitTypeCodeA";
+
+    private String unitTypeCodeB = "unitTypeCodeB";
+
+    @Test
+    @Rollback(false)
+    public void CreateUnitType() {
+        UnitType entityA = UnitType.create(unitTypeCodeA, getUniqueName());
+        UnitType entityB = UnitType.create(unitTypeCodeB, getUniqueName());
+        unitTypeDAO.save(entityA);
+        unitTypeDAO.save(entityB);
+        unitTypeDAO.flush();
+        sessionFactory.getCurrentSession().evict(entityA);
+        sessionFactory.getCurrentSession().evict(entityB);
+    }
 
     @Before
     public void loadRequiredaData() {
@@ -128,7 +143,7 @@ public class MaterialServiceTest {
                 .addMaterials(materialCategoryListDTO).instanceConstraintViolationsList;
 
         assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 0);
+                instanceConstraintViolationsList.size() == 1);
     }
 
     @Test
@@ -256,7 +271,8 @@ public class MaterialServiceTest {
 
         /* Build material (0 constraint violations). */
         MaterialDTO m1 = new MaterialDTO("M-1", "tornillos",
-                new BigDecimal(13), unitTypeCodeA, true);
+                new BigDecimal(13), UnitTypeBootstrap.getDefaultUnitType()
+                        .getCode(), true);
 
         List<MaterialDTO> materialDTOs1 = new ArrayList<MaterialDTO>();
         materialDTOs1.add(m1);
