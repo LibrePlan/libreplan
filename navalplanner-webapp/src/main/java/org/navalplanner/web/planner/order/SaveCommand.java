@@ -35,6 +35,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
+import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
@@ -67,6 +68,9 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
+
+    @Autowired
+    private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
     private PlanningState state;
 
@@ -112,6 +116,7 @@ public class SaveCommand implements ISaveCommand {
         saveTasksToSave();
         removeTasksToRemove();
         taskElementDAO.removeOrphanedDayAssignments();
+        subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
     }
 
     private void removeTasksToRemove() {

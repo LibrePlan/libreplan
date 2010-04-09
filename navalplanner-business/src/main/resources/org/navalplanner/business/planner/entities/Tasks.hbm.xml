@@ -98,8 +98,8 @@
 
         <many-to-one name="externalCompany" class="org.navalplanner.business.externalcompanies.entities.ExternalCompany" />
 
-        <many-to-one name="task" column="TASK_ELEMENT_ID"
-                unique="true" cascade="all" lazy="false" />
+        <one-to-one name="task" class="Task"
+            property-ref="subcontractedTaskData" lazy="false"/>
 
         <property name="subcontratationDate" />
         <property name="subcontractCommunicationDate" />
