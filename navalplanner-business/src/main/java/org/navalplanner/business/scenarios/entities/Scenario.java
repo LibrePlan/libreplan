@@ -159,4 +159,8 @@ public class Scenario extends BaseEntity {
         return false;
     }
 
+    public OrderVersion getOrderVersion(Order order) {
+        return orders.get(order);
+    }
+
 }

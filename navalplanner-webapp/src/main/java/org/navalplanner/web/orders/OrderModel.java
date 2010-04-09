@@ -67,6 +67,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
@@ -372,9 +373,11 @@ public class OrderModel implements IOrderModel {
         currentScenario = scenarioManager.getCurrent();
         currentScenario.addOrder(order);
 
+        OrderVersion orderVersion = currentScenario.getOrderVersion(order);
+
         derivedScenarios = scenarioDAO.getDerivedScenarios(currentScenario);
         for (Scenario scenario : derivedScenarios) {
-            scenario.addOrder(order);
+            scenario.addOrder(order, orderVersion);
         }
     }
 

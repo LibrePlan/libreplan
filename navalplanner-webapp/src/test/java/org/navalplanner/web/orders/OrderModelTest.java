@@ -95,9 +95,6 @@ public class OrderModelTest {
     @Resource
     private IDataBootstrap scenariosBootstrap;
 
-    @Autowired
-    private IAdHocTransactionService transactionService;
-
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
