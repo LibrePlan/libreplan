@@ -26,7 +26,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 import static org.navalplanner.web.test.ws.common.Util.assertNoConstraintViolations;
 import static org.navalplanner.web.test.ws.common.Util.assertOneConstraintViolation;
 import static org.navalplanner.web.test.ws.common.Util.assertOneConstraintViolationPerInstance;
@@ -82,8 +84,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {BUSINESS_SPRING_CONFIG_FILE,
-    WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE})
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 @Transactional
 public class ResourceServiceTest {
 
