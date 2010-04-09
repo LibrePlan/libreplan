@@ -33,6 +33,8 @@
             </generator>
         </id>
         <version name="version" access="property" type="long" />
+
+        <many-to-one name="ownerScenario" class="Scenario" />
     </class>
 
 </hibernate-mapping>

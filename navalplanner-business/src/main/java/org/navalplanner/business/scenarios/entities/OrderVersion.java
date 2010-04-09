@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.scenarios.entities;
 
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.Order;
 
@@ -30,12 +31,23 @@ import org.navalplanner.business.orders.entities.Order;
  */
 public class OrderVersion extends BaseEntity {
 
-    public static OrderVersion createInitialVersion() {
-        return create(new OrderVersion());
+    private Scenario ownerScenario;
+
+    public static OrderVersion createInitialVersion(Scenario ownerScenario) {
+        return create(new OrderVersion(ownerScenario));
     }
 
     // Default constructor, needed by Hibernate
     protected OrderVersion() {
+    }
+
+    private OrderVersion(Scenario ownerScenario) {
+        this.ownerScenario = ownerScenario;
+    }
+
+    @NotNull(message = "owner scenario not specified")
+    public Scenario getOwnerScenario() {
+        return ownerScenario;
     }
 
 }
