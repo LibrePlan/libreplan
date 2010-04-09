@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +49,7 @@ import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentContro
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.navalplanner.web.resources.worker.CriterionsController;
 import org.navalplanner.web.resources.worker.CriterionsMachineController;
+import org.navalplanner.web.resources.worker.WorkerCRUDController.LimitingResourceEnum;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -57,6 +59,8 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -96,6 +100,8 @@ public class MachineCRUDController extends GenericForwardComposer {
     private Datebox filterStartDate;
 
     private Datebox filterFinishDate;
+
+    private Listbox filterLimitingResource;
 
     private Textbox txtfilter;
 
@@ -139,6 +145,8 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
+        this.filterLimitingResource = (Listbox) listWindow
+                .getFellowIfAny("filterLimitingResource");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -512,13 +520,18 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getValue());
         }
 
+        final Listitem item = filterLimitingResource.getSelectedItem();
+        Boolean isLimitingResource = (item != null) ? LimitingResourceEnum
+                .valueOf((LimitingResourceEnum) item.getValue()) : null;
+
         if (listFilters.isEmpty()
                 && (personalFilter == null || personalFilter.isEmpty())
-                && startDate == null && finishDate == null) {
+                && startDate == null && finishDate == null
+                && isLimitingResource == null) {
             return null;
         }
         return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate);
+                finishDate, isLimitingResource);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
@@ -538,4 +551,31 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .toArray()));
         listing.invalidate();
     }
+
+    public Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
+        return LimitingResourceEnum.getLimitingResourceFilterOptionList();
+    }
+
+    public Set<LimitingResourceEnum> getLimitingResourceOptionList() {
+        return LimitingResourceEnum.getLimitingResourceOptionList();
+    }
+
+    public Object getLimitingResource() {
+        final Machine machine = getMachine();
+        return (machine != null) ? LimitingResourceEnum.valueOf(machine
+                .isLimitingResource())
+                : LimitingResourceEnum.NON_LIMITING_RESOURCE;         // Default option
+    }
+
+    public void setLimitingResource(LimitingResourceEnum option) {
+        Machine machine = getMachine();
+        if (machine != null) {
+            machine.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
+        }
+    }
+
+    public boolean isEditing() {
+        return (getMachine() != null && !getMachine().isNewObject());
+    }
+
 }

@@ -12,7 +12,11 @@
             Hibernate infers type="integer".
         -->
     <version name="version" access="property" type="long" />
+
     <property name="code" access="property" not-null="true" unique="true"/>
+
+    <property name="limitingResource" column="LIMITED_RESOURCE" not-null="true"/>
+
     <set access="field" cascade="all-delete-orphan" inverse="true" name="criterionSatisfactions">
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>

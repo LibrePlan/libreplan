@@ -27,6 +27,7 @@ import java.util.List;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.orders.materials.AssignedMaterialsModel;
@@ -128,6 +129,14 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     public void removeMaterialAssignment(
             MaterialAssignmentTemplate materialAssignment) {
         template.removeMaterialAssignment(materialAssignment);
+    }
+
+    @Override
+    public boolean isCurrentUnitType(Object assigment, UnitType unitType) {
+        MaterialAssignmentTemplate material = (MaterialAssignmentTemplate) assigment;
+        return ((material != null)
+                && (material.getMaterial().getUnitType() != null) && (unitType
+                .getId().equals(material.getMaterial().getUnitType().getId())));
     }
 
 }

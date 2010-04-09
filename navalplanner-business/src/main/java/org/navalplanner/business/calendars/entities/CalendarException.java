@@ -24,7 +24,9 @@ import java.util.Date;
 
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 
 /**
  * Represents an exceptional day that has a different number of hours. For
@@ -34,22 +36,16 @@ import org.navalplanner.business.common.BaseEntity;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CalendarException extends BaseEntity {
+public class CalendarException extends IntegrationEntity {
 
     public static CalendarException create(Date date, Integer hours,
             CalendarExceptionType type) {
-        CalendarException exceptionDay = new CalendarException(new LocalDate(
-                date), hours, type);
-        exceptionDay.setNewObject(true);
-        return exceptionDay;
+        return create(new CalendarException(new LocalDate(date), hours, type));
     }
 
     public static CalendarException create(LocalDate date, Integer hours,
             CalendarExceptionType type) {
-        CalendarException exceptionDay = new CalendarException(date, hours,
-                type);
-        exceptionDay.setNewObject(true);
-        return exceptionDay;
+        return create(new CalendarException(date, hours, type));
     }
 
     private LocalDate date;
@@ -83,6 +79,11 @@ public class CalendarException extends BaseEntity {
 
     public CalendarExceptionType getType() {
         return type;
+    }
+
+    @Override
+    protected ICalendarExceptionDAO getIntegrationEntityDAO() {
+        return Registry.getCalendarExceptionDAO();
     }
 
 }

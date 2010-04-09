@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.zkoss.ganttz.util.MutableTreeModel;
 
 /**
@@ -53,4 +54,7 @@ public interface IMaterialsModel {
 
     void removeMaterial(Material material);
 
+    List<UnitType> getUnitTypes();
+
+    void loadUnitTypes();
 }

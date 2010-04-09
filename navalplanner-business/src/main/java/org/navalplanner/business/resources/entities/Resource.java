@@ -19,6 +19,9 @@
  */
 
 package org.navalplanner.business.resources.entities;
+
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -90,6 +93,8 @@ public abstract class Resource extends IntegrationEntity {
 
     private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
         new HashSet<ResourcesCostCategoryAssignment>();
+
+    private Boolean limitingResource = Boolean.FALSE;
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
@@ -1039,6 +1044,18 @@ public abstract class Resource extends IntegrationEntity {
 
     protected IResourceDAO getIntegrationEntityDAO() {
         return Registry.getResourceDAO();
+    }
+
+    public Boolean isLimitingResource() {
+        return limitingResource;
+    }
+
+    public void setLimitingResource(Boolean limitingResource) {
+        this.limitingResource = limitingResource;
+    }
+
+    public String getLimitingResourceAsString() {
+        return (Boolean.TRUE.equals(isLimitingResource())) ? _("yes") : _("no");
     }
 
 }

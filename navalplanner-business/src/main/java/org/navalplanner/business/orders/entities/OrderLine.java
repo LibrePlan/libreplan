@@ -51,6 +51,17 @@ public class OrderLine extends OrderElement {
         return result;
     }
 
+    public static OrderLine createUnvalidated(String code) {
+        OrderLine orderLine = create(new OrderLine(), code);
+        return orderLine;
+    }
+
+    public static OrderLine createUnvalidatedWithUnfixedPercentage(String code,
+            int hours) {
+        OrderLine orderLine = createOrderLineWithUnfixedPercentage(hours);
+        return create(orderLine, code);
+    }
+
     public static OrderLine createOrderLineWithUnfixedPercentage(int hours) {
         OrderLine result = create();
         HoursGroup hoursGroup = HoursGroup.create(result);

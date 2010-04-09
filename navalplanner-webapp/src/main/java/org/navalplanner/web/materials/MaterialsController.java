@@ -32,6 +32,7 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -47,6 +48,10 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -86,12 +91,16 @@ public class MaterialsController extends
 
     private Component messagesContainer;
 
+    private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("materialsController", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        // load the unit types
+        loadUnitTypes();
 
         // Renders grid and enables delete button is material is new
         gridMaterials.addEventListener("onInitRender", new EventListener() {
@@ -113,6 +122,21 @@ public class MaterialsController extends
                 }
             }
         });
+    }
+
+    private void loadUnitTypes() {
+        materialsModel.loadUnitTypes();
+    }
+
+    public List<UnitType> getUnitTypes() {
+        return materialsModel.getUnitTypes();
+    }
+
+    public void selectUnitType(Component self) {
+        Listitem selectedItem = ((Listbox) self).getSelectedItem();
+            UnitType unitType = (UnitType) selectedItem.getValue();
+            Material material = (Material) ((Row) self.getParent()).getValue();
+            material.setUnitType(unitType);
     }
 
     public TreeModel getMaterialCategories() {
@@ -410,4 +434,29 @@ public class MaterialsController extends
         Util.reloadBindings(gridMaterials);
     }
 
+    public UnitTypeListRenderer getRenderer() {
+        return unitTypeListRenderer;
+    }
+
+    /**
+     * RowRenderer for a @{UnitType} element
+     * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+     */
+    public class UnitTypeListRenderer implements ListitemRenderer {
+        @Override
+        public void render(Listitem listItem, Object data) throws Exception {
+            final UnitType unitType = (UnitType) data;
+            listItem.setValue(unitType);
+
+            Listcell listCell = new Listcell(unitType.getMeasure());
+            listItem.appendChild(listCell);
+
+            Material material = (Material) ((Row) listItem.getListbox()
+                    .getParent()).getValue();
+            if ((material.getUnitType() != null)
+                    && (unitType.getId().equals(material.getUnitType().getId()))) {
+                listItem.getListbox().setSelectedItem(listItem);
+            }
+        }
+    }
 }

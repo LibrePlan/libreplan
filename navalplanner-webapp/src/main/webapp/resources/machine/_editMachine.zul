@@ -54,6 +54,14 @@
                             <textbox value="@{controller.machine.description}" width="500px"
                                 constraint="no empty:${i18n:_('Description cannot be null or empty')}" />
                         </row>
+                       <row>
+                            <label value="${i18n:_('Limted resource')}" />
+                            <listbox mold="select" width="200px"
+                                model="@{controller.limitingResourceOptionList}"
+                                selectedItem="@{controller.limitingResource}"
+                                onSelect="controller.setLimitingResource(self.selectedItem.value);"
+                                disabled="@{controller.isEditing}" />
+                        </row>
                     </rows>
                 </grid>
             </tabpanel>

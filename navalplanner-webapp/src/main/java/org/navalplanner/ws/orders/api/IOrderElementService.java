@@ -20,12 +20,8 @@
 
 package org.navalplanner.ws.orders.api;
 
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
-import org.navalplanner.ws.common.api.OrderDTO;
-import org.navalplanner.ws.common.api.OrderElementDTO;
 
 /**
  * Service for managing {@link OrderElement} entities.
@@ -34,12 +30,8 @@ import org.navalplanner.ws.common.api.OrderElementDTO;
  */
 public interface IOrderElementService {
 
-    OrderElementDTO getOrderElement(String code)
-            throws InstanceNotFoundException;
+    InstanceConstraintViolationsListDTO addOrders(OrderListDTO orderListDTO);
 
-    InstanceConstraintViolationsListDTO addOrder(OrderDTO order);
-
-    InstanceConstraintViolationsListDTO updateOrder(OrderDTO orderDTO)
-            throws InstanceNotFoundException, IncompatibleTypeException;
+    OrderListDTO getOrders();
 
 }

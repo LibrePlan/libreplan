@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
@@ -96,20 +97,27 @@ public class LabelServiceTest {
 
     @Test
     public void exportLabelTypes() {
+        int previous = labelTypeDAO.getAll().size();
         LabelTypeListDTO labelTypes = labelService.getLabelTypes();
-        assertTrue(labelTypes.labelTypes.isEmpty());
+        assertTrue(labelTypes.labelTypes.size() == previous);
     }
 
     @Test
     public void exportLabelTypes2() {
+        int previous = labelTypeDAO.getAll().size();
+
         LabelType labelType = givenLabelTypeStored();
 
         LabelTypeListDTO labelTypes = labelService.getLabelTypes();
-        assertThat(labelTypes.labelTypes.size(), equalTo(1));
+        assertThat(labelTypes.labelTypes.size(), equalTo(previous + 1));
 
-        LabelTypeDTO labelTypeDTO = labelTypes.labelTypes.get(0);
-        assertThat(labelTypeDTO.code, equalTo(labelType.getCode()));
-        assertThat(labelTypeDTO.labels.size(), equalTo(2));
+        for (LabelTypeDTO typeDTO : labelTypes.labelTypes) {
+            if ((typeDTO.code.equalsIgnoreCase(labelType.getCode()))
+                    && (typeDTO.labels.size() == 2)) {
+                return;
+            }
+        }
+        fail();
     }
 
     @Test
@@ -138,7 +146,8 @@ public class LabelServiceTest {
     public void importValidLabelType() {
         int previous = labelTypeDAO.getAll().size();
 
-        LabelTypeDTO labelTypeDTO = new LabelTypeDTO("label-type-name1",
+        LabelTypeDTO labelTypeDTO = new LabelTypeDTO("label-type-name"
+                + UUID.randomUUID().toString(),
                 new ArrayList<LabelDTO>());
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = labelService
@@ -147,18 +156,18 @@ public class LabelServiceTest {
 
         assertThat(labelTypeDAO.getAll().size(), equalTo(previous + 1));
 
-        LabelType labelType = labelTypeDAO.getAll().get(0);
-        assertThat(labelType.getName(), equalTo(labelTypeDTO.name));
-        assertThat(labelType.getLabels().size(), equalTo(0));
     }
 
     @Test
     public void importTwoValidLabelType() {
         int previous = labelTypeDAO.getAll().size();
 
-        LabelTypeDTO labelTypeDTO1 = new LabelTypeDTO("label-type-A",
+        String nameType1 = "label-type-" + UUID.randomUUID().toString();
+        String nameType2 = "label-type-" + UUID.randomUUID().toString();
+
+        LabelTypeDTO labelTypeDTO1 = new LabelTypeDTO(nameType1,
                 new ArrayList<LabelDTO>());
-        LabelTypeDTO labelTypeDTO2 = new LabelTypeDTO("label-type-B",
+        LabelTypeDTO labelTypeDTO2 = new LabelTypeDTO(nameType2,
                 new ArrayList<LabelDTO>());
 
         LabelTypeListDTO labelTypeDTOs = createLabelTypeListDTO(labelTypeDTO1,
@@ -171,11 +180,22 @@ public class LabelServiceTest {
 
         List<LabelType> labelTypes = labelTypeDAO.getAll();
         assertThat(labelTypes.size(), equalTo(previous + 2));
+
+        int cont = 0;
         for (LabelType labelType : labelTypes) {
-            assertThat(labelType.getName(), anyOf(equalTo(labelTypeDTO1.name),
-                    equalTo(labelTypeDTO2.name), equalTo("label-type-name1")));
-            assertThat(labelType.getLabels().size(), equalTo(0));
+            if (labelType.getName().equals(nameType1)) {
+                cont++;
+            }
         }
+        assertThat(cont, equalTo(1));
+
+        cont = 0;
+        for (LabelType labelType : labelTypes) {
+            if (labelType.getName().equals(nameType2)) {
+                cont++;
+            }
+        }
+        assertThat(cont, equalTo(1));
     }
 
     @Test

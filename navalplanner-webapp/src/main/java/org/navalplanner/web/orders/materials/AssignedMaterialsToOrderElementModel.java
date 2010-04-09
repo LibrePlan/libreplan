@@ -28,6 +28,7 @@ import java.util.Set;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,6 +138,14 @@ public class AssignedMaterialsToOrderElementModel extends
     @Override
     protected boolean isInitialized() {
         return orderElement != null;
+    }
+
+    @Override
+    public boolean isCurrentUnitType(Object assigment, UnitType unitType) {
+        MaterialAssignment material = (MaterialAssignment) assigment;
+        return ((material != null)
+                && (material.getMaterial().getUnitType() != null) && (unitType
+                .getId().equals(material.getMaterial().getUnitType().getId())));
     }
 
 }

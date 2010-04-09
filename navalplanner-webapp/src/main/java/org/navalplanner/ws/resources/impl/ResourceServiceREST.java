@@ -20,14 +20,20 @@
 
 package org.navalplanner.ws.resources.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.GenericRESTService;
@@ -37,6 +43,7 @@ import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourceListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST-based implementation of <code>IResourceService</code>.
@@ -52,6 +59,27 @@ public class ResourceServiceREST
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
+
+    @Autowired
+    private IMachineDAO machineDAO;
+
+    @Override
+    @GET
+    @Transactional(readOnly = true)
+    public ResourceListDTO getResources() {
+        return new ResourceListDTO(findAll());
+    }
+
+    @Override
+    protected List<ResourceDTO> findAll() {
+        List<Resource> result = new ArrayList<Resource>();
+        result.addAll(workerDAO.getWorkers());
+        result.addAll(machineDAO.getAll());
+        return toDTO(result);
+    }
 
     @Override
     @POST
@@ -73,7 +101,7 @@ public class ResourceServiceREST
 
     @Override
     protected ResourceDTO toDTO(Resource entity) {
-       return null; // This service does not provide finder methods.
+       return ResourceConverter.toDTO(entity);
     }
 
     @Override

@@ -149,33 +149,39 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     public void cancel() {
-        task.setStartDate(currentStartDate);
+        if (currentStartDate != null) {
+            task.setStartDate(currentStartDate);
+        }
         allocationRowsHandler = null;
         currentStartDate = null;
     }
 
     @Override
     public void accept() {
-        applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                stepsBeforeDoingAllocation();
-                allocationRowsHandler.doAllocation().applyTo(task);
-                return null;
-            }
-        });
+        if (context != null) {
+            applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
+                @Override
+                public Void execute() {
+                    stepsBeforeDoingAllocation();
+                    allocationRowsHandler.doAllocation().applyTo(task);
+                    return null;
+                }
+            });
+        }
     }
 
     @Override
     public void accept(final AllocationResult modifiedAllocationResult) {
-        applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                stepsBeforeDoingAllocation();
-                modifiedAllocationResult.applyTo(task);
-                return null;
-            }
-        });
+        if (context != null) {
+            applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
+                @Override
+                public Void execute() {
+                    stepsBeforeDoingAllocation();
+                    modifiedAllocationResult.applyTo(task);
+                    return null;
+                }
+            });
+        }
     }
 
     private void applyAllocationWithDateChangesNotification(

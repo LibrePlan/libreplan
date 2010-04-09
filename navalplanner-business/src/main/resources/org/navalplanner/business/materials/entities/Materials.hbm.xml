@@ -17,15 +17,26 @@
 
     <property name="defaultUnitPrice" column="default_unit_price" />
 
-    <property name="unitType" column="unit_type" >
-        <type name="org.hibernate.type.EnumType">
-            <param name="enumClass">org.navalplanner.business.materials.entities.UnitTypeEnum</param>
-        </type>
-    </property>
+    <many-to-one name="unitType" class="UnitType" column="unit_type" />
 
     <property name="disabled"/>
 
     <many-to-one name="category" class="MaterialCategory" column="CATEGORY_ID" />
+
+</class>
+
+<!-- UnitType -->
+<class name="UnitType" table="UNIT_TYPE">
+
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="code" access="property" not-null="true" unique="true"/>
+    <property name="measure" access="field"/>
 
 </class>
 
@@ -37,6 +48,8 @@
         </generator>
     </id>
     <version name="version" access="property" type="long" />
+
+    <property name="code" access="property" not-null="true" unique="true"/>
 
     <property name="name" />
 

@@ -38,11 +38,12 @@ import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlob
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.materials.bootstrap.PredefinedMaterialCategories;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
-import org.navalplanner.business.materials.entities.PredefinedMaterialCategories;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.ICriterionRequirable;
 import org.navalplanner.business.orders.entities.Order;
@@ -58,7 +59,6 @@ import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.common.api.CriterionRequirementDTO;
 import org.navalplanner.ws.common.api.DirectCriterionRequirementDTO;
 import org.navalplanner.ws.common.api.HoursGroupDTO;
-import org.navalplanner.ws.common.api.IncompatibleTypeException;
 import org.navalplanner.ws.common.api.IndirectCriterionRequirementDTO;
 import org.navalplanner.ws.common.api.LabelReferenceDTO;
 import org.navalplanner.ws.common.api.MaterialAssignmentDTO;
@@ -225,7 +225,7 @@ public final class OrderElementConverter {
 
     public final static OrderElement toEntity(OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
-            throws InstanceNotFoundException {
+            throws ValidationException {
         OrderElement orderElement = toEntityExceptCriterionRequirements(
                 orderElementDTO, configuration);
         if (configuration.isCriterionRequirements()) {
@@ -316,13 +316,14 @@ public final class OrderElementConverter {
     private final static OrderElement toEntityExceptCriterionRequirements(
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
-            throws InstanceNotFoundException {
+            throws ValidationException {
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
             if ((configuration.isHoursGroups())
                     && (!((OrderLineDTO) orderElementDTO).hoursGroups.isEmpty())) {
-                orderElement = OrderLine.create();
+                orderElement = OrderLine
+                        .createUnvalidated(orderElementDTO.code);
 
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
                     HoursGroup hoursGroup = toEntity(hoursGroupDTO,
@@ -331,7 +332,8 @@ public final class OrderElementConverter {
                 }
             } else {
                 orderElement = OrderLine
-                        .createOrderLineWithUnfixedPercentage(0);
+                        .createUnvalidatedWithUnfixedPercentage(
+                                orderElementDTO.code, 0);
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
             List<OrderElement> children = new ArrayList<OrderElement>();
@@ -340,11 +342,9 @@ public final class OrderElementConverter {
             }
 
             if (orderElementDTO instanceof OrderDTO) {
-                orderElement = Order.create();
-
+                orderElement = Order.createUnvalidated(orderElementDTO.code);
                 ((Order) orderElement)
                         .setDependenciesConstraintsHavePriority(((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority);
-
                 List<BaseCalendar> calendars = Registry.getBaseCalendarDAO()
                         .findByName(((OrderDTO) orderElementDTO).calendarName);
                 BaseCalendar calendar;
@@ -356,7 +356,8 @@ public final class OrderElementConverter {
                 }
                 ((Order) orderElement).setCalendar(calendar);
             } else { // orderElementDTO instanceof OrderLineGroupDTO
-                orderElement = OrderLineGroup.create();
+                orderElement = OrderLineGroup
+                        .createUnvalidated(orderElementDTO.code);
             }
 
             for (OrderElement child : children) {
@@ -372,7 +373,12 @@ public final class OrderElementConverter {
 
         if (configuration.isLabels()) {
             for (LabelReferenceDTO labelDTO : orderElementDTO.labels) {
+                try {
                 orderElement.addLabel(LabelReferenceConverter.toEntity(labelDTO));
+                } catch (InstanceNotFoundException e) {
+                    throw new ValidationException("Label " + labelDTO.code
+                            + " not found.");
+                }
             }
         }
 
@@ -456,7 +462,7 @@ public final class OrderElementConverter {
     public final static void update(OrderElement orderElement,
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
-            throws IncompatibleTypeException, InstanceNotFoundException {
+            throws ValidationException {
         updateExceptCriterionRequirements(orderElement, orderElementDTO,
                 configuration);
         if (configuration.isCriterionRequirements()) {
@@ -467,12 +473,14 @@ public final class OrderElementConverter {
     private final static void updateExceptCriterionRequirements(
             OrderElement orderElement, OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
-            throws IncompatibleTypeException, InstanceNotFoundException {
+            throws ValidationException {
 
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
-                throw new IncompatibleTypeException(orderElement.getCode(),
-                        OrderLine.class, orderElement.getClass());
+                throw new ValidationException(_(
+                        "Order element {0} : OrderLineGroup is incompatible type with {1}"
+                                + orderElement.getCode(), orderElement
+                                .getClass().getName()));
             }
 
             if (configuration.isHoursGroups()) {
@@ -492,8 +500,11 @@ public final class OrderElementConverter {
         } else { // orderElementDTO instanceof OrderLineGroupDTO
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
-                    throw new IncompatibleTypeException(orderElement.getCode(),
-                            Order.class, orderElement.getClass());
+                    throw new ValidationException(_(
+                            "Order element {0} : Order is incompatible type with {1}"
+                                    + orderElement.getCode(), orderElement
+                                    .getClass().getName()));
+
                 }
 
                 Boolean dependenciesConstraintsHavePriority = ((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority;
@@ -518,8 +529,10 @@ public final class OrderElementConverter {
                 }
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 if (!(orderElement instanceof OrderLineGroup)) {
-                    throw new IncompatibleTypeException(orderElement.getCode(),
-                            OrderLineGroup.class, orderElement.getClass());
+                    throw new ValidationException(_(
+                            "Order element {0} : OrderLineGroup is incompatible type with {1}"
+                                    + orderElement.getCode(), orderElement
+                                    .getClass().getName()));
                 }
             }
 
@@ -538,7 +551,12 @@ public final class OrderElementConverter {
         if (configuration.isLabels()) {
             for (LabelReferenceDTO labelDTO : orderElementDTO.labels) {
                 if (!orderElement.containsLabel(labelDTO.code)) {
+                    try {
                     orderElement.addLabel(LabelReferenceConverter.toEntity(labelDTO));
+                    } catch (InstanceNotFoundException e) {
+                        throw new ValidationException("Label " + labelDTO.code
+                                + " not found");
+                    }
                 }
             }
         }
@@ -584,7 +602,7 @@ public final class OrderElementConverter {
             HoursGroupDTO hoursGroupDTO,
             ConfigurationOrderElementConverter configuration) {
         if (!hoursGroup.getCode().equals(hoursGroupDTO.code)) {
-            throw new RuntimeException(
+            throw new ValidationException(
                     _("Not the same hours group, impossible to update"));
         }
 
@@ -602,7 +620,8 @@ public final class OrderElementConverter {
             MaterialAssignmentDTO materialAssignmentDTO) {
         if (!materialAssignment.getMaterial().getCode().equals(
                 materialAssignmentDTO.materialCode)) {
-            throw new RuntimeException(_("Not the same material, impossible to update"));
+            throw new ValidationException(
+                    _("Not the same material, impossible to update"));
         }
 
         if (materialAssignmentDTO.units != null) {
@@ -652,9 +671,13 @@ public final class OrderElementConverter {
                 directAdvanceAssignment = orderElement
                         .addSubcontractorAdvanceAssignment();
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
-                throw new RuntimeException(e);
+                throw new ValidationException(
+                        _("Duplicate value true report global Advance for order element "
+                                + orderElement.getCode()));
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-                throw new RuntimeException(e);
+                throw new ValidationException(
+                        _("Duplicate advance assignment for order element "
+                                + orderElement.getCode()));
             }
         }
         return directAdvanceAssignment;

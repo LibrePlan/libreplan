@@ -23,7 +23,7 @@ package org.navalplanner.business.materials.daos;
 import java.util.List;
 import java.util.Set;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
@@ -37,7 +37,7 @@ import org.navalplanner.business.orders.entities.Order;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface IMaterialDAO extends IGenericDAO<Material, Long> {
+public interface IMaterialDAO extends IIntegrationEntityDAO<Material> {
 
     /**
      * Returns true if {@link Material} exits

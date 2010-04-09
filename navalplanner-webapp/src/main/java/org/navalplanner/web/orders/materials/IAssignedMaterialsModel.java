@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.zkoss.zul.TreeModel;
 
 /**
@@ -42,6 +43,8 @@ public interface IAssignedMaterialsModel<T, A> {
 
     List<A> getAssignedMaterials(MaterialCategory materialCategory);
 
+    abstract boolean isCurrentUnitType(Object assigment, UnitType unitType);
+
     List<Material> getMatchingMaterials();
 
     TreeModel getMaterialCategories();
@@ -53,5 +56,9 @@ public interface IAssignedMaterialsModel<T, A> {
     void removeMaterialAssignment(A materialAssignment);
 
     void searchMaterials(String text, MaterialCategory materialCategory);
+
+    void loadUnitTypes();
+
+    List<UnitType> getUnitTypes();
 
 }

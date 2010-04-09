@@ -23,7 +23,7 @@ package org.navalplanner.business.orders.daos;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -35,11 +35,9 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IOrderElementDAO extends IGenericDAO<OrderElement, Long> {
+public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     public List<OrderElement> findWithoutParent();
-
-    public List<OrderElement> findByCode(String code);
 
     public OrderElement findUniqueByCode(String code)
             throws InstanceNotFoundException;

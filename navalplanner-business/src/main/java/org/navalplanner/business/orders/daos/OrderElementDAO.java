@@ -27,12 +27,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -59,7 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
  **/
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
+public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         implements IOrderElementDAO {
 
     @Autowired
@@ -209,10 +210,34 @@ public class OrderElementDAO extends GenericDAOHibernate<OrderElement, Long>
     }
 
     @Override
-    public List<OrderElement> findByCode(String code) {
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("infoComponent.code", code).ignoreCase());
-        return (List<OrderElement>) c.list();
+    public List<OrderElement> findAll() {
+        return getSession().createCriteria(getEntityClass()).addOrder(
+                org.hibernate.criterion.Order.asc("infoComponent.code")).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public OrderElement findByCode(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(null, getEntityClass()
+                    .getName());
+        }
+
+        OrderElement entity = (OrderElement) getSession().createCriteria(
+                getEntityClass())
+                .add(
+                        Restrictions.eq("infoComponent.code", code.trim())
+                                .ignoreCase()).uniqueResult();
+
+        if (entity == null) {
+            throw new InstanceNotFoundException(code, getEntityClass()
+                    .getName());
+        } else {
+            return entity;
+        }
+
     }
 
     public List<OrderElement> findByTemplate(OrderElementTemplate template) {

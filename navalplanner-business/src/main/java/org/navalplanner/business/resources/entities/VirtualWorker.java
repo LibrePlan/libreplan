@@ -93,4 +93,9 @@ public class VirtualWorker extends Worker {
         }
     }
 
+    @Override
+    public Boolean isLimitingResource() {
+        return false;
+    }
+
 }

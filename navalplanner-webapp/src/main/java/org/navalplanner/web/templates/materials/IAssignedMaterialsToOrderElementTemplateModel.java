@@ -20,6 +20,7 @@
 package org.navalplanner.web.templates.materials;
 
 import org.navalplanner.business.materials.entities.MaterialAssignmentTemplate;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.orders.materials.IAssignedMaterialsModel;
 
@@ -29,6 +30,8 @@ import org.navalplanner.web.orders.materials.IAssignedMaterialsModel;
  */
 public interface IAssignedMaterialsToOrderElementTemplateModel extends
         IAssignedMaterialsModel<OrderElementTemplate, MaterialAssignmentTemplate> {
+
+    public boolean isCurrentUnitType(Object assigment, UnitType unitType);
 
     OrderElementTemplate getTemplate();
 

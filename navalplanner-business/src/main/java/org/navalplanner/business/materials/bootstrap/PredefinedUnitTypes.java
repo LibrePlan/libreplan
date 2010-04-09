@@ -1,3 +1,5 @@
+
+
 /*
  * This file is part of NavalPlan
  *
@@ -18,17 +20,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.entities;
+package org.navalplanner.business.materials.bootstrap;
 
-import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.materials.entities.UnitType;
 
 /**
- * Contratct for {@link MaterialCategory}.
+ * Defines the default {@link UnitType}.
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IMaterialCategoryBootstrap extends IDataBootstrap {
+public enum PredefinedUnitTypes {
 
-    void loadRequiredData();
+    UNITS("units"),
+    KILOGRAMS("kg"),
+    KILOMETERS("km"),
+    LITER("l"),
+    METER("m"),
+    SQUARE_METER("m2"),
+    CUBIC_METER("m3"),
+    TONS("tn");
 
+    private String measure;
+
+    private PredefinedUnitTypes(String measure) {
+        this.measure = measure;
+    }
+
+    public UnitType createUnitType() {
+        return UnitType.create(measure);
+    }
+
+    public String getMeasure() {
+        return measure;
+    }
+
+    public String toString() {
+        return measure;
+    }
 }

@@ -23,11 +23,11 @@ package org.navalplanner.business.orders.daos;
 import java.util.Date;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.navalplanner.business.users.entities.User;
-import org.navalplanner.business.planner.entities.Task;
 
 /**
  * Contract for {@link OrderDAO}
@@ -36,7 +36,7 @@ import org.navalplanner.business.planner.entities.Task;
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
-public interface IOrderDAO extends IGenericDAO<Order, Long> {
+public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
 
     /**
      * Gets all the orders.

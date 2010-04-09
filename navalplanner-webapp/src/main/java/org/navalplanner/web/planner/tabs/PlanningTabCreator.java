@@ -175,7 +175,6 @@ public class PlanningTabCreator {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 Map<String, Object> arguments = new HashMap<String, Object>();
-                orderPlanningController.setOrder(mode.getOrder());
                 arguments.put("orderPlanningController",
                         orderPlanningController);
                 orderPlanningController.setURLParameters(parameters);

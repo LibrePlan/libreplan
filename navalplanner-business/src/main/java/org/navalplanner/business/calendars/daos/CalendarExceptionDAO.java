@@ -18,41 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.entities;
+package org.navalplanner.business.calendars.daos;
 
-import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 /**
- * Defines the default {@link MaterialCategory}.
+ * DAO for {@link CalendarException}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public enum PredefinedMaterialCategories {
-
-    IMPORTED_MATERIALS_WITHOUT_CATEGORY("Imported materials without category");
-
-    private final String name;
-
-    private PredefinedMaterialCategories(String name) {
-        this.name = name;
-    }
-
-    public MaterialCategory createMaterialCategory() {
-        return MaterialCategory.create(name);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public MaterialCategory getMaterialCategory() {
-        try {
-            return Registry.getMaterialCategoryDAO().findUniqueByName(name);
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
+@Repository
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class CalendarExceptionDAO extends
+        IntegrationEntityDAO<CalendarException> implements
+        ICalendarExceptionDAO {
 
 }

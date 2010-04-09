@@ -212,8 +212,7 @@
 
 /* -------------- TaskGroup -------------- */
 .taskgroup_start {
-    background-image:
-        url("../img/group_left.png");
+    background-image: url("../../zkau/web/ganttz/img/group_left.png");
     height: 10px;
     width: 10px;
     float: left;
@@ -222,7 +221,7 @@
 
 .taskgroup_end {
     background-image:
-        url("../img/group_right.png");
+        url("../../zkau/web/ganttz/img/group_right.png");
     height: 10px;
     width: 10px;
     position:absolute;
@@ -251,7 +250,7 @@
 
 .milestone_end {
     background-image:
-        url("../img/milestone.png");
+        url("../../zkau/web/ganttz/img/milestone.png");
     height: 15px;
     width: 15px;
     float: right;
@@ -309,7 +308,7 @@
 
 #watermark .timetracker_column_today.timetracker_column_deadline,
 #watermark .timetracker_column_deadline.timetracker_column_today  {
-    background-image: url("../img/watermark_deadline.png");
+    background-image: url("../../zkau/web/ganttz/img/watermark_deadline.png");
 }
 
 /* Background image for current day vertical line */
@@ -320,7 +319,7 @@
 
 #watermark .timetracker_column_deadline {
     background-image:
-        url("../img/watermark_deadline.png");
+        url("../../zkau/web/ganttz/img/watermark_deadline.png");
     background-repeat: repeat-y;
 }
 
@@ -887,7 +886,7 @@ div.z-tree {
     left:-100px; /* Hide when it has't been set */
     width:10px;
     height:22px;
-    background-image: url("../img/deadline2.png");
+    background-image: url("../../zkau/web/ganttz/img/deadline2.png");
 }
 
 body .perspectives-column {

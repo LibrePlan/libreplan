@@ -23,8 +23,9 @@ package org.navalplanner.business.materials.daos;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,7 +41,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class MaterialCategoryDAO extends GenericDAOHibernate<MaterialCategory, Long> implements
+public class MaterialCategoryDAO extends IntegrationEntityDAO<MaterialCategory>
+        implements
         IMaterialCategoryDAO {
 
     @Override
@@ -87,4 +89,10 @@ public class MaterialCategoryDAO extends GenericDAOHibernate<MaterialCategory, L
         return findUniqueByName(name);
     }
 
+    @Override
+    public List<MaterialCategory> findAll() {
+        return getSession().createCriteria(MaterialCategory.class).add(
+                Restrictions.isNull("parent")).addOrder(Order.asc("code"))
+                .list();
+    }
 }

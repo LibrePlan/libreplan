@@ -22,6 +22,8 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
@@ -33,6 +35,7 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
+import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -158,6 +161,12 @@ public class Registry {
     private IHourCostDAO hourCostDAO;
 
     @Autowired
+    private ICalendarExceptionDAO calendarExceptionDAO;
+
+    @Autowired
+    private ICalendarDataDAO calendarDataDAO;
+
+    @Autowired
     private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
 
     @Autowired
@@ -166,11 +175,18 @@ public class Registry {
     @Autowired
     private IScenarioManager scenarioManager;
 
+    @Autowired
+    private IUnitTypeDAO unitTypeDAO;
+
     private Registry() {
     }
 
     public static Registry getInstance() {
         return singleton;
+    }
+
+    public static IUnitTypeDAO getUnitTypeDAO() {
+        return getInstance().unitTypeDAO;
     }
 
     public static IAdvanceTypeDAO getAdvanceTypeDao() {
@@ -297,6 +313,14 @@ public class Registry {
 
     public static IScenarioManager getScenarioManager() {
         return getInstance().scenarioManager;
+    }
+
+    public static ICalendarExceptionDAO getCalendarExceptionDAO() {
+        return getInstance().calendarExceptionDAO;
+    }
+
+    public static ICalendarDataDAO getCalendarDataDAO() {
+        return getInstance().calendarDataDAO;
     }
 
 }

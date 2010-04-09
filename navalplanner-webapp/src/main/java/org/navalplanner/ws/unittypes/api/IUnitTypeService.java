@@ -18,25 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.entities;
+package org.navalplanner.ws.unittypes.api;
 
-public enum UnitTypeEnum {
-    UNITS("units"),
-    KILOGRAMS("kg"),
-    KILOMETERS("km"),
-    LITER("l"),
-    METER("m"),
-    SQUARE_METER("m2"),
-    CUBIC_METER("m3"),
-    TONS("tn");
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
-    private String measure;
+public interface IUnitTypeService {
 
-    private UnitTypeEnum(String measure) {
-        this.measure = measure;
-    }
+    public UnitTypeListDTO getUnitTypes();
 
-    public String toString() {
-        return measure;
-    }
+    public InstanceConstraintViolationsListDTO addUnitTypes(
+            UnitTypeListDTO unitTypeListDTO);
+
 }

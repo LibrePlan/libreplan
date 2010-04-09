@@ -77,7 +77,7 @@ public class AdvanceMeasurement extends BaseEntity {
     public void setValue(BigDecimal value) {
         this.value = value;
         if (value != null) {
-            this.value.setScale(2);
+            this.value.setScale(2, BigDecimal.ROUND_DOWN);
         }
         resetCommunicationDate();
     }

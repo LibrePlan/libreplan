@@ -19,8 +19,6 @@
 -->
 <zk>
 <zscript><![CDATA[
-    Object[] unitTypes = org.navalplanner.business.materials.entities.UnitTypeEnum
-                            .values();
     Object[] materialStatus = org.navalplanner.business.materials.entities.MaterialStatusEnum
                             .values();
     materialAssignmentComponent = self;
@@ -116,10 +114,10 @@
                                         <listcell label="@{material.code}" />
                                         <listcell label="@{material.description}" />
                                         <listcell>
-                                            <listbox mold="select"
-                                                model="@{unitTypes}"
-                                                selectedItem="@{material.unitType}"
-                                                disabled="true" />
+                                            <listbox mold="select"  model="@{assignedMaterialsController.unitTypes}"
+                                                    onSelect = "assignedMaterialsController.selectUnitType(self)"
+                                                    itemRenderer="@{assignedMaterialsController.renderer}"
+                                                    disabled="true"/>
                                         </listcell>
                                         <listcell label="@{material.defaultUnitPrice}" />
                                         <listcell label="@{material.category.name}" />

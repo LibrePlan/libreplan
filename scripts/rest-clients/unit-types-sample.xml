@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<unit-type-list xmlns="http://rest.ws.navalplanner.org">
+  <unit-type measure="units" code="000-001" />
+  <unit-type measure="kg" code="000-002" />
+  <unit-type measure="km" code="000-003" />
+  <unit-type measure="l" code="000-004" />
+  <unit-type measure="m" code="000-005" />
+  <unit-type measure="m2" code="000-006" />
+  <unit-type measure="m3" code="000-007" />
+  <unit-type measure="tn" code="000-008" />
+</unit-type-list>

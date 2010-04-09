@@ -42,8 +42,9 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
@@ -62,7 +63,7 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 
-public abstract class OrderElement extends BaseEntity implements
+public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
 
     private InfoComponent infoComponent = new InfoComponent();
@@ -1023,4 +1024,8 @@ public abstract class OrderElement extends BaseEntity implements
         return (measuredProgress.compareTo(new BigDecimal(100)) == 0);
     }
 
+    @Override
+    protected IIntegrationEntityDAO<OrderElement> getIntegrationEntityDAO() {
+        return Registry.getOrderElementDAO();
+    }
 }

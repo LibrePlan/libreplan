@@ -130,9 +130,6 @@ public class OrderPlanningController implements Composer {
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
-        if (order == null) {
-            throw new IllegalStateException("an order should have been set");
-        }
         this.planner = (Planner) comp;
         String zoomLevelParameter = null;
         if ((parameters != null) && (parameters.get("zoom") != null)
@@ -166,9 +163,12 @@ public class OrderPlanningController implements Composer {
     }
 
     private void updateConfiguration() {
-        model.setConfigurationToPlanner(planner, order, viewSwitcher,
-                editTaskController, calendarAllocationController, additional);
-        planner.updateSelectedZoomLevel();
+        if (order != null) {
+            model.setConfigurationToPlanner(planner, order, viewSwitcher,
+                    editTaskController, calendarAllocationController,
+                    additional);
+            planner.updateSelectedZoomLevel();
+        }
     }
 
     public EditTaskController getEditTaskController() {

@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zul.Listcell;
@@ -72,11 +73,8 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     }
 
     public String getNewFilterText(String inputText) {
-        String newFilterText = new String("");
         String[] filtersText = inputText.split(",");
-        newFilterText = getLastText(filtersText);
-        newFilterText = newFilterText.replace(" ", "");
-        newFilterText = newFilterText.trim();
+        String newFilterText = getLastText(filtersText);
         return newFilterText;
     }
 
@@ -85,7 +83,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         if (texts.length > 0) {
             return texts[last];
         } else {
-            return "";
+            return new String("");
         }
     }
 
@@ -103,7 +101,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         }
 
         filterValues = updateDeletedFilters(filterValues, value);
-        value = value.replace(" ", "");
+        value = StringUtils.deleteWhitespace(value);
         String[] values = value.split(",");
         if (values.length != filterValues.size()) {
             return false;
@@ -142,7 +140,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     private boolean isFilterAdded(String[] values, String filter) {
         for (int i = 0; i < values.length; i++) {
             String value = values[i].replace(" ", "");
-            filter = filter.replace(" ", "");
+            filter = StringUtils.deleteWhitespace(filter);
 
             if (filter.equals(value)) {
                 return true;

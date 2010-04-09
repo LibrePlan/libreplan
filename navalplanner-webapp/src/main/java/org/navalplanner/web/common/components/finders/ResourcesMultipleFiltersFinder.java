@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
@@ -131,7 +132,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     public List<FilterPair> getMatching(String filter) {
         getListMatching().clear();
         if ((filter != null) && (!filter.isEmpty())) {
-            filter = filter.toLowerCase();
+            filter = StringUtils.deleteWhitespace(filter.toLowerCase());
             searchInCriterionTypes(filter);
             searchInCostCategories(filter);
         }
@@ -142,7 +143,9 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInCriterionTypes(String filter) {
         boolean limited = (filter.length() < 3);
         for (CriterionType type : mapCriterions.keySet()) {
-            if (type.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(type.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 setFilterPairCriterionType(type, limited);
             } else {
                 searchInCriterions(type, filter);
@@ -152,7 +155,9 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCriterions(CriterionType type, String filter) {
         for (Criterion criterion : mapCriterions.get(type)) {
-            if (criterion.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(criterion.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 addCriterion(type, criterion);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;
@@ -172,7 +177,9 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCostCategories(String filter) {
         for (CostCategory costCategory : costCategories) {
-            if (costCategory.getName().toLowerCase().contains(filter)) {
+            String name = StringUtils.deleteWhitespace(costCategory.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
                 addCostCategory(costCategory);
                 if ((filter.length() < 3) && (getListMatching().size() > 9)) {
                     return;

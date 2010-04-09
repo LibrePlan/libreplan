@@ -64,6 +64,14 @@
                             <label value="${i18n:_('NIF')}" />
                             <textbox value="@{controller.worker.nif}" constraint="no empty"/>
                         </row>
+                        <row visible="@{controller.isRealWorker}">
+                            <label value="${i18n:_('Limiting resource')}" />
+                            <listbox mold="select" width="200px"
+                                model="@{controller.limitingResourceOptionList}"
+                                selectedItem="@{controller.limitingResource}"
+                                onSelect="controller.setLimitingResource(self.selectedItem.value);"
+                                disabled="@{controller.isEditing}" />
+                        </row>
                         <row visible="@{controller.isVirtualWorker}">
                             <label value="${i18n:_('Capacity')}" />
                             <intbox value="@{controller.virtualWorkerCapacity}" width="100px" constraint="no negative,no zero,no empty" />

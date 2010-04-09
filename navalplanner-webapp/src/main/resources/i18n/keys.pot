@@ -739,7 +739,7 @@ msgid "percentage cannot be duplicated"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:21
-msgid "Navalpro: Configuration"
+msgid "NavalPlan: Configuration"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/workreports/_sortFieldsAndLabels.zul:26
@@ -1639,7 +1639,7 @@ msgid "Hours invested"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/calendars/calendars.zul:21
-msgid "Navalpro: Calendars"
+msgid "NavalPlan: Calendars"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:472
@@ -1709,7 +1709,7 @@ msgid "Confirm deleting this profile. Are you sure?"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:21
-msgid "Navalpro: AdvanceTypes"
+msgid "NavalPlan: AdvanceTypes"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/orders/_edition.zul:147
@@ -2115,7 +2115,7 @@ msgid "Statistics list "
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/qualityforms/qualityForms.zul:21
-msgid "Navalpro: QualityForms"
+msgid "NavalPlan: QualityForms"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:39
@@ -2442,7 +2442,7 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/planner/resources_use.zul:21
 #: navalplanner-webapp/src/main/webapp/planner/index.zul:21
 #: navalplanner-webapp/src/main/webapp/planner/order.zul:21
-msgid "Navalpro: Scheduling"
+msgid "NavalPlan: Scheduling"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:187

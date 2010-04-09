@@ -18,37 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.materials.entities;
+package org.navalplanner.business.materials.bootstrap;
 
-import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
+import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.materials.daos.IUnitTypeDAO;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Creates the default {@link CalendarExceptionType}.
- *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * Creates the bootstrap of the predefined {@link UnitType}.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
+
 @Component
 @Scope("singleton")
-public class MaterialCategoryBootstrap implements IMaterialCategoryBootstrap {
+public class UnitTypeBootstrap implements IDataBootstrap {
 
     @Autowired
-    private IMaterialCategoryDAO materialCategoryDAO;
+    private IUnitTypeDAO unitTypeDAO;
 
-    @Override
     @Transactional
+    @Override
     public void loadRequiredData() {
-        for (PredefinedMaterialCategories predefinedMaterialCategory : PredefinedMaterialCategories
+        for (PredefinedUnitTypes predefinedUnitType : PredefinedUnitTypes
                 .values()) {
-            if (!materialCategoryDAO
-                    .existsMaterialCategoryWithNameInAnotherTransaction(predefinedMaterialCategory
-                            .getName())) {
-                materialCategoryDAO.save(predefinedMaterialCategory
-                        .createMaterialCategory());
+            if (!unitTypeDAO
+                    .existsUnitTypeByNameInAnotherTransaction(predefinedUnitType
+                    .getMeasure())) {
+                unitTypeDAO.save(predefinedUnitType.createUnitType());
             }
         }
     }

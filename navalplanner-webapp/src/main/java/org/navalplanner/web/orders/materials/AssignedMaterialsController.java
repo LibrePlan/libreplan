@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -45,7 +46,9 @@ import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.SimpleListModel;
@@ -88,6 +91,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        getModel().loadUnitTypes();
         createAssignmentsBoxComponent(assignmentsBox);
     }
 
@@ -508,6 +512,63 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
 
     protected abstract double getUnits(A assignment);
 
+    private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
+
+    public List<UnitType> getUnitTypes() {
+        return getModel().getUnitTypes();
+    }
+
+    public void selectUnitType(Component self) {
+        Listitem selectedItem = ((Listbox) self).getSelectedItem();
+        UnitType unitType = (UnitType) selectedItem.getValue();
+        Material material = (Material) ((Row) self.getParent()).getValue();
+        material.setUnitType(unitType);
+    }
+
+    public UnitTypeListRenderer getRenderer() {
+        return unitTypeListRenderer;
+    }
+
+    /**
+     * RowRenderer for a @{UnitType} element
+     * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+     */
+    public class UnitTypeListRenderer implements ListitemRenderer {
+        @Override
+        public void render(Listitem listItem, Object data) throws Exception {
+            final UnitType unitType = (UnitType) data;
+            listItem.setValue(unitType);
+
+            Listcell listCell = new Listcell(unitType.getMeasure());
+            listItem.appendChild(listCell);
+
+            Listbox listbox = listItem.getListbox();
+            Component parent = listbox.getParent();
+
+            if (parent instanceof Row) {
+                Object assigment = (Object) ((Row) parent).getValue();
+                if (getModel().isCurrentUnitType(assigment, unitType)) {
+                    listItem.getListbox().setSelectedItem(listItem);
+                }
+                return;
+            }
+
+            if (parent instanceof Listcell) {
+                Material material = (Material) ((Listitem) (parent.getParent()))
+                        .getValue();
+                if (isCurrentUnitType(material, unitType)) {
+                    listItem.getListbox().setSelectedItem(listItem);
+                }
+            }
+
+        }
+    }
+
+    private boolean isCurrentUnitType(Material material, UnitType unitType) {
+        return ((material != null)
+                && (material.getUnitType() != null)
+ && (unitType
+                .getId().equals(material.getUnitType().getId())));
+    }
+
 }
-
-

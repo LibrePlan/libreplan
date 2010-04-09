@@ -54,6 +54,9 @@ import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
@@ -247,6 +250,7 @@ public class Planner extends HtmlMacroComponent  {
         if (configuration == null) {
             return;
         }
+
         this.diagramGraph = new GanttDiagramGraph(configuration
                 .getStartConstraints(), configuration.getEndConstraints(),
                 configuration.isDependenciesConstraintsHavePriority());
@@ -296,6 +300,7 @@ public class Planner extends HtmlMacroComponent  {
             flattenTree.setVisible(false);
         }
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
+
     }
 
     private void resettingPreviousComponentsToNull() {
@@ -415,6 +420,18 @@ public class Planner extends HtmlMacroComponent  {
     public void afterCompose() {
         super.afterCompose();
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
+
+        Component westContainer = getFellow("taskdetailsContainer");
+        westContainer.addEventListener(Events.ON_SIZE, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Clients.evalJavaScript("zkTaskContainer.legendResize();");
+
+            }
+
+        });
+
     }
 
     public TimeTracker getTimeTracker() {

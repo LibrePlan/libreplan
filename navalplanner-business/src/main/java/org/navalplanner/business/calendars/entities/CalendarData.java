@@ -25,19 +25,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 
 /**
  * Represents the information about the calendar that can change through time.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CalendarData extends BaseEntity {
+public class CalendarData extends IntegrationEntity {
 
     public static CalendarData create() {
-        CalendarData calendarData = new CalendarData();
-        calendarData.setNewObject(true);
-        return calendarData;
+        return create(new CalendarData());
     }
 
     private Map<Integer, Integer> hoursPerDay;
@@ -157,6 +157,11 @@ public class CalendarData extends BaseEntity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected ICalendarDataDAO getIntegrationEntityDAO() {
+        return Registry.getCalendarDataDAO();
     }
 
 }

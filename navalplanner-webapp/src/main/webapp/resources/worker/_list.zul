@@ -33,6 +33,7 @@
             <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(surname)" />
             <newdatasortablecolumn label="${i18n:_('NIF')}" sort="auto(nif)" />
             <newdatasortablecolumn label="${i18n:_('Code')}"/>
+            <newdatasortablecolumn label="${i18n:_('Limiting resource')}" sort="auto(limitingResource)" />
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
@@ -41,6 +42,7 @@
                 <label value="@{worker.surname}" />
                 <label value="@{worker.nif}" />
                 <label value="@{worker.code}" />
+                <label value="@{worker.limitingResourceAsString}" />
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
                         hoverImage="/common/img/ico_editar.png"
