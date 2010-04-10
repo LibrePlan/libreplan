@@ -176,8 +176,15 @@ public class OrderModelTest {
     }
 
     @Test
-    public void testCreation1() throws ValidationException {
-        orderModel.prepareForCreate();
+    public void testCreationUsingPrepareForCreate() {
+        adHocTransaction
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        orderModel.prepareForCreate();
+                        return null;
+                    }
+                });
         Order order = (Order) orderModel.getOrder();
         order.setName("name");
         order.setCode("code");
