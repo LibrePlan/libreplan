@@ -370,7 +370,8 @@ public class OrderModel implements IOrderModel {
     }
 
     private void addOrderToCurrentScenario(Order order) {
-        currentScenario = scenarioManager.getCurrent();
+        currentScenario = scenarioDAO.findExistingEntity(scenarioManager
+                .getCurrent().getId());
         currentScenario.addOrder(order);
 
         OrderVersion orderVersion = currentScenario.getOrderVersion(order);
