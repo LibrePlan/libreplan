@@ -23,19 +23,27 @@
  */
 package org.navalplanner.business.workreports.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public enum PositionInWorkReportEnum {
 
-    HEADING, LINE;
+    HEADING(_("heading")), LINE(_("line"));
+
+    private String displayName;
+
+    private PositionInWorkReportEnum(String displayName) {
+        this.displayName = displayName;
+    }
 
     public static PositionInWorkReportEnum getDefault() {
         return LINE;
     }
 
     public String toString() {
-        return name().toLowerCase();
+        return displayName;
     }
 
 }
