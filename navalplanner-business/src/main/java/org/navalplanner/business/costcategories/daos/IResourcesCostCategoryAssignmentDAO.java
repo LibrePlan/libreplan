@@ -20,7 +20,10 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 
 /**
@@ -29,4 +32,6 @@ import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAs
 public interface IResourcesCostCategoryAssignmentDAO
     extends IIntegrationEntityDAO<ResourcesCostCategoryAssignment> {
 
+    List<ResourcesCostCategoryAssignment>
+        getResourcesCostCategoryAssignmentsByCostCategory(CostCategory costCategory);
 }

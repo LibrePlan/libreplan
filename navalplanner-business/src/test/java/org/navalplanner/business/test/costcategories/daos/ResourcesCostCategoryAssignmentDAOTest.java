@@ -141,4 +141,22 @@ public class ResourcesCostCategoryAssignmentDAOTest {
 
         resourcesCostCategoryAssignmentDAO.save(assignment);
     }
+
+    @Test
+    public void testGetResourcesCostCategoryAssignmentsByCostCategory() {
+        ResourcesCostCategoryAssignment assignment1 = createValidResourcesCostCategoryAssignment();
+        ResourcesCostCategoryAssignment assignment2 = createValidResourcesCostCategoryAssignment();
+        resourcesCostCategoryAssignmentDAO.save(assignment1);
+        resourcesCostCategoryAssignmentDAO.save(assignment2);
+
+        assertTrue(resourcesCostCategoryAssignmentDAO.getResourcesCostCategoryAssignmentsByCostCategory(
+                assignment1.getCostCategory()).contains(assignment1));
+        assertFalse(resourcesCostCategoryAssignmentDAO.getResourcesCostCategoryAssignmentsByCostCategory(
+                assignment1.getCostCategory()).contains(assignment2));
+
+        assignment2.setCostCategory(assignment1.getCostCategory());
+        resourcesCostCategoryAssignmentDAO.save(assignment2);
+        assertTrue(resourcesCostCategoryAssignmentDAO.getResourcesCostCategoryAssignmentsByCostCategory(
+                assignment1.getCostCategory()).contains(assignment2));
+    }
 }
