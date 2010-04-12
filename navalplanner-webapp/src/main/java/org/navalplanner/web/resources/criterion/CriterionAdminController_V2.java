@@ -94,7 +94,11 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
             criterionsModel_V2.prepareForCreate();
             setResourceComboboxValue((Combobox) createComponent.getFellowIfAny("resourceCombobox"));
             Util.reloadBindings(createComponent);
-        }catch(Exception e){}
+        }catch(Exception e){
+            messagesForUser.showMessage(
+                    Level.ERROR, _("Error setting up creation form."));
+            log.error(_("Error setting up creation form for Criterion Type"), e );
+        }
     }
 
     public void goToEditForm(CriterionType criterionType) {
@@ -104,7 +108,12 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
             criterionsModel_V2.prepareForEdit(criterionType);
             setResourceComboboxValue((Combobox) editComponent.getFellowIfAny("resourceCombobox"));
             Util.reloadBindings(editComponent);
-        }catch(Exception e){}
+        }catch(Exception e){
+            messagesForUser.showMessage(
+                    Level.ERROR, _("Error setting up edition form."));
+            log.error(_("Error setting up edition form for Criterion Type with id: {0}",
+                    criterionType.getId()), e );
+        }
     }
 
     public void confirmRemove(CriterionType criterionType) {
