@@ -472,7 +472,11 @@ public class OrderModel implements IOrderModel {
         for (OrderElement orderElement : listToBeRemoved) {
             if (!(orderElement instanceof Order)) {
                 try {
-                    orderElementDAO.remove(orderElement.getId());
+                    // checking no work reports for that orderElement
+                    if (!orderElementDAO
+                            .isAlreadyInUseThisOrAnyOfItsChildren(orderElement)) {
+                        orderElementDAO.remove(orderElement.getId());
+                    }
                 } catch (InstanceNotFoundException e) {
                     throw new ValidationException(_(""
                             + "It not could remove the order element "
