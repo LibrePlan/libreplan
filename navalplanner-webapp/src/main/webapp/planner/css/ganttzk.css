@@ -150,7 +150,7 @@
 }
 
 .standard-task {
-    background-color: #007bbe;
+    background-color: #aaccee; /* NOT_ALLOCATED_TASK_BLUE */
 }
 
 .subcontracted-task {
@@ -929,4 +929,12 @@ body .perspectives-column {
 .taskdetailsContainer {
     overflow-x: scroll;
     overflow-y: hidden;
+}
+
+.row .assigned {
+    background-color: #007BBE; /* ALLOCATED_TASK_BLUE */
+}
+
+.row .partially-assigned {
+    background-color: #FF5A11; /* PARTIALLY_ALLOCATED_TASK_ORANGE */
 }

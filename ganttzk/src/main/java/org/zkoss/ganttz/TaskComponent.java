@@ -183,18 +183,23 @@ public class TaskComponent extends Div implements AfterCompose {
         setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssignment");
         this.task = task;
+        String cssClass = "";
         if (task.isSubcontracted()) {
-            setClass("box subcontracted-task");
+            cssClass = "box subcontracted-task";
         } else {
             if (task.isContainer()) {
                 if (task.isExpanded()) {
-                    setClass("box standard-task expanded");
+                    cssClass = "box standard-task expanded";
                 } else {
-                    setClass("box standard-task closed");
+                    cssClass = "box standard-task closed";
                 }
             } else {
-                setClass("box standard-task");
+                cssClass = "box standard-task";
             }
+
+            cssClass += " " + getTask().getAssignedStatus();
+
+            setClass(cssClass);
         }
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
@@ -232,6 +237,9 @@ public class TaskComponent extends Div implements AfterCompose {
                         cssClass += " closed";
                     }
                 }
+
+                cssClass += " " + getTask().getAssignedStatus();
+
                 return cssClass;
             }
 
@@ -256,6 +264,9 @@ public class TaskComponent extends Div implements AfterCompose {
         if (task.isInCriticalPath()) {
             classText += " critical";
         }
+
+        classText += " " + getTask().getAssignedStatus();
+
         return classText;
     }
 

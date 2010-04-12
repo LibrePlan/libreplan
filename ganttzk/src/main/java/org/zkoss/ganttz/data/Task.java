@@ -326,4 +326,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return Arrays.asList(this);
     }
 
+    public String getAssignedStatus() {
+        return fundamentalProperties.getAssignedStatus();
+    }
+
 }
