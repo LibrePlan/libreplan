@@ -70,7 +70,8 @@ public class SubcontractController extends GenericForwardComposer {
 
     public void accept() throws ValidationException {
         int status = Messagebox.YES;
-        if (subcontractModel.hasResourceAllocations()) {
+        if (subcontractModel.hasResourceAllocations()
+                && (subcontractModel.getSubcontractedTaskData() != null)) {
             try {
                 status = Messagebox
                         .show(
