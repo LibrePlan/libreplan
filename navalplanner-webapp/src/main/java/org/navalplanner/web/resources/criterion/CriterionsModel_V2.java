@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -66,6 +67,9 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     @Autowired
     private IResourceDAO resourceDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     private CriterionType criterionType;
 
     private Criterion criterion;
@@ -100,8 +104,16 @@ public class CriterionsModel_V2 implements ICriterionsModel_V2 {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public void prepareForCreate() {
-        this.criterionType = CriterionType.create();
+        boolean generateCode = configurationDAO.getConfiguration().getGenerateCodeForCriterion();
+        if(generateCode) {
+            this.criterionType = CriterionType.create();
+        }
+        else {
+            this.criterionType = CriterionType.create("");
+        }
+        this.criterionType.setGenerateCode(generateCode);
         this.criterionTreeModel = new CriterionTreeModel(criterionType);
     }
 

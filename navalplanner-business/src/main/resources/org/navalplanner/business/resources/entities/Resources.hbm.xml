@@ -122,6 +122,7 @@
     <property name="allowSimultaneousCriterionsPerResource"/>
     <property name="allowHierarchy"/>
     <property name="enabled"/>
+    <property name="generateCode" not-null="true" />
     <property name="resource">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
