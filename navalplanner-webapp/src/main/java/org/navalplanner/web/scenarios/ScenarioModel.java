@@ -29,6 +29,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -59,6 +60,9 @@ public class ScenarioModel implements IScenarioModel {
     @Autowired
     private IScenarioDAO scenarioDAO;
 
+    @Autowired
+    private IOrderDAO orderDAO;
+
     /*
      * Non conversational steps
      */
@@ -84,6 +88,7 @@ public class ScenarioModel implements IScenarioModel {
         scenarioDAO.reattach(scenario);
         Set<Order> orders = scenario.getOrders().keySet();
         for (Order order : orders) {
+            orderDAO.reattach(order);
             order.getName();
         }
     }

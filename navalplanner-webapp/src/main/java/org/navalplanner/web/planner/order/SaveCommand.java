@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -42,6 +43,10 @@ import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -70,10 +75,18 @@ public class SaveCommand implements ISaveCommand {
 
     private PlanningState state;
 
+    private Order order;
+
     @Autowired
     private IAdHocTransactionService transactionService;
 
     private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
 
     @Override
     public void setState(PlanningState state) {
@@ -81,16 +94,31 @@ public class SaveCommand implements ISaveCommand {
     }
 
     @Override
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    @Override
     public void doAction(IContext<TaskElement> context) {
-        transactionService.runOnTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                doTheSaving();
-                return null;
-            }
-        });
-        fireAfterSave();
-        notifyUserThatSavingIsDone();
+        final Scenario currentScenario = transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Scenario>() {
+                    @Override
+                    public Scenario execute() {
+                        return scenarioManager.getCurrent();
+                    }
+                });
+        final boolean scenarioIsOwner = scenarioIsOwner(currentScenario);
+        if (scenarioIsOwner || userAcceptsCreateANewOrderVersion()) {
+            transactionService.runOnTransaction(new IOnTransaction<Void>() {
+                @Override
+                public Void execute() {
+                    doTheSaving(currentScenario, scenarioIsOwner);
+                    return null;
+                }
+            });
+            fireAfterSave();
+            notifyUserThatSavingIsDone();
+        }
     }
 
     private void fireAfterSave() {
@@ -108,10 +136,13 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private void doTheSaving() {
+    private void doTheSaving(Scenario currentScenario, boolean scenarioIsOwner) {
         saveTasksToSave();
         removeTasksToRemove();
         taskElementDAO.removeOrphanedDayAssignments();
+        if (!scenarioIsOwner) {
+            createAndSaveNewOrderVersion(currentScenario);
+        }
     }
 
     private void removeTasksToRemove() {
@@ -257,6 +288,54 @@ public class SaveCommand implements ISaveCommand {
     @Override
     public String getImage() {
         return "/common/img/ico_save.png";
+    }
+
+    private boolean scenarioIsOwner(Scenario currentScenario) {
+        OrderVersion orderVersion = currentScenario.getOrderVersion(order);
+        if (orderVersion == null) {
+            throw new RuntimeException(
+                    "Order version must never be null for an order in any scenario");
+        }
+
+        if (currentScenario.getId().equals(
+                orderVersion.getOwnerScenario().getId())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean userAcceptsCreateANewOrderVersion() {
+        try {
+            int status = Messagebox
+                    .show(
+                            _("Confirm creating a new order version for this scenario and derived. Are you sure?"),
+                            _("New order version"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
+            return (Messagebox.OK == status);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createAndSaveNewOrderVersion(Scenario currentScenario) {
+        OrderVersion previousOrderVersion = currentScenario
+                .getOrderVersion(order);
+
+        OrderVersion newOrderVersion = OrderVersion
+                .createInitialVersion(currentScenario);
+        currentScenario.setOrderVersion(order, newOrderVersion);
+        scenarioDAO.save(currentScenario);
+
+        for (Scenario scenario : scenarioDAO
+                .getDerivedScenarios(currentScenario)) {
+            if ((scenario.getOrderVersion(order) != null)
+                    && (scenario.getOrderVersion(order).getId()
+                            .equals(previousOrderVersion.getId()))) {
+                scenario.setOrderVersion(order, newOrderVersion);
+                scenarioDAO.save(scenario);
+            }
+        }
     }
 
 }

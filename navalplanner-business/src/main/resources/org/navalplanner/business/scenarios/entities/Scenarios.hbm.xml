@@ -14,7 +14,7 @@
 
         <property name="name" />
         <property name="description" />
-        <map name="orders" table="SCENARIO_ORDERS">
+        <map name="orders" table="SCENARIO_ORDERS" lazy="false">
             <key column="SCENARIO_ID" />
             <map-key-many-to-many column="ORDER_ID"
                 class="org.navalplanner.business.orders.entities.Order" />

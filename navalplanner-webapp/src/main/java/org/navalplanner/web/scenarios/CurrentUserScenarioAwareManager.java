@@ -19,13 +19,19 @@
  */
 package org.navalplanner.web.scenarios;
 
+import java.util.Set;
+
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -36,12 +42,36 @@ public class CurrentUserScenarioAwareManager implements IScenarioManager {
     @Autowired
     private IScenariosBootstrap scenariosBootstrap;
 
+    @Autowired
+    private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
+
     @Override
+    @Transactional(readOnly = true)
     public Scenario getCurrent() {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
-        return authentication == null ? scenariosBootstrap.getMain()
-                : getScenarioFrom(authentication);
+        Scenario scenario = authentication == null ? scenariosBootstrap
+                .getMain() : getScenarioFrom(authentication);
+
+        if (scenario.getId() == null) {
+            return scenario;
+        }
+
+        scenario = scenarioDAO.findExistingEntity(scenario.getId());
+        forceLoad(scenario);
+        return scenario;
+    }
+
+    private void forceLoad(Scenario scenario) {
+        scenarioDAO.reattach(scenario);
+        Set<Order> orders = scenario.getOrders().keySet();
+        for (Order order : orders) {
+            orderDAO.reattach(order);
+            order.getName();
+        }
     }
 
     private Scenario getScenarioFrom(Authentication authentication) {

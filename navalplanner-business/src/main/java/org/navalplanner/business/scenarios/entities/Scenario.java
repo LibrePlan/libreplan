@@ -163,4 +163,8 @@ public class Scenario extends BaseEntity {
         return orders.get(order);
     }
 
+    public void setOrderVersion(Order order, OrderVersion newOrderVersion) {
+        orders.put(order, newOrderVersion);
+    }
+
 }
