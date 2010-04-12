@@ -57,8 +57,6 @@ public class LabelTypeModel implements ILabelTypeModel {
 
     private LabelType labelType;
 
-    private boolean codeGenerated;
-
     public LabelTypeModel() {
 
     }
@@ -82,13 +80,14 @@ public class LabelTypeModel implements ILabelTypeModel {
     @Override
     @Transactional(readOnly=true)
     public void initCreate() {
-        codeGenerated = configurationDAO.getConfiguration().getGenerateCodeForLabel();
+        boolean codeGenerated = configurationDAO.getConfiguration().getGenerateCodeForLabel();
         if(codeGenerated) {
             labelType = LabelType.create("");
         }
         else {
             labelType = LabelType.create("", "");
         }
+        labelType.setGenerateCode(codeGenerated);
     }
 
     @Override
@@ -149,7 +148,6 @@ public class LabelTypeModel implements ILabelTypeModel {
     public void initEdit(LabelType labelType) {
         Validate.notNull(labelType);
         this.labelType = getFromDB(labelType);
-        codeGenerated = configurationDAO.getConfiguration().getGenerateCodeForLabel();
     }
 
     private LabelType getFromDB(LabelType labelType) {
@@ -186,7 +184,7 @@ public class LabelTypeModel implements ILabelTypeModel {
     @Override
     public void addLabel(String value) {
         Label label;
-        if(codeGenerated) {
+        if(labelType.getGenerateCode()) {
             label = Label.create(value);
         }
         else {
@@ -211,16 +209,6 @@ public class LabelTypeModel implements ILabelTypeModel {
             }
         }
         return (count == 1);
-    }
-
-    @Override
-    public boolean isCodeGenerated() {
-        return codeGenerated;
-    }
-
-    @Override
-    public void setCodeGenerated(boolean codeGenerated) {
-        this.codeGenerated = codeGenerated;
     }
 
 }

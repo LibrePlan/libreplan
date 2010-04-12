@@ -34,6 +34,7 @@
 
     <property name="code" access="property" not-null="true" unique="true"/>
     <property name="name" unique="true"/>
+    <property name="generateCode" not-null="true" />
 
     <set name="labels" inverse="false" cascade="all">
         <key column="LABEL_TYPE_ID"/>

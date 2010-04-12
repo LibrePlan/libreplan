@@ -46,6 +46,8 @@ public class LabelType extends IntegrationEntity implements Comparable {
 
     private Set<Label> labels = new HashSet<Label>();
 
+    private Boolean generateCode = false;
+
     // Default constructor, needed by Hibernate
     // At least package visibility, https://www.hibernate.org/116.html#A6
     protected LabelType() {
@@ -70,6 +72,14 @@ public class LabelType extends IntegrationEntity implements Comparable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getGenerateCode() {
+        return generateCode;
+    }
+
+    public void setGenerateCode(Boolean generateCode) {
+        this.generateCode = generateCode;
     }
 
     public Set<Label> getLabels() {
