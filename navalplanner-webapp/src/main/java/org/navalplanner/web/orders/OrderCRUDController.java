@@ -157,12 +157,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     private TemplateFinderPopup templateFinderPopup;
 
     public void createOrderFromTemplate() {
-        showOrderElementFilter();
         templateFinderPopup.openForOrderCreation(createOrderFromTemplateButton,
                 "after_start", new IOnResult<OrderTemplate>() {
 
                     @Override
                     public void found(OrderTemplate template) {
+                        showOrderElementFilter();
                         showCreateButtons(false);
                         orderModel.prepareCreationFrom(template);
                         showEditWindow(_("Create order from Template"));
