@@ -18,20 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.calendars.api;
+package org.navalplanner.business.calendars.daos;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 /**
- * Service for managing {@link BaseCalendar} entities.
+ * DAO for {@link CalendarAvailability}
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface ICalendarService {
+@Repository
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class CalendarAvailabilityDAO extends
+        IntegrationEntityDAO<CalendarAvailability>
+        implements ICalendarAvailabilityDAO {
 
-    BaseCalendarListDTO getBaseCalendars();
-
-    public InstanceConstraintViolationsListDTO addBaseCalendars(
-            BaseCalendarListDTO BaseCalendraListDTO);
 }

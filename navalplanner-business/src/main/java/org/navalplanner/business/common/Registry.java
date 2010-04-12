@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.daos.ICalendarAvailabilityDAO;
 import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
@@ -169,6 +170,9 @@ public class Registry {
     @Autowired
     private IUnitTypeDAO unitTypeDAO;
 
+    @Autowired
+    private ICalendarAvailabilityDAO calendarAvailabilityDAO;
+
     private Registry() {
     }
 
@@ -306,4 +310,7 @@ public class Registry {
         return getInstance().calendarDataDAO;
     }
 
+    public static ICalendarAvailabilityDAO getCalendarAvailabilityDAO() {
+        return getInstance().calendarAvailabilityDAO;
+    }
 }

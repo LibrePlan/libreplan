@@ -48,11 +48,30 @@ public class CalendarException extends IntegrationEntity {
         return create(new CalendarException(date, hours, type));
     }
 
+    public static CalendarException create(String code, LocalDate date,
+            Integer hours, CalendarExceptionType type) {
+        return create(new CalendarException(date, hours, type), code);
+    }
+
+    public void updateUnvalidated(LocalDate date, Integer hours,
+            CalendarExceptionType type) {
+        if (date != null) {
+            this.date = date;
+        }
+
+        if (hours != null) {
+            this.hours = hours;
+        }
+
+        if (type != null) {
+            this.type = type;
+        }
+    }
+
     private LocalDate date;
 
     private Integer hours;
 
-    @NotNull
     private CalendarExceptionType type;
 
     /**
@@ -77,6 +96,7 @@ public class CalendarException extends IntegrationEntity {
         return hours != null ? hours : 0;
     }
 
+    @NotNull
     public CalendarExceptionType getType() {
         return type;
     }

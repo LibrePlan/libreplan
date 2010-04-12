@@ -712,31 +712,19 @@ public abstract class Resource extends IntegrationEntity {
         return calendar;
     }
 
-    public void setResourceCalendar(String calendarName)
+    public void setResourceCalendar(String calendarCode)
         throws InstanceNotFoundException, MultipleInstancesException {
 
         ResourceCalendar calendar;
 
-        if (StringUtils.isBlank(calendarName)) {
-
+        if (StringUtils.isBlank(calendarCode)) {
             calendar = Registry.getConfigurationDAO().getConfiguration().
                 getDefaultCalendar().newDerivedResourceCalendar();
 
         } else {
-
-            List<BaseCalendar> baseCalendars = Registry.getBaseCalendarDAO().
-                findByName(calendarName);
-
-            if (baseCalendars.isEmpty()) {
-                throw new InstanceNotFoundException(calendarName,
-                    BaseCalendar.class.getName());
-            } if (baseCalendars.size() > 1) {
-                throw new MultipleInstancesException(calendarName,
-                    BaseCalendar.class.getName());
-            } else {
-                calendar = baseCalendars.get(0).newDerivedResourceCalendar();
-            }
-
+            BaseCalendar baseCalendar = Registry.getBaseCalendarDAO()
+                    .findByCode(calendarCode);
+            calendar = baseCalendar.newDerivedResourceCalendar();
         }
 
         setCalendar(calendar);

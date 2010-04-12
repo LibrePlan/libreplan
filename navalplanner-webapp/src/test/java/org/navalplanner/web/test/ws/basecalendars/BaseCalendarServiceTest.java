@@ -1,0 +1,348 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.navalplanner.web.test.ws.basecalendars;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.ws.common.Util.getUniqueName;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.hibernate.SessionFactory;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
+import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.IConfigurationBootstrap;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.ws.calendarexceptiontypes.api.ICalendarExceptionTypeService;
+import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
+import org.navalplanner.ws.calendars.api.BaseCalendarListDTO;
+import org.navalplanner.ws.calendars.api.CalendarDataDTO;
+import org.navalplanner.ws.calendars.api.CalendarExceptionDTO;
+import org.navalplanner.ws.calendars.api.HoursPerDayDTO;
+import org.navalplanner.ws.calendars.api.ICalendarService;
+import org.navalplanner.ws.calendars.impl.CalendarConverter;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Tests for <code>ICalendarService</code>.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
+@Transactional
+
+public class BaseCalendarServiceTest {
+
+    @Autowired
+    private ICalendarService calendarService;
+
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private ICalendarExceptionDAO calendarExceptionDAO;
+
+    @Autowired
+    private ICalendarExceptionTypeService calendarExceptionTypeService;
+
+    @Autowired
+    private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ICalendarDataDAO calendarDataDAO;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IConfigurationBootstrap configurationBootstrap;
+
+    private final String typeCode = "TypeCode_A";
+
+    @Before
+    public void loadConfiguration() {
+
+        IOnTransaction<Void> load = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                configurationBootstrap.loadRequiredData();
+                return null;
+            }
+        };
+
+        transactionService.runOnAnotherTransaction(load);
+
+    }
+
+    @Test
+    @Rollback(false)
+    public void givenCalendarExceptionTypeStored() {
+        CalendarExceptionType calendarExceptionType = CalendarExceptionType
+                .create("name", "color", false);
+        calendarExceptionType.setCode(typeCode);
+
+        calendarExceptionTypeDAO.save(calendarExceptionType);
+        calendarExceptionTypeDAO.flush();
+        sessionFactory.getCurrentSession().evict(calendarExceptionType);
+        calendarExceptionType.dontPoseAsTransientObjectAnymore();
+
+    }
+
+    private Date getValidDate(int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        calendar.add(calendar.MONTH, 1);
+        calendar.add(calendar.DAY_OF_MONTH, day);
+
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        calendar.set(year, month, date);
+        return calendar.getTime();
+    }
+
+    private Date getInvalidDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(calendar.MONTH) - 1;
+        int year = calendar.get(Calendar.YEAR);
+
+        calendar.set(year, month, date);
+        return calendar.getTime();
+    }
+
+    private XMLGregorianCalendar toXml(Date date) {
+        try {
+            return CalendarConverter.toXMLGregorianCalendar(date);
+        } catch (DatatypeConfigurationException e) {
+            return null;
+        }
+    }
+
+    @Test
+    public void testAddValidBaseCalendar() {
+
+        /* Build valid base calendar "bc1" (5 constraint violations). */
+        /* Build a calendar exception */
+        CalendarExceptionDTO exceptionDTO_1 = new CalendarExceptionDTO(
+                getUniqueName(), toXml(getValidDate(0)), new Integer(7),
+                typeCode);
+
+        CalendarExceptionDTO exceptionDTO_2 = new CalendarExceptionDTO(
+                getUniqueName(), toXml(getValidDate(1)), new Integer(7),
+                typeCode);
+
+        List<CalendarExceptionDTO> calendarExceptions = new ArrayList<CalendarExceptionDTO>();
+        calendarExceptions.add(exceptionDTO_1);
+        calendarExceptions.add(exceptionDTO_2);
+
+        /* Build a calendar data */
+        HoursPerDayDTO hoursPerDayDTO_1 = new HoursPerDayDTO(CalendarData.Days.FRIDAY.name(), new Integer(4));
+        HoursPerDayDTO hoursPerDayDTO_2 = new HoursPerDayDTO(CalendarData.Days.TUESDAY.name(), new Integer(4));
+        List<HoursPerDayDTO> listHoursPerDayDTO = new ArrayList<HoursPerDayDTO>();
+        listHoursPerDayDTO.add(hoursPerDayDTO_1);
+        listHoursPerDayDTO.add(hoursPerDayDTO_2);
+
+        /* missing code,date, hoursPerDays and parent */
+        CalendarDataDTO dataDTO_1 = new CalendarDataDTO(null, null, null);
+        CalendarDataDTO dataDTO_2 = new CalendarDataDTO("codeData",
+                listHoursPerDayDTO, toXml(getValidDate(4)),
+                getDefaultCalendar()
+                        .getCode());
+
+        List<CalendarDataDTO> calendarDatas = new ArrayList<CalendarDataDTO>();
+        calendarDatas.add(dataDTO_1);
+        calendarDatas.add(dataDTO_2);
+
+        /* Build Base Calendar list. */
+        BaseCalendarDTO bc1 = new BaseCalendarDTO(getUniqueName(),
+                getUniqueName(), null, calendarExceptions,
+                new ArrayList<CalendarDataDTO>());
+
+        String codeBaseCalendar = getUniqueName();
+        BaseCalendarDTO bc2 = new BaseCalendarDTO(codeBaseCalendar,
+                getUniqueName(), null, null, calendarDatas);
+
+        BaseCalendarListDTO baseCalendars = createBaseCalendarListDTO(bc1, bc2);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = calendarService
+                .addBaseCalendars(baseCalendars).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+
+        try{
+            BaseCalendar baseCalendar = baseCalendarDAO
+                    .findByCode(codeBaseCalendar);
+            assertTrue(baseCalendar.getExceptions().isEmpty());
+            assertTrue(baseCalendar.getCalendarDataVersions().size() == 2);
+
+            CalendarData data = baseCalendar.getCalendarDataByCode("codeData");
+            assertTrue(data.getHours(CalendarData.Days.FRIDAY) == 4);
+            assertTrue(data.getHours(CalendarData.Days.TUESDAY) == 4);
+        }catch(InstanceNotFoundException e){
+            fail();
+        } catch (NullPointerException o) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testAddInvalidBaseCalendar() throws InstanceNotFoundException {
+        /* Build valid base calendar "bc1" (5 constraint violations). */
+        /* Build two calendar exception with the same date */
+        CalendarExceptionDTO exceptionDTO_1 = new CalendarExceptionDTO(
+                getUniqueName(), toXml(getValidDate(0)), new Integer(7),
+                typeCode);
+
+        CalendarExceptionDTO exceptionDTO_2 = new CalendarExceptionDTO(
+                getUniqueName(), toXml(getValidDate(0)), new Integer(7),
+                typeCode);
+
+        /* Build two calendar exception with the past date */
+        CalendarExceptionDTO exceptionDTO_3 = new CalendarExceptionDTO(
+                getUniqueName(), toXml(getInvalidDate()), new Integer(7),
+                typeCode);
+
+        /* Build two calendar exception with the invalid type */
+        CalendarExceptionDTO exceptionDTO_4 = new CalendarExceptionDTO(
+                getUniqueName(), toXml(getInvalidDate()), new Integer(7),
+                "InvalidType");
+
+        List<CalendarExceptionDTO> calendarExceptions = new ArrayList<CalendarExceptionDTO>();
+        calendarExceptions.add(exceptionDTO_1);
+        calendarExceptions.add(exceptionDTO_2);
+        calendarExceptions.add(exceptionDTO_3);
+        calendarExceptions.add(exceptionDTO_4);
+
+        /* Build Base Calendar list. */
+        BaseCalendarDTO bc1 = new BaseCalendarDTO(getUniqueName(),
+                getUniqueName(), null, calendarExceptions,
+                new ArrayList<CalendarDataDTO>());
+
+        BaseCalendarListDTO baseCalendars = createBaseCalendarListDTO(bc1);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = calendarService
+                .addBaseCalendars(baseCalendars).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+
+    }
+
+    @Test
+    public void testAddInvalidCalendarData() {
+        /* Build a calendar data */
+        HoursPerDayDTO hoursPerDayDTO_1 = new HoursPerDayDTO("XXX",
+                new Integer(4));
+        List<HoursPerDayDTO> listHoursPerDayDTO = new ArrayList<HoursPerDayDTO>();
+        listHoursPerDayDTO.add(hoursPerDayDTO_1);
+
+        /* missing code,date, hoursPerDays and parent */
+        CalendarDataDTO dataDTO_2 = new CalendarDataDTO("codeData_2",
+                listHoursPerDayDTO, toXml(getInvalidDate()),
+                getDefaultCalendar()
+                        .getCode());
+
+        List<CalendarDataDTO> calendarDatas = new ArrayList<CalendarDataDTO>();
+        calendarDatas.add(dataDTO_2);
+
+        String codeBaseCalendar = getUniqueName();
+        BaseCalendarDTO bc2 = new BaseCalendarDTO(codeBaseCalendar,
+                getUniqueName(), null, null, calendarDatas);
+
+        BaseCalendarListDTO baseCalendars = createBaseCalendarListDTO(bc2);
+
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = calendarService
+                .addBaseCalendars(baseCalendars).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
+    private BaseCalendarListDTO createBaseCalendarListDTO(
+            BaseCalendarDTO... calendarDTOs) {
+
+        List<BaseCalendarDTO> baseCalendarList = new ArrayList<BaseCalendarDTO>();
+
+        for (BaseCalendarDTO c : calendarDTOs) {
+            baseCalendarList.add(c);
+        }
+
+        return new BaseCalendarListDTO(baseCalendarList);
+
+    }
+
+    private BaseCalendar getDefaultCalendar() {
+
+        IOnTransaction<BaseCalendar> find = new IOnTransaction<BaseCalendar>() {
+
+            @Override
+            public BaseCalendar execute() {
+                BaseCalendar defaultCalendar = configurationDAO
+                        .getConfiguration().getDefaultCalendar();
+                defaultCalendar.getCode();
+                return defaultCalendar;
+            }
+        };
+
+        return transactionService.runOnAnotherTransaction(find);
+
+    }
+
+}

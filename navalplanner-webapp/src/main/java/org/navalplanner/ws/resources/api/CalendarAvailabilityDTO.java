@@ -18,47 +18,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.calendars.api;
+package org.navalplanner.ws.resources.api;
+
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
 /**
- * DTO for {@link CalendarException} entity.
- *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * DTO for {@link CalendarAvailability} entity.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class CalendarExceptionDTO extends IntegrationEntityDTO {
+public class CalendarAvailabilityDTO extends IntegrationEntityDTO {
 
-    public final static String ENTITY_TYPE = "calendar-exception";
-
-    @XmlAttribute
-    public XMLGregorianCalendar date;
+    public final static String ENTITY_TYPE = "calendar-availability";
 
     @XmlAttribute
-    public Integer hours;
+    public Date startDate;
 
-    @XmlAttribute(name = "calendar-exception-type-code")
-    public String calendarExceptionTypeCode;
+    @XmlAttribute
+    public Date endDate;
 
-    public CalendarExceptionDTO() {
+    public CalendarAvailabilityDTO() {
     }
 
-    public CalendarExceptionDTO(String code, XMLGregorianCalendar date,
-            Integer hours,
-            String calendarExceptionTypeCode) {
+    public CalendarAvailabilityDTO(String code, Date startDate, Date endDate) {
         super(code);
-        this.date = date;
-        this.hours = hours;
-        this.calendarExceptionTypeCode = calendarExceptionTypeCode;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    public CalendarExceptionDTO(XMLGregorianCalendar date, Integer hours,
-            String calendarExceptionTypeCode) {
-        this(generateCode(), date, hours, calendarExceptionTypeCode);
+    public CalendarAvailabilityDTO(Date startDate, Date endDate) {
+        this(generateCode(), startDate, endDate);
     }
 
     @Override

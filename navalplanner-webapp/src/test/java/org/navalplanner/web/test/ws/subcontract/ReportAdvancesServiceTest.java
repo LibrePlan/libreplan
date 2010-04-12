@@ -47,6 +47,8 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -76,6 +78,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ReportAdvancesServiceTest {
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
@@ -84,8 +89,18 @@ public class ReportAdvancesServiceTest {
 
     @Before
     public void loadRequiredaData() {
-        defaultAdvanceTypesBootstrapListener.loadRequiredData();
-        configurationBootstrap.loadRequiredData();
+
+        IOnTransaction<Void> load = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                defaultAdvanceTypesBootstrapListener.loadRequiredData();
+                configurationBootstrap.loadRequiredData();
+                return null;
+            }
+        };
+
+        transactionService.runOnAnotherTransaction(load);
     }
 
     @Autowired

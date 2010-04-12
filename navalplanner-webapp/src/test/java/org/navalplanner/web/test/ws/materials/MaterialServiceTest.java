@@ -40,6 +40,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.bootstrap.UnitTypeBootstrap;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
@@ -73,6 +75,9 @@ public class MaterialServiceTest {
     private SessionFactory sessionFactory;
 
     @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
     private IMaterialService materialService;
 
     @Autowired
@@ -94,6 +99,22 @@ public class MaterialServiceTest {
 
     private String unitTypeCodeB = "unitTypeCodeB";
 
+    @Before
+    public void loadRequiredaData() {
+        IOnTransaction<Void> load = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                materialCategoryBootstrap.loadRequiredData();
+                unitTypeBootstrap.loadRequiredData();
+                return null;
+            }
+        };
+
+        transactionService.runOnAnotherTransaction(load);
+
+    }
+
     @Test
     @Rollback(false)
     public void CreateUnitType() {
@@ -104,12 +125,6 @@ public class MaterialServiceTest {
         unitTypeDAO.flush();
         sessionFactory.getCurrentSession().evict(entityA);
         sessionFactory.getCurrentSession().evict(entityB);
-    }
-
-    @Before
-    public void loadRequiredaData() {
-        materialCategoryBootstrap.loadRequiredData();
-        unitTypeBootstrap.loadRequiredData();
     }
 
     @Test

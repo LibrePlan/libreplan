@@ -18,20 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.ws.calendars.api;
+package org.navalplanner.business.calendars.daos;
 
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 
 /**
- * Service for managing {@link BaseCalendar} entities.
+ * Contract for {@link CalendarAvailabilityDAO}
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface ICalendarService {
+public interface ICalendarAvailabilityDAO extends
+        IIntegrationEntityDAO<CalendarAvailability> {
 
-    BaseCalendarListDTO getBaseCalendars();
-
-    public InstanceConstraintViolationsListDTO addBaseCalendars(
-            BaseCalendarListDTO BaseCalendraListDTO);
 }

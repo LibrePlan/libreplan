@@ -25,7 +25,9 @@ import java.util.Date;
 
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.calendars.daos.ICalendarAvailabilityDAO;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 
 /**
  * Stores information about activating periods, that define the availability of
@@ -33,7 +35,7 @@ import org.navalplanner.business.common.BaseEntity;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CalendarAvailability extends BaseEntity {
+public class CalendarAvailability extends IntegrationEntity {
 
     public static CalendarAvailability craete() {
         return create(new CalendarAvailability(new LocalDate(), null));
@@ -116,6 +118,11 @@ public class CalendarAvailability extends BaseEntity {
         }
 
         return true;
+    }
+
+    @Override
+    protected ICalendarAvailabilityDAO getIntegrationEntityDAO() {
+        return Registry.getCalendarAvailabilityDAO();
     }
 
 }
