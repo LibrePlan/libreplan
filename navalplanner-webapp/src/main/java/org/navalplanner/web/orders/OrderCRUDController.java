@@ -631,7 +631,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             if (order.isScheduled()) {
                 planningControllerEntryPoints.goToScheduleOf(order);
-            }else{
+                showCreateButtons(false);
+            } else {
                 try {
                     Messagebox.show(_("The order has no scheduled elements"),
                             _("Information"), Messagebox.OK, Messagebox.INFORMATION);
