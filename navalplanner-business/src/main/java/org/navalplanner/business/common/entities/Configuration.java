@@ -41,13 +41,13 @@ public class Configuration extends BaseEntity {
 
     private String companyCode;
 
-    private Boolean generateCodeForCriterion;
+    private Boolean generateCodeForCriterion = false;
 
-    private Boolean generateCodeForLabel;
+    private Boolean generateCodeForLabel = false;
 
-    private Boolean generateCodeForWorkReport;
+    private Boolean generateCodeForWorkReport = false;
 
-    private Boolean generateCodeForResources;
+    private Boolean generateCodeForResources = false;
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
