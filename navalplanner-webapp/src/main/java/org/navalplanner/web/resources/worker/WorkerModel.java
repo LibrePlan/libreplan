@@ -168,6 +168,10 @@ public class WorkerModel implements IWorkerModel {
         } else {
             worker = Worker.create();
         }
+        worker.setGenerateCode(configurationDAO.getConfiguration().getGenerateCodeForResources());
+        if(!worker.getGenerateCode()) {
+            worker.setCode("");
+        }
         localizationsAssigner = new MultipleCriterionActiveAssigner(
                 criterionDAO, worker,
                 PredefinedCriterionTypes.LOCATION_GROUP);

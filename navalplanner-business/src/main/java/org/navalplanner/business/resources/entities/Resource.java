@@ -96,6 +96,8 @@ public abstract class Resource extends IntegrationEntity {
 
     private Boolean limitingResource = Boolean.FALSE;
 
+    private Boolean generateCode = false;
+
     private void clearCachedData() {
         assignmentsByDayCached = null;
     }
@@ -1056,6 +1058,14 @@ public abstract class Resource extends IntegrationEntity {
 
     public String getLimitingResourceAsString() {
         return (Boolean.TRUE.equals(isLimitingResource())) ? _("yes") : _("no");
+    }
+
+    public void setGenerateCode(Boolean generateCode) {
+        this.generateCode = generateCode;
+    }
+
+    public Boolean getGenerateCode() {
+        return generateCode;
     }
 
 }
