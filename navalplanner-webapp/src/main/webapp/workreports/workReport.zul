@@ -128,8 +128,14 @@
                                     </row>
                                     <row>
                                         <label value="${i18n:_('Code')}:" />
-                                        <textbox value="@{controller.workReport.code}" width="500px"
-                                            constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                        <hbox>
+                                            <textbox width="350px" value="@{controller.workReport.code}"
+                                                constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                                disabled="@{controller.workReport.generateCode}" />
+                                            <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                                onCheck="controller.onCheckGenerateCode(event)"
+                                                checked="@{controller.workReport.generateCode}" />
+                                        </hbox>
                                     </row>
                                 </rows>
                             </grid>

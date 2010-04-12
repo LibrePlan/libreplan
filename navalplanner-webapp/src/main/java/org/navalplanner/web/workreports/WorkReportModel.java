@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -79,6 +80,9 @@ public class WorkReportModel implements IWorkReportModel {
     @Autowired
     private ILabelDAO labelDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     private WorkReportType workReportType;
 
     private WorkReport workReport;
@@ -113,6 +117,10 @@ public class WorkReportModel implements IWorkReportModel {
         editing = false;
         forceLoadWorkReportTypeFromDB(workReportType);
         workReport = WorkReport.create(this.workReportType);
+        workReport.setGenerateCode(configurationDAO.getConfiguration().getGenerateCodeForWorkReport());
+        if(!workReport.getGenerateCode()) {
+            workReport.setCode("");
+        }
         loadMaps();
     }
 
@@ -334,6 +342,9 @@ public class WorkReportModel implements IWorkReportModel {
     public WorkReportLine addWorkReportLine() {
         if (workReport != null) {
             WorkReportLine workReportLine = WorkReportLine.create(workReport);
+            if(!workReport.getGenerateCode()) {
+                workReportLine.setCode("");
+            }
             workReport.addWorkReportLine(workReportLine);
             return workReportLine;
         }
