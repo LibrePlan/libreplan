@@ -926,3 +926,7 @@ body .perspectives-column {
     overflow: visible;
 }
 
+.taskdetailsContainer {
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
