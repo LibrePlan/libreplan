@@ -23,6 +23,7 @@ package org.navalplanner.web.costcategories;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
@@ -54,4 +55,7 @@ public interface ICostCategoryModel {
     void addHourCost();
 
     void removeHourCost(HourCost hourCost);
+
+    void confirmRemoveCostCategory(CostCategory category)
+        throws InstanceNotFoundException;
 }

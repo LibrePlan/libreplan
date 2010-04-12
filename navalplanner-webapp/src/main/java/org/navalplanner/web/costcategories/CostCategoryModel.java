@@ -128,4 +128,11 @@ public class CostCategoryModel implements ICostCategoryModel {
     public void removeHourCost(HourCost hourCost) {
         costCategory.removeHourCost(hourCost);
     }
+
+    @Override
+    @Transactional
+    public void confirmRemoveCostCategory(CostCategory category)
+            throws InstanceNotFoundException {
+        costCategoryDAO.remove(category.getId());
+    }
 }

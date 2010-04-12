@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
@@ -393,6 +394,20 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         }
     }
 
+    public void confirmRemove(CostCategory category) {
+        try {
+            int status = Messagebox.show(_("Confirm deleting this cost category. Are you sure?"), _("Delete"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                removeCostCategory(category);
+            }
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, e.getMessage());
+            LOG.error(_("Error on showing removing element: ", category.getId()), e);
+        }
+    }
+
     public HourCostListRenderer getRenderer() {
         return hourCostListRenderer;
     }
@@ -410,6 +425,17 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     public void removeHourCost(HourCost hourCost) {
         costCategoryModel.removeHourCost(hourCost);
         Util.reloadBindings(listHourCosts);
+    }
+
+    public void removeCostCategory(CostCategory category) {
+        try {
+            costCategoryModel.confirmRemoveCostCategory(category);
+        }
+        catch(InstanceNotFoundException e) {
+            messagesForUser.showMessage(
+                    Level.ERROR, _("The cost category had already been removed."));
+        }
+        Util.reloadBindings(listWindow.getFellowIfAny("listing"));
     }
 
     /**
