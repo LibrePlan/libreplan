@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -56,6 +57,8 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.api.Hbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -83,15 +86,39 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
     private Grid listHourCosts;
 
+    private Grid listCostCategories;
+
     private HourCostListRenderer hourCostListRenderer = new HourCostListRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         listHourCosts = (Grid) createWindow.getFellowIfAny("listHourCosts");
+        listCostCategories = (Grid) listWindow.getFellowIfAny("listing");
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
+
+        // Renders grid and disables delete button in case it cannot be removed
+        listCostCategories.addEventListener("onInitRender", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                listCostCategories.renderAll();
+
+                final Rows rows = listCostCategories.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext(); ) {
+                    final Row row = (Row) i.next();
+                    final CostCategory category = (CostCategory) row.getValue();
+                    Button btnDelete = (Button) ((Hbox)row.getChildren().get(2)).getChildren().get(1);
+                    if (!canRemoveCostCategory(category)) {
+                        btnDelete.setDisabled(true);
+                        btnDelete.setImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setHoverImage("/common/img/ico_borrar_out.png");
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -436,7 +463,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 messagesForUser.showMessage(
                         Level.ERROR, _("The cost category had already been removed."));
             }
-            Util.reloadBindings(listWindow.getFellowIfAny("listing"));
+            Util.reloadBindings(listCostCategories);
         }
         else {
             messagesForUser.showMessage(Level.ERROR,
