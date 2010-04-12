@@ -130,8 +130,13 @@ public class MachineModel implements IMachineModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void initCreate() {
         machine = Machine.create();
+        machine.setGenerateCode(configurationDAO.getConfiguration().getGenerateCodeForResources());
+        if(!machine.getGenerateCode()) {
+            machine.setCode("");
+        }
     }
 
     @Override
