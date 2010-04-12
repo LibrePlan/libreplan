@@ -428,14 +428,24 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     }
 
     public void removeCostCategory(CostCategory category) {
-        try {
-            costCategoryModel.confirmRemoveCostCategory(category);
+        if(canRemoveCostCategory(category)) {
+            try {
+                costCategoryModel.confirmRemoveCostCategory(category);
+            }
+            catch(InstanceNotFoundException e) {
+                messagesForUser.showMessage(
+                        Level.ERROR, _("The cost category had already been removed."));
+            }
+            Util.reloadBindings(listWindow.getFellowIfAny("listing"));
         }
-        catch(InstanceNotFoundException e) {
-            messagesForUser.showMessage(
-                    Level.ERROR, _("The cost category had already been removed."));
+        else {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("Cannot delete that cost category because there are resources assigned to it."));
         }
-        Util.reloadBindings(listWindow.getFellowIfAny("listing"));
+    }
+
+    public boolean canRemoveCostCategory(CostCategory category) {
+        return costCategoryModel.canRemoveCostCategory(category);
     }
 
     /**

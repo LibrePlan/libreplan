@@ -58,4 +58,6 @@ public interface ICostCategoryModel {
 
     void confirmRemoveCostCategory(CostCategory category)
         throws InstanceNotFoundException;
+
+    boolean canRemoveCostCategory(CostCategory category);
 }
