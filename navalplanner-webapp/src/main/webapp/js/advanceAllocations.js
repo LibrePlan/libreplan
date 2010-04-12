@@ -34,5 +34,7 @@ ADVANCE_ALLOCATIONS.listenToScroll = function() {
     };
 	scrollableArea_.onscroll = onScroll;
 
-	innerScrollableArea_.style["width"] = timetracker_.clientWidth + "px";
+	if (timetracker_ != undefined ) {
+		innerScrollableArea_.style["width"] = timetracker_.clientWidth + "px";
+	}
 };
