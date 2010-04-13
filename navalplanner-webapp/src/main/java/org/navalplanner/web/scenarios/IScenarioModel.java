@@ -37,6 +37,10 @@ public interface IScenarioModel {
      */
     List<Scenario> getScenarios();
 
+    List<Scenario> getDerivedScenarios(Scenario scenario);
+
+    void remove(Scenario scenario);
+
     /*
      * Initial conversation steps
      */

@@ -28,11 +28,18 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.User;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -63,6 +70,15 @@ public class ScenarioModel implements IScenarioModel {
     @Autowired
     private IOrderDAO orderDAO;
 
+    @Autowired
+    private IUserDAO userDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
+
     /*
      * Non conversational steps
      */
@@ -70,6 +86,56 @@ public class ScenarioModel implements IScenarioModel {
     @Transactional(readOnly = true)
     public List<Scenario> getScenarios() {
         return scenarioDAO.getAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Scenario> getDerivedScenarios(Scenario scenario) {
+        return scenarioDAO.getDerivedScenarios(scenario);
+    }
+
+    @Override
+    @Transactional
+    public void remove(Scenario scenario) {
+        forceLoad(scenario);
+
+        List<User> users = userDAO.findByLastConnectedScenario(scenario);
+        for (User user : users) {
+            user.setLastConnectedScenario(PredefinedScenarios.MASTER
+                    .getScenario());
+            userDAO.save(user);
+        }
+
+        for (Order order : scenario.getOrders().keySet()) {
+            if (order.getScenarios().size() == 1) {
+                if (!orderElementDAO
+                        .isAlreadyInUseThisOrAnyOfItsChildren(order)) {
+                    try {
+                        orderDAO.remove(order.getId());
+                    } catch (InstanceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                order.removeOrderVersionForScenario(scenario);
+                orderDAO.save(order);
+            }
+        }
+
+        for (OrderVersion orderVersion : orderVersionDAO
+                .getOrderVersionByOwnerScenario(scenario)) {
+            try {
+                orderVersionDAO.remove(orderVersion.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        try {
+            scenarioDAO.remove(scenario.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /*

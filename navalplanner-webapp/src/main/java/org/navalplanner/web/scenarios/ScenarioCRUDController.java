@@ -23,11 +23,13 @@ package org.navalplanner.web.scenarios;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.ITemplateModel;
@@ -152,6 +154,10 @@ public class ScenarioCRUDController extends GenericForwardComposer {
             final Scenario scenario = (Scenario) simpleTreeNode.getData();
             item.setValue(data);
 
+            Scenario currentScenario = scenarioManager.getCurrent();
+            boolean isCurrentScenario = currentScenario.getId().equals(
+                    scenario.getId());
+
             Treerow treerow = new Treerow();
 
             Treecell nameTreecell = new Treecell();
@@ -178,13 +184,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
             });
             operationsTreecell.appendChild(createDerivedButton);
 
-            Button editButton = new Button();
-            editButton.setTooltiptext(_("Edit"));
-            editButton.setSclass("icono");
-            editButton.setImage("/common/img/ico_editar1.png");
-            editButton.setHoverImage("/common/img/ico_editar.png");
-
-            editButton.addEventListener(Events.ON_CLICK, new EventListener() {
+            Button editButton = Util.createEditButton(new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
@@ -193,6 +193,26 @@ public class ScenarioCRUDController extends GenericForwardComposer {
 
             });
             operationsTreecell.appendChild(editButton);
+
+            Button removeButton = Util.createRemoveButton(new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    scenarioModel.remove(scenario);
+                    Util.reloadBindings(listWindow);
+                }
+
+            });
+
+            boolean isMainScenario = PredefinedScenarios.MASTER.getScenario()
+                    .getId().equals(scenario.getId());
+            List<Scenario> derivedScenarios = scenarioModel
+                    .getDerivedScenarios(scenario);
+            if (isCurrentScenario || isMainScenario
+                    || !derivedScenarios.isEmpty()) {
+                removeButton.setDisabled(true);
+            }
+            operationsTreecell.appendChild(removeButton);
 
             Button connectButton = new Button(_("Connect"));
             connectButton.addEventListener(Events.ON_CLICK,
@@ -211,8 +231,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
                         }
 
                     });
-            Scenario currentScenario = scenarioManager.getCurrent();
-            if (currentScenario.getId().equals(scenario.getId())) {
+            if (isCurrentScenario) {
                 connectButton.setDisabled(true);
             }
             operationsTreecell.appendChild(connectButton);

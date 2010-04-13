@@ -20,8 +20,14 @@
 
 package org.navalplanner.business.scenarios.daos;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -35,5 +41,17 @@ import org.springframework.stereotype.Repository;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class OrderVersionDAO extends GenericDAOHibernate<OrderVersion, Long>
         implements IOrderVersionDAO {
+
+    @Override
+    public List<OrderVersion> getOrderVersionByOwnerScenario(
+            Scenario ownerScenario) {
+        if (ownerScenario == null) {
+            return Collections.emptyList();
+        }
+
+        Criteria c = getSession().createCriteria(OrderVersion.class).add(
+                Restrictions.eq("ownerScenario", ownerScenario));
+        return (List<OrderVersion>) c.list();
+    }
 
 }

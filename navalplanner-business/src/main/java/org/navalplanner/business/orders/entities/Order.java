@@ -421,4 +421,8 @@ public class Order extends OrderLineGroup {
         scenarios.put(currentScenario, orderVersion);
     }
 
+    public void removeOrderVersionForScenario(Scenario scenario) {
+        scenarios.remove(scenario);
+    }
+
 }

@@ -20,8 +20,11 @@
 
 package org.navalplanner.business.scenarios.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * Contract for {@link OrderVersionDAO}.
@@ -29,5 +32,7 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public interface IOrderVersionDAO extends IGenericDAO<OrderVersion, Long> {
+
+    List<OrderVersion> getOrderVersionByOwnerScenario(Scenario ownerScenario);
 
 }
