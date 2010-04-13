@@ -27,13 +27,18 @@ import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.ITemplateModel;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.security.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -54,7 +59,14 @@ import org.zkoss.zul.api.Window;
  */
 public class ScenarioCRUDController extends GenericForwardComposer {
 
+    @Autowired
     private IScenarioModel scenarioModel;
+
+    @Autowired
+    private ITemplateModel templateModel;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private Window listWindow;
 
@@ -181,6 +193,29 @@ public class ScenarioCRUDController extends GenericForwardComposer {
 
             });
             operationsTreecell.appendChild(editButton);
+
+            Button connectButton = new Button(_("Connect"));
+            connectButton.addEventListener(Events.ON_CLICK,
+                    new EventListener() {
+
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            connectTo(scenario);
+                        }
+
+                        private void connectTo(Scenario scenario) {
+                            templateModel.setScenario(SecurityUtils
+                                    .getSessionUserLoginName(), scenario);
+
+                            Executions.sendRedirect("/scenarios/scenarios.zul");
+                        }
+
+                    });
+            Scenario currentScenario = scenarioManager.getCurrent();
+            if (currentScenario.getId().equals(scenario.getId())) {
+                connectButton.setDisabled(true);
+            }
+            operationsTreecell.appendChild(connectButton);
 
             treerow.appendChild(operationsTreecell);
 

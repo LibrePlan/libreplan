@@ -27,9 +27,11 @@ import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,6 +73,10 @@ public class TemplateModel implements ITemplateModel {
             User user = userDAO.findByLoginName(loginName);
             user.setLastConnectedScenario(scenario);
             userDAO.save(user);
+
+            CustomUser customUser = (CustomUser) SecurityContextHolder
+                    .getContext().getAuthentication().getPrincipal();
+            customUser.setScenario(scenario);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

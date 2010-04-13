@@ -27,11 +27,9 @@ import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.security.SecurityUtils;
-import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -85,10 +83,6 @@ public class TemplateController extends GenericForwardComposer {
 
         templateModel.setScenario(SecurityUtils.getSessionUserLoginName(),
                 scenario);
-
-        CustomUser customUser = (CustomUser) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-        customUser.setScenario(scenario);
 
         window.setVisible(false);
         Executions.sendRedirect("/");
