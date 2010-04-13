@@ -77,8 +77,9 @@ public class Scenario extends BaseEntity {
         this.predecessor = predecessor;
     }
 
-    public void addOrder(Order order) {
+    public OrderVersion addOrder(Order order) {
         addOrder(order, OrderVersion.createInitialVersion(this));
+        return orders.get(order);
     }
 
     public void addOrder(Order order, OrderVersion orderVersion) {
