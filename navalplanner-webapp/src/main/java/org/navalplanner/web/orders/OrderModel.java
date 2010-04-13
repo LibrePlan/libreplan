@@ -371,10 +371,8 @@ public class OrderModel implements IOrderModel {
 
     private void addOrderToCurrentScenario(Order order) {
         currentScenario = scenarioManager.getCurrent();
-        currentScenario.addOrder(order);
-
-        OrderVersion orderVersion = currentScenario.getOrderVersion(order);
-
+        OrderVersion orderVersion = currentScenario.addOrder(order);
+        order.setVersionForScenario(currentScenario, orderVersion);
         derivedScenarios = scenarioDAO.getDerivedScenarios(currentScenario);
         for (Scenario scenario : derivedScenarios) {
             scenario.addOrder(order, orderVersion);
@@ -458,13 +456,10 @@ public class OrderModel implements IOrderModel {
         synchronizeWithSchedule(order);
 
         order.dontPoseAsTransientObjectAnymore();
-        saveCurrentScenario();
+        saveDerivedScenarios();
     }
 
-    private void saveCurrentScenario() {
-        if (currentScenario != null) {
-            scenarioDAO.save(currentScenario);
-        }
+    private void saveDerivedScenarios() {
         if (derivedScenarios != null) {
             for (Scenario scenario : derivedScenarios) {
                 scenarioDAO.save(scenario);

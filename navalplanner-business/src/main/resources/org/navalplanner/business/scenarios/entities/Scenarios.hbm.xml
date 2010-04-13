@@ -21,7 +21,7 @@
             <many-to-many column="ORDER_VERSION_ID" class="OrderVersion"/>
         </map>
 
-        <many-to-one name="predecessor" cascade="all" class="Scenario" />
+        <many-to-one name="predecessor" class="Scenario" />
 
     </class>
 

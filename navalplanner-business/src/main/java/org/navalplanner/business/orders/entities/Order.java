@@ -416,4 +416,9 @@ public class Order extends OrderLineGroup {
         return true;
     }
 
+    public void setVersionForScenario(Scenario currentScenario,
+            OrderVersion orderVersion) {
+        scenarios.put(currentScenario, orderVersion);
+    }
+
 }
