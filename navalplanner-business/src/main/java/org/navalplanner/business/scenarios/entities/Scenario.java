@@ -168,4 +168,8 @@ public class Scenario extends BaseEntity {
         orders.put(order, newOrderVersion);
     }
 
+    public boolean contains(Order each) {
+        return orders.containsKey(each);
+    }
+
 }
