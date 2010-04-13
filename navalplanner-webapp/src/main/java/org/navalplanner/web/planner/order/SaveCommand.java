@@ -296,13 +296,8 @@ public class SaveCommand implements ISaveCommand {
             throw new RuntimeException(
                     "Order version must never be null for an order in any scenario");
         }
-
-        if (currentScenario.getId().equals(
-                orderVersion.getOwnerScenario().getId())) {
-            return true;
-        }
-
-        return false;
+        return currentScenario.getId().equals(
+                orderVersion.getOwnerScenario().getId());
     }
 
     private boolean userAcceptsCreateANewOrderVersion() {
