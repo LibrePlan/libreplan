@@ -38,6 +38,7 @@ import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 
@@ -81,6 +82,8 @@ public class ResourceLoadController implements Composer {
     public void reload() {
         // by default show the task by resources
         boolean filterByResources = true;
+        timeTracker = null;
+        resourcesLoadPanel = null;
         reload(filterByResources);
     }
 
@@ -92,13 +95,14 @@ public class ResourceLoadController implements Composer {
                 resourceLoadModel.initGlobalView(filterBy, filterByResources);
             }
             timeTracker = buildTimeTracker();
-            resourcesLoadPanel = buildResourcesLoadPanel();
-            addListeners();
+            buildResourcesLoadPanel();
 
             this.parent.getChildren().clear();
             this.parent.appendChild(resourcesLoadPanel);
+
             resourcesLoadPanel.afterCompose();
             addCommands(resourcesLoadPanel);
+
         } catch (IllegalArgumentException e) {
             try {
                 Messagebox
@@ -123,24 +127,31 @@ public class ResourceLoadController implements Composer {
     }
 
     public void onApplyFilter(boolean filterByResources) {
-        resourcesLoadPanel.clearComponents();
         reload(filterByResources);
     }
 
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
+
         resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[0]));
     }
 
     private TimeTracker buildTimeTracker() {
-        return timeTracker = new TimeTracker(resourceLoadModel
-                .getViewInterval(), resourceLoadModel
-                .calculateInitialZoomLevel(), SeveralModificators.create(),
-                SeveralModificators.create(new BankHolidaysMarker()), parent);
+        ZoomLevel zoomLevel = (timeTracker == null) ? resourceLoadModel
+                .calculateInitialZoomLevel() : timeTracker.getDetailLevel();
+        return new TimeTracker(resourceLoadModel.getViewInterval(), zoomLevel,
+                SeveralModificators.create(), SeveralModificators
+                        .create(new BankHolidaysMarker()), parent);
     }
 
-    private ResourcesLoadPanel buildResourcesLoadPanel() {
-        return new ResourcesLoadPanel(resourceLoadModel.getLoadTimeLines(),
-                timeTracker);
+    private void buildResourcesLoadPanel() {
+        if (resourcesLoadPanel != null) {
+            resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
+                    timeTracker);
+        } else {
+            resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
+                    .getLoadTimeLines(), timeTracker);
+            addListeners();
+        }
     }
 
     public void filterBy(Order order) {

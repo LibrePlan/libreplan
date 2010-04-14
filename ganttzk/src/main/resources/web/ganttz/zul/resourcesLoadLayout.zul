@@ -39,14 +39,10 @@ resourcesLoadPanel = self;
         </listbox>
         <separator/>
         Filter:
-        <listbox id="listFilters" mold="select" rows="1" width="200px"
+        <listbox id="listFilters" mold="select" rows="1" width="150px"
             model="${resourcesLoadPanel.filters}"
-            onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);" >
+            onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
         </listbox>
-	<button image="/common/img/ico_filter.png" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to resource load satisfying required criteria')}"
-        onClick="resourcesLoadPanel.onApplyFilter()"/>
-
        </hbox>
        </north>
 

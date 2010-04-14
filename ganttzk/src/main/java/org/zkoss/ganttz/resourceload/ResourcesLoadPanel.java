@@ -73,9 +73,9 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private Listbox listZoomLevels;
 
-    private static final String filterResources = _("Filter by resources");
-    private static final String filterCriterions = _("Filter by criterions");
-    private boolean filterbyResources = true;
+    private static final String filterResources = _("by resources");
+    private static final String filterCriterions = _("by criterions");
+    private Boolean filterbyResources;
 
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
             TimeTracker timeTracker) {
@@ -104,10 +104,11 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         } else {
             this.filterbyResources = false;
         }
+        onApplyFilter();
     }
 
     public boolean getFilter() {
-        return filterbyResources;
+        return (filterbyResources == null) ? true : filterbyResources;
     }
 
     public void onApplyFilter() {
@@ -142,9 +143,19 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public void add(final IToolbarCommand... commands) {
         Component toolbar = getToolbar();
+        resetToolbar(toolbar);
         Separator separator = getSeparator();
         for (IToolbarCommand c : commands) {
             toolbar.insertBefore(asButton(c), separator);
+        }
+    }
+
+    private void resetToolbar(Component toolbar) {
+        List<Component> children = toolbar.getChildren();
+        List<Button> buttons = ComponentsFinder.findComponentsOfType(
+                Button.class, children);
+        for (Button b : buttons) {
+            toolbar.removeChild(b);
         }
     }
 
@@ -224,6 +235,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     @Override
     public void afterCompose() {
         super.afterCompose();
+        clearComponents();
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
