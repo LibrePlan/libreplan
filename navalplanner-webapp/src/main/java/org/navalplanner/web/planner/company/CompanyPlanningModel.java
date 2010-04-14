@@ -56,6 +56,7 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
@@ -155,6 +156,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private MultipleTabsPlannerController tabs;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
@@ -603,7 +607,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return result;
         }
 
-        List<Order> list = orderDAO.getOrdersByReadAuthorization(user);
+        List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
+                user, scenarioManager.getCurrent());
 
         for (Order order : list) {
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();

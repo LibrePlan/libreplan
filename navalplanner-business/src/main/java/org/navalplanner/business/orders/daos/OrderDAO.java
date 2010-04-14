@@ -40,6 +40,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
@@ -259,4 +260,22 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         }
 
     }
+
+    @Override
+    public List<Order> getOrdersByReadAuthorizationByScenario(User user,
+            Scenario scenario) {
+        return existsInScenario(getOrdersByReadAuthorization(user), scenario);
+    }
+
+    private List<Order> existsInScenario(List<Order> ordersByReadAuthorization,
+            Scenario scenario) {
+        List<Order> result = new ArrayList<Order>();
+        for (Order each : ordersByReadAuthorization) {
+            if (scenario.contains(each)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
 }

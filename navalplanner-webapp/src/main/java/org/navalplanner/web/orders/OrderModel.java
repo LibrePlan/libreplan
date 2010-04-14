@@ -216,23 +216,11 @@ public class OrderModel implements IOrderModel {
             return new ArrayList<Order>();
         }
         getLabelsOnConversation().reattachLabels();
-        List<Order> orders = existsInCurrentScenario(orderDAO
-                .getOrdersByReadAuthorization(user));
+        List<Order> orders = orderDAO.getOrdersByReadAuthorizationByScenario(
+                user, scenarioManager.getCurrent());
 
         initializeOrders(orders);
         return orders;
-    }
-
-    private List<Order> existsInCurrentScenario(
-            List<Order> ordersByReadAuthorization) {
-        Scenario current = scenarioManager.getCurrent();
-        List<Order> result = new ArrayList<Order>();
-        for (Order each : ordersByReadAuthorization) {
-            if (current.contains(each)) {
-                result.add(each);
-            }
-        }
-        return result;
     }
 
     private void initializeOrders(List<Order> list) {

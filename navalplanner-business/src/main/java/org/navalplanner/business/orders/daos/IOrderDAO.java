@@ -27,6 +27,7 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.entities.User;
 
 /**
@@ -74,5 +75,8 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
      * @return Filtered list of orders.
      */
     List<Order> getOrdersByWriteAuthorization(User user);
+
+    List<Order> getOrdersByReadAuthorizationByScenario(User user,
+            Scenario scenario);
 
 }
