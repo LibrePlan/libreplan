@@ -101,7 +101,15 @@ public class ScenarioModel implements IScenarioModel {
     @Override
     @Transactional
     public void remove(Scenario scenario) {
-        forceLoad(scenario);
+        remove(scenario, true);
+    }
+
+    @Override
+    @Transactional
+    public void remove(Scenario scenario, boolean forceLoad) {
+        if (forceLoad) {
+            forceLoad(scenario);
+        }
 
         boolean isMainScenario = PredefinedScenarios.MASTER.getScenario().getId().equals(scenario.getId());
         if (isMainScenario) {

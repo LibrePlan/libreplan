@@ -34,6 +34,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,11 +42,13 @@ import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -102,6 +105,12 @@ public class ScenarioModelTest {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
     private Order givenStoredOrderInCurrentScenario() {
         Order order = Order.create();
         order.setCode(UUID.randomUUID().toString());
@@ -129,6 +138,8 @@ public class ScenarioModelTest {
 
         orderDAO.save(order);
         orderDAO.flush();
+        sessionFactory.getCurrentSession().evict(order);
+        order.dontPoseAsTransientObjectAnymore();
 
         return order;
     }
@@ -144,6 +155,7 @@ public class ScenarioModelTest {
 
         scenarioDAO.save(scenario);
         scenarioDAO.flush();
+        sessionFactory.getCurrentSession().evict(scenario);
         scenario.dontPoseAsTransientObjectAnymore();
 
         return scenario;
@@ -206,7 +218,7 @@ public class ScenarioModelTest {
 
         int previous = scenarioModel.getScenarios().size();
 
-        scenarioModel.remove(scenario);
+        scenarioModel.remove(scenario, false);
         assertThat(scenarioModel.getScenarios().size(), equalTo(previous - 1));
     }
 
@@ -215,6 +227,22 @@ public class ScenarioModelTest {
         Scenario scenario = givenStoredScenario();
         Scenario derived = givenStoredScenario(scenario);
         scenarioModel.remove(scenario);
+    }
+
+    @Test
+    public void testRemoveScenarioWithOrders() throws InstanceNotFoundException {
+        Order order = givenStoredOrderInCurrentScenario();
+        Scenario scenario = givenStoredScenario();
+
+        int previous = scenarioModel.getScenarios().size();
+
+        OrderVersion orderVersion = scenario.getOrderVersion(order);
+
+        scenarioModel.remove(scenario, false);
+        assertThat(scenarioModel.getScenarios().size(), equalTo(previous - 1));
+
+        assertNotNull(orderDAO.find(order.getId()));
+        assertNotNull(orderVersionDAO.find(orderVersion.getId()));
     }
 
 }
