@@ -23,19 +23,15 @@ package org.navalplanner.business.costcategories.entities;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public class TypeOfWorkHours extends IntegrationEntity {
-
-    private String code;
 
     private String name;
 
@@ -85,7 +81,7 @@ public class TypeOfWorkHours extends IntegrationEntity {
     }
 
     protected TypeOfWorkHours(String code, String name) {
-        this.code = code;
+        setCode(code);
         this.name = name;
     }
 
@@ -96,15 +92,6 @@ public class TypeOfWorkHours extends IntegrationEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @NotEmpty(message = "code not specified")
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public BigDecimal getDefaultPrice() {
@@ -121,38 +108,6 @@ public class TypeOfWorkHours extends IntegrationEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    @AssertTrue(message="type code has to be unique. It is already used")
-    public boolean checkConstraintUniqueCode() {
-
-        if (code == null) {
-            return true;
-        }
-
-        boolean result;
-        if (isNewObject()) {
-            result = !existsTypeWithTheCode();
-        } else {
-            result = isTheExistentTypeThisOne();
-        }
-        return result;
-    }
-
-    private boolean existsTypeWithTheCode() {
-        ITypeOfWorkHoursDAO dao = Registry.getTypeOfWorkHoursDAO();
-        return dao.existsTypeWithCodeInAnotherTransaction(code);
-    }
-
-    private boolean isTheExistentTypeThisOne() {
-        ITypeOfWorkHoursDAO dao = Registry.getTypeOfWorkHoursDAO();
-        try {
-            TypeOfWorkHours type =
-                dao.findUniqueByCodeInAnotherTransaction(code);
-            return type.getId().equals(getId());
-        } catch (InstanceNotFoundException e) {
-            return true;
-        }
     }
 
     @Override
