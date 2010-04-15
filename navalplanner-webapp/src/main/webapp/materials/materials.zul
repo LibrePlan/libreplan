@@ -37,9 +37,8 @@
             </tabs>
             <tabpanels>
                 <tabpanel>
-                    <hbox>
                         <!-- Categories  -->
-                        <vbox>
+                        <hbox>
                             <panel title="${i18n:_('Categories')}"
                                 border="normal">
                                 <panelchildren>
@@ -48,30 +47,30 @@
                                             style="padding-bottom: 4px" />
                                         <button label="${i18n:_('Add')}"
                                             onClick="materialsController.addMaterialCategory()" />
+                                        <separator spacing="20px" orient="vertical" />
+                                        <button label="${i18n:_('Unselect')}" onClick="materialsController.clearSelectionCategoriesTree()" />
                                     </hbox>
-                                    <separator spacing="10px" orient="horizontal" />
 
-                                    <button label="${i18n:_('Unselect')}" onClick="materialsController.clearSelectionCategoriesTree()" />
                                     <separator spacing="5px" orient="horizontal" />
 
                                     <tree id="categoriesTree" zclass="z-dottree"
-                                        width="280px" rows="10" vflex="true" multiple="false"
+                                        rows="5" vflex="true" multiple="false"
                                         model="@{materialsController.materialCategories}"
                                         treeitemRenderer="@{materialsController.materialCategoryRenderer}"
                                         onSelect="materialsController.refreshMaterials()">
                                         <treecols>
                                             <treecol label="${i18n:_('Name')}" />
                                             <treecol label="${i18n:_('Code')}" />
-                                            <treecol label="${i18n:_('Generate code')}" />
-                                            <treecol label="" />
+                                            <treecol label="${i18n:_('Generate code')}" width="100px" />
+                                            <treecol label="${i18n:_('Operations')}" width="80px" />
                                         </treecols>
                                     </tree>
                                 </panelchildren>
                             </panel>
-                        </vbox>
+                        </hbox>
 
                         <!-- Materials -->
-                        <vbox>
+                        <hbox>
                             <panel title="${i18n:_('Materials')}"
                                 border="normal">
                                 <panelchildren>
@@ -80,7 +79,7 @@
                                         onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
                                     <separator spacing="15px" orient="horizontal" />
                                     <newdatasortablegrid id="gridMaterials"
-                                        fixedLayout="true"
+                                        fixedLayout="true" mold="paging" pageSize="5"
                                         model="@{materialsController.materials}">
                                         <columns>
                                             <newdatasortablecolumn label="${i18n:_('Code')}" />
@@ -88,14 +87,14 @@
                                             <newdatasortablecolumn label="${i18n:_('Unit price')}" />
                                             <newdatasortablecolumn label="${i18n:_('Unit type')}" />
                                             <newdatasortablecolumn label="${i18n:_('Category')}" />
-                                            <newdatasortablecolumn label="${i18n:_('Disabled')}" />
-                                            <newdatasortablecolumn label="" />
+                                            <newdatasortablecolumn label="${i18n:_('Disabled')}" width="80px" />
+                                            <newdatasortablecolumn label="${i18n:_('Operations')}" width="80px" />
                                         </columns>
                                         <rows>
                                             <row self="@{each='material'}" value="@{material}" >
-                                                <textbox id="code" value="@{material.code}"
+                                                <textbox id="code" value="@{material.code}" width="95%"
                                                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
-                                                <textbox value="@{material.description}" />
+                                                <textbox value="@{material.description}" width="95%" />
                                                 <doublebox value="@{material.defaultUnitPrice}" />
                                                 <listbox mold="select"  model="@{materialsController.unitTypes}"
                                                     onSelect = "materialsController.selectUnitType(self)"
@@ -114,9 +113,7 @@
 
                                 </panelchildren>
                             </panel>
-                        </vbox>
-
-                    </hbox>
+                        </hbox>
                 </tabpanel>
             </tabpanels>
         </tabbox>

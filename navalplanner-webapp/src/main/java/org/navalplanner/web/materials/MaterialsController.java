@@ -176,6 +176,7 @@ public class MaterialsController extends
             final MaterialCategory materialCategory = (MaterialCategory) node;
 
             final Textbox tb = new Textbox(materialCategory.getName());
+            tb.setWidth("90%");
             tb.addEventListener("onChange", new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
@@ -199,6 +200,7 @@ public class MaterialsController extends
             tc.setParent(tr);
 
             final Textbox codeTb = new Textbox(materialCategory.getCode());
+            codeTb.setWidth("95%");
             codeTb.setDisabled(materialCategory.getGenerateCode());
             codeTb.addEventListener("onChange", new EventListener() {
                 @Override
