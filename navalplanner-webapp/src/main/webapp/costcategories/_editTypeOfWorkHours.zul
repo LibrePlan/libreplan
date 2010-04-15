@@ -38,9 +38,15 @@
                             <row>
                                 <label
                                     value="${i18n:_('Code')}:" />
-                                <textbox id="code"
-                                    value="@{controller.typeOfWorkHours.code}" width="300px"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                <hbox>
+                                    <textbox id="code"
+                                        value="@{controller.typeOfWorkHours.code}" width="300px"
+                                        constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                        disabled="@{controller.typeOfWorkHours.generateCode}" />
+                                    <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                        onCheck="controller.onCheckGenerateCode(event)"
+                                        checked="@{controller.typeOfWorkHours.generateCode}" />
+                                </hbox>
                             </row>
                             <row>
                                 <label value="${i18n:_('Name')}:" />

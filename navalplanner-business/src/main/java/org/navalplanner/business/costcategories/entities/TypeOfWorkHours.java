@@ -39,6 +39,8 @@ public class TypeOfWorkHours extends IntegrationEntity {
 
     boolean enabled = true;
 
+    private Boolean generateCode = false;
+
     // Default constructor, needed by Hibernate
     protected TypeOfWorkHours() {
 
@@ -108,6 +110,14 @@ public class TypeOfWorkHours extends IntegrationEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Boolean getGenerateCode() {
+        return generateCode;
+    }
+
+    public void setGenerateCode(Boolean generateCode) {
+        this.generateCode = generateCode;
     }
 
     @Override

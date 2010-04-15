@@ -22,6 +22,7 @@ package org.navalplanner.web.costcategories;
 
 import java.util.List;
 
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
@@ -48,6 +49,9 @@ public class TypeOfWorkHoursModel implements ITypeOfWorkHoursModel {
     @Autowired
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
@@ -69,6 +73,11 @@ public class TypeOfWorkHoursModel implements ITypeOfWorkHoursModel {
     @Transactional(readOnly = true)
     public void initCreate() {
         this.typeOfWorkHours = TypeOfWorkHours.create();
+        typeOfWorkHours.setGenerateCode(configurationDAO.getConfiguration().
+              getGenerateCodeForTypesOfWorkHours());
+        if(!typeOfWorkHours.getGenerateCode()) {
+            typeOfWorkHours.setCode("");
+        }
     }
 
     @Override
