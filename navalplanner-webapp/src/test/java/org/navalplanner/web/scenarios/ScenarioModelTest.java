@@ -111,7 +111,7 @@ public class ScenarioModelTest {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private Order givenStoredOrderInCurrentScenario() {
+    private Order givenStoredOrderInDefaultScenario() {
         Order order = Order.create();
         order.setCode(UUID.randomUUID().toString());
         order.setName("order-name");
@@ -185,7 +185,7 @@ public class ScenarioModelTest {
 
     @Test
     public void testCreateAndSaveScenarioWithOrders() {
-        Order order = givenStoredOrderInCurrentScenario();
+        Order order = givenStoredOrderInDefaultScenario();
 
         int previous = scenarioModel.getScenarios().size();
 
@@ -231,7 +231,7 @@ public class ScenarioModelTest {
 
     @Test
     public void testRemoveScenarioWithOrders() throws InstanceNotFoundException {
-        Order order = givenStoredOrderInCurrentScenario();
+        Order order = givenStoredOrderInDefaultScenario();
         Scenario scenario = givenStoredScenario();
 
         int previous = scenarioModel.getScenarios().size();
