@@ -339,21 +339,7 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     @Override
     protected int getHoursAssigned() {
-        return sumAllocations() + calculateSumOfSpecific();
-    }
-
-    private int calculateSumOfSpecific() {
-        List<SpecificDayAssignment> specific = new ArrayList<SpecificDayAssignment>();
-        for (Resource each : resourcesSatisfyingCriterionAtSomePoint) {
-            specific.addAll(specificAssignmentsAtInterval(each));
-        }
-        return sum(specific);
-    }
-
-    private List<SpecificDayAssignment> specificAssignmentsAtInterval(
-            Resource each) {
-        return DayAssignment.getAtInterval(
-                getSpecificOrderedAssignmentsFor(each), start, end);
+        return sumAllocations();
     }
 
     private Map<Resource, List<SpecificDayAssignment>> specificByResourceCached = new HashMap<Resource, List<SpecificDayAssignment>>();

@@ -139,6 +139,22 @@ public class ResourceAllocationDAO extends
         return stripAllocationsWithoutAssignations(byCriterion(list));
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
+            List<Criterion> criterions) {
+        if (criterions.isEmpty()) {
+            return new HashMap<Criterion, List<GenericResourceAllocation>>();
+        }
+        List<Object> list = getSession().createQuery(
+                "select generic, criterion "
+                        + "from GenericResourceAllocation as generic "
+                        + "join generic.criterions as criterion "
+                        + "where criterion in(:criterions)").setParameterList(
+                "criterions", criterions).list();
+        return stripAllocationsWithoutAssignations(byCriterion(list));
+    }
+
     private Map<Criterion, List<GenericResourceAllocation>> byCriterion(
             List<Object> results) {
 
