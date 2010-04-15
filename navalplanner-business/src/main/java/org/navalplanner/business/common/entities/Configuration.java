@@ -49,6 +49,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForResources = false;
 
+    private Boolean generateCodeForTypesOfWorkHours = false;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -109,6 +111,15 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForResources() {
         return generateCodeForResources;
+    }
+
+    public void setGenerateCodeForTypesOfWorkHours(
+            Boolean generateCodeForTypesOfWorkHours) {
+        this.generateCodeForTypesOfWorkHours = generateCodeForTypesOfWorkHours;
+    }
+
+    public Boolean getGenerateCodeForTypesOfWorkHours() {
+        return generateCodeForTypesOfWorkHours;
     }
 
 }

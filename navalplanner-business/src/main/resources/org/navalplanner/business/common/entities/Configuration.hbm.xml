@@ -21,6 +21,7 @@
         <property name="generateCodeForLabel" not-null="true" />
         <property name="generateCodeForWorkReport" not-null="true" />
         <property name="generateCodeForResources" not-null="true" />
+        <property name="generateCodeForTypesOfWorkHours" not-null="true" />
 
     </class>
 

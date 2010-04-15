@@ -77,6 +77,10 @@
                             <label value="${i18n:_('Generate code for Resources')}" />
                             <checkbox checked="@{configurationController.generateCodeForResources}" />
                         </row>
+                        <row>
+                            <label value="${i18n:_('Generate code for Types of work hours')}" />
+                            <checkbox checked="@{configurationController.generateCodeForTypesOfWorkHours}" />
+                        </row>
                     </rows>
                 </grid>
 
