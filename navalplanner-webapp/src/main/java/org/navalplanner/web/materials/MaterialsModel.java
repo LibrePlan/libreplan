@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
@@ -61,6 +62,9 @@ public class MaterialsModel implements IMaterialsModel {
 
     @Autowired
     IUnitTypeDAO unitTypeDAO;
+
+    @Autowired
+    IConfigurationDAO configurationDAO;
 
     MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
             .create(MaterialCategory.class);
@@ -121,10 +125,20 @@ public class MaterialsModel implements IMaterialsModel {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public void addMaterialCategory(MaterialCategory parent, String categoryName) throws ValidationException {
         Validate.notNull(categoryName);
 
-        MaterialCategory child = MaterialCategory.create(_(categoryName));
+        Boolean generateCode = configurationDAO.getConfiguration().
+            getGenerateCodeForMaterialCategories();
+        MaterialCategory child;
+        if(generateCode) {
+            child = MaterialCategory.create(_(categoryName));
+        }
+        else {
+            child = MaterialCategory.createUnvalidated("", _(categoryName));
+        }
+        child.setGenerateCode(generateCode);
 
         final MaterialCategory materialCategory = findMaterialCategory(child);
         if (materialCategory != null) {

@@ -53,6 +53,8 @@
 
     <property name="name" />
 
+    <property name="generateCode" not-null="true" />
+
     <set name="subcategories" inverse="true" cascade="all-delete-orphan">
         <key column="PARENT_ID"/>
         <one-to-many class="MaterialCategory"/>

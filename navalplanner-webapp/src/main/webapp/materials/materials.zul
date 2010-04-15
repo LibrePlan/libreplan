@@ -60,7 +60,9 @@
                                         treeitemRenderer="@{materialsController.materialCategoryRenderer}"
                                         onSelect="materialsController.refreshMaterials()">
                                         <treecols>
-                                            <treecol label="Name" />
+                                            <treecol label="${i18n:_('Name')}" />
+                                            <treecol label="${i18n:_('Code')}" />
+                                            <treecol label="${i18n:_('Generate code')}" />
                                             <treecol label="" />
                                         </treecols>
                                     </tree>
