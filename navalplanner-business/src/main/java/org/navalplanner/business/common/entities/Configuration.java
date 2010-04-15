@@ -51,6 +51,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForTypesOfWorkHours = false;
 
+    private Boolean generateCodeForMaterialCategories = false;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -120,6 +122,15 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForTypesOfWorkHours() {
         return generateCodeForTypesOfWorkHours;
+    }
+
+    public void setGenerateCodeForMaterialCategories(
+            Boolean generateCodeForMaterialCategories) {
+        this.generateCodeForMaterialCategories = generateCodeForMaterialCategories;
+    }
+
+    public Boolean getGenerateCodeForMaterialCategories() {
+        return generateCodeForMaterialCategories;
     }
 
 }

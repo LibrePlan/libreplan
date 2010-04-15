@@ -81,6 +81,10 @@
                             <label value="${i18n:_('Generate code for Types of work hours')}" />
                             <checkbox checked="@{configurationController.generateCodeForTypesOfWorkHours}" />
                         </row>
+                        <row>
+                            <label value="${i18n:_('Generate code for Material categories')}" />
+                            <checkbox checked="@{configurationController.generateCodeForMaterialCategories}" />
+                        </row>
                     </rows>
                 </grid>
 
