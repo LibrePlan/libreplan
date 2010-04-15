@@ -168,7 +168,11 @@ public class ScenarioDAO extends GenericDAOHibernate<Scenario, Long> implements
             Scenario currentScenario, OrderVersion newOrderVersion) {
         for (Scenario each : getDerivedScenarios(currentScenario)) {
             if (each.usesVersion(previousOrderVersion, order)) {
-                each.setOrderVersion(order, newOrderVersion);
+                if (newOrderVersion == null) {
+                    each.removeOrderVersionForOrder(order);
+                } else {
+                    each.setOrderVersion(order, newOrderVersion);
+                }
                 save(each);
             }
         }

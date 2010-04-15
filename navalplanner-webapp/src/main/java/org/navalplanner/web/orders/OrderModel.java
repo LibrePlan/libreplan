@@ -68,6 +68,7 @@ import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -168,6 +169,9 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
+
     @Override
     @Transactional(readOnly = true)
     public List<Label> getLabels() {
@@ -233,8 +237,7 @@ public class OrderModel implements IOrderModel {
 
     private void initializeOrders(List<Order> list) {
         for (Order order : list) {
-            // Remove or not?
-            // orderDAO.reattachUnmodifiedEntity(order);
+            orderDAO.reattachUnmodifiedEntity(order);
             if (order.getCustomer() != null) {
                 order.getCustomer().getName();
             }
@@ -242,6 +245,7 @@ public class OrderModel implements IOrderModel {
             for (Label label : order.getLabels()) {
                 label.getName();
             }
+            order.getScenarios().size();
         }
         this.orderList = list;
     }
@@ -591,10 +595,44 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional
     public void remove(Order order) {
-        try {
-            this.orderDAO.remove(order.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
+        if (order.getScenarios().size() == 1) {
+            try {
+                orderDAO.remove(order.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            orderDAO.save(order);
+
+            Scenario scenario = scenarioManager.getCurrent();
+            OrderVersion currentOrderVersion = scenario.getOrderVersion(order);
+            order.removeOrderVersionForScenario(scenario);
+
+            derivedScenarios = scenarioDAO.getDerivedScenarios(scenario);
+            for (Scenario derivedScenario : derivedScenarios) {
+                OrderVersion orderVersion = order
+                        .getOrderVersionFor(derivedScenario);
+                if ((orderVersion != null)
+                        && (orderVersion.getId()
+                                .equals(currentOrderVersion.getId()))) {
+                    order.removeOrderVersionForScenario(derivedScenario);
+                }
+            }
+
+            boolean orderVersionNotUsed = true;
+            for (OrderVersion orderVersion : order.getScenarios().values()) {
+                if (orderVersion.getId().equals(currentOrderVersion.getId())) {
+                    orderVersionNotUsed = false;
+                    break;
+                }
+            }
+            if (orderVersionNotUsed) {
+                try {
+                    orderVersionDAO.remove(currentOrderVersion.getId());
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -848,8 +886,15 @@ public class OrderModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isAlreadyInUse(OrderElement element) {
-        return orderElementDAO.isAlreadyInUseThisOrAnyOfItsChildren(element);
+    public boolean isAlreadyInUse(OrderElement orderElement) {
+        return orderElementDAO
+                .isAlreadyInUseThisOrAnyOfItsChildren(orderElement);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAlreadyInUseAndIsOnlyInCurrentScenario(Order order) {
+        return isAlreadyInUse(order) && (order.getScenarios().size() == 1);
     }
 
 }
