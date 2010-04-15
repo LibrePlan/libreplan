@@ -497,7 +497,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void synchronizeWithSchedule(OrderElement orderElement) {
-        for (TaskSourceSynchronization each : order
+        for (TaskSourceSynchronization each : orderElement
                 .calculateSynchronizationsNeeded()) {
             each.apply(taskSourceDAO);
         }
