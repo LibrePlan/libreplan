@@ -33,6 +33,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -79,6 +80,9 @@ public class ScenarioModel implements IScenarioModel {
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     /*
      * Non conversational steps
      */
@@ -98,6 +102,26 @@ public class ScenarioModel implements IScenarioModel {
     @Transactional
     public void remove(Scenario scenario) {
         forceLoad(scenario);
+
+        boolean isMainScenario = PredefinedScenarios.MASTER.getScenario().getId().equals(scenario.getId());
+        if (isMainScenario) {
+            throw new IllegalArgumentException(
+                    _("You can not remove the default scenario called \"{0}\"", PredefinedScenarios.MASTER.getName()));
+        }
+
+        Scenario currentScenario = scenarioManager.getCurrent();
+        boolean isCurrentScenario = currentScenario.getId().equals(
+                scenario.getId());
+        if (isCurrentScenario) {
+            throw new IllegalArgumentException(
+                    _("You can not remove the current scenario"));
+        }
+
+        List<Scenario> derivedScenarios = getDerivedScenarios(scenario);
+        if (!derivedScenarios.isEmpty()) {
+            throw new IllegalArgumentException(
+                    _("You can not remove a scenario with derived scenarios"));
+        }
 
         List<User> users = userDAO.findByLastConnectedScenario(scenario);
         for (User user : users) {
