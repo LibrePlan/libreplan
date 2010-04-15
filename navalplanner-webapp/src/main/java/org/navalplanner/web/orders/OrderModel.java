@@ -270,6 +270,13 @@ public class OrderModel implements IOrderModel {
         forceLoadCalendar(this.getCalendar());
         forceLoadCustomer(this.order.getCustomer());
         forceLoadLabels(this.order);
+        OrderVersion version = getVersionFor(this.order);
+        this.order.useSchedulingDataFor(version);
+    }
+
+    private OrderVersion getVersionFor(Order order) {
+        currentScenario = scenarioManager.getCurrent();
+        return currentScenario.getOrderVersion(order);
     }
 
     private void forceLoadLabels(OrderElement orderElement) {
@@ -368,10 +375,11 @@ public class OrderModel implements IOrderModel {
         this.order = Order.create();
         initializeOrder();
         initializeCalendar();
-        addOrderToCurrentScenario(this.order);
+        OrderVersion version = addOrderToCurrentScenario(this.order);
+        this.order.useSchedulingDataFor(version);
     }
 
-    private void addOrderToCurrentScenario(Order order) {
+    private OrderVersion addOrderToCurrentScenario(Order order) {
         currentScenario = scenarioManager.getCurrent();
         OrderVersion orderVersion = currentScenario.addOrder(order);
         order.setVersionForScenario(currentScenario, orderVersion);
@@ -379,6 +387,7 @@ public class OrderModel implements IOrderModel {
         for (Scenario scenario : derivedScenarios) {
             scenario.addOrder(order, orderVersion);
         }
+        return orderVersion;
     }
 
     private void initializeOrder() {
@@ -456,6 +465,7 @@ public class OrderModel implements IOrderModel {
         reattachCurrentTaskSources();
         deleteOrderElementWithoutParent();
         synchronizeWithSchedule(order);
+        order.writeSchedulingStateChanges();
 
         order.dontPoseAsTransientObjectAnymore();
         saveDerivedScenarios();

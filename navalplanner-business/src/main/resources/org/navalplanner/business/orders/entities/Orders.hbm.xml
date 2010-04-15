@@ -15,11 +15,6 @@
         </component>
         <property name="initDate" access="field" />
         <property name="deadline" access="field" />
-        <property name="schedulingStateType" access="field" >
-            <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.navalplanner.business.orders.entities.SchedulingState$Type</param>
-            </type>
-        </property>
 
         <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="DIRECT_ORDER_ELEMENT_ID" />
@@ -49,13 +44,12 @@
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
         <many-to-one name="parent" access="field" cascade="all" class="org.navalplanner.business.orders.entities.OrderLineGroup"/>
 
-        <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="orderElement"/>
-
         <many-to-one name="template" access="field" cascade="none" class="org.navalplanner.business.templates.entities.OrderElementTemplate"/>
 
         <property name="externalCode" access="field" />
 
-        <map name="schedulingStates" table="SCHEDULING_STATES_BY_ORDER_VERSION">
+        <map name="schedulingStates" table="SCHEDULING_STATES_BY_ORDER_VERSION"
+            cascade="all-delete-orphan">
             <key column="ORDER_ELEMENT_ID"></key>
             <map-key-many-to-many column="ORDER_VERSION_ID"
                 class="org.navalplanner.business.scenarios.entities.OrderVersion" />
@@ -186,8 +180,7 @@
         </id>
         <version name="version" access="property" type="long" />
         <many-to-one name="orderElement"
-               class="OrderElement" cascade="none"
-               unique="true" access="field"/>
+               class="OrderElement" cascade="none" access="field"/>
         <many-to-one name="schedulingState" class="SchedulingStateForVersion"
             cascade="none" unique="true" access="field" />
         <one-to-one name="task" class="org.navalplanner.business.planner.entities.TaskElement"

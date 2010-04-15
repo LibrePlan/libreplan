@@ -57,6 +57,7 @@ import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
@@ -204,6 +205,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
             IPredicate predicate) {
+
         PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
 
         Tabbox chartComponent = new Tabbox();
@@ -607,10 +609,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return result;
         }
 
+        Scenario scenario = scenarioManager.getCurrent();
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
-                user, scenarioManager.getCurrent());
+                user, scenario);
 
         for (Order order : list) {
+            order.useSchedulingDataFor(scenario);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
             if (associatedTaskElement != null) {

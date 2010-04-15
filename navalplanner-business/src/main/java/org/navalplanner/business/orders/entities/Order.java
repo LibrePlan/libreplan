@@ -110,6 +110,11 @@ public class Order extends OrderLineGroup {
         return Collections.unmodifiableMap(scenarios);
     }
 
+    public void useSchedulingDataFor(Scenario scenario) {
+        OrderVersion orderVersion = scenarios.get(scenario);
+        useSchedulingDataFor(orderVersion);
+    }
+
     public BigDecimal getWorkBudget() {
         if (workBudget == null) {
             return BigDecimal.ZERO;
@@ -423,6 +428,10 @@ public class Order extends OrderLineGroup {
 
     public void removeOrderVersionForScenario(Scenario scenario) {
         scenarios.remove(scenario);
+    }
+
+    public OrderVersion getOrderVersionFor(Scenario current) {
+        return scenarios.get(current);
     }
 
 }

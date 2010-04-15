@@ -56,6 +56,9 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.test.planner.daos.ResourceAllocationDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -102,12 +105,18 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private Session getSession() {
         return sessionFactory.getCurrentSession();
     }
 
     private Order createValidOrder() {
         Order order = Order.create();
+        OrderVersion orderVersion = ResourceAllocationDAOTest
+                .setupVersionUsing(scenarioManager, order);
+        order.useSchedulingDataFor(orderVersion);
         order.setDescription("description");
         order.setInitDate(CriterionSatisfactionDAOTest.year(2000));
         order.setName("name");
@@ -249,7 +258,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test
     public void addingAssignmentsOfAnotherTypeToSon() throws Exception {
+        Order validOrder = createValidOrder();
         OrderLineGroup container = OrderLineGroup.create();
+        validOrder.add(container);
         container.setName("bla");
         container.setCode("000000000");
         OrderLine son = createValidLeaf("bla", "132");
@@ -276,7 +287,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     @Test
     public void addingAnAdvanceAssignmentIncreasesTheNumberOfAdvanceAssignments()
             throws Exception {
+        Order validOrder = createValidOrder();
         final OrderLineGroup container = OrderLineGroup.create();
+        validOrder.add(container);
         container.setName("bla");
         container.setCode("000000000");
         container.add(createValidLeaf("bla", "979"));
@@ -294,7 +307,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test
     public void cannotAddDuplicatedAssignmentToSon() throws Exception {
+        Order validOrder = createValidOrder();
         final OrderLineGroup father = OrderLineGroup.create();
+        validOrder.add(father);
         father.setName("bla");
         father.setCode("000000000");
         father.add(createValidLeaf("bla", "979"));
@@ -320,7 +335,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test
     public void cannotAddDuplicateAssignmentToGrandParent() throws Exception {
+        Order validOrder = createValidOrder();
         OrderLineGroup parent = OrderLineGroup.create();
+        validOrder.add(parent);
         parent.setName("bla_");
         parent.setCode("000000000");
         OrderLineGroup son = (OrderLineGroup) OrderLineGroup.create();

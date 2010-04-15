@@ -67,6 +67,8 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -227,6 +229,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
     private ITaskElementAdapter taskElementAdapter;
@@ -237,6 +242,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private Order orderReloaded;
+
+    private Scenario currentScenario;
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -266,6 +273,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             EditTaskController editTaskController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
+        currentScenario = scenarioManager.getCurrent();
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         addAdditional(additional, configuration);
@@ -962,11 +970,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 
     private Order reload(Order order) {
-        try {
-            return orderDAO.find(order.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Order result = orderDAO.findExistingEntity(order.getId());
+        result.useSchedulingDataFor(currentScenario);
+        return result;
     }
 
     private class OrderLoadChartFiller extends ChartFiller {

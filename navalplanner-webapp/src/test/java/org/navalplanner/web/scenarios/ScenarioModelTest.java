@@ -130,7 +130,7 @@ public class ScenarioModelTest {
 
         OrderVersion orderVersion = scenario.addOrder(order);
         order.setVersionForScenario(scenario, orderVersion);
-
+        order.useSchedulingDataFor(orderVersion);
         OrderLine orderLine = OrderLine
                 .createOrderLineWithUnfixedPercentage(1000);
         order.add(orderLine);

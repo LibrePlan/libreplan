@@ -47,11 +47,14 @@ import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
@@ -67,6 +70,7 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.CriterionRequirementDTO;
@@ -117,14 +121,26 @@ public class OrderElementServiceTest {
     @Resource
     private IDataBootstrap criterionsBootstrap;
 
-    @Test
-    @Rollback(false)
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Before
     public void loadRequiredaData() {
-        defaultAdvanceTypesBootstrapListener.loadRequiredData();
-        configurationBootstrap.loadRequiredData();
-        materialCategoryBootstrap.loadRequiredData();
-        criterionsBootstrap.loadRequiredData();
-        unitTypeBootstrap.loadRequiredData();
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                materialCategoryBootstrap.loadRequiredData();
+                criterionsBootstrap.loadRequiredData();
+                unitTypeBootstrap.loadRequiredData();
+                configurationBootstrap.loadRequiredData();
+                defaultAdvanceTypesBootstrapListener.loadRequiredData();
+                scenariosBootstrap.loadRequiredData();
+                return null;
+            }
+        });
     }
 
     @Autowired

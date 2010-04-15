@@ -36,7 +36,6 @@ import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
@@ -80,10 +79,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
     @Override
     public void remove(Long id) throws InstanceNotFoundException {
         Order order = find(id);
-        List<TaskSource> sources = order.getTaskSourcesFromBottomToTop();
-        for (TaskSource each : sources) {
-            taskSourceDAO.remove(each.getId());
-        }
+        OrderElementDAO.removeTaskSourcesFor(taskSourceDAO, order);
         super.remove(id);
     }
 

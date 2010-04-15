@@ -22,6 +22,7 @@ package org.navalplanner.business.orders.daos;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
@@ -190,14 +192,32 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     @Override
     public void remove(Long id) throws InstanceNotFoundException {
         OrderElement orderElement = find(id);
-        for (TaskSource each : orderElement.getTaskSourcesFromBottomToTop()) {
-            each.detachAssociatedTaskFromParent();
-            taskSourceDAO.remove(each.getId());
-        }
+        removeTaskSourcesFor(this.taskSourceDAO, orderElement);
         for (WorkReport each : getWorkReportsPointingTo(orderElement)) {
             workReportDAO.remove(each.getId());
         }
         super.remove(id);
+    }
+
+    public static void removeTaskSourcesFor(ITaskSourceDAO taskSourceDAO,
+            OrderElement orderElement) throws InstanceNotFoundException {
+        List<SchedulingStateForVersion> allVersions = orderElement
+        .getSchedulingStateForVersionFromBottomToTop();
+        for (TaskSource each : taskSourcesFrom(allVersions)) {
+            each.detachAssociatedTaskFromParent();
+            taskSourceDAO.remove(each.getId());
+        }
+    }
+
+    private static List<TaskSource> taskSourcesFrom(
+            List<SchedulingStateForVersion> list) {
+        List<TaskSource> result = new ArrayList<TaskSource>();
+        for (SchedulingStateForVersion each : list) {
+            if (each.getTaskSource() != null) {
+                result.add(each.getTaskSource());
+            }
+        }
+        return result;
     }
 
     private Set<WorkReport> getWorkReportsPointingTo(OrderElement orderElement) {

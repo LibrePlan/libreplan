@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createNiceMock;
+import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -47,6 +50,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.StartConstraintType;
@@ -184,7 +188,19 @@ public class TaskElementTest {
         if (hoursGroups.isEmpty()) {
             hoursGroups = Collections.singletonList(createHoursGroup(100));
         }
-        return TaskSource.create(orderLine, hoursGroups);
+        return TaskSource.create(orderLine,
+                mockSchedulingStateVersion(orderLine),
+                hoursGroups);
+    }
+
+    public static SchedulingStateForVersion mockSchedulingStateVersion(
+            OrderElement orderElement) {
+        SchedulingStateForVersion result = createNiceMock(SchedulingStateForVersion.class);
+        TaskSource taskSource = createNiceMock(TaskSource.class);
+        expect(taskSource.getOrderElement()).andReturn(orderElement).anyTimes();
+        expect(result.getTaskSource()).andReturn(taskSource).anyTimes();
+        replay(result, taskSource);
+        return result;
     }
 
     private static Date asDate(LocalDate localDate) {
@@ -211,6 +227,7 @@ public class TaskElementTest {
 
     private void addOrderTo(OrderElement orderElement) {
         Order order = new Order();
+        order.useSchedulingDataFor(TaskTest.mockOrderVersion());
         order.setInitDate(new Date());
         order.add(orderElement);
     }
@@ -235,11 +252,11 @@ public class TaskElementTest {
 
     @Test
     public void unlessTheOnlyParentWithInitDateNotNullIsTheOrder() {
-        Date initDate = asDate(new LocalDate(2005, 10, 5));
-        Order order = Order.create();
-        order.setInitDate(initDate);
         OrderLine orderLine = OrderLine.create();
-        order.add(orderLine);
+        addOrderTo(orderLine);
+        Order order = orderLine.getOrder();
+        Date initDate = asDate(new LocalDate(2005, 10, 5));
+        order.setInitDate(initDate);
         LocalDate deadline = new LocalDate(2007, 4, 4);
         orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);

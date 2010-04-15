@@ -21,8 +21,11 @@ package org.navalplanner.business.orders.entities;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -30,7 +33,86 @@ import org.navalplanner.business.orders.entities.SchedulingState.Type;
  */
 public class SchedulingStateForVersion extends BaseEntity {
 
-    public static SchedulingStateForVersion create(OrderElement orderElement) {
+    public static class SchedulingData {
+
+        private static SchedulingData from(SchedulingStateForVersion version,
+                OrderVersion orderVersion) {
+            return new SchedulingData(orderVersion, version, version
+                    .getTaskSource(), version.getSchedulingStateType());
+        }
+
+        private SchedulingStateForVersion originVersion;
+
+        private TaskSource taskSource;
+
+        private SchedulingState.Type schedulingStateType = Type.NO_SCHEDULED;
+
+        private final OrderVersion originOrderVersion;
+
+        private SchedulingData(OrderVersion orderVersion,
+                SchedulingStateForVersion version,
+                TaskSource taskSource,
+                Type schedulingStateType) {
+            Validate.notNull(schedulingStateType);
+            this.originOrderVersion = orderVersion;
+            this.originVersion = version;
+            this.taskSource = taskSource;
+            this.schedulingStateType = schedulingStateType;
+        }
+
+        public TaskSource getTaskSource() {
+            return taskSource;
+        }
+
+        public SchedulingState.Type getSchedulingStateType() {
+            return schedulingStateType;
+        }
+
+        public void initializeType(Type type) {
+            if (schedulingStateType != Type.NO_SCHEDULED) {
+                throw new IllegalStateException("already initialized");
+            }
+        }
+
+        public ITypeChangedListener onTypeChangeListener() {
+            return new ITypeChangedListener() {
+                @Override
+                public void typeChanged(Type newType) {
+                    schedulingStateType = newType;
+                }
+            };
+        }
+
+        public void taskSourceRemovalRequested() {
+            taskSource = null;
+        }
+
+        public void requestedCreationOf(TaskSource taskSource) {
+            Validate.isTrue(this.taskSource == null, "there is no task source");
+            this.taskSource = taskSource;
+        }
+
+        public void replaceCurrentTaskSourceWith(TaskSource newTaskSource) {
+            Validate.isTrue(this.taskSource != null,
+                    "there must be a task source to replace");
+            this.taskSource = newTaskSource;
+        }
+
+        public SchedulingStateForVersion getVersion() {
+            return originVersion;
+        }
+
+        public void writeSchedulingStateChanges() {
+            this.originVersion.schedulingStateType = this.schedulingStateType;
+            this.originVersion.taskSource = this.taskSource;
+        }
+
+        public OrderVersion getOriginOrderVersion() {
+            return originOrderVersion;
+        }
+    }
+
+    public static SchedulingStateForVersion createInitialFor(OrderElement orderElement) {
         Validate.notNull(orderElement);
         SchedulingStateForVersion schedulingStateForVersion = new SchedulingStateForVersion();
         schedulingStateForVersion.orderElement = orderElement;
@@ -49,12 +131,17 @@ public class SchedulingStateForVersion extends BaseEntity {
         return schedulingStateType;
     }
 
+    @Valid
     public TaskSource getTaskSource() {
         return taskSource;
     }
 
     public OrderElement getOrderElement() {
         return orderElement;
+    }
+
+    public SchedulingData asSchedulingData(OrderVersion orderVersion) {
+        return SchedulingData.from(this, orderVersion);
     }
 
 }

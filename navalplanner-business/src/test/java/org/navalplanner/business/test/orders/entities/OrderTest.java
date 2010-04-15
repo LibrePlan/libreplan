@@ -35,6 +35,8 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.test.planner.entities.TaskTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +51,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class OrderTest {
 
+    private static OrderVersion mockedOrderVersion = TaskTest.mockOrderVersion();
+
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
@@ -60,17 +64,18 @@ public class OrderTest {
     @Test
     public void testAddingOrderElement() throws Exception {
         Order order = Order.create();
+        order.useSchedulingDataFor(mockedOrderVersion);
         OrderLineGroup container = OrderLineGroup.create();
         OrderLine leaf = OrderLine.create();
-        container.add(leaf);
         order.add(container);
+        container.add(leaf);
         assertThat(order.getOrderElements().size(), equalTo(1));
     }
 
     @Test
     public void testPreservesOrder() throws Exception {
         OrderLineGroup container = OrderLineGroup.create();
-
+        container.useSchedulingDataFor(mockedOrderVersion);
         OrderLine[] created = new OrderLine[100];
         for (int i = 0; i < created.length; i++) {
             created[i] = OrderLine.create();

@@ -33,6 +33,7 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.navalplanner.business.common.entities.OrderSequence;
@@ -44,6 +45,8 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
@@ -116,7 +119,10 @@ public class SubcontractServiceREST implements ISubcontractService {
         }
 
         try {
-            OrderElement orderElement = OrderElementConverter.toEntity(
+            Scenario current = Registry.getScenarioManager().getCurrent();
+            OrderVersion version = OrderVersion.createInitialVersion(current);
+
+            OrderElement orderElement = OrderElementConverter.toEntity(version,
                     orderElementDTO, ConfigurationOrderElementConverter
                             .noAdvanceMeasurements());
 
@@ -124,7 +130,7 @@ public class SubcontractServiceREST implements ISubcontractService {
             if (orderElement instanceof Order) {
                 order = (Order) orderElement;
             } else {
-                order = wrapInOrder(orderElement);
+                order = wrapInOrder(current, version, orderElement);
             }
 
             order.moveCodeToExternalCode();
@@ -145,7 +151,8 @@ public class SubcontractServiceREST implements ISubcontractService {
                 order.setName(subcontractedTaskDataDTO.workDescription);
             }
             order.setCustomer(externalCompany);
-            order.setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
+            order
+                    .setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
             order.setWorkBudget(subcontractedTaskDataDTO.subcontractPrice);
 
             order.validate();
@@ -172,12 +179,15 @@ public class SubcontractServiceREST implements ISubcontractService {
         order.generateOrderElementCodes(numberOfDigits);
     }
 
-    private Order wrapInOrder(OrderElement orderElement) {
+    private Order wrapInOrder(Scenario current, OrderVersion version,
+            OrderElement orderElement) {
         if (orderElement instanceof Order) {
             return (Order) orderElement;
         }
 
         Order order = Order.create();
+        order.setVersionForScenario(current, version);
+        order.useSchedulingDataFor(version);
         order.add(orderElement);
 
         order.setName(_("Order from client"));

@@ -38,6 +38,7 @@ import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.test.planner.entities.TaskTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +64,7 @@ public class OrderLineTest {
     @Test
     public void parentPropertyMustBeSetWhenAddingOrderLineToContainer() {
         OrderLineGroup orderLineGroup = OrderLineGroup.create();
+        orderLineGroup.useSchedulingDataFor(TaskTest.mockOrderVersion());
         OrderLine orderLine = OrderLine.create();
         orderLineGroup.add(orderLine);
         assertThat(orderLine.getParent(), equalTo(orderLineGroup));

@@ -36,15 +36,25 @@ import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TaskTest {
+
+    private static final OrderVersion mockedOrderVersion = mockOrderVersion();
+
+    public static final OrderVersion mockOrderVersion() {
+        OrderVersion result = createNiceMock(OrderVersion.class);
+        replay(result);
+        return result;
+    }
 
     private Task task;
     private HoursGroup hoursGroup;
@@ -53,10 +63,13 @@ public class TaskTest {
         hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
         Order order = new Order();
+        order.useSchedulingDataFor(mockedOrderVersion);
         order.setInitDate(new Date());
         OrderLine orderLine = OrderLine.create();
         order.add(orderLine);
-        TaskSource taskSource = TaskSource.create(orderLine, Arrays
+        SchedulingStateForVersion version = TaskElementTest
+                .mockSchedulingStateVersion(orderLine);
+        TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
                 .asList(hoursGroup));
         task = Task.createTask(taskSource);
     }
@@ -82,9 +95,12 @@ public class TaskTest {
         hoursGroup.setWorkingHours(3);
         OrderLine orderLine = OrderLine.create();
         Order order = new Order();
+        order.useSchedulingDataFor(mockedOrderVersion);
         order.setInitDate(new Date());
         order.add(orderLine);
-        TaskSource taskSource = TaskSource.create(orderLine, Arrays
+        SchedulingStateForVersion version = TaskElementTest
+                .mockSchedulingStateVersion(orderLine);
+        TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
                 .asList(hoursGroup));
         return Task.createTask(taskSource);
     }
