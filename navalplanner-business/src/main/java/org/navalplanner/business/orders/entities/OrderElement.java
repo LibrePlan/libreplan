@@ -26,8 +26,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -60,6 +62,7 @@ import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 
@@ -106,6 +109,8 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     private String externalCode;
+
+    private Map<OrderVersion, SchedulingStateForVersion> schedulingStates = new HashMap<OrderVersion, SchedulingStateForVersion>();
 
     public SchedulingState getSchedulingState() {
         if (schedulingState == null) {

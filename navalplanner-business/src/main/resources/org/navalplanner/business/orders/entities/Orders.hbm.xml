@@ -55,6 +55,14 @@
 
         <property name="externalCode" access="field" />
 
+        <map name="schedulingStates" table="SCHEDULING_STATES_BY_ORDER_VERSION">
+            <key column="ORDER_ELEMENT_ID"></key>
+            <map-key-many-to-many column="ORDER_VERSION_ID"
+                class="org.navalplanner.business.scenarios.entities.OrderVersion" />
+            <many-to-many class="SchedulingStateForVersion"
+                column="SCHEDULING_STATE_FOR_VERSION_ID" />
+        </map>
+
         <joined-subclass name="OrderLineGroup">
             <key column="ORDERELEMENTID"></key>
             <list name="children" access="field" cascade="all">
@@ -154,6 +162,22 @@
 
     </class>
 
+    <class name="SchedulingStateForVersion">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <property name="schedulingStateType" access="field" >
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.orders.entities.SchedulingState$Type</param>
+            </type>
+        </property>
+        <many-to-one name="orderElement" column="ORDER_ELEMENT_ID"></many-to-one>
+        <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="schedulingState" />
+    </class>
+
     <class name="TaskSource">
         <id name="id" access="property" type="long">
 	        <generator class="foreign">
@@ -162,9 +186,10 @@
         </id>
         <version name="version" access="property" type="long" />
         <many-to-one name="orderElement"
-	        class="OrderElement" cascade="none"
-	        unique="true" access="field"/>
-
+               class="OrderElement" cascade="none"
+               unique="true" access="field"/>
+        <many-to-one name="schedulingState" class="SchedulingStateForVersion"
+            cascade="none" unique="true" access="field" />
         <one-to-one name="task" class="org.navalplanner.business.planner.entities.TaskElement"
             constrained="true" cascade="all" access="field" lazy="false"/>
         <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field">

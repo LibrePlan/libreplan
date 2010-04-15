@@ -281,6 +281,8 @@ public class TaskSource extends BaseEntity {
     @NotNull
     private TaskElement task;
 
+    private SchedulingStateForVersion schedulingState;
+
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
     public TaskSource() {
