@@ -11,8 +11,6 @@ MAVEN_REPO := $(CURDIR)/debian/maven-repo
 MAVEN_OPTS := -Pprod,postgresql -Dmaven.test.skip=true -B \
               -s $(CURDIR)/debian/maven-settings.xml
 
-JTA_JAR    ?= $(CURDIR)/debian/jta-1_0_1B-classes.zip
-
 
 define NFO
 @echo "[1;32m$1[0;0m"
@@ -40,7 +38,8 @@ configure-stamp:
 build: build-arch
 
 build-arch: build-arch-stamp
-build-arch-stamp: configure-stamp maven-import-jta
+
+build-arch-stamp: configure-stamp 
 	$(call NFO,Building sources...)
 	# Build arch-dependant stuff
 	$(call CMD,mkdir -p $(MAVEN_REPO))
@@ -54,8 +53,8 @@ clean:
 	# Cleanup commands
 	$(call CMD,$(RM) build-arch-stamp build-indep-stamp configure-stamp)
 	$(call CMD,mkdir -p $(MAVEN_REPO))
-	# This is likely to fail, e.g. if JTA jar file was not imported
-	-$(call CMD,mvn $(MAVEN_OPTS) clean)
+	# This is likely to fail, e.g. needs to be reviewed
+	-$(call CMD,mvn $(MAVEN_OPTS) -npu clean)
 	$(call CMD,$(RM) -r $(CURDIR)/maven-repo)
 	$(call CMD,dh_clean)
 
@@ -109,14 +108,6 @@ binary-arch: build install
 
 binary: binary-indep binary-arch
 
-maven-import-jta: maven-import-jta-stamp
-maven-import-jta-stamp:	$(JTA_JAR)
-	$(call NFO,Importing $(notdir $<)...)
-	$(call CMD,mvn $(MAVEN_OPTS) install:install-file \
-		-DgroupId=javax.transaction -DartifactId=jta \
-		-Dversion=1.0.1B -Dpackaging=jar -Dfile="$<")
-	$(call CMD,touch $@)
-
 
 .PHONY: build clean binary-indep binary-arch binary install install-indep
-.PHONY: install-arch configure maven-import-jta
+.PHONY: install-arch configure 
