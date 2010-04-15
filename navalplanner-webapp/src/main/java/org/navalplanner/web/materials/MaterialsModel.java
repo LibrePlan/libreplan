@@ -121,8 +121,10 @@ public class MaterialsModel implements IMaterialsModel {
     }
 
     @Override
-    public void addMaterialCategory(MaterialCategory parent, MaterialCategory child) throws ValidationException {
-        Validate.notNull(child);
+    public void addMaterialCategory(MaterialCategory parent, String categoryName) throws ValidationException {
+        Validate.notNull(categoryName);
+
+        MaterialCategory child = MaterialCategory.create(_(categoryName));
 
         final MaterialCategory materialCategory = findMaterialCategory(child);
         if (materialCategory != null) {

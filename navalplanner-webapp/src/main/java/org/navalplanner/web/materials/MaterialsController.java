@@ -248,14 +248,13 @@ public class MaterialsController extends
             throw new WrongValueException(txtCategory, _("cannot be null or empty"));
         }
 
-        final MaterialCategory category = MaterialCategory.create(_(categoryName));
         MaterialCategory parent = null;
         final Treeitem treeitem = categoriesTree.getSelectedItem();
         if (treeitem != null) {
             parent = (MaterialCategory) treeitem.getValue();
         }
         try {
-            materialsModel.addMaterialCategory(parent, category);
+            materialsModel.addMaterialCategory(parent, categoryName);
             txtCategory.setValue("");
             reloadCategoriesTree(treeitem);
         } catch (ValidationException e) {
