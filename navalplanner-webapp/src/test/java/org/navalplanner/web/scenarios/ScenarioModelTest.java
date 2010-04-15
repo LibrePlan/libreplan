@@ -23,6 +23,7 @@ package org.navalplanner.web.scenarios;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
@@ -46,7 +47,6 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -88,9 +88,6 @@ public class ScenarioModelTest {
     }
 
     @Autowired
-    private IScenarioManager scenarioManager;
-
-    @Autowired
     private IScenarioModel scenarioModel;
 
     @Autowired
@@ -112,13 +109,6 @@ public class ScenarioModelTest {
     private SessionFactory sessionFactory;
 
     private Order givenStoredOrderInDefaultScenario() {
-        Order order = Order.create();
-        order.setCode(UUID.randomUUID().toString());
-        order.setName("order-name");
-        order.setInitDate(new Date());
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
-
         Scenario defaultScenario = transactionService
                 .runOnAnotherReadOnlyTransaction(new IOnTransaction<Scenario>() {
 
@@ -127,8 +117,19 @@ public class ScenarioModelTest {
                         return PredefinedScenarios.MASTER.getScenario();
                     }
                 });
-        OrderVersion orderVersion = defaultScenario.addOrder(order);
-        order.setVersionForScenario(defaultScenario, orderVersion);
+        return givenStoredOrderInScenario(defaultScenario);
+    }
+
+    private Order givenStoredOrderInScenario(Scenario scenario) {
+        Order order = Order.create();
+        order.setCode(UUID.randomUUID().toString());
+        order.setName("order-name");
+        order.setInitDate(new Date());
+        order.setCalendar(configurationDAO.getConfiguration()
+                .getDefaultCalendar());
+
+        OrderVersion orderVersion = scenario.addOrder(order);
+        order.setVersionForScenario(scenario, orderVersion);
 
         OrderLine orderLine = OrderLine
                 .createOrderLineWithUnfixedPercentage(1000);
@@ -243,6 +244,38 @@ public class ScenarioModelTest {
 
         assertNotNull(orderDAO.find(order.getId()));
         assertNotNull(orderVersionDAO.find(orderVersion.getId()));
+    }
+
+    @Test
+    public void testRemoveScenarioWithOrdersJustInThisScenario()
+            throws InstanceNotFoundException {
+        Scenario scenario = givenStoredScenario();
+        Order order = givenStoredOrderInScenario(scenario);
+
+        int previous = scenarioModel.getScenarios().size();
+
+        // Reload scenario information
+        sessionFactory.getCurrentSession().evict(scenario);
+        scenario = scenarioDAO.find(scenario.getId());
+
+        OrderVersion orderVersion = scenario.getOrderVersion(order);
+
+        scenarioModel.remove(scenario, false);
+        assertThat(scenarioModel.getScenarios().size(), equalTo(previous - 1));
+
+        try {
+            orderDAO.find(order.getId());
+            fail("Order should be removed");
+        } catch (InstanceNotFoundException e) {
+            // Ok
+        }
+
+        try {
+            orderVersionDAO.find(orderVersion.getId());
+            fail("Order version should be removed");
+        } catch (InstanceNotFoundException e) {
+            // Ok
+        }
     }
 
 }
