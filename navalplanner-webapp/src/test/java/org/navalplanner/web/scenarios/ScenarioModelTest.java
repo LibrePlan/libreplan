@@ -1,0 +1,220 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.navalplanner.web.scenarios;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
+
+import java.util.Date;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Tests for {@link ScenarioModel}.
+ *
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+@Transactional
+public class ScenarioModelTest {
+
+    @Resource
+    private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Resource
+    private IDataBootstrap scenariosBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
+        configurationBootstrap.loadRequiredData();
+        scenariosBootstrap.loadRequiredData();
+    }
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    @Autowired
+    private IScenarioModel scenarioModel;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    private Order givenStoredOrderInCurrentScenario() {
+        Order order = Order.create();
+        order.setCode(UUID.randomUUID().toString());
+        order.setName("order-name");
+        order.setInitDate(new Date());
+        order.setCalendar(configurationDAO.getConfiguration()
+                .getDefaultCalendar());
+
+        Scenario defaultScenario = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Scenario>() {
+
+                    @Override
+                    public Scenario execute() {
+                        return PredefinedScenarios.MASTER.getScenario();
+                    }
+                });
+        OrderVersion orderVersion = defaultScenario.addOrder(order);
+        order.setVersionForScenario(defaultScenario, orderVersion);
+
+        OrderLine orderLine = OrderLine
+                .createOrderLineWithUnfixedPercentage(1000);
+        order.add(orderLine);
+        orderLine.setCode(UUID.randomUUID().toString());
+        orderLine.setName("order-line-name");
+
+        orderDAO.save(order);
+        orderDAO.flush();
+
+        return order;
+    }
+
+    private Scenario givenStoredScenario() {
+        Scenario defaultScenario = PredefinedScenarios.MASTER.getScenario();
+        return givenStoredScenario(defaultScenario);
+    }
+
+    private Scenario givenStoredScenario(Scenario predecessor) {
+        Scenario scenario = predecessor.newDerivedScenario();
+        scenario.setName("scenario-name-" + UUID.randomUUID());
+
+        scenarioDAO.save(scenario);
+        scenarioDAO.flush();
+        scenario.dontPoseAsTransientObjectAnymore();
+
+        return scenario;
+    }
+
+    @Test
+    @Rollback(false)
+    public void testNotRollback() {
+        // Just to do not make rollback in order to have the default scenario
+    }
+
+    @Test
+    public void testCreateAndSaveScenarioWithoutOrders() {
+        int previous = scenarioModel.getScenarios().size();
+
+        Scenario defaultScenario = PredefinedScenarios.MASTER.getScenario();
+        scenarioModel.initCreateDerived(defaultScenario);
+
+        Scenario newScenario = scenarioModel.getScenario();
+        newScenario.setName("scenario-name-" + UUID.randomUUID());
+
+        scenarioModel.confirmSave();
+        assertThat(scenarioModel.getScenarios().size(), equalTo(previous + 1));
+        assertThat(scenarioModel.getScenarios().get(previous).getId(),
+                equalTo(newScenario.getId()));
+    }
+
+    @Test
+    public void testCreateAndSaveScenarioWithOrders() {
+        Order order = givenStoredOrderInCurrentScenario();
+
+        int previous = scenarioModel.getScenarios().size();
+
+        Scenario defaultScenario = PredefinedScenarios.MASTER.getScenario();
+        scenarioModel.initCreateDerived(defaultScenario);
+
+        Scenario newScenario = scenarioModel.getScenario();
+        newScenario.setName("scenario-name-" + UUID.randomUUID());
+
+        scenarioModel.confirmSave();
+        assertThat(scenarioModel.getScenarios().size(), equalTo(previous + 1));
+        Scenario newScenarioSaved = scenarioModel.getScenarios().get(previous);
+        assertThat(newScenarioSaved.getId(), equalTo(newScenario.getId()));
+        assertThat(newScenarioSaved.getOrders().size(), equalTo(defaultScenario
+                .getOrders().size()));
+        assertNotNull(newScenarioSaved.getOrders().get(order));
+        assertThat(newScenarioSaved.getOrders().get(order).getOwnerScenario()
+                .getId(), equalTo(defaultScenario.getId()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveDefaultScenario() {
+        Scenario defaultScenario = PredefinedScenarios.MASTER.getScenario();
+        scenarioModel.remove(defaultScenario);
+    }
+
+    @Test
+    public void testRemoveScenarioWithoutOrders() {
+        Scenario scenario = givenStoredScenario();
+
+        int previous = scenarioModel.getScenarios().size();
+
+        scenarioModel.remove(scenario);
+        assertThat(scenarioModel.getScenarios().size(), equalTo(previous - 1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveScenarioWithDerivedScenraios() {
+        Scenario scenario = givenStoredScenario();
+        Scenario derived = givenStoredScenario(scenario);
+        scenarioModel.remove(scenario);
+    }
+
+}
