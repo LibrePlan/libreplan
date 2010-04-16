@@ -174,12 +174,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         return getCurrentSchedulingData().getVersion();
     }
 
-    public void writeSchedulingStateChanges() {
+    public void writeSchedulingDataChanges() {
         Data currentSchedulingState = getCurrentSchedulingData();
         currentSchedulingState.writeSchedulingDataChanges();
         List<OrderElement> children = getChildren();
         for (OrderElement each : children) {
-            each.writeSchedulingStateChanges();
+            each.writeSchedulingDataChanges();
         }
     }
 

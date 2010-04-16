@@ -465,7 +465,7 @@ public class OrderModel implements IOrderModel {
         reattachCurrentTaskSources();
         deleteOrderElementWithoutParent();
         synchronizeWithSchedule(order);
-        order.writeSchedulingStateChanges();
+        order.writeSchedulingDataChanges();
 
         order.dontPoseAsTransientObjectAnymore();
         saveDerivedScenarios();
