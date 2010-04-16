@@ -21,7 +21,7 @@ $ sudo apt-get install libqt4-webkit libqt4-svg xvfb
 
 Descargamos a utilidade CutyCapt
 
-$ wget http://www.navalplan.org/fileadmin/debian/cutycapt_20100108_i386.deb
+$ wget http://navalplan.org/downloads/cutycapt_20100108_i386.deb
 
 Instalamos CutyCapt
 
