@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.scenarios.entities;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.Order;
@@ -42,6 +43,7 @@ public class OrderVersion extends BaseEntity {
     }
 
     private OrderVersion(Scenario ownerScenario) {
+        Validate.notNull(ownerScenario);
         this.ownerScenario = ownerScenario;
     }
 
