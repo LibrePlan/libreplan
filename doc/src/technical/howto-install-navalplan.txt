@@ -21,7 +21,7 @@ $ sudo apt-get install libqt4-webkit libqt4-svg xvfb
 
 Descargamos a utilidade CutyCapt
 
-$ wget http://navalplan.org/downloads/cutycapt_20100108_i386.deb
+$ wget http://www.navalplan.org/fileadmin/debian/cutycapt_20100108_i386.deb
 
 Instalamos CutyCapt
 
@@ -92,99 +92,6 @@ $ sudo /etc/init.d/tomcat6 restart
 
 
 Neste intre a aplicación debería estar accesible en : http://localhost:8080/navalplanner-webapp/
-
----------------------------------------------------------------------------
-
-Instalación de scripts de actualización, copiaranse os seguintes scripts no Escritorio:
-
-   * navalapp-scripts-update.sh: ao executarse descarga as últimas versión dos scripts navalapp-update.sh e navalapp-database-update.sh
-   * navalapp-application-update.sh: ao executarse descarga e instala a última versión da aplicación dispoñible
-   * navalapp-database-update.sh: carga a última versión da base de datos por defecto.
-
-----navalapp-scripts-update.sh ----------------------------------
-
-#!/bin/sh
-set -e
-
-BASE_URL=http://navalplan.org/downloads
-
-wget $BASE_URL/navalapp-application-update.txt
-wget $BASE_URL/navalapp-database-update.txt
-
-mv navalapp-application-update.txt navalapp-application-update.sh
-mv navalapp-database-update.txt navalapp-database-update.sh
-
-chmod +x navalapp-application-update.sh navalapp-database-update.sh
-
-echo Se han actualizado los scripts de actualización pulse una tecla para terminar
-
-read foo
-----------------------------------------------------------------
-
-
---- navalapp-database-update.sh ----------------------------------
-#!/bin/sh
-set -e
-
-CONFIG_FILENAME=navalapp-download-config.txt
-UPDATE_CONFIG_URL=http://navalplan.org/downloads/$CONFIG_FILENAME
-
-wget $UPDATE_CONFIG_URL
-. ./$CONFIG_FILENAME
-rm -f $CONFIG_FILENAME
-
-DUMP_FILENAME_UNCOMPRESSED=`echo $NAVAL_DATABASE_DUMP_FILENAME|sed "s/\.bz2$//g"`
-
-cd /tmp
-sudo su -c "rm -f /tmp/$NAVAL_DATABASE_DUMP_FILENAME"
-sudo su -c "rm -f /tmp/$DUMP_FILENAME_UNCOMPRESSED"
-wget $NAVAL_DATABASE_DUMP_URL
-bunzip2 $NAVAL_DATABASE_DUMP_FILENAME
-
-sudo su -c "psql navaldev < $DUMP_FILENAME_UNCOMPRESSED" postgres
-cd -
-
-
-echo Se han actualizado la base de datos $DUMP_FILENAME_UNCOMPRESSED con la versión inicial de datos de prueba
-echo Pulse una tecla para terminar
-
-read foo
-------------------------------------------------------------------------
-
-----navalapp-application-update.sh ----------------------------------
-#!/bin/sh
-set -e
-
-CONFIG_FILENAME=navalapp-download-config.txt
-UPDATE_CONFIG_URL=http://navalplan.org/downloads/$CONFIG_FILENAME
-
-wget $UPDATE_CONFIG_URL
-. ./$CONFIG_FILENAME
-rm -f $CONFIG_FILENAME
-
-HOME_NAVALAPP=/var/lib/tomcat6
-
-
-cd $HOME_NAVALAPP/webapps
-sudo rm -f $NAVAL_APP_WAR_FILENAME
-sudo wget  $NAVAL_APP_WAR_URL
-sudo chown tomcat6.tomcat6 $NAVAL_APP_WAR_FILENAME
-sudo /etc/init.d/tomcat6 restart
-cd -
-
-
-echo Se han actualizado la aplicacion puede consultarla en http://localhost:8080//navalplanner-webapp/
-echo Pulse una tecla para terminar
-
-read foo
-
-------------------------------------------------------------------------
-
-Cambianse os permisos para que sexan executables.
-
-chmod +x navalapp-database-update.sh navalapp-application-update.sh navalapp-scripts-update.sh
-
-Comprobarase que os scripts se executan correctamente e a aplicación segue a funcionar.
 
 ------------------------------------------------------------------------
 Se quixeramos facer un volcado da base de datos so precisariamos empregar o seguinte comando, isto non é necesario para a instalación.
