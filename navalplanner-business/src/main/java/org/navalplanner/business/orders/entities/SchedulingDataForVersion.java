@@ -72,6 +72,7 @@ public class SchedulingDataForVersion extends BaseEntity {
             if (schedulingStateType != Type.NO_SCHEDULED) {
                 throw new IllegalStateException("already initialized");
             }
+            this.schedulingStateType = type;
         }
 
         public ITypeChangedListener onTypeChangeListener() {
