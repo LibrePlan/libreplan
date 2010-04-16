@@ -88,7 +88,8 @@ public class SchedulingDataForVersion extends BaseEntity {
         }
 
         public void requestedCreationOf(TaskSource taskSource) {
-            Validate.isTrue(this.taskSource == null, "there is no task source");
+            Validate.isTrue(this.taskSource == null,
+                    "there must be no task source");
             this.taskSource = taskSource;
         }
 
