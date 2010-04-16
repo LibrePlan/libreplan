@@ -20,17 +20,22 @@
 
 package org.zkoss.ganttz.resourceload;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.util.MutableTreeModel;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.OpenEvent;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
@@ -45,6 +50,9 @@ public class ResourceLoadLeftPane extends HtmlMacroComponent {
 
     private MutableTreeModel<LoadTimeLine> modelForTree;
     private final ResourceLoadList resourceLoadList;
+
+    private WeakReferencedListeners<ISeeScheduledOfListener> scheduleListeners = WeakReferencedListeners
+            .create();
 
     public ResourceLoadLeftPane(
 MutableTreeModel<LoadTimeLine> modelForTree,
@@ -76,8 +84,50 @@ MutableTreeModel<LoadTimeLine> modelForTree,
                 item.appendChild(row);
                 row.appendChild(cell);
                 cell.appendChild(component);
+
+                appendOperations(row, line);
+
                 collapse(line);
                 addExpandedListener(item, line);
+            }
+
+            private void appendOperations(final Treerow row,
+                    final LoadTimeLine line) {
+                if (line.getRole().isVisibleScheduled()) {
+                    Treecell cell = new Treecell();
+                    appendButtonPlan(cell, line);
+                    row.appendChild(cell);
+                }
+            }
+
+            private void appendButtonPlan(final Treecell cell,
+                    final LoadTimeLine taskLine) {
+                Button buttonPlan = new Button();
+                buttonPlan.setWidth("5px");
+                buttonPlan.setHeight("5px");
+                buttonPlan.setSclass("icono");
+                buttonPlan.setImage("/common/img/ico_planificador1.png");
+                buttonPlan.setHoverImage("/common/img/ico_planificador.png");
+                buttonPlan.setTooltiptext(_("See scheduling"));
+                buttonPlan.addEventListener("onClick", new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        schedule(taskLine);
+                    }
+                });
+                cell.appendChild(buttonPlan);
+            }
+
+            public void schedule(final LoadTimeLine taskLine) {
+
+                scheduleListeners
+                        .fireEvent(new IListenerNotification<ISeeScheduledOfListener>() {
+                            @Override
+                            public void doNotify(
+                                    ISeeScheduledOfListener listener) {
+                                listener.seeScheduleOf(taskLine);
+                            }
+                        });
             }
 
             private void addExpandedListener(final Treeitem item,
@@ -194,5 +244,10 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         result.appendChild(new Label(originalValue));
         parent.appendChild(result);
         return result;
+    }
+
+    public void addSeeScheduledOfListener(
+            ISeeScheduledOfListener seeScheduledOfListener) {
+        scheduleListeners.addListener(seeScheduledOfListener);
     }
 }

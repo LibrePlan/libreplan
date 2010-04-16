@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.adapters;
 
+import java.util.Map;
+
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 
@@ -60,4 +62,5 @@ public interface IDomainAndBeansMapper<T> {
      */
     Task findAssociatedBean(T domainObject) throws IllegalArgumentException;
 
+    public Map<T, Task> getMapDomainToTask();
 }

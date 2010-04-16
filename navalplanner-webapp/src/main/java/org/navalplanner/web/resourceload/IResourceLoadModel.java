@@ -23,6 +23,7 @@ package org.navalplanner.web.resourceload;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -38,4 +39,8 @@ public interface IResourceLoadModel {
     Interval getViewInterval();
 
     ZoomLevel calculateInitialZoomLevel();
+
+    Order getOrderByTask(TaskElement task);
+
+    boolean userCanRead(Order order, String loginName);
 }

@@ -28,12 +28,17 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
+import org.navalplanner.web.planner.order.IOrderPlanningGate;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
+import org.zkoss.ganttz.resourceload.ISeeScheduledOfListener;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -64,6 +69,10 @@ public class ResourceLoadController implements Composer {
     private TimeTracker timeTracker;
 
     private transient IFilterChangedListener filterChangedListener;
+
+    private transient ISeeScheduledOfListener seeScheduledOfListener;
+
+    private IOrderPlanningGate planningControllerEntryPoints;
 
     public ResourceLoadController() {
     }
@@ -101,8 +110,8 @@ public class ResourceLoadController implements Composer {
             this.parent.appendChild(resourcesLoadPanel);
 
             resourcesLoadPanel.afterCompose();
+            addListeners();
             addCommands(resourcesLoadPanel);
-
         } catch (IllegalArgumentException e) {
             try {
                 Messagebox
@@ -116,6 +125,7 @@ public class ResourceLoadController implements Composer {
     }
 
     private void addListeners() {
+        /* Listener to filter */
         filterChangedListener = new IFilterChangedListener() {
 
             @Override
@@ -123,7 +133,17 @@ public class ResourceLoadController implements Composer {
                 onApplyFilter(filter);
             }
         };
-        this.resourcesLoadPanel.addFilterListener(filterChangedListener);
+        resourcesLoadPanel.addFilterListener(filterChangedListener);
+
+        /* Listener to show the scheduling screen */
+        seeScheduledOfListener = new ISeeScheduledOfListener() {
+
+            @Override
+            public void seeScheduleOf(LoadTimeLine taskLine) {
+                onSeeScheduleOf(taskLine);
+            }
+        };
+        resourcesLoadPanel.addSeeScheduledOfListener(seeScheduledOfListener);
     }
 
     public void onApplyFilter(boolean filterByResources) {
@@ -131,7 +151,6 @@ public class ResourceLoadController implements Composer {
     }
 
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
-
         resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[0]));
     }
 
@@ -150,11 +169,51 @@ public class ResourceLoadController implements Composer {
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker);
-            addListeners();
         }
     }
 
     public void filterBy(Order order) {
         this.filterBy = order;
     }
+
+    public void setPlanningControllerEntryPoints(
+            IOrderPlanningGate planningControllerEntryPoints) {
+        this.planningControllerEntryPoints = planningControllerEntryPoints;
+    }
+
+    public IOrderPlanningGate getPlanningControllerEntryPoints() {
+        return this.planningControllerEntryPoints;
+    }
+
+    private void onSeeScheduleOf(LoadTimeLine taskLine) {
+
+        TaskElement task = (TaskElement) taskLine.getRole().getEntity();
+        Order order = resourceLoadModel.getOrderByTask(task);
+
+        if (resourceLoadModel.userCanRead(order, SecurityUtils
+                .getSessionUserLoginName())) {
+            if (order.isScheduled()) {
+                planningControllerEntryPoints.goToTaskResourceAllocation(order,
+                    task);
+             } else {
+                try {
+                    Messagebox.show(_("The order has no scheduled elements"),
+                            _("Information"), Messagebox.OK,
+                            Messagebox.INFORMATION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            try {
+                Messagebox
+                        .show(_("You don't have read access to this order"),
+                                _("Information"), Messagebox.OK,
+                                Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+}
+
 }

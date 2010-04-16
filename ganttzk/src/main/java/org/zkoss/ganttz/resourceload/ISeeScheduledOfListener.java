@@ -18,23 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner.order;
+package org.zkoss.ganttz.resourceload;
 
-import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.entities.TaskElement;
+import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 
-/**
- * This interface allows to go to the schedule and the details of an
- * {@link Order}.
- *
- * @author Óscar González Fernández <ogonzalez@igalia.com>
- */
-public interface IOrderPlanningGate {
+public interface ISeeScheduledOfListener {
 
-    void goToTaskResourceAllocation(Order order, TaskElement task);
-
-    void goToScheduleOf(Order order);
-
-    void goToOrderDetails(Order order);
+    public void seeScheduleOf(LoadTimeLine taskLine);
 
 }

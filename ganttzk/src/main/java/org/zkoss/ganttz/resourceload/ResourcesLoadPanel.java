@@ -266,4 +266,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         };
     }
 
+    public void addSeeScheduledOfListener(
+            ISeeScheduledOfListener seeScheduledOfListener) {
+        leftPane.addSeeScheduledOfListener(seeScheduledOfListener);
+    }
 }

@@ -39,17 +39,17 @@ public class LoadTimelineTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadTimelineMustHaveANotNullName() {
-        new LoadTimeLine(null, Collections.<LoadPeriod> emptyList());
+        new LoadTimeLine(null, Collections.<LoadPeriod> emptyList(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadTimelineMustHaveANotEmptyName() {
-        new LoadTimeLine("", Collections.<LoadPeriod> emptyList());
+        new LoadTimeLine("", Collections.<LoadPeriod> emptyList(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadTimelineCannotHaveNullLoadPeriods() {
-        new LoadTimeLine("bla", null);
+        new LoadTimeLine("bla", null, null);
     }
 
     @Test
@@ -63,13 +63,13 @@ public class LoadTimelineTest {
         loadTimeLine = new LoadTimeLine(conceptName, Arrays
                 .asList(new LoadPeriod(new LocalDate(2009, 10, 5),
                                 new LocalDate(2009, 10, 11), 100, 20,
-                                new LoadLevel(20))));
+                                new LoadLevel(20))), null);
     }
 
     @Test
     public void aLoadTimelineWithZeroLoadPeriodsIsEmpty() {
         LoadTimeLine timeline = new LoadTimeLine("bla", Collections
-                .<LoadPeriod> emptyList());
+                .<LoadPeriod> emptyList(), null);
         assertTrue(timeline.isEmpty());
     }
 
@@ -79,7 +79,8 @@ public class LoadTimelineTest {
                 new LocalDate(2009, 10, 11), 100, 20, new LoadLevel(20));
         LoadPeriod l2 = new LoadPeriod(new LocalDate(2009, 5, 3),
                 new LocalDate(2009, 6, 3), 100, 20, new LoadLevel(20));
-        LoadTimeLine loadTimeLine = new LoadTimeLine("bla", Arrays.asList(l1, l2));
+        LoadTimeLine loadTimeLine = new LoadTimeLine("bla", Arrays.asList(l1,
+                l2), null);
 
         List<LoadPeriod> loadPeriods = loadTimeLine.getLoadPeriods();
         assertThat(loadPeriods.get(0), sameInstance(l2));
@@ -92,7 +93,7 @@ public class LoadTimelineTest {
                 new LocalDate(2009, 10, 11), 100, 20, new LoadLevel(20));
         LoadPeriod l2 = new LoadPeriod(new LocalDate(2009, 5, 3),
                 new LocalDate(2009, 10, 10), 100, 20, new LoadLevel(20));
-        new LoadTimeLine("bla", Arrays.asList(l1, l2));
+        new LoadTimeLine("bla", Arrays.asList(l1, l2), null);
     }
 
 }

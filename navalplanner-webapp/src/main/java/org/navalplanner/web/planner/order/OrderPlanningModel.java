@@ -1238,6 +1238,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     @Override
+    public PlanningState getPlanningState() {
+        return planningState;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void forceLoadLabelsAndCriterionRequirements() {
         orderDAO.reattach(orderReloaded);

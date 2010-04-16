@@ -29,6 +29,7 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
@@ -170,8 +171,28 @@ public class MultipleTabsPlannerController implements Composer,
 
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
                 resourceLoadController, upCommand(),
-                resourceLoadControllerGlobal,
-                breadcrumbs);
+                resourceLoadControllerGlobal, new IOrderPlanningGate() {
+
+                    @Override
+                    public void goToScheduleOf(Order order) {
+                        mode.goToOrderMode(order);
+                        getTabsRegistry().show(planningTab);
+                    }
+
+                    @Override
+                    public void goToOrderDetails(Order order) {
+                        // it do nothing
+                    }
+
+                    @Override
+                    public void goToTaskResourceAllocation(Order order,
+                            TaskElement task) {
+                        orderPlanningController.setShowedTask(task);
+                        mode.goToOrderMode(order);
+                        getTabsRegistry().show(planningTab);
+                    }
+
+                }, breadcrumbs);
         ordersTab = OrdersTabCreator.create(mode, orderCRUDController,
                 breadcrumbs, new IOrderPlanningGate() {
 
@@ -187,6 +208,11 @@ public class MultipleTabsPlannerController implements Composer,
                         getTabsRegistry().show(ordersTab);
                     }
 
+                    @Override
+                    public void goToTaskResourceAllocation(Order order,
+                            TaskElement task) {
+                        // do nothing
+                    }
 
                 }, parameters);
         final State<Void> typeChanged = typeChangedState();
