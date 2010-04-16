@@ -299,21 +299,12 @@ public class SaveCommand implements ISaveCommand {
     private void createAndSaveNewOrderVersion(Scenario currentScenario) {
         OrderVersion previousOrderVersion = currentScenario
                 .getOrderVersion(order);
-
         OrderVersion newOrderVersion = OrderVersion
                 .createInitialVersion(currentScenario);
         currentScenario.setOrderVersion(order, newOrderVersion);
         scenarioDAO.save(currentScenario);
-
-        for (Scenario scenario : scenarioDAO
-                .getDerivedScenarios(currentScenario)) {
-            if ((scenario.getOrderVersion(order) != null)
-                    && (scenario.getOrderVersion(order).getId()
-                            .equals(previousOrderVersion.getId()))) {
-                scenario.setOrderVersion(order, newOrderVersion);
-                scenarioDAO.save(scenario);
-            }
-        }
+        scenarioDAO.updateDerivedScenariosWithNewVersion(previousOrderVersion,
+                order, currentScenario, newOrderVersion);
     }
 
 }

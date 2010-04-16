@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
@@ -170,6 +171,19 @@ public class Scenario extends BaseEntity {
 
     public boolean contains(Order each) {
         return orders.containsKey(each);
+    }
+
+    /**
+     * @return If this scenario is related to previousOrderVersion for the order
+     *         specified
+     */
+    public boolean usesVersion(OrderVersion previousOrderVersion, Order order) {
+        Validate.notNull(order);
+        Validate.notNull(previousOrderVersion);
+        OrderVersion orderVersionForThisScenario = getOrderVersion(order);
+        return orderVersionForThisScenario != null
+                && orderVersionForThisScenario.getId().equals(
+                        previousOrderVersion.getId());
     }
 
 }

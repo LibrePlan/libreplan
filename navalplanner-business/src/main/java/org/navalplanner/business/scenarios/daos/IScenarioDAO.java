@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
@@ -46,5 +48,9 @@ public interface IScenarioDAO extends IGenericDAO<Scenario, Long> {
     List<Scenario> findByPredecessor(Scenario scenario);
 
     List<Scenario> getDerivedScenarios(Scenario scenario);
+
+    void updateDerivedScenariosWithNewVersion(
+            OrderVersion previousOrderVersion, Order order,
+            Scenario currentScenario, OrderVersion newOrderVersion);
 
 }

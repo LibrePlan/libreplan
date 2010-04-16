@@ -31,6 +31,7 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +160,18 @@ public class ScenarioDAO extends GenericDAOHibernate<Scenario, Long> implements
         }
 
         return result;
+    }
+
+    @Override
+    public void updateDerivedScenariosWithNewVersion(
+            OrderVersion previousOrderVersion, Order order,
+            Scenario currentScenario, OrderVersion newOrderVersion) {
+        for (Scenario each : getDerivedScenarios(currentScenario)) {
+            if (each.usesVersion(previousOrderVersion, order)) {
+                each.setOrderVersion(order, newOrderVersion);
+                save(each);
+            }
+        }
     }
 
 }
