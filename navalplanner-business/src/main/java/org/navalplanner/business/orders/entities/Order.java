@@ -412,6 +412,9 @@ public class Order extends OrderLineGroup {
             return true;
         if (obj == null || isNewObject())
             return false;
+        if (!(obj instanceof Order)) {
+            return false;
+        }
         Order other = (Order) obj;
         if (getId() == null) {
             if (other.getId() != null)
