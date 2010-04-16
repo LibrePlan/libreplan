@@ -49,6 +49,8 @@ public class SchedulingDataForVersion extends BaseEntity {
 
         private final OrderVersion originOrderVersion;
 
+        private boolean hasPendingChanges = false;
+
         private Data(OrderVersion orderVersion,
                 SchedulingDataForVersion version,
                 TaskSource taskSource,
@@ -68,50 +70,67 @@ public class SchedulingDataForVersion extends BaseEntity {
             return schedulingStateType;
         }
 
+        private void setSchedulingStateType(
+                SchedulingState.Type schedulingStateType) {
+            this.schedulingStateType = schedulingStateType;
+            hasPendingChanges = true;
+        }
+
+        private void setTaskSource(TaskSource taskSource) {
+            hasPendingChanges = true;
+            this.taskSource = taskSource;
+        }
+
         public void initializeType(Type type) {
-            if (schedulingStateType != Type.NO_SCHEDULED) {
+            if (getSchedulingStateType() != Type.NO_SCHEDULED) {
                 throw new IllegalStateException("already initialized");
             }
-            this.schedulingStateType = type;
+            this.setSchedulingStateType(type);
         }
 
         public ITypeChangedListener onTypeChangeListener() {
             return new ITypeChangedListener() {
                 @Override
                 public void typeChanged(Type newType) {
-                    schedulingStateType = newType;
+                    setSchedulingStateType(newType);
                 }
             };
         }
 
         public void taskSourceRemovalRequested() {
-            taskSource = null;
+            setTaskSource(null);
         }
 
         public void requestedCreationOf(TaskSource taskSource) {
-            Validate.isTrue(this.taskSource == null,
+            Validate.isTrue(this.getTaskSource() == null,
                     "there must be no task source");
-            this.taskSource = taskSource;
+            this.setTaskSource(taskSource);
         }
 
         public void replaceCurrentTaskSourceWith(TaskSource newTaskSource) {
-            Validate.isTrue(this.taskSource != null,
+            Validate.isTrue(this.getTaskSource() != null,
                     "there must be a task source to replace");
-            this.taskSource = newTaskSource;
+            this.setTaskSource(newTaskSource);
         }
 
         public SchedulingDataForVersion getVersion() {
             return originVersion;
         }
 
-        public void writeSchedulingStateChanges() {
-            this.originVersion.schedulingStateType = this.schedulingStateType;
-            this.originVersion.taskSource = this.taskSource;
+        public void writeSchedulingDataChanges() {
+            this.originVersion.schedulingStateType = this.getSchedulingStateType();
+            this.originVersion.taskSource = this.getTaskSource();
+            hasPendingChanges = false;
         }
 
         public OrderVersion getOriginOrderVersion() {
             return originOrderVersion;
         }
+
+        public boolean hasPendingChanges() {
+            return hasPendingChanges;
+        }
+
     }
 
     public static SchedulingDataForVersion createInitialFor(OrderElement orderElement) {

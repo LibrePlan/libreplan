@@ -137,6 +137,20 @@ public abstract class OrderElement extends IntegrationEntity implements
         return result;
     }
 
+    public boolean hasSchedulingDataBeingModified() {
+        return getCurrentSchedulingData().hasPendingChanges()
+                || someSchedullingDataModified();
+    }
+
+    private boolean someSchedullingDataModified() {
+        for (OrderElement each : getChildren()) {
+            if (each.hasSchedulingDataBeingModified()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected boolean isSchedulingDataInitialized() {
         return current != null;
     }
@@ -162,7 +176,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public void writeSchedulingStateChanges() {
         Data currentSchedulingState = getCurrentSchedulingData();
-        currentSchedulingState.writeSchedulingStateChanges();
+        currentSchedulingState.writeSchedulingDataChanges();
         List<OrderElement> children = getChildren();
         for (OrderElement each : children) {
             each.writeSchedulingStateChanges();

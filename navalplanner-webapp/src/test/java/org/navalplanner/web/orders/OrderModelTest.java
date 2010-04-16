@@ -234,6 +234,17 @@ public class OrderModelTest {
         assertTrue(taskSourceDAO.exists(lineTaskSource.getId()));
     }
 
+    @Test
+    public void itKnowsIfSchedulingDataHasBeenModified() {
+        Order order = givenOrderFromPrepareForCreate();
+        assertFalse(order.hasSchedulingDataBeingModified());
+        OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
+        order.add(line);
+        assertFalse(order.hasSchedulingDataBeingModified());
+        line.getSchedulingState().schedule();
+        assertTrue(order.hasSchedulingDataBeingModified());
+    }
+
     @Ignore("Test ignored until having the possibility to have a user " +
             "session from tests")
     @Test
