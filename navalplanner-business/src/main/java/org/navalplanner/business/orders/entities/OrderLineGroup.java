@@ -77,7 +77,7 @@ public class OrderLineGroup extends OrderElement implements
         @Override
         protected SchedulingState getSchedulingStateFrom(OrderElement node) {
             if (!node.isSchedulingDataInitialized()) {
-                node.useSchedulingDataFor(getCurrentSchedulingState()
+                node.useSchedulingDataFor(getCurrentSchedulingData()
                         .getOriginOrderVersion());
             }
             return node.getSchedulingState();

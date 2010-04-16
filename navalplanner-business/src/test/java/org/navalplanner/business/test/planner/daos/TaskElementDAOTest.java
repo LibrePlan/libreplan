@@ -55,7 +55,7 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskGroupSynchronization;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -146,10 +146,10 @@ public class TaskElementDAOTest {
                 .setupVersionUsing(scenarioManager,
                 orderLine.getOrder());
         orderLine.useSchedulingDataFor(orderVersion);
-        SchedulingStateForVersion schedulingStateForVersion = orderLine
-                .getCurrentSchedulingStateForVersion();
+        SchedulingDataForVersion schedulingDataForVersion = orderLine
+                .getCurrentSchedulingDataForVersion();
         TaskSource taskSource = TaskSource.create(orderLine,
-                schedulingStateForVersion, Arrays.asList(associatedHoursGroup));
+                schedulingDataForVersion, Arrays.asList(associatedHoursGroup));
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(taskSourceDAO);
         Task task = (Task) taskSource.getTask();
@@ -188,10 +188,10 @@ public class TaskElementDAOTest {
                 .setupVersionUsing(scenarioManager, orderLine
                         .getOrder());
         orderLine.useSchedulingDataFor(orderVersion);
-        SchedulingStateForVersion schedulingStateForVersion = orderLine
-                .getCurrentSchedulingStateForVersion();
+        SchedulingDataForVersion schedulingDataForVersion = orderLine
+                .getCurrentSchedulingDataForVersion();
         TaskSource taskSource = TaskSource.createForGroup(orderLine,
-                schedulingStateForVersion);
+                schedulingDataForVersion);
         TaskGroupSynchronization synchronization = new TaskGroupSynchronization(
                 taskSource, Collections.<TaskSourceSynchronization> emptyList()) {
 

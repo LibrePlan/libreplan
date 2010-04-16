@@ -50,7 +50,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.StartConstraintType;
@@ -189,13 +189,13 @@ public class TaskElementTest {
             hoursGroups = Collections.singletonList(createHoursGroup(100));
         }
         return TaskSource.create(orderLine,
-                mockSchedulingStateVersion(orderLine),
+                mockSchedulingDataForVersion(orderLine),
                 hoursGroups);
     }
 
-    public static SchedulingStateForVersion mockSchedulingStateVersion(
+    public static SchedulingDataForVersion mockSchedulingDataForVersion(
             OrderElement orderElement) {
-        SchedulingStateForVersion result = createNiceMock(SchedulingStateForVersion.class);
+        SchedulingDataForVersion result = createNiceMock(SchedulingDataForVersion.class);
         TaskSource taskSource = createNiceMock(TaskSource.class);
         expect(taskSource.getOrderElement()).andReturn(orderElement).anyTimes();
         expect(result.getTaskSource()).andReturn(taskSource).anyTimes();

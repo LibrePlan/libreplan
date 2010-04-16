@@ -48,12 +48,12 @@
 
         <property name="externalCode" access="field" />
 
-        <map name="schedulingStates" table="SCHEDULING_STATES_BY_ORDER_VERSION"
+        <map name="schedulingDatasForVersion" table="SCHEDULING_STATES_BY_ORDER_VERSION"
             cascade="all-delete-orphan">
             <key column="ORDER_ELEMENT_ID"></key>
             <map-key-many-to-many column="ORDER_VERSION_ID"
                 class="org.navalplanner.business.scenarios.entities.OrderVersion" />
-            <many-to-many class="SchedulingStateForVersion"
+            <many-to-many class="SchedulingDataForVersion"
                 column="SCHEDULING_STATE_FOR_VERSION_ID" />
         </map>
 
@@ -156,7 +156,7 @@
 
     </class>
 
-    <class name="SchedulingStateForVersion">
+    <class name="SchedulingDataForVersion">
         <id name="id" access="property" type="long">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
@@ -169,7 +169,7 @@
             </type>
         </property>
         <many-to-one name="orderElement" column="ORDER_ELEMENT_ID"></many-to-one>
-        <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="schedulingState" />
+        <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="schedulingData" />
     </class>
 
     <class name="TaskSource">
@@ -181,7 +181,7 @@
         <version name="version" access="property" type="long" />
         <many-to-one name="orderElement"
                class="OrderElement" cascade="none" access="field"/>
-        <many-to-one name="schedulingState" class="SchedulingStateForVersion"
+        <many-to-one name="schedulingData" class="SchedulingDataForVersion"
             cascade="none" unique="true" access="field" />
         <one-to-one name="task" class="org.navalplanner.business.planner.entities.TaskElement"
             constrained="true" cascade="all" access="field" lazy="false"/>

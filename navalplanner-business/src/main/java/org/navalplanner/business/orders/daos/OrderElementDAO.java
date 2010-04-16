@@ -38,7 +38,7 @@ import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
@@ -201,8 +201,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     public static void removeTaskSourcesFor(ITaskSourceDAO taskSourceDAO,
             OrderElement orderElement) throws InstanceNotFoundException {
-        List<SchedulingStateForVersion> allVersions = orderElement
-        .getSchedulingStateForVersionFromBottomToTop();
+        List<SchedulingDataForVersion> allVersions = orderElement
+        .getSchedulingDatasForVersionFromBottomToTop();
         for (TaskSource each : taskSourcesFrom(allVersions)) {
             each.detachAssociatedTaskFromParent();
             taskSourceDAO.remove(each.getId());
@@ -210,9 +210,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     }
 
     private static List<TaskSource> taskSourcesFrom(
-            List<SchedulingStateForVersion> list) {
+            List<SchedulingDataForVersion> list) {
         List<TaskSource> result = new ArrayList<TaskSource>();
-        for (SchedulingStateForVersion each : list) {
+        for (SchedulingDataForVersion each : list) {
             if (each.getTaskSource() != null) {
                 result.add(each.getTaskSource());
             }

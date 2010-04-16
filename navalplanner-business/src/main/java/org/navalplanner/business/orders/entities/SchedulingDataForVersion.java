@@ -31,17 +31,17 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public class SchedulingStateForVersion extends BaseEntity {
+public class SchedulingDataForVersion extends BaseEntity {
 
-    public static class SchedulingData {
+    public static class Data {
 
-        private static SchedulingData from(SchedulingStateForVersion version,
+        private static Data from(SchedulingDataForVersion version,
                 OrderVersion orderVersion) {
-            return new SchedulingData(orderVersion, version, version
+            return new Data(orderVersion, version, version
                     .getTaskSource(), version.getSchedulingStateType());
         }
 
-        private SchedulingStateForVersion originVersion;
+        private SchedulingDataForVersion originVersion;
 
         private TaskSource taskSource;
 
@@ -49,8 +49,8 @@ public class SchedulingStateForVersion extends BaseEntity {
 
         private final OrderVersion originOrderVersion;
 
-        private SchedulingData(OrderVersion orderVersion,
-                SchedulingStateForVersion version,
+        private Data(OrderVersion orderVersion,
+                SchedulingDataForVersion version,
                 TaskSource taskSource,
                 Type schedulingStateType) {
             Validate.notNull(schedulingStateType);
@@ -98,7 +98,7 @@ public class SchedulingStateForVersion extends BaseEntity {
             this.taskSource = newTaskSource;
         }
 
-        public SchedulingStateForVersion getVersion() {
+        public SchedulingDataForVersion getVersion() {
             return originVersion;
         }
 
@@ -112,11 +112,11 @@ public class SchedulingStateForVersion extends BaseEntity {
         }
     }
 
-    public static SchedulingStateForVersion createInitialFor(OrderElement orderElement) {
+    public static SchedulingDataForVersion createInitialFor(OrderElement orderElement) {
         Validate.notNull(orderElement);
-        SchedulingStateForVersion schedulingStateForVersion = new SchedulingStateForVersion();
-        schedulingStateForVersion.orderElement = orderElement;
-        return create(schedulingStateForVersion);
+        SchedulingDataForVersion schedulingDataForVersion = new SchedulingDataForVersion();
+        schedulingDataForVersion.orderElement = orderElement;
+        return create(schedulingDataForVersion);
     }
 
     @NotNull
@@ -140,8 +140,8 @@ public class SchedulingStateForVersion extends BaseEntity {
         return orderElement;
     }
 
-    public SchedulingData asSchedulingData(OrderVersion orderVersion) {
-        return SchedulingData.from(this, orderVersion);
+    public Data makeAvailableFor(OrderVersion orderVersion) {
+        return Data.from(this, orderVersion);
     }
 
 }

@@ -42,7 +42,7 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 public class TaskSource extends BaseEntity {
 
     public static TaskSource create(OrderElement orderElement,
-            SchedulingStateForVersion schedulingState,
+            SchedulingDataForVersion schedulingState,
             List<HoursGroup> hoursGroups) {
         TaskSource result = create(new TaskSource(orderElement, schedulingState));
         result.setHoursGroups(new HashSet<HoursGroup>(hoursGroups));
@@ -262,12 +262,12 @@ public class TaskSource extends BaseEntity {
     }
 
     public static TaskSource withHoursGroupOf(OrderElement orderElement,
-            SchedulingStateForVersion schedulingState) {
+            SchedulingDataForVersion schedulingState) {
         return create(new TaskSource(orderElement, schedulingState));
     }
 
     public static TaskSource createForGroup(OrderElement orderElement,
-            SchedulingStateForVersion schedulingState) {
+            SchedulingDataForVersion schedulingState) {
         return create(new TaskSource(orderElement, schedulingState));
     }
 
@@ -284,7 +284,7 @@ public class TaskSource extends BaseEntity {
     @NotNull
     private TaskElement task;
 
-    private SchedulingStateForVersion schedulingState;
+    private SchedulingDataForVersion schedulingData;
 
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
@@ -292,11 +292,11 @@ public class TaskSource extends BaseEntity {
     }
 
     public TaskSource(OrderElement orderElement,
-            SchedulingStateForVersion schedulingState) {
+            SchedulingDataForVersion schedulingState) {
         Validate.notNull(orderElement);
         Validate.notNull(schedulingState);
         this.setOrderElement(orderElement);
-        this.schedulingState = schedulingState;
+        this.schedulingData = schedulingState;
         Type orderElementType = orderElement.getSchedulingState().getType();
         if (orderElementType == SchedulingState.Type.SCHEDULING_POINT) {
             this.setHoursGroups(new HashSet<HoursGroup>(orderElement

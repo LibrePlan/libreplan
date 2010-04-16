@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -89,8 +89,8 @@ public class TaskGroupTest {
         order.setInitDate(new Date());
         OrderLine orderLine = OrderLine.create();
         order.add(orderLine);
-        SchedulingStateForVersion version = TaskElementTest
-                .mockSchedulingStateVersion(orderLine);
+        SchedulingDataForVersion version = TaskElementTest
+                .mockSchedulingDataForVersion(orderLine);
         TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
                 .asList(hoursGroup));
         return TaskGroup.create(taskSource);

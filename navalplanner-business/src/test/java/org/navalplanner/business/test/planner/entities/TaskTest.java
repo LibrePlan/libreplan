@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.orders.entities.SchedulingStateForVersion;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -67,8 +67,8 @@ public class TaskTest {
         order.setInitDate(new Date());
         OrderLine orderLine = OrderLine.create();
         order.add(orderLine);
-        SchedulingStateForVersion version = TaskElementTest
-                .mockSchedulingStateVersion(orderLine);
+        SchedulingDataForVersion version = TaskElementTest
+                .mockSchedulingDataForVersion(orderLine);
         TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
                 .asList(hoursGroup));
         task = Task.createTask(taskSource);
@@ -98,8 +98,8 @@ public class TaskTest {
         order.useSchedulingDataFor(mockedOrderVersion);
         order.setInitDate(new Date());
         order.add(orderLine);
-        SchedulingStateForVersion version = TaskElementTest
-                .mockSchedulingStateVersion(orderLine);
+        SchedulingDataForVersion version = TaskElementTest
+                .mockSchedulingDataForVersion(orderLine);
         TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
                 .asList(hoursGroup));
         return Task.createTask(taskSource);

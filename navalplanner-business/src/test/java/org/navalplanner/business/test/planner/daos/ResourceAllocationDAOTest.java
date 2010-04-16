@@ -155,7 +155,7 @@ public class ResourceAllocationDAOTest {
 
         List<HoursGroup> hoursGroups = Arrays.asList(hoursGroup);
         TaskSource taskSource = TaskSource.create(orderLine, orderLine
-                        .getCurrentSchedulingStateForVersion(),
+                        .getCurrentSchedulingDataForVersion(),
                         hoursGroups);
         TaskSourceSynchronization synchronization = TaskSource
                 .mustAdd(taskSource);
