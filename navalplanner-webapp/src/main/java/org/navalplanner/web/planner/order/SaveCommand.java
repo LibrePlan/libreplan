@@ -100,19 +100,11 @@ public class SaveCommand implements ISaveCommand {
 
     @Override
     public void doAction(IContext<TaskElement> context) {
-        final Scenario currentScenario = transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<Scenario>() {
-                    @Override
-                    public Scenario execute() {
-                        return scenarioManager.getCurrent();
-                    }
-                });
-        final boolean scenarioIsOwner = scenarioIsOwner(currentScenario);
-        if (scenarioIsOwner || userAcceptsCreateANewOrderVersion()) {
+        if (order.isUsingTheOwnerScenario() || userAcceptsCreateANewOrderVersion()) {
             transactionService.runOnTransaction(new IOnTransaction<Void>() {
                 @Override
                 public Void execute() {
-                    doTheSaving(currentScenario, scenarioIsOwner);
+                    doTheSaving();
                     return null;
                 }
             });
@@ -136,11 +128,12 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private void doTheSaving(Scenario currentScenario, boolean scenarioIsOwner) {
+    private void doTheSaving() {
         saveTasksToSave();
         removeTasksToRemove();
         taskElementDAO.removeOrphanedDayAssignments();
-        if (!scenarioIsOwner) {
+        Scenario currentScenario = scenarioManager.getCurrent();
+        if (!order.isUsingTheOwnerScenario()) {
             createAndSaveNewOrderVersion(currentScenario);
         }
     }
@@ -288,16 +281,6 @@ public class SaveCommand implements ISaveCommand {
     @Override
     public String getImage() {
         return "/common/img/ico_save.png";
-    }
-
-    private boolean scenarioIsOwner(Scenario currentScenario) {
-        OrderVersion orderVersion = currentScenario.getOrderVersion(order);
-        if (orderVersion == null) {
-            throw new RuntimeException(
-                    "Order version must never be null for an order in any scenario");
-        }
-        return currentScenario.getId().equals(
-                orderVersion.getOwnerScenario().getId());
     }
 
     private boolean userAcceptsCreateANewOrderVersion() {

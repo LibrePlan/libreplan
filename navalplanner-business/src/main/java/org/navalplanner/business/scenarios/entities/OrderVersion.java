@@ -52,4 +52,8 @@ public class OrderVersion extends BaseEntity {
         return ownerScenario;
     }
 
+    public boolean isOwnedBy(Scenario scenario) {
+        return scenario.getId().equals(ownerScenario.getId());
+    }
+
 }

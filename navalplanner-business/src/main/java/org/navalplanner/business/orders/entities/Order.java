@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -101,6 +102,45 @@ public class Order extends OrderLineGroup {
 
     private Set<OrderAuthorization> orderAuthorizations = new HashSet<OrderAuthorization>();
 
+    private CurrentVersionInfo currentVersionInfo;
+
+    private static class CurrentVersionInfo {
+
+        private final Scenario scenario;
+
+        private final OrderVersion orderVersion;
+
+        private final boolean modifyingTheOwnerScenario;
+
+        static CurrentVersionInfo create(Scenario scenario,
+                OrderVersion orderVersion) {
+            return new CurrentVersionInfo(scenario, orderVersion);
+        }
+
+        private CurrentVersionInfo(Scenario scenario, OrderVersion orderVersion) {
+            Validate.notNull(scenario);
+            Validate.notNull(orderVersion);
+            this.scenario = scenario;
+            this.orderVersion = orderVersion;
+            this.modifyingTheOwnerScenario = orderVersion.isOwnedBy(scenario);
+        }
+
+        public boolean isUsingTheOwnerScenario() {
+            return modifyingTheOwnerScenario;
+        }
+    }
+
+    public CurrentVersionInfo getCurrentVersionInfo() {
+        if (currentVersionInfo == null) {
+            throw new IllegalStateException(
+                    "Order#useSchedulingDataFor(Scenario scenario)"
+                            + " must have been called first in order to use"
+                            + " this method");
+        }
+        return currentVersionInfo;
+    }
+
+
     public void addOrderAuthorization(OrderAuthorization orderAuthorization) {
         orderAuthorization.setOrder(this);
         orderAuthorizations.add(orderAuthorization);
@@ -112,7 +152,12 @@ public class Order extends OrderLineGroup {
 
     public void useSchedulingDataFor(Scenario scenario) {
         OrderVersion orderVersion = scenarios.get(scenario);
+        currentVersionInfo = CurrentVersionInfo.create(scenario, orderVersion);
         useSchedulingDataFor(orderVersion);
+    }
+
+    public boolean isUsingTheOwnerScenario() {
+        return getCurrentVersionInfo().isUsingTheOwnerScenario();
     }
 
     public BigDecimal getWorkBudget() {
