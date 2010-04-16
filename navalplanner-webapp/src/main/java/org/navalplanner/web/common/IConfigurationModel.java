@@ -82,4 +82,8 @@ public interface IConfigurationModel {
     void confirm();
     void cancel();
 
+    Boolean getGenerateCodeForUnitTypes();
+
+    void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes);
+
 }

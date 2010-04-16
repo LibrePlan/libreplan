@@ -183,6 +183,16 @@ public class ConfigurationController extends GenericForwardComposer {
                 generateCodeForMaterialCategories);
     }
 
+    public Boolean getGenerateCodeForUnitTypes() {
+        return configurationModel.getGenerateCodeForUnitTypes();
+    }
+
+    public void setGenerateCodeForUnitTypes(
+            Boolean generateCodeForUnitTypes) {
+        configurationModel.setGenerateCodeForUnitTypes(
+                generateCodeForUnitTypes);
+    }
+
     public List<OrderSequence> getOrderSequences() {
         return configurationModel.getOrderSequences();
     }

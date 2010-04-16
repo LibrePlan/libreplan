@@ -53,6 +53,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForMaterialCategories = false;
 
+    private Boolean generateCodeForUnitTypes = false;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -131,6 +133,14 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForMaterialCategories() {
         return generateCodeForMaterialCategories;
+    }
+
+    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
+        this.generateCodeForUnitTypes = generateCodeForUnitTypes;
+    }
+
+    public Boolean getGenerateCodeForUnitTypes() {
+        return generateCodeForUnitTypes;
     }
 
 }

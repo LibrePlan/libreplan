@@ -303,6 +303,22 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForUnitTypes() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForUnitTypes();
+    }
+
+    @Override
+    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
+            if (configuration != null) {
+                configuration.setGenerateCodeForUnitTypes(
+                        generateCodeForUnitTypes);
+            }
+    }
+
+    @Override
     public List<OrderSequence> getOrderSequences() {
         return Collections.unmodifiableList(orderSequences);
     }

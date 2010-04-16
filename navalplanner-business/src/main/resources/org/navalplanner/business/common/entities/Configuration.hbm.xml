@@ -23,6 +23,7 @@
         <property name="generateCodeForResources" not-null="true" />
         <property name="generateCodeForTypesOfWorkHours" not-null="true" />
         <property name="generateCodeForMaterialCategories" not-null="true" />
+        <property name="generateCodeForUnitTypes" not-null="true" />
 
     </class>
 
