@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
@@ -38,6 +39,9 @@ public class UnitTypeModel implements IUnitTypeModel {
     @Autowired
     private IUnitTypeDAO unitTypeDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     @Override
     @Transactional(readOnly=true)
     public List<UnitType> getUnitTypes() {
@@ -45,8 +49,17 @@ public class UnitTypeModel implements IUnitTypeModel {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public void initCreate() {
-        this.unitTypeState = UnitType.create();
+        Boolean generateCode = configurationDAO.getConfiguration().
+            getGenerateCodeForUnitTypes();
+        if(generateCode) {
+            this.unitTypeState = UnitType.create();
+        }
+        else {
+            this.unitTypeState = UnitType.create("", "");
+        }
+        this.unitTypeState.setGenerateCode(generateCode);
     }
 
     @Override

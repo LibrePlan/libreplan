@@ -33,11 +33,17 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Code')}"/>
-                            <textbox
-                                id="codeTextBox"
-                                value="@{controller.unitType.code}"
-                                constraint="@{controller.uniqueCode}"
-                                width="300px"/>
+                            <hbox>
+                                <textbox
+                                    id="codeTextBox" width="300px"
+                                    value="@{controller.unitType.code}"
+                                    constraint="@{controller.uniqueCode}"
+                                    disabled="@{controller.unitType.generateCode}" />
+                                <checkbox
+                                    id="generateCode" label="${i18n:_('Generate code')}"
+                                    onCheck="controller.onCheckGenerateCode(event)"
+                                    checked="@{controller.unitType.generateCode}" />
+                            </hbox>
                         </row>
                         <row>
                             <label value="${i18n:_('Unit measure name')}" />
