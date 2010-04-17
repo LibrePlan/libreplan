@@ -386,6 +386,10 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return getChildCount(node) > 0;
     }
 
+    public boolean contains(T object) {
+        return find(object) != null;
+    }
+
     public boolean contains(T parent, T child) {
         Node<T> parentNode = find(parent);
         Node<T> childNode = find(child);

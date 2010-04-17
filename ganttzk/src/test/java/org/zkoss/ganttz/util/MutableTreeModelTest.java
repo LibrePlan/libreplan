@@ -489,6 +489,18 @@ public class MutableTreeModelTest {
     }
 
     @Test
+    public void canBeKnownIfAnEntityIsOnTheTree() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.addToRoot(prueba1);
+
+        assertTrue(model.contains(prueba1));
+        assertTrue(model.contains(model.getRoot()));
+        assertFalse(model.contains(new Prueba()));
+    }
+
+    @Test
     public void treeParentContainsChild() {
         final MutableTreeModel<Prueba> model = MutableTreeModel
             .create(Prueba.class);
