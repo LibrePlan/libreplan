@@ -70,8 +70,6 @@ public class Order extends OrderLineGroup {
 
     private String responsible;
 
-    // TODO turn into a many to one relationship when Customer entity is defined
-
     private Boolean dependenciesConstraintsHavePriority;
 
     private BaseCalendar calendar;
