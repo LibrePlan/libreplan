@@ -206,9 +206,17 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         if (tree.isRoot(parent)) {
             return;
         }
+        // if the last child of parent in unindented parent is replaced by its
+        // representation as leaf so no longer would be found. Keeping track of
+        // the position
+        int[] parentNodePath = tree.getPath(getRoot(), parent);
         T destination = tree.getParent(parent);
         move(nodeToUnindent, destination, getChildren(destination).indexOf(
                 parent) + 1);
+
+        if (!tree.contains(parent)) {
+            parent = tree.findObjectAt(parentNodePath);
+        }
         if (!tree.isRoot(parent)) {
             tree.sendContentsChangedEventFor(parent);
         }
