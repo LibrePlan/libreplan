@@ -394,10 +394,9 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         Node<T> parentNode = find(parent);
         Node<T> childNode = find(child);
 
-        if (parentNode != null && (childNode != null && childNode.getParent() != null)) {
-            return childNode.getParent().equals(parentNode);
-        }
-        return false;
+        return parentNode != null && childNode != null
+                && childNode.getParent() != null
+                && childNode.getParent().equals(parentNode);
     }
 
     public List<T> asList() {
