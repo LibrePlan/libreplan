@@ -192,6 +192,32 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return asIntArray(path);
     }
 
+    public int[] getPath(Object last) {
+        return getPath(getRoot(), last);
+    }
+
+    public T findObjectAt(int... path) {
+        T current = getRoot();
+        for (int i = 0; i < path.length; i++) {
+            int position = path[i];
+            if (position >= getChildCount(current)) {
+                throw new IllegalArgumentException(
+                        "Failure acessing the path at: "
+                                + stringRepresentationUntil(path, i));
+            }
+            current = getChild(current, position);
+        }
+        return current;
+    }
+
+    private static String stringRepresentationUntil(int[] path, int endExclusive) {
+        String valid = Arrays.toString(Arrays
+                .copyOfRange(path, 0, endExclusive));
+        String invalid = Arrays.toString(Arrays.copyOfRange(path, endExclusive,
+                path.length));
+        return valid + "^" + invalid;
+    }
+
     private int[] asIntArray(List<Integer> path) {
         int[] result = new int[path.size()];
         int i = 0;
@@ -417,6 +443,4 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
             asList(each, result);
         }
     }
-
-
 }
