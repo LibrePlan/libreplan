@@ -114,6 +114,8 @@ public abstract class Resource extends IntegrationEntity {
 
     private Boolean limitingResource = Boolean.FALSE;
 
+    private LimitingResourceQueue limitingResourceQueue;
+
     private Boolean generateCode = false;
 
     private void clearCachedData() {
@@ -1072,6 +1074,15 @@ public abstract class Resource extends IntegrationEntity {
 
     public Boolean getGenerateCode() {
         return generateCode;
+    }
+
+    public LimitingResourceQueue getLimitingResourceQueue() {
+        return limitingResourceQueue;
+    }
+
+    public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
+        limitingResourceQueue.setResource(this);
+        this.limitingResourceQueue = limitingResourceQueue;
     }
 
 }

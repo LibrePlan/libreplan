@@ -38,6 +38,8 @@
         <one-to-many class="org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment"/>
     </set>
 
+    <one-to-one name="limitingResourceQueue" property-ref="resource" cascade="all" />
+
     <joined-subclass name="org.navalplanner.business.resources.entities.Worker">
       <key column="WORKER_ID"/>
       <property name="firstName"/>
@@ -62,6 +64,19 @@
     </set>
 
     </joined-subclass>
+
+  </class>
+
+  <!-- LimitingResourceQueue -->
+  <class name="LimitingResourceQueue" table="limiting_resource_queue">
+    <id name="id" access="property" type="long">
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <many-to-one name="resource" not-null="false" unique="true" />
   </class>
 
   <!-- Criterion -->

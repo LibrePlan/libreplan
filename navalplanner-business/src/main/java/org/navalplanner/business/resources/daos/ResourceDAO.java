@@ -33,6 +33,7 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -192,6 +193,16 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
         list.addAll(getRealWorkers());
         list.addAll(getMachines());
         return list;
+    }
+
+    @Override
+    public void save(Resource resource) {
+        if (resource instanceof Worker || resource instanceof Machine) {
+            if (resource.isLimitingResource() && resource.getLimitingResourceQueue() == null) {
+                resource.setLimitingResourceQueue(LimitingResourceQueue.create());
+            }
+        }
+        super.save(resource);
     }
 
 }
