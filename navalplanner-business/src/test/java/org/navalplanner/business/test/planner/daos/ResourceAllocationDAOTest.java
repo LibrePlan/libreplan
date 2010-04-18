@@ -154,7 +154,7 @@ public class ResourceAllocationDAOTest {
         hoursGroupDAO.save(hoursGroup);
 
         List<HoursGroup> hoursGroups = Arrays.asList(hoursGroup);
-        TaskSource taskSource = TaskSource.create(orderLine, orderLine
+        TaskSource taskSource = TaskSource.create(orderLine
                         .getCurrentSchedulingDataForVersion(),
                         hoursGroups);
         TaskSourceSynchronization synchronization = TaskSource

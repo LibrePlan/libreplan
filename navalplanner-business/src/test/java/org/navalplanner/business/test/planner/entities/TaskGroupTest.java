@@ -91,7 +91,7 @@ public class TaskGroupTest {
         order.add(orderLine);
         SchedulingDataForVersion version = TaskElementTest
                 .mockSchedulingDataForVersion(orderLine);
-        TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
+        TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
         return TaskGroup.create(taskSource);
     }

@@ -229,7 +229,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         List<TaskSourceSynchronization> childrenSynchronizations = childrenSynchronizations();
         if (thereIsNoTaskSource()) {
             getCurrentSchedulingData().requestedCreationOf(
-                    TaskSource.createForGroup(this, schedulingState));
+                    TaskSource.createForGroup(schedulingState));
             return TaskSource.mustAddGroup(getTaskSource(),
                     childrenSynchronizations);
         } else {
@@ -261,15 +261,15 @@ public abstract class OrderElement extends IntegrationEntity implements
             SchedulingDataForVersion schedulingState) {
         if (thereIsNoTaskSource()) {
             getCurrentSchedulingData().requestedCreationOf(
-                    TaskSource.create(this, schedulingState, getHoursGroups()));
+                    TaskSource.create(schedulingState, getHoursGroups()));
             return TaskSource.mustAdd(getTaskSource());
         } else {
             if (getTaskSource().getTask().isLeaf()) {
                 return getTaskSource().withCurrentHoursGroup(getHoursGroups());
             } else {
                 List<TaskSource> toBeRemoved = getTaskSourcesFromBottomToTop();
-                TaskSource newTaskSource = TaskSource.create(this,
-                        schedulingState, getHoursGroups());
+                TaskSource newTaskSource = TaskSource.create(schedulingState,
+                        getHoursGroups());
                 getCurrentSchedulingData().replaceCurrentTaskSourceWith(
                         newTaskSource);
                 return TaskSource.mustReplace(toBeRemoved, getTaskSource());

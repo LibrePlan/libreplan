@@ -179,8 +179,6 @@
 	        </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <many-to-one name="orderElement"
-               class="OrderElement" cascade="none" access="field"/>
         <many-to-one name="schedulingData" class="SchedulingDataForVersion"
             cascade="none" unique="true" access="field" />
         <one-to-one name="task" class="org.navalplanner.business.planner.entities.TaskElement"

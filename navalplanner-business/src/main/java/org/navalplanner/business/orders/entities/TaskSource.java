@@ -41,10 +41,9 @@ import org.navalplanner.business.planner.entities.TaskGroup;
  */
 public class TaskSource extends BaseEntity {
 
-    public static TaskSource create(OrderElement orderElement,
-            SchedulingDataForVersion schedulingState,
+    public static TaskSource create(SchedulingDataForVersion schedulingState,
             List<HoursGroup> hoursGroups) {
-        TaskSource result = create(new TaskSource(orderElement, schedulingState));
+        TaskSource result = create(new TaskSource(schedulingState));
         result.setHoursGroups(new HashSet<HoursGroup>(hoursGroups));
         return result;
     }
@@ -261,14 +260,14 @@ public class TaskSource extends BaseEntity {
 
     }
 
-    public static TaskSource withHoursGroupOf(OrderElement orderElement,
+    public static TaskSource withHoursGroupOf(
             SchedulingDataForVersion schedulingState) {
-        return create(new TaskSource(orderElement, schedulingState));
+        return create(new TaskSource(schedulingState));
     }
 
-    public static TaskSource createForGroup(OrderElement orderElement,
+    public static TaskSource createForGroup(
             SchedulingDataForVersion schedulingState) {
-        return create(new TaskSource(orderElement, schedulingState));
+        return create(new TaskSource(schedulingState));
     }
 
     public static TaskSourceSynchronization mustReplace(
@@ -277,9 +276,6 @@ public class TaskSource extends BaseEntity {
         return new TaskGroupMustBeReplacedByTask(toBeRemovedFromBottomToTop,
                 taskSource);
     }
-
-    @NotNull
-    private OrderElement orderElement;
 
     @NotNull
     private TaskElement task;
@@ -291,13 +287,13 @@ public class TaskSource extends BaseEntity {
     public TaskSource() {
     }
 
-    public TaskSource(OrderElement orderElement,
-            SchedulingDataForVersion schedulingState) {
-        Validate.notNull(orderElement);
+    public TaskSource(SchedulingDataForVersion schedulingState) {
         Validate.notNull(schedulingState);
-        this.setOrderElement(orderElement);
+        Validate.notNull(schedulingState.getOrderElement());
         this.schedulingData = schedulingState;
-        Type orderElementType = orderElement.getSchedulingState().getType();
+        OrderElement orderElement = schedulingState.getOrderElement();
+        Type orderElementType = orderElement
+                .getSchedulingState().getType();
         if (orderElementType == SchedulingState.Type.SCHEDULING_POINT) {
             this.setHoursGroups(new HashSet<HoursGroup>(orderElement
                     .getHoursGroups()));
@@ -319,17 +315,13 @@ public class TaskSource extends BaseEntity {
         this.task = task;
     }
 
-    private void setOrderElement(OrderElement orderElement) {
-        this.orderElement = orderElement;
-    }
-
     @Valid
     public TaskElement getTask() {
         return task;
     }
 
     public OrderElement getOrderElement() {
-        return orderElement;
+        return schedulingData.getOrderElement();
     }
 
     private void setHoursGroups(Set<HoursGroup> hoursGroups) {

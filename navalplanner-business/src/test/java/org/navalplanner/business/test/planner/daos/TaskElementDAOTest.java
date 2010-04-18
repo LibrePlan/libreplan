@@ -148,8 +148,8 @@ public class TaskElementDAOTest {
         orderLine.useSchedulingDataFor(orderVersion);
         SchedulingDataForVersion schedulingDataForVersion = orderLine
                 .getCurrentSchedulingDataForVersion();
-        TaskSource taskSource = TaskSource.create(orderLine,
-                schedulingDataForVersion, Arrays.asList(associatedHoursGroup));
+        TaskSource taskSource = TaskSource.create(schedulingDataForVersion,
+                Arrays.asList(associatedHoursGroup));
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(taskSourceDAO);
         Task task = (Task) taskSource.getTask();
@@ -190,8 +190,8 @@ public class TaskElementDAOTest {
         orderLine.useSchedulingDataFor(orderVersion);
         SchedulingDataForVersion schedulingDataForVersion = orderLine
                 .getCurrentSchedulingDataForVersion();
-        TaskSource taskSource = TaskSource.createForGroup(orderLine,
-                schedulingDataForVersion);
+        TaskSource taskSource = TaskSource
+                .createForGroup(schedulingDataForVersion);
         TaskGroupSynchronization synchronization = new TaskGroupSynchronization(
                 taskSource, Collections.<TaskSourceSynchronization> emptyList()) {
 

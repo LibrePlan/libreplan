@@ -188,8 +188,7 @@ public class TaskElementTest {
         if (hoursGroups.isEmpty()) {
             hoursGroups = Collections.singletonList(createHoursGroup(100));
         }
-        return TaskSource.create(orderLine,
-                mockSchedulingDataForVersion(orderLine),
+        return TaskSource.create(mockSchedulingDataForVersion(orderLine),
                 hoursGroups);
     }
 
@@ -197,6 +196,7 @@ public class TaskElementTest {
             OrderElement orderElement) {
         SchedulingDataForVersion result = createNiceMock(SchedulingDataForVersion.class);
         TaskSource taskSource = createNiceMock(TaskSource.class);
+        expect(result.getOrderElement()).andReturn(orderElement).anyTimes();
         expect(taskSource.getOrderElement()).andReturn(orderElement).anyTimes();
         expect(result.getTaskSource()).andReturn(taskSource).anyTimes();
         replay(result, taskSource);

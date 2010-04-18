@@ -69,7 +69,7 @@ public class TaskTest {
         order.add(orderLine);
         SchedulingDataForVersion version = TaskElementTest
                 .mockSchedulingDataForVersion(orderLine);
-        TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
+        TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
         task = Task.createTask(taskSource);
     }
@@ -100,7 +100,7 @@ public class TaskTest {
         order.add(orderLine);
         SchedulingDataForVersion version = TaskElementTest
                 .mockSchedulingDataForVersion(orderLine);
-        TaskSource taskSource = TaskSource.create(orderLine, version, Arrays
+        TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
         return Task.createTask(taskSource);
     }
