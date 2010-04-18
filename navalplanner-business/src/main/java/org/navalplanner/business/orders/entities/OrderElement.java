@@ -120,6 +120,11 @@ public abstract class OrderElement extends IntegrationEntity implements
         return current;
     }
 
+    private void currentSchedulingDataNowPointsTo(OrderVersion version) {
+        current = getCurrentSchedulingData().pointsTo(version,
+                schedulingVersionFor(version));
+    }
+
     public SchedulingState getSchedulingState() {
         if (schedulingState == null) {
             schedulingState = SchedulingState.createSchedulingState(
@@ -157,6 +162,15 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public void useSchedulingDataFor(OrderVersion orderVersion) {
         Validate.notNull(orderVersion);
+        SchedulingDataForVersion schedulingVersion = schedulingVersionFor(orderVersion);
+        for (OrderElement each : getChildren()) {
+            each.useSchedulingDataFor(orderVersion);
+        }
+        current = schedulingVersion.makeAvailableFor(orderVersion);
+    }
+
+    private SchedulingDataForVersion schedulingVersionFor(
+            OrderVersion orderVersion) {
         SchedulingDataForVersion currentSchedulingData = schedulingDatasForVersion
                 .get(orderVersion);
         if (currentSchedulingData == null) {
@@ -164,10 +178,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                     .createInitialFor(this);
             schedulingDatasForVersion.put(orderVersion, currentSchedulingData);
         }
-        for (OrderElement each : getChildren()) {
-            each.useSchedulingDataFor(orderVersion);
-        }
-        current = currentSchedulingData.makeAvailableFor(orderVersion);
+        return currentSchedulingData;
     }
 
     public SchedulingDataForVersion getCurrentSchedulingDataForVersion() {
@@ -181,6 +192,11 @@ public abstract class OrderElement extends IntegrationEntity implements
         for (OrderElement each : children) {
             each.writeSchedulingDataChanges();
         }
+    }
+
+    public void writeSchedulingDataChangesTo(OrderVersion newOrderVersion) {
+        currentSchedulingDataNowPointsTo(newOrderVersion);
+        writeSchedulingDataChanges();
     }
 
     public List<TaskSourceSynchronization> calculateSynchronizationsNeeded() {

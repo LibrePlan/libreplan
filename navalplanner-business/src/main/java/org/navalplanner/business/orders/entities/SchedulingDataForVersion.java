@@ -131,6 +131,25 @@ public class SchedulingDataForVersion extends BaseEntity {
             return hasPendingChanges;
         }
 
+        public Data pointsTo(OrderVersion orderVersion,
+                SchedulingDataForVersion schedulingVersion) {
+            Validate.isTrue(!this.originVersion.equals(schedulingVersion));
+            Data data = new Data(orderVersion, schedulingVersion,
+                    copy(taskSource), copy(schedulingStateType));
+            data.hasPendingChanges = true;
+            return data;
+        }
+
+        // FIXME because there is still no support for deep copying, new default
+        // data is created.
+        private static Type copy(Type schedulingStateType) {
+            return Type.NO_SCHEDULED;
+        }
+
+        private static TaskSource copy(TaskSource taskSource) {
+            return null;
+        }
+
     }
 
     public static SchedulingDataForVersion createInitialFor(OrderElement orderElement) {
