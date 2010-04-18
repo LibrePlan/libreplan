@@ -88,6 +88,8 @@ public class Task extends TaskElement {
     @Valid
     private SubcontractedTaskData subcontractedTaskData;
 
+    private Integer priority;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -515,6 +517,14 @@ public class Task extends TaskElement {
 
     public boolean hasResourceAllocations() {
         return !resourceAllocations.isEmpty();
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
 }

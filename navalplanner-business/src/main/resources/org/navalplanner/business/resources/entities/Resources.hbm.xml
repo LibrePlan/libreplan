@@ -76,7 +76,13 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <many-to-one name="resource" not-null="false" unique="true" />
+    <many-to-one name="resource" column="RESOURCE_ID" not-null="false" unique="true" />
+
+    <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true" >
+        <key column="LIMITING_RESOURCE_QUEUE_ID" not-null="true" />
+        <one-to-many class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement" />
+    </set>
+
   </class>
 
   <!-- Criterion -->

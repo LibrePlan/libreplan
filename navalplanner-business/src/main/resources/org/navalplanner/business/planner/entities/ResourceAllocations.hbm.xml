@@ -25,6 +25,8 @@
             <one-to-many class="DerivedAllocation"/>
         </set>
 
+        <one-to-one name="limitingResourceQueueElement" property-ref="resourceAllocation" cascade="all" />
+
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
             <key column="RESOURCE_ALLOCATION_ID" />
 
@@ -53,6 +55,22 @@
 
     </class>
 
+    <class name="LimitingResourceQueueElement" table="limiting_resource_queue_element">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" not-null="false" unique="true" />
+
+        <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" />
+
+        <property name="earlierStartDateBecauseOfGantt" column="EARLIER_START_DATE_BECAUSE_OF_GANTT" />
+
+    </class>
+
     <!-- DayAssignment -->
     <class name="DayAssignment" table="day_assignment">
         <id name="id" type="long" access="property">
@@ -60,17 +78,17 @@
                 <param name="max_lo">100</param>
             </generator>
         </id>
-		<discriminator column="DAY_ASSIGNMENT_TYPE" type="string"/>
+        <discriminator column="DAY_ASSIGNMENT_TYPE" type="string"/>
 
         <version name="version" access="property" type="long" />
 
-		<property name="hours" not-null="true"/>
+        <property name="hours" not-null="true"/>
 
-		<property name="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate" not-null="true"/>
+        <property name="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate" not-null="true"/>
 
-		<many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
-		  column="RESOURCE_ID" not-null="true">
-		</many-to-one>
+        <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
+          column="RESOURCE_ID" not-null="true">
+        </many-to-one>
 
         <!-- SpecificDayAssignment -->
         <subclass name="SpecificDayAssignment" discriminator-value="SPECIFIC_DAY">
@@ -112,18 +130,18 @@
                 </composite-element>
             </list>
             <property name="type">
-		      <type name="org.hibernate.type.EnumType">
-		        <param name="enumClass">org.navalplanner.business.planner.entities.StretchesFunction$Type</param>
-		      </type>
-		    </property>
+              <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.planner.entities.StretchesFunction$Type</param>
+              </type>
+            </property>
         </joined-subclass>
     </class>
 
     <class name="DerivedAllocation">
         <id name="id" type="long" access="property" >
-	        <generator class="hilo">
-	            <param name="max_lo">100</param>
-	        </generator>
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
         </id>
         <version name="version" access="property" type="long" />
         <many-to-one class="ResourceAllocation" column="RESOURCE_ALLOCATION_ID"
