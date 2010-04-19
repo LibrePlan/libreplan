@@ -326,10 +326,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Task task = entry.getKey();
             Set<Criterion> criterions = task.getCriterions();
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
+
+            /**
+             * Each resource line has the same role than its allocated task, so
+             * that link with the resource allocation screen
+             */
             LoadTimeLine timeLine = new LoadTimeLine(buildTimeLine(criterions,
                     task, criterion, entry.getValue(), role),
                     buildTimeLinesForEachResource(criterion, onlyGeneric(entry
-                            .getValue())));
+                            .getValue()), role));
             if (!timeLine.isEmpty()) {
                 secondLevel.add(timeLine);
             }
@@ -339,7 +344,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<LoadTimeLine> buildTimeLinesForEachResource(
-            Criterion criterion, List<GenericResourceAllocation> allocations) {
+            Criterion criterion, List<GenericResourceAllocation> allocations,
+            TimeLineRole<BaseEntity> role) {
         Map<Resource, List<GenericResourceAllocation>> byResource = GenericResourceAllocation
                 .byResource(allocations);
 
@@ -351,7 +357,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     .getValue();
             String descriptionTimeLine = getDescriptionResourceWithCriterions(resource);
 
-            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
             LoadTimeLine timeLine = buildTimeLine(resource,
                     descriptionTimeLine, resourceAllocations, role);
             if (!timeLine.isEmpty()) {
