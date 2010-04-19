@@ -21,8 +21,12 @@
 
 package org.zkoss.ganttz.resourceload;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IDatesMapper;
@@ -31,7 +35,14 @@ import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.MenuBuilder;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -48,6 +59,8 @@ public class ResourceLoadComponent extends XulElement {
     private final LoadTimeLine loadLine;
     private final TimeTracker timeTracker;
     private transient IZoomLevelChangedListener zoomChangedListener;
+    private WeakReferencedListeners<ISeeScheduledOfListener> scheduleListeners = WeakReferencedListeners
+            .create();
 
     private ResourceLoadComponent(final TimeTracker timeTracker,
             final LoadTimeLine loadLine) {
@@ -66,11 +79,81 @@ public class ResourceLoadComponent extends XulElement {
         this.timeTracker.addZoomListener(zoomChangedListener);
     }
 
-    private void createChildren(LoadTimeLine loadLine, IDatesMapper mapper) {
+    private void createChildren(final LoadTimeLine loadLine, IDatesMapper mapper) {
         List<Div> divs = createDivsForPeriods(mapper, loadLine.getLoadPeriods());
         for (Div div : divs) {
             appendChild(div);
         }
+
+        if (loadLine.getRole().isVisibleScheduled()) {
+            for (Div div : divs) {
+                addDoubleClickAction(div, loadLine);
+                addContextMenu(divs, div, loadLine);
+            }
+        }
+    }
+
+    private void addDoubleClickAction(final Div div, final LoadTimeLine loadLine) {
+        div.addEventListener("onDoubleClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                schedule(loadLine);
+            }
+        });
+    }
+
+    private void addContextMenu(final List<Div> divs, final Div div,
+            final LoadTimeLine loadLine) {
+        div.addEventListener("onRightClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                try {
+                    getContextMenuFor(divs, div, loadLine).open(div);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void schedule(final LoadTimeLine taskLine) {
+
+        scheduleListeners
+                .fireEvent(new IListenerNotification<ISeeScheduledOfListener>() {
+                    @Override
+                    public void doNotify(ISeeScheduledOfListener listener) {
+                        listener.seeScheduleOf(taskLine);
+                    }
+                });
+    }
+
+    public void addSeeScheduledOfListener(
+            ISeeScheduledOfListener seeScheduledOfListener) {
+        scheduleListeners.addListener(seeScheduledOfListener);
+    }
+
+    private Map<Div, Menupopup> contextMenus = new HashMap<Div, Menupopup>();
+
+    private Menupopup getContextMenuFor(final List<Div> divs, final Div div,
+            final LoadTimeLine loadLine) {
+        if (contextMenus.get(div) == null) {
+
+            MenuBuilder<Div> menuBuilder = MenuBuilder.on(getPage(), divs);
+            menuBuilder.item(_("See resource allocation"),
+                    "/common/img/ico_allocation.png", new ItemAction<Div>() {
+
+                        @Override
+                        public void onEvent(Div choosen, Event event) {
+                            schedule(loadLine);
+                        }
+                    });
+
+            Menupopup result = menuBuilder.createWithoutSettingContext();
+            contextMenus.put(div, result);
+            return result;
+
+        }
+        return contextMenus.get(div);
     }
 
     public String getResourceLoadName() {
