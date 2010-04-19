@@ -210,8 +210,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesForActiveTasks() {
-        return resourcesDAO.findResourcesRelatedTo(justTasks(filterBy
-                .getAllChildrenAssociatedTaskElements()));
+        return Resource.sortByName(resourcesDAO
+                .findResourcesRelatedTo(justTasks(filterBy
+                        .getAllChildrenAssociatedTaskElements())));
     }
 
     private List<Task> justTasks(Collection<? extends TaskElement> tasks) {
@@ -225,7 +226,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> allResources() {
-        return resourcesDAO.list(Resource.class);
+        return Resource.sortByName(resourcesDAO.list(Resource.class));
     }
 
     private TimeLineRole<BaseEntity> getCurrentTimeLineRole(BaseEntity entity) {

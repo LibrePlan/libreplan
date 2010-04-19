@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -81,6 +82,23 @@ public abstract class Resource extends IntegrationEntity {
             }
         }
         return result;
+    }
+
+    public static List<Resource> sortByName(List<Resource> resources) {
+        Collections.sort(resources, new Comparator<Resource>() {
+
+            @Override
+            public int compare(Resource o1, Resource o2) {
+                if (o1.getName() == null) {
+                    return 1;
+                }
+                if (o2.getName() == null) {
+                    return -1;
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return resources;
     }
 
     private ResourceCalendar calendar;
