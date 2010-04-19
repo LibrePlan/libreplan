@@ -30,9 +30,11 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -68,6 +70,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private TimeTracker timeTracker;
 
+    private final Component componentOnWhichGiveFeedback;
+
     private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners
             .create();
 
@@ -75,10 +79,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private static final String filterResources = _("by resources");
     private static final String filterCriterions = _("by criterions");
+    private String feedBackMessage;
     private Boolean filterbyResources;
 
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
-            TimeTracker timeTracker) {
+            TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
+        this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
         init(groups, timeTracker);
 
     }
@@ -101,17 +107,39 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     public void setFilter(String filterby) {
         if (filterby.equals(filterResources)) {
             this.filterbyResources = true;
+            this.feedBackMessage = _("showing resources");
         } else {
             this.filterbyResources = false;
+            this.feedBackMessage = _("showing criterions");
         }
-        onApplyFilter();
+        invalidatingChangeHappenedWithFeedback();
     }
 
     public boolean getFilter() {
         return (filterbyResources == null) ? true : filterbyResources;
     }
 
-    public void onApplyFilter() {
+    private void invalidatingChangeHappenedWithFeedback() {
+        LongOperationFeedback.execute(componentOnWhichGiveFeedback,
+                new ILongOperation() {
+
+                    @Override
+                    public void doAction() throws Exception {
+                        applyFilter();
+                    }
+
+                    @Override
+                    public String getName() {
+                        return getFeedBackMessage();
+                    }
+                });
+    }
+
+    private String getFeedBackMessage() {
+        return feedBackMessage;
+    }
+
+    private void applyFilter() {
         zoomListeners
                 .fireEvent(new IListenerNotification<IFilterChangedListener>() {
                     @Override

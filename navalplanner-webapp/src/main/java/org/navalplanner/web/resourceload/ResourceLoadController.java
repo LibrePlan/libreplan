@@ -168,7 +168,8 @@ public class ResourceLoadController implements Composer {
                     timeTracker);
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
-                    .getLoadTimeLines(), timeTracker);
+                    .getLoadTimeLines(), timeTracker, parent);
+            addListeners();
         }
     }
 
