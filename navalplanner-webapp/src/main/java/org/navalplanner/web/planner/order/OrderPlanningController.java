@@ -292,7 +292,7 @@ public class OrderPlanningController implements Composer {
     public void showResorceAllocationIfIsNeeded() {
         if ((task != null) && (planner != null)) {
 
-            planner.expandAll();
+            planner.expandAllAlways();
 
             Task foundTask = null;
             TaskElement foundTaskElement = null;

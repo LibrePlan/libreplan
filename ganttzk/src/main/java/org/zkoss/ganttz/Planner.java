@@ -538,6 +538,14 @@ public class Planner extends HtmlMacroComponent  {
         }
     }
 
+    public void expandAllAlways() {
+        Button expandAllButton = (Button) getFellow("expandAll");
+        if (disabilityConfiguration.isExpandAllEnabled()) {
+                context.expandAll();
+                expandAllButton.setSclass("planner-command clicked");
+        }
+    }
+
     public void updateSelectedZoomLevel() {
         if (!isFixedZoomByUser()) {
             Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
