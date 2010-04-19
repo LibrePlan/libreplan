@@ -23,6 +23,7 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -68,6 +70,9 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.api.Treecell;
+import org.zkoss.zul.api.Treerow;
+import org.zkoss.zul.impl.api.InputElement;
 
 /**
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
@@ -244,11 +249,120 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 .getFellow("templateFinderPopupAtTree");
     }
 
+    private enum Navigation {
+        LEFT, UP, RIGHT, DOWN;
+        public static Navigation getIntentFrom(KeyEvent keyEvent) {
+            return values()[keyEvent.getKeyCode() - 37];
+        }
+    }
+
     public class OrderElementTreeitemRenderer extends Renderer {
 
         private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
 
         public OrderElementTreeitemRenderer() {
+        }
+
+        private void registerKeyboardListener(final InputElement inputElement) {
+            inputElement.setCtrlKeys("#up#down#left#right");
+            inputElement.addEventListener("onCtrlKey", new EventListener() {
+                private Treerow treerow = getCurrentTreeRow();
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    Navigation navigation = Navigation.getIntentFrom((KeyEvent)event);
+                    moveFocusTo(inputElement, navigation, treerow);
+                }
+            });
+        }
+
+        private void moveFocusTo(InputElement inputElement, Navigation navigation, Treerow treerow) {
+            List<InputElement> boxes = getBoxes(treerow);
+            int position = boxes.indexOf(inputElement);
+
+            switch (navigation) {
+            case UP:
+                focusGoUp(treerow, position);
+                break;
+            case DOWN:
+                focusGoDown(treerow, position);
+                break;
+            case LEFT:
+                if (position == 0) {
+                    focusGoUp(treerow, boxes.size() - 1);
+                } else {
+                    if(boxes.get(position - 1).isDisabled()) {
+                        moveFocusTo(boxes.get(position - 1), Navigation.LEFT, treerow);
+                    }
+                    else {
+                        boxes.get(position - 1).focus();
+                    }
+                }
+                break;
+            case RIGHT:
+                if (position == boxes.size() - 1) {
+                    focusGoDown(treerow, 0);
+                } else {
+                    if(boxes.get(position + 1).isDisabled()) {
+                        moveFocusTo(boxes.get(position + 1), Navigation.RIGHT, treerow);
+                    }
+                    else {
+                        boxes.get(position + 1).focus();
+                    }
+                }
+                break;
+            }
+        }
+
+        private void focusGoUp(Treerow treerow, int position) {
+            List treeItems = treerow.getParent().getParent().getChildren();
+            int myPosition = treeItems.indexOf(treerow.getParent());
+
+            if(myPosition > 0) {
+                Treerow upTreerow = (Treerow)
+                    ((Component)treeItems.get(myPosition - 1)).getChildren().get(0);
+                List<InputElement> boxes = getBoxes(upTreerow);
+
+                if(boxes.get(position).isDisabled()) {
+                    moveFocusTo(boxes.get(position), Navigation.LEFT, upTreerow);
+                }
+                else {
+                    boxes.get(position).focus();
+                }
+            }
+        }
+
+        private void focusGoDown(Treerow treerow, int position) {
+            List treeItems = treerow.getParent().getParent().getChildren();
+            int myPosition = treeItems.indexOf(treerow.getParent());
+
+            if(myPosition < treeItems.size() - 1) {
+                Treerow downTreerow = (Treerow)
+                    ((Component)treeItems.get(myPosition + 1)).getChildren().get(0);
+                List<InputElement> boxes = getBoxes(downTreerow);
+
+                if(boxes.get(position).isDisabled()) {
+                    moveFocusTo(boxes.get(position), Navigation.RIGHT, downTreerow);
+                }
+                else {
+                    boxes.get(position).focus();
+                }
+            }
+        }
+
+        private List<InputElement> getBoxes(Treerow row) {
+            InputElement codeBox = (InputElement)
+                ((Treecell)row.getChildren().get(1)).getChildren().get(0);
+            InputElement nameBox = (InputElement)
+                ((Treecell)row.getChildren().get(2)).getChildren().get(1);
+            InputElement hoursBox = (InputElement)
+                ((Treecell)row.getChildren().get(3)).getChildren().get(0);
+            InputElement initDateBox = (InputElement)
+                ((Hbox)((Treecell)row.getChildren().get(4)).getChildren().get(0)).getChildren().get(0);
+            InputElement endDateBox = (InputElement)
+                ((Hbox)((Treecell)row.getChildren().get(5)).getChildren().get(0)).getChildren().get(0);
+
+            return Arrays.asList(codeBox, nameBox, hoursBox, initDateBox, endDateBox);
         }
 
         @Override
@@ -295,6 +409,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 textBox.setDisabled(true);
             }
             addCell(cssClass, taskNumber, textBox);
+            registerKeyboardListener(textBox);
         }
 
         @Override
@@ -343,6 +458,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
             addCell(textBoxCode);
+            registerKeyboardListener(textBoxCode);
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {
@@ -365,6 +481,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("init"), currentOrderElement);
+            registerKeyboardListener(dinamicDatebox.getDateTextBox());
         }
 
         void addEndDateCell(final OrderElement currentOrderElement) {
@@ -386,6 +503,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("end"), currentOrderElement);
+            registerKeyboardListener(dinamicDatebox.getDateTextBox());
         }
 
         void addHoursCell(final OrderElement currentOrderElement) {
@@ -395,6 +513,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 intboxHours.setDisabled(true);
             }
             addCell(intboxHours);
+            registerKeyboardListener(intboxHours);
         }
 
         private void addDateCell(final DynamicDatebox dinamicDatebox,

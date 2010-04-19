@@ -311,6 +311,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private Treerow currentTreeRow;
 
+        public Treerow getCurrentTreeRow() {
+            return currentTreeRow;
+        }
+
         public Renderer() {
         }
 
