@@ -240,15 +240,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimeLine> groupsFor(
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        for (Entry<Criterion, List<GenericResourceAllocation>> entry : genericAllocationsByCriterion
-                .entrySet()) {
+        List<Criterion> criterions = Criterion
+                .sortByName(genericAllocationsByCriterion.keySet());
+        for (Criterion criterion : criterions) {
             List<GenericResourceAllocation> allocations = ResourceAllocation
-                    .sortedByStartDate(entry.getValue());
-            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(entry
-                    .getKey());
-            LoadTimeLine group = new LoadTimeLine(createPrincipal(entry
-                    .getKey(), allocations,role), buildSecondLevel(entry.getKey(),
-                    allocations));
+                    .sortedByStartDate(genericAllocationsByCriterion
+                            .get(criterion));
+            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(criterion);
+            LoadTimeLine group = new LoadTimeLine(createPrincipal(criterion,
+                    allocations, role),
+                    buildSecondLevel(criterion, allocations));
             if (!group.isEmpty()) {
                 result.add(group);
             }
