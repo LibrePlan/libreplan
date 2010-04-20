@@ -66,6 +66,7 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.api.Panel;
 
 /**
  * Controller for {@link Material} materials
@@ -92,6 +93,8 @@ public class MaterialsController extends
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+
+    private Panel materialsPanel;
 
     private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
 
@@ -464,7 +467,20 @@ public class MaterialsController extends
     public void refreshMaterials() {
         final List<Material> materials = getMaterials();
         gridMaterials.setModel(new SimpleListModel(materials));
+        refreshMaterialsListTitle();
         Util.reloadBindings(gridMaterials);
+    }
+
+    private void refreshMaterialsListTitle() {
+        Treeitem treeitem = categoriesTree.getSelectedItem();
+        if (treeitem != null) {
+            materialsPanel.setTitle(_("List of materials for category: {0}",
+                    ((MaterialCategory) treeitem.getValue()).getName()));
+        }
+        else {
+            materialsPanel.setTitle
+                (_("List of materials for all categories (select one to filter)"));
+        }
     }
 
     public List<Material> getMaterials() {

@@ -71,8 +71,8 @@
 
                         <!-- Materials -->
                         <hbox>
-                            <panel title="${i18n:_('Materials')}"
-                                border="normal">
+                            <panel title="${i18n:_('List of materials for all categories (select one to filter)')}"
+                                id="materialsPanel" border="normal">
                                 <panelchildren>
                                     <button id="btnAddMaterial"
                                         label="${i18n:_('Add')}"
