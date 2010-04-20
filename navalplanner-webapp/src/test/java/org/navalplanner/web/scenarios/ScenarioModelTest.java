@@ -120,7 +120,9 @@ public class ScenarioModelTest {
         return givenStoredOrderInScenario(defaultScenario);
     }
 
-    private Order givenStoredOrderInScenario(Scenario scenario) {
+    public static Order givenStoredOrderInScenario(Scenario scenario,
+            IConfigurationDAO configurationDAO, IOrderDAO orderDAO,
+            SessionFactory sessionFactory) {
         Order order = Order.create();
         order.setCode(UUID.randomUUID().toString());
         order.setName("order-name");
@@ -145,12 +147,18 @@ public class ScenarioModelTest {
         return order;
     }
 
+    private Order givenStoredOrderInScenario(Scenario scenario) {
+        return givenStoredOrderInScenario(scenario, configurationDAO, orderDAO,
+                sessionFactory);
+    }
+
     private Scenario givenStoredScenario() {
         Scenario defaultScenario = PredefinedScenarios.MASTER.getScenario();
         return givenStoredScenario(defaultScenario);
     }
 
-    private Scenario givenStoredScenario(Scenario predecessor) {
+    public static Scenario givenStoredScenario(Scenario predecessor,
+            IScenarioDAO scenarioDAO, SessionFactory sessionFactory) {
         Scenario scenario = predecessor.newDerivedScenario();
         scenario.setName("scenario-name-" + UUID.randomUUID());
 
@@ -160,6 +168,10 @@ public class ScenarioModelTest {
         scenario.dontPoseAsTransientObjectAnymore();
 
         return scenario;
+    }
+
+    private Scenario givenStoredScenario(Scenario predecessor) {
+        return givenStoredScenario(predecessor, scenarioDAO, sessionFactory);
     }
 
     @Test
