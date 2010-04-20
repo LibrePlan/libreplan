@@ -399,4 +399,9 @@ public class DeepCopy {
         }
         return null;
     }
+
+    public <T> DeepCopy replace(T toBeReplaced, T substitution) {
+        alreadyCopiedObjects.put(toBeReplaced, substitution);
+        return this;
+    }
 }

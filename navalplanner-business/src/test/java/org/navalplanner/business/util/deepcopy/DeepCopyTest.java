@@ -347,4 +347,16 @@ public class DeepCopyTest {
                 .getSetProperty());
     }
 
+    @Test
+    public void canSpecifyReplacements() {
+        DeepCopy deepCopy = new DeepCopy();
+        Parent parent = new Parent();
+        EntityA entityA = new EntityA();
+        parent.setEntityAProperty(entityA);
+        EntityA anotherEntity = new EntityA();
+        deepCopy.replace(entityA, anotherEntity);
+        Parent copy = deepCopy.copy(parent);
+        assertSame(copy.getEntityAProperty(), anotherEntity);
+    }
+
 }
