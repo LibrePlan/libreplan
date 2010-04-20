@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -273,10 +274,11 @@ public class DeepCopy {
         return copy(entity, null);
     }
 
-    private <T> T copy(T value, Strategy strategy) {
-        if (value == null) {
+    private <T> T copy(T couldBeProxyValue, Strategy strategy) {
+        if (couldBeProxyValue == null) {
             return null;
         }
+        T value = desproxify(couldBeProxyValue);
         if (alreadyCopiedObjects.containsKey(value)) {
             return (T) alreadyCopiedObjects.get(value);
         }
@@ -294,6 +296,15 @@ public class DeepCopy {
         alreadyCopiedObjects.put(value, result);
         copyProperties(value, result);
         return result;
+    }
+
+    private <T> T desproxify(T value) {
+        if (value instanceof HibernateProxy) {
+            HibernateProxy proxy = (HibernateProxy) value;
+            return (T) proxy.getHibernateLazyInitializer()
+                    .getImplementation();
+        }
+        return value;
     }
 
     private boolean isImmutable(Object value) {
