@@ -57,4 +57,6 @@ public interface IMaterialsModel {
     List<UnitType> getUnitTypes();
 
     void loadUnitTypes();
+
+    boolean canRemoveMaterial(Material material);
 }

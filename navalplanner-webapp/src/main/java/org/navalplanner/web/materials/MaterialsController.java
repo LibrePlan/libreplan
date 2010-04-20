@@ -119,7 +119,7 @@ public class MaterialsController extends
                     final Row row = (Row) i.next();
                     final Material material = (Material) row.getValue();
                     Button btnDelete = (Button) row.getChildren().get(6);
-                    if (!material.isNewObject()) {
+                    if (!materialsModel.canRemoveMaterial(material)) {
                         btnDelete.setDisabled(true);
                         btnDelete.setImage("/common/img/ico_borrar_out.png");
                         btnDelete.setHoverImage("/common/img/ico_borrar_out.png");
@@ -502,8 +502,14 @@ public class MaterialsController extends
     }
 
     public void remove(Material material) {
-        materialsModel.removeMaterial(material);
-        Util.reloadBindings(gridMaterials);
+        if(materialsModel.canRemoveMaterial(material)) {
+            materialsModel.removeMaterial(material);
+            Util.reloadBindings(gridMaterials);
+        }
+        else {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("Cannot delete that material because it is assigned to an order."));
+        }
     }
 
     public void clearSelectionCategoriesTree() {

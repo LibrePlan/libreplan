@@ -35,6 +35,7 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.materials.daos.IMaterialAssignmentDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
@@ -65,6 +66,9 @@ public class MaterialsModel implements IMaterialsModel {
 
     @Autowired
     IConfigurationDAO configurationDAO;
+
+    @Autowired
+    IMaterialAssignmentDAO materialAssignmentDAO;
 
     MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
             .create(MaterialCategory.class);
@@ -275,5 +279,14 @@ public class MaterialsModel implements IMaterialsModel {
 
     public List<UnitType> getUnitTypes() {
         return this.unitTypes;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean canRemoveMaterial(Material material) {
+        if(material.isNewObject()) {
+            return true;
+        }
+        return materialAssignmentDAO.getByMaterial(material).size() == 0;
     }
 }
