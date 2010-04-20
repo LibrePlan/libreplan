@@ -463,15 +463,16 @@ public class OrderModel implements IOrderModel {
     public void save() throws ValidationException {
         final boolean newOrderVersionNeeded = isEditing
                 && order.hasSchedulingDataBeingModified()
-                && !order.isUsingTheOwnerScenario()
-                && userAcceptsCreateANewOrderVersion();
-        transactionService.runOnTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                saveOnTransaction(newOrderVersionNeeded);
-                return null;
-            }
-        });
+                && !order.isUsingTheOwnerScenario();
+        if (!newOrderVersionNeeded || userAcceptsCreateANewOrderVersion()) {
+            transactionService.runOnTransaction(new IOnTransaction<Void>() {
+                @Override
+                public Void execute() {
+                    saveOnTransaction(newOrderVersionNeeded);
+                    return null;
+                }
+            });
+        }
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
