@@ -120,9 +120,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         return current;
     }
 
-    private void currentSchedulingDataNowPointsTo(OrderVersion version) {
+    private void schedulingDataNowPointsTo(OrderVersion version) {
         current = getCurrentSchedulingData().pointsTo(version,
                 schedulingVersionFor(version));
+        for (OrderElement each : getChildren()) {
+            each.schedulingDataNowPointsTo(version);
+        }
     }
 
     public SchedulingState getSchedulingState() {
@@ -195,7 +198,7 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public void writeSchedulingDataChangesTo(OrderVersion newOrderVersion) {
-        currentSchedulingDataNowPointsTo(newOrderVersion);
+        schedulingDataNowPointsTo(newOrderVersion);
         writeSchedulingDataChanges();
     }
 
