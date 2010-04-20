@@ -65,6 +65,7 @@ import org.navalplanner.business.requirements.entities.IndirectCriterionRequirem
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
 
 public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
@@ -120,11 +121,23 @@ public abstract class OrderElement extends IntegrationEntity implements
         return current;
     }
 
-    private void schedulingDataNowPointsTo(OrderVersion version) {
-        current = getCurrentSchedulingData().pointsTo(version,
+    private void schedulingDataNowPointsTo(DeepCopy deepCopy,
+            OrderVersion version) {
+        current = getCurrentSchedulingData().pointsTo(deepCopy, version,
                 schedulingVersionFor(version));
         for (OrderElement each : getChildren()) {
-            each.schedulingDataNowPointsTo(version);
+            each.schedulingDataNowPointsTo(deepCopy, version);
+        }
+    }
+
+    protected void addNeededReplaces(DeepCopy deepCopy,
+            OrderVersion newOrderVersion) {
+        SchedulingDataForVersion currentVersion = getCurrentSchedulingData()
+                .getVersion();
+        SchedulingDataForVersion newSchedulingVersion = schedulingVersionFor(newOrderVersion);
+        deepCopy.replace(currentVersion, newSchedulingVersion);
+        for (OrderElement each : getChildren()) {
+            each.addNeededReplaces(deepCopy, newOrderVersion);
         }
     }
 
@@ -197,8 +210,9 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
-    protected void writeSchedulingDataChangesTo(OrderVersion newOrderVersion) {
-        schedulingDataNowPointsTo(newOrderVersion);
+    protected void writeSchedulingDataChangesTo(DeepCopy deepCopy,
+            OrderVersion newOrderVersion) {
+        schedulingDataNowPointsTo(deepCopy, newOrderVersion);
         writeSchedulingDataChanges();
     }
 

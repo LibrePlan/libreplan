@@ -44,6 +44,7 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
 
 /**
  * It represents an {@link Order} with its related information. <br />
@@ -164,8 +165,18 @@ public class Order extends OrderLineGroup {
     public void writeSchedulingDataChangesTo(Scenario currentScenario,
             OrderVersion newOrderVersion) {
         setVersionForScenario(currentScenario, newOrderVersion);
-        writeSchedulingDataChangesTo(newOrderVersion);
+        writeSchedulingDataChangesTo(
+                deepCopyWithNeededReplaces(newOrderVersion),
+                newOrderVersion);
         useSchedulingDataFor(currentScenario);
+    }
+
+
+    private DeepCopy deepCopyWithNeededReplaces(
+            OrderVersion newOrderVersion) {
+        DeepCopy result = new DeepCopy();
+        addNeededReplaces(result, newOrderVersion);
+        return result;
     }
 
     public boolean isUsingTheOwnerScenario() {

@@ -26,6 +26,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -131,23 +132,17 @@ public class SchedulingDataForVersion extends BaseEntity {
             return hasPendingChanges;
         }
 
-        public Data pointsTo(OrderVersion orderVersion,
+        public Data pointsTo(DeepCopy deepCopy, OrderVersion orderVersion,
                 SchedulingDataForVersion schedulingVersion) {
             Validate.isTrue(!this.originVersion.equals(schedulingVersion));
-            Data data = new Data(orderVersion, schedulingVersion,
-                    copy(taskSource), copy(schedulingStateType));
+            Data data = new Data(orderVersion, schedulingVersion, copy(
+                    deepCopy, taskSource), schedulingStateType);
             data.hasPendingChanges = true;
             return data;
         }
 
-        // FIXME because there is still no support for deep copying, new default
-        // data is created.
-        private static Type copy(Type schedulingStateType) {
-            return Type.NO_SCHEDULED;
-        }
-
-        private static TaskSource copy(TaskSource taskSource) {
-            return null;
+        private static TaskSource copy(DeepCopy deepCopy, TaskSource taskSource) {
+            return deepCopy.copy(taskSource);
         }
 
     }
