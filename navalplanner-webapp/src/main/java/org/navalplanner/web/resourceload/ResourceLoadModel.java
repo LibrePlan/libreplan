@@ -297,7 +297,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
 
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(criterion,
-                "Others ordes", allocations, getCurrentTimeLineRole(null)),
+                "Others ordes", "global-generic", allocations,
+                getCurrentTimeLineRole(null)),
                 buildTimeLinesGroupForOrder(
                 criterion, byOrder));
         return group;
@@ -309,7 +310,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         for (Order order : byOrder.keySet()) {
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(order);
             result.add(new LoadTimeLine(buildTimeLine(criterion, order
-                    .getName(), byOrder.get(order), role),
+                    .getName(), "global-generic", byOrder.get(order), role),
                     buildTimeLinesForOrder(
                     criterion, byOrder.get(order))));
         }
@@ -332,7 +333,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
              * that link with the resource allocation screen
              */
             LoadTimeLine timeLine = new LoadTimeLine(buildTimeLine(criterions,
-                    task, criterion, entry.getValue(), role),
+                    task, criterion, "global-generic", entry.getValue(), role),
                     buildTimeLinesForEachResource(criterion, onlyGeneric(entry
                             .getValue()), role));
             if (!timeLine.isEmpty()) {
@@ -358,7 +359,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             String descriptionTimeLine = getDescriptionResourceWithCriterions(resource);
 
             LoadTimeLine timeLine = buildTimeLine(resource,
-                    descriptionTimeLine, resourceAllocations, role);
+                    descriptionTimeLine, resourceAllocations, "generic", role);
             if (!timeLine.isEmpty()) {
                 secondLevel.add(timeLine);
             }
@@ -416,7 +417,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                         .findAllocationsRelatedTo(resource));
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
-                .getShortDescription(), sortedByStartDate, role),
+                .getShortDescription(), sortedByStartDate, "resource", role),
                 buildSecondLevel(resource, sortedByStartDate));
         return result;
 
@@ -452,7 +453,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(null);
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(resource,
-                _("Others ordes"), resourceAllocations, role),
+                _("Others ordes"), resourceAllocations, "resource", role),
                 buildTimeLinesGroupForOrder(resource, byOrder));
         return group;
     }
@@ -463,7 +464,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         for (Order order : byOrder.keySet()) {
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(order);
             result.add(new LoadTimeLine(buildTimeLine(resource,
-                    order.getName(), byOrder.get(order), role),
+                    order.getName(), byOrder.get(order), "resource", role),
                     buildTimeLinesForOrder(resource, byOrder.get(order))));
         }
         return result;
@@ -546,7 +547,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                         .getValue());
                 TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
                 LoadTimeLine timeLine = buildTimeLine(entry.getKey(), task,
-                        resource, resouceAllocations, role);
+                        resource, "generic", resouceAllocations, role);
                 if (!timeLine.isEmpty()) {
                     result.add(timeLine);
                 }
@@ -598,43 +599,38 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,
             List<? extends ResourceAllocation<?>> sortedByStartDate,
-            TimeLineRole<BaseEntity> role) {
-        return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
-                .onResource(resource), sortedByStartDate), role);
-    }
-
-    private LoadTimeLine buildTimeLine(Criterion criterion, String name,
-            List<ResourceAllocation<?>> allocations,
-            TimeLineRole<BaseEntity> role) {
-        List<GenericResourceAllocation> generics = onlyGeneric(allocations);
-        return new LoadTimeLine(name, createPeriods(criterion, generics),
-                "global-generic", role);
-    }
-
-    private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
-            Task task, Criterion criterion,
-            List<ResourceAllocation<?>> allocations,
-            TimeLineRole<BaseEntity> role) {
-        return buildTimeLine(criterion, getName(criterions, task), allocations,
-                role);
-    }
-
-    private LoadTimeLine buildTimeLine(Resource resource, String name,
-            List<ResourceAllocation<?>> sortedByStartDate, String type,
+            String type,
             TimeLineRole<BaseEntity> role) {
         return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
                 .onResource(resource), sortedByStartDate), type, role);
     }
 
+    private LoadTimeLine buildTimeLine(Criterion criterion, String name,
+            String type, List<ResourceAllocation<?>> allocations,
+            TimeLineRole<BaseEntity> role) {
+        List<GenericResourceAllocation> generics = onlyGeneric(allocations);
+        return new LoadTimeLine(name, createPeriods(criterion, generics), type,
+                role);
+    }
+
     private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
-            Task task, Resource resource,
+            Task task, Criterion criterion, String type,
+            List<ResourceAllocation<?>> allocations,
+            TimeLineRole<BaseEntity> role) {
+        return buildTimeLine(criterion, getName(criterions, task), type,
+                allocations,
+                role);
+    }
+
+    private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
+            Task task, Resource resource, String type,
             List<GenericResourceAllocation> allocationsSortedByStartDate,
             TimeLineRole<BaseEntity> role) {
         LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
                 .onResourceSatisfying(resource, criterions);
         return new LoadTimeLine(getName(criterions, task), PeriodsBuilder
                 .build(periodGeneratorFactory, allocationsSortedByStartDate),
-                "generic", role);
+                type, role);
     }
 
     @Override
