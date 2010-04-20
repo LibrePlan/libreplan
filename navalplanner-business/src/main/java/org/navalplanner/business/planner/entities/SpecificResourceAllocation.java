@@ -39,6 +39,8 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * Represents the relation between {@link Task} and a specific {@link Worker}.
@@ -53,6 +55,7 @@ public class SpecificResourceAllocation extends
     }
 
     @NotNull
+    @OnCopy(Strategy.SHARE)
     private Resource resource;
 
     private Set<SpecificDayAssignment> specificDaysAssignment = new HashSet<SpecificDayAssignment>();

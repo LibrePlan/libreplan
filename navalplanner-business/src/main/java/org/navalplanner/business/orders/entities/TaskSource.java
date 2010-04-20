@@ -35,6 +35,8 @@ import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -282,6 +284,7 @@ public class TaskSource extends BaseEntity {
 
     private SchedulingDataForVersion schedulingData;
 
+    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
     public TaskSource() {

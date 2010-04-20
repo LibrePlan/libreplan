@@ -34,6 +34,8 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -85,6 +87,7 @@ public class DerivedAllocation extends BaseEntity {
 
     private Set<DerivedDayAssignment> assignments = new HashSet<DerivedDayAssignment>();
 
+    @OnCopy(Strategy.IGNORE)
     private Set<DerivedDayAssignment> detached = new HashSet<DerivedDayAssignment>();
 
     public BigDecimal getAlpha() {

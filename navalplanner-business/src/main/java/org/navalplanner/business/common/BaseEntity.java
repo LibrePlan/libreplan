@@ -26,6 +26,8 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.INewObject;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 
 /**
@@ -40,10 +42,13 @@ public abstract class BaseEntity implements INewObject {
 
     private static final Log LOG = LogFactory.getLog(BaseEntity.class);
 
+    @OnCopy(Strategy.IGNORE)
     private Long id;
 
+    @OnCopy(Strategy.IGNORE)
     private Long version;
 
+    @OnCopy(Strategy.IGNORE)
     private boolean newObject = false;
 
     public Long getId() {

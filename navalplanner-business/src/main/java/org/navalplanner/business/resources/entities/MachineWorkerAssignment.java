@@ -23,6 +23,8 @@ package org.navalplanner.business.resources.entities;
 import java.util.Date;
 
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 
 /**
@@ -35,6 +37,7 @@ public class MachineWorkerAssignment extends BaseEntity {
 
     private Date finishDate;
 
+    @OnCopy(Strategy.SHARE)
     private Worker worker;
 
     private MachineWorkersConfigurationUnit machineWorkersConfigurationUnit;

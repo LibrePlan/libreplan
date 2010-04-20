@@ -43,6 +43,8 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * Represents the relation between {@link Task} and a generic {@link Resource}.
@@ -74,10 +76,12 @@ public class GenericResourceAllocation extends
         return result;
     }
 
+    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
     private Set<GenericDayAssignment> genericDayAssignments = new HashSet<GenericDayAssignment>();
 
+    @OnCopy(Strategy.IGNORE)
     private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
 
     private GenericResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {

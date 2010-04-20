@@ -38,6 +38,8 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 public abstract class DayAssignment extends BaseEntity {
 
@@ -149,6 +151,7 @@ public abstract class DayAssignment extends BaseEntity {
     private LocalDate day;
 
     @NotNull
+    @OnCopy(Strategy.SHARE)
     private Resource resource;
 
     protected DayAssignment() {

@@ -51,6 +51,8 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * Resources are allocated to planner tasks.
@@ -293,6 +295,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private AssignmentFunction assignmentFunction;
 
     @NotNull
+    @OnCopy(Strategy.SHARE)
     private ResourcesPerDay resourcesPerDay;
 
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();

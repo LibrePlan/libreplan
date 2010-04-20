@@ -27,6 +27,8 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * Gathers all the information related with a subcontracted {@link Task}.
@@ -65,6 +67,7 @@ public class SubcontractedTaskData extends BaseEntity {
 
     private Task task;
 
+    @OnCopy(Strategy.SHARE)
     private ExternalCompany externalCompany;
 
     private Date subcontratationDate;

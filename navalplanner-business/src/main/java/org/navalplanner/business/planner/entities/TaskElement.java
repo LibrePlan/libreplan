@@ -37,6 +37,8 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -97,6 +99,7 @@ public abstract class TaskElement extends BaseEntity {
 
     private Set<Dependency> dependenciesWithThisDestination = new HashSet<Dependency>();
 
+    @OnCopy(Strategy.SHARE)
     private BaseCalendar calendar;
 
     private TaskSource taskSource;
