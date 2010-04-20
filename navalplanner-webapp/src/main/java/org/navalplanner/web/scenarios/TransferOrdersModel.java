@@ -28,6 +28,7 @@ import java.util.Set;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -38,7 +39,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.zul.Messagebox;
 
 /**
  * Model for UI operations to transfer orders between scenarios.
@@ -51,13 +51,15 @@ import org.zkoss.zul.Messagebox;
 @OnConcurrentModification(goToPage = "/scenarios/transferOrders.zul")
 public class TransferOrdersModel implements ITransferOrdersModel {
 
-    private Scenario sourceScenario = PredefinedScenarios.MASTER.getScenario();
+    private Scenario sourceScenario;
 
-    private Scenario destinationScenario = PredefinedScenarios.MASTER
-            .getScenario();
+    private Scenario destinationScenario;
 
     @Autowired
     private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -67,6 +69,9 @@ public class TransferOrdersModel implements ITransferOrdersModel {
 
     @Override
     public Scenario getSourceScenario() {
+        if (sourceScenario == null) {
+            sourceScenario = PredefinedScenarios.MASTER.getScenario();
+        }
         return sourceScenario;
     }
 
@@ -82,6 +87,9 @@ public class TransferOrdersModel implements ITransferOrdersModel {
 
     @Override
     public Scenario getDestinationScenario() {
+        if (destinationScenario == null) {
+            destinationScenario = PredefinedScenarios.MASTER.getScenario();
+        }
         return destinationScenario;
     }
 
@@ -102,7 +110,11 @@ public class TransferOrdersModel implements ITransferOrdersModel {
     }
 
     @Override
+    @Transactional
     public void transfer(Order order) throws ValidationException {
+        Scenario sourceScenario = getSourceScenario();
+        Scenario destinationScenario = getDestinationScenario();
+
         if (sourceScenario == null) {
             throw new ValidationException(
                     _("You should select a source scenario"));
@@ -132,11 +144,24 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                     _("Order version is the same in source and destination scenarios"));
         }
 
-        // TODO
-        try {
-            Messagebox.show("TODO");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        order.useSchedulingDataFor(sourceOrderVersion);
+
+        if ((destinationOrderVersion != null)
+                && (destinationOrderVersion.getOwnerScenario().getId()
+                        .equals(destinationScenario.getId()))) {
+            order.writeSchedulingDataChangesTo(destinationScenario,
+                    destinationOrderVersion);
+            orderVersionDAO.save(destinationOrderVersion);
+        } else {
+            OrderVersion newOrderVersion = OrderVersion
+                    .createInitialVersion(destinationScenario);
+            destinationScenario.setOrderVersion(order, newOrderVersion);
+            order.writeSchedulingDataChangesTo(destinationScenario,
+                    newOrderVersion);
+            scenarioDAO.save(destinationScenario);
+            scenarioDAO.updateDerivedScenariosWithNewVersion(
+                    destinationOrderVersion, order, destinationScenario,
+                    newOrderVersion);
         }
     }
 

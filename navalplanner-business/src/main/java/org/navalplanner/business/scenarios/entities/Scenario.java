@@ -179,8 +179,10 @@ public class Scenario extends BaseEntity {
      */
     public boolean usesVersion(OrderVersion previousOrderVersion, Order order) {
         Validate.notNull(order);
-        Validate.notNull(previousOrderVersion);
         OrderVersion orderVersionForThisScenario = getOrderVersion(order);
+        if (previousOrderVersion == null) {
+            return (orderVersionForThisScenario == null);
+        }
         return orderVersionForThisScenario != null
                 && orderVersionForThisScenario.getId().equals(
                         previousOrderVersion.getId());

@@ -29,6 +29,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
@@ -160,6 +161,9 @@ public class TransferOrdersController extends GenericForwardComposer {
                             try {
                                 transferOrdersModel.transfer(order);
                                 Util.reloadBindings(destinationScenarioOrders);
+                                messagesForUser.showMessage(Level.INFO,
+                                        _("Order {0} transfered", order
+                                                .getName()));
                             } catch (ValidationException e) {
                                 messagesForUser.showInvalidValues(e);
                             }
