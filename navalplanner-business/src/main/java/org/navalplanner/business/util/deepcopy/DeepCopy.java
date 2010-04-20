@@ -231,17 +231,32 @@ public class DeepCopy {
 
     private static abstract class ImplementationInstantiation {
 
+        private static final String[] VETOED_IMPLEMENTATIONS = {
+                "PersistentSet", "PersistentList", "PersistentMap" };
+
         ImplementationInstantiation() {
         }
 
         <T> T instantiate(Class<?> type) {
-            try {
-                Constructor<? extends Object> constructor = type
-                        .getConstructor();
-                return (T) type.cast(constructor.newInstance());
-            } catch (Exception e) {
-                return (T) createDefault();
+            if (!isVetoed(type)) {
+                try {
+                    Constructor<? extends Object> constructor = type
+                            .getConstructor();
+                    return (T) type.cast(constructor.newInstance());
+                } catch (Exception e) {
+                }
             }
+            return (T) createDefault();
+        }
+
+        private static boolean isVetoed(Class<?> type) {
+            final String simpleName = type.getSimpleName();
+            for (String each : VETOED_IMPLEMENTATIONS) {
+                if (each.equalsIgnoreCase(simpleName)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         protected abstract Object createDefault();
