@@ -46,7 +46,7 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
      *            search worker by name(firstname or surname)/NIF
      *
      */
-    List<Worker> findByNameSubpartOrNifCaseInsensitive(String name);
+    List<Worker> findByNameSubpartOrNifCaseInsensitive(String name, boolean limitingResource);
 
     /**
      * Finds a {@link Worker} with the NIF param that should be unique.

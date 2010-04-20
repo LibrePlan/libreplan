@@ -21,7 +21,11 @@
 package org.navalplanner.web.planner.taskedition;
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
@@ -37,10 +41,14 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.api.Checkbox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Combobox;
 import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Row;
@@ -142,6 +150,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
      */
     private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
 
+    private EditTaskController editTaskController;
+
     private TaskElement currentTaskElement;
 
     private Tabpanel tabpanel;
@@ -158,16 +168,47 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private IContextWithPlannerTask<TaskElement> currentContext;
 
-    private Row subcontract;
+    private Row resourceAllocationType;
 
-    private Checkbox subcontractCheckbox;
+    private Listbox lbResourceAllocationType;
 
-    public void init(IContextWithPlannerTask<TaskElement> context,
+    private ResourceAllocationTypeEnum originalState;
+
+    public void init(EditTaskController editTaskController,
+            IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
+        this.editTaskController = editTaskController;
         this.currentContext = context;
         this.currentTaskElement = taskElement;
+
+        setOldState(null);
+        originalState = getResourceAllocationType(currentTaskElement);
+
         taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         updateComponentValuesForTask();
+    }
+
+    private void setOldState(ResourceAllocationTypeEnum state) {
+        lbResourceAllocationType.setVariable("oldState", state, true);
+    }
+
+    private ResourceAllocationTypeEnum getOldState() {
+        return (ResourceAllocationTypeEnum) lbResourceAllocationType
+                .getVariable("oldState", true);
+    }
+
+    private void setResourceAllocationType(Listbox listbox, ResourceAllocationTypeEnum value) {
+        setResourceAllocationType(listbox, value.toString());
+    }
+
+    private void setResourceAllocationType(Listbox listbox, String label) {
+        for (Iterator i = listbox.getChildren().iterator(); i.hasNext(); ) {
+            Listitem item = (Listitem) i.next();
+            Listcell cell = (Listcell) item.getFirstChild();
+            if (cell.getLabel() != null && cell.getLabel().equals(label)) {
+                item.setSelected(true);
+            }
+        }
     }
 
     private void updateComponentValuesForTask() {
@@ -175,23 +216,23 @@ public class TaskPropertiesController extends GenericForwardComposer {
             Task task = (Task) currentTaskElement;
             showDurationRow(task);
             showStartConstraintRow(task);
-            showSubcontractRow(task);
-        } else {
+            showResourceAllocationTypeRow(task);
+        }
+        else {
             hideDurationRow();
             hideStartConstraintRow();
-            hideSubcontractRow();
+            hideResourceAllocationTypeRow();
         }
         hours.setValue(currentTaskElement.getWorkHours());
         Util.reloadBindings(tabpanel);
     }
 
-    private void hideSubcontractRow() {
-        subcontract.setVisible(false);
+    private void hideResourceAllocationTypeRow() {
+        resourceAllocationType.setVisible(false);
     }
 
-    private void showSubcontractRow(Task task) {
-        subcontractCheckbox.setChecked(task.getSubcontractedTaskData() != null);
-        subcontract.setVisible(true);
+    private void showResourceAllocationTypeRow(Task task) {
+        resourceAllocationType.setVisible(true);
     }
 
     private void hideStartConstraintRow() {
@@ -270,6 +311,34 @@ public class TaskPropertiesController extends GenericForwardComposer {
                         constraintTypeChoosen(constraint);
                     }
                 });
+
+        lbResourceAllocationType.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                SelectEvent se = (SelectEvent) event;
+
+                final ResourceAllocationTypeEnum oldState = getOldState();
+                ResourceAllocationTypeEnum newState = getSelectedValue(new ArrayList(se.getSelectedItems()));
+                if (thereIsTransition(newState)) {
+                    changeResourceAllocationType(oldState, newState);
+                }
+                if (oldState == null) {
+                    setOldState(newState);
+                }
+            }
+
+            private ResourceAllocationTypeEnum getSelectedValue(List<Listitem> selectedItems) {
+                final Listitem item = (Listitem) selectedItems.get(0);
+                final Listcell cell = (Listcell) item.getChildren().get(0);
+                return ResourceAllocationTypeEnum.asEnum(cell.getLabel());
+            }
+
+        });
+    }
+
+    private boolean thereIsTransition(ResourceAllocationTypeEnum newState) {
+        return getOldState() != null && !getOldState().equals(newState);
     }
 
     public TaskDTO getGanttTaskDTO() {
@@ -291,6 +360,231 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     public void cancel() {
         taskEditFormComposer.cancel();
+    }
+
+    /**
+     * Enum for showing type of resource assignation option list
+     *
+     * @author Diego Pino Garcia <dpino@igalia.com>
+     *
+     */
+    public enum ResourceAllocationTypeEnum {
+        NON_LIMITING_RESOURCES(_("Non limiting resource assignation")),
+        LIMITING_RESOURCES(_("Limiting resource assignation")),
+        SUBCONTRACT(_("Subcontract"));
+
+        private String option;
+
+        private ResourceAllocationTypeEnum(String option) {
+            this.option = option;
+        }
+
+        public String toString() {
+            return option;
+        }
+
+        public static List<ResourceAllocationTypeEnum> getOptionList() {
+            return Arrays.asList(values());
+        }
+
+        public static ResourceAllocationTypeEnum getDefault() {
+            return NON_LIMITING_RESOURCES;
+        }
+
+        public static ResourceAllocationTypeEnum asEnum(String label) {
+            if (NON_LIMITING_RESOURCES.toString().equals(label)) {
+                return NON_LIMITING_RESOURCES;
+            } else if (LIMITING_RESOURCES.toString().equals(label)) {
+                return LIMITING_RESOURCES;
+            } else if (SUBCONTRACT.toString().equals(label)) {
+                return SUBCONTRACT;
+            }
+            return getDefault();
+        }
+
+    }
+
+    public List<ResourceAllocationTypeEnum> getResourceAllocationTypeOptionList() {
+        return ResourceAllocationTypeEnum.getOptionList();
+    }
+
+    public ResourceAllocationTypeEnum getResourceAllocationType() {
+        return getResourceAllocationType(currentTaskElement);
+    }
+
+    /**
+     * Does nothing, but it must exist for receiving selected value from listbox
+     *
+     * @param resourceAllocation
+     */
+    public void setResourceAllocationType(ResourceAllocationTypeEnum resourceAllocation) {
+
+    }
+
+    public ResourceAllocationTypeEnum getResourceAllocationType(TaskElement taskElement) {
+        if (taskElement == null || !isTask(taskElement)) {
+            return null;
+        }
+        return getResourceAllocationType(asTask(currentTaskElement));
+    }
+
+    /**
+     * Returns type of resource allocation depending on state of task
+     *
+     * If task is subcontracted, return a SUBCONTRACT state
+     * If task has at least one limiting resource, returns a LIMITING RESOURCE state
+     * Otherwise, return default state (NON-LIMITING RESOURCE)
+     *
+     * @return
+     */
+    public ResourceAllocationTypeEnum getResourceAllocationType(Task task) {
+        ResourceAllocationTypeEnum result = ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES;
+
+        if (task.isSubcontracted()) {
+            result = ResourceAllocationTypeEnum.SUBCONTRACT;
+        }
+        if (task.isLimiting()) {
+            result = ResourceAllocationTypeEnum.LIMITING_RESOURCES;
+        }
+        return result;
+    }
+
+    private boolean isTask(TaskElement taskElement) {
+        return taskElement instanceof Task;
+    }
+
+    private Task asTask(TaskElement taskElement) {
+        return (Task) taskElement;
+    }
+
+    private void changeResourceAllocationType(ResourceAllocationTypeEnum from, ResourceAllocationTypeEnum to) {
+        if (from.equals(ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES)) {
+            fromNonLimitingResource(to);
+        } else if (from.equals(ResourceAllocationTypeEnum.LIMITING_RESOURCES)) {
+            fromLimitingResource(to);
+        } else if (from.equals(ResourceAllocationTypeEnum.SUBCONTRACT)) {
+            fromSubcontract(to);
+        }
+    }
+
+    /**
+     * Change state from NonLimitingResource assignation type to a new state (limiting, subcontract)
+     *
+     * @param newState
+     */
+    private void fromNonLimitingResource(ResourceAllocationTypeEnum newState) {
+        if (!isTask(currentTaskElement)) {
+            return;
+        }
+
+        Task task = asTask(currentTaskElement);
+        if (task.hasResourceAllocations()) {
+            try {
+                if (Messagebox.show(_("Assigned resources for this task will be deleted. Are you sure?"),
+                        _("Warning"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                    task.removeAllResourceAllocations();
+                    setStateTo(newState);
+                } else {
+                    resetStateTo(ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES);
+                }
+                return;
+            } catch (InterruptedException e) {
+
+            }
+        }
+        setStateTo(newState);
+    }
+
+    private void setStateTo(ResourceAllocationTypeEnum state) {
+        setOldState(state);
+        editTaskController.showTabPanel(state);
+    }
+
+    private void resetStateTo(ResourceAllocationTypeEnum state) {
+        setResourceAllocationType(lbResourceAllocationType, state);
+        setOldState(state);
+    }
+
+    /**
+     * Change state from LimitingResource assignation type to a new state (non-limiting, subcontract)
+     *
+     * @param newState
+     */
+    private void fromLimitingResource(ResourceAllocationTypeEnum newState) {
+        if (!isTask(currentTaskElement)) {
+            return;
+        }
+
+        Task task = asTask(currentTaskElement);
+        if (task.hasResourceAllocations()) {
+            try {
+                if (Messagebox.show(_("Assigned resources for this task will be deleted. Are you sure?"),
+                        _("Warning"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                    task.removeAllResourceAllocations();
+                    setStateTo(newState);
+                } else {
+                    resetStateTo(ResourceAllocationTypeEnum.LIMITING_RESOURCES);
+                }
+                return;
+            } catch (InterruptedException e) {
+
+            }
+        }
+        setStateTo(newState);
+    }
+
+    /**
+     * Change state from Subcontract assignation type to a new state (non-limiting, limiting)
+     *
+     * @param newState
+     */
+    private void fromSubcontract(ResourceAllocationTypeEnum newState) {
+        Task task = asTask(currentTaskElement);
+
+        if (task.isSubcontracted()) {
+            final Date communicationDate = (task.getSubcontractedTaskData() != null) ?
+                    task.getSubcontractedTaskData().getSubcontractCommunicationDate()
+                    : null;
+
+            // Notification has been sent
+            if (communicationDate != null) {
+                try {
+                    if (Messagebox.show(_("IMPORTANT: Don't forget to communicate to subcontractor that his contract has been cancelled"),
+                            _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION) == Messagebox.OK) {
+                        setStateTo(newState);
+                    } else {
+                        resetStateTo(ResourceAllocationTypeEnum.SUBCONTRACT);
+                    }
+                    return;
+                } catch (InterruptedException e) {
+
+                }
+            }
+        }
+        setStateTo(newState);
+    }
+
+    public boolean stateHasChanged() {
+        final ResourceAllocationTypeEnum currentState = getCurrentState();
+        return currentState != null && !currentState.equals(getOriginalState());
+    }
+
+    public ResourceAllocationTypeEnum getOriginalState() {
+        return originalState;
+    }
+
+    public ResourceAllocationTypeEnum getCurrentState() {
+        return getSelectedResourceAllocationType();
+    }
+
+    private ResourceAllocationTypeEnum getSelectedResourceAllocationType() {
+        final Listitem item = lbResourceAllocationType.getSelectedItem();
+        if (item == null) {
+            return null;
+        }
+
+        final Listcell cell = (Listcell) item.getChildren().get(0);
+        return ResourceAllocationTypeEnum.asEnum(cell.getLabel());
     }
 
 }

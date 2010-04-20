@@ -35,12 +35,14 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.FormBinder;
+import org.navalplanner.web.planner.allocation.LimitingResourceAllocationController;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.order.SubcontractController;
+import org.navalplanner.web.planner.taskedition.TaskPropertiesController.ResourceAllocationTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -68,16 +70,24 @@ public class EditTaskController extends GenericForwardComposer {
     private ResourceAllocationController resourceAllocationController;
 
     @Autowired
+    private LimitingResourceAllocationController limitingResourceAllocationController;
+
+    @Autowired
     private SubcontractController subcontractController;
 
     private Window window;
 
     private Tabbox editTaskTabbox;
+
     private Tab resourceAllocationTab;
+    private Tab limitingResourceAllocationTab;
     private Tab subcontractTab;
+
     private Tabpanel taskPropertiesTabpanel;
     private Tabpanel resourceAllocationTabpanel;
+    private Tabpanel limitingResourceAllocationTabpanel;
     private Tabpanel subcontractTabpanel;
+
     private Component messagesContainer;
 
     private IMessagesForUser messagesForUser;
@@ -95,6 +105,7 @@ public class EditTaskController extends GenericForwardComposer {
         taskPropertiesController.doAfterCompose(taskPropertiesTabpanel);
         resourceAllocationController.doAfterCompose(resourceAllocationTabpanel);
         subcontractController.doAfterCompose(subcontractTabpanel);
+        limitingResourceAllocationController.doAfterCompose(limitingResourceAllocationTabpanel);
         messagesForUser = new MessagesForUser(messagesContainer);
     }
 
@@ -104,6 +115,10 @@ public class EditTaskController extends GenericForwardComposer {
 
     public ResourceAllocationController getResourceAllocationController() {
         return resourceAllocationController;
+    }
+
+    public LimitingResourceAllocationController getLimitingResourceAllocationController() {
+        return limitingResourceAllocationController;
     }
 
     public SubcontractController getSubcontractController() {
@@ -116,22 +131,65 @@ public class EditTaskController extends GenericForwardComposer {
         this.context = context;
         this.planningState = planningState;
 
-        taskPropertiesController.init(context, taskElement);
+        taskPropertiesController.init(this, context, taskElement);
         if (taskElement instanceof Task) {
             resourceAllocationController.init(context, (Task) taskElement,
                     planningState, messagesForUser);
+            limitingResourceAllocationController.init((Task) taskElement, messagesForUser);
             if (taskElement.isSubcontracted()) {
                 subcontractController.init((Task) taskElement, context);
             }
         }
 
         try {
-            Util.reloadBindings(window);
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
             window.setMode("modal");
+            showSelectedTabPanel();
+            Util.reloadBindings(window);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void showSelectedTabPanel() {
+        showTabPanel(taskPropertiesController
+                .getResourceAllocationType(taskElement));
+    }
+
+    public void showTabPanel(
+            ResourceAllocationTypeEnum resourceAllocationType) {
+        subcontractTab.setVisible(false);
+        resourceAllocationTab.setVisible(false);
+        limitingResourceAllocationTab.setVisible(false);
+
+        if (ResourceAllocationTypeEnum.SUBCONTRACT
+                .equals(resourceAllocationType)) {
+            subcontractController.init(asTask(taskElement), context);
+            showSubcontractTab();
+        } else if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES
+                .equals(resourceAllocationType)) {
+            resourceAllocationController.init(context, asTask(taskElement), planningState, messagesForUser);
+            showNonLimitingResourcesTab();
+        } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES
+                .equals(resourceAllocationType)) {
+            limitingResourceAllocationController.init(asTask(taskElement), messagesForUser);
+            showLimitingResourcesTab();
+        }
+
+    }
+
+    private void showSubcontractTab() {
+        subcontractTab.setVisible(true);
+    }
+
+    private void showNonLimitingResourcesTab() {
+        resourceAllocationController.clear();
+        resourceAllocationTab.setVisible(true);
+    }
+
+    private void showLimitingResourcesTab() {
+        limitingResourceAllocationController.clear();
+        limitingResourceAllocationTab.setVisible(true);
     }
 
     public void showEditFormTaskProperties(
@@ -165,14 +223,22 @@ public class EditTaskController extends GenericForwardComposer {
 
     public void accept() {
         try {
+            if (taskPropertiesController.stateHasChanged()) {
+                ResourceAllocationTypeEnum oldState = taskPropertiesController.getOriginalState();
+                removeAssociatedData(oldState);
+            }
+
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
             taskPropertiesController.accept();
 
-            editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
-            resourceAllocationController.accept();
-
-            editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
-            subcontractController.accept();
+            ResourceAllocationTypeEnum currentState = taskPropertiesController.getCurrentState();
+            if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(currentState)) {
+                editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
+                resourceAllocationController.accept();
+            } else if (ResourceAllocationTypeEnum.SUBCONTRACT.equals(currentState)) {
+                editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
+                subcontractController.accept();
+            }
 
             askForReloads();
 
@@ -183,6 +249,20 @@ public class EditTaskController extends GenericForwardComposer {
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         }
+    }
+
+    private void removeAssociatedData(ResourceAllocationTypeEnum state) {
+        Task task = asTask(taskElement);
+
+        if (state.equals(ResourceAllocationTypeEnum.SUBCONTRACT)) {
+            task.removeSubcontractCommunicationDate();
+            task.setSubcontractedTaskData(null);
+            subcontractController.removeSubcontractedTaskData();
+        }
+    }
+
+    public Task asTask(TaskElement taskElement) {
+        return (Task) taskElement;
     }
 
     private void askForReloads() {
@@ -203,58 +283,24 @@ public class EditTaskController extends GenericForwardComposer {
         window.setVisible(false);
     }
 
-    public void subcontract(boolean subcontract) {
-        if (taskElement instanceof Task) {
-            if (subcontract) {
-                resourceAllocationTab.setVisible(false);
-                subcontractTab.setVisible(true);
-                subcontractController.init((Task) taskElement, context);
-            } else {
-                subcontractTab.setVisible(false);
-                resourceAllocationTab.setVisible(true);
-                subcontractController.removeSubcontractedTaskData();
-            }
-        }
-    }
-
     public boolean isSubcontractedAndIsTask() {
-        if (taskElement == null) {
-            return false;
-        }
-        if (!isTask()) {
-            return false;
-        }
-        return taskElement.isSubcontracted();
+        return isSubcontractedAndIsTask(taskElement);
     }
 
     private boolean isSubcontractedAndIsTask(TaskElement task) {
-        if (task == null) {
-            return false;
-        }
-        if (!(task instanceof Task)) {
-            return false;
-        }
-        return task.isSubcontracted();
+        return (isTask(task) && task.isSubcontracted());
+    }
+
+    private boolean isTask(TaskElement taskElement) {
+        return (taskElement != null && taskElement instanceof Task);
     }
 
     public boolean isNotSubcontractedAndIsTask() {
-        if (taskElement == null) {
-            return false;
-        }
-        if (!isTask()) {
-            return false;
-        }
-        return !taskElement.isSubcontracted();
+        return isNotSubcontractedAndIsTask(taskElement);
     }
 
     private boolean isNotSubcontractedAndIsTask(TaskElement task) {
-        if (task == null) {
-            return false;
-        }
-        if (!(task instanceof Task)) {
-            return false;
-        }
-        return !task.isSubcontracted();
+        return (isTask(task) && !task.isSubcontracted());
     }
 
     public void goToAdvancedAllocation() {
@@ -329,7 +375,7 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     public boolean isTask() {
-        return (taskElement instanceof Task);
+        return isTask(taskElement);
     }
 
     public Date getStartConstraintDate() {

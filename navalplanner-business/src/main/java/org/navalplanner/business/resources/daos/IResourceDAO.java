@@ -38,21 +38,88 @@ import org.navalplanner.business.resources.entities.Worker;
  */
 public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
 
-    public List<Worker> getWorkers();
-
-    public List<Worker> getRealWorkers();
-
-    public List<Worker> getVirtualWorkers();
-
-    public List<Machine> getMachines();
     /**
-     * Returns all {@link Resource} which satisfy a set of {@link Criterion}
+     * Returns all {@link Resource} which are related with tasks
+     *
+     * @param tasks
+     * @return
+     */
+    List<Resource> findResourcesRelatedTo(List<Task> tasks);
+
+    /**
+     * Returns a list of {@link Resource} satisfying all criterions
+     *
+     * @param criterions
+     * @return
+     */
+    List<Resource> findSatisfyingAllCriterions(
+            Collection<? extends Criterion> criterions,
+            boolean limitingResource);
+
+    /**
+     * Returns a list of {@link Resource} satisfying at least one criterion from criterions
+     *
+     * @param criterions
+     * @return
      */
     List<Resource> findSatisfyingCriterionsAtSomePoint(Collection<? extends Criterion> criterions);
 
-    List<Resource> findResourcesRelatedTo(List<Task> tasks);
+    /**
+     * Returns all {@link Machine}
+     *
+     * @return
+     */
+    List<Machine> getMachines();
 
+    /**
+     * Returns all real resources ({@link Machine} and {@link Worker})
+     *
+     * @return
+     */
+    List<Resource> getRealResources();
+
+    /**
+     * Returns all {@link Worker} which are not virtual
+     *
+     * @return
+     */
+    List<Worker> getRealWorkers();
+
+    /**
+     * Returns all {@link Resource}
+     *
+     * @return
+     */
     List<Resource> getResources();
 
-    List<Resource> getRealResources();
+    /**
+     * Returns all {@link Worker} which are virtual
+     *
+     * @return
+     */
+    List<Worker> getVirtualWorkers();
+
+    /**
+     * Returns all {@link Worker} (including those which are virtual)
+     *
+     * @return
+     */
+    List<Worker> getWorkers();
+
+    /**
+     *
+     * Returns all {@link Resource} which are limiting
+     *
+     * @return
+     */
+    List<Resource> getAllLimitingResources();
+
+    /**
+     *
+     * Returns all {@link Resource} which are not limiting
+     *
+     * @return
+     */
+    List<Resource> getAllNonLimitingResources();
+
 }

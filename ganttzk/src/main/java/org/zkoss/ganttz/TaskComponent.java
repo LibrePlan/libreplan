@@ -256,13 +256,17 @@ public class TaskComponent extends Div implements AfterCompose {
 
     protected String calculateClass() {
         String classText;
-        if (getSclass().equals("null")) {
+
+        if (getSclass() == null || getSclass().equals("null")) {
             classText = "box";
         } else {
             classText = getSclass();
         }
         if (task.isInCriticalPath()) {
             classText += " critical";
+        }
+        if (task.isSubcontracted()) {
+            classText += " subcontracted-task";
         }
 
         classText += " " + getTask().getAssignedStatus();

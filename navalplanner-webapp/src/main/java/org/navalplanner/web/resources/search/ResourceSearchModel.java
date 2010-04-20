@@ -21,7 +21,6 @@
 package org.navalplanner.web.resources.search;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +34,9 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -79,39 +80,48 @@ public class ResourceSearchModel implements IResourceSearchModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Resource> findResources(String name, List<Criterion> criterions) {
-        return findByNameAndCriterions(name, criterions);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Resource> findResources(String name) {
-        return findByNameAndCriterions(name, Collections
-                .<Criterion> emptyList());
+    public List<Resource> findResources(String name, List<Criterion> criteria, boolean limitingResource) {
+        return findByNameAndCriterions(name, criteria, limitingResource);
     }
 
     private List<Resource> findByNameAndCriterions(String name,
-            List<Criterion> criterions) {
+            List<Criterion> criteria, boolean limitingResource) {
+
         final boolean emptyName = StringUtils.isEmpty(name);
-        if (criterions.isEmpty() && emptyName) {
-            return resourceDAO.list(Resource.class);
+        if (criteria.isEmpty() && emptyName) {
+            return getAllResources(limitingResource);
         }
-        Set<Resource> resourcesMatchingCriterions = null;
-        if (!criterions.isEmpty()) {
-            resourcesMatchingCriterions = new HashSet<Resource>(resourceDAO
-                    .findSatisfyingCriterionsAtSomePoint(criterions));
-            if (resourcesMatchingCriterions.isEmpty()) {
+
+        Set<Resource> resourcesMatchingCriteria = null;
+        if (!criteria.isEmpty()) {
+            resourcesMatchingCriteria = new HashSet<Resource>(resourceDAO
+                    .findSatisfyingAllCriterions(criteria, limitingResource));
+            if (resourcesMatchingCriteria.isEmpty()) {
                 return new ArrayList<Resource>();
             }
         }
         if (emptyName) {
-            return new ArrayList<Resource>(resourcesMatchingCriterions);
+            return new ArrayList<Resource>(resourcesMatchingCriteria);
         }
-        Set<Resource> result = intersect(workerDAO.findByNameSubpartOrNifCaseInsensitive(name),
-                resourcesMatchingCriterions);
-        result.addAll(intersect(machineDAO.findByNameOrCode(name),
-                resourcesMatchingCriterions));
+        Set<Resource> result = intersect(findWorkers(name,
+                limitingResource), resourcesMatchingCriteria);
+        result.addAll(intersect(findMachines(name, limitingResource),
+                resourcesMatchingCriteria));
         return new ArrayList<Resource>(result);
+    }
+
+    private List<Worker> findWorkers(String name, boolean limitingResource) {
+        return workerDAO.findByNameSubpartOrNifCaseInsensitive(name,
+                limitingResource);
+    }
+
+    private List<Machine> findMachines(String name, boolean limitingResource) {
+        return machineDAO.findByNameOrCode(name, limitingResource);
+    }
+
+    private List<Resource> getAllResources(boolean limitingResource) {
+        return (limitingResource) ? resourceDAO.getAllLimitingResources()
+                : resourceDAO.getAllNonLimitingResources();
     }
 
     private static Set<Resource> intersect(List<? extends Resource> all,
@@ -129,4 +139,17 @@ public class ResourceSearchModel implements IResourceSearchModel {
     public List<Resource> getAllResources() {
         return resourceDAO.getResources();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Resource> getAllLimitingResources() {
+        return resourceDAO.getAllLimitingResources();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Resource> getAllNonLimitingResources() {
+        return resourceDAO.getAllNonLimitingResources();
+    }
+
 }

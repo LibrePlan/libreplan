@@ -36,6 +36,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -139,6 +140,12 @@ public class Task extends TaskElement {
     @Override
     public Set<ResourceAllocation<?>> getAllResourceAllocations() {
         return Collections.unmodifiableSet(resourceAllocations);
+    }
+
+    public boolean isLimiting() {
+        // FIXME: Task is limiting if its resourceAllocation is associated with
+        // a LimitingResourceQueueElement
+        return false;
     }
 
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
@@ -498,6 +505,16 @@ public class Task extends TaskElement {
     @Override
     public boolean isMilestone() {
         return false;
+    }
+
+    public void removeSubcontractCommunicationDate() {
+        if (subcontractedTaskData != null) {
+            subcontractedTaskData.setSubcontractCommunicationDate(null);
+        }
+    }
+
+    public boolean hasResourceAllocations() {
+        return !resourceAllocations.isEmpty();
     }
 
 }
