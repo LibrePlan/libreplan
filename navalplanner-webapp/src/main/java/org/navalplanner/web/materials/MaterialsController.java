@@ -184,6 +184,13 @@ public class MaterialsController extends
                     materialCategory.setName(ie.getValue());
                 }
             });
+            tb.addEventListener("onFocus", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    ((Treeitem)tb.getParent().getParent().getParent()).setSelected(true);
+                    refreshMaterials();
+                }
+            });
             Treecell tc = new Treecell();
 
             Treerow tr = null;
@@ -207,6 +214,13 @@ public class MaterialsController extends
                 public void onEvent(Event event) throws Exception {
                     final InputEvent ie = (InputEvent) event;
                     materialCategory.setCode(ie.getValue());
+                }
+            });
+            codeTb.addEventListener("onFocus", new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    ((Treeitem)codeTb.getParent().getParent().getParent()).setSelected(true);
+                    refreshMaterials();
                 }
             });
             Treecell codeTc = new Treecell();
