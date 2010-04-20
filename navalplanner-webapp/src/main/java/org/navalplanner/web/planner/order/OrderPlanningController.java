@@ -316,8 +316,6 @@ public class OrderPlanningController implements Composer {
                                 foundTaskElement, model.getPlanningState());
             }
         }
-
-        this.task = null;
     }
 
 }
