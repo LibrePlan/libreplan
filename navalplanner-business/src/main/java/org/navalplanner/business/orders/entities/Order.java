@@ -156,6 +156,13 @@ public class Order extends OrderLineGroup {
         useSchedulingDataFor(orderVersion);
     }
 
+    public void writeSchedulingDataChangesTo(Scenario currentScenario,
+            OrderVersion newOrderVersion) {
+        setVersionForScenario(currentScenario, newOrderVersion);
+        writeSchedulingDataChangesTo(newOrderVersion);
+        useSchedulingDataFor(currentScenario);
+    }
+
     public boolean isUsingTheOwnerScenario() {
         return getCurrentVersionInfo().isUsingTheOwnerScenario();
     }

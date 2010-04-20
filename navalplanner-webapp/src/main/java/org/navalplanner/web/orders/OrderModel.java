@@ -489,7 +489,7 @@ public class OrderModel implements IOrderModel {
         if (newOrderVersionNeeded) {
             OrderVersion newVersion = OrderVersion
                     .createInitialVersion(currentScenario);
-            order.writeSchedulingDataChangesTo(newVersion);
+            order.writeSchedulingDataChangesTo(currentScenario, newVersion);
             createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
                     newVersion);
         } else {
