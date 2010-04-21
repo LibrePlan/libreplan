@@ -381,4 +381,14 @@ public class SchedulingState {
         }
     }
 
+    public String getCssClass() {
+        String cssclass = "not-scheduled";
+        if (isCompletelyScheduled()) {
+            cssclass = "completely-scheduled";
+        } else if (isPartiallyScheduled()) {
+            cssclass = "partially-scheduled";
+        }
+        return cssclass;
+    }
+
 }

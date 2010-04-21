@@ -890,11 +890,13 @@ div.z-listbox-pgi-b {
     border-bottom:dotted #EEEEEE 1px;
 }
 
-.orderTree .partially-scheduled span.scheduling-state {
+.partially-scheduled span.scheduling-state,
+span.partially-scheduled {
     background-color: #fddf9b;
 }
 
-.orderTree .completely-scheduled span.scheduling-state {
+.completely-scheduled span.scheduling-state,
+span.completely-scheduled {
     background-color: #bee5a9;
 }
 
@@ -1265,7 +1267,7 @@ overflow: visible;
 
 
 .clickable-rows tr.z-row:hover .z-row-inner {
-    background-color: #BCD2EF;
+    background-color: #E9F2FB;
 }
 
 .clickable-rows tr.z-row:hover .z-row-cnt {
