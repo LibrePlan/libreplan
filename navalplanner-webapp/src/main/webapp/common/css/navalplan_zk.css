@@ -890,11 +890,11 @@ div.z-listbox-pgi-b {
     border-bottom:dotted #EEEEEE 1px;
 }
 
-.orderTree .partially-scheduled {
+.orderTree .partially-scheduled span.scheduling-state {
     background-color: #fddf9b;
 }
 
-.orderTree .completely-scheduled {
+.orderTree .completely-scheduled span.scheduling-state {
     background-color: #bee5a9;
 }
 
