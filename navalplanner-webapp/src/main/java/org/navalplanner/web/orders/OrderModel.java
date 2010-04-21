@@ -486,14 +486,15 @@ public class OrderModel implements IOrderModel {
         orderDAO.save(order);
         reattachCurrentTaskSources();
         deleteOrderElementWithoutParent();
-        synchronizeWithSchedule(order);
         if (newOrderVersionNeeded) {
             OrderVersion newVersion = OrderVersion
                     .createInitialVersion(currentScenario);
             order.writeSchedulingDataChangesTo(currentScenario, newVersion);
             createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
                     newVersion);
+            synchronizeWithSchedule(order, false);
         } else {
+            synchronizeWithSchedule(order, true);
             order.writeSchedulingDataChanges();
         }
         order.dontPoseAsTransientObjectAnymore();
@@ -557,10 +558,11 @@ public class OrderModel implements IOrderModel {
         }
     }
 
-    private void synchronizeWithSchedule(OrderElement orderElement) {
+    private void synchronizeWithSchedule(OrderElement orderElement,
+            boolean preexistent) {
         for (TaskSourceSynchronization each : orderElement
                 .calculateSynchronizationsNeeded()) {
-            each.apply(taskSourceDAO);
+            each.apply(taskSourceDAO, preexistent);
         }
     }
 

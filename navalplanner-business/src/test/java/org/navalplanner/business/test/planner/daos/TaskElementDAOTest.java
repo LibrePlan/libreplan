@@ -197,7 +197,7 @@ public class TaskElementDAOTest {
 
             @Override
             protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                    List<TaskElement> children) {
+                    List<TaskElement> children, boolean preexistent) {
                 TaskGroup result = TaskGroup.create(taskSource);
                 Date today = new Date();
                 result.setStartDate(today);

@@ -65,7 +65,13 @@ public class TaskSource extends BaseEntity {
     }
 
     public static abstract class TaskSourceSynchronization {
-        public abstract TaskElement apply(ITaskSourceDAO taskSourceDAO);
+
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+            return apply(taskSourceDAO, true);
+        }
+
+        public abstract TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent);
     }
 
     static class TaskSourceMustBeAdded extends TaskSourceSynchronization {
@@ -77,7 +83,8 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
             Task result = Task.createTask(taskSource);
             taskSource.setTask(result);
             taskSourceDAO.save(taskSource);
@@ -94,7 +101,8 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preeexistent) {
             updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
             taskSourceDAO.save(taskSource);
             return taskSource.getTask();
@@ -134,15 +142,18 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
-            for (TaskSource each : toBeRemovedFromBottomToTop) {
-                remove(taskSourceDAO, each);
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
+            if (!preexistent) {
+                for (TaskSource each : toBeRemovedFromBottomToTop) {
+                    remove(taskSourceDAO, each);
+                }
+                taskSourceDAO.flush();
+                // flush must be done to avoid ERROR: duplicate key value
+                // violates unique constraint "tasksource_orderelement_key"
             }
-            taskSourceDAO.flush();
-            // flush must be done to avoid ERROR: duplicate key value
-            // violates unique constraint "tasksource_orderelement_key"
-            return new TaskSourceMustBeAdded(taskSource)
-                    .apply(taskSourceDAO);
+            return new TaskSourceMustBeAdded(taskSource).apply(taskSourceDAO,
+                    preexistent);
         }
 
         private void remove(ITaskSourceDAO taskSourceDAO, TaskSource each) {
@@ -174,15 +185,17 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
-            List<TaskElement> children = getChildren(taskSourceDAO);
-            return apply(taskSourceDAO, children);
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
+            List<TaskElement> children = getChildren(taskSourceDAO, preexistent);
+            return apply(taskSourceDAO, children, preexistent);
         }
 
-        private List<TaskElement> getChildren(ITaskSourceDAO taskSourceDAO) {
+        private List<TaskElement> getChildren(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
             List<TaskElement> result = new ArrayList<TaskElement>();
             for (TaskSourceSynchronization each : synchronizations) {
-                TaskElement t = each.apply(taskSourceDAO);
+                TaskElement t = each.apply(taskSourceDAO, preexistent);
                 if (t != null) {
                     // TaskSourceMustBeRemoved gives null
                     result.add(t);
@@ -192,7 +205,7 @@ public class TaskSource extends BaseEntity {
         }
 
         protected abstract TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children);
+                List<TaskElement> children, boolean preexistent);
     }
 
     static class TaskGroupMustBeAdded extends TaskGroupSynchronization {
@@ -204,7 +217,7 @@ public class TaskSource extends BaseEntity {
 
         @Override
         protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children) {
+                List<TaskElement> children, boolean preexistent) {
             TaskGroup result = TaskGroup.create(taskSource);
             for (TaskElement taskElement : children) {
                 result.addTaskElement(taskElement);
@@ -226,7 +239,7 @@ public class TaskSource extends BaseEntity {
 
         @Override
         protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children) {
+                List<TaskElement> children, boolean preexistent) {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
             taskGroup.setTaskChildrenTo(children);
             updateTaskWithOrderElement(taskGroup, taskSource.getOrderElement());
@@ -244,7 +257,11 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
+            if (!preexistent) {
+                return null;
+            }
             try {
                 taskSourceDAO.remove(taskSource.getId());
 
