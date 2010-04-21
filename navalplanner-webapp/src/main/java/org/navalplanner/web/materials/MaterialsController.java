@@ -514,6 +514,7 @@ public class MaterialsController extends
 
     public void clearSelectionCategoriesTree() {
         categoriesTree.clearSelection();
+        this.refreshMaterialsListTitle();
         Util.reloadBindings(gridMaterials);
     }
 
