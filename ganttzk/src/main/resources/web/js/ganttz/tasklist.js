@@ -35,9 +35,8 @@ MIN_RESOLUTION_Y = 600; // Minimun vertical autoresizable window
 
 TASKDETAILS_WIDTH = 300; // Taskdetails column fixed width (300)
 TASKDETAILS_HEIGHT = 180; // 260 // Design-relative reservated height for
-							// taskdetails (300,260)
-TIMETRACKER_OFFSET_TOP = 120
-// // Design-relative height above timetracker
+							   // taskdetails (300,260)
+TIMETRACKER_OFFSET_TOP = 120   // Design-relative height above timetracker
 
 FOOTER_HEIGHT = 40; // Design-relative footer height
 
@@ -49,6 +48,8 @@ PERSPECTIVES_WIDTH = 90;
 
 LEGEND_CONTAINER_OFFSET = 75; // Taskdetail width - legend container width
 
+zkTasklist.DELAY = 10         // Delay in ms to show task tooltips
+
 zkTasklist.tooltipTimeout = "";
 
 zkTasklist.showTooltip = function(elem) {
@@ -59,7 +60,7 @@ zkTasklist.showTooltip = function(elem) {
 			offset = zkTask.xMouse - component.parentNode.offsetLeft - leftpanelcontainer().offsetWidth - PERSPECTIVES_WIDTH + rightpanellayout().scrollLeft;
 			component.style['left'] = offset + 'px';
 		}
-	}, 1000);
+	}, zkTasklist.DELAY);
 }
 
 zkTasklist.showAllTooltips = function(elem) {

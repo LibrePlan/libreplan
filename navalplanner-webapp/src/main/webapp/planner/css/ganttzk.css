@@ -648,8 +648,13 @@ div.z-tree {
     margin-left: 5px;
     background-color: #f7f7bf;
     border: solid 1px #CCCCCC;
-    z-index: 7;
+    z-index: 100 !important;
     -moz-box-shadow: 1px 1px 10px #666666;
+}
+
+/* Avoid current box tooltip being overlapped */
+.box:hover {
+    z-index:100 !important;
 }
 
 .task-labels {
