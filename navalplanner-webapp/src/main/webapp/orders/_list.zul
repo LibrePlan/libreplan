@@ -22,7 +22,7 @@
     <grid id="listing" model="@{controller.orders}" mold="paging"
         pageSize="10" fixedLayout="true"
         rowRenderer= "@{controller.ordersRowRender}"
-        onInitRender ="controller.sortOrders();">
+        onInitRender ="controller.sortOrders();" sclass="clickable-rows">
         <columns>
             <column label="${i18n:_('Name')}" align="center" sort="auto(name)"/>
             <column label="${i18n:_('Code')}" align="center" sort="auto(code)"/>

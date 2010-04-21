@@ -1140,7 +1140,7 @@ span.z-dottree-line {
 
 tr.z-tree-row-seld, tr.z-list-item-seld,
 .z-combobox-pp .z-combo-item-seld {
-    background-color: #2a83b4;
+    background-color: #fdd772;
     color: #FFFFFF;
 }
 
@@ -1261,4 +1261,21 @@ overflow: visible;
 
 .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
     background-color: #E8E8E8;
+}
+
+
+.clickable-rows tr.z-row:hover .z-row-inner {
+    background-color: #BCD2EF;
+}
+
+.clickable-rows tr.z-row:hover .z-row-cnt {
+    color: #000000;
+}
+
+tr.z-tree-row-seld td.z-row-inner {
+    background-color: #2A83B4
+}
+
+tr.z-tree-row-seld .z-row-cnt {
+    color: #FFFFFF;
 }
