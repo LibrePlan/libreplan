@@ -340,8 +340,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
                         @Override
                         public String execute() {
-                            orderElementDAO
-                                    .reattachUnmodifiedEntity(taskElement
+                            orderElementDAO.reattach(taskElement
                                     .getOrderElement());
                             return buildTooltipText();
                         }
@@ -355,8 +354,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
                         @Override
                         public String execute() {
-                            orderElementDAO
-                                    .reattachUnmodifiedEntity(taskElement
+                            orderElementDAO.reattach(taskElement
                                     .getOrderElement());
                             return buildLabelsText();
                         }
