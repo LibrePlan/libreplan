@@ -81,6 +81,7 @@ table {
     display: none;
 }
 
+.icono .z-button-cm,
 body .z-window-embedded .icono .z-button-cm,
 body .z-window-modal .icono .z-button-cm,
 body .advancedallocationlayout .icono .z-button-cm {

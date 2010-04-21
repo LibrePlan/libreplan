@@ -83,28 +83,25 @@ MutableTreeModel<LoadTimeLine> modelForTree,
                 Component component = createComponent(line);
                 item.appendChild(row);
                 row.appendChild(cell);
-                cell.appendChild(component);
 
-                appendOperations(row, line);
+                appendOperations(cell, line);
+
+                cell.appendChild(component);
 
                 collapse(line);
                 addExpandedListener(item, line);
             }
 
-            private void appendOperations(final Treerow row,
+            private void appendOperations(final Treecell cell,
                     final LoadTimeLine line) {
                 if (line.getRole().isVisibleScheduled()) {
-                    Treecell cell = new Treecell();
                     appendButtonPlan(cell, line);
-                    row.appendChild(cell);
                 }
             }
 
             private void appendButtonPlan(final Treecell cell,
                     final LoadTimeLine taskLine) {
                 Button buttonPlan = new Button();
-                buttonPlan.setWidth("5px");
-                buttonPlan.setHeight("5px");
                 buttonPlan.setSclass("icono");
                 buttonPlan.setImage("/common/img/ico_planificador1.png");
                 buttonPlan.setHoverImage("/common/img/ico_planificador.png");

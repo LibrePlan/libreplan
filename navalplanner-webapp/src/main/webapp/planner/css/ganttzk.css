@@ -494,6 +494,21 @@ tr.z-vbox-sep {
     display: inline;
 }
 
+.resourceloadleftpane .secondlevel .z-label,
+.resourceloadleftpane .z-tree-body {
+    white-space: nowrap;
+}
+
+.resourceloadleftpane .icono {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border: 0px;
+}
+
+.resourceloadleftpane .icono img {
+    height: 18px;
+}
+
 /* -- Upper taskpannel is hidden --*/
 .taskspanelgap #timetracker {
     border-top: 0px;
@@ -579,6 +594,18 @@ tr.z-vbox-sep {
     font-size: 10px;
 }
 
+.resourceloadleftpane div.z-tree-body {
+    overflow: visible;
+}
+.resourceloadleftpane div.z-tree-body table {
+    table-layout:auto !important;
+}
+
+.resourceloadleftpane .icono .z-button-cm:active,
+.resourceloadleftpane .icono .z-button-cm:hover {
+    border: 0;
+    background-color: transparent;
+}
 
 .timetrackergap {
     position: relative;
