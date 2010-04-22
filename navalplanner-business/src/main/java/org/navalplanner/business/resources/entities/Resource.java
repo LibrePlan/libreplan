@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -83,6 +84,23 @@ public abstract class Resource extends IntegrationEntity {
         return result;
     }
 
+    public static List<Resource> sortByName(List<Resource> resources) {
+        Collections.sort(resources, new Comparator<Resource>() {
+
+            @Override
+            public int compare(Resource o1, Resource o2) {
+                if (o1.getName() == null) {
+                    return 1;
+                }
+                if (o2.getName() == null) {
+                    return -1;
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return resources;
+    }
+
     private ResourceCalendar calendar;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
@@ -95,6 +113,10 @@ public abstract class Resource extends IntegrationEntity {
         new HashSet<ResourcesCostCategoryAssignment>();
 
     private Boolean limitingResource = Boolean.FALSE;
+
+    private LimitingResourceQueue limitingResourceQueue;
+
+    private Boolean generateCode = false;
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
@@ -710,31 +732,19 @@ public abstract class Resource extends IntegrationEntity {
         return calendar;
     }
 
-    public void setResourceCalendar(String calendarName)
+    public void setResourceCalendar(String calendarCode)
         throws InstanceNotFoundException, MultipleInstancesException {
 
         ResourceCalendar calendar;
 
-        if (StringUtils.isBlank(calendarName)) {
-
+        if (StringUtils.isBlank(calendarCode)) {
             calendar = Registry.getConfigurationDAO().getConfiguration().
                 getDefaultCalendar().newDerivedResourceCalendar();
 
         } else {
-
-            List<BaseCalendar> baseCalendars = Registry.getBaseCalendarDAO().
-                findByName(calendarName);
-
-            if (baseCalendars.isEmpty()) {
-                throw new InstanceNotFoundException(calendarName,
-                    BaseCalendar.class.getName());
-            } if (baseCalendars.size() > 1) {
-                throw new MultipleInstancesException(calendarName,
-                    BaseCalendar.class.getName());
-            } else {
-                calendar = baseCalendars.get(0).newDerivedResourceCalendar();
-            }
-
+            BaseCalendar baseCalendar = Registry.getBaseCalendarDAO()
+                    .findByCode(calendarCode);
+            calendar = baseCalendar.newDerivedResourceCalendar();
         }
 
         setCalendar(calendar);
@@ -1056,6 +1066,23 @@ public abstract class Resource extends IntegrationEntity {
 
     public String getLimitingResourceAsString() {
         return (Boolean.TRUE.equals(isLimitingResource())) ? _("yes") : _("no");
+    }
+
+    public void setGenerateCode(Boolean generateCode) {
+        this.generateCode = generateCode;
+    }
+
+    public Boolean getGenerateCode() {
+        return generateCode;
+    }
+
+    public LimitingResourceQueue getLimitingResourceQueue() {
+        return limitingResourceQueue;
+    }
+
+    public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
+        limitingResourceQueue.setResource(this);
+        this.limitingResourceQueue = limitingResourceQueue;
     }
 
 }

@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
@@ -49,6 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 /**
  * Dao for {@link Order}
@@ -274,4 +276,34 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         return result;
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public Order findByNameAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+
+        return findByName(name);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private Order findByName(String name) throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(name)) {
+            throw new InstanceNotFoundException(null,
+                getEntityClass().getName());
+        }
+
+        Order order = (Order) getSession().createCriteria(getEntityClass())
+                .add(
+                        Restrictions.ilike("infoComponent.name", name,
+                                MatchMode.EXACT))
+                .uniqueResult();
+
+        if (order == null) {
+            throw new InstanceNotFoundException(
+                name, getEntityClass().getName());
+        } else {
+            return order;
+        }
+
+    }
 }

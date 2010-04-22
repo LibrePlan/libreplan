@@ -20,7 +20,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Type of work hours listing')}">
     <newdatasortablegrid id="listing" model="@{controller.typesOfWorkHours}" mold="paging"
-        pageSize="10">
+        pageSize="10" fixedLayout="true">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Code')}" sort="auto(code)" />
             <newdatasortablecolumn label="${i18n:_('Type name')}" sort="auto(name)" />

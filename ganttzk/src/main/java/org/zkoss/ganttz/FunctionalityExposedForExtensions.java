@@ -84,6 +84,10 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             return fromDomainToTask.get(domainObject);
         }
 
+        public Map<T, Task> getMapDomainToTask() {
+            return fromDomainToTask;
+        }
+
         /**
          * @param insertionPositionForTop
          *            the position in which to insert the task at the top level,

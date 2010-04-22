@@ -22,6 +22,7 @@ package org.navalplanner.business.common;
 
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.daos.ICalendarAvailabilityDAO;
 import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
@@ -39,6 +40,7 @@ import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionSatisfactionDAO;
@@ -177,6 +179,12 @@ public class Registry {
 
     @Autowired
     private IUnitTypeDAO unitTypeDAO;
+
+    @Autowired
+    private ICalendarAvailabilityDAO calendarAvailabilityDAO;
+
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
 
     private Registry() {
     }
@@ -321,6 +329,14 @@ public class Registry {
 
     public static ICalendarDataDAO getCalendarDataDAO() {
         return getInstance().calendarDataDAO;
+    }
+
+    public static ICalendarAvailabilityDAO getCalendarAvailabilityDAO() {
+        return getInstance().calendarAvailabilityDAO;
+    }
+
+    public static ITaskElementDAO getTaskElementDAO() {
+        return getInstance().taskElementDAO;
     }
 
 }

@@ -42,7 +42,7 @@ public interface IMachineDAO extends IIntegrationEntityDAO<Machine> {
      *            search machine by name/Code
      *
      */
-    List<Machine> findByNameOrCode(String name);
+    List<Machine> findByNameOrCode(String name, boolean limitingResource);
 
     /**
      * Finds a {@link Machine} with the Code param that should be unique.

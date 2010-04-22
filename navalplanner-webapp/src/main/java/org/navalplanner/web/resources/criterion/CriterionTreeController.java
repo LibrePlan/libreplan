@@ -66,6 +66,8 @@ public class CriterionTreeController extends GenericForwardComposer {
 
     private Textbox criterionName;
 
+    private boolean codeEditionDisabled;
+
     public CriterionTreeitemRenderer getRenderer() {
         return renderer;
     }
@@ -179,6 +181,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             Treecell cellForCode = new Treecell();
             cellForCode.setStyle("center");
             Textbox codeLabel = new Textbox();
+            codeLabel.setDisabled(codeEditionDisabled);
             cellForCode.appendChild(Util.bind(codeLabel,
                     new Util.Getter<String>() {
 
@@ -376,6 +379,14 @@ public class CriterionTreeController extends GenericForwardComposer {
         snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
         getModel().updateEnabledCriterions(isChecked);
         reloadTree();
+    }
+
+    public void setCriterionCodeEditionDisabled(boolean disabled) {
+        codeEditionDisabled = disabled;
+    }
+
+    public void regenerateCodeForUnsavedCriteria() {
+        getModel().regenerateCodeForUnsavedCriteria();
     }
 
     public void reloadTree(){

@@ -40,6 +40,35 @@ public class CalendarData extends IntegrationEntity {
         return create(new CalendarData());
     }
 
+    public static CalendarData createUnvalidated(String code,
+            LocalDate expiringDate, BaseCalendar parent) {
+        CalendarData calendarData = create(new CalendarData(), code);
+        calendarData.expiringDate = expiringDate;
+        calendarData.parent = parent;
+        return calendarData;
+    }
+
+    public void updateUnvalidated(LocalDate expiringDate, BaseCalendar parent) {
+        if (expiringDate != null) {
+            this.expiringDate = expiringDate;
+        }
+        if (parent != null) {
+            this.parent = parent;
+        }
+    }
+
+    public void updateHourPerDay(Map<Integer, Integer> hoursPerDay)
+            throws IllegalArgumentException {
+        if ((hoursPerDay != null)) {
+            for (Days day : Days.values()) {
+                Integer hours = hoursPerDay.get(day.ordinal());
+                if (hours != null) {
+                    setHours(day, hours);
+                }
+            }
+        }
+    }
+
     private Map<Integer, Integer> hoursPerDay;
 
     private LocalDate expiringDate;

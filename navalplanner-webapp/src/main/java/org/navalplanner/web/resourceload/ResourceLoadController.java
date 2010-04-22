@@ -28,15 +28,22 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
+import org.navalplanner.web.planner.order.IOrderPlanningGate;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.resourceload.IFilterChangedListener;
+import org.zkoss.ganttz.resourceload.ISeeScheduledOfListener;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 
@@ -57,6 +64,16 @@ public class ResourceLoadController implements Composer {
 
     private org.zkoss.zk.ui.Component parent;
 
+    private ResourcesLoadPanel resourcesLoadPanel;
+
+    private TimeTracker timeTracker;
+
+    private transient IFilterChangedListener filterChangedListener;
+
+    private transient ISeeScheduledOfListener seeScheduledOfListener;
+
+    private IOrderPlanningGate planningControllerEntryPoints;
+
     public ResourceLoadController() {
     }
 
@@ -72,17 +89,28 @@ public class ResourceLoadController implements Composer {
     }
 
     public void reload() {
+        // by default show the task by resources
+        boolean filterByResources = true;
+        timeTracker = null;
+        resourcesLoadPanel = null;
+        reload(filterByResources);
+    }
+
+    private void reload(boolean filterByResources) {
         try {
             if (filterBy == null) {
-                resourceLoadModel.initGlobalView();
+                resourceLoadModel.initGlobalView(filterByResources);
             } else {
-                resourceLoadModel.initGlobalView(filterBy);
+                resourceLoadModel.initGlobalView(filterBy, filterByResources);
             }
+            timeTracker = buildTimeTracker();
+            buildResourcesLoadPanel();
 
-            ResourcesLoadPanel resourcesLoadPanel = buildResourcesLoadPanel();
             this.parent.getChildren().clear();
             this.parent.appendChild(resourcesLoadPanel);
+
             resourcesLoadPanel.afterCompose();
+            addListeners();
             addCommands(resourcesLoadPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -96,19 +124,97 @@ public class ResourceLoadController implements Composer {
         }
     }
 
+    private void addListeners() {
+        /* Listener to filter */
+        filterChangedListener = new IFilterChangedListener() {
+
+            @Override
+            public void filterChanged(boolean filter) {
+                onApplyFilter(filter);
+            }
+        };
+        resourcesLoadPanel.addFilterListener(filterChangedListener);
+
+        /* Listener to show the scheduling screen */
+        seeScheduledOfListener = new ISeeScheduledOfListener() {
+
+            @Override
+            public void seeScheduleOf(LoadTimeLine taskLine) {
+                onSeeScheduleOf(taskLine);
+            }
+        };
+        resourcesLoadPanel.addSeeScheduledOfListener(seeScheduledOfListener);
+    }
+
+    public void onApplyFilter(boolean filterByResources) {
+        reload(filterByResources);
+    }
+
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
         resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[0]));
     }
 
-    private ResourcesLoadPanel buildResourcesLoadPanel() {
-        return new ResourcesLoadPanel(resourceLoadModel.getLoadTimeLines(),
-                new TimeTracker(resourceLoadModel.getViewInterval(),
-                        resourceLoadModel.calculateInitialZoomLevel(),
-                        SeveralModificators.create(), SeveralModificators
-                                .create(new BankHolidaysMarker()), parent));
+    private TimeTracker buildTimeTracker() {
+        ZoomLevel zoomLevel = (timeTracker == null) ? resourceLoadModel
+                .calculateInitialZoomLevel() : timeTracker.getDetailLevel();
+        return new TimeTracker(resourceLoadModel.getViewInterval(), zoomLevel,
+                SeveralModificators.create(), SeveralModificators
+                        .create(new BankHolidaysMarker()), parent);
+    }
+
+    private void buildResourcesLoadPanel() {
+        if (resourcesLoadPanel != null) {
+            resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
+                    timeTracker);
+        } else {
+            resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
+                    .getLoadTimeLines(), timeTracker, parent);
+            addListeners();
+        }
     }
 
     public void filterBy(Order order) {
         this.filterBy = order;
     }
+
+    public void setPlanningControllerEntryPoints(
+            IOrderPlanningGate planningControllerEntryPoints) {
+        this.planningControllerEntryPoints = planningControllerEntryPoints;
+    }
+
+    public IOrderPlanningGate getPlanningControllerEntryPoints() {
+        return this.planningControllerEntryPoints;
+    }
+
+    private void onSeeScheduleOf(LoadTimeLine taskLine) {
+
+        TaskElement task = (TaskElement) taskLine.getRole().getEntity();
+        Order order = resourceLoadModel.getOrderByTask(task);
+
+        if (resourceLoadModel.userCanRead(order, SecurityUtils
+                .getSessionUserLoginName())) {
+            if (order.isScheduled()) {
+                planningControllerEntryPoints.goToTaskResourceAllocation(order,
+                    task);
+             } else {
+                try {
+                    Messagebox.show(_("The order has no scheduled elements"),
+                            _("Information"), Messagebox.OK,
+                            Messagebox.INFORMATION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            try {
+                Messagebox
+                        .show(_("You don't have read access to this order"),
+                                _("Information"), Messagebox.OK,
+                                Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+}
+
 }

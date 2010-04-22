@@ -15,6 +15,8 @@
 
     <property name="code" access="property" not-null="true" unique="true"/>
 
+    <property name="generateCode" not-null="true" />
+
     <property name="limitingResource" column="LIMITED_RESOURCE" not-null="true"/>
 
     <set access="field" cascade="all-delete-orphan" inverse="true" name="criterionSatisfactions">
@@ -35,6 +37,8 @@
         <key column="RESOURCE_ID"/>
         <one-to-many class="org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment"/>
     </set>
+
+    <one-to-one name="limitingResourceQueue" property-ref="resource" cascade="all" />
 
     <joined-subclass name="org.navalplanner.business.resources.entities.Worker">
       <key column="WORKER_ID"/>
@@ -60,6 +64,25 @@
     </set>
 
     </joined-subclass>
+
+  </class>
+
+  <!-- LimitingResourceQueue -->
+  <class name="LimitingResourceQueue" table="limiting_resource_queue">
+    <id name="id" access="property" type="long">
+      <generator class="hilo">
+        <param name="max_lo">100</param>
+      </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <many-to-one name="resource" column="RESOURCE_ID" not-null="false" unique="true" />
+
+    <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true" >
+        <key column="LIMITING_RESOURCE_QUEUE_ID" not-null="true" />
+        <one-to-many class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement" />
+    </set>
+
   </class>
 
   <!-- Criterion -->
@@ -122,6 +145,7 @@
     <property name="allowSimultaneousCriterionsPerResource"/>
     <property name="allowHierarchy"/>
     <property name="enabled"/>
+    <property name="generateCode" not-null="true" />
     <property name="resource">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>

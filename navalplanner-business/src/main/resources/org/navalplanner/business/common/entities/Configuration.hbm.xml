@@ -17,10 +17,13 @@
 
         <property name="companyCode" />
 
-        <property name="generateCodeForCriterion" />
-        <property name="generateCodeForLabel" />
-        <property name="generateCodeForWorkReport" />
-        <property name="generateCodeForResources" />
+        <property name="generateCodeForCriterion" not-null="true" />
+        <property name="generateCodeForLabel" not-null="true" />
+        <property name="generateCodeForWorkReport" not-null="true" />
+        <property name="generateCodeForResources" not-null="true" />
+        <property name="generateCodeForTypesOfWorkHours" not-null="true" />
+        <property name="generateCodeForMaterialCategories" not-null="true" />
+        <property name="generateCodeForUnitTypes" not-null="true" />
 
     </class>
 

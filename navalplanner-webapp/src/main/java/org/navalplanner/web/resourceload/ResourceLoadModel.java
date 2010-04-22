@@ -36,11 +36,14 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -48,7 +51,15 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.OrderAuthorizationType;
+import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -56,6 +67,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
@@ -73,25 +85,69 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private IOrderDAO orderDAO;
 
     @Autowired
+    private ITaskElementDAO taskElementDAO;
+
+    @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     private List<LoadTimeLine> loadTimeLines;
     private Interval viewInterval;
 
     private Order filterBy;
 
+    private boolean filterByResources = true;
+
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView() {
+    public void initGlobalView(boolean filterByResources) {
         filterBy = null;
+        this.filterByResources = filterByResources;
         doGlobalView();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView(Order filterBy) {
+    public void initGlobalView(Order filterBy, boolean filterByResources) {
         this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
+        this.filterByResources = filterByResources;
         doGlobalView();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Order getOrderByTask(TaskElement task) {
+        return orderElementDAO
+                .loadOrderAvoidingProxyFor(task.getOrderElement());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean userCanRead(Order order, String loginName) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_ORDERS)
+                || SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return true;
+        }
+        try {
+            User user = userDAO.findByLoginName(loginName);
+            for (OrderAuthorization authorization : orderAuthorizationDAO
+                    .listByOrderUserAndItsProfiles(order, user)) {
+                if (authorization.getAuthorizationType() == OrderAuthorizationType.READ_AUTHORIZATION
+                        || authorization.getAuthorizationType() == OrderAuthorizationType.WRITE_AUTHORIZATION) {
+                    return true;
+                }
+            }
+        } catch (InstanceNotFoundException e) {
+            // this case shouldn't happen, because it would mean that there
+            // isn't a logged user
+            // anyway, if it happenned we don't allow the user to pass
+        }
+        return false;
     }
 
     private void doGlobalView() {
@@ -112,16 +168,30 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<LoadTimeLine> calculateLoadTimeLines() {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        result.addAll(groupsFor(resourcesToShow()));
-        result.addAll(groupsFor(genericAllocationsByCriterion()));
+        if (filterByResources) {
+            result.addAll(groupsFor(resourcesToShow()));
+        } else {
+            result.addAll(groupsFor(genericAllocationsByCriterion()));
+        }
         return result;
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
         if (filter()) {
+            List<Criterion> criterions = new ArrayList<Criterion>();
+            List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
+            List<Task> tasks = justTasks(filterBy
+                    .getAllChildrenAssociatedTaskElements());
+            for (Task task : tasks) {
+
+                List<ResourceAllocation<?>> listAllocations = new ArrayList<ResourceAllocation<?>>(
+                        task.getSatisfiedResourceAllocations());
+                for (GenericResourceAllocation generic : (onlyGeneric(listAllocations))) {
+                    criterions.addAll(generic.getCriterions());
+                }
+            }
             return resourceAllocationDAO
-                    .findGenericAllocationsByCriterionFor(justTasks(filterBy
-                            .getAllChildrenAssociatedTaskElements()));
+                    .findGenericAllocationsBySomeCriterion(criterions);
         } else {
             return resourceAllocationDAO.findGenericAllocationsByCriterion();
         }
@@ -140,8 +210,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesForActiveTasks() {
-        return resourcesDAO.findResourcesRelatedTo(justTasks(filterBy
-                .getAllChildrenAssociatedTaskElements()));
+        return Resource.sortByName(resourcesDAO
+                .findResourcesRelatedTo(justTasks(filterBy
+                        .getAllChildrenAssociatedTaskElements())));
     }
 
     private List<Task> justTasks(Collection<? extends TaskElement> tasks) {
@@ -155,18 +226,30 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> allResources() {
-        return resourcesDAO.list(Resource.class);
+        return Resource.sortByName(resourcesDAO.list(Resource.class));
     }
 
+    private TimeLineRole<BaseEntity> getCurrentTimeLineRole(BaseEntity entity) {
+        return new TimeLineRole<BaseEntity>(entity);
+    }
+
+    /**
+     * @param genericAllocationsByCriterion
+     * @return
+     */
     private List<LoadTimeLine> groupsFor(
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        for (Entry<Criterion, List<GenericResourceAllocation>> entry : genericAllocationsByCriterion
-                .entrySet()) {
+        List<Criterion> criterions = Criterion
+                .sortByName(genericAllocationsByCriterion.keySet());
+        for (Criterion criterion : criterions) {
             List<GenericResourceAllocation> allocations = ResourceAllocation
-                    .sortedByStartDate(entry.getValue());
-            LoadTimeLine group = new LoadTimeLine(createPrincipal(entry
-                    .getKey(), allocations), new ArrayList<LoadTimeLine>());
+                    .sortedByStartDate(genericAllocationsByCriterion
+                            .get(criterion));
+            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(criterion);
+            LoadTimeLine group = new LoadTimeLine(createPrincipal(criterion,
+                    allocations, role),
+                    buildSecondLevel(criterion, allocations));
             if (!group.isEmpty()) {
                 result.add(group);
             }
@@ -174,10 +257,141 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return result;
     }
 
+    private List<LoadTimeLine> buildSecondLevel(Criterion criterion,
+            List<GenericResourceAllocation> allocations) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(new ArrayList<ResourceAllocation<?>>(
+                allocations));
+
+        if (filter()) {
+            // build time lines for current order
+            if (byOrder.get(filterBy) != null) {
+                result.addAll(buildTimeLinesForOrder(criterion, byOrder
+                        .get(filterBy)));
+            }
+            byOrder.remove(filterBy);
+            // build time lines for other orders
+            LoadTimeLine lineOthersOrders = buildTimeLinesForOtherOrders(
+                    criterion, byOrder);
+            if (lineOthersOrders != null) {
+                result.add(lineOthersOrders);
+            }
+        } else {
+            result.addAll(buildTimeLinesGroupForOrder(criterion, byOrder));
+        }
+        return result;
+    }
+
+    private List<LoadTimeLine> buildTimeLinesForOrder(Criterion criterion,
+            List<ResourceAllocation<?>> allocations) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        result.addAll(buildTimeLinesForEachTask(criterion, allocations));
+        return result;
+    }
+
+    private LoadTimeLine buildTimeLinesForOtherOrders(Criterion criterion,
+            Map<Order, List<ResourceAllocation<?>>> byOrder) {
+        List<ResourceAllocation<?>> allocations = getAllSortedValues(byOrder);
+        if (allocations.isEmpty()) {
+            return null;
+        }
+
+        LoadTimeLine group = new LoadTimeLine(buildTimeLine(criterion,
+                "Others ordes", "global-generic", allocations,
+                getCurrentTimeLineRole(null)),
+                buildTimeLinesGroupForOrder(
+                criterion, byOrder));
+        return group;
+    }
+
+    private List<LoadTimeLine> buildTimeLinesGroupForOrder(Criterion criterion,
+            Map<Order, List<ResourceAllocation<?>>> byOrder) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        for (Order order : byOrder.keySet()) {
+            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(order);
+            result.add(new LoadTimeLine(buildTimeLine(criterion, order
+                    .getName(), "global-generic", byOrder.get(order), role),
+                    buildTimeLinesForOrder(
+                    criterion, byOrder.get(order))));
+        }
+        return result;
+    }
+
+    private List<LoadTimeLine> buildTimeLinesForEachTask(Criterion criterion,
+            List<ResourceAllocation<?>> allocations) {
+        Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
+                .byTask(allocations);
+
+        List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
+        for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
+            Task task = entry.getKey();
+            Set<Criterion> criterions = task.getCriterions();
+            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
+
+            /**
+             * Each resource line has the same role than its allocated task, so
+             * that link with the resource allocation screen
+             */
+            LoadTimeLine timeLine = new LoadTimeLine(buildTimeLine(criterions,
+                    task, criterion, "global-generic", entry.getValue(), role),
+                    buildTimeLinesForEachResource(criterion, onlyGeneric(entry
+                            .getValue()), role));
+            if (!timeLine.isEmpty()) {
+                secondLevel.add(timeLine);
+            }
+
+        }
+        return secondLevel;
+    }
+
+    private List<LoadTimeLine> buildTimeLinesForEachResource(
+            Criterion criterion, List<GenericResourceAllocation> allocations,
+            TimeLineRole<BaseEntity> role) {
+        Map<Resource, List<GenericResourceAllocation>> byResource = GenericResourceAllocation
+                .byResource(allocations);
+
+        List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
+        for (Entry<Resource, List<GenericResourceAllocation>> entry : byResource
+                .entrySet()) {
+            Resource resource = entry.getKey();
+            List<GenericResourceAllocation> resourceAllocations = entry
+                    .getValue();
+            String descriptionTimeLine = getDescriptionResourceWithCriterions(resource);
+
+            LoadTimeLine timeLine = buildTimeLine(resource,
+                    descriptionTimeLine, resourceAllocations, "generic", role);
+            if (!timeLine.isEmpty()) {
+                secondLevel.add(timeLine);
+            }
+
+        }
+        return secondLevel;
+    }
+
+    private String getDescriptionResourceWithCriterions(Resource resource) {
+        Set<CriterionSatisfaction> criterionSatisfactions = resource
+                .getCriterionSatisfactions();
+        return resource.getShortDescription()
+                + getCriterionSatisfactionDescription(criterionSatisfactions);
+    }
+
+    private String getCriterionSatisfactionDescription(
+            Set<CriterionSatisfaction> satisfactions) {
+        if (satisfactions.isEmpty()) {
+            return _("");
+        }
+        List<Criterion> criterions = new ArrayList<Criterion>();
+        for (CriterionSatisfaction satisfaction : satisfactions) {
+            criterions.add(satisfaction.getCriterion());
+        }
+        return " :: " + getName(criterions);
+    }
+
     private LoadTimeLine createPrincipal(Criterion criterion,
-            List<GenericResourceAllocation> orderedAllocations) {
+            List<GenericResourceAllocation> orderedAllocations,
+            TimeLineRole<BaseEntity> role) {
         return new LoadTimeLine(criterion.getName(), createPeriods(criterion,
-                orderedAllocations), "global-generic");
+                orderedAllocations), "global-generic", role);
     }
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
@@ -201,9 +415,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
                         .findAllocationsRelatedTo(resource));
+        TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
-                .getShortDescription(), sortedByStartDate), buildSecondLevel(
-                resource, sortedByStartDate));
+                .getShortDescription(), sortedByStartDate, "resource", role),
+                buildSecondLevel(resource, sortedByStartDate));
         return result;
 
     }
@@ -236,8 +451,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (resourceAllocations.isEmpty()) {
             return null;
         }
+        TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(null);
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(resource,
-                "Others ordes", resourceAllocations),
+                _("Others ordes"), resourceAllocations, "resource", role),
                 buildTimeLinesGroupForOrder(resource, byOrder));
         return group;
     }
@@ -246,8 +462,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Map<Order, List<ResourceAllocation<?>>> byOrder) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for (Order order : byOrder.keySet()) {
+            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(order);
             result.add(new LoadTimeLine(buildTimeLine(resource,
-                    order.getName(), byOrder.get(order)),
+                    order.getName(), byOrder.get(order), "resource", role),
                     buildTimeLinesForOrder(resource, byOrder.get(order))));
         }
         return result;
@@ -271,10 +488,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Transactional(readOnly = true)
     public Map<Order, List<ResourceAllocation<?>>> byOrder(
-            Collection<? extends ResourceAllocation<?>> allocations) {
+            Collection<ResourceAllocation<?>> allocations) {
         Map<Order, List<ResourceAllocation<?>>> result = new HashMap<Order, List<ResourceAllocation<?>>>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
-            if (resourceAllocation.getTask() != null) {
+            if ((resourceAllocation.isSatisfied())
+                    && (resourceAllocation.getTask() != null)) {
                 OrderElement orderElement = resourceAllocation.getTask()
                         .getOrderElement();
                 Order order = orderElementDAO
@@ -318,15 +536,18 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .entrySet()) {
 
             Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
-                    .byTask(entry.getValue());
+                    .byTask(new ArrayList<ResourceAllocation<?>>(entry
+                            .getValue()));
+
             for (Entry<Task, List<ResourceAllocation<?>>> entryTask : byTask
                     .entrySet()) {
 
                 Task task = entryTask.getKey();
-                List<GenericResourceAllocation> resouceAllocations = getGenericResourceAllocation(entryTask
+                List<GenericResourceAllocation> resouceAllocations = onlyGeneric(entryTask
                         .getValue());
+                TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
                 LoadTimeLine timeLine = buildTimeLine(entry.getKey(), task,
-                        resource, resouceAllocations);
+                        resource, "generic", resouceAllocations, role);
                 if (!timeLine.isEmpty()) {
                     result.add(timeLine);
                 }
@@ -336,42 +557,26 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return result;
     }
 
-    private List<GenericResourceAllocation> getGenericResourceAllocation(
-            List<ResourceAllocation<?>> list) {
-        List<GenericResourceAllocation> result = new ArrayList<GenericResourceAllocation>();
-        for (ResourceAllocation<?> resourceAllocation : list) {
-            if (resourceAllocation instanceof GenericResourceAllocation) {
-                result.add((GenericResourceAllocation) resourceAllocation);
-            }
-        }
-        return result;
-    }
-
     private List<LoadTimeLine> buildTimeLinesForEachTask(Resource resource,
             List<SpecificResourceAllocation> sortedByStartDate) {
+
+        List<ResourceAllocation<?>> listOnlySpecific = new ArrayList<ResourceAllocation<?>>(
+                sortedByStartDate);
         Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
-                .byTask(sortedByStartDate);
+                .byTask(listOnlySpecific);
+
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
         for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
             Task task = entry.getKey();
+            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
             LoadTimeLine timeLine = buildTimeLine(resource, task.getName(),
-                    entry.getValue(), "specific");
+                    entry.getValue(), "specific", role);
             if (!timeLine.isEmpty()) {
                 secondLevel.add(timeLine);
             }
 
         }
         return secondLevel;
-    }
-
-    private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
-            Task task, Resource resource,
-            List<GenericResourceAllocation> allocationsSortedByStartDate) {
-        LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
-                .onResourceSatisfying(resource, criterions);
-        return new LoadTimeLine(getName(criterions, task), PeriodsBuilder
-                .build(periodGeneratorFactory, allocationsSortedByStartDate),
-                "generic");
     }
 
     public static String getName(Collection<? extends Criterion> criterions,
@@ -393,15 +598,39 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,
-            List<ResourceAllocation<?>> sortedByStartDate) {
+            List<? extends ResourceAllocation<?>> sortedByStartDate,
+            String type,
+            TimeLineRole<BaseEntity> role) {
         return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
-                .onResource(resource), sortedByStartDate), "resource");
+                .onResource(resource), sortedByStartDate), type, role);
     }
 
-    private LoadTimeLine buildTimeLine(Resource resource, String name,
-            List<ResourceAllocation<?>> sortedByStartDate, String type) {
-        return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
-                .onResource(resource), sortedByStartDate), type);
+    private LoadTimeLine buildTimeLine(Criterion criterion, String name,
+            String type, List<ResourceAllocation<?>> allocations,
+            TimeLineRole<BaseEntity> role) {
+        List<GenericResourceAllocation> generics = onlyGeneric(allocations);
+        return new LoadTimeLine(name, createPeriods(criterion, generics), type,
+                role);
+    }
+
+    private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
+            Task task, Criterion criterion, String type,
+            List<ResourceAllocation<?>> allocations,
+            TimeLineRole<BaseEntity> role) {
+        return buildTimeLine(criterion, getName(criterions, task), type,
+                allocations,
+                role);
+    }
+
+    private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
+            Task task, Resource resource, String type,
+            List<GenericResourceAllocation> allocationsSortedByStartDate,
+            TimeLineRole<BaseEntity> role) {
+        LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
+                .onResourceSatisfying(resource, criterions);
+        return new LoadTimeLine(getName(criterions, task), PeriodsBuilder
+                .build(periodGeneratorFactory, allocationsSortedByStartDate),
+                type, role);
     }
 
     @Override

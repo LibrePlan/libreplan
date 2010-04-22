@@ -312,7 +312,7 @@ Os fluxos de integración detallan a secuencia que ten que facer unha aplicació
 Os servizos web atópanse dispoñibles a partir da URL_BASE da aplicación en /ws/rest/:
 
    * URL Base de Servizos: URL_BASE_NAVALPLANNER_WEBAPP/ws/rest
-   * Exemplo: https://naval.igalia.com/navalplanner-webapp/ws/rest
+   * Exemplo: http://www.navalplan.org/navalplanner-webapp/ws/rest
 
 A partir deste intre denominase a esta URL de servizos coma *BASE_SERVICES_URL*.
 
@@ -492,7 +492,7 @@ Descrición do fluxo
 
 Información de realización da chamada
    * *URL Servizo*: BASE_SERVICE_URL/criteriontypes
-   * *Exemplo URL*: https://naval.igalia.com/navalplanner-webapp/ws/rest/services/criteriontypes
+   * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/criteriontypes
    * *Método POST*
 
 Descrición do formato do ficheiro XML
@@ -690,7 +690,7 @@ Descrición do fluxo
 
 Información de realización da chamada
    * *URL Servizo*: BASE_SERVICE_URL/resources
-   * *Exemplo URL*: https://naval.igalia.com/navalplanner-webapp/ws/rest/services/resources
+   * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/resources
    * *Método POST*
 
 Descrición do formato do ficheiro XML
@@ -1186,7 +1186,7 @@ O seguinte script permite interactuar co servizo de importación de recursos emp
  #!/bin/sh
 
  DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/navalplanner-webapp/ws/rest
- PRODUCTION_BASE_SERVICE_URL=https://naval.igalia.com/navalplanner-webapp/ws/rest
+ PRODUCTION_BASE_SERVICE_URL=http://www.navalplan.org/navalplanner-webapp/ws/rest
 
  DEVELOPMENT_CERTIFICATE=""
  PRODUCTION_CERTIFICATE=-k
@@ -1229,7 +1229,7 @@ O seguinte código de exemplo fai unha petición por GET que nos devolve o lista
  #!/bin/sh
 
  DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/navalplanner-webapp/ws/rest
- PRODUCTION_BASE_SERVICE_URL=https://naval.igalia.com/navalplanner-webapp/ws/rest
+ PRODUCTION_BASE_SERVICE_URL=http://www.navalplan.org/navalplanner-webapp/ws/rest
 
  DEVELOPMENT_CERTIFICATE=""
  PRODUCTION_CERTIFICATE=-k

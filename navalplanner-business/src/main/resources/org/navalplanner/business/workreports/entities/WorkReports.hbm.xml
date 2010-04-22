@@ -61,6 +61,8 @@
 
     <property name="date"/>
 
+    <property name="generateCode" not-null="true" />
+
     <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
 
     <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID"/>

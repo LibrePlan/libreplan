@@ -78,14 +78,17 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Worker> findByNameSubpartOrNifCaseInsensitive(String name) {
-        String containsName = "%" + name + "%";
-        return getSession().createCriteria(Worker.class)
-                .add(
-                        Restrictions.or(Restrictions.or(Restrictions.ilike(
-                                "firstName", containsName), Restrictions.ilike(
-                                "surname", containsName)), Restrictions.like(
-                                "nif", containsName))).list();
+    public List<Worker> findByNameSubpartOrNifCaseInsensitive(String name, boolean limitingResource) {
+        final String containsName = "%" + name + "%";
+        return getSession().createCriteria(Worker.class).add(
+                Restrictions.and(
+                        Restrictions.eq("limitingResource", limitingResource),
+                        Restrictions.or(
+                                Restrictions.or(
+                                        Restrictions.ilike("firstName", containsName),
+                                        Restrictions.ilike("surname", containsName)),
+                                Restrictions.like("nif", containsName)))).list();
+
     }
 
     @SuppressWarnings("unchecked")

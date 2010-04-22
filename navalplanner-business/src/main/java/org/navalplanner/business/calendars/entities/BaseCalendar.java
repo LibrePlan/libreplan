@@ -27,12 +27,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 
 /**
@@ -48,6 +51,45 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
     public static BaseCalendar create() {
         return create(new BaseCalendar(CalendarData.create()));
+    }
+
+    public static BaseCalendar createUnvalidated(String code, String name,
+            BaseCalendar parent, Set<CalendarException> exceptions,
+            List<CalendarData> calendarDataVersions)
+            throws IllegalArgumentException {
+
+        BaseCalendar baseCalendar = create(new BaseCalendar(CalendarData
+                .create()), code);
+        baseCalendar.name = name;
+
+        if ((exceptions != null) && (!exceptions.isEmpty())) {
+            for (CalendarException exception : exceptions) {
+                baseCalendar.addExceptionDay(exception);
+            }
+        }
+
+        if ((calendarDataVersions != null) && (!calendarDataVersions.isEmpty())) {
+            baseCalendar.calendarDataVersions = calendarDataVersions;
+        }
+
+        if (parent != null) {
+            baseCalendar.setParent(parent);
+        }
+
+        return baseCalendar;
+
+    }
+
+    public void updateUnvalidated(String name, BaseCalendar parent) {
+
+        if (!StringUtils.isBlank(name)) {
+            this.name = name;
+        }
+
+        if (parent != null) {
+            setParent(parent);
+        }
+
     }
 
     @NotEmpty
@@ -416,6 +458,43 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         CalendarData newCalendarData = CalendarData.create();
         newCalendarData.setParent(getLastCalendarData().getParent());
         calendarDataVersions.add(newCalendarData);
+    }
+
+    public void addNewVersion(CalendarData version){
+        if (version.getExpiringDate() == null) {
+            if (getLastCalendarData().getExpiringDate() == null) {
+                throw new IllegalArgumentException(
+                        "the date is null and overlaps with the last version.");
+            }
+            else{
+                calendarDataVersions.add(version);
+                return;
+            }
+        }
+
+        if (version.getExpiringDate().toDateTimeAtStartOfDay().toDate()
+                .compareTo(new Date()) <= 0) {
+            throw new IllegalArgumentException(
+                    "You can not add a version with previous date than current date");
+        }
+        for (int i = 0; i < calendarDataVersions.size(); i++) {
+            if ((calendarDataVersions.get(i).getExpiringDate() == null)
+                    || (calendarDataVersions.get(i).getExpiringDate()
+                            .compareTo(version.getExpiringDate()) > 0)) {
+                if ((i - 1 >= 0)
+                        && (calendarDataVersions.get(i - 1).getExpiringDate() != null)
+                        && (calendarDataVersions.get(i - 1).getExpiringDate()
+                                .compareTo(version.getExpiringDate()) >= 0)) {
+                    throw new IllegalArgumentException(
+                            "the date is null and overlap with the other version.");
+                }
+                calendarDataVersions.add(i, version);
+                return;
+            }
+        }
+
+        calendarDataVersions.add(version);
+
     }
 
     public BaseCalendar newCopy() {
@@ -942,4 +1021,64 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         return org.navalplanner.business.common.Registry.getBaseCalendarDAO();
     }
 
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "the versions: the dates should be sorted and could not overlap ")
+    public boolean checkConstraintDateCouldNotOverlap() {
+
+        if (calendarDataVersions == null || calendarDataVersions.isEmpty()) {
+            return true;
+        }
+
+        if (this.getLastCalendarData().getExpiringDate() != null) {
+            return false;
+        }
+
+        for (int i = 0; i < calendarDataVersions.size() - 2; i++) {
+            LocalDate date1 = calendarDataVersions.get(i).getExpiringDate();
+            LocalDate date2 = calendarDataVersions.get(i + 1).getExpiringDate();
+            if ((date1 == null) || (date2 == null)
+                    || (date1.compareTo(date2) >= 0)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public CalendarException getCalendarExceptionByCode(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code, CalendarException.class
+                    .getName());
+        }
+
+        for (CalendarException e : this.exceptions) {
+            if (e.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return e;
+            }
+        }
+
+        throw new InstanceNotFoundException(code, CalendarException.class
+                .getName());
+
+    }
+
+    public CalendarData getCalendarDataByCode(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code, CalendarData.class
+                    .getName());
+        }
+
+        for (CalendarData e : this.calendarDataVersions) {
+            if (e.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return e;
+            }
+        }
+
+        throw new InstanceNotFoundException(code, CalendarData.class.getName());
+
+    }
 }

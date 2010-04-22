@@ -138,6 +138,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         tabpanel = (Tabpanel) comp;
         allResourcesPerDay = new Decimalbox();
+        newAllocationSelector.setLimitingResourceFilter(false);
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
     }
@@ -479,7 +480,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourceAllocationModel.cancel();
     }
 
-    private void clear() {
+    public void clear() {
         newAllocationSelector.clearAll();
         allocationsGrid.setModel(new SimpleListModel(Collections.emptyList()));
     }

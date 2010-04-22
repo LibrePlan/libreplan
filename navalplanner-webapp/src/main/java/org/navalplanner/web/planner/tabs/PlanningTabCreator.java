@@ -212,7 +212,9 @@ public class PlanningTabCreator {
 
                     Label schedulingStateLabel = new Label(order
                             .getSchedulingState().getStateAbbreviation());
-                    schedulingStateLabel.setSclass("scheduling-state");
+
+                    schedulingStateLabel.setSclass("scheduling-state "
+                            + order.getSchedulingState().getCssClass());
                     schedulingStateLabel.setTooltiptext(order
                             .getSchedulingState().getStateName());
 

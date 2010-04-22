@@ -69,23 +69,7 @@ public class SubcontractController extends GenericForwardComposer {
     }
 
     public void accept() throws ValidationException {
-        int status = Messagebox.YES;
-        if (subcontractModel.hasResourceAllocations()) {
-            try {
-                status = Messagebox
-                        .show(
-                                _("As you are subcontracting this task, all the resource allocations related with this task will be removed.")
-                                        + _("Are you sure?"), _("Confirm"),
-                                Messagebox.YES | Messagebox.NO,
-                                Messagebox.QUESTION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        if (status == Messagebox.YES) {
-            subcontractModel.confirm();
-        }
+        subcontractModel.confirm();
     }
 
     public void cancel() {

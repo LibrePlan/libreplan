@@ -63,6 +63,14 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForResources();
     void setGenerateCodeForResources(Boolean generateCodeForResources);
 
+    Boolean getGenerateCodeForTypesOfWorkHours();
+    void setGenerateCodeForTypesOfWorkHours(
+            Boolean generateCodeForTypesOfWorkHours);
+
+    Boolean getGenerateCodeForMaterialCategories();
+    void setGenerateCodeForMaterialCategories(
+            Boolean generateCodeForMaterialCategories);
+
     List<OrderSequence> getOrderSequences();
     void addOrderSequence();
     void removeOrderSequence(OrderSequence orderSequence)
@@ -73,5 +81,9 @@ public interface IConfigurationModel {
      */
     void confirm();
     void cancel();
+
+    Boolean getGenerateCodeForUnitTypes();
+
+    void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes);
 
 }

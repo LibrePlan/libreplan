@@ -21,18 +21,35 @@
 package org.navalplanner.business.test.resources.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +73,12 @@ public class ResourceDAOTest {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
 
     @Test
     public void saveResourceWithCalendar() throws InstanceNotFoundException {
@@ -87,6 +110,72 @@ public class ResourceDAOTest {
         worker.setSurname("Surname");
         worker.setNif("NIF");
         return worker;
+    }
+
+    @Test
+    public void testResourceIsRelatedWithAllCriterions() {
+        Collection<Criterion> criterions = createCriterions();
+        createAndSaveResourceSatisfyingAllCriterions(criterions);
+        List<Resource> result = resourceDAO
+                .findSatisfyingAllCriterions(criterions, false);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    private Collection<Criterion> createCriterions() {
+        List<Criterion> result = new ArrayList<Criterion>();
+        CriterionType type = createCriterionType("criterionTypeTest");
+        result.add(createCriterion("criterion1", type));
+        result.add(createCriterion("criterion2", type));
+        return result;
+    }
+
+    private CriterionType createCriterionType(String name) {
+        CriterionType result = CriterionType.create(name, "");
+        criterionTypeDAO.save(result);
+        return result;
+    }
+
+    private Criterion createCriterion(String name) {
+        return createCriterion(name, createCriterionType(UUID.randomUUID().toString()));
+    }
+
+    private Criterion createCriterion(String name, CriterionType type) {
+        Criterion result = Criterion.create(name, type);
+        criterionDAO.save(result);
+        return result;
+    }
+
+    private Worker createAndSaveResourceSatisfyingAllCriterions(final Collection<Criterion> criterions) {
+        Worker result = givenValidWorker();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Interval interval = Interval.range(sdf.parse("01/01/1970"), null);
+            Set<CriterionSatisfaction> satisfactions = new HashSet<CriterionSatisfaction>();
+            for (Criterion each: criterions) {
+                satisfactions.add(CriterionSatisfaction.create(each, result, interval));
+            }
+            result.addSatisfactions(satisfactions);
+            resourceDAO.save(result);
+        } catch (ParseException e) {
+
+        }
+        return result;
+    }
+
+    @Test
+    public void testResourceIsNotRelatedWithAllCriterions() {
+        Collection<Criterion> criterions = createCriterions();
+        createAndSaveResourceSatisfyingAllCriterions(criterions);
+
+        // Modify criterions collection
+        criterions.add(createCriterion("criterion3"));
+
+        List<Resource> result = resourceDAO
+                .findSatisfyingAllCriterions(criterions, false);
+        assertNotNull(result);
+        assertTrue(result.size() != 1);
     }
 
 }

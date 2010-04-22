@@ -172,4 +172,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return true;
     }
 
+    @Override
+    public String getAssignedStatus() {
+        return "unassigned";
+    }
+
 }

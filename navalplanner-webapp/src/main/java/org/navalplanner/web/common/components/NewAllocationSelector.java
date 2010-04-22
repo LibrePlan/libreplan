@@ -105,7 +105,6 @@ public class NewAllocationSelector extends HtmlMacroComponent {
     }
 
     public void addChoosen() {
-
         getController().addTo(allocationsAdder);
     }
 
@@ -115,6 +114,14 @@ public class NewAllocationSelector extends HtmlMacroComponent {
             getController().clearAll();
         }
 
+    }
+
+    public void setLimitingResourceFilter(boolean limitingResource) {
+        getController().setLimitingResourceFilter(limitingResource);
+    }
+
+    public void allowSelectMultipleResources(boolean multiple) {
+        getController().allowSelectMultipleResources(multiple);
     }
 
 }

@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
@@ -47,8 +48,10 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.FilterAndParentExpandedPredicates;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.extensions.ContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.LongOperationFeedback;
@@ -91,6 +94,8 @@ public class OrderPlanningController implements Composer {
 
     private Order order;
 
+    private TaskElement task;
+
     private List<ICommand<TaskElement>> additional = new ArrayList<ICommand<TaskElement>>();
 
     private Vbox orderElementFilter;
@@ -118,6 +123,10 @@ public class OrderPlanningController implements Composer {
         if (planner != null) {
             updateConfiguration();
         }
+    }
+
+    public void setShowedTask(TaskElement task) {
+        this.task = task;
     }
 
     public CalendarAllocationController getCalendarAllocationController() {
@@ -158,7 +167,6 @@ public class OrderPlanningController implements Composer {
         filterNameOrderElement = (Textbox) filterComponent
                 .getFellow("filterNameOrderElement");
         filterComponent.setVisible(true);
-
         updateConfiguration();
     }
 
@@ -168,6 +176,7 @@ public class OrderPlanningController implements Composer {
                     editTaskController, calendarAllocationController,
                     additional);
             planner.updateSelectedZoomLevel();
+            showResorceAllocationIfIsNeeded();
         }
     }
 
@@ -278,6 +287,35 @@ public class OrderPlanningController implements Composer {
                 }
             }
         };
+    }
+
+    public void showResorceAllocationIfIsNeeded() {
+        if ((task != null) && (planner != null)) {
+
+            planner.expandAllAlways();
+
+            Task foundTask = null;
+            TaskElement foundTaskElement = null;
+            IContext<TaskElement> context = (IContext<TaskElement>) planner
+                    .getContext();
+            Map<TaskElement, Task> map = context.getMapper()
+                    .getMapDomainToTask();
+
+            for (Entry<TaskElement, Task> entry : map.entrySet()) {
+                if (task.getId().equals(entry.getKey().getId())) {
+                    foundTaskElement = entry.getKey();
+                    foundTask = entry.getValue();
+                }
+            }
+
+            if ((foundTask != null) && (foundTaskElement != null)) {
+                IContextWithPlannerTask<TaskElement> contextTask = ContextWithPlannerTask
+                        .create(context, foundTask);
+                this.editTaskController
+                        .showEditFormResourceAllocation(contextTask,
+                                foundTaskElement, model.getPlanningState());
+            }
+        }
     }
 
 }

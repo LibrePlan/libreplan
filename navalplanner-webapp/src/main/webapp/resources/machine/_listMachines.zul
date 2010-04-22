@@ -28,7 +28,7 @@
     <separator bar="false" spacing="30px" orient="horizontal"/>
 
     <grid id="listing" model="@{controller.machines}" mold="paging"
-        pageSize="10" fixedLayout="true">
+        pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
             <column label="${i18n:_('Code')}" sort="auto(code)" />
             <column label="${i18n:_('Name')}" sort="auto(name)" />

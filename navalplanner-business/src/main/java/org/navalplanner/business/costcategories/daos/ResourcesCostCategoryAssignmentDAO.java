@@ -20,8 +20,12 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.util.List;
+
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -47,5 +51,13 @@ public class ResourcesCostCategoryAssignmentDAO
             //we do nothing
         }
         super.remove(id);
+    }
+
+    @Override
+    public List<ResourcesCostCategoryAssignment> getResourcesCostCategoryAssignmentsByCostCategory(
+            CostCategory costCategory) {
+        return (List<ResourcesCostCategoryAssignment>)getSession().
+            createCriteria(ResourcesCostCategoryAssignment.class)
+            .add(Restrictions.eq("costCategory", costCategory)).list();
     }
 }

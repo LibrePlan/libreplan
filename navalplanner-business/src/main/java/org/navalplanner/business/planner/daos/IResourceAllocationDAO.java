@@ -55,4 +55,6 @@ public interface IResourceAllocationDAO extends
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
             List<Task> task);
 
+    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
+            List<Criterion> criterions);
 }

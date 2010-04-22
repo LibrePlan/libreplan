@@ -52,7 +52,7 @@ planner = self;
 
         <center border="0">
             <borderlayout sclass="plannerlayout_center">
-                <west flex="false" collapsible="true" splittable="true" autoscroll="true" width="300px"
+                <west flex="false" collapsible="true" splittable="true" width="300px"
                     id="taskdetailsContainer" sclass="taskdetailsContainer">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
                 </west>

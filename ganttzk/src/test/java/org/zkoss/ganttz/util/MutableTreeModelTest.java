@@ -163,6 +163,47 @@ public class MutableTreeModelTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void findObjectAtInvalidPath() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        model.findObjectAt(0, 1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void findObjectAtInvalidPathInTheMiddle() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        Prueba p1 = new Prueba();
+        model.addToRoot(p1);
+        model.addToRoot(new Prueba());
+        model.add(p1, new Prueba());
+        model.findObjectAt(1, 1);
+    }
+
+    @Test
+    public void findAtPathCanReceiveGetPathResult() {
+        Prueba root = new Prueba();
+        MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
+                root);
+        assertTrue(canBeRetrievedWithGetPath(model, model.getRoot()));
+        model.addToRoot(new Prueba());
+        Prueba p2 = new Prueba();
+        model.addToRoot(p2);
+        assertTrue(canBeRetrievedWithGetPath(model, p2));
+        Prueba grandChild = new Prueba();
+        model.add(p2, grandChild);
+        assertTrue(canBeRetrievedWithGetPath(model, grandChild));
+    }
+
+    private static <T> boolean canBeRetrievedWithGetPath(
+            final MutableTreeModel<T> tree, T object) {
+        int[] path = tree.getPath(object);
+        return tree.findObjectAt(path).equals(object);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void getParentOfRootThrowsException() {
         Prueba root = new Prueba();
         MutableTreeModel<Prueba> model = MutableTreeModel.create(Prueba.class,
@@ -486,6 +527,18 @@ public class MutableTreeModelTest {
         model.addToRoot(prueba2);
         model.down(prueba2);
         assertThat(model.getChild(model.getRoot(), 1), equalTo(prueba2));
+    }
+
+    @Test
+    public void canBeKnownIfAnEntityIsOnTheTree() {
+        final MutableTreeModel<Prueba> model = MutableTreeModel
+                .create(Prueba.class);
+        Prueba prueba1 = new Prueba();
+        model.addToRoot(prueba1);
+
+        assertTrue(model.contains(prueba1));
+        assertTrue(model.contains(model.getRoot()));
+        assertFalse(model.contains(new Prueba()));
     }
 
     @Test

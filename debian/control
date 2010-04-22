@@ -1,0 +1,13 @@
+Source: navalplan
+Priority: optional
+Maintainer: Adrian Perez <aperez@igalia.com>
+Build-Depends: debhelper (>= 5), maven2, python-docutils, gettext (>= 0.17),
+ texlive-latex-recommended, pgf, openjdk-6-jdk
+
+Package: navalplan
+Architecture: all
+Section: web
+Depends: cutycapt, postgresql-client, xvfb, dbconfig-common, ucf,
+ tomcat6, openjdk-6-jre-headless | openjdk-6-jre, ${misc:Depends}
+Description: Web based planner thought for naval-related companies.
+

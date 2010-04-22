@@ -21,6 +21,7 @@
 package org.navalplanner.business.materials.bootstrap;
 
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.materials.entities.UnitType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,17 +41,30 @@ public class UnitTypeBootstrap implements IDataBootstrap {
     @Autowired
     private IUnitTypeDAO unitTypeDAO;
 
+    private static UnitType defaultUnitType;
+
     @Transactional
     @Override
     public void loadRequiredData() {
         for (PredefinedUnitTypes predefinedUnitType : PredefinedUnitTypes
                 .values()) {
-            if (!unitTypeDAO
-                    .existsUnitTypeByNameInAnotherTransaction(predefinedUnitType
-                    .getMeasure())) {
-                unitTypeDAO.save(predefinedUnitType.createUnitType());
+            UnitType type = null;
+            try {
+                type = unitTypeDAO
+                        .findUniqueByNameInAnotherTransaction(predefinedUnitType
+                                .getMeasure());
+            } catch (InstanceNotFoundException e) {
+                type = predefinedUnitType.createUnitType();
+                unitTypeDAO.save(type);
+            }
+            if (predefinedUnitType
+                    .equals(PredefinedUnitTypes.defaultUnitType())) {
+                defaultUnitType = type;
             }
         }
     }
 
+    public static UnitType getDefaultUnitType() {
+        return defaultUnitType;
+    }
 }

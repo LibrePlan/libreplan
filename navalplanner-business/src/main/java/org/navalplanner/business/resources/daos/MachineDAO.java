@@ -52,11 +52,14 @@ public class MachineDAO extends IntegrationEntityDAO<Machine>
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Machine> findByNameOrCode(String name) {
-        String containsName = "%" + name + "%";
+    public List<Machine> findByNameOrCode(String name, boolean limitingResource) {
+        final String containsName = "%" + name + "%";
         return getSession().createCriteria(Machine.class).add(
-                Restrictions.or(Restrictions.ilike("name", containsName),
-                        Restrictions.ilike("code", containsName))).list();
+                Restrictions.and(
+                        Restrictions.eq("limitingResource",limitingResource),
+                        Restrictions.or(
+                                Restrictions.ilike("name", containsName),
+                                Restrictions.ilike("code", containsName)))).list();
     }
 
     @Override

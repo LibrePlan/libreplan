@@ -80,4 +80,6 @@ public interface ITaskFundamentalProperties {
 
     public boolean canBeExplicitlyResized();
 
+    public String getAssignedStatus();
+
 }

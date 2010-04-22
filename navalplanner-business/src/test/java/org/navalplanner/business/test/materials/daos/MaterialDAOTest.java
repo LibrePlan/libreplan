@@ -28,12 +28,14 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Category;
+import javax.annotation.Resource;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
@@ -67,6 +69,18 @@ public class MaterialDAOTest {
     @Test
     public void testInSpringContainer() {
         assertNotNull(materialDAO);
+    }
+
+    @Resource
+    private IDataBootstrap materialCategoryBootstrap;
+
+    @Resource
+    private IDataBootstrap unitTypeBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        materialCategoryBootstrap.loadRequiredData();
+        unitTypeBootstrap.loadRequiredData();
     }
 
     private MaterialCategory createValidMaterialCategory() {

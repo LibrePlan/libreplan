@@ -41,13 +41,19 @@ public class Configuration extends BaseEntity {
 
     private String companyCode;
 
-    private Boolean generateCodeForCriterion;
+    private Boolean generateCodeForCriterion = false;
 
-    private Boolean generateCodeForLabel;
+    private Boolean generateCodeForLabel = false;
 
-    private Boolean generateCodeForWorkReport;
+    private Boolean generateCodeForWorkReport = false;
 
-    private Boolean generateCodeForResources;
+    private Boolean generateCodeForResources = false;
+
+    private Boolean generateCodeForTypesOfWorkHours = false;
+
+    private Boolean generateCodeForMaterialCategories = false;
+
+    private Boolean generateCodeForUnitTypes = false;
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -109,6 +115,32 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForResources() {
         return generateCodeForResources;
+    }
+
+    public void setGenerateCodeForTypesOfWorkHours(
+            Boolean generateCodeForTypesOfWorkHours) {
+        this.generateCodeForTypesOfWorkHours = generateCodeForTypesOfWorkHours;
+    }
+
+    public Boolean getGenerateCodeForTypesOfWorkHours() {
+        return generateCodeForTypesOfWorkHours;
+    }
+
+    public void setGenerateCodeForMaterialCategories(
+            Boolean generateCodeForMaterialCategories) {
+        this.generateCodeForMaterialCategories = generateCodeForMaterialCategories;
+    }
+
+    public Boolean getGenerateCodeForMaterialCategories() {
+        return generateCodeForMaterialCategories;
+    }
+
+    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
+        this.generateCodeForUnitTypes = generateCodeForUnitTypes;
+    }
+
+    public Boolean getGenerateCodeForUnitTypes() {
+        return generateCodeForUnitTypes;
     }
 
 }

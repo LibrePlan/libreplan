@@ -28,6 +28,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -37,10 +39,14 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
+import org.navalplanner.ws.calendars.impl.CalendarConverter;
 import org.navalplanner.ws.common.impl.InstanceNotFoundRecoverableErrorException;
 import org.navalplanner.ws.common.impl.RecoverableErrorException;
+import org.navalplanner.ws.resources.api.CalendarAvailabilityDTO;
 import org.navalplanner.ws.resources.api.CriterionSatisfactionDTO;
 import org.navalplanner.ws.resources.api.MachineDTO;
+import org.navalplanner.ws.resources.api.ResourceCalendarDTO;
 import org.navalplanner.ws.resources.api.ResourceDTO;
 import org.navalplanner.ws.resources.api.ResourcesCostCategoryAssignmentDTO;
 import org.navalplanner.ws.resources.api.WorkerDTO;
@@ -49,8 +55,8 @@ import org.navalplanner.ws.resources.criterion.api.CriterionTypeDTO;
 
 /**
  * Converter from/to resource-related entities to/from DTOs.
- *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class ResourceConverter {
 
@@ -79,7 +85,7 @@ public class ResourceConverter {
 
         addCriterionSatisfactions(resource,
             resourceDTO.criterionSatisfactions);
-        setResourceCalendar(resource, resourceDTO.calendarName);
+        setResourceCalendar(resource, resourceDTO.calendar);
         addResourcesCostCategoryAssignments(resource,
             resourceDTO.resourcesCostCategoryAssignments);
 
@@ -95,7 +101,7 @@ public class ResourceConverter {
 
         updateBasicData(resource, resourceDTO);
 
-        updateResourceCalendar(resource, resourceDTO.calendarName);
+        updateResourceCalendar(resource, resourceDTO.calendar);
 
         updateCriterionSatisfactions(resource,
             resourceDTO.criterionSatisfactions);
@@ -178,19 +184,49 @@ public class ResourceConverter {
     }
 
     private static void setResourceCalendar(Resource resource,
-        String calendarName) {
-
-        try {
-            resource.setResourceCalendar(StringUtils.trim(calendarName));
-        } catch (InstanceNotFoundException e) {
-            throw new InstanceNotFoundRecoverableErrorException(
-                RESOURCE_CALENDAR_ENTITY_TYPE, e.getKey().toString());
-        } catch (MultipleInstancesException e) {
-            throw new ValidationException(
-                _("there exist multiple resource calendars with name {0}",
-                    calendarName));
+            ResourceCalendarDTO calendar) {
+        String calendarCode = null;
+        if (calendar != null) {
+            calendarCode = calendar.parent;
         }
 
+        try {
+            resource.setResourceCalendar(StringUtils.trim(calendarCode));
+
+            // Copy the data of the resource calendar DTO
+            updateBasicPropertiesResourceCalendar(calendar, resource
+                    .getCalendar());
+
+        } catch (InstanceNotFoundException e) {
+                throw new InstanceNotFoundRecoverableErrorException(
+                        RESOURCE_CALENDAR_ENTITY_TYPE, e.getKey().toString());
+        } catch (MultipleInstancesException e) {
+            throw new ValidationException(_(
+                    "there exist multiple resource calendars with name  {0}",
+                    calendarCode));
+        }
+    }
+
+    private static void updateBasicPropertiesResourceCalendar(
+            ResourceCalendarDTO calendarDTO, ResourceCalendar calendar) {
+        if (calendarDTO != null) {
+
+            if (!StringUtils.isBlank(calendarDTO.name)) {
+                calendar.setName(calendarDTO.name);
+            }
+
+            if (!StringUtils.isBlank(calendarDTO.code)) {
+                calendar.setCode(calendarDTO.code);
+            } else {
+                throw new ValidationException(
+                        _("missing code in the resource calendar"));
+            }
+
+            if (calendarDTO.capacity != null) {
+                calendar.setCapacity(calendarDTO.capacity);
+            }
+
+        }
     }
 
     private static void addResourcesCostCategoryAssignments(
@@ -266,7 +302,7 @@ public class ResourceConverter {
 
 
     private static void updateResourceCalendar(Resource resource,
-        String calendarName) {
+            ResourceCalendarDTO calendarDTO) {
 
         // TODO. Decide policy to update calendar (e.g. previous calendar must
         // be removed?, if new calendar is the same as previous, must be
@@ -407,6 +443,9 @@ public class ResourceConverter {
         }
         resourceDTO.resourcesCostCategoryAssignments = resourcesCostCategoryAssignmentDTOs;
 
+        ResourceCalendarDTO resourceCalendarDTO = toDTO(resource.getCalendar());
+        resourceDTO.calendar = resourceCalendarDTO;
+
         return resourceDTO;
     }
 
@@ -444,4 +483,36 @@ public class ResourceConverter {
                 initDate, endDate);
     }
 
+    public static ResourceCalendarDTO toDTO(ResourceCalendar calendar) {
+
+        BaseCalendarDTO baseCalendarDTO = CalendarConverter.toDTO(calendar);
+
+        List<CalendarAvailabilityDTO> calendarAvailabilityDTOs = new ArrayList<CalendarAvailabilityDTO>();
+        for (CalendarAvailability calendarAvailability : calendar
+                .getCalendarAvailabilities()) {
+            calendarAvailabilityDTOs.add(toDTO(calendarAvailability));
+        }
+
+        return new ResourceCalendarDTO(baseCalendarDTO.code,
+                baseCalendarDTO.name, baseCalendarDTO.parent, calendar
+                        .getCapacity(), baseCalendarDTO.calendarExceptions,
+                baseCalendarDTO.calendarDatas, calendarAvailabilityDTOs);
+
+    }
+
+    private static CalendarAvailabilityDTO toDTO(
+            CalendarAvailability calendarAvailability) {
+
+        Date startDate = calendarAvailability.getStartDate()
+                .toDateTimeAtStartOfDay().toDate();
+
+        Date endDate = null;
+        if (calendarAvailability.getEndDate() != null) {
+            endDate = calendarAvailability.getEndDate()
+                .toDateTimeAtStartOfDay().toDate();
+        }
+
+        return new CalendarAvailabilityDTO(calendarAvailability.getCode(),
+                startDate, endDate);
+    }
 }

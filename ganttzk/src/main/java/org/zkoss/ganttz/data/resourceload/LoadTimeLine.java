@@ -34,26 +34,30 @@ public class LoadTimeLine {
     private final String conceptName;
     private final List<LoadPeriod> loadPeriods;
 
+    private final TimeLineRole<?> timeLineRole;
     private final String type;
 
     private final List<LoadTimeLine> children;
 
-    public LoadTimeLine(String conceptName, List<LoadPeriod> loadPeriods) {
+    public LoadTimeLine(String conceptName, List<LoadPeriod> loadPeriods,
+            TimeLineRole<?> role) {
         Validate.notEmpty(conceptName);
         Validate.notNull(loadPeriods);
         this.loadPeriods = LoadPeriod.sort(loadPeriods);
         this.conceptName = conceptName;
         this.type = "";
+        this.timeLineRole = role;
         this.children = Collections
         .unmodifiableList(new ArrayList<LoadTimeLine>());
     }
 
     public LoadTimeLine(String conceptName, List<LoadPeriod> loadPeriods,
-            String type) {
+            String type, TimeLineRole<?> role) {
         Validate.notEmpty(conceptName);
         Validate.notNull(loadPeriods);
         this.loadPeriods = LoadPeriod.sort(loadPeriods);
         this.conceptName = conceptName;
+        this.timeLineRole = role;
         this.type = type;
         this.children = Collections
                 .unmodifiableList(new ArrayList<LoadTimeLine>());
@@ -64,6 +68,7 @@ public class LoadTimeLine {
         Validate.notNull(principal.getLoadPeriods());
         this.loadPeriods = LoadPeriod.sort(principal.getLoadPeriods());
         this.conceptName = principal.getConceptName();
+        this.timeLineRole = principal.getRole();
         this.type = principal.getType();
         Validate.notNull(children);
         allChildrenAreNotEmpty(children);
@@ -78,6 +83,10 @@ public class LoadTimeLine {
 
     public String getConceptName() {
         return conceptName;
+    }
+
+    public TimeLineRole<?> getRole() {
+        return timeLineRole;
     }
 
     private LoadPeriod getFirst() {

@@ -74,6 +74,8 @@ public class WorkReport extends IntegrationEntity {
 
     private OrderElement orderElement;
 
+    private Boolean generateCode = false;
+
     private Set<Label> labels = new HashSet<Label>();
 
     private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
@@ -195,6 +197,14 @@ public class WorkReport extends IntegrationEntity {
                 this.orderElement = null;
             }
         }
+    }
+
+    public Boolean getGenerateCode() {
+        return generateCode;
+    }
+
+    public void setGenerateCode(Boolean generateCode) {
+        this.generateCode = generateCode;
     }
 
     @SuppressWarnings("unused")

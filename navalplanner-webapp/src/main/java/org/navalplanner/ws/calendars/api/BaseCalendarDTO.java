@@ -42,6 +42,9 @@ public class BaseCalendarDTO extends IntegrationEntityDTO {
     @XmlAttribute
     public String name;
 
+    @XmlAttribute
+    public String parent;
+
     @XmlElementWrapper(name = "calendar-exception-list")
     @XmlElement(name = "calendar-exception")
     public List<CalendarExceptionDTO> calendarExceptions = new ArrayList<CalendarExceptionDTO>();
@@ -53,19 +56,20 @@ public class BaseCalendarDTO extends IntegrationEntityDTO {
     public BaseCalendarDTO() {
     }
 
-    public BaseCalendarDTO(String code, String name,
+    public BaseCalendarDTO(String code, String name, String parent,
             List<CalendarExceptionDTO> calendarExceptions,
             List<CalendarDataDTO> calendarDatas) {
         super(code);
         this.name = name;
+        this.parent = parent;
         this.calendarExceptions = calendarExceptions;
         this.calendarDatas = calendarDatas;
     }
 
-    public BaseCalendarDTO(String name,
+    public BaseCalendarDTO(String name, String parent,
             List<CalendarExceptionDTO> calendarExceptions,
             List<CalendarDataDTO> calendarDatas) {
-        this(generateCode(), name, calendarExceptions, calendarDatas);
+        this(generateCode(), name, parent, calendarExceptions, calendarDatas);
     }
 
     @Override

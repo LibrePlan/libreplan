@@ -37,4 +37,6 @@ public interface ISubcontractedTaskDataDAO extends
 
     List<SubcontractedTaskData> getAll();
 
+    void removeOrphanedSubcontractedTaskData();
+
 }

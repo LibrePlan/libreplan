@@ -163,6 +163,36 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setGenerateCodeForResources(generateCodeForResources);
     }
 
+    public Boolean getGenerateCodeForTypesOfWorkHours() {
+        return configurationModel.getGenerateCodeForTypesOfWorkHours();
+    }
+
+    public void setGenerateCodeForTypesOfWorkHours(
+            Boolean generateCodeForTypesOfWorkHours) {
+        configurationModel.setGenerateCodeForTypesOfWorkHours(
+                generateCodeForTypesOfWorkHours);
+    }
+
+    public Boolean getGenerateCodeForMaterialCategories() {
+        return configurationModel.getGenerateCodeForMaterialCategories();
+    }
+
+    public void setGenerateCodeForMaterialCategories(
+            Boolean generateCodeForMaterialCategories) {
+        configurationModel.setGenerateCodeForMaterialCategories(
+                generateCodeForMaterialCategories);
+    }
+
+    public Boolean getGenerateCodeForUnitTypes() {
+        return configurationModel.getGenerateCodeForUnitTypes();
+    }
+
+    public void setGenerateCodeForUnitTypes(
+            Boolean generateCodeForUnitTypes) {
+        configurationModel.setGenerateCodeForUnitTypes(
+                generateCodeForUnitTypes);
+    }
+
     public List<OrderSequence> getOrderSequences() {
         return configurationModel.getOrderSequences();
     }

@@ -20,9 +20,8 @@
 
 package org.navalplanner.ws.calendars.api;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -37,28 +36,29 @@ public class CalendarExceptionDTO extends IntegrationEntityDTO {
     public final static String ENTITY_TYPE = "calendar-exception";
 
     @XmlAttribute
-    public Date date;
+    public XMLGregorianCalendar date;
 
     @XmlAttribute
     public Integer hours;
 
-    @XmlAttribute(name = "calendar-exception-type-name")
-    public String calendarExceptionTypeName;
+    @XmlAttribute(name = "calendar-exception-type-code")
+    public String calendarExceptionTypeCode;
 
     public CalendarExceptionDTO() {
     }
 
-    public CalendarExceptionDTO(String code, Date date, Integer hours,
-            String calendarExceptionTypeName) {
+    public CalendarExceptionDTO(String code, XMLGregorianCalendar date,
+            Integer hours,
+            String calendarExceptionTypeCode) {
         super(code);
         this.date = date;
         this.hours = hours;
-        this.calendarExceptionTypeName = calendarExceptionTypeName;
+        this.calendarExceptionTypeCode = calendarExceptionTypeCode;
     }
 
-    public CalendarExceptionDTO(Date date, Integer hours,
-            String calendarExceptionTypeName) {
-        this(generateCode(), date, hours, calendarExceptionTypeName);
+    public CalendarExceptionDTO(XMLGregorianCalendar date, Integer hours,
+            String calendarExceptionTypeCode) {
+        this(generateCode(), date, hours, calendarExceptionTypeCode);
     }
 
     @Override

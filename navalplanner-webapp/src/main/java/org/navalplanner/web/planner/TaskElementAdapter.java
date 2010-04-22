@@ -543,6 +543,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return taskElement.canBeExplicitlyResized();
         }
 
+        @Override
+        public String getAssignedStatus() {
+            return taskElement.getAssignedStatus();
+        }
+
     }
 
     @Override

@@ -81,6 +81,7 @@ table {
     display: none;
 }
 
+.icono .z-button-cm,
 body .z-window-embedded .icono .z-button-cm,
 body .z-window-modal .icono .z-button-cm,
 body .advancedallocationlayout .icono .z-button-cm {
@@ -559,7 +560,7 @@ div.z-row-cnt {
     font-size: 11px;
 }
 
-div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column-cnt {
+div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column-cnt,div.z-tree-col-cnt {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: bold;
@@ -889,11 +890,13 @@ div.z-listbox-pgi-b {
     border-bottom:dotted #EEEEEE 1px;
 }
 
-.orderTree .partially-scheduled {
+.partially-scheduled span.scheduling-state,
+span.partially-scheduled {
     background-color: #fddf9b;
 }
 
-.orderTree .completely-scheduled {
+.completely-scheduled span.scheduling-state,
+span.completely-scheduled {
     background-color: #bee5a9;
 }
 
@@ -1139,7 +1142,7 @@ span.z-dottree-line {
 
 tr.z-tree-row-seld, tr.z-list-item-seld,
 .z-combobox-pp .z-combo-item-seld {
-    background-color: #2a83b4;
+    background-color: #fdd772;
     color: #FFFFFF;
 }
 
@@ -1260,4 +1263,21 @@ overflow: visible;
 
 .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
     background-color: #E8E8E8;
+}
+
+
+.clickable-rows tr.z-row:hover .z-row-inner {
+    background-color: #E9F2FB;
+}
+
+.clickable-rows tr.z-row:hover .z-row-cnt {
+    color: #000000;
+}
+
+tr.z-tree-row-seld td.z-row-inner {
+    background-color: #2A83B4
+}
+
+tr.z-tree-row-seld .z-row-cnt {
+    color: #FFFFFF;
 }

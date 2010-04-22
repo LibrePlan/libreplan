@@ -157,12 +157,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     private TemplateFinderPopup templateFinderPopup;
 
     public void createOrderFromTemplate() {
-        showOrderElementFilter();
         templateFinderPopup.openForOrderCreation(createOrderFromTemplateButton,
                 "after_start", new IOnResult<OrderTemplate>() {
 
                     @Override
                     public void found(OrderTemplate template) {
+                        showOrderElementFilter();
                         showCreateButtons(false);
                         orderModel.prepareCreationFrom(template);
                         showEditWindow(_("Create order from Template"));
@@ -631,7 +631,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             if (order.isScheduled()) {
                 planningControllerEntryPoints.goToScheduleOf(order);
-            }else{
+                showCreateButtons(false);
+            } else {
                 try {
                     Messagebox.show(_("The order has no scheduled elements"),
                             _("Information"), Messagebox.OK, Messagebox.INFORMATION);

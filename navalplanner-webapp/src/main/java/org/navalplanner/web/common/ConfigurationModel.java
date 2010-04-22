@@ -269,6 +269,56 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForTypesOfWorkHours() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForTypesOfWorkHours();
+    }
+
+    @Override
+    public void setGenerateCodeForTypesOfWorkHours(
+            Boolean generateCodeForTypesOfWorkHours) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForTypesOfWorkHours(
+                    generateCodeForTypesOfWorkHours);
+        }
+    }
+
+    @Override
+    public Boolean getGenerateCodeForMaterialCategories() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForMaterialCategories();
+    }
+
+    @Override
+    public void setGenerateCodeForMaterialCategories(
+            Boolean generateCodeForMaterialCategories) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForMaterialCategories(
+                    generateCodeForMaterialCategories);
+        }
+    }
+
+    @Override
+    public Boolean getGenerateCodeForUnitTypes() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForUnitTypes();
+    }
+
+    @Override
+    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
+            if (configuration != null) {
+                configuration.setGenerateCodeForUnitTypes(
+                        generateCodeForUnitTypes);
+            }
+    }
+
+    @Override
     public List<OrderSequence> getOrderSequences() {
         return Collections.unmodifiableList(orderSequences);
     }

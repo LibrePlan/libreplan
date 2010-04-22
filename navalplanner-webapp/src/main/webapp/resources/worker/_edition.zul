@@ -43,7 +43,14 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Code')}" />
-                            <textbox value="@{controller.worker.code}" constraint="no empty" width="500px" />
+                            <hbox>
+                                <textbox width="350px" value="@{controller.worker.code}"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    disabled="@{controller.worker.generateCode}" />
+                                <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                    onCheck="controller.onCheckGenerateCode(event)"
+                                    checked="@{controller.worker.generateCode}" />
+                            </hbox>
                         </row>
                         <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('First name')}" />

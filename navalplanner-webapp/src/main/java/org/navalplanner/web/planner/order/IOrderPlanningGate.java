@@ -21,6 +21,7 @@
 package org.navalplanner.web.planner.order;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
 
 /**
  * This interface allows to go to the schedule and the details of an
@@ -29,6 +30,8 @@ import org.navalplanner.business.orders.entities.Order;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface IOrderPlanningGate {
+
+    void goToTaskResourceAllocation(Order order, TaskElement task);
 
     void goToScheduleOf(Order order);
 

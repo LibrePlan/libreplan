@@ -192,6 +192,32 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return asIntArray(path);
     }
 
+    public int[] getPath(Object last) {
+        return getPath(getRoot(), last);
+    }
+
+    public T findObjectAt(int... path) {
+        T current = getRoot();
+        for (int i = 0; i < path.length; i++) {
+            int position = path[i];
+            if (position >= getChildCount(current)) {
+                throw new IllegalArgumentException(
+                        "Failure acessing the path at: "
+                                + stringRepresentationUntil(path, i));
+            }
+            current = getChild(current, position);
+        }
+        return current;
+    }
+
+    private static String stringRepresentationUntil(int[] path, int endExclusive) {
+        String valid = Arrays.toString(Arrays
+                .copyOfRange(path, 0, endExclusive));
+        String invalid = Arrays.toString(Arrays.copyOfRange(path, endExclusive,
+                path.length));
+        return valid + "^" + invalid;
+    }
+
     private int[] asIntArray(List<Integer> path) {
         int[] result = new int[path.size()];
         int i = 0;
@@ -386,14 +412,17 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         return getChildCount(node) > 0;
     }
 
+    public boolean contains(T object) {
+        return find(object) != null;
+    }
+
     public boolean contains(T parent, T child) {
         Node<T> parentNode = find(parent);
         Node<T> childNode = find(child);
 
-        if (parentNode != null && (childNode != null && childNode.getParent() != null)) {
-            return childNode.getParent().equals(parentNode);
-        }
-        return false;
+        return parentNode != null && childNode != null
+                && childNode.getParent() != null
+                && childNode.getParent().equals(parentNode);
     }
 
     public List<T> asList() {
@@ -414,6 +443,4 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
             asList(each, result);
         }
     }
-
-
 }

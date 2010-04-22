@@ -48,6 +48,9 @@ public class CriterionType extends IntegrationEntity implements
         return create(new CriterionType());
     }
 
+    public static CriterionType create(String code) {
+        return create(new CriterionType(), code);
+    }
 
     public static CriterionType createUnvalidated(String code, String name,
         String description, Boolean allowHierarchy,
@@ -139,6 +142,8 @@ public class CriterionType extends IntegrationEntity implements
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
     private int numCriterions;
+
+    private Boolean generateCode = false;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -467,6 +472,14 @@ public class CriterionType extends IntegrationEntity implements
     @Override
     protected ICriterionTypeDAO getIntegrationEntityDAO() {
         return Registry.getCriterionTypeDAO();
+    }
+
+    public Boolean getGenerateCode() {
+        return generateCode;
+    }
+
+    public void setGenerateCode(Boolean generateCode) {
+        this.generateCode = generateCode;
     }
 
 }

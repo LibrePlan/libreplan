@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<resource-list xmlns="http://rest.ws.navalplanner.org">
+  <worker nif="71717171G" surname="Gómez" first-name="Perico"
+  code="263bc2dc-cb89-43b6-8a8b-478ed90fb092">
+    <calendar capacity="1"
+    parent="2080b360-53bf-48ec-8dca-2ef7140f7605"
+    code="d6bbf813-37ad-4c2f-84d6-3f4b36f44415">
+      <calendar-exception-list>
+        <calendar-exception calendar-exception-type-name="HOLIDAY"
+        hours="4" date="2010-03-29T00:00:00+02:00"
+        code="60decd79-ec2a-4849-b577-df110709c5ba" />
+      </calendar-exception-list>
+      <calendar-data-list>
+        <calendar-data parent-calendar="2080b360-53bf-48ec-8dca-2ef7140f7605"
+        code="c6669314-d75a-4933-839f-1eb5361290b2">
+          <hors-per-day-list />
+        </calendar-data>
+      </calendar-data-list>
+      <calendar-availability-list>
+        <calendar-availability startDate="2010-03-25T00:00:00+01:00" />
+      </calendar-availability-list>
+    </calendar>
+    <criterion-satisfaction-list>
+      <criterion-satisfaction end-date="2010-03-28T00:00:00+01:00"
+      start-date="2010-03-25T11:25:12.539+01:00"
+      criterion-name="hiredResourceWorkingRelationship"
+      criterion-type-name="WORK_RELATIONSHIP"
+      code="6d42f5bd-6eb5-4031-bb59-78ce13ee618b" />
+    </criterion-satisfaction-list>
+    <resources-cost-category-assignment-list>
+      <resources-cost-category-assignment end-date="2010-04-04T00:00:00+02:00"
+      start-date="2010-03-31T00:00:00+02:00"
+      cost-category-name="Category A"
+      code="8782d69e-1c77-4cdc-b035-02864ae1a324" />
+    </resources-cost-category-assignment-list>
+  </worker>
+  <worker nif="Pedreira" surname="Montes" first-name="Susana"
+  code="00175c85-b19c-430d-9458-0402f81bb32a">
+    <calendar capacity="1"
+    parent="e5227df0-489b-4ee2-8a18-2df958f4e006"
+    code="8e5e8546-b5d3-4703-8a1b-6b6a22b379ea">
+      <calendar-exception-list />
+      <calendar-data-list>
+        <calendar-data parent-calendar="e5227df0-489b-4ee2-8a18-2df958f4e006"
+        code="ad7bc1bc-57cf-4f32-81ee-2cad0624e124">
+          <hors-per-day-list />
+        </calendar-data>
+      </calendar-data-list>
+      <calendar-availability-list>
+        <calendar-availability endDate="2010-03-28T00:00:00+01:00"
+        startDate="2010-03-25T00:00:00+01:00" />
+      </calendar-availability-list>
+    </calendar>
+    <criterion-satisfaction-list>
+      <criterion-satisfaction end-date="2010-03-27T00:00:00+01:00"
+      start-date="2010-03-25T11:21:07.757+01:00"
+      criterion-name="medicalLeave" criterion-type-name="LEAVE"
+      code="b7e7b6f7-0816-4b00-8d89-92ecaaa0dd78" />
+    </criterion-satisfaction-list>
+    <resources-cost-category-assignment-list />
+  </worker>
+</resource-list>

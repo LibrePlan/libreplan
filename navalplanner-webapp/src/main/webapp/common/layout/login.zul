@@ -45,7 +45,7 @@
     <n:td class="identificacion">${i18n:_('Access to the system')}</n:td>
     <n:td align="right" valign="bottom">
         <div tooltiptext="${i18n:_('Help on authentication (opens a new window)')}">
-            <n:a href="https://naval.igalia.com/fileadmin/templates/doc/index.html" target="_blank" class="ayuda">${i18n:_('Help')}</n:a>
+            <n:a href="http://www.navalplan.org/fileadmin/templates/doc/index.html" target="_blank" class="ayuda">${i18n:_('Help')}</n:a>
         </div>
     </n:td>
   </n:tr>

@@ -36,7 +36,7 @@ import org.zkoss.ganttz.util.MutableTreeModel;
  */
 public interface IMaterialsModel {
 
-    void addMaterialCategory(MaterialCategory parent, MaterialCategory child) throws ValidationException;
+    void addMaterialCategory(MaterialCategory parent, String categoryName) throws ValidationException;
 
     void addMaterialToMaterialCategory(MaterialCategory materialCategory);
 
@@ -57,4 +57,6 @@ public interface IMaterialsModel {
     List<UnitType> getUnitTypes();
 
     void loadUnitTypes();
+
+    boolean canRemoveMaterial(Material material);
 }

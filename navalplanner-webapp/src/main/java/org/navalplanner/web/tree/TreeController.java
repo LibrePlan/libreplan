@@ -311,6 +311,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private Treerow currentTreeRow;
 
+        public Treerow getCurrentTreeRow() {
+            return currentTreeRow;
+        }
+
         public Renderer() {
         }
 
@@ -437,13 +441,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 T currentElement);
 
         private String getDecorationFromState(SchedulingState state) {
-            String cssclass = "not-scheduled";
-            if (state.isCompletelyScheduled()) {
-                cssclass = "completely-scheduled";
-            } else if (state.isPartiallyScheduled()) {
-                cssclass = "partially-scheduled";
-            }
-            return cssclass;
+            return state.getCssClass();
         }
 
         protected abstract void addCodeCell(final T element);

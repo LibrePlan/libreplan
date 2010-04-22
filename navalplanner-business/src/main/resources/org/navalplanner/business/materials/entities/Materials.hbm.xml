@@ -37,6 +37,7 @@
 
     <property name="code" access="property" not-null="true" unique="true"/>
     <property name="measure" access="field"/>
+    <property name="generateCode" not-null="true" />
 
 </class>
 
@@ -52,6 +53,8 @@
     <property name="code" access="property" not-null="true" unique="true"/>
 
     <property name="name" />
+
+    <property name="generateCode" not-null="true" />
 
     <set name="subcategories" inverse="true" cascade="all-delete-orphan">
         <key column="PARENT_ID"/>

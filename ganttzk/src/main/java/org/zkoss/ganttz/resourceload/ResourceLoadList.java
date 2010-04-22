@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -129,5 +130,13 @@ public class ResourceLoadList extends HtmlMacroComponent implements
     @Override
     public void afterCompose() {
         super.afterCompose();
+    }
+
+    public void addSeeScheduledOfListener(
+            ISeeScheduledOfListener seeScheduledOfListener) {
+        for (Entry<LoadTimeLine, ResourceLoadComponent> entry : fromTimeLineToComponent
+                .entrySet()) {
+            entry.getValue().addSeeScheduledOfListener(seeScheduledOfListener);
+        }
     }
 }

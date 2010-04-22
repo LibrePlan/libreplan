@@ -68,4 +68,6 @@ public interface ICriterionTreeModel {
     void indent(CriterionDTO nodeToIndent);
 
     void unindent(CriterionDTO nodeToIndent);
+
+    void regenerateCodeForUnsavedCriteria();
 }

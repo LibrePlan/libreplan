@@ -21,6 +21,7 @@
 package org.navalplanner.ws.calendars.api;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
  * Service for managing {@link BaseCalendar} entities.
@@ -31,4 +32,6 @@ public interface ICalendarService {
 
     BaseCalendarListDTO getBaseCalendars();
 
+    public InstanceConstraintViolationsListDTO addBaseCalendars(
+            BaseCalendarListDTO BaseCalendraListDTO);
 }

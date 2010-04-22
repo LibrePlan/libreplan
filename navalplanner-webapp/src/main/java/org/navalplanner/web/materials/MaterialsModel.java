@@ -32,8 +32,10 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.materials.daos.IMaterialAssignmentDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
@@ -61,6 +63,12 @@ public class MaterialsModel implements IMaterialsModel {
 
     @Autowired
     IUnitTypeDAO unitTypeDAO;
+
+    @Autowired
+    IConfigurationDAO configurationDAO;
+
+    @Autowired
+    IMaterialAssignmentDAO materialAssignmentDAO;
 
     MutableTreeModel<MaterialCategory> materialCategories = MutableTreeModel
             .create(MaterialCategory.class);
@@ -121,8 +129,20 @@ public class MaterialsModel implements IMaterialsModel {
     }
 
     @Override
-    public void addMaterialCategory(MaterialCategory parent, MaterialCategory child) throws ValidationException {
-        Validate.notNull(child);
+    @Transactional(readOnly=true)
+    public void addMaterialCategory(MaterialCategory parent, String categoryName) throws ValidationException {
+        Validate.notNull(categoryName);
+
+        Boolean generateCode = configurationDAO.getConfiguration().
+            getGenerateCodeForMaterialCategories();
+        MaterialCategory child;
+        if(generateCode) {
+            child = MaterialCategory.create(_(categoryName));
+        }
+        else {
+            child = MaterialCategory.createUnvalidated("", _(categoryName));
+        }
+        child.setGenerateCode(generateCode);
 
         final MaterialCategory materialCategory = findMaterialCategory(child);
         if (materialCategory != null) {
@@ -259,5 +279,14 @@ public class MaterialsModel implements IMaterialsModel {
 
     public List<UnitType> getUnitTypes() {
         return this.unitTypes;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean canRemoveMaterial(Material material) {
+        if(material.isNewObject()) {
+            return true;
+        }
+        return materialAssignmentDAO.getByMaterial(material).size() == 0;
     }
 }

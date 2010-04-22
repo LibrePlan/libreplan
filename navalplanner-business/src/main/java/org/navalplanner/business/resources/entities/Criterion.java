@@ -21,9 +21,13 @@
 package org.navalplanner.business.resources.entities;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -60,6 +64,24 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
         return criterion;
 
+    }
+
+    public static List<Criterion> sortByName(Collection<Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(result, new Comparator<Criterion>() {
+
+            @Override
+            public int compare(Criterion o1, Criterion o2) {
+                if (o1.getName() == null) {
+                    return 1;
+                }
+                if (o2.getName() == null) {
+                    return -1;
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return result;
     }
 
     public void updateUnvalidated(String name, Boolean active) {

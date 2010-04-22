@@ -64,7 +64,7 @@ public class GenericResourceAllocation extends
     }
 
     public static Map<Set<Criterion>, List<GenericResourceAllocation>> byCriterions(
-            Collection<? extends GenericResourceAllocation> genericAllocations) {
+            Collection<GenericResourceAllocation> genericAllocations) {
         Map<Set<Criterion>, List<GenericResourceAllocation>> result = new HashMap<Set<Criterion>, List<GenericResourceAllocation>>();
         for (GenericResourceAllocation genericResourceAllocation : genericAllocations) {
             Set<Criterion> criterions = genericResourceAllocation.getCriterions();
@@ -74,6 +74,34 @@ public class GenericResourceAllocation extends
             result.get(criterions).add(genericResourceAllocation);
         }
         return result;
+    }
+
+    public static Map<Resource, List<GenericResourceAllocation>> byResource(
+            Collection<GenericResourceAllocation> allocations) {
+        Map<Resource, List<GenericResourceAllocation>> result = new HashMap<Resource, List<GenericResourceAllocation>>();
+        for (GenericResourceAllocation resourceAllocation : allocations) {
+            for (Resource resource : resourceAllocation
+                    .getAssociatedResources()) {
+                initializeIfNeeded_(result, resource);
+                result.get(resource).add(resourceAllocation);
+            }
+        }
+        return result;
+    }
+
+    private static void initializeIfNeeded_(
+            Map<Resource, List<GenericResourceAllocation>> result,
+            Resource resource) {
+        if (!result.containsKey(resource)) {
+            result.put(resource, new ArrayList<GenericResourceAllocation>());
+        }
+    }
+
+    private static void initializeIfNeeded_(
+            Map<Task, List<GenericResourceAllocation>> result, Task task) {
+        if (!result.containsKey(task)) {
+            result.put(task, new ArrayList<GenericResourceAllocation>());
+        }
     }
 
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
@@ -318,6 +346,23 @@ public class GenericResourceAllocation extends
     @Override
     public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
         return resourceDAO.findSatisfyingCriterionsAtSomePoint(getCriterions());
+    }
+
+    public static Map<Criterion, List<GenericResourceAllocation>> byCriterion(
+            List<GenericResourceAllocation> generics) {
+        Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<Criterion, List<GenericResourceAllocation>>();
+        for (GenericResourceAllocation genericResourceAllocation : generics) {
+            Set<Criterion> criterions = genericResourceAllocation
+                    .getCriterions();
+            for (Criterion criterion : criterions) {
+                if (!result.containsKey(criterion)) {
+                    result.put(criterion,
+                            new ArrayList<GenericResourceAllocation>());
+                }
+                result.get(criterion).add(genericResourceAllocation);
+            }
+        }
+        return result;
     }
 
 }

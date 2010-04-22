@@ -32,16 +32,26 @@ import org.navalplanner.business.materials.daos.IUnitTypeDAO;
  * UnitType entity
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- *
+ * @author Javier Moran Rua <jmoran@ialia.com>
  */
 public class UnitType extends IntegrationEntity{
 
     public static UnitType create(String code, String measure) {
-        return (UnitType) create(new UnitType(measure), code);
+        UnitType unitType = new UnitType(measure);
+        unitType.setNewObject(true);
+        return (UnitType) create(unitType, code);
     }
 
     public static UnitType create(String measure) {
-        return (UnitType) create(new UnitType(measure));
+        UnitType unitType = new UnitType(measure);
+        unitType.setNewObject(true);
+        return (UnitType) create(unitType);
+    }
+
+    public static UnitType create() {
+        UnitType unitType = new UnitType();
+        unitType.setNewObject(true);
+        return create(unitType);
     }
 
     public void updateUnvalidated(String measure) {
@@ -51,6 +61,8 @@ public class UnitType extends IntegrationEntity{
     }
 
     private String measure;
+
+    private Boolean generateCode = false;
 
     // Default constructor, needed by Hibernate
     protected UnitType() {
@@ -68,6 +80,14 @@ public class UnitType extends IntegrationEntity{
 
     public void setMeasure(String measure) {
         this.measure = measure;
+    }
+
+    public Boolean getGenerateCode() {
+        return generateCode;
+    }
+
+    public void setGenerateCode(Boolean generateCode) {
+        this.generateCode = generateCode;
     }
 
     @AssertTrue(message = "the measure unit type has to be unique. It is already used")

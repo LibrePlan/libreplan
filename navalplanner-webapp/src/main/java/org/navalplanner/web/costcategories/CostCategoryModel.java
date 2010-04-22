@@ -28,6 +28,7 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
+import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
@@ -51,6 +52,9 @@ public class CostCategoryModel implements ICostCategoryModel {
 
     @Autowired
     private ICostCategoryDAO costCategoryDAO;
+
+    @Autowired
+    private IResourcesCostCategoryAssignmentDAO resourcesCostCategoryAssignmentDAO;
 
     @Override
     public List<CostCategory> getCostCategories() {
@@ -127,5 +131,19 @@ public class CostCategoryModel implements ICostCategoryModel {
     @Override
     public void removeHourCost(HourCost hourCost) {
         costCategory.removeHourCost(hourCost);
+    }
+
+    @Override
+    @Transactional
+    public void confirmRemoveCostCategory(CostCategory category)
+            throws InstanceNotFoundException {
+        costCategoryDAO.remove(category.getId());
+    }
+
+    @Override
+    @Transactional(readOnly=true)
+    public boolean canRemoveCostCategory(CostCategory category) {
+        return (resourcesCostCategoryAssignmentDAO.
+                getResourcesCostCategoryAssignmentsByCostCategory(category).size() == 0);
     }
 }

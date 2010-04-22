@@ -94,15 +94,4 @@ public interface ILabelTypeModel {
      */
     boolean labelNameIsUnique(String value);
 
-    /**
-     * Checks if the autogeneration of codes for Labels is active
-     * @return
-     */
-    boolean isCodeGenerated();
-
-    /**
-     * Sets the state of the autogeneration of codes for Labels
-     */
-    void setCodeGenerated(boolean codeGenerated);
-
 }

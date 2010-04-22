@@ -20,14 +20,33 @@
 
 package org.navalplanner.ws.calendars.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 import org.navalplanner.ws.calendars.api.CalendarDataDTO;
 import org.navalplanner.ws.calendars.api.CalendarExceptionDTO;
@@ -35,8 +54,8 @@ import org.navalplanner.ws.calendars.api.HoursPerDayDTO;
 
 /**
  * Converter from/to {@link BaseCalendar} related entities to/from DTOs.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public final class CalendarConverter {
 
@@ -54,16 +73,28 @@ public final class CalendarConverter {
             calendarDataDTOs.add(toDTO(calendarData));
         }
 
+        String parent = null;
+        if (baseCalendar.getParent() != null) {
+            parent = baseCalendar.getParent().getCode();
+        }
+
         return new BaseCalendarDTO(baseCalendar.getCode(), baseCalendar
-                .getName(), calendarExceptionDTOs, calendarDataDTOs);
+                .getName(), parent, calendarExceptionDTOs, calendarDataDTOs);
     }
 
     private final static CalendarExceptionDTO toDTO(
             CalendarException calendarException) {
-        return new CalendarExceptionDTO(calendarException.getCode(),
-                calendarException.getDate().toDateTimeAtStartOfDay().toDate(),
+
+        XMLGregorianCalendar date = null;
+        try {
+            date = toXMLGregorianCalendar(calendarException.getDate());
+        } catch (DatatypeConfigurationException e) {
+            throw new ValidationException(e.getMessage());
+        }
+
+        return new CalendarExceptionDTO(calendarException.getCode(), date,
                 calendarException.getHours(), calendarException.getType()
-                        .getName());
+                        .getCode());
     }
 
     private final static CalendarDataDTO toDTO(CalendarData calendarData) {
@@ -75,15 +106,276 @@ public final class CalendarConverter {
             hoursPerDayDTOs.add(new HoursPerDayDTO(dayName, hours));
         }
 
-        Date expiringDate = (calendarData.getExpiringDate() != null) ? calendarData
-                .getExpiringDate().toDateTimeAtStartOfDay().toDate()
+        XMLGregorianCalendar expiringDate = null;
+        try {
+            expiringDate = (calendarData.getExpiringDate() != null) ? toXMLGregorianCalendar(calendarData
+                    .getExpiringDate())
                 : null;
+        } catch (DatatypeConfigurationException e) {
+            throw new ValidationException(e.getMessage());
+        }
+
         String parentCalendar = (calendarData.getParent() != null) ? calendarData
                 .getParent().getCode()
                 : null;
 
-        return new CalendarDataDTO(hoursPerDayDTOs, expiringDate,
-                parentCalendar);
+        return new CalendarDataDTO(calendarData.getCode(), hoursPerDayDTOs,
+                expiringDate, parentCalendar);
+    }
+
+    public final static BaseCalendar toEntity(BaseCalendarDTO baseCalendarDTO) {
+
+        Set<CalendarException> exceptions = new HashSet<CalendarException>();
+        if (baseCalendarDTO.calendarExceptions != null) {
+            for (CalendarExceptionDTO exceptionDTO : baseCalendarDTO.calendarExceptions) {
+                exceptions.add(toEntity(exceptionDTO));
+            }
+        }
+
+        List<CalendarData> calendarDataVersions = new ArrayList<CalendarData>();
+        if (baseCalendarDTO.calendarDatas != null) {
+            for (CalendarDataDTO calendarDataDTO : baseCalendarDTO.calendarDatas) {
+                calendarDataVersions.add(toEntity(calendarDataDTO));
+            }
+            calendarDataVersions = getVersionsOrderedByExpiringDate(calendarDataVersions);
+        }
+
+        BaseCalendar parent = findBaseCalendarParent(baseCalendarDTO.parent);
+
+        try {
+        return BaseCalendar.createUnvalidated(baseCalendarDTO.code,
+                baseCalendarDTO.name, parent, exceptions, calendarDataVersions);
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException(_(e.getMessage()));
+        }
+    }
+
+    public final static CalendarException toEntity(
+            CalendarExceptionDTO calendarExceptionDTO) {
+
+        LocalDate date = null;
+        if (calendarExceptionDTO.date != null) {
+            date = toLocalDate(calendarExceptionDTO.date);
+        }
+
+        CalendarExceptionType type = findCalendarExceptionType(calendarExceptionDTO.calendarExceptionTypeCode);
+
+        return CalendarException.create(calendarExceptionDTO.code, date,
+                calendarExceptionDTO.hours, type);
+    }
+
+    public final static CalendarData toEntity(CalendarDataDTO calendarDataDTO) {
+        LocalDate expiringDate = null;
+        if (calendarDataDTO.expiringDate != null) {
+            expiringDate = toLocalDate(calendarDataDTO.expiringDate);
+        }
+
+        BaseCalendar parent = findBaseCalendarParent(calendarDataDTO.parentCalendar);
+
+        CalendarData calendarData = CalendarData.createUnvalidated(
+                calendarDataDTO.code, expiringDate, parent);
+
+        Map<Integer, Integer> hoursPerDays = getHoursPerDays(calendarDataDTO.hoursPerDays);
+        try {
+            calendarData.updateHourPerDay(hoursPerDays);
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException(_(e.getMessage()));
+        }
+
+        return calendarData;
+    }
+
+    public final static void update(BaseCalendar baseCalendar,
+            BaseCalendarDTO baseCalendarDTO) {
+
+        if (baseCalendarDTO.calendarExceptions != null) {
+            for (CalendarExceptionDTO exceptionDTO : baseCalendarDTO.calendarExceptions) {
+
+                if (StringUtils.isBlank(exceptionDTO.code)) {
+                    throw new ValidationException(
+                            _("missing code in a calendar exception"));
+                }
+
+                if (exceptionDTO.date == null) {
+                    throw new ValidationException(
+                            _("missing date in a calendar exception"));
+                }
+                // find by code
+                try {
+                    CalendarException exception = baseCalendar
+                            .getCalendarExceptionByCode(exceptionDTO.code);
+                    update(exception, exceptionDTO);
+                } catch (InstanceNotFoundException e) {
+                    // find by date
+                    CalendarException exception = baseCalendar
+                            .getOwnExceptionDay(toLocalDate(exceptionDTO.date));
+                    if (exception != null) {
+                        throw new ValidationException(
+                                _("exception date already exists"));
+                    } else {
+                        try {
+                            baseCalendar
+                                    .addExceptionDay(toEntity(exceptionDTO));
+                        } catch (IllegalArgumentException o) {
+                            throw new ValidationException(_(o.getMessage()));
+                        }
+                    }
+                }
+            }
+        }
+
+        if (baseCalendarDTO.calendarDatas != null) {
+
+            for (CalendarDataDTO calendarDataDTO : baseCalendarDTO.calendarDatas) {
+
+                if (StringUtils.isBlank(calendarDataDTO.code)) {
+                    throw new ValidationException(
+                            _("missing code in a calendar data version"));
+                }
+
+                // find by code
+                try {
+                    CalendarData version = baseCalendar
+                            .getCalendarDataByCode(calendarDataDTO.code);
+                    update(version, calendarDataDTO);
+                } catch (InstanceNotFoundException e) {
+                    try {
+                        baseCalendar.addNewVersion(toEntity(calendarDataDTO));
+                    } catch (IllegalArgumentException o) {
+                        throw new ValidationException(_(o.getMessage()));
+                    }
+                }
+            }
+
+        }
+
+        BaseCalendar parent = null;
+        if (!StringUtils.isBlank(baseCalendarDTO.parent)) {
+            try {
+                parent = Registry.getBaseCalendarDAO().findByCode(
+                        baseCalendarDTO.parent);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("The base calendar parent not found"));
+            }
+        }
+
+        baseCalendar.updateUnvalidated(baseCalendarDTO.name, parent);
+
+    }
+
+    public final static void update(CalendarException exception,
+            CalendarExceptionDTO calendarExceptionDTO) {
+
+        LocalDate date = null;
+        if (calendarExceptionDTO.date != null) {
+            date = toLocalDate(calendarExceptionDTO.date);
+        }
+
+        CalendarExceptionType type = findCalendarExceptionType(calendarExceptionDTO.calendarExceptionTypeCode);
+
+        exception.updateUnvalidated(date, calendarExceptionDTO.hours, type);
+    }
+
+    public final static void update(CalendarData calendarData,
+            CalendarDataDTO calendarDataDTO) {
+
+        LocalDate expiringDate = null;
+        if (calendarDataDTO.expiringDate != null) {
+            expiringDate = toLocalDate(calendarDataDTO.expiringDate);
+        }
+
+        BaseCalendar parent = findBaseCalendarParent(calendarDataDTO.parentCalendar);
+
+        Map<Integer, Integer> hoursPerDays = getHoursPerDays(calendarDataDTO.hoursPerDays);
+        try {
+            calendarData.updateHourPerDay(hoursPerDays);
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException(_(e.getMessage()));
+        }
+
+        calendarData.updateUnvalidated(expiringDate, parent);
+
+    }
+
+    private static Map<Integer, Integer> getHoursPerDays(
+            List<HoursPerDayDTO> hoursPerDayDTOs) {
+        Map<Integer, Integer> hoursPerDays = new HashMap<Integer, Integer>();
+        if (hoursPerDayDTOs != null) {
+            for (HoursPerDayDTO hoursPerDayDTO : hoursPerDayDTOs) {
+                Integer day = CalendarData.Days.valueOf(hoursPerDayDTO.day)
+                        .ordinal();
+                if (day != null) {
+                    hoursPerDays.put(day, hoursPerDayDTO.hours);
+                } else {
+                    throw new ValidationException(_("a day is not valid"));
+                }
+            }
+        }
+        return hoursPerDays;
+    }
+
+    private static BaseCalendar findBaseCalendarParent(String parentCode) {
+        if (StringUtils.isBlank(parentCode)) {
+            return null;
+        }
+
+        try {
+            return Registry.getBaseCalendarDAO().findByCode(parentCode);
+        } catch (InstanceNotFoundException e) {
+            throw new ValidationException(
+                    _("The base calendar parent not found"));
+        }
+    }
+
+    private static CalendarExceptionType findCalendarExceptionType(
+            String typeCode) {
+        if (StringUtils.isBlank(typeCode)) {
+            return null;
+        }
+
+        try {
+            return Registry.getCalendarExceptionTypeDAO().findByCode(typeCode);
+        } catch (InstanceNotFoundException e) {
+            throw new ValidationException(
+                    _("The calendar exception type not found"));
+        }
+    }
+
+    private static final List<CalendarData> getVersionsOrderedByExpiringDate(
+            List<CalendarData> versions) {
+
+        Collections.sort(versions, new Comparator<CalendarData>() {
+
+            @Override
+            public int compare(CalendarData o1, CalendarData o2) {
+                if (o1.getExpiringDate() == null) {
+                    return 1;
+                }
+                if (o2.getExpiringDate() == null) {
+                    return -1;
+                }
+                return o1.getExpiringDate().compareTo(o2.getExpiringDate());
+            }
+        });
+        return versions;
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar(
+            LocalDate localDate) throws DatatypeConfigurationException {
+        DatatypeFactory factory = DatatypeFactory.newInstance();
+        return factory.newXMLGregorianCalendarDate(localDate.getYear(),
+                localDate.getMonthOfYear(), localDate.getDayOfMonth(),
+                DatatypeConstants.FIELD_UNDEFINED);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date)
+            throws DatatypeConfigurationException {
+        return toXMLGregorianCalendar(LocalDate.fromDateFields(date));
+    }
+    public static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
+        return new LocalDate(calendar.getYear(), calendar.getMonth(), calendar
+                .getDay());
     }
 
 }

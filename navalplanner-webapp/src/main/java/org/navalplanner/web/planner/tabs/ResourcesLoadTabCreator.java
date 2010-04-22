@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.zkoss.ganttz.extensions.ITab;
@@ -46,13 +47,17 @@ public class ResourcesLoadTabCreator {
 
     private static final String ORDER_RESOURCE_LOAD_VIEW = _("Resources Load");
 
+    private final IOrderPlanningGate orderPlanningGate;
+
     public static ITab create(Mode mode,
             ResourceLoadController resourceLoadController,
             IToolbarCommand upCommand,
             ResourceLoadController resourceLoadControllerGlobal,
+            IOrderPlanningGate orderPlanningGate,
             Component breadcrumbs) {
         return new ResourcesLoadTabCreator(mode, resourceLoadController,
-                upCommand, resourceLoadControllerGlobal, breadcrumbs)
+                upCommand, resourceLoadControllerGlobal, orderPlanningGate,
+                breadcrumbs)
                 .build();
     }
 
@@ -68,11 +73,13 @@ public class ResourcesLoadTabCreator {
             ResourceLoadController resourceLoadController,
             IToolbarCommand upCommand,
             ResourceLoadController resourceLoadControllerGlobal,
+            IOrderPlanningGate orderPlanningGate,
             Component breadcrumbs) {
         this.mode = mode;
         this.resourceLoadController = resourceLoadController;
         this.upCommand = upCommand;
         this.resourceLoadControllerGlobal = resourceLoadControllerGlobal;
+        this.orderPlanningGate = orderPlanningGate;
         this.breadcrumbs = breadcrumbs;
     }
 
@@ -110,6 +117,8 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Label(ORDER_RESOURCE_LOAD_VIEW));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 Order currentOrder = mode.getOrder();
+                resourceLoadController
+                        .setPlanningControllerEntryPoints(orderPlanningGate);
                 resourceLoadController.filterBy(currentOrder);
                 resourceLoadController.reload();
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
@@ -136,6 +145,8 @@ public class ResourcesLoadTabCreator {
                 componentCreator) {
             @Override
             protected void afterShowAction() {
+                resourceLoadControllerGlobal
+                        .setPlanningControllerEntryPoints(orderPlanningGate);
                 resourceLoadControllerGlobal.filterBy(null);
                 resourceLoadControllerGlobal.reload();
                 if (breadcrumbs.getChildren() != null) {

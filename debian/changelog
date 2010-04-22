@@ -1,0 +1,11 @@
+navalplan (20100415) karmic; urgency=low
+
+  * Updated to upstream.
+
+ -- Jose Maria Casanova <jmcasanova@igalia.com>  Thu, 15 Mar 2010 14:30:00 +0000
+
+navalplan (20100324) karmic; urgency=low
+
+  * Initial release.
+
+ -- Adrian Perez <aperez@igalia.com>  Wed, 24 Mar 2010 16:35:00 +0000

@@ -23,7 +23,6 @@ package org.navalplanner.ws.resources.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -36,8 +35,8 @@ import org.navalplanner.ws.common.api.IntegrationEntityDTO;
  */
 public abstract class ResourceDTO extends IntegrationEntityDTO {
 
-    @XmlAttribute(name="calendar-name")
-    public String calendarName;
+    @XmlElement(name = "calendar")
+    public ResourceCalendarDTO calendar;
 
     @XmlElementWrapper(name="criterion-satisfaction-list")
     @XmlElement(name="criterion-satisfaction")

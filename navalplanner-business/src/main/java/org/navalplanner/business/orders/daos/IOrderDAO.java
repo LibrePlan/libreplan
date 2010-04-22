@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
@@ -78,5 +79,15 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
 
     List<Order> getOrdersByReadAuthorizationByScenario(User user,
             Scenario scenario);
+
+    /**
+     * Returns the order filtered by the name. If name is blank (whitespace,
+     * empty ("") or null, it throws <code>InstanceNotFoundException</code>.
+     * @param name
+     *            String
+     * @return order Order
+     */
+    public Order findByNameAnotherTransaction(String name)
+            throws InstanceNotFoundException;
 
 }

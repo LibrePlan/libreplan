@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.resourceload;
 
+import static org.zkoss.ganttz.i18n.I18nHelper._;
+
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,8 +30,12 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
@@ -42,7 +48,6 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Listbox;
-
 public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public interface IToolbarCommand {
@@ -59,16 +64,32 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private ResourceLoadList resourceLoadList;
 
-    private final List<LoadTimeLine> groups;
+    private List<LoadTimeLine> groups;
 
     private MutableTreeModel<LoadTimeLine> treeModel;
 
-    private final TimeTracker timeTracker;
+    private TimeTracker timeTracker;
+
+    private final Component componentOnWhichGiveFeedback;
+
+    private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners
+            .create();
 
     private Listbox listZoomLevels;
 
+    private static final String filterResources = _("by resources");
+    private static final String filterCriterions = _("by criterions");
+    private String feedBackMessage;
+    private Boolean filterbyResources;
+
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
-            TimeTracker timeTracker) {
+            TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
+        this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
+        init(groups, timeTracker);
+
+    }
+
+    public void init(List<LoadTimeLine> groups, TimeTracker timeTracker) {
         this.groups = groups;
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();
@@ -76,6 +97,60 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
         registerNeededScripts();
+    }
+
+    public ListModel getFilters() {
+        String[] filters = new String[] { filterResources, filterCriterions };
+        return new SimpleListModel(filters);
+    }
+
+    public void setFilter(String filterby) {
+        if (filterby.equals(filterResources)) {
+            this.filterbyResources = true;
+            this.feedBackMessage = _("showing resources");
+        } else {
+            this.filterbyResources = false;
+            this.feedBackMessage = _("showing criterions");
+        }
+        invalidatingChangeHappenedWithFeedback();
+    }
+
+    public boolean getFilter() {
+        return (filterbyResources == null) ? true : filterbyResources;
+    }
+
+    private void invalidatingChangeHappenedWithFeedback() {
+        LongOperationFeedback.execute(componentOnWhichGiveFeedback,
+                new ILongOperation() {
+
+                    @Override
+                    public void doAction() throws Exception {
+                        applyFilter();
+                    }
+
+                    @Override
+                    public String getName() {
+                        return getFeedBackMessage();
+                    }
+                });
+    }
+
+    private String getFeedBackMessage() {
+        return feedBackMessage;
+    }
+
+    private void applyFilter() {
+        zoomListeners
+                .fireEvent(new IListenerNotification<IFilterChangedListener>() {
+                    @Override
+                    public void doNotify(IFilterChangedListener listener) {
+                        listener.filterChanged(getFilter());
+                    }
+                });
+    }
+
+    public void addFilterListener(IFilterChangedListener listener) {
+        zoomListeners.addListener(listener);
     }
 
     public ListModel getZoomLevels() {
@@ -96,9 +171,19 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public void add(final IToolbarCommand... commands) {
         Component toolbar = getToolbar();
+        resetToolbar(toolbar);
         Separator separator = getSeparator();
         for (IToolbarCommand c : commands) {
             toolbar.insertBefore(asButton(c), separator);
+        }
+    }
+
+    private void resetToolbar(Component toolbar) {
+        List<Component> children = toolbar.getChildren();
+        List<Button> buttons = ComponentsFinder.findComponentsOfType(
+                Button.class, children);
+        for (Button b : buttons) {
+            toolbar.removeChild(b);
         }
     }
 
@@ -178,6 +263,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     @Override
     public void afterCompose() {
         super.afterCompose();
+        clearComponents();
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
@@ -192,6 +278,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
     }
 
+    public void clearComponents() {
+        getFellow("insertionPointLeftPanel").getChildren().clear();
+        getFellow("insertionPointRightPanel").getChildren().clear();
+        getFellow("insertionPointTimetracker").getChildren().clear();
+    }
+
     private TimeTrackerComponent createTimeTrackerHeader() {
         return new TimeTrackerComponent(
                 timeTracker) {
@@ -200,6 +292,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
          protected void scrollHorizontalPercentage(int pixelsDisplacement) {
          }
         };
+    }
+
+    public void addSeeScheduledOfListener(
+            ISeeScheduledOfListener seeScheduledOfListener) {
+        leftPane.addSeeScheduledOfListener(seeScheduledOfListener);
+        resourceLoadList.addSeeScheduledOfListener(seeScheduledOfListener);
     }
 
 }

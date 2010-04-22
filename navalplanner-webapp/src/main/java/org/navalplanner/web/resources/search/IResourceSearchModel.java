@@ -26,9 +26,7 @@ import java.util.Set;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Conversation for worker search
@@ -38,24 +36,14 @@ import org.navalplanner.business.resources.entities.Worker;
 public interface IResourceSearchModel {
 
     /**
-     * Returns all {@link Worker} matching by name (firstname or surname)
+     * Returns all resources filtering by name, criteria and limitingResource
      *
      * @param name
-     * @return
-     */
-    List<Resource> findResources(String name);
-
-    /**
-     * Queries database for retrieving all resources that match to the
-     * parameters
-     * @param name
-     *            matches name/NIF of {@link Worker} or name/code of
-     *            {@link Machine}
      * @param criterions
-     *            {@link Resource} that satisfy all criterions
+     * @param limitingResource
      * @return
      */
-    List<Resource> findResources(String name, List<Criterion> criterions);
+    List<Resource> findResources(String name, List<Criterion> criteria, boolean limitingResource);
 
     /**
      * Returns all resources
@@ -68,4 +56,19 @@ public interface IResourceSearchModel {
      * @return HashMap<CriterionType, Set<Criterion>>
      */
     Map<CriterionType, Set<Criterion>> getCriterions();
+
+    /**
+     * Returns all limiting resources
+     *
+     * @return
+     */
+    List<Resource> getAllLimitingResources();
+
+    /**
+     * Returns all non-limiting resources
+     *
+     * @return
+     */
+    List<Resource> getAllNonLimitingResources();
+
 }

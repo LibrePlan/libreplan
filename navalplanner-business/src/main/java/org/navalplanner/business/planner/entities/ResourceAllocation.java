@@ -92,7 +92,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public static Map<Task, List<ResourceAllocation<?>>> byTask(
-            Collection<? extends ResourceAllocation<?>> allocations) {
+            List<ResourceAllocation<?>> allocations) {
         Map<Task, List<ResourceAllocation<?>>> result = new HashMap<Task, List<ResourceAllocation<?>>>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             if (resourceAllocation.getTask() != null) {
@@ -104,11 +104,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
-    private static void initializeIfNeeded(
-            Map<Task, List<ResourceAllocation<?>>> result, Task task) {
+    private static <E extends ResourceAllocation<?>> void initializeIfNeeded(
+            Map<Task, List<E>> result, Task task) {
         if (!result.containsKey(task)) {
-            result.put(task,
-                    new ArrayList<ResourceAllocation<?>>());
+            result.put(task, new ArrayList<E>());
         }
     }
 
@@ -299,6 +298,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private ResourcesPerDay resourcesPerDay;
 
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();
+
+    private LimitingResourceQueueElement limitingResourceQueueElement;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -824,6 +825,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public boolean hasAssignments() {
         return !getAssignments().isEmpty();
+    }
+
+    public LimitingResourceQueueElement getLimitingResourceQueueElement() {
+        return limitingResourceQueueElement;
+    }
+
+    public void setLimitingResourceQueueElement(
+            LimitingResourceQueueElement limitingResourceQueueElement) {
+        this.limitingResourceQueueElement = limitingResourceQueueElement;
     }
 
     /**

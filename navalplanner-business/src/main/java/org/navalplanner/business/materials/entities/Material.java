@@ -26,8 +26,8 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.materials.bootstrap.UnitTypeBootstrap;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
-
 /**
  * Material entity
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
@@ -43,7 +43,6 @@ public class Material extends IntegrationEntity implements Comparable {
 
     private Boolean disabled;
 
-    @NotNull
     private MaterialCategory category = null;
 
     // Default constructor, needed by Hibernate
@@ -52,7 +51,9 @@ public class Material extends IntegrationEntity implements Comparable {
     }
 
     public static Material create(String code) {
-        return (Material) create(new Material(), code);
+        Material material = (Material) create(new Material(), code);
+        material.unitType = UnitTypeBootstrap.getDefaultUnitType();
+        return material;
     }
 
     public static Material createUnvalidated(String code, String description,
@@ -86,6 +87,7 @@ public class Material extends IntegrationEntity implements Comparable {
         this.setCode(code);
     }
 
+    @NotNull
     public MaterialCategory getCategory() {
         return category;
     }
@@ -118,6 +120,7 @@ public class Material extends IntegrationEntity implements Comparable {
         this.defaultUnitPrice = defaultUnitPrice;
     }
 
+    @NotNull
     public UnitType getUnitType() {
         return unitType;
     }

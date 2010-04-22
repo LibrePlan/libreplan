@@ -23,9 +23,12 @@ package org.navalplanner.business.materials.daos;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.UnitType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -36,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * DAO for {@link UnitType}
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Javier Moran Rua <jmoran@igaia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -70,18 +74,41 @@ public class UnitTypeDAO extends IntegrationEntityDAO<UnitType> implements
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public UnitType findUniqueByNameInAnotherTransaction(String measure)
             throws InstanceNotFoundException {
-        return findByName(measure);
+        return findByNameCaseInsensitive(measure);
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsUnitTypeByNameInAnotherTransaction(String measure) {
         try {
-            findByName(measure);
+            findByNameCaseInsensitive(measure);
         } catch (InstanceNotFoundException e) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    @Transactional(readOnly=true)
+    public UnitType findByNameCaseInsensitive(String measure)
+            throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(UnitType.class);
+        c.add(Restrictions.ilike("measure", measure, MatchMode.EXACT));
+        UnitType result = (UnitType) c.uniqueResult();
+
+        if (result == null) {
+            throw new InstanceNotFoundException(measure,
+                    getEntityClass().getName());
+        }
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly=true)
+    public boolean isUnitTypeUsedInAnyMaterial(UnitType unitType) {
+        Criteria c = getSession().createCriteria(Material.class);
+        return !c.add(Restrictions.eq("unitType", unitType)).list().isEmpty();
     }
 
 }

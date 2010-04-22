@@ -23,11 +23,13 @@
  */
 package org.navalplanner.business.workreports.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 public enum HoursManagementEnum {
 
-    NUMBER_OF_HOURS("Number of assigned hours."), HOURS_CALCULATED_BY_CLOCK(
-            "Number of hours caculated by clock."), NUMBER_OF_HOURS_AND_CLOCK(
-            "Number of assigned hours and the time.");
+    NUMBER_OF_HOURS(_("Number of assigned hours.")),
+    HOURS_CALCULATED_BY_CLOCK(_("Number of hours calculated by clock.")),
+    NUMBER_OF_HOURS_AND_CLOCK(_("Number of assigned hours and the time."));
 
     private String description;
 

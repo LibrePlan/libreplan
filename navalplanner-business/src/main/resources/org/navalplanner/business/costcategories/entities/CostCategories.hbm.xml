@@ -61,6 +61,8 @@
 
     <property name="enabled"/>
 
+    <property name="generateCode" not-null="true" />
+
 </class>
 
 <!--  ResourcesCostCategoryAssignment -->

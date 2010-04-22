@@ -21,12 +21,12 @@
 package org.navalplanner.ws.calendars.api;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -41,11 +41,11 @@ public class CalendarDataDTO extends IntegrationEntityDTO {
     public final static String ENTITY_TYPE = "calendar-data";
 
     @XmlElementWrapper(name = "hors-per-day-list")
-    @XmlElement(name = "hors-per-day")
+    @XmlElement(name = "hours-per-day")
     public List<HoursPerDayDTO> hoursPerDays = new ArrayList<HoursPerDayDTO>();
 
     @XmlAttribute(name = "expiring-date")
-    public Date expiringDate;
+    public XMLGregorianCalendar expiringDate;
 
     @XmlAttribute(name = "parent-calendar")
     public String parentCalendar;
@@ -54,7 +54,7 @@ public class CalendarDataDTO extends IntegrationEntityDTO {
     }
 
     public CalendarDataDTO(String code, List<HoursPerDayDTO> hoursPerDays,
-            Date expiringDate, String parentCalendar) {
+            XMLGregorianCalendar expiringDate, String parentCalendar) {
         super(code);
         this.hoursPerDays = hoursPerDays;
         this.expiringDate = expiringDate;
@@ -62,7 +62,7 @@ public class CalendarDataDTO extends IntegrationEntityDTO {
     }
 
     public CalendarDataDTO(List<HoursPerDayDTO> hoursPerDays,
-            Date expiringDate, String parentCalendar) {
+            XMLGregorianCalendar expiringDate, String parentCalendar) {
         this(generateCode(), hoursPerDays, expiringDate, parentCalendar);
     }
 

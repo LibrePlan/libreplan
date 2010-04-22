@@ -181,7 +181,7 @@ public final class MaterialConverter {
                         materialDTO.unitType);
                 material.setUnitType(unitType);
             } catch (InstanceNotFoundException e) {
-                material.setUnitType(null);
+                throw new ValidationException(_("unit type code not found"));
             }
         }
 

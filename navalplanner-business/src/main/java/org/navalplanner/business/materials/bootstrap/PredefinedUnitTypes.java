@@ -57,4 +57,8 @@ public enum PredefinedUnitTypes {
     public String toString() {
         return measure;
     }
+
+    public static PredefinedUnitTypes defaultUnitType() {
+        return UNITS;
+    }
 }

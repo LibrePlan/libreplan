@@ -43,6 +43,8 @@ public interface IOrderPlanningModel {
 
     Order getOrder();
 
+    PlanningState getPlanningState();
+
     void forceLoadLabelsAndCriterionRequirements();
 
 }

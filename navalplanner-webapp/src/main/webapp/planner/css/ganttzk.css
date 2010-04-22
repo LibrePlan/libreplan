@@ -150,7 +150,7 @@
 }
 
 .standard-task {
-    background-color: #007bbe;
+    background-color: #aaccee; /* NOT_ALLOCATED_TASK_BLUE */
 }
 
 .subcontracted-task {
@@ -494,6 +494,21 @@ tr.z-vbox-sep {
     display: inline;
 }
 
+.resourceloadleftpane .secondlevel .z-label,
+.resourceloadleftpane .z-tree-body {
+    white-space: nowrap;
+}
+
+.resourceloadleftpane .icono {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border: 0px;
+}
+
+.resourceloadleftpane .icono img {
+    height: 18px;
+}
+
 /* -- Upper taskpannel is hidden --*/
 .taskspanelgap #timetracker {
     border-top: 0px;
@@ -579,6 +594,18 @@ tr.z-vbox-sep {
     font-size: 10px;
 }
 
+.resourceloadleftpane div.z-tree-body {
+    overflow: visible;
+}
+.resourceloadleftpane div.z-tree-body table {
+    table-layout:auto !important;
+}
+
+.resourceloadleftpane .icono .z-button-cm:active,
+.resourceloadleftpane .icono .z-button-cm:hover {
+    border: 0;
+    background-color: transparent;
+}
 
 .timetrackergap {
     position: relative;
@@ -621,8 +648,13 @@ div.z-tree {
     margin-left: 5px;
     background-color: #f7f7bf;
     border: solid 1px #CCCCCC;
-    z-index: 7;
+    z-index: 100 !important;
     -moz-box-shadow: 1px 1px 10px #666666;
+}
+
+/* Avoid current box tooltip being overlapped */
+.box:hover {
+    z-index:100 !important;
 }
 
 .task-labels {
@@ -926,3 +958,15 @@ body .perspectives-column {
     overflow: visible;
 }
 
+.taskdetailsContainer {
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.row .assigned {
+    background-color: #007BBE; /* ALLOCATED_TASK_BLUE */
+}
+
+.row .partially-assigned {
+    background-color: #FF5A11; /* PARTIALLY_ALLOCATED_TASK_ORANGE */
+}

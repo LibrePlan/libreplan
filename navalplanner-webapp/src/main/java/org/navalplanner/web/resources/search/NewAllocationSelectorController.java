@@ -81,6 +81,8 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     private AllocationType currentAllocationType;
 
+    private boolean limitingResource = false;
+
     public NewAllocationSelectorController() {
 
     }
@@ -114,7 +116,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         listBoxResources.setItemRenderer(getListitemRenderer());
 
         // Show all workers
-        refreshListBoxResources(resourceSearchModel.getAllResources());
+        refreshListBoxResources(getAllResources());
 
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
@@ -137,6 +139,12 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
             }
         });
         doInitialSelection();
+    }
+
+    private List<Resource> getAllResources() {
+        return (limitingResource) ? resourceSearchModel
+                .getAllLimitingResources() : resourceSearchModel
+                .getAllNonLimitingResources();
     }
 
     private void doInitialSelection() {
@@ -187,8 +195,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      */
     private void searchResources(String name, List<Criterion> criterions) {
         final List<Resource> resources = resourceSearchModel.findResources(
-                name,
-                criterions);
+                name, criterions, limitingResource);
         refreshListBoxResources(resources);
     }
 
@@ -226,7 +233,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     public void clearAll() {
         txtName.setValue("");
-        refreshListBoxResources(resourceSearchModel.getAllResources());
+        refreshListBoxResources(getAllResources());
         criterionsTree.setModel(getCriterions());
         clearSelection(listBoxResources);
         clearSelection(criterionsTree);
@@ -418,6 +425,14 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     public void addTo(INewAllocationsAdder allocationsAdder) {
         currentAllocationType.addTo(this, allocationsAdder);
+    }
+
+    public void setLimitingResourceFilter(boolean limitingResource) {
+        this.limitingResource = limitingResource;
+    }
+
+    public void allowSelectMultipleResources(boolean multiple) {
+        listBoxResources.setMultiple(multiple);
     }
 
 }
