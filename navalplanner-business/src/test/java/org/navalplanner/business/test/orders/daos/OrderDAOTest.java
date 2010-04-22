@@ -44,10 +44,15 @@ import org.navalplanner.business.orders.daos.OrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -70,10 +75,14 @@ public class OrderDAOTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
+    @Resource
+    private IScenariosBootstrap scenariosBootstrap;
+
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
+        scenariosBootstrap.loadRequiredData();
     }
 
     @Autowired
@@ -88,15 +97,31 @@ public class OrderDAOTest {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private Order order;
+
+    private OrderVersion setupVersionUsing(IScenarioManager scenarioManager,
+            Order order) {
+        Scenario current = scenarioManager.getCurrent();
+        OrderVersion result = OrderVersion.createInitialVersion(current);
+        order.setVersionForScenario(current, result);
+        return result;
+    }
 
     private Task createValidTask() {
         HoursGroup associatedHoursGroup = new HoursGroup();
         associatedHoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         OrderLine orderLine = createOrderLine();
         orderLine.addHoursGroup(associatedHoursGroup);
-        TaskSource taskSource = TaskSource.create(orderLine, Arrays
-                .asList(associatedHoursGroup));
+        OrderVersion orderVersion = setupVersionUsing(scenarioManager,
+                orderLine.getOrder());
+        orderLine.useSchedulingDataFor(orderVersion);
+        SchedulingDataForVersion schedulingDataForVersion = orderLine
+                .getCurrentSchedulingDataForVersion();
+        TaskSource taskSource = TaskSource.create(schedulingDataForVersion,
+                Arrays.asList(associatedHoursGroup));
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(taskSourceDAO);
         Task task = (Task) taskSource.getTask();
@@ -111,9 +136,11 @@ public class OrderDAOTest {
         hoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         orderLine.addHoursGroup(hoursGroup);
         order = Order.create();
+        OrderVersion orderVersion = setupVersionUsing(scenarioManager, order);
         order.setName("bla");
         order.setInitDate(new Date());
         order.setCode("code-" + UUID.randomUUID());
+        order.useSchedulingDataFor(orderVersion);
         order.add(orderLine);
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());

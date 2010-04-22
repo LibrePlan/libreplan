@@ -175,10 +175,10 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             return new ArrayList<Task>();
         }
 
-        final String strQuery = "SELECT taskSource.task "
-                + "FROM TaskSource taskSource "
-                + "WHERE taskSource.orderElement IN (:orderElements) "
-                + " AND taskSource.task IN (FROM Task)";
+        final String strQuery = "SELECT taskSource.task FROM TaskSource taskSource "
+                + "JOIN taskSource.schedulingData schedulingData "
+                + "WHERE schedulingData.orderElement IN (:orderElements) "
+                + "AND taskSource.task IN (FROM Task)";
         Query query = getSession().createQuery(strQuery);
         query.setParameterList("orderElements", orderElements);
 
