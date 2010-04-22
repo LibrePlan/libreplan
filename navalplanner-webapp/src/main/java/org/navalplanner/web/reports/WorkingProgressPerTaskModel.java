@@ -33,6 +33,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.reports.dtos.WorkingProgressPerTaskDTO;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -53,10 +54,14 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     @Autowired
     ITaskElementDAO taskDAO;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        List<Order> result = orderDAO.getOrders();
+        List<Order> result = orderDAO.getOrdersByScenario(scenarioManager
+                .getCurrent());
         return result;
     }
 

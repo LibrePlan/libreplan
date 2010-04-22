@@ -45,6 +45,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.reports.dtos.SchedulingProgressPerOrderDTO;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -68,10 +69,14 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     @Autowired
     IAdvanceTypeDAO advanceTypeDAO;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        List<Order> orders = orderDAO.getOrders();
+        List<Order> orders = orderDAO.getOrdersByScenario(scenarioManager
+                .getCurrent());
 
         for (Order each: orders) {
             initializeTasks(each.getTaskElements());
