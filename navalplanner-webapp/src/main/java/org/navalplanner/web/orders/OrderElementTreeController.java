@@ -24,10 +24,13 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -68,6 +71,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Treecell;
@@ -231,6 +235,26 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
 
+        // Add the expand/collapse button to the tool bar
+        final Button expandAllButton = new Button();
+        expandAllButton.setId("expandAllButton");
+        expandAllButton.setClass("planner-command");
+        expandAllButton.setTooltiptext(_("Expand/Collapse all"));
+        expandAllButton.setImage("/common/img/ico_expand.png");
+        expandAllButton.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (expandAllButton.getSclass().equals("planner-command")) {
+                    expandAll();
+                    expandAllButton.setSclass("planner-command clicked");
+                } else {
+                    collapseAll();
+                    expandAllButton.setSclass("planner-command");
+                }
+            }
+        });
+        orderElementFilter.getParent().getChildren().add(expandAllButton);
+
         // Configuration of the order elements filter
         Component filterComponent = Executions.createComponents(
                 "/orders/_orderElementTreeFilter.zul", orderElementFilter,
@@ -247,6 +271,38 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
+    }
+
+    public void expandAll() {
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+        Treechildren children = tree.getTreechildren();
+        if(children != null) {
+            childrenSet.addAll((Collection<Treeitem>) children.getItems());
+        }
+        for(Treeitem each: childrenSet) {
+            expandAll(each);
+        }
+    }
+
+    private void expandAll(Treeitem item) {
+        item.setOpen(true);
+
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+        Treechildren children = item.getTreechildren();
+        if(children != null) {
+            childrenSet.addAll((Collection<Treeitem>) children.getItems());
+        }
+
+        for(Treeitem each: childrenSet) {
+            expandAll(each);
+        }
+    }
+
+    public void collapseAll() {
+        Treechildren children = tree.getTreechildren();
+        for(Treeitem each: (Collection<Treeitem>) children.getItems()) {
+            each.setOpen(false);
+        }
     }
 
     private enum Navigation {
