@@ -36,8 +36,6 @@ import org.zkoss.zul.SimpleTreeNode;
  */
 public class ScenariosTreeModel extends SimpleTreeModel {
 
-    private static Map<Scenario, List<Scenario>> relationParentChildren = new HashMap<Scenario, List<Scenario>>();
-
     public ScenariosTreeModel(ScenarioTreeRoot root) {
         super(createRootNodeAndDescendants(root, root.getRootScenarios(), root
                 .getDerivedScenarios()));
@@ -46,66 +44,52 @@ public class ScenariosTreeModel extends SimpleTreeModel {
     private static SimpleTreeNode createRootNodeAndDescendants(
             ScenarioTreeRoot root, List<Scenario> rootScenarios,
             List<Scenario> derivedScenarios) {
-
-        fillHashParentChildren(rootScenarios, derivedScenarios);
-
-        return new SimpleTreeNode(root, asNodes(rootScenarios));
+        return new SimpleTreeNode(root, asNodes(fillHashParentChildren(
+                rootScenarios, derivedScenarios), rootScenarios));
     }
 
-    private static List<SimpleTreeNode> asNodes(List<Scenario> scenarios) {
+    private static List<SimpleTreeNode> asNodes(
+            Map<Scenario, List<Scenario>> childrenMap,
+            List<Scenario> scenarios) {
         if (scenarios == null) {
             return new ArrayList<SimpleTreeNode>();
         }
 
         ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
         for (Scenario scenario : scenarios) {
-            result.add(asNode(scenario));
+            result.add(asNode(childrenMap, scenario));
         }
 
         return result;
     }
 
-    private static SimpleTreeNode asNode(Scenario scenario) {
-        List<Scenario> children = relationParentChildren.get(scenario);
-        return new SimpleTreeNode(scenario, asNodes(children));
+    private static SimpleTreeNode asNode(
+            Map<Scenario, List<Scenario>> childrenMap, Scenario scenario) {
+        List<Scenario> children = childrenMap.get(scenario);
+        return new SimpleTreeNode(scenario, asNodes(childrenMap, children));
     }
 
-    private static void fillHashParentChildren(
+    private static Map<Scenario, List<Scenario>> fillHashParentChildren(
             List<Scenario> rootScenarios,
             List<Scenario> derivedScenarios) {
+        Map<Scenario, List<Scenario>> result = new HashMap<Scenario, List<Scenario>>();
         for (Scenario root : rootScenarios) {
-            relationParentChildren.put(root, new ArrayList<Scenario>());
+            result.put(root, new ArrayList<Scenario>());
         }
 
         for (Scenario derived : derivedScenarios) {
             Scenario parent = derived.getPredecessor();
-            List<Scenario> siblings = relationParentChildren.get(parent);
+            List<Scenario> siblings = result.get(parent);
 
             if (siblings == null) {
                 siblings = new ArrayList<Scenario>();
                 siblings.add(derived);
-                relationParentChildren.put(parent, siblings);
+                result.put(parent, siblings);
             } else {
                 siblings.add(derived);
             }
         }
-    }
-
-    @Override
-    public boolean isLeaf(Object node) {
-        if (node == null) {
-            return true;
-        }
-
-        SimpleTreeNode simpleTreeNode = (SimpleTreeNode) node;
-        Scenario scenario = (Scenario) simpleTreeNode.getData();
-
-        List<Scenario> children = relationParentChildren.get(scenario);
-        if (children == null) {
-            return true;
-        }
-
-        return children.isEmpty();
+        return result;
     }
 
 }
