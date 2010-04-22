@@ -36,9 +36,7 @@ import org.navalplanner.business.costcategories.daos.CostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -167,25 +165,6 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
     }
 
     @Override
-    public List<Task> getTasksByOrder(Order order) {
-        reattach(order);
-
-        final List<OrderElement> orderElements = order.getAllChildren();
-        if (orderElements.isEmpty()) {
-            return new ArrayList<Task>();
-        }
-
-        final String strQuery = "SELECT taskSource.task FROM TaskSource taskSource "
-                + "JOIN taskSource.schedulingData schedulingData "
-                + "WHERE schedulingData.orderElement IN (:orderElements) "
-                + "AND taskSource.task IN (FROM Task)";
-        Query query = getSession().createQuery(strQuery);
-        query.setParameterList("orderElements", orderElements);
-
-        return (List<Task>) query.list();
-    }
-
-    @Override
     public List<Order> getOrdersByReadAuthorization(User user) {
         if (user.getRoles().contains(UserRole.ROLE_READ_ALL_ORDERS) ||
             user.getRoles().contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
@@ -265,10 +244,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         return existsInScenario(getOrdersByReadAuthorization(user), scenario);
     }
 
-    private List<Order> existsInScenario(List<Order> ordersByReadAuthorization,
-            Scenario scenario) {
+    private List<Order> existsInScenario(List<Order> orders, Scenario scenario) {
         List<Order> result = new ArrayList<Order>();
-        for (Order each : ordersByReadAuthorization) {
+        for (Order each : orders) {
             if (scenario.contains(each)) {
                 result.add(each);
             }
@@ -305,5 +283,10 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             return order;
         }
 
+    }
+
+    @Override
+    public List<Order> getOrdersByScenario(Scenario scenario) {
+        return existsInScenario(getOrders(), scenario);
     }
 }
