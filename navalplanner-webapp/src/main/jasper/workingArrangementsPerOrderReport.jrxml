@@ -353,7 +353,7 @@
 			<staticText>
 				<reportElement style="SubTitle" x="69" y="46" width="207" height="22"/>
 				<textElement/>
-				<text><![CDATA[Working arrangements]]></text>
+				<text><![CDATA[Task scheduling status]]></text>
 			</staticText>
 			<image scaleImage="RealHeight">
 				<reportElement x="318" y="0" width="180" height="53"/>
