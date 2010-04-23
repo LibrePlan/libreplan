@@ -64,6 +64,14 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
  */
 public abstract class Resource extends IntegrationEntity {
 
+    public static class AllResourceAssignments implements IAssignmentsOnResourceCalculator {
+
+        @Override
+        public List<DayAssignment> getAssignments(Resource resource) {
+            return resource.getAssignments();
+        }
+    }
+
     public static List<Machine> machines(
             Collection<? extends Resource> resources) {
         return filter(Machine.class, resources);

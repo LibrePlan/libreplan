@@ -66,6 +66,7 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -242,6 +243,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private Order orderReloaded;
+
+    private IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator = new Resource.AllResourceAssignments();
 
     private Scenario currentScenario;
 
@@ -1005,7 +1008,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
             for (Resource resource : order.getResources()) {
-                resourcesDayAssignments.addAll(resource.getAssignments());
+                resourcesDayAssignments.addAll(assigmentsOnResourceCalculator
+                        .getAssignments(resource));
             }
             SortedMap<LocalDate, Map<Resource, Integer>> resourceDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(resourcesDayAssignments);
 
