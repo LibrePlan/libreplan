@@ -22,13 +22,19 @@ package org.navalplanner.web.scenarios;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
-import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -59,12 +65,25 @@ public class TransferOrdersModel implements ITransferOrdersModel {
     private IScenarioDAO scenarioDAO;
 
     @Autowired
-    private IOrderVersionDAO orderVersionDAO;
+    private IOrderDAO orderDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
+    private Map<Long, Order> ordersMap = new HashMap<Long, Order>();
 
     @Override
     @Transactional(readOnly = true)
     public List<Scenario> getScenarios() {
-        return scenarioDAO.list(Scenario.class);
+        loadOrders();
+        return scenarioDAO.getAll();
+    }
+
+    private void loadOrders() {
+        for (Order order : orderDAO.getOrders()) {
+            orderDAO.save(order);
+            ordersMap.put(order.getId(), order);
+        }
     }
 
     @Override
@@ -82,7 +101,11 @@ public class TransferOrdersModel implements ITransferOrdersModel {
 
     @Override
     public Set<Order> getSourceScenarioOrders() {
-        return sourceScenario.getOrders().keySet();
+        Set<Order> orders = new HashSet<Order>();
+        for (Order order : sourceScenario.getOrders().keySet()) {
+            orders.add(ordersMap.get(order.getId()));
+        }
+        return orders;
     }
 
     @Override
@@ -112,6 +135,8 @@ public class TransferOrdersModel implements ITransferOrdersModel {
     @Override
     @Transactional
     public void transfer(Order order) throws ValidationException {
+        orderDAO.save(order);
+
         Scenario sourceScenario = getSourceScenario();
         Scenario destinationScenario = getDestinationScenario();
 
@@ -129,14 +154,15 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                     _("Source and destination scenarios should be different"));
         }
 
-        OrderVersion sourceOrderVersion = sourceScenario.getOrderVersion(order);
+        OrderVersion sourceOrderVersion = order
+                .getOrderVersionFor(sourceScenario);
         if (sourceOrderVersion == null) {
             throw new RuntimeException(
                     "OrderVersion must not be null for source scenario");
         }
 
-        OrderVersion destinationOrderVersion = destinationScenario
-                .getOrderVersion(order);
+        OrderVersion destinationOrderVersion = order
+                .getOrderVersionFor(destinationScenario);
         if ((destinationOrderVersion != null)
                 && (sourceOrderVersion.getId().equals(destinationOrderVersion
                         .getId()))) {
@@ -146,22 +172,27 @@ public class TransferOrdersModel implements ITransferOrdersModel {
 
         order.useSchedulingDataFor(sourceOrderVersion);
 
-        if ((destinationOrderVersion != null)
-                && (destinationOrderVersion.getOwnerScenario().getId()
-                        .equals(destinationScenario.getId()))) {
-            order.writeSchedulingDataChangesTo(destinationScenario,
-                    destinationOrderVersion);
-            orderVersionDAO.save(destinationOrderVersion);
-        } else {
-            OrderVersion newOrderVersion = OrderVersion
-                    .createInitialVersion(destinationScenario);
-            destinationScenario.setOrderVersion(order, newOrderVersion);
-            order.writeSchedulingDataChangesTo(destinationScenario,
-                    newOrderVersion);
-            scenarioDAO.save(destinationScenario);
-            scenarioDAO.updateDerivedScenariosWithNewVersion(
-                    destinationOrderVersion, order, destinationScenario,
-                    newOrderVersion);
+        OrderVersion newOrderVersion = OrderVersion
+                .createInitialVersion(destinationScenario);
+        order.setOrderVersion(destinationScenario, newOrderVersion);
+        order
+                .writeSchedulingDataChangesTo(destinationScenario,
+                        newOrderVersion);
+        scenarioDAO.updateDerivedScenariosWithNewVersion(
+                destinationOrderVersion, order, destinationScenario,
+                newOrderVersion);
+
+        List<TaskSource> taskSourcesFromBottomToTop = order
+                .getTaskSourcesFromBottomToTop();
+        for (TaskSource taskSource : taskSourcesFromBottomToTop) {
+            taskSourceDAO.save(taskSource);
+        }
+
+        try {
+            setDestinationScenario(scenarioDAO
+                    .find(destinationScenario.getId()));
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -157,25 +157,40 @@ public class TransferOrdersModelTest {
                     Scenario source = scenarioDAO.find((Long) objects[0]);
                     Scenario destination = scenarioDAO.find((Long) objects[1]);
 
-                    Order order = (Order) objects[2];
-
-                    System.out.println(source.getOrders().size());
-                    System.out.println(numOrders);
                     assertThat(source.getOrders().size(),
                             equalTo(numOrders + 1));
                     assertThat(destination.getOrders().size(),
                             equalTo(numOrders));
 
+                    transferOrdersModel.getScenarios();
+
                     transferOrdersModel.setSourceScenario(source);
                     transferOrdersModel.setDestinationScenario(destination);
 
+                    Order order = transferOrdersModel
+                            .getSourceScenarioOrders().iterator().next();
                     transferOrdersModel.transfer(order);
+
+                    return null;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                try {
+                    Scenario source = scenarioDAO.find((Long) objects[0]);
+                    Scenario destination = scenarioDAO.find((Long) objects[1]);
 
                     assertThat(source.getOrders().size(),
                             equalTo(numOrders + 1));
                     assertThat(destination.getOrders().size(),
                             equalTo(numOrders + 1));
-                    assertNotNull(destination.getOrderVersion(order));
+                    assertNotNull(destination
+                            .getOrderVersion((Order) objects[2]));
 
                     return null;
                 } catch (InstanceNotFoundException e) {

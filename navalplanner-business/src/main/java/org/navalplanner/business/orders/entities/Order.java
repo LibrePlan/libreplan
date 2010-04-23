@@ -503,4 +503,9 @@ public class Order extends OrderLineGroup {
         return scenarios.get(current);
     }
 
+
+    public void setOrderVersion(Scenario scenario, OrderVersion newOrderVersion) {
+        scenarios.put(scenario, newOrderVersion);
+    }
+
 }

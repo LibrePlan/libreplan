@@ -27,7 +27,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
 
-<window self="@{define(content)}"
+<window self="@{define(content)}" id="transferOrdersWindow"
     title="${i18n:_('Transfer orders between scenarios')}"
     apply="org.navalplanner.web.scenarios.TransferOrdersController">
 

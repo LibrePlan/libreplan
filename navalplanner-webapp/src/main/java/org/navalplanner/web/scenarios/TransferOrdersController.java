@@ -22,6 +22,7 @@ package org.navalplanner.web.scenarios;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.awt.Window;
 import java.util.List;
 import java.util.Set;
 
@@ -66,6 +67,8 @@ public class TransferOrdersController extends GenericForwardComposer {
     private BandboxSearch destinationScenarioBandboxSearch;
 
     private Listbox destinationScenarioOrders;
+
+    private Window transferOrdersWindow;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
