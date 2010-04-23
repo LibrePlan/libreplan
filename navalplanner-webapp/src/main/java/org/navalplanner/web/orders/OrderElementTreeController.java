@@ -584,6 +584,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 notifyDateboxCantBeCreated(dateboxName, currentOrderElement
                         .getCode());
             }
+            registerFocusEvent(dinamicDatebox.getDateTextBox());
             addCell(cell);
         }
 
