@@ -12,12 +12,12 @@
     </calendar-exception-list>
     <calendar-data-list>
       <calendar-data code="000-003">
-        <hors-per-day-list>
+        <hours-per-day-list>
           <hours-per-day hours="2" day="MONDAY" />
           <hours-per-day hours="3" day="TUESDAY" />
           <hours-per-day hours="4" day="WEDNESDAY" />
           <hours-per-day hours="5" day="THURSDAY" />
-        </hors-per-day-list>
+        </hours-per-day-list>
       </calendar-data>
     </calendar-data-list>
   </base-calendar>
@@ -41,28 +41,28 @@
     <calendar-data-list>
       <calendar-data expiring-date="2010-06-15"
       code="000-000-002">
-        <hors-per-day-list>
+        <hours-per-day-list>
           <hours-per-day hours="5" day="MONDAY" />
           <hours-per-day hours="5" day="TUESDAY" />
           <hours-per-day hours="5" day="WEDNESDAY" />
           <hours-per-day hours="5" day="THURSDAY" />
           <hours-per-day hours="5" day="FRIDAY" />
-        </hors-per-day-list>
+        </hours-per-day-list>
       </calendar-data>
       <calendar-data expiring-date="2010-06-25"
       code="000-000-001">
-        <hors-per-day-list>
+        <hours-per-day-list>
           <hours-per-day hours="9" day="MONDAY" />
           <hours-per-day hours="9" day="THURSDAY" />
           <hours-per-day hours="9" day="FRIDAY" />
-        </hors-per-day-list>
+        </hours-per-day-list>
       </calendar-data>
       <calendar-data code="000-000-021">
-        <hors-per-day-list>
+        <hours-per-day-list>
           <hours-per-day hours="7" day="MONDAY" />
           <hours-per-day hours="7" day="THURSDAY" />
           <hours-per-day hours="7" day="FRIDAY" />
-        </hors-per-day-list>
+        </hours-per-day-list>
       </calendar-data>
     </calendar-data-list>
   </base-calendar>
