@@ -426,6 +426,16 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     onDoubleClickForSchedulingStateCell(currentElement);
                 }
             });
+            cell.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                private Treeitem item = (Treeitem) getCurrentTreeRow().getParent();
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    item.setSelected(true);
+                    Util.reloadBindings(item.getParent());
+                }
+            });
             schedulingState.addTypeChangeListener(
                     new ITypeChangedListener() {
 
