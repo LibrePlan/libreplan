@@ -134,6 +134,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean flattenTreeEnabled = true;
 
+    private boolean renamingTasksEnabled = true;
+
     // private String identifier = null;
 
     private IDetailItemModificator firstLevelModificators = SeveralModificators
@@ -296,6 +298,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isFlattenTreeEnabled() {
         return flattenTreeEnabled;
+    }
+
+    public void setRenamingTasksEnabled(boolean renamingTasksEnabled) {
+        this.renamingTasksEnabled = renamingTasksEnabled;
+    }
+
+    @Override
+    public boolean isRenamingTasksEnabled() {
+        return renamingTasksEnabled;
     }
 
     public IDetailItemModificator getSecondLevelModificators() {

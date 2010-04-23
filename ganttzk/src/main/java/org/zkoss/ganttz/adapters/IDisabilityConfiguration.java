@@ -39,4 +39,6 @@ public interface IDisabilityConfiguration {
 
     public boolean isFlattenTreeEnabled();
 
+    public boolean isRenamingTasksEnabled();
+
 }

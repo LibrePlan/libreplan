@@ -372,6 +372,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private void updateComponents() {
         getNameBox().setValue(task.getName());
+        getNameBox().setDisabled(!canRenameTask());
         getNameBox().setTooltiptext(task.getName());
 
         getStartDateBox().setValue(task.getBeginDate());
@@ -394,6 +395,10 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     private boolean canChangeEndDate() {
         return disabilityConfiguration.isResizingTasksEnabled()
                 && task.canBeExplicitlyResized();
+    }
+
+    private boolean canRenameTask() {
+        return disabilityConfiguration.isRenamingTasksEnabled();
     }
 
     private String asString(Date date) {
