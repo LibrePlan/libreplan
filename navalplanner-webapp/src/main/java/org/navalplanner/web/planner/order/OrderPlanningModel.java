@@ -248,6 +248,51 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private Scenario currentScenario;
 
+    private final class ReturningNewAssignments implements
+            IAssignmentsOnResourceCalculator {
+
+        private Set<DayAssignment> previousAssignmentsSet;
+        private Map<Resource, List<DayAssignment>> newAssignments;
+
+        public ReturningNewAssignments(List<DayAssignment> previousAssignments,
+                List<DayAssignment> newAssignments) {
+            this.previousAssignmentsSet = new HashSet<DayAssignment>(
+                    previousAssignments);
+            this.newAssignments = byResource(newAssignments);
+        }
+
+        private Map<Resource, List<DayAssignment>> byResource(List<DayAssignment> newAssignments) {
+            Map<Resource, List<DayAssignment>> result = new HashMap<Resource, List<DayAssignment>>();
+            for (DayAssignment each : newAssignments) {
+                Resource resource = each.getResource();
+                List<DayAssignment> list = result.get(resource);
+                if (list == null) {
+                    result.put(resource, new ArrayList<DayAssignment>());
+                }
+                result.get(resource).add(each);
+            }
+            return result;
+        }
+
+        @Override
+        public List<DayAssignment> getAssignments(Resource resource) {
+            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            for (DayAssignment each : resource.getAssignments()) {
+                if (!previousAssignmentsSet.contains(each)) {
+                    result.add(each);
+                }
+            }
+            result.addAll(newAssignmentsFor(resource));
+            return result;
+        }
+
+        private List<DayAssignment> newAssignmentsFor(Resource resource) {
+            List<DayAssignment> result = newAssignments.get(resource);
+            return result == null ? Collections.<DayAssignment> emptyList()
+                    : result;
+        }
+    }
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
