@@ -64,6 +64,7 @@ public class EntityExamples {
         public void setSetProperty(Set<Object> setProperty) {
             this.setProperty = setProperty;
         }
+
     }
 
     public static class EntityA {
@@ -109,6 +110,10 @@ public class EntityExamples {
         private Map<Object, Object> sharedCollectionElementsMapProperty;
 
         private Parent parentProperty;
+
+        private boolean firstHookCalled = false;
+
+        private boolean secondHookCalled = false;
 
         public String getStringProperty() {
             return stringProperty;
@@ -239,6 +244,24 @@ public class EntityExamples {
             return finalProperty;
         }
 
+        @AfterCopy
+        private void firstCopyHook() {
+            firstHookCalled = true;
+        }
+
+        @AfterCopy
+        private void secondCopyHook() {
+            secondHookCalled = true;
+        }
+
+        public boolean isFirstHookCalled() {
+            return firstHookCalled;
+        }
+
+        public boolean isSecondHookCalled() {
+            return secondHookCalled;
+        }
+
     }
 
     public static class EntityWithoutNoArgsConstructor {
@@ -249,12 +272,23 @@ public class EntityExamples {
     public static class SuperclassExample {
         private String superClassStringProperty;
 
+        private boolean afterCopyHookCalled = false;
+
         public String getSuperClassStringProperty() {
             return superClassStringProperty;
         }
 
         public void setSuperClassStringProperty(String superClassStringProperty) {
             this.superClassStringProperty = superClassStringProperty;
+        }
+
+        @AfterCopy
+        private void afterCopy() {
+            afterCopyHookCalled = true;
+        }
+
+        public boolean isAfterCopyHookCalled() {
+            return afterCopyHookCalled;
         }
     }
 

@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.Each.each;
 
 import java.math.BigDecimal;
@@ -357,6 +358,22 @@ public class DeepCopyTest {
         deepCopy.replace(entityA, anotherEntity);
         Parent copy = deepCopy.copy(parent);
         assertSame(copy.getEntityAProperty(), anotherEntity);
+    }
+
+    @Test
+    public void afterCopyHooksCanBeDefined() {
+        DeepCopy deepCopy = new DeepCopy();
+        EntityA entityA = new EntityA();
+        EntityA copy = deepCopy.copy(entityA);
+        assertTrue(copy.isFirstHookCalled());
+        assertTrue(copy.isSecondHookCalled());
+    }
+
+    @Test
+    public void superclassAfterHooksAreCalled() {
+        DeepCopy deepCopy = new DeepCopy();
+        SubClassExample subclass = deepCopy.copy(new SubClassExample());
+        assertTrue(subclass.isAfterCopyHookCalled());
     }
 
 }

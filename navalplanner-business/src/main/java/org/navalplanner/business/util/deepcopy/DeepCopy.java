@@ -21,6 +21,7 @@ package org.navalplanner.business.util.deepcopy;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -295,6 +296,7 @@ public class DeepCopy {
         T result = instantiateUsingDefaultConstructor(getTypedClassFrom(value));
         alreadyCopiedObjects.put(value, result);
         copyProperties(value, result);
+        callAferCopyHooks(result);
         return result;
     }
 
@@ -398,6 +400,43 @@ public class DeepCopy {
             }
         }
         return null;
+    }
+
+    private void callAferCopyHooks(Object value) {
+        assert value != null;
+        for (Method each : getAfterCopyHooks(value.getClass())) {
+            each.setAccessible(true);
+            try {
+                each.invoke(value);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private List<Method> getAfterCopyHooks(Class<?> klass) {
+        Class<?> current = klass;
+        List<Method> result = new ArrayList<Method>();
+        while (current != null) {
+            result.addAll(getAfterCopyDeclaredAt(current));
+            current = current.getSuperclass();
+        }
+        return result;
+    }
+
+    private List<Method> getAfterCopyDeclaredAt(Class<?> klass) {
+        List<Method> result = new ArrayList<Method>();
+        for (Method each : klass.getDeclaredMethods()) {
+            if (isAfterCopyHook(each)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    private boolean isAfterCopyHook(Method each) {
+        AfterCopy annotation = each.getAnnotation(AfterCopy.class);
+        return annotation != null;
     }
 
     public <T> DeepCopy replace(T toBeReplaced, T substitution) {
