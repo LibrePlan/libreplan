@@ -34,20 +34,19 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
-import org.navalplanner.business.scenarios.entities.OrderVersion;
-import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -72,6 +71,9 @@ public class SaveCommand implements ISaveCommand {
     private ITaskElementDAO taskElementDAO;
 
     @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
 
     @Autowired
@@ -87,7 +89,7 @@ public class SaveCommand implements ISaveCommand {
     private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
     @Autowired
-    private IScenarioManager scenarioManager;
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IScenarioDAO scenarioDAO;
@@ -104,7 +106,8 @@ public class SaveCommand implements ISaveCommand {
 
     @Override
     public void doAction(IContext<TaskElement> context) {
-        if (order.isUsingTheOwnerScenario() || userAcceptsCreateANewOrderVersion()) {
+        if (state.getScenarioInfo().isUsingTheOwnerScenario()
+                || userAcceptsCreateANewOrderVersion()) {
             transactionService.runOnTransaction(new IOnTransaction<Void>() {
                 @Override
                 public Void execute() {
@@ -112,6 +115,7 @@ public class SaveCommand implements ISaveCommand {
                     return null;
                 }
             });
+            state.getScenarioInfo().afterCommit();
             fireAfterSave();
             notifyUserThatSavingIsDone();
         }
@@ -133,13 +137,13 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void doTheSaving() {
+        if (!state.getScenarioInfo().isUsingTheOwnerScenario()) {
+            state.getScenarioInfo().saveVersioningInfo(orderDAO, scenarioDAO,
+                    taskSourceDAO);
+        }
         saveTasksToSave();
         removeTasksToRemove();
         taskElementDAO.removeOrphanedDayAssignments();
-        Scenario currentScenario = scenarioManager.getCurrent();
-        if (!order.isUsingTheOwnerScenario()) {
-            createAndSaveNewOrderVersion(currentScenario);
-        }
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
     }
 
@@ -160,10 +164,25 @@ public class SaveCommand implements ISaveCommand {
         for (TaskElement taskElement : state.getTasksToSave()) {
             removeDetachedDerivedDayAssignments(taskElement);
             taskElementDAO.save(taskElement);
+            if (taskElement.getTaskSource() != null
+                    && taskElement.getTaskSource().isNewObject()) {
+                saveTaskSources(taskElement);
+            }
             dontPoseAsTransient(taskElement);
         }
         if (!state.getTasksToSave().isEmpty()) {
             updateRootTaskPosition();
+        }
+    }
+
+    private void saveTaskSources(TaskElement taskElement) {
+        taskSourceDAO.save(taskElement.getTaskSource());
+        taskElement.getTaskSource().dontPoseAsTransientObjectAnymore();
+        if (taskElement.isLeaf()) {
+            return;
+        }
+        for (TaskElement each : taskElement.getChildren()) {
+            saveTaskSources(each);
         }
     }
 
@@ -299,17 +318,6 @@ public class SaveCommand implements ISaveCommand {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void createAndSaveNewOrderVersion(Scenario currentScenario) {
-        OrderVersion previousOrderVersion = currentScenario
-                .getOrderVersion(order);
-        OrderVersion newOrderVersion = OrderVersion
-                .createInitialVersion(currentScenario);
-        currentScenario.setOrderVersion(order, newOrderVersion);
-        scenarioDAO.save(currentScenario);
-        scenarioDAO.updateDerivedScenariosWithNewVersion(previousOrderVersion,
-                order, currentScenario, newOrderVersion);
     }
 
 }
