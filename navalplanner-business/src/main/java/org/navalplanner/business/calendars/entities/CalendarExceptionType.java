@@ -37,6 +37,12 @@ public class CalendarExceptionType extends IntegrationEntity {
         return create(new CalendarExceptionType(name, color, notAssignable));
     }
 
+    public static CalendarExceptionType create(String code, String name,
+            String color, Boolean notAssignable) {
+        return create(new CalendarExceptionType(name, color, notAssignable),
+                code);
+    }
+
     private String name;
     private String color;
 
