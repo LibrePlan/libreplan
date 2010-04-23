@@ -26,7 +26,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Set;
 
@@ -608,8 +607,8 @@ public class BaseCalendarTest {
         assertThat(calendar.getOwnExceptions().size(), equalTo(2));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNotAllowCreateExceptionsInThePast() {
+    @Test
+    public void testAllowCreateExceptionsInThePast() {
         BaseCalendar calendar = createBasicCalendar();
 
         LocalDate pastMonth = (new LocalDate()).minusMonths(1);
@@ -619,28 +618,26 @@ public class BaseCalendarTest {
         calendar.addExceptionDay(exceptionDay);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNotAllowRemoveExceptionsInThePast() {
+    @Test
+    public void testAllowRemoveExceptionsInThePast() {
         BaseCalendar calendar = createBasicCalendar();
 
         LocalDate pastMonth = (new LocalDate()).minusMonths(1);
+        CalendarException exceptionDay = CalendarException.create(pastMonth, 0,
+                createCalendarExceptionType());
 
+        calendar.addExceptionDay(exceptionDay);
         calendar.removeExceptionDay(pastMonth);
     }
 
     @Test
-    public void testNotAllowSetExpiringDateInThePast() {
+    public void testAllowSetExpiringDateInThePast() {
         BaseCalendar calendar = createBasicCalendar();
 
         calendar.newVersion((new LocalDate()).plusDays(1));
 
         LocalDate pastWeek = (new LocalDate()).minusWeeks(1);
-        try {
-            calendar.setExpiringDate(pastWeek);
-            fail("It should throw an exception");
-        } catch (IllegalArgumentException e) {
-
-        }
+        calendar.setExpiringDate(pastWeek);
     }
 
     @Test
@@ -697,8 +694,8 @@ public class BaseCalendarTest {
                 equalTo(currentDate.plusWeeks(2)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNotAllowSetValidFromInThePast() {
+    @Test
+    public void testAllowSetValidFromInThePast() {
         BaseCalendar calendar = createBasicCalendar();
 
         LocalDate currentDate = new LocalDate();
