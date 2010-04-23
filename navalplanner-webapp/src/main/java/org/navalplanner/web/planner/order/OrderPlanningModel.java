@@ -69,6 +69,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -92,6 +93,7 @@ import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
+import org.navalplanner.web.planner.order.PlanningState.IScenarioInfo;
 import org.navalplanner.web.planner.reassign.IReassignCommand;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
@@ -891,14 +893,32 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         criterionDAO.list(Criterion.class);
         TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
         forceLoadOfChildren(Arrays.asList(taskElement));
-        final List<Resource> allResources = resourceDAO
-                .list(Resource.class);
+        final List<Resource> allResources = resourceDAO.list(Resource.class);
+        final IScenarioInfo scenarioInfo = buildScenarioInfo(orderReloaded);
         PlanningState result = PlanningState.create(taskElement, orderReloaded
-                .getAssociatedTasks(), allResources, criterionDAO, resourceDAO);
+                .getAssociatedTasks(), allResources, criterionDAO, resourceDAO,
+                scenarioInfo);
         forceLoadOfDependenciesCollections(result.getInitial());
         forceLoadOfWorkingHours(result.getInitial());
         forceLoadOfLabels(result.getInitial());
         return result;
+    }
+
+    private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
+        if (orderReloaded.isUsingTheOwnerScenario()) {
+            return PlanningState.ownerScenarioInfo();
+        }
+        final List<DayAssignment> previousAssignments = orderReloaded
+                .getDayAssignments();
+        OrderVersion previousVersion = currentScenario
+                .getOrderVersion(orderReloaded);
+        OrderVersion newVersion = OrderVersion
+                .createInitialVersion(currentScenario);
+        orderReloaded.writeSchedulingDataChangesTo(currentScenario, newVersion);
+        assigmentsOnResourceCalculator = new ReturningNewAssignments(
+                previousAssignments, orderReloaded.getDayAssignments());
+        return PlanningState.forNotOwnerScenario(orderReloaded,
+                previousVersion, currentScenario, newVersion);
     }
 
     private void forceLoadOfChildren(Collection<? extends TaskElement> initial) {

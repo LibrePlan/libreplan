@@ -140,10 +140,10 @@ public abstract class PlanningState {
     public static PlanningState create(TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources,
-            ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
+            ICriterionDAO criterionDAO, IResourceDAO resourceDAO,
+            IScenarioInfo scenarioInfo) {
         return new WithDataPlanningState(rootTask, initialState,
-                initialResources, criterionDAO, resourceDAO,
-                ownerScenarioInfo());
+                initialResources, criterionDAO, resourceDAO, scenarioInfo);
     }
 
     public static PlanningState createEmpty() {

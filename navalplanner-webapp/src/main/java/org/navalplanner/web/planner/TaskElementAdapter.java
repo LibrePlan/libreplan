@@ -372,9 +372,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
                             @Override
                             public String execute() {
-                                orderElementDAO
-                                        .reattachUnmodifiedEntity(taskElement
-                                                .getOrderElement());
+                                orderElementDAO.reattach(taskElement
+                                        .getOrderElement());
                                 return buildResourcesText();
                             }
                         });
