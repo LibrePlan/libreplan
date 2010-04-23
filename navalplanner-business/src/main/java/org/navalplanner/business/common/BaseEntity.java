@@ -26,6 +26,7 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.INewObject;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.util.deepcopy.AfterCopy;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 
@@ -73,6 +74,11 @@ public abstract class BaseEntity implements INewObject {
 
     protected void setNewObject(boolean newObject) {
         this.newObject = newObject;
+    }
+
+    @AfterCopy
+    private void afterCopyIsANewObject() {
+        setNewObject(true);
     }
 
     public boolean isNewObject() {
