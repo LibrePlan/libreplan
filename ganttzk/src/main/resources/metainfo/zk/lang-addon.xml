@@ -103,7 +103,7 @@
 	</component>
 
     <component>
-        <component-name>limitingresources</component-name>
+        <component-name>limitingresources</component-name><!-- Limiting resources queue -->
         <component-class>org.zkoss.ganttz.limitingresources.LimitingResourcesComponent
         </component-class>
         <mold>
@@ -178,6 +178,17 @@
 			<mold-uri>~./ganttz/dependency.dsp</mold-uri>
 		</mold>
 	</component>
+
+    <!-- Depencencies displayed in limiting resources window -->
+    <component>
+        <component-name>limitingdependencylist</component-name>
+        <component-class>org.zkoss.ganttz.limitingresources.LimitingDependencyList</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/limitingresources/limitingdependencylist.dsp</mold-uri>
+        </mold>
+    </component>
+
 
 	<component>
 		<component-name>timetracker</component-name>

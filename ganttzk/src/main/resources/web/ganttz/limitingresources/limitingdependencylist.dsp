@@ -3,11 +3,14 @@
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 
-<div id="${self.uuid}" class="row_resourceload resourceload-${self.resourceLoadType}"
-    z.autoz="true" ${self.outerAttrs}">
-    <span class="resourceload_name">${self.resourceLoadName}</span>
+<div id="${self.uuid}" z.type="ganttz.dependencylist.Dependencylist" z.autoz="true"${self.outerAttrs}">
+
+<div id="listdependencies">
     <c:forEach var="child" items="${self.children}">
         ${z:redraw(child, null)}
     </c:forEach>
 </div>
 
+</div>
+
+</div>

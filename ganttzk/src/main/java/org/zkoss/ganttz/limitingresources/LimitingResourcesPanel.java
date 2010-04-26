@@ -68,6 +68,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private TimeTracker timeTracker;
 
+    private LimitingDependencyList dependencyList;
+
     // private WeakReferencedListeners<IFilterChangedListener> zoomListeners =
     // WeakReferencedListeners.create();
 
@@ -181,7 +183,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private void registerNeededScripts() {
-        getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
+        // getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
     }
 
     private IScriptsRegister getScriptsRegister() {
@@ -225,12 +227,34 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     @Override
     public void afterCompose() {
+
         super.afterCompose();
 
         leftPane.afterCompose();
 
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel").appendChild(limitingResourcesList);
+
+        /* ----------- All dependencies stuff ----------- */
+
+        /* Static limitingresources panel dependencies */
+        // Div source = new Div();
+        // Div destination = new Div();
+        //
+        // Dependency dependency = null;
+        // LimitingDependencyComponent limitingDependencyComponent = new
+        // LimitingDependencyComponent(
+        // source, destination, dependency);
+        //
+        // dependencyList = new LimitingDependencyList(null);
+        // dependencyList.addDependencyComponent(limitingDependencyComponent);
+        //
+        // dependencyList.afterCompose();
+        //
+        // getFellow("insertionPointRightPanel").appendChild(dependencyList);
+
+        /* ----------- All dependencies stuff ----------- */
+
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 

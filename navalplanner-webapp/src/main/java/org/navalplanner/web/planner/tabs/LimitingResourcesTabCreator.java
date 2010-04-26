@@ -52,8 +52,8 @@ public class LimitingResourcesTabCreator {
             LimitingResourcesController LimitingResourcesControllerGlobal,
             Component breadcrumbs) {
         return new LimitingResourcesTabCreator(mode,
-                LimitingResourcesController, upCommand,
-                LimitingResourcesControllerGlobal, breadcrumbs)
+                LimitingResourcesController, LimitingResourcesControllerGlobal,
+                breadcrumbs)
                 .build();
     }
 
@@ -62,29 +62,27 @@ public class LimitingResourcesTabCreator {
 
     private final LimitingResourcesController LimitingResourcesControllerGlobal;
 
-    private final IToolbarCommand upCommand;
     private final Component breadcrumbs;
 
     private LimitingResourcesTabCreator(Mode mode,
             LimitingResourcesController LimitingResourcesController,
-            IToolbarCommand upCommand,
             LimitingResourcesController LimitingResourcesControllerGlobal,
             Component breadcrumbs) {
         this.mode = mode;
         this.LimitingResourcesController = LimitingResourcesController;
-        this.upCommand = upCommand;
         this.LimitingResourcesControllerGlobal = LimitingResourcesControllerGlobal;
         this.breadcrumbs = breadcrumbs;
     }
 
     private ITab build() {
         return TabOnModeType.forMode(mode)
-            .forType(ModeType.GLOBAL, createGlobalResourcesLoadTab())
-            .forType(ModeType.ORDER, createOrderResourcesLoadTab())
+.forType(ModeType.GLOBAL,
+                createGlobalLimitingResourcesTab()).forType(ModeType.ORDER,
+                createOrderLimitingResourcesTab())
             .create();
     }
 
-    private ITab createOrderResourcesLoadTab() {
+    private ITab createOrderLimitingResourcesTab() {
         IComponentCreator componentCreator = new IComponentCreator() {
 
             @Override
@@ -122,7 +120,7 @@ public class LimitingResourcesTabCreator {
         };
     }
 
-    private ITab createGlobalResourcesLoadTab() {
+    private ITab createGlobalLimitingResourcesTab() {
 
         final IComponentCreator componentCreator = new IComponentCreator() {
 

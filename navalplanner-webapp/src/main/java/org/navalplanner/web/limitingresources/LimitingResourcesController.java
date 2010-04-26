@@ -93,7 +93,7 @@ public class LimitingResourcesController implements Composer {
                 resourceLoadModel.initGlobalView(filterBy, filterByResources);
             }
             timeTracker = buildTimeTracker();
-            limitingResourcesPanel = buildResourcesLoadPanel();
+            limitingResourcesPanel = buildLimitingResourcesPanel();
             addListeners();
 
             this.parent.getChildren().clear();
@@ -104,7 +104,7 @@ public class LimitingResourcesController implements Composer {
             try {
                 Messagebox
                         .show(
-                                _("Some lines have not allocation periods.\nBelow it shows the load all company resources"),
+_("Limiting resources error") + e,
                                 _("Error"), Messagebox.OK, Messagebox.ERROR);
             } catch (InterruptedException o) {
                 throw new RuntimeException(e);
@@ -139,7 +139,7 @@ public class LimitingResourcesController implements Composer {
                 SeveralModificators.create(new BankHolidaysMarker()), parent);
     }
 
-    private LimitingResourcesPanel buildResourcesLoadPanel() {
+    private LimitingResourcesPanel buildLimitingResourcesPanel() {
         return new LimitingResourcesPanel(resourceLoadModel.getLoadTimeLines(),
                 timeTracker);
     }
