@@ -65,7 +65,7 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         @Override
         public void onEvent(final LimitingDependencyComponent choosen,
                 Event event) {
-            context.changeType(choosen.getDependency(), type);
+            // context.changeType(choosen.getDependency(), type);
         }
     }
 
@@ -206,8 +206,8 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
                                 public void onEvent(
                                         final LimitingDependencyComponent choosen,
                                         Event event) {
-                                    context
-                                            .removeDependency(choosen.getDependency());
+//                                    context
+//                                            .removeDependency(choosen.getDependency());
                                 }
                             });
             contextMenuBuilder.item(_("Set End-Start"), null,
