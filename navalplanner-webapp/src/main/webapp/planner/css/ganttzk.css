@@ -612,6 +612,18 @@ tr.z-vbox-sep {
     height: 25px;
 }
 
+.limitingresources .z-tree-ico {
+    display: none;
+}
+
+.limitingresources .z-tree-row {
+    height: 35px;
+}
+
+.limitingresources .z-tree-body {
+    margin-top: 4px;
+}
+
 /* ---------- End Limiting resources ----------------- */
 
 

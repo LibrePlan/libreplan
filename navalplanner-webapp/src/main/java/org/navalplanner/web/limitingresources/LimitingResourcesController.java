@@ -102,9 +102,7 @@ public class LimitingResourcesController implements Composer {
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
             try {
-                Messagebox
-                        .show(
-_("Limiting resources error") + e,
+                Messagebox.show(_("Limiting resources error") + e,
                                 _("Error"), Messagebox.OK, Messagebox.ERROR);
             } catch (InterruptedException o) {
                 throw new RuntimeException(e);

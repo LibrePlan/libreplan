@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
-import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -230,30 +229,30 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         super.afterCompose();
 
+        getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
-        getFellow("insertionPointRightPanel").appendChild(limitingResourcesList);
+        getFellow("insertionPointRightPanel")
+                .appendChild(limitingResourcesList);
 
         /* ----------- All dependencies stuff ----------- */
 
-        /* Static limitingresources panel dependencies */
         // Div source = new Div();
         // Div destination = new Div();
         //
-        // Dependency dependency = null;
         // LimitingDependencyComponent limitingDependencyComponent = new
         // LimitingDependencyComponent(
-        // source, destination, dependency);
+        // source, destination);
         //
         // dependencyList = new LimitingDependencyList(null);
         // dependencyList.addDependencyComponent(limitingDependencyComponent);
-        //
         // dependencyList.afterCompose();
         //
         // getFellow("insertionPointRightPanel").appendChild(dependencyList);
 
         /* ----------- All dependencies stuff ----------- */
+
 
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);

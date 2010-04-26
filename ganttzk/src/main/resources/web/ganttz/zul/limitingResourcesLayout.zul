@@ -61,7 +61,7 @@ resourcesLoadPanel = self;
        </north>
 
         <center border="0">
-            <borderlayout sclass="resourcesload">
+            <borderlayout sclass="resourcesload limitingresources">
                 <west size="250px" flex="true" collapsible="true"
                     splittable="true" autoscroll="true">
 
@@ -94,8 +94,6 @@ resourcesLoadPanel = self;
             </borderlayout>
         </center>
         <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
-
-
     <grid style="margin:10px;">
         <columns sizable="true">
             <column label="Project" sort="auto"/>

@@ -50,22 +50,20 @@ public class LimitingDependencyComponent extends XulElement implements
 
     private DependencyType type;
 
-    private Dependency dependency;
+    // private Dependency dependency;
 
     private IConstraintViolationListener<Date> violationListener;
 
-    public LimitingDependencyComponent(Div source, Div destination,
-            Dependency dependency) {
-        Validate.notNull(dependency);
+    public LimitingDependencyComponent(Div source, Div destination) {
         Validate.notNull(source);
         Validate.notNull(destination);
         // Validate.isTrue(source.getTask() == dependency.getSource());
         // Validate.isTrue(destination.getTask() ==
         // dependency.getDestination());
-        this.type = dependency.getType();
+        // this.type = dependency.getType();
         this.source = source;
         this.destination = destination;
-        this.dependency = dependency;
+        // this.dependency = dependency;
         violationListener = new IConstraintViolationListener<Date>() {
 
             @Override
@@ -74,7 +72,7 @@ public class LimitingDependencyComponent extends XulElement implements
                 // TODO mark graphically dependency as violated
             }
         };
-        this.dependency.addConstraintViolationListener(violationListener);
+        // this.dependency.addConstraintViolationListener(violationListener);
     }
 
     @Override
@@ -140,9 +138,9 @@ public class LimitingDependencyComponent extends XulElement implements
         return destination;
     }
 
-    public Dependency getDependency() {
-        return dependency;
-    }
+    // public Dependency getDependency() {
+    // return dependency;
+    // }
 
     public DependencyType getDependencyType() {
         return type;
