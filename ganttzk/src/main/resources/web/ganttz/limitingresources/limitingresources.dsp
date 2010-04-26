@@ -3,7 +3,7 @@
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 
-<div id="${self.uuid}" class="row_resourceload resourceload-${self.resourceLoadType}"
+<div id="${self.uuid}" class="row_resourceload resourcequeue-${self.resourceLoadType}"
     z.autoz="true" ${self.outerAttrs}">
     <span class="resourceload_name">${self.resourceLoadName}</span>
     <c:forEach var="child" items="${self.children}">

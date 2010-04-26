@@ -32,7 +32,7 @@ function addLimitingResourcesListMethods(object) {
 	}
 
 	function resourceloadlist() {
-		return YAHOO.util.Selector.query('.resourceloadlist')[0];
+		return YAHOO.util.Selector.query('.limitingresourceslist')[0];
 	}
 
 	function taskspanelgap() {
@@ -60,7 +60,7 @@ function addLimitingResourcesListMethods(object) {
 	object.init = function(cmp) {
 		this.adjustTimeTrackerSize(cmp);
 		YAHOO.util.Event.addListener(window, 'resize',
-				zkResourcesLoadList.adjustTimeTrackerSize, cmp);
+				zkLimitingResourcesList.adjustTimeTrackerSize, cmp);
 		scrollSync = new ScrollSync(cmp);
 		scrollSync.synchXChangeTo(timetracker);
 
@@ -89,12 +89,12 @@ function addLimitingResourcesListMethods(object) {
 		watermark().style["height"] = cmp.clientHeight + "px";
 		timetracker().style["width"] = cmp.clientWidth + "px";
 		/* Set watermark width */
-		YAHOO.util.Selector.query('.resourceloadlist')[0].style["width"] = YAHOO.util.Selector
+		YAHOO.util.Selector.query('.limitingresourceslist')[0].style["width"] = YAHOO.util.Selector
 				.query('.second_level_')[0].clientWidth
 				+ "px";
 		YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0].style["height"] =
 		/* Calculate min : taskspanelgap().clientHeight + 120 + 'px'; )  */
-		YAHOO.util.Selector.query('.resourceloadlist')[0].clientHeight + 120
+		YAHOO.util.Selector.query('.limitingresourceslist')[0].clientHeight + 120
 				+ "px";
 	};
 

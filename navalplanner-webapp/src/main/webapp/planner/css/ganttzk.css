@@ -607,6 +607,14 @@ tr.z-vbox-sep {
     background-color: transparent;
 }
 
+/* ---------- Start Limiting resources --------------- */
+.limitingresourceslist .row_resourceload {
+    height: 25px;
+}
+
+/* ---------- End Limiting resources ----------------- */
+
+
 .timetrackergap {
     position: relative;
 }
