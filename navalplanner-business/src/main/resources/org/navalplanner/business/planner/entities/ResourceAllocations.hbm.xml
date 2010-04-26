@@ -14,6 +14,8 @@
 
         <property name="resourcesPerDay" type="org.navalplanner.business.planner.entities.hibernate.ResourcesPerDayType" />
 
+        <property name="intendedTotalHours" column="intended_total_hours" />
+
         <many-to-one class="Task" name="task" column="TASK" />
 
         <many-to-one class="AssignmentFunction" name="assignmentFunction"
@@ -25,7 +27,10 @@
             <one-to-many class="DerivedAllocation"/>
         </set>
 
-        <one-to-one name="limitingResourceQueueElement" property-ref="resourceAllocation" cascade="all" />
+        <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true">
+            <key column="RESOURCE_ALLOCATION_ID" />
+            <one-to-many class="LimitingResourceQueueElement"/>
+        </set>
 
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
             <key column="RESOURCE_ALLOCATION_ID" />

@@ -294,9 +294,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     @NotNull
     private ResourcesPerDay resourcesPerDay;
 
+    private Integer intendedTotalHours;
+
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();
 
-    private LimitingResourceQueueElement limitingResourceQueueElement;
+    private Set<LimitingResourceQueueElement> limitingResourceQueueElements = new HashSet<LimitingResourceQueueElement>();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -531,6 +533,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private void markAsUnsatisfied() {
         removingAssignments(getAssignments());
         assert isUnsatisfied();
+    }
+
+    public boolean isLimiting() {
+        return getLimitingResourceQueueElement() != null;
     }
 
     public boolean isSatisfied() {
@@ -825,12 +831,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public LimitingResourceQueueElement getLimitingResourceQueueElement() {
-        return limitingResourceQueueElement;
+        return (!limitingResourceQueueElements.isEmpty()) ? (LimitingResourceQueueElement) limitingResourceQueueElements.iterator().next() : null;
     }
 
-    public void setLimitingResourceQueueElement(
-            LimitingResourceQueueElement limitingResourceQueueElement) {
-        this.limitingResourceQueueElement = limitingResourceQueueElement;
+    public void setLimitingResourceQueueElement(LimitingResourceQueueElement element) {
+        limitingResourceQueueElements.clear();
+        element.setResourceAllocation(this);
+        limitingResourceQueueElements.add(element);
+    }
+
+    public Integer getIntendedTotalHours() {
+        return intendedTotalHours;
+    }
+
+    public void setIntendedTotalHours(Integer intendedTotalHours) {
+        this.intendedTotalHours = intendedTotalHours;
     }
 
     /**

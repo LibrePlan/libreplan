@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.web.planner.allocation.LimitingResourceAllocationModel.LimitingResourceAllocationRow;
 
 /**
  * Contract for {@link Task}.
@@ -33,14 +32,14 @@ import org.navalplanner.web.planner.allocation.LimitingResourceAllocationModel.L
  */
 public interface ILimitingResourceAllocationModel extends INewAllocationsAdder {
 
+    void confirmSave();
+
     List<AggregatedHoursGroup> getHoursAggregatedByCriteria();
 
     Integer getOrderHours();
 
-    List<LimitingResourceAllocationRow> getResourceAllocations();
+    List<LimitingAllocationRow> getResourceAllocationRows();
 
     void init(Task task);
-
-    void removeAllResourceAllocations();
 
 }

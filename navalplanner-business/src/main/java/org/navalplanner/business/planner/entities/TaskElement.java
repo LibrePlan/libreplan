@@ -434,7 +434,8 @@ public abstract class TaskElement extends BaseEntity {
             return "unassigned";
         }
         for (ResourceAllocation<?> resourceAllocation : getSatisfiedResourceAllocations()) {
-            if (resourceAllocation.getResourcesPerDay().isZero()) {
+            final ResourcesPerDay resourcesPerDay = resourceAllocation.getResourcesPerDay();
+            if (resourcesPerDay != null && resourcesPerDay.isZero()) {
                 return "partially-assigned";
             }
         }

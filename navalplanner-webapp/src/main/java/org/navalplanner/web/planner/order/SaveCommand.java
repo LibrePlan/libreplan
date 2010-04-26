@@ -40,6 +40,7 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -191,6 +192,13 @@ public class SaveCommand implements ISaveCommand {
                     eachAssignment.dontPoseAsTransientObjectAnymore();
                 }
             }
+            dontPoseAsTransient(each.getLimitingResourceQueueElement());
+        }
+    }
+
+    private void dontPoseAsTransient(LimitingResourceQueueElement element) {
+        if (element != null) {
+            element.dontPoseAsTransientObjectAnymore();
         }
     }
 

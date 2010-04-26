@@ -106,7 +106,7 @@ public class SubcontractModel implements ISubcontractModel {
                             .applyChanges(subcontractedTaskData);
                 }
 
-                task.removeAllResourceAllocations();
+                task.removeAllSatisfiedResourceAllocations();
                 convertOnStartOnFixedDate(task);
             }
 

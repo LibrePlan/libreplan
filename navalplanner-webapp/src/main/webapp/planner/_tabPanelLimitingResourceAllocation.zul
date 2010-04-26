@@ -63,7 +63,7 @@
                 <groupbox mold="3d" style="margin-top: 5px" sclass="assignedresources" closable="false">
                     <caption label="${i18n:_('Allocations')}" />
                     <grid id="gridLimitingAllocations"
-                        model="@{limitingAllocationController.resourceAllocations}"
+                        model="@{limitingAllocationController.resourceAllocationRows}"
                         rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
                         style="margin-bottom: 5px">
                         <columns>

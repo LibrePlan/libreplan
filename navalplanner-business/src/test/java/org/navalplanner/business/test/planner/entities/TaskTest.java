@@ -27,26 +27,43 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.Arrays;
 import java.util.Date;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@Transactional
 public class TaskTest {
 
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
+
     private Task task;
+
     private HoursGroup hoursGroup;
 
     public TaskTest() {
@@ -148,6 +165,11 @@ public class TaskTest {
         assertThat(task.getDaysDuration(), equalTo(1));
     }
 
+    /**
+     * @param task
+     * @param hours
+     * @return
+     */
     private SpecificResourceAllocation stubResourceAllocationWithAssignedHours(
             Task task,
             int hours) {
@@ -159,6 +181,28 @@ public class TaskTest {
         expect(resourceAllocation.isSatisfied()).andReturn(true).anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;
+    }
+
+    @Test
+    public void testIsLimiting() {
+        LimitingResourceQueueElement element = LimitingResourceQueueElement.create();
+        Task task = createValidTask();
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
+        resourceAllocation.setLimitingResourceQueueElement(element);
+        task.addResourceAllocation(resourceAllocation);
+        taskElementDAO.save(task);
+
+        assertTrue(task.getLimitingResourceAllocations().size() == 1);
+    }
+
+    @Test
+    public void testIsNonLimiting() {
+        Task task = createValidTask();
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
+        task.addResourceAllocation(resourceAllocation);
+        taskElementDAO.save(task);
+
+        assertTrue(task.getNonLimitingResourceAllocations().size() == 1);
     }
 
 }

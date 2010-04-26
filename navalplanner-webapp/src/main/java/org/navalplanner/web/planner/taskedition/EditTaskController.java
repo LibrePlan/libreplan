@@ -132,14 +132,6 @@ public class EditTaskController extends GenericForwardComposer {
         this.planningState = planningState;
 
         taskPropertiesController.init(this, context, taskElement);
-        if (taskElement instanceof Task) {
-            resourceAllocationController.init(context, (Task) taskElement,
-                    planningState, messagesForUser);
-            limitingResourceAllocationController.init((Task) taskElement, messagesForUser);
-            if (taskElement.isSubcontracted()) {
-                subcontractController.init((Task) taskElement, context);
-            }
-        }
 
         try {
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
@@ -202,8 +194,14 @@ public class EditTaskController extends GenericForwardComposer {
     public void showEditFormResourceAllocation(
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
-        if (isNotSubcontractedAndIsTask(taskElement)) {
-            editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
+
+        if (isTask(taskElement)) {
+            Task task = asTask(taskElement);
+            if (task.isLimiting()) {
+                editTaskTabbox.setSelectedPanelApi(limitingResourceAllocationTabpanel);
+            } else {
+                editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
+            }
         } else {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
         }
@@ -238,6 +236,9 @@ public class EditTaskController extends GenericForwardComposer {
             } else if (ResourceAllocationTypeEnum.SUBCONTRACT.equals(currentState)) {
                 editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
                 subcontractController.accept();
+            } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES.equals(currentState)) {
+                editTaskTabbox.setSelectedPanelApi(limitingResourceAllocationTabpanel);
+                limitingResourceAllocationController.accept();
             }
 
             askForReloads();

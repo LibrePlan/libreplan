@@ -266,7 +266,12 @@ public abstract class AllocationRow {
 
     public void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
         this.resourcesPerDay = resourcesPerDay;
-        resourcesPerDayInput.setValue(this.resourcesPerDay.getAmount());
+        resourcesPerDayInput.setValue(getAmount(resourcesPerDay));
+    }
+
+    private BigDecimal getAmount(ResourcesPerDay resourcesPerDay) {
+        return (resourcesPerDay != null) ? resourcesPerDay.getAmount()
+                : new BigDecimal(0);
     }
 
     public void setTemporal(ResourceAllocation<?> last) {
