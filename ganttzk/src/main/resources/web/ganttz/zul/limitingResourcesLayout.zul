@@ -1,0 +1,148 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+                     Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<?xel-method prefix="i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
+    signature="java.lang.String _(java.lang.String name)" ?>
+
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+<zscript><![CDATA[
+resourcesLoadPanel = self;
+]]>
+</zscript>
+
+
+    <borderlayout sclass="resourcesloadlayout" width="auto">
+       <north height="30px" border="0" sclass="toolbar-box">
+       <hbox align="center" id="toolbar">
+        <separator/>
+        <label>${i18n:_('Zoom')}:</label>
+        <listbox id="listZoomLevels" mold="select" rows="1"
+            model="${resourcesLoadPanel.zoomLevels}"
+            onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
+        </listbox>
+
+            <separator/>
+            <label>${i18n:_('Pagination')}:</label>
+            <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
+            onClick="advancedAllocationController.paginationDown();" disabled="true" />
+            <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
+            onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
+            <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
+            onClick="advancedAllocationController.paginationUp();" />
+
+
+        <separator/>
+        Filter:
+        <listbox id="listFilters" mold="select" rows="1" width="200px"
+            model="${resourcesLoadPanel.filters}"
+            onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);" >
+        </listbox>
+	<button image="/common/img/ico_filter.png" style="margin-top: -4px"
+        tooltiptext="${i18n:_('Apply filtering to resource load satisfying required criteria')}"
+        onClick="resourcesLoadPanel.onApplyFilter()"/>
+
+       </hbox>
+       </north>
+
+        <center border="0">
+            <borderlayout sclass="resourcesload">
+                <west size="250px" flex="true" collapsible="true"
+                    splittable="true" autoscroll="true">
+
+                    <borderlayout >
+                        <north border="0" height="38px" flex="true" collapsible="true">
+                            <vbox pack="top" align="center">
+                            <tree fixedLayout="true">
+                                <treecols>
+                                    <treecol label="Name" height="29px"/>
+                                </treecols>
+                            </tree>
+
+                            </vbox>
+                        </north>
+                        <center border="0" style="overflow-x:scroll">
+                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+                        </center>
+                    </borderlayout>
+                </west>
+
+                <center sclass="taskspanel">
+                    <borderlayout>
+                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker"></div></north>
+                        <center autoscroll="true" border="0" sclass="rightpanellayout">
+                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                        </center>
+                    </borderlayout>
+
+                </center>
+            </borderlayout>
+        </center>
+        <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
+
+
+    <grid style="margin:10px;">
+        <columns sizable="true">
+            <column label="Project" sort="auto"/>
+            <column label="Task name" sort="auto"/>
+            <column label="Operations" width="100px"/>
+            <column label="Auto" width="50px" tooltiptext="Select " />
+        </columns>
+        <rows>
+            <row>
+                <label value="Project A"/>
+                <label value="Task A.1"/>
+                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
+                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
+                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
+            </row>
+            <row>
+                <label value="Project A"/>
+                <label value="Task A.2"/>
+                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
+                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
+                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
+            </row>
+            <row>
+                <label value="Project A"/>
+                <label value="Task A.3"/>
+                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
+                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
+                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
+            </row>
+            <row>
+                <label value="Project B"/>
+                <label value="Task B.2"/>
+                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
+                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
+                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
+            </row>
+        <row>
+                <label value="Project B"/>
+                <label value="Task B.3"/>
+                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
+                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
+                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
+            </row>
+        </rows>
+</grid>
+
+
+        </south>
+    </borderlayout>
+</zk>

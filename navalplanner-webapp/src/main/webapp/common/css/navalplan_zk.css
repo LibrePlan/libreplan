@@ -1048,6 +1048,13 @@ span.z-dottree-line {
 .perspective-active.order-load .z-button-cm {
     background-image: url(../img/ico_order-load.png);
 }
+.perspective.limiting-resources .z-button-cm,
+.perspective-active.limiting-resources .z-button-cm {
+    background-image: url(../img/ico_order-load.png);
+}
+.perspective.order-limiting-resources {
+    display: none;
+}
 .perspective.order-data .z-button-cm,
 .perspective-active.order-data .z-button-cm {
     background-image: url(../img/ico_order-data.png);

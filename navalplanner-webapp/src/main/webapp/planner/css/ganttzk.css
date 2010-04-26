@@ -970,3 +970,9 @@ body .perspectives-column {
 .row .partially-assigned {
     background-color: #FF5A11; /* PARTIALLY_ALLOCATED_TASK_ORANGE */
 }
+
+
+/* ------------ Limiting resources  ------------ */
+.limiting-resources-buffer .z-south-body {
+	overflow-y:scroll;
+}

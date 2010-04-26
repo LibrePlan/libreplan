@@ -46,4 +46,6 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint( { "orderElement", "order" })
     public void goToOrderElementDetails(OrderElement orderElement, Order order);
 
+    void goToCompanyLimitingResources();
+
 }
