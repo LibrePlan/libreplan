@@ -194,7 +194,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         if (filter()) {
             return resourcesForActiveTasks();
         } else {
-            return allResources();
+            return allLimitingResources();
         }
     }
 
@@ -218,8 +218,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private List<Resource> allResources() {
-        // return Resource.sortByName(resourcesDAO.list(Resource.class));
+    private List<Resource> allLimitingResources() {
         return Resource.sortByName(resourcesDAO.getAllLimitingResources());
     }
 

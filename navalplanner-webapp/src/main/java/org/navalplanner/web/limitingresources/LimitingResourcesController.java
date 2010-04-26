@@ -29,7 +29,6 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
-import org.navalplanner.web.resourceload.IResourceLoadModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -43,7 +42,7 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 
 /**
- * Controller for global limitingresources view
+ * Controller for limiting resources view
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
@@ -51,7 +50,7 @@ import org.zkoss.zul.Messagebox;
 public class LimitingResourcesController implements Composer {
 
     @Autowired
-    private IResourceLoadModel resourceLoadModel;
+    private ILimitingResourceQueueModel limitingResourceQueueModel;
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
@@ -88,9 +87,10 @@ public class LimitingResourcesController implements Composer {
     private void reload(boolean filterByResources) {
         try {
             if (filterBy == null) {
-                resourceLoadModel.initGlobalView(filterByResources);
+                limitingResourceQueueModel.initGlobalView(filterByResources);
             } else {
-                resourceLoadModel.initGlobalView(filterBy, filterByResources);
+                limitingResourceQueueModel.initGlobalView(filterBy,
+                        filterByResources);
             }
             timeTracker = buildTimeTracker();
             limitingResourcesPanel = buildLimitingResourcesPanel();
@@ -131,14 +131,15 @@ public class LimitingResourcesController implements Composer {
     }
 
     private TimeTracker buildTimeTracker() {
-        return timeTracker = new TimeTracker(resourceLoadModel
-                .getViewInterval(), resourceLoadModel
+        return timeTracker = new TimeTracker(limitingResourceQueueModel
+                .getViewInterval(), limitingResourceQueueModel
                 .calculateInitialZoomLevel(), SeveralModificators.create(),
                 SeveralModificators.create(new BankHolidaysMarker()), parent);
     }
 
     private LimitingResourcesPanel buildLimitingResourcesPanel() {
-        return new LimitingResourcesPanel(resourceLoadModel.getLoadTimeLines(),
+        return new LimitingResourcesPanel(limitingResourceQueueModel
+                .getLoadTimeLines(),
                 timeTracker);
     }
 
