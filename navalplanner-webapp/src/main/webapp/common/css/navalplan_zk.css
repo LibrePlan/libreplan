@@ -1052,6 +1052,10 @@ span.z-dottree-line {
 .perspective-active.limiting-resources .z-button-cm {
     background-image: url(../img/ico_order-load.png);
 }
+.perspective.limiting-resources {
+    /* FIX: Temporary disabled */
+    display: none;
+}
 .perspective.order-limiting-resources {
     display: none;
 }

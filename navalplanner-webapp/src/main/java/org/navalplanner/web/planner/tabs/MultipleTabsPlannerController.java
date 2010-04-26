@@ -393,4 +393,9 @@ public class MultipleTabsPlannerController implements Composer,
         orderCRUDController.highLight(orderElement);
     }
 
+    @Override
+    public void goToLimitingResources() {
+        getTabsRegistry().show(limitingResourcesTab);
+    }
+
 }
