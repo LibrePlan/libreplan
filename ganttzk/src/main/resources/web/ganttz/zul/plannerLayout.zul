@@ -67,7 +67,8 @@ planner = self;
                 </center>
             </borderlayout>
         </center>
-        <south collapsible="true" title="Graphics" sclass="scheduling-graphics">
+        <south collapsible="true" title="Graphics" sclass="scheduling-graphics"
+            open="false" onOpen="planner.changeChartVisibility(event.open);">
             <div id="insertionPointChart" />
         </south>
     </borderlayout>

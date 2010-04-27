@@ -49,7 +49,9 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
+import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -137,6 +139,9 @@ public class Planner extends HtmlMacroComponent  {
     private ZoomLevel initialZoomLevel = null;
 
     private Listbox listZoomLevels = null;
+
+    private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners = WeakReferencedListeners
+            .create();
 
     public Planner() {
         registerNeededScripts();
@@ -450,6 +455,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private FilterAndParentExpandedPredicates predicate;
 
+    private boolean visibleChart = false;
+
     public void showCriticalPath() {
         Button showCriticalPathButton = (Button) getFellow("showCriticalPath");
         if (disabilityConfiguration.isCriticalPathEnabled()) {
@@ -590,6 +597,27 @@ public class Planner extends HtmlMacroComponent  {
 
     public FilterAndParentExpandedPredicates getPredicate() {
         return predicate;
+    }
+
+    public void changeChartVisibility(boolean visible) {
+        visibleChart = visible;
+        chartVisibilityListeners
+                .fireEvent(new IListenerNotification<IChartVisibilityChangedListener>() {
+                    @Override
+                    public void doNotify(
+                            IChartVisibilityChangedListener listener) {
+                        listener.chartVisibilityChanged(visibleChart);
+                    }
+                });
+    }
+
+    public boolean isVisibleChart() {
+        return visibleChart;
+    }
+
+    public void addChartVisibilityListener(
+            IChartVisibilityChangedListener chartVisibilityChangedListener) {
+        chartVisibilityListeners.addListener(chartVisibilityChangedListener);
     }
 
 }
