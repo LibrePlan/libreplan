@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IDatesMapper;
-import org.zkoss.ganttz.data.resourceload.LoadPeriod;
-import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
+import org.zkoss.ganttz.data.limitingresource.QueueTask;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -41,33 +41,36 @@ import org.zkoss.zul.impl.XulElement;
 public class LimitingResourcesComponent extends XulElement {
 
     public static LimitingResourcesComponent create(TimeTracker timeTracker,
-            LoadTimeLine loadLine) {
-        return new LimitingResourcesComponent(timeTracker, loadLine);
+            LimitingResourceQueue limitingResourceQueue) {
+        return new LimitingResourcesComponent(timeTracker,
+                limitingResourceQueue);
     }
 
-    private final LoadTimeLine loadLine;
+    private final LimitingResourceQueue loadLine;
     private final TimeTracker timeTracker;
     private transient IZoomLevelChangedListener zoomChangedListener;
 
     private LimitingResourcesComponent(final TimeTracker timeTracker,
-            final LoadTimeLine loadLine) {
-        this.loadLine = loadLine;
+            final LimitingResourceQueue limitingResourceQueue) {
+        this.loadLine = limitingResourceQueue;
         this.timeTracker = timeTracker;
-        createChildren(loadLine, timeTracker.getMapper());
+        createChildren(limitingResourceQueue, timeTracker.getMapper());
         zoomChangedListener = new IZoomLevelChangedListener() {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 getChildren().clear();
-                createChildren(loadLine, timeTracker.getMapper());
+                createChildren(limitingResourceQueue, timeTracker.getMapper());
                 invalidate();
             }
         };
         this.timeTracker.addZoomListener(zoomChangedListener);
     }
 
-    private void createChildren(LoadTimeLine loadLine, IDatesMapper mapper) {
-        List<Div> divs = createDivsForPeriods(mapper, loadLine.getLoadPeriods());
+    private void createChildren(LimitingResourceQueue limitingResourceQueue,
+            IDatesMapper mapper) {
+        List<Div> divs = createDivsForPeriods(mapper, limitingResourceQueue
+                .getQueueTasks());
         for (Div div : divs) {
             appendChild(div);
         }
@@ -83,16 +86,16 @@ public class LimitingResourcesComponent extends XulElement {
 
 
     private static List<Div> createDivsForPeriods(IDatesMapper datesMapper,
-            List<LoadPeriod> loadPeriods) {
+            List<QueueTask> list) {
         List<Div> result = new ArrayList<Div>();
-        for (LoadPeriod loadPeriod : loadPeriods) {
+        for (QueueTask loadPeriod : list) {
             result.add(createDivForPeriod(datesMapper, loadPeriod));
         }
         return result;
     }
 
     private static Div createDivForPeriod(IDatesMapper datesMapper,
-            LoadPeriod loadPeriod) {
+            QueueTask loadPeriod) {
         Div result = new Div();
         result.setClass(String.format("taskassignmentinterval %s", loadPeriod
                 .getLoadLevel().getCategory()));
@@ -112,7 +115,7 @@ public class LimitingResourcesComponent extends XulElement {
     }
 
     private static int getWidthPixels(IDatesMapper datesMapper,
-            LoadPeriod loadPeriod) {
+            QueueTask loadPeriod) {
         LocalDate start = loadPeriod.getStart();
         LocalDate end = loadPeriod.getEnd();
         return datesMapper
@@ -128,7 +131,7 @@ public class LimitingResourcesComponent extends XulElement {
     }
 
     private static int getStartPixels(IDatesMapper datesMapper,
-            LoadPeriod loadPeriod) {
+            QueueTask loadPeriod) {
         return datesMapper.toPixels(loadPeriod.getStart().toDateMidnight()
                 .toDate());
     }

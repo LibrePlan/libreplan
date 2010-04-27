@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -45,26 +45,26 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
 
     private final IZoomLevelChangedListener zoomListener;
 
-    private Map<LoadTimeLine, LimitingResourcesComponent> fromTimeLineToComponent = new HashMap<LoadTimeLine, LimitingResourcesComponent>();
+    private Map<LimitingResourceQueue, LimitingResourcesComponent> fromTimeLineToComponent = new HashMap<LimitingResourceQueue, LimitingResourcesComponent>();
 
-    private final MutableTreeModel<LoadTimeLine> timelinesTree;
+    private final MutableTreeModel<LimitingResourceQueue> timelinesTree;
 
     public LimitingResourcesList(TimeTracker timeTracker,
-            MutableTreeModel<LoadTimeLine> timelinesTree) {
+            MutableTreeModel<LimitingResourceQueue> timelinesTree) {
         this.timelinesTree = timelinesTree;
         zoomListener = adjustTimeTrackerSizeListener();
         timeTracker.addZoomListener(zoomListener);
-        LoadTimeLine current = timelinesTree.getRoot();
-        List<LoadTimeLine> toInsert = new ArrayList<LoadTimeLine>();
+        LimitingResourceQueue current = timelinesTree.getRoot();
+        List<LimitingResourceQueue> toInsert = new ArrayList<LimitingResourceQueue>();
         fill(timelinesTree, current, toInsert);
         insertAsComponents(timeTracker, toInsert);
     }
 
-    private void fill(MutableTreeModel<LoadTimeLine> timelinesTree,
-            LoadTimeLine current, List<LoadTimeLine> result) {
+    private void fill(MutableTreeModel<LimitingResourceQueue> timelinesTree,
+            LimitingResourceQueue current, List<LimitingResourceQueue> result) {
         final int length = timelinesTree.getChildCount(current);
         for (int i = 0; i < length; i++) {
-            LoadTimeLine child = timelinesTree.getChild(current, i);
+            LimitingResourceQueue child = timelinesTree.getChild(current, i);
             result.add(child);
             fill(timelinesTree, child, result);
         }
@@ -84,45 +84,47 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
     }
 
     private void insertAsComponents(TimeTracker timetracker,
-            List<LoadTimeLine> children) {
-        for (LoadTimeLine loadTimeLine : children) {
+            List<LimitingResourceQueue> children) {
+        for (LimitingResourceQueue LimitingResourceQueue : children) {
             LimitingResourcesComponent component = LimitingResourcesComponent
                     .create(
-                    timetracker, loadTimeLine);
+timetracker, LimitingResourceQueue);
             appendChild(component);
-            fromTimeLineToComponent.put(loadTimeLine, component);
+            fromTimeLineToComponent.put(LimitingResourceQueue, component);
         }
     }
 
-    public void collapse(LoadTimeLine line) {
-        for (LoadTimeLine l : line.getAllChildren()) {
+    public void collapse(LimitingResourceQueue line) {
+        for (LimitingResourceQueue l : line.getAllChildren()) {
             getComponentFor(l).detach();
         }
     }
 
-    private LimitingResourcesComponent getComponentFor(LoadTimeLine l) {
+    private LimitingResourcesComponent getComponentFor(LimitingResourceQueue l) {
         LimitingResourcesComponent resourceLoadComponent = fromTimeLineToComponent
                 .get(l);
         return resourceLoadComponent;
     }
 
-    public void expand(LoadTimeLine line, List<LoadTimeLine> closed) {
+    public void expand(LimitingResourceQueue line,
+            List<LimitingResourceQueue> closed) {
         LimitingResourcesComponent parentComponent = getComponentFor(line);
         Component nextSibling = parentComponent.getNextSibling();
 
-        List<LoadTimeLine> childrenToOpen = getChildrenReverseOrderFor(line);
+        List<LimitingResourceQueue> childrenToOpen = getChildrenReverseOrderFor(line);
         childrenToOpen.removeAll(closed);
 
-        for (LoadTimeLine loadTimeLine : childrenToOpen) {
-            LimitingResourcesComponent child = getComponentFor(loadTimeLine);
+        for (LimitingResourceQueue LimitingResourceQueue : childrenToOpen) {
+            LimitingResourcesComponent child = getComponentFor(LimitingResourceQueue);
             insertBefore(child, nextSibling);
             nextSibling = child;
         }
 
     }
 
-    private List<LoadTimeLine> getChildrenReverseOrderFor(LoadTimeLine line) {
-        List<LoadTimeLine> childrenOf = line.getAllChildren();
+    private List<LimitingResourceQueue> getChildrenReverseOrderFor(
+            LimitingResourceQueue line) {
+        List<LimitingResourceQueue> childrenOf = line.getAllChildren();
         Collections.reverse(childrenOf);
         return childrenOf;
     }

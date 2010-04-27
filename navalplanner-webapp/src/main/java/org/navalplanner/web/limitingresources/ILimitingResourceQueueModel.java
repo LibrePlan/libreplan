@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
@@ -34,7 +34,7 @@ public interface ILimitingResourceQueueModel {
 
     void initGlobalView(Order filterBy, boolean filterByResources);
 
-    List<LoadTimeLine> getLoadTimeLines();
+    List<LimitingResourceQueue> getLimitingResourceQueues();
 
     Interval getViewInterval();
 

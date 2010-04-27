@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
@@ -43,13 +44,14 @@ import org.zkoss.zul.api.Tree;
 
 public class LimitingResourcesLeftPane extends HtmlMacroComponent {
 
-    private MutableTreeModel<LoadTimeLine> modelForTree;
+    private MutableTreeModel<LimitingResourceQueue> modelForTree;
     private final LimitingResourcesList limitingResourcesList;
 
-    public LimitingResourcesLeftPane(MutableTreeModel<LoadTimeLine> modelForTree,
+    public LimitingResourcesLeftPane(
+            MutableTreeModel<LimitingResourceQueue> treeModel,
             LimitingResourcesList resourceLoadList) {
         this.limitingResourcesList = resourceLoadList;
-        this.modelForTree = modelForTree;
+        this.modelForTree = treeModel;
     }
 
 
@@ -75,7 +77,7 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
                 item.appendChild(row);
                 row.appendChild(cell);
                 cell.appendChild(component);
-                collapse(line);
+                // collapse(line);
                 addExpandedListener(item, line);
             }
 
@@ -85,12 +87,12 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         OpenEvent openEvent = (OpenEvent) event;
-                        if (openEvent.isOpen()) {
-                            List<LoadTimeLine> closed = calculatedClosedItems(item);
-                            expand(line, closed);
-                        } else {
-                            collapse(line);
-                        }
+//                        if (openEvent.isOpen()) {
+//                            List<LoadTimeLine> closed = calculatedClosedItems(item);
+//                            expand(line, closed);
+//                        } else {
+//                            collapse(line);
+//                        }
                     }
                 });
             }
@@ -107,12 +109,14 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         };
     }
 
-    private void collapse(LoadTimeLine line) {
+    private void collapse(LimitingResourceQueue line) {
+        // unnecesary
         limitingResourcesList.collapse(line);
     }
 
-    private void expand(LoadTimeLine line, List<LoadTimeLine> closed) {
-        limitingResourcesList.expand(line, closed);
+    private void expand(LoadTimeLine line, List<LimitingResourceQueue> closed) {
+        // unnecesary
+        // limitingResourcesList.expand(line, closed);
     }
 
     private List<LoadTimeLine> calculatedClosedItems(Treeitem item) {

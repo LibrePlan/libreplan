@@ -139,7 +139,7 @@ public class LimitingResourcesController implements Composer {
 
     private LimitingResourcesPanel buildLimitingResourcesPanel() {
         return new LimitingResourcesPanel(limitingResourceQueueModel
-                .getLoadTimeLines(),
+                .getLimitingResourceQueues(),
                 timeTracker);
     }
 

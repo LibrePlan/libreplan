@@ -28,7 +28,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -63,7 +65,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
+import org.zkoss.ganttz.data.limitingresource.QueueTask;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -93,7 +96,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
-    private List<LoadTimeLine> loadTimeLines;
+    private List<LimitingResourceQueue> limitingResourceQueues;
     private Interval viewInterval;
 
     private Order filterBy;
@@ -148,9 +151,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private void doGlobalView() {
-        loadTimeLines = calculateLoadTimeLines();
-        if (!loadTimeLines.isEmpty()) {
-            viewInterval = LoadTimeLine.getIntervalFrom(loadTimeLines);
+        limitingResourceQueues = calculateLimitingResourceQueues();
+        if (!limitingResourceQueues.isEmpty()) {
+            viewInterval = LimitingResourceQueue
+                    .getIntervalFrom(limitingResourceQueues);
         } else {
             viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
         }
@@ -163,9 +167,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return calendar.getTime();
     }
 
-    private List<LoadTimeLine> calculateLoadTimeLines() {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-            result.addAll(groupsFor(genericAllocationsByCriterion()));
+    private List<LimitingResourceQueue> calculateLimitingResourceQueues() {
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
+        result.addAll(groupsFor(resourcesToShow()));
         return result;
     }
 
@@ -226,37 +230,72 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return new TimeLineRole<BaseEntity>(entity);
     }
 
-    /**
-     * @param genericAllocationsByCriterion
-     * @return
-     */
-    private List<LoadTimeLine> groupsFor(
-            Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        List<Criterion> criterions = Criterion
-                .sortByName(genericAllocationsByCriterion.keySet());
-        for (Criterion criterion : criterions) {
-            List<GenericResourceAllocation> allocations = ResourceAllocation
-                    .sortedByStartDate(genericAllocationsByCriterion
-                            .get(criterion));
-            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(criterion);
+    private List<LimitingResourceQueue> groupsFor(List<Resource> allResources) {
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
+        for (Resource resource : allResources) {
+            LimitingResourceQueue group = buildGroup(resource);
+            if (!group.isEmpty()) {
+                result.add(group);
+            }
         }
         return result;
     }
 
-    private List<LoadTimeLine> buildTimeLinesForOrder(Criterion criterion,
-            List<ResourceAllocation<?>> allocations) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        result.addAll(buildTimeLinesForEachTask(criterion, allocations));
+    private LimitingResourceQueue buildGroup(Resource resource) {
+        List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
+                .sortedByStartDate(resourceAllocationDAO
+                        .findAllocationsRelatedTo(resource));
+        TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
+        LimitingResourceQueue result = new LimitingResourceQueue(buildTimeLine(
+                resource, resource.getShortDescription(), sortedByStartDate,
+                "resource", role),
+                buildSecondLevel(resource, sortedByStartDate));
         return result;
     }
 
-    private List<LoadTimeLine> buildTimeLinesForEachTask(Criterion criterion,
+    private LimitingResourceQueue buildTimeLine(Resource resource, String name,
+            List<? extends ResourceAllocation<?>> sortedByStartDate,
+            String type, TimeLineRole<BaseEntity> role) {
+        return new LimitingResourceQueue(name, PeriodsBuilder.build(
+                QueueTaskGenerator.onResource(resource), sortedByStartDate),
+                type, role);
+    }
+
+    private List<LimitingResourceQueue> buildSecondLevel(Resource resource,
+            List<ResourceAllocation<?>> sortedByStartDate) {
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
+        Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(sortedByStartDate);
+
+        if (filter()) {
+            // build time lines for current order
+            result.addAll(buildTimeLinesForOrder(resource, byOrder
+                    .get(filterBy)));
+            byOrder.remove(filterBy);
+            // build time lines for other orders
+            LimitingResourceQueue lineOthersOrders = buildTimeLinesForOtherOrders(
+                    resource, byOrder);
+            if (lineOthersOrders != null) {
+                result.add(lineOthersOrders);
+            }
+        } else {
+            // result.addAll(buildTimeLinesGroupForOrder(resource, byOrder));
+        }
+        return result;
+    }
+
+    private LimitingResourceQueue buildTimeLinesForOtherOrders(
+            Resource resource, Map<Order, List<ResourceAllocation<?>>> byOrder) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private List<LimitingResourceQueue> buildTimeLinesForEachTask(
+            Criterion criterion,
             List<ResourceAllocation<?>> allocations) {
         Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
                 .byTask(allocations);
 
-        List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
+        List<LimitingResourceQueue> secondLevel = new ArrayList<LimitingResourceQueue>();
         for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
             Task task = entry.getKey();
             Set<Criterion> criterions = task.getCriterions();
@@ -267,23 +306,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
              * that link with the resource allocation screen
              */
 
-        }
-        return secondLevel;
-    }
-
-    private List<LoadTimeLine> buildTimeLinesForEachResource(
-            Criterion criterion, List<GenericResourceAllocation> allocations,
-            TimeLineRole<BaseEntity> role) {
-        Map<Resource, List<GenericResourceAllocation>> byResource = GenericResourceAllocation
-                .byResource(allocations);
-
-        List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
-        for (Entry<Resource, List<GenericResourceAllocation>> entry : byResource
-                .entrySet()) {
-            Resource resource = entry.getKey();
-            List<GenericResourceAllocation> resourceAllocations = entry
-                    .getValue();
-            String descriptionTimeLine = getDescriptionResourceWithCriterions(resource);
         }
         return secondLevel;
     }
@@ -341,13 +363,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private List<LoadTimeLine> buildTimeLinesForOrder(Resource resource,
+    private List<LimitingResourceQueue> buildTimeLinesForOrder(
+            Resource resource,
             List<ResourceAllocation<?>> sortedByStartDate) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        result.addAll(buildTimeLinesForEachTask(resource,
-                onlySpecific(sortedByStartDate)));
-        result.addAll(buildTimeLinesForEachCriterion(resource,
-                onlyGeneric(sortedByStartDate)));
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
+        // Add all time lines
+        // result.addAll(buildTimeLinesForEachTask(resource,
+        // onlySpecific(sortedByStartDate)));
+        // result.addAll(buildTimeLinesForEachCriterion(resource,
+        // onlyGeneric(sortedByStartDate)));
         return result;
     }
 
@@ -363,12 +387,12 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 sortedByStartDate);
     }
 
-    private List<LoadTimeLine> buildTimeLinesForEachCriterion(
+    private List<LimitingResourceQueue> buildTimeLinesForEachCriterion(
             Resource resource, List<GenericResourceAllocation> sortdByStartDate) {
         Map<Set<Criterion>, List<GenericResourceAllocation>> byCriterions = GenericResourceAllocation
                 .byCriterions(sortdByStartDate);
 
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
         for (Entry<Set<Criterion>, List<GenericResourceAllocation>> entry : byCriterions
                 .entrySet()) {
 
@@ -388,7 +412,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private List<LoadTimeLine> buildTimeLinesForEachTask(Resource resource,
+    private List<LimitingResourceQueue> buildTimeLinesForEachTask(
+            Resource resource,
             List<SpecificResourceAllocation> sortedByStartDate) {
 
         List<ResourceAllocation<?>> listOnlySpecific = new ArrayList<ResourceAllocation<?>>(
@@ -396,7 +421,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
                 .byTask(listOnlySpecific);
 
-        List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
+        List<LimitingResourceQueue> secondLevel = new ArrayList<LimitingResourceQueue>();
         for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
             Task task = entry.getKey();
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
@@ -425,8 +450,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
 
     @Override
-    public List<LoadTimeLine> getLoadTimeLines() {
-        return loadTimeLines;
+    public List<LimitingResourceQueue> getLimitingResourceQueues() {
+        return limitingResourceQueues;
     }
 
     @Override
@@ -438,6 +463,143 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         Interval interval = getViewInterval();
         return ZoomLevel.getDefaultZoomByDates(new LocalDate(interval
                 .getStart()), new LocalDate(interval.getFinish()));
+    }
+
+
+}
+
+class PeriodsBuilder {
+
+    private final List<? extends ResourceAllocation<?>> sortedByStartDate;
+
+    private final List<QueueTaskGenerator> loadPeriodsGenerators = new LinkedList<QueueTaskGenerator>();
+
+    private final QueueTaskGeneratorFactory factory;
+
+    private PeriodsBuilder(QueueTaskGeneratorFactory factory,
+            List<? extends ResourceAllocation<?>> sortedByStartDate) {
+        this.factory = factory;
+        this.sortedByStartDate = sortedByStartDate;
+    }
+
+    public static List<QueueTask> build(QueueTaskGeneratorFactory factory,
+            List<? extends ResourceAllocation<?>> sortedByStartDate) {
+        return new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
+    }
+
+    private List<QueueTask> buildPeriods() {
+        for (ResourceAllocation<?> resourceAllocation : sortedByStartDate) {
+            loadPeriodsGenerators.add(factory.create(resourceAllocation));
+        }
+        joinPeriodGenerators();
+        return toGenerators(loadPeriodsGenerators);
+    }
+
+    private List<QueueTask> toGenerators(List<QueueTaskGenerator> generators) {
+        List<QueueTask> result = new ArrayList<QueueTask>();
+        for (QueueTaskGenerator queueTaskGenerator : generators) {
+            result.add(queueTaskGenerator.build());
+        }
+        return result;
+    }
+
+    private void joinPeriodGenerators() {
+        ListIterator<QueueTaskGenerator> iterator = loadPeriodsGenerators
+                .listIterator();
+        while (iterator.hasNext()) {
+            final QueueTaskGenerator current = findNextOneOverlapping(iterator);
+            if (current != null) {
+                rewind(iterator, current);
+                iterator.remove();
+                QueueTaskGenerator next = iterator.next();
+                iterator.remove();
+                List<QueueTaskGenerator> generated = current.join(next);
+                final QueueTaskGenerator positionToComeBack = generated.get(0);
+                final List<QueueTaskGenerator> remaining = loadPeriodsGenerators
+                        .subList(iterator.nextIndex(), loadPeriodsGenerators
+                                .size());
+                List<QueueTaskGenerator> generatorsSortedByStartDate = mergeListsKeepingByStartSortOrder(
+                        generated, remaining);
+                final int takenFromRemaining = generatorsSortedByStartDate
+                        .size()
+                        - generated.size();
+                removeNextElements(iterator, takenFromRemaining);
+                addAtCurrentPosition(iterator, generatorsSortedByStartDate);
+                rewind(iterator, positionToComeBack);
+            }
+        }
+    }
+
+    private QueueTaskGenerator findNextOneOverlapping(
+            ListIterator<QueueTaskGenerator> iterator) {
+        while (iterator.hasNext()) {
+            QueueTaskGenerator current = iterator.next();
+            if (!iterator.hasNext()) {
+                return null;
+            }
+            QueueTaskGenerator next = peekNext(iterator);
+            if (current.overlaps(next)) {
+                return current;
+            }
+        }
+        return null;
+    }
+
+    private void addAtCurrentPosition(
+            ListIterator<QueueTaskGenerator> iterator,
+            List<QueueTaskGenerator> sortedByStartDate) {
+        for (QueueTaskGenerator l : sortedByStartDate) {
+            iterator.add(l);
+        }
+    }
+
+    private void removeNextElements(ListIterator<QueueTaskGenerator> iterator,
+            final int elementsNumber) {
+        for (int i = 0; i < elementsNumber; i++) {
+            iterator.next();
+            iterator.remove();
+        }
+    }
+
+    private void rewind(ListIterator<QueueTaskGenerator> iterator,
+            QueueTaskGenerator nextOne) {
+        while (peekNext(iterator) != nextOne) {
+            iterator.previous();
+        }
+    }
+
+    private List<QueueTaskGenerator> mergeListsKeepingByStartSortOrder(
+            List<QueueTaskGenerator> joined, List<QueueTaskGenerator> remaining) {
+        List<QueueTaskGenerator> result = new ArrayList<QueueTaskGenerator>();
+        ListIterator<QueueTaskGenerator> joinedIterator = joined.listIterator();
+        ListIterator<QueueTaskGenerator> remainingIterator = remaining
+                .listIterator();
+        while (joinedIterator.hasNext() && remainingIterator.hasNext()) {
+            QueueTaskGenerator fromJoined = peekNext(joinedIterator);
+            QueueTaskGenerator fromRemaining = peekNext(remainingIterator);
+            if (fromJoined.getStart().compareTo(fromRemaining.getStart()) <= 0) {
+                result.add(fromJoined);
+                joinedIterator.next();
+            } else {
+                result.add(fromRemaining);
+                remainingIterator.next();
+            }
+        }
+        if (joinedIterator.hasNext()) {
+            result.addAll(joined.subList(joinedIterator.nextIndex(), joined
+                    .size()));
+        }
+        return result;
+    }
+
+    private QueueTaskGenerator peekNext(
+            ListIterator<QueueTaskGenerator> iterator) {
+        if (!iterator.hasNext()) {
+            return null;
+        }
+        QueueTaskGenerator result = iterator.next();
+        iterator.previous();
+        return result;
     }
 
 }

@@ -25,7 +25,7 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -61,9 +61,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private LimitingResourcesList limitingResourcesList;
 
-    private List<LoadTimeLine> groups;
+    private List<LimitingResourceQueue> groups;
 
-    private MutableTreeModel<LoadTimeLine> treeModel;
+    private MutableTreeModel<LimitingResourceQueue> treeModel;
 
     private TimeTracker timeTracker;
 
@@ -78,13 +78,13 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private static final String filterCriterions = _("Filter by criterions");
     private boolean filterbyResources = true;
 
-    public LimitingResourcesPanel(List<LoadTimeLine> groups,
+    public LimitingResourcesPanel(List<LimitingResourceQueue> groups,
             TimeTracker timeTracker) {
         init(groups, timeTracker);
 
     }
 
-    public void init(List<LoadTimeLine> groups, TimeTracker timeTracker) {
+    public void init(List<LimitingResourceQueue> groups, TimeTracker timeTracker) {
         this.groups = groups;
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();
@@ -190,23 +190,25 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .retrieve();
     }
 
-    private MutableTreeModel<LoadTimeLine> createModelForTree() {
-        MutableTreeModel<LoadTimeLine> result = MutableTreeModel
-                .create(LoadTimeLine.class);
-        for (LoadTimeLine loadTimeLine : this.groups) {
-            result.addToRoot(loadTimeLine);
-            result = addNodes(result, loadTimeLine);
+    private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
+        MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
+                .create(LimitingResourceQueue.class);
+        for (LimitingResourceQueue LimitingResourceQueue : this.groups) {
+            result.addToRoot(LimitingResourceQueue);
+            result = addNodes(result, LimitingResourceQueue);
         }
         return result;
     }
 
 
-    private MutableTreeModel<LoadTimeLine> addNodes(
-            MutableTreeModel<LoadTimeLine> tree, LoadTimeLine parent) {
+    private MutableTreeModel<LimitingResourceQueue> addNodes(
+            MutableTreeModel<LimitingResourceQueue> tree,
+            LimitingResourceQueue parent) {
         if (!parent.getChildren().isEmpty()) {
             tree.add(parent, parent.getChildren());
-            for (LoadTimeLine loadTimeLine : parent.getChildren()) {
-                tree = addNodes(tree, loadTimeLine);
+            for (LimitingResourceQueue LimitingResourceQueue : parent
+                    .getChildren()) {
+                tree = addNodes(tree, LimitingResourceQueue);
             }
         }
         return tree;
