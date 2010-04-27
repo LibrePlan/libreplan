@@ -474,19 +474,6 @@ public abstract class BaseCalendarEditionController extends
         return baseCalendarModel.getHoursOfDay();
     }
 
-    public boolean isSelectedDateFromPast() {
-        Date selectedDay = baseCalendarModel.getSelectedDay();
-        if (selectedDay != null) {
-            return isPast(selectedDay);
-        }
-
-        return true;
-    }
-
-    public boolean isNotSelectedDateFromPast() {
-        return !isSelectedDateFromPast();
-    }
-
     public void createException() {
         Combobox exceptionTypes = (Combobox) window.getFellow("exceptionTypes");
         CalendarExceptionType type = (CalendarExceptionType) exceptionTypes
@@ -514,13 +501,6 @@ public abstract class BaseCalendarEditionController extends
                     _("You should select a end date for the exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
-        }
-        if (startDate.compareTo(new Date()) <= 0) {
-            throw new WrongValueException(
-                    dateboxStartDate,
-                    _("Exception start date should be greater than current date"));
-        } else {
-            Clients.closeErrorBox(dateboxStartDate);
         }
         if (startDate.compareTo(endDate) > 0) {
             throw new WrongValueException(
@@ -903,9 +883,6 @@ public abstract class BaseCalendarEditionController extends
                             reloadDayInformation();
                         }
                     });
-            if (isSelectedDateFromPast()) {
-                result.setDisabled(true);
-            }
             return result;
         }
 
@@ -955,13 +932,6 @@ public abstract class BaseCalendarEditionController extends
                     _("You should select a end date for the exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
-        }
-        if (startDate.compareTo(new Date()) <= 0) {
-            throw new WrongValueException(
-                    dateboxStartDate,
-                    _("Exception start date should be greater than current date"));
-        } else {
-            Clients.closeErrorBox(dateboxStartDate);
         }
         if (startDate.compareTo(endDate) > 0) {
             throw new WrongValueException(
