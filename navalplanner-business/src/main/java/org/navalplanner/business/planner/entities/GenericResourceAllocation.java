@@ -109,6 +109,8 @@ public class GenericResourceAllocation extends
 
     private Set<GenericDayAssignment> genericDayAssignments = new HashSet<GenericDayAssignment>();
 
+    private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
+
     @OnCopy(Strategy.IGNORE)
     private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
 

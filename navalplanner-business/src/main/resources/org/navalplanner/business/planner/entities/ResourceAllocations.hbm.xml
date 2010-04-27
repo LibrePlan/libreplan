@@ -56,6 +56,11 @@
                 <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
                 <one-to-many class="GenericDayAssignment"/>
             </set>
+
+            <set name="genericDayAssignmentsContainers" cascade="all-delete-orphan">
+                <key column="RESOURCE_ALLOCATION_ID" />
+                <one-to-many class="GenericDayAssignmentsContainer"/>
+            </set>
         </joined-subclass>
 
     </class>
@@ -78,6 +83,27 @@
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="SPECIFIC_CONTAINER_ID" />
             <one-to-many class="SpecificDayAssignment"/>
+        </set>
+    </class>
+
+    <class name="GenericDayAssignmentsContainer">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <!-- this provokes that there can only be one GenericDayAssignmentsContainer per
+         resource allocation and scenario -->
+        <natural-id>
+            <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+            <many-to-one name="scenario" />
+        </natural-id>
+
+        <version name="version" access="property" type="long" />
+        <set name="dayAssignments" cascade="all-delete-orphan">
+            <key column="GENERIC_CONTAINER_ID" />
+            <one-to-many class="GenericDayAssignment"/>
         </set>
     </class>
 
@@ -127,6 +153,7 @@
         <subclass name="GenericDayAssignment" discriminator-value="GENERIC_DAY">
             <many-to-one name="genericResourceAllocation"
                 class="GenericResourceAllocation" column="GENERIC_RESOURCE_ALLOCATION_ID" />
+            <many-to-one name="container" column="GENERIC_CONTAINER_ID" />
         </subclass>
         <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
             <many-to-one name="allocation" column="DERIVED_ALLOCATION_ID"/>

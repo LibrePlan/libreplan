@@ -36,6 +36,8 @@ public class GenericDayAssignment extends DayAssignment {
 
     private GenericResourceAllocation genericResourceAllocation;
 
+    private GenericDayAssignmentsContainer container;
+
     public static GenericDayAssignment create(LocalDate day, int hours,
             Resource resource) {
         return create(new GenericDayAssignment(day, hours,
