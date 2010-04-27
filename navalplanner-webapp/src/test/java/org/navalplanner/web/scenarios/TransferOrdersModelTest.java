@@ -149,11 +149,13 @@ public class TransferOrdersModelTest {
                                 destination.getId(), order };
                     }
                 });
-
+        final Order orderAtSource = (Order) objects[2];
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 try {
+                    Order order = orderDAO.findExistingEntity(orderAtSource
+                            .getId());
                     Scenario source = scenarioDAO.find((Long) objects[0]);
                     Scenario destination = scenarioDAO.find((Long) objects[1]);
 
@@ -167,8 +169,6 @@ public class TransferOrdersModelTest {
                     transferOrdersModel.setSourceScenario(source);
                     transferOrdersModel.setDestinationScenario(destination);
 
-                    Order order = transferOrdersModel
-                            .getSourceScenarioOrders().iterator().next();
                     transferOrdersModel.transfer(order);
 
                     return null;
