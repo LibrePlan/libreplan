@@ -687,10 +687,20 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         return isLastVersion(new LocalDate(date));
     }
 
+    public boolean isFirstVersion(Date date) {
+        return isFirstVersion(new LocalDate(date));
+    }
+
     public boolean isLastVersion(LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
         Integer index = calendarDataVersions.indexOf(calendarData);
         return (index == (calendarDataVersions.size() - 1));
+    }
+
+    public boolean isFirstVersion(LocalDate date) {
+        CalendarData calendarData = getCalendarData(date);
+        Integer index = calendarDataVersions.indexOf(calendarData);
+        return (index == 0);
     }
 
     /**
