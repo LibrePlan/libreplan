@@ -21,6 +21,7 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -173,6 +174,8 @@ public class TaskTest {
         expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
         expect(resourceAllocation.hasAssignments()).andReturn(true).anyTimes();
         expect(resourceAllocation.isSatisfied()).andReturn(true).anyTimes();
+        resourceAllocation.detach();
+        expectLastCall().anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;
     }

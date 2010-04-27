@@ -92,37 +92,6 @@ public class SpecificResourceAllocation extends
         this.resource = resource;
     }
 
-    private List<SpecificDayAssignment> assignmentsOrderedCached;
-    @Override
-    public List<SpecificDayAssignment> getAssignments() {
-        if (assignmentsOrderedCached != null) {
-            return assignmentsOrderedCached;
-        }
-        return assignmentsOrderedCached = DayAssignment
-                .orderedByDay(specificDaysAssignment);
-    }
-
-    @Override
-    protected void addingAssignments(
-            Collection<? extends SpecificDayAssignment> assignments) {
-        setParentFor(assignments);
-        this.specificDaysAssignment.addAll(assignments);
-        clearFieldsCalculatedFromAssignments();
-    }
-
-    @Override
-    protected void removingAssignments(List<? extends DayAssignment> assignments) {
-        this.specificDaysAssignment.removeAll(assignments);
-        clearFieldsCalculatedFromAssignments();
-    }
-
-    private void setParentFor(
-            Collection<? extends SpecificDayAssignment> assignments) {
-        for (SpecificDayAssignment specificDayAssignment : assignments) {
-            specificDayAssignment.setSpecificResourceAllocation(this);
-        }
-    }
-
     @Override
     public void allocate(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
@@ -182,23 +151,6 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public void mergeAssignments(ResourceAllocation<?> modifications) {
-        Validate.isTrue(modifications instanceof SpecificResourceAllocation);
-        mergeAssignments((SpecificResourceAllocation) modifications);
-    }
-
-    private void mergeAssignments(SpecificResourceAllocation modifications) {
-        detachAssignments();
-        this.specificDaysAssignment = SpecificDayAssignment.copy(this,
-                modifications.specificDaysAssignment);
-        clearFieldsCalculatedFromAssignments();
-    }
-
-    private void clearFieldsCalculatedFromAssignments() {
-        assignmentsOrderedCached = null;
-    }
-
-    @Override
     public IAllocatable withPreviousAssociatedResources() {
         return this;
     }
@@ -236,6 +188,60 @@ public class SpecificResourceAllocation extends
     @Override
     public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
         return Collections.singletonList(resource);
+    }
+
+    private class SpecificDayAssignmentsState extends DayAssignmentsState {
+
+        private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
+
+        @Override
+        protected void addAssignments(
+                Collection<? extends SpecificDayAssignment> assignments) {
+            specificDaysAssignment.addAll(assignments);
+        }
+
+        @Override
+        protected void clearFieldsCalculatedFromAssignments() {
+        }
+
+        @Override
+        protected Collection<SpecificDayAssignment> copyAssignmentsFrom(
+                ResourceAllocation<?> modification) {
+            SpecificResourceAllocation specificModication = (SpecificResourceAllocation) modification;
+            return SpecificDayAssignment.copy(outerSpecificAllocation,
+                    specificModication.specificDaysAssignment);
+        }
+
+        @Override
+        protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
+            return specificDaysAssignment;
+        }
+
+        @Override
+        protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            specificDaysAssignment.removeAll(assignments);
+        }
+
+        @Override
+        protected void resetTo(
+                Collection<SpecificDayAssignment> assignmentsCopied) {
+            specificDaysAssignment.clear();
+            specificDaysAssignment.addAll(assignmentsCopied);
+        }
+
+        @Override
+        protected void setParentFor(SpecificDayAssignment each) {
+            each.setSpecificResourceAllocation(outerSpecificAllocation);
+        }
+
+    }
+
+    private DayAssignmentsState state = new SpecificDayAssignmentsState();
+
+    @Override
+    protected org.navalplanner.business.planner.entities.ResourceAllocation.DayAssignmentsState getDayAssignmentsState() {
+        return state;
     }
 
 }

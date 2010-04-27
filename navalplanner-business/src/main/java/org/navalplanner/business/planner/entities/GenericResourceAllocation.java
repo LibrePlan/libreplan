@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.IWorkHours;
@@ -161,11 +160,6 @@ public class GenericResourceAllocation extends
         return orderedDayAssignmentsByResource;
     }
 
-    private void clearFieldsCalculatedFromAssignments() {
-        this.orderedDayAssignmentsByResource = null;
-        this.orderedDayAssignmentsCached = null;
-    }
-
     public Set<Criterion> getCriterions() {
         return Collections.unmodifiableSet(criterions);
     }
@@ -241,36 +235,57 @@ public class GenericResourceAllocation extends
         return new GenericAllocation(new ArrayList<Resource>(resources));
     }
 
-    @Override
-    protected void addingAssignments(
-            Collection<? extends GenericDayAssignment> assignments) {
-        setParentFor(assignments);
-        this.genericDayAssignments.addAll(assignments);
-        clearFieldsCalculatedFromAssignments();
-    }
+    private class GenericDayAssignmentState extends DayAssignmentsState {
+        private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
 
-    @Override
-    protected void removingAssignments(List<? extends DayAssignment> assignments) {
-        this.genericDayAssignments.removeAll(assignments);
-        clearFieldsCalculatedFromAssignments();
-    }
+        @Override
+        protected void clearFieldsCalculatedFromAssignments() {
+            orderedDayAssignmentsByResource = null;
+        }
 
-    private void setParentFor(
-            Collection<? extends GenericDayAssignment> assignmentsCreated) {
-        for (GenericDayAssignment genericDayAssignment : assignmentsCreated) {
-            genericDayAssignment.setGenericResourceAllocation(this);
+        @Override
+        protected Collection<GenericDayAssignment> getUnorderedAssignments() {
+            return genericDayAssignments;
+        }
+
+        @Override
+        protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            genericDayAssignments.removeAll(assignments);
+        }
+
+        @Override
+        protected void setParentFor(GenericDayAssignment each) {
+            each.setGenericResourceAllocation(outerGenericAllocation);
+        }
+
+        @Override
+        protected void addAssignments(
+                Collection<? extends GenericDayAssignment> assignments) {
+            genericDayAssignments.addAll(assignments);
+        }
+
+        @Override
+        protected Collection<GenericDayAssignment> copyAssignmentsFrom(
+                ResourceAllocation<?> modification) {
+            GenericResourceAllocation allocation = (GenericResourceAllocation) modification;
+            genericDayAssignments = GenericDayAssignment.copy(
+                    outerGenericAllocation, allocation.genericDayAssignments);
+            return genericDayAssignments;
+        }
+
+        @Override
+        protected void resetTo(Collection<GenericDayAssignment> assignments) {
+            genericDayAssignments.clear();
+            genericDayAssignments.addAll(assignments);
         }
     }
 
-    private List<GenericDayAssignment> orderedDayAssignmentsCached;
+    private GenericDayAssignmentState assignmentsState = new GenericDayAssignmentState();
 
     @Override
-    public List<GenericDayAssignment> getAssignments() {
-        if (orderedDayAssignmentsCached != null) {
-            return orderedDayAssignmentsCached;
-        }
-        return orderedDayAssignmentsCached = DayAssignment
-                .orderedByDay(genericDayAssignments);
+    protected ResourceAllocation<GenericDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
+        return assignmentsState;
     }
 
     @Override
@@ -288,22 +303,6 @@ public class GenericResourceAllocation extends
                 day, hours));
     }
 
-    @Override
-    public void mergeAssignments(ResourceAllocation<?> modifications) {
-        Validate.isTrue(modifications instanceof GenericResourceAllocation);
-        mergeAssignments((GenericResourceAllocation) modifications);
-    }
-
-    private void mergeAssignments(GenericResourceAllocation modifications) {
-        detachAssignments();
-        moveToThis(modifications.genericDayAssignments);
-        clearFieldsCalculatedFromAssignments();
-    }
-
-    private void moveToThis(Set<GenericDayAssignment> assignemnts) {
-        this.genericDayAssignments = GenericDayAssignment.copy(this,
-                assignemnts);
-    }
 
     @Override
     public List<Resource> getAssociatedResources() {
