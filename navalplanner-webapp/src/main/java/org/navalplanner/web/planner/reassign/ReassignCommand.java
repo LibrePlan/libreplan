@@ -263,7 +263,7 @@ public class ReassignCommand implements IReassignCommand {
 
     private void reassign(TaskElement taskElement) {
         org.navalplanner.business.planner.entities.Task t = (org.navalplanner.business.planner.entities.Task) taskElement;
-        t.reassignAllocationsWithNewResources(resourceDAO);
+        t.reassignAllocationsWithNewResources(planningState.getCurrentScenario(), resourceDAO);
     }
 
     @Override

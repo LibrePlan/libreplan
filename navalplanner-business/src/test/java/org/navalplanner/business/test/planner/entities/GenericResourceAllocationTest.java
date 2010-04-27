@@ -60,6 +60,7 @@ import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 public class GenericResourceAllocationTest {
 
@@ -74,6 +75,12 @@ public class GenericResourceAllocationTest {
 
     private BaseCalendar baseCalendar;
     private Task task;
+
+    private static Scenario mockScenario() {
+        Scenario result = createNiceMock(Scenario.class);
+        replay(result);
+        return result;
+    }
 
     private void givenGenericResourceAllocation() {
         task = givenTaskWithCriterions();
@@ -243,7 +250,7 @@ public class GenericResourceAllocationTest {
     public void theCriterionsAreCopied() {
         givenGenericResourceAllocation();
         GenericResourceAllocation copied = (GenericResourceAllocation) genericResourceAllocation
-                .copy();
+                .copy(mockScenario());
         assertThat(copied.getCriterions(), equalTo(criterions));
     }
 

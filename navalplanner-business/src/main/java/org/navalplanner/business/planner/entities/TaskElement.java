@@ -37,6 +37,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 
@@ -203,7 +204,7 @@ public abstract class TaskElement extends BaseEntity {
      * Sets the startDate to newStartDate. It can update the endDate
      * @param newStartDate
      */
-    public void moveTo(Date newStartDate) {
+    public void moveTo(Scenario scenario, Date newStartDate) {
         if (newStartDate == null) {
             return;
         }
@@ -213,7 +214,7 @@ public abstract class TaskElement extends BaseEntity {
         this.startDate = newStartDate;
         this.endDate = new Date(this.startDate.getTime() + durationMilliseconds);
         if (!sameDay) {
-            moveAllocations();
+            moveAllocations(scenario);
         }
     }
 
@@ -221,7 +222,7 @@ public abstract class TaskElement extends BaseEntity {
         return new LocalDate(one).equals(new LocalDate(other));
     }
 
-    protected abstract void moveAllocations();
+    protected abstract void moveAllocations(Scenario scenario);
 
     @NotNull
     public Date getEndDate() {
@@ -232,14 +233,14 @@ public abstract class TaskElement extends BaseEntity {
         this.endDate = endDate != null ? new Date(endDate.getTime()) : null;
     }
 
-    public void resizeTo(Date endDate) {
+    public void resizeTo(Scenario scenario, Date endDate) {
         if (!canBeResized()) {
             return;
         }
         boolean sameDay = areSameDay(this.endDate, endDate);
         setEndDate(endDate);
         if (!sameDay) {
-            moveAllocations();
+            moveAllocations(scenario);
         }
     }
 

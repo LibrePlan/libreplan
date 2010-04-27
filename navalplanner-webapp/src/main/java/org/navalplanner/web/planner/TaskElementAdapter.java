@@ -64,6 +64,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -107,9 +108,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private List<IOnMoveListener> listeners = new ArrayList<IOnMoveListener>();
 
+    private Scenario scenario;
+
     @Override
-    public void setOrder(Order order) {
+    public void initialize(Order order, Scenario scenario) {
         this.order = order;
+        this.scenario = scenario;
     }
 
     public TaskElementAdapter() {
@@ -118,8 +122,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     private class TaskElementWrapper implements ITaskFundamentalProperties {
 
         private final TaskElement taskElement;
+        private final Scenario currentScenario;
 
-        protected TaskElementWrapper(TaskElement taskElement) {
+        protected TaskElementWrapper(Scenario currentScenario,
+                TaskElement taskElement) {
+            this.currentScenario = currentScenario;
             this.taskElement = taskElement;
         }
 
@@ -198,7 +205,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private Long setBeginDateInsideTransaction(final Date beginDate) {
-            taskElement.moveTo(beginDate);
+            taskElement.moveTo(currentScenario, beginDate);
             return getLengthMilliseconds();
         }
 
@@ -217,8 +224,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private void updateEndDate(long lengthMilliseconds) {
-            taskElement.resizeTo(new Date(getBeginDate().getTime()
-                    + lengthMilliseconds));
+            Date endDate = new Date(getBeginDate().getTime()
+                    + lengthMilliseconds);
+            taskElement.resizeTo(currentScenario, endDate);
         }
 
         @Override
@@ -551,7 +559,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Override
     public ITaskFundamentalProperties adapt(final TaskElement taskElement) {
-        return new TaskElementWrapper(taskElement);
+        return new TaskElementWrapper(scenario, taskElement);
     }
 
 

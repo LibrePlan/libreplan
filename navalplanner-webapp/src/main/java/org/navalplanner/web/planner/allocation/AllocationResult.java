@@ -34,6 +34,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -60,11 +61,11 @@ public class AllocationResult {
         return new AggregateOfResourceAllocations(all);
     }
 
-    public static AllocationResult createCurrent(Task task) {
+    public static AllocationResult createCurrent(Scenario scenario, Task task) {
         Set<ResourceAllocation<?>> resourceAllocations = task
                 .getSatisfiedResourceAllocations();
-        List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation
-                .copy(resourceAllocations);
+        List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation.copy(
+                scenario, resourceAllocations);
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
                 ModifiedAllocation.modified(modifiedAllocations));
         return new AllocationResult(task, task.getCalculatedValue(), aggregate,

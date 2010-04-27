@@ -36,7 +36,6 @@ import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -48,6 +47,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -235,12 +235,12 @@ public class Task extends TaskElement {
 
     public static class ModifiedAllocation {
 
-        public static List<ModifiedAllocation> copy(
+        public static List<ModifiedAllocation> copy(Scenario onScenario,
                 Collection<ResourceAllocation<?>> resourceAllocations) {
             List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
             for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
                 result.add(new ModifiedAllocation(resourceAllocation,
-                        resourceAllocation.copy()));
+                        resourceAllocation.copy(onScenario)));
             }
             return result;
         }
@@ -380,17 +380,19 @@ public class Task extends TaskElement {
     }
 
     @Override
-    protected void moveAllocations() {
-        reassign(new WithTheSameHoursAndResourcesPerDay());
+    protected void moveAllocations(Scenario scenario) {
+        reassign(scenario, new WithTheSameHoursAndResourcesPerDay());
     }
 
-    public void reassignAllocationsWithNewResources(IResourceDAO resourceDAO) {
-        reassign(new WithAnotherResources(resourceDAO));
+    public void reassignAllocationsWithNewResources(Scenario scenario,
+            IResourceDAO resourceDAO) {
+        reassign(scenario, new WithAnotherResources(resourceDAO));
     }
 
-    private void reassign(AllocationModificationStrategy strategy) {
-        List<ModifiedAllocation> copied = ModifiedAllocation
-                .copy(getSatisfiedResourceAllocations());
+    private void reassign(Scenario onScenario,
+            AllocationModificationStrategy strategy) {
+        List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
+                getSatisfiedResourceAllocations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
                 .modified(copied);
         List<ResourcesPerDayModification> allocations = strategy

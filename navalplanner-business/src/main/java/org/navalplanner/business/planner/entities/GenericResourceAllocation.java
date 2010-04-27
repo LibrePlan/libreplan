@@ -43,6 +43,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 
@@ -316,7 +317,7 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    ResourceAllocation<GenericDayAssignment> createCopy() {
+    ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
         allocation.genericDayAssignments = new HashSet<GenericDayAssignment>(
                 this.genericDayAssignments);

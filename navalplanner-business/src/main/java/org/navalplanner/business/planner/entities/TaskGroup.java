@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -107,7 +108,7 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    protected void moveAllocations() {
+    protected void moveAllocations(Scenario scenario) {
         // do nothing
     }
 

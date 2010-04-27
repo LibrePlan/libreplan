@@ -41,6 +41,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
@@ -162,13 +163,13 @@ public class FormBinder {
 
     private Decimalbox allResourcesPerDay;
 
-    public FormBinder(
+    public FormBinder(Scenario currentScenario,
             AllocationRowsHandler allocationRowsHandler,
             IResourceAllocationModel resourceAllocationModel) {
         this.allocationRowsHandler = allocationRowsHandler;
         this.resourceAllocationModel = resourceAllocationModel;
         this.lastAllocation = this.allocationRowsHandler
-            .getInitialAllocation();
+                .getInitialAllocation(currentScenario);
         this.aggregate = this.lastAllocation.getAggregate();
     }
 

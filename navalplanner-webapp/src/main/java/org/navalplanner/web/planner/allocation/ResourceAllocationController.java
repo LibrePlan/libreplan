@@ -181,8 +181,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
             allocationRows = resourceAllocationModel.initAllocationsFor(task,
                     context, planningState);
-            formBinder = allocationRows
-                    .createFormBinder(resourceAllocationModel);
+            formBinder = allocationRows.createFormBinder(planningState
+                    .getCurrentScenario(), resourceAllocationModel);
             formBinder.setAssignedHoursComponent(assignedHoursComponent);
             formBinder.setTaskStartDateBox(taskStartDateBox);
             formBinder.setEndDate(taskEndDate);

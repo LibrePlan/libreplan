@@ -22,6 +22,7 @@ package org.navalplanner.web.planner;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 
 /**
@@ -38,6 +39,6 @@ public interface ITaskElementAdapter extends IAdapterToTaskFundamentalProperties
 
     public void removeListener(IOnMoveListener moveListener);
 
-    void setOrder(Order order);
+    void initialize(Order order, Scenario scenario);
 
 }

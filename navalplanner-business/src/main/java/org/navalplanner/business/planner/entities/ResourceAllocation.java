@@ -51,6 +51,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 
@@ -637,15 +638,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected abstract Class<T> getDayAssignmentType();
 
-    public ResourceAllocation<T> copy() {
-        ResourceAllocation<T> copy = createCopy();
+    public ResourceAllocation<T> copy(Scenario scenario) {
+        Validate.notNull(scenario);
+        ResourceAllocation<T> copy = createCopy(scenario);
         copy.resourcesPerDay = resourcesPerDay;
         copy.task = task;
         copy.assignmentFunction = assignmentFunction;
         return copy;
     }
 
-    abstract ResourceAllocation<T> createCopy();
+    abstract ResourceAllocation<T> createCopy(Scenario scenario);
 
     public AssignmentFunction getAssignmentFunction() {
         return assignmentFunction;

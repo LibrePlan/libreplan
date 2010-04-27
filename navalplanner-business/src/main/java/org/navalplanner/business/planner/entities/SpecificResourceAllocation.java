@@ -209,7 +209,7 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    ResourceAllocation<SpecificDayAssignment> createCopy() {
+    ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
         SpecificResourceAllocation result = create(getTask());
         result.specificDaysAssignment = new HashSet<SpecificDayAssignment>(
                 this.specificDaysAssignment);

@@ -29,6 +29,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -111,7 +112,7 @@ public class TaskMilestone extends TaskElement {
     }
 
     @Override
-    protected void moveAllocations() {
+    protected void moveAllocations(Scenario scenario) {
         // do nothing
     }
 

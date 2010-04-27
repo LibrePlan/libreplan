@@ -36,6 +36,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModi
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 public class AllocationRowsHandler {
 
@@ -224,13 +225,14 @@ public class AllocationRowsHandler {
         }
     }
 
-    public FormBinder createFormBinder(
+    public FormBinder createFormBinder(Scenario currentScenario,
             IResourceAllocationModel resourceAllocationModel) {
         if (formBinder != null) {
             throw new IllegalStateException(
                     "there is already a binder associated with this object");
         }
-        formBinder = new FormBinder(this, resourceAllocationModel);
+        formBinder = new FormBinder(currentScenario, this,
+                resourceAllocationModel);
         return formBinder;
     }
 
@@ -243,8 +245,8 @@ public class AllocationRowsHandler {
         this.daysDuration = task.getDaysDuration();
     }
 
-    public AllocationResult getInitialAllocation() {
-        return AllocationResult.createCurrent(task);
+    public AllocationResult getInitialAllocation(Scenario currentScenario) {
+        return AllocationResult.createCurrent(currentScenario, task);
     }
 
 
