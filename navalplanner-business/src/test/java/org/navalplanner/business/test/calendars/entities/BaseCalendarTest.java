@@ -660,8 +660,8 @@ public class BaseCalendarTest {
                 nullValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNotAllowNewVersionOnCurrentDate() {
+    @Test
+    public void testAllowNewVersionOnCurrentDate() {
         BaseCalendar calendar = createBasicCalendar();
 
         calendar.newVersion(new LocalDate());

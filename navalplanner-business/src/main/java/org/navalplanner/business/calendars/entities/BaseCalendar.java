@@ -430,11 +430,6 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * new calendar will be used from that date onwards.
      */
     public void newVersion(LocalDate date) throws IllegalArgumentException {
-        if (date.compareTo(new LocalDate()) <= 0) {
-            throw new IllegalArgumentException(
-                    "Date for new version must be greater than current date");
-        }
-
         CalendarData calendarData = getCalendarDataBeforeTheLastIfAny();
         if ((calendarData.getExpiringDate() != null)
                 && (date.compareTo(calendarData.getExpiringDate()) <= 0)) {
