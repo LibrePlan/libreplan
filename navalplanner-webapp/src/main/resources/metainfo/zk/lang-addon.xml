@@ -84,8 +84,32 @@
 
     <component>
         <component-name>LimitingResourcesPanel</component-name>
-        <component-class>org.zkoss.ganttz.limitingresources.LimitingResourcesPanel</component-class>
+        <component-class>org.navalplanner.web.limitingresources.LimitingResourcesPanel</component-class>
             <macro-uri>/limitingresources/limitingResourcesLayout.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>LimitingResourcesList</component-name>
+        <component-class>org.navalplanner.web.limitingresources.LimitingResourcesList</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>/limitingresources/limitingresourceslist.dsp</mold-uri>
+        </mold>
+    </component>
+
+    <component>
+        <component-name>LimitingResourcesLeftPane</component-name>
+        <component-class>org.navalplanner.web.limitingresources.LimitingResourcesLeftPane</component-class>
+        <macro-uri>/limitingresources/leftPane.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>limitingresources</component-name><!-- Limiting resources queue -->
+        <component-class>org.navalplanner.web.limitingresources.LimitingResourcesComponent</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>/limitingresources/limitingresources.dsp</mold-uri>
+        </mold>
     </component>
 
 

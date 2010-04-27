@@ -28,13 +28,12 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.limitingresources.LimitingResourcesPanel;
-import org.zkoss.ganttz.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;

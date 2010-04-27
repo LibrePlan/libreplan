@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.zkoss.ganttz.limitingresources;
+package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
 import java.util.HashMap;

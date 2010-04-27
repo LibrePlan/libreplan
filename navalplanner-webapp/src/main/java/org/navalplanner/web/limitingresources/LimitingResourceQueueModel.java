@@ -209,7 +209,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
         for (Resource resource : allResources) {
             LimitingResourceQueue group = buildGroup(resource);
-            if (false || !group.isEmpty()) {
+            if (!group.isEmpty()) {
                 result.add(group);
             }
         }

@@ -49,22 +49,6 @@
     </component>
 
 
-    <component>
-        <component-name>LimitingResourcesList</component-name>
-        <component-class>org.zkoss.ganttz.limitingresources.LimitingResourcesList</component-class>
-        <mold>
-            <mold-name>default</mold-name>
-            <mold-uri>~./ganttz/limitingresources/limitingresourceslist.dsp</mold-uri>
-        </mold>
-    </component>
-
-    <component>
-        <component-name>LimitingResourcesLeftPane</component-name>
-        <component-class>org.zkoss.ganttz.limitingresources.LimitingResourcesLeftPane</component-class>
-        <macro-uri>~./ganttz/limitingresources/leftPane.zul</macro-uri>
-    </component>
-
-
 	<component>
 		<component-name>leftPane</component-name>
 		<component-class>org.zkoss.ganttz.LeftPane</component-class>
@@ -95,16 +79,6 @@
 			<mold-uri>~./ganttz/resourceload/resourceload.dsp</mold-uri>
 		</mold>
 	</component>
-
-    <component>
-        <component-name>limitingresources</component-name><!-- Limiting resources queue -->
-        <component-class>org.zkoss.ganttz.limitingresources.LimitingResourcesComponent
-        </component-class>
-        <mold>
-            <mold-name>default</mold-name>
-            <mold-uri>~./ganttz/limitingresources/limitingresources.dsp</mold-uri>
-        </mold>
-    </component>
 
 
 	<component>

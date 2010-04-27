@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.zkoss.ganttz.limitingresources;
+package org.navalplanner.web.limitingresources;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
@@ -67,7 +67,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private TimeTracker timeTracker;
 
-    private LimitingDependencyList dependencyList;
+    // private LimitingDependencyList dependencyList;
 
     // private WeakReferencedListeners<IFilterChangedListener> zoomListeners =
     // WeakReferencedListeners.create();
