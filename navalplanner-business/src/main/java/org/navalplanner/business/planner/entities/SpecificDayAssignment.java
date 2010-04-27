@@ -51,6 +51,8 @@ public class SpecificDayAssignment extends DayAssignment {
 
     private SpecificResourceAllocation specificResourceAllocation;
 
+    private SpecificDayAssignmentsContainer container;
+
     public static SpecificDayAssignment create(LocalDate day, int hours,
             Resource resource) {
         return create(new SpecificDayAssignment(day,

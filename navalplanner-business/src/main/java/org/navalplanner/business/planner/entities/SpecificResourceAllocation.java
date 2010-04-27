@@ -60,6 +60,8 @@ public class SpecificResourceAllocation extends
 
     private Set<SpecificDayAssignment> specificDaysAssignment = new HashSet<SpecificDayAssignment>();
 
+    private Set<SpecificDayAssignmentsContainer> specificDayAssignmentsContainers = new HashSet<SpecificDayAssignmentsContainer>();
+
     public static SpecificResourceAllocation createForTesting(
             ResourcesPerDay resourcesPerDay, Task task) {
         return create(new SpecificResourceAllocation(
