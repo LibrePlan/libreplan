@@ -77,7 +77,7 @@ public class LimitingResourcesComponent extends XulElement {
     }
 
     public String getResourceLoadName() {
-        return loadLine.getConceptName();
+        return loadLine.getResourceName();
     }
 
     public String getResourceLoadType() {

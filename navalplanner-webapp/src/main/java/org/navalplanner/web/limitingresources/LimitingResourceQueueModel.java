@@ -43,7 +43,6 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -83,9 +82,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -173,27 +169,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
-        if (filter()) {
-            List<Criterion> criterions = new ArrayList<Criterion>();
-            List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
-            List<Task> tasks = justTasks(filterBy
-                    .getAllChildrenAssociatedTaskElements());
-            for (Task task : tasks) {
-
-                List<ResourceAllocation<?>> listAllocations = new ArrayList<ResourceAllocation<?>>(
-                        task.getSatisfiedResourceAllocations());
-                for (GenericResourceAllocation generic : (onlyGeneric(listAllocations))) {
-                    criterions.addAll(generic.getCriterions());
-                }
-            }
-            return resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(criterions);
-        } else {
-            return resourceAllocationDAO.findGenericAllocationsByCriterion();
-        }
-    }
-
     private List<Resource> resourcesToShow() {
         if (filter()) {
             return resourcesForActiveTasks();
@@ -234,7 +209,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
         for (Resource resource : allResources) {
             LimitingResourceQueue group = buildGroup(resource);
-            if (!group.isEmpty()) {
+            if (false || !group.isEmpty()) {
                 result.add(group);
             }
         }
@@ -245,11 +220,17 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
                         .findAllocationsRelatedTo(resource));
+
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
+
+        // Create ganttzk limitingResourceQueues
         LimitingResourceQueue result = new LimitingResourceQueue(buildTimeLine(
                 resource, resource.getShortDescription(), sortedByStartDate,
-                "resource", role),
-                buildSecondLevel(resource, sortedByStartDate));
+                "resource", role));
+
+        System.out.println("Allocations " + resource.getName() + " - "
+                + sortedByStartDate.size() + result.getResourceName());
+
         return result;
     }
 

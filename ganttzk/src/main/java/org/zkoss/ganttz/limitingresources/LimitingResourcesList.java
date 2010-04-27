@@ -21,7 +21,6 @@
 package org.zkoss.ganttz.limitingresources;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.au.out.AuInvoke;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
 
@@ -87,17 +85,13 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
             List<LimitingResourceQueue> children) {
         for (LimitingResourceQueue LimitingResourceQueue : children) {
             LimitingResourcesComponent component = LimitingResourcesComponent
-                    .create(
-timetracker, LimitingResourceQueue);
+                    .create(timetracker, LimitingResourceQueue);
             appendChild(component);
             fromTimeLineToComponent.put(LimitingResourceQueue, component);
         }
     }
 
     public void collapse(LimitingResourceQueue line) {
-        for (LimitingResourceQueue l : line.getAllChildren()) {
-            getComponentFor(l).detach();
-        }
     }
 
     private LimitingResourcesComponent getComponentFor(LimitingResourceQueue l) {
@@ -108,25 +102,6 @@ timetracker, LimitingResourceQueue);
 
     public void expand(LimitingResourceQueue line,
             List<LimitingResourceQueue> closed) {
-        LimitingResourcesComponent parentComponent = getComponentFor(line);
-        Component nextSibling = parentComponent.getNextSibling();
-
-        List<LimitingResourceQueue> childrenToOpen = getChildrenReverseOrderFor(line);
-        childrenToOpen.removeAll(closed);
-
-        for (LimitingResourceQueue LimitingResourceQueue : childrenToOpen) {
-            LimitingResourcesComponent child = getComponentFor(LimitingResourceQueue);
-            insertBefore(child, nextSibling);
-            nextSibling = child;
-        }
-
-    }
-
-    private List<LimitingResourceQueue> getChildrenReverseOrderFor(
-            LimitingResourceQueue line) {
-        List<LimitingResourceQueue> childrenOf = line.getAllChildren();
-        Collections.reverse(childrenOf);
-        return childrenOf;
     }
 
     @Override

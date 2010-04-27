@@ -195,24 +195,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .create(LimitingResourceQueue.class);
         for (LimitingResourceQueue LimitingResourceQueue : this.groups) {
             result.addToRoot(LimitingResourceQueue);
-            result = addNodes(result, LimitingResourceQueue);
         }
         return result;
     }
 
-
-    private MutableTreeModel<LimitingResourceQueue> addNodes(
-            MutableTreeModel<LimitingResourceQueue> tree,
-            LimitingResourceQueue parent) {
-        if (!parent.getChildren().isEmpty()) {
-            tree.add(parent, parent.getChildren());
-            for (LimitingResourceQueue LimitingResourceQueue : parent
-                    .getChildren()) {
-                tree = addNodes(tree, LimitingResourceQueue);
-            }
-        }
-        return tree;
-    }
 
     private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
             TimeTracker timeTracker) {

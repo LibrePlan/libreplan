@@ -82,4 +82,11 @@
         <macro-uri>/common/components/templateFinder.zul</macro-uri>
     </component>
 
+    <component>
+        <component-name>LimitingResourcesPanel</component-name>
+        <component-class>org.zkoss.ganttz.limitingresources.LimitingResourcesPanel</component-class>
+            <macro-uri>/limitingresources/limitingResourcesLayout.zul</macro-uri>
+    </component>
+
+
 </language-addon>

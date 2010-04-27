@@ -20,8 +20,6 @@
 
 package org.zkoss.ganttz.data.limitingresource;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -32,25 +30,21 @@ import org.zkoss.ganttz.util.Interval;
 
 public class LimitingResourceQueue {
 
-    private final String conceptName;
-    private final List<QueueTask> loadPeriods;
+    private final String resourcetName;
+    private final List<QueueTask> queueTask;
 
     private final TimeLineRole<?> timeLineRole;
     private final String type;
-
-    private final List<LimitingResourceQueue> children;
 
     public LimitingResourceQueue(String conceptName,
             List<QueueTask> loadPeriods,
             TimeLineRole<?> role) {
         Validate.notEmpty(conceptName);
         Validate.notNull(loadPeriods);
-        this.loadPeriods = QueueTask.sort(loadPeriods);
-        this.conceptName = conceptName;
+        this.queueTask = QueueTask.sort(loadPeriods);
+        this.resourcetName = conceptName;
         this.type = "";
         this.timeLineRole = role;
-        this.children = Collections
-        .unmodifiableList(new ArrayList<LimitingResourceQueue>());
     }
 
     public LimitingResourceQueue(String conceptName,
@@ -58,34 +52,27 @@ public class LimitingResourceQueue {
             String type, TimeLineRole<?> role) {
         Validate.notEmpty(conceptName);
         Validate.notNull(loadPeriods);
-        this.loadPeriods = QueueTask.sort(loadPeriods);
-        this.conceptName = conceptName;
+        this.queueTask = QueueTask.sort(loadPeriods);
+        this.resourcetName = conceptName;
         this.timeLineRole = role;
         this.type = type;
-        this.children = Collections
-                .unmodifiableList(new ArrayList<LimitingResourceQueue>());
     }
 
-    public LimitingResourceQueue(LimitingResourceQueue principal, List<LimitingResourceQueue> children) {
-        Validate.notEmpty(principal.getConceptName());
+    public LimitingResourceQueue(LimitingResourceQueue principal) {
+        Validate.notEmpty(principal.getResourceName());
         Validate.notNull(principal.getQueueTasks());
-        this.loadPeriods = QueueTask.sort(principal.getQueueTasks());
-        this.conceptName = principal.getConceptName();
+        this.queueTask = QueueTask.sort(principal.getQueueTasks());
+        this.resourcetName = principal.getResourceName();
         this.timeLineRole = principal.getRole();
         this.type = principal.getType();
-        Validate.notNull(children);
-        allChildrenAreNotEmpty(children);
-        this.children = Collections
-                .unmodifiableList(new ArrayList<LimitingResourceQueue>(children));
-
     }
 
     public List<QueueTask> getQueueTasks() {
-        return loadPeriods;
+        return queueTask;
     }
 
-    public String getConceptName() {
-        return conceptName;
+    public String getResourceName() {
+        return resourcetName;
     }
 
     public TimeLineRole<?> getRole() {
@@ -93,11 +80,11 @@ public class LimitingResourceQueue {
     }
 
     private QueueTask getFirst() {
-        return loadPeriods.get(0);
+        return queueTask.get(0);
     }
 
     private QueueTask getLast() {
-        return loadPeriods.get(loadPeriods.size() - 1);
+        return queueTask.get(queueTask.size() - 1);
     }
 
     public LocalDate getStartPeriod() {
@@ -108,7 +95,7 @@ public class LimitingResourceQueue {
     }
 
     public boolean isEmpty() {
-        return loadPeriods.isEmpty();
+        return queueTask.isEmpty();
     }
 
     public LocalDate getEndPeriod() {
@@ -159,55 +146,12 @@ public class LimitingResourceQueue {
         return one.compareTo(other) < 0 ? one : other;
     }
 
-    private static void allChildrenAreNotEmpty(List<LimitingResourceQueue> lines) {
-        for (LimitingResourceQueue l : lines) {
-            if (l.isEmpty()) {
-                throw new IllegalArgumentException(l + " is empty");
-            }
-            if (l.hasChildren()) {
-                allChildrenAreNotEmpty(l.getChildren());
-            }
-        }
-    }
-
-    public boolean hasChildren() {
-        return (!children.isEmpty());
-    }
-
-    public List<LimitingResourceQueue> getChildren() {
-        return children;
-    }
-
-    public List<LimitingResourceQueue> getAllChildren() {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        for (LimitingResourceQueue child : children) {
-            result.addAll(child.getAllChildren());
-            result.add(child);
-        }
-        return result;
-    }
-
     public LocalDate getStart() {
-        LocalDate result = getStartPeriod();
-        for (LimitingResourceQueue loadTimeLine : getChildren()) {
-            LocalDate start = loadTimeLine.getStart();
-            if (start != null) {
-            result = result == null || result.compareTo(start) > 0 ? start
-                    : result;
-            }
-        }
-        return result;
+        return getStartPeriod();
     }
 
     public LocalDate getEnd() {
-        LocalDate result = getEndPeriod();
-        for (LimitingResourceQueue loadTimeLine : getChildren()) {
-            LocalDate end = loadTimeLine.getEnd();
-            if (end != null) {
-            result = result == null || result.compareTo(end) < 0 ? end : result;
-            }
-        }
-        return result;
+        return getEndPeriod();
     }
 
 }
