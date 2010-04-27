@@ -46,8 +46,8 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 
 public abstract class PlanningState {
 
-    public static IScenarioInfo ownerScenarioInfo() {
-        return new UsingOwnerScenario();
+    public static IScenarioInfo ownerScenarioInfo(Scenario scenario) {
+        return new UsingOwnerScenario(scenario);
     }
 
     public static IScenarioInfo forNotOwnerScenario(Order order,
@@ -58,6 +58,9 @@ public abstract class PlanningState {
     }
 
     public interface IScenarioInfo {
+
+        public Scenario getCurrentScenario();
+
         public boolean isUsingTheOwnerScenario();
 
         /**
@@ -73,6 +76,13 @@ public abstract class PlanningState {
 
     private static class UsingOwnerScenario implements IScenarioInfo {
 
+        private final Scenario currentScenario;
+
+        public UsingOwnerScenario(Scenario currentScenario) {
+            Validate.notNull(currentScenario);
+            this.currentScenario = currentScenario;
+        }
+
         @Override
         public boolean isUsingTheOwnerScenario() {
             return true;
@@ -87,6 +97,11 @@ public abstract class PlanningState {
         @Override
         public void afterCommit() {
             // do nothing
+        }
+
+        @Override
+        public Scenario getCurrentScenario() {
+            return currentScenario;
         }
     }
 
@@ -135,6 +150,11 @@ public abstract class PlanningState {
         public void afterCommit() {
             versionSaved = true;
         }
+
+        @Override
+        public Scenario getCurrentScenario() {
+            return currentScenario;
+        }
     }
 
     public static PlanningState create(TaskGroup rootTask,
@@ -146,8 +166,8 @@ public abstract class PlanningState {
                 initialResources, criterionDAO, resourceDAO, scenarioInfo);
     }
 
-    public static PlanningState createEmpty() {
-        return new EmptyPlannigState();
+    public static PlanningState createEmpty(Scenario currentScenario) {
+        return new EmptyPlannigState(currentScenario);
     }
 
     public abstract Collection<? extends TaskElement> getTasksToSave();
@@ -165,6 +185,10 @@ public abstract class PlanningState {
     public abstract TaskGroup getRootTask();
 
     public abstract IScenarioInfo getScenarioInfo();
+
+    public Scenario getCurrentScenario() {
+        return getScenarioInfo().getCurrentScenario();
+    }
 
     static class WithDataPlanningState extends PlanningState {
 
@@ -307,6 +331,12 @@ public abstract class PlanningState {
 
     private static class EmptyPlannigState extends PlanningState {
 
+        private final Scenario currentScenario;
+
+        private EmptyPlannigState(Scenario currentScenario) {
+            this.currentScenario = currentScenario;
+        }
+
         @Override
         public void added(TaskElement taskElement) {
         }
@@ -340,7 +370,7 @@ public abstract class PlanningState {
 
         @Override
         public IScenarioInfo getScenarioInfo() {
-            return new UsingOwnerScenario();
+            return new UsingOwnerScenario(currentScenario);
         }
 
     }

@@ -888,7 +888,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private PlanningState createPlanningStateFor(
             Order orderReloaded) {
         if (!orderReloaded.isSomeTaskElementScheduled()) {
-            return PlanningState.createEmpty();
+            return PlanningState.createEmpty(currentScenario);
         }
         criterionDAO.list(Criterion.class);
         TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
@@ -906,7 +906,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
         if (orderReloaded.isUsingTheOwnerScenario()) {
-            return PlanningState.ownerScenarioInfo();
+            return PlanningState.ownerScenarioInfo(currentScenario);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
                 .getDayAssignments();
