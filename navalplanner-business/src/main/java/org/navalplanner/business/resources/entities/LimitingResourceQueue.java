@@ -21,9 +21,11 @@
 package org.navalplanner.business.resources.entities;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 
@@ -37,7 +39,7 @@ public class LimitingResourceQueue extends BaseEntity {
     private Resource resource;
 
     private Set<LimitingResourceQueueElement> limitingResourceQueueElements =
-        new HashSet<LimitingResourceQueueElement>();
+        new TreeSet<LimitingResourceQueueElement>();
 
     public static LimitingResourceQueue create() {
         return create(new LimitingResourceQueue());

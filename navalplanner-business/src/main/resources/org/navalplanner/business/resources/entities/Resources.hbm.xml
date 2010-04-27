@@ -78,7 +78,8 @@
 
     <many-to-one name="resource" column="RESOURCE_ID" not-null="false" unique="true" />
 
-    <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true" >
+    <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true"
+            order-by="START_DATE, START_HOUR">
         <key column="LIMITING_RESOURCE_QUEUE_ID" not-null="true" />
         <one-to-many class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement" />
     </set>

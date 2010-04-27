@@ -60,6 +60,7 @@
 
     </class>
 
+    <!-- LimitingResourceQueueElement -->
     <class name="LimitingResourceQueueElement" table="limiting_resource_queue_element">
         <id name="id" type="long" access="property">
             <generator class="hilo">
@@ -73,6 +74,16 @@
         <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" />
 
         <property name="earlierStartDateBecauseOfGantt" column="EARLIER_START_DATE_BECAUSE_OF_GANTT" />
+
+        <component name="startQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
+            <property name="date" column="START_DATE" />
+            <property name="hour" column="START_HOUR" />
+        </component>
+
+        <component name="endQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
+            <property name="date" column="END_DATE" />
+            <property name="hour" column="END_HOUR" />
+        </component>
 
     </class>
 

@@ -20,8 +20,12 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.Date;
 
+import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 
@@ -38,7 +42,11 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private Date earlierStartDateBecauseOfGantt;
 
-   public Date getEarlierStartDateBecauseOfGantt() {
+    private QueuePosition startQueuePosition;
+
+    private QueuePosition endQueuePosition;
+
+    public Date getEarlierStartDateBecauseOfGantt() {
         return earlierStartDateBecauseOfGantt;
     }
 
@@ -47,7 +55,7 @@ public class LimitingResourceQueueElement extends BaseEntity {
         this.earlierStartDateBecauseOfGantt = earlierStartDateBecauseOfGantt;
     }
 
-public static LimitingResourceQueueElement create() {
+    public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
     }
 
@@ -69,6 +77,38 @@ public static LimitingResourceQueueElement create() {
 
     public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
         this.limitingResourceQueue = limitingResourceQueue;
+    }
+
+    public LocalDate getStartDate() {
+        return startQueuePosition.getDate();
+    }
+
+    public void setStartDate(LocalDate date) {
+        startQueuePosition.setDate(date);
+    }
+
+    public int getStartHour() {
+        return startQueuePosition.getHour();
+    }
+
+    public void setStartHour(int hour) {
+        startQueuePosition.setHour(hour);
+    }
+
+    public LocalDate getEndDate() {
+        return endQueuePosition.getDate();
+    }
+
+    public void setEndDate(LocalDate date) {
+        endQueuePosition.setDate(date);
+    }
+
+    public int getEndHour() {
+        return endQueuePosition.getHour();
+    }
+
+    public void setEndHour(int hour) {
+        endQueuePosition.setHour(hour);
     }
 
 }
