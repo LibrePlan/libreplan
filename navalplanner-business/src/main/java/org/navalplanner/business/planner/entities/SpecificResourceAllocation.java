@@ -353,7 +353,8 @@ public class SpecificResourceAllocation extends
 
     }
 
-    private DayAssignmentsState state = new SpecificDayAssignmentsState();
+    @OnCopy(Strategy.IGNORE)
+    private DayAssignmentsState state;
 
     @Override
     protected void scenarioChangedTo(Scenario scenario) {

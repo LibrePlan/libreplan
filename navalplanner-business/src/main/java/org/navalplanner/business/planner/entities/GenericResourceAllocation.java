@@ -390,6 +390,7 @@ public class GenericResourceAllocation extends
         }
     }
 
+    @OnCopy(Strategy.IGNORE)
     private DayAssignmentsState assignmentsState = new GenericDayAssignmentState();
 
     @Override

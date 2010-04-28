@@ -27,6 +27,8 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * Object containing the {@link GenericDayAssignment generic day assignments}
@@ -44,6 +46,7 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
 
     private GenericResourceAllocation resourceAllocation;
 
+    @OnCopy(Strategy.SHARE)
     private Scenario scenario;
 
     private Set<GenericDayAssignment> dayAssignments = new HashSet<GenericDayAssignment>();
