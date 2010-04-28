@@ -166,8 +166,15 @@ public class SpecificResourceAllocation extends
         SpecificResourceAllocation result = create(getTask());
         result.specificDaysAssignment = new HashSet<SpecificDayAssignment>(
                 this.specificDaysAssignment);
+        result.toTransientStateWithInitial(new HashSet<SpecificDayAssignment>(
+                this.specificDaysAssignment));
         result.resource = getResource();
         return result;
+    }
+
+    private void toTransientStateWithInitial(
+            Set<SpecificDayAssignment> initialAssignments) {
+        this.state = new TransientState(initialAssignments);
     }
 
     @Override
@@ -236,6 +243,57 @@ public class SpecificResourceAllocation extends
             each.setSpecificResourceAllocation(outerSpecificAllocation);
         }
 
+    }
+
+    private class TransientState extends DayAssignmentsState {
+        private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
+
+        private final Set<SpecificDayAssignment> specificDaysAssignment;
+
+        TransientState(Set<SpecificDayAssignment> specificDayAssignments) {
+            this.specificDaysAssignment = specificDayAssignments;
+        }
+
+        @Override
+        protected void addAssignments(
+                Collection<? extends SpecificDayAssignment> assignments) {
+            specificDaysAssignment.addAll(assignments);
+        }
+
+        @Override
+        protected void clearFieldsCalculatedFromAssignments() {
+        }
+
+        @Override
+        protected Collection<SpecificDayAssignment> copyAssignmentsFrom(
+                ResourceAllocation<?> modification) {
+            SpecificResourceAllocation specificModication = (SpecificResourceAllocation) modification;
+            return SpecificDayAssignment.copy(outerSpecificAllocation,
+                    specificModication.specificDaysAssignment);
+        }
+
+        @Override
+        protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
+            return specificDaysAssignment;
+        }
+
+        @Override
+        protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            specificDaysAssignment.removeAll(assignments);
+        }
+
+        @Override
+        protected void resetTo(
+                Collection<SpecificDayAssignment> assignmentsCopied) {
+            specificDaysAssignment.clear();
+            specificDaysAssignment.addAll(assignmentsCopied);
+        }
+
+        @Override
+        protected void setParentFor(SpecificDayAssignment each) {
+            each.setSpecificResourceAllocation(outerSpecificAllocation);
+        }
     }
 
     private DayAssignmentsState state = new SpecificDayAssignmentsState();
