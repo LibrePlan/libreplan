@@ -316,6 +316,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      */
     public abstract List<Resource> getAssociatedResources();
 
+    private Scenario currentScenario;
+
+    public void switchToScenario(Scenario scenario) {
+        Validate.notNull(scenario);
+        currentScenario = scenario;
+        scenarioChangedTo(currentScenario);
+    }
+
+    protected abstract void scenarioChangedTo(Scenario scenario);
+
     protected void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
         this.resourcesPerDay = resourcesPerDay;
@@ -847,11 +857,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return sum;
     }
 
-    public void mergeAssignmentsAndResourcesPerDay(
+    public void mergeAssignmentsAndResourcesPerDay(Scenario scenario,
             ResourceAllocation<?> modifications) {
         if (modifications == this) {
             return;
         }
+        switchToScenario(scenario);
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
         setWithoutApply(modifications.getAssignmentFunction());

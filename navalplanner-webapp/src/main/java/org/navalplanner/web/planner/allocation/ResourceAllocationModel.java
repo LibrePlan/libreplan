@@ -163,7 +163,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 @Override
                 public Void execute() {
                     stepsBeforeDoingAllocation();
-                    allocationRowsHandler.doAllocation().applyTo(task);
+                    allocationRowsHandler.doAllocation().applyTo(
+                            planningState.getCurrentScenario(), task);
                     return null;
                 }
             });
@@ -177,7 +178,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 @Override
                 public Void execute() {
                     stepsBeforeDoingAllocation();
-                    modifiedAllocationResult.applyTo(task);
+                    modifiedAllocationResult.applyTo(planningState
+                            .getCurrentScenario(), task);
                     return null;
                 }
             });

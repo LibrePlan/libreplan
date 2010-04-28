@@ -276,7 +276,8 @@ public class Task extends TaskElement {
 
     }
 
-    public void mergeAllocation(CalculatedValue calculatedValue,
+    public void mergeAllocation(Scenario scenario,
+            CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
@@ -286,11 +287,12 @@ public class Task extends TaskElement {
         }
         final LocalDate start = aggregate.getStart();
         final LocalDate end = aggregate.getEnd();
-        mergeAllocation(start, end, calculatedValue, newAllocations,
+        mergeAllocation(scenario, start, end, calculatedValue, newAllocations,
                 modifications, toRemove);
     }
 
-    private void mergeAllocation(final LocalDate start, final LocalDate end,
+    private void mergeAllocation(Scenario scenario, final LocalDate start,
+            final LocalDate end,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
@@ -300,11 +302,11 @@ public class Task extends TaskElement {
         setDaysDuration(Days.daysBetween(start, end).getDays());
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
-            pair.getOriginal().mergeAssignmentsAndResourcesPerDay(
+            pair.getOriginal().mergeAssignmentsAndResourcesPerDay(scenario,
                     pair.getModification());
         }
         remove(toRemove);
-        addAllocations(newAllocations);
+        addAllocations(scenario, newAllocations);
     }
 
     private void remove(Collection<? extends ResourceAllocation<?>> toRemove) {
@@ -313,8 +315,10 @@ public class Task extends TaskElement {
         }
     }
 
-    private void addAllocations(List<ResourceAllocation<?>> newAllocations) {
+    private void addAllocations(Scenario scenario,
+            List<ResourceAllocation<?>> newAllocations) {
         for (ResourceAllocation<?> resourceAllocation : newAllocations) {
+            resourceAllocation.switchToScenario(scenario);
             addResourceAllocation(resourceAllocation);
         }
     }
@@ -421,7 +425,8 @@ public class Task extends TaskElement {
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
         updateDerived(copied);
-        mergeAllocation(asLocalDate(getStartDate()), asLocalDate(getEndDate()),
+        mergeAllocation(onScenario, asLocalDate(getStartDate()),
+                asLocalDate(getEndDate()),
                 calculatedValue, Collections
                         .<ResourceAllocation<?>> emptyList(), copied,
                 Collections.<ResourceAllocation<?>> emptyList());

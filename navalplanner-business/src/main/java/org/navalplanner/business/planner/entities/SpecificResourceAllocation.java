@@ -241,6 +241,11 @@ public class SpecificResourceAllocation extends
     private DayAssignmentsState state = new SpecificDayAssignmentsState();
 
     @Override
+    protected void scenarioChangedTo(Scenario scenario) {
+        // TODO complete
+    }
+
+    @Override
     protected ResourceAllocation<SpecificDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
         return state;
     }

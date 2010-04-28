@@ -74,8 +74,10 @@ public class AdvancedAllocationTabCreator {
         private AllocationResult allocationResult;
         private final Task task;
         private Set<Resource> associatedResources;
+        private final Scenario currentScenario;
 
         public ResultReceiver(Scenario currentScenario, Order order, Task task) {
+            this.currentScenario = currentScenario;
             this.calculatedValue = task.getCalculatedValue();
             this.allocationResult = AllocationResult.createCurrent(currentScenario, task);
             this.aggregate = this.allocationResult.getAggregate();
@@ -171,7 +173,7 @@ public class AdvancedAllocationTabCreator {
 
         private void applyChanges() {
             taskElementDAO.save(task);
-            allocationResult.applyTo(task);
+            allocationResult.applyTo(currentScenario, task);
             taskElementDAO.removeOrphanedDayAssignments();
         }
     }

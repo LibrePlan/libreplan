@@ -284,6 +284,11 @@ public class GenericResourceAllocation extends
     private GenericDayAssignmentState assignmentsState = new GenericDayAssignmentState();
 
     @Override
+    protected void scenarioChangedTo(Scenario scenario) {
+        // TODO complete
+    }
+
+    @Override
     protected ResourceAllocation<GenericDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
         return assignmentsState;
     }

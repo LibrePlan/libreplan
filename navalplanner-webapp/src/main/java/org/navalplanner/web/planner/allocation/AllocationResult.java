@@ -124,10 +124,10 @@ public class AllocationResult {
         return calculatedValue;
     }
 
-    public void applyTo(Task task) {
+    public void applyTo(Scenario scenario, Task task) {
         List<ModifiedAllocation> modified = getModified();
-        task.mergeAllocation(getCalculatedValue(), aggregate, getNew(),
-                modified, getNotModified(originals(modified)));
+        task.mergeAllocation(scenario, getCalculatedValue(), aggregate,
+                getNew(), modified, getNotModified(originals(modified)));
     }
 
     private List<ResourceAllocation<?>> originals(
