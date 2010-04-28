@@ -47,11 +47,6 @@
                 <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
-            <set name="genericDayAssignments" cascade="all">
-                <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
-                <one-to-many class="GenericDayAssignment"/>
-            </set>
-
             <set name="genericDayAssignmentsContainers" cascade="all-delete-orphan">
                 <key column="RESOURCE_ALLOCATION_ID" />
                 <one-to-many class="GenericDayAssignmentsContainer"/>
