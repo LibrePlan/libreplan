@@ -18,33 +18,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.limitingresources;
+package org.navalplanner.business.planner.daos;
 
 import java.util.List;
 
-import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
-import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.Interval;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 
-public interface ILimitingResourceQueueModel {
+/**
+ * DAO interface for {@link ILimitingResourceQueueElementDAO}
+ *
+ * @author Diego Pino García <dpino@igalia.com>
+ */
+public interface ILimitingResourceQueueElementDAO extends
+        IGenericDAO<LimitingResourceQueueElement, Long> {
 
-    void initGlobalView(boolean filterByResources);
+    List<LimitingResourceQueueElement> getAll();
 
-    void initGlobalView(Order filterBy, boolean filterByResources);
+    /**
+     * Returns all {@link LimitingResourceQueueElement} that are assigned to a
+     * {@link LimitingResourceQueue}
+     *
+     * @return
+     */
+    List<LimitingResourceQueueElement> getAssigned();
 
-    List<LimitingResourceQueue> getLimitingResourceQueues();
-
-    Interval getViewInterval();
-
-    ZoomLevel calculateInitialZoomLevel();
-
-    Order getOrderByTask(TaskElement task);
-
-    boolean userCanRead(Order order, String loginName);
-
-    List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements();
+    /**
+     * Returns all {@link LimitingResourceQueueElement} that have not been assigned to
+     * {@link LimitingResourceQueue} yet
+     *
+     * @return
+     */
+    List<LimitingResourceQueueElement> getUnassigned();
 
 }

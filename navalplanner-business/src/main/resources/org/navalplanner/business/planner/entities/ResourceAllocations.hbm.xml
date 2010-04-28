@@ -77,13 +77,15 @@
 
         <property name="earlierStartDateBecauseOfGantt" column="EARLIER_START_DATE_BECAUSE_OF_GANTT" />
 
+        <property name="creationTimestamp" column="CREATION_TIMESTAMP" />
+
         <component name="startQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
-            <property name="date" column="START_DATE" />
+            <property name="date" column="START_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="hour" column="START_HOUR" />
         </component>
 
         <component name="endQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
-            <property name="date" column="END_DATE" />
+            <property name="date" column="END_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="hour" column="END_HOUR" />
         </component>
 

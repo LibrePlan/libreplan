@@ -20,11 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.util.Date;
 
-import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -46,21 +43,14 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private QueuePosition endQueuePosition;
 
-    public Date getEarlierStartDateBecauseOfGantt() {
-        return earlierStartDateBecauseOfGantt;
-    }
-
-    public void setEarlierStartDateBecauseOfGantt(
-            Date earlierStartDateBecauseOfGantt) {
-        this.earlierStartDateBecauseOfGantt = earlierStartDateBecauseOfGantt;
-    }
+    private long creationTimestamp;
 
     public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
     }
 
     protected LimitingResourceQueueElement() {
-
+        creationTimestamp = (new Date()).getTime();
     }
 
     public ResourceAllocation<?> getResourceAllocation() {
@@ -109,6 +99,23 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void setEndHour(int hour) {
         endQueuePosition.setHour(hour);
+    }
+
+    public Date getEarlierStartDateBecauseOfGantt() {
+        return earlierStartDateBecauseOfGantt;
+    }
+
+    public void setEarlierStartDateBecauseOfGantt(
+            Date earlierStartDateBecauseOfGantt) {
+        this.earlierStartDateBecauseOfGantt = earlierStartDateBecauseOfGantt;
+    }
+
+    public long getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
+    public void setCreationTimestamp(long creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
     }
 
 }
