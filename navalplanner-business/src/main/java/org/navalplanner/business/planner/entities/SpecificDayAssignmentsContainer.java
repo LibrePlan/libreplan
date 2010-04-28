@@ -46,6 +46,10 @@ public class SpecificDayAssignmentsContainer extends BaseEntity {
 
     private Set<SpecificDayAssignment> dayAssignments = new HashSet<SpecificDayAssignment>();
 
+    public Set<SpecificDayAssignment> getDayAssignments() {
+        return new HashSet<SpecificDayAssignment>(dayAssignments);
+    }
+
     private SpecificDayAssignmentsContainer(
             SpecificResourceAllocation resourceAllocation, Scenario scenario) {
         Validate.notNull(resourceAllocation);

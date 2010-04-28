@@ -68,4 +68,8 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
         return scenario;
     }
 
+    public Set<GenericDayAssignment> getDayAssignments() {
+        return new HashSet<GenericDayAssignment>(dayAssignments);
+    }
+
 }

@@ -42,6 +42,7 @@ import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForSpecifiedResourcesPerDayAndHours;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
@@ -51,6 +52,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
@@ -746,6 +748,72 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         protected abstract DayAssignmentsState switchTo(Scenario scenario);
+    }
+
+    /**
+     * It uses the current scenario retrieved from {@link IScenarioManager} in
+     * order to return the assignments for that scenario. This state doesn't
+     * allow to update the current assignments for that scenario.<br />
+     * Note that this implementation doesn't work well if the current scenario
+     * is changed since the assignments are cached and the assignments for the
+     * previous one would be returned<br />
+     */
+    protected abstract class NoExplicitlySpecifiedScenario extends
+            DayAssignmentsState {
+
+        @Override
+        protected final void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            modificationsNotAllowed();
+        }
+
+        protected final void setParentFor(T each) {
+            modificationsNotAllowed();
+        }
+
+        @Override
+        protected final void addAssignments(Collection<? extends T> assignments) {
+            modificationsNotAllowed();
+        }
+
+        @Override
+        final void detachAssignments() {
+            modificationsNotAllowed();
+        }
+
+        @Override
+        protected final void resetTo(Collection<T> assignmentsCopied) {
+            modificationsNotAllowed();
+        }
+
+        @Override
+        protected final void clearFieldsCalculatedFromAssignments() {
+            modificationsNotAllowed();
+        }
+
+        @Override
+        protected final Collection<T> copyAssignmentsFrom(
+                ResourceAllocation<?> modification) {
+            modificationsNotAllowed();
+            throw new RuntimeException(
+                    "unreachable, just for satisfying the compiler");
+        }
+
+        private void modificationsNotAllowed() {
+            throw new IllegalStateException(
+                    "modifications to assignments can't be done "
+                            + "if the scenario on which to work on is not explicitly specified");
+        }
+
+        @Override
+        protected Collection<T> getUnorderedAssignments() {
+            Scenario currentScenario = Registry
+                    .getScenarioManager().getCurrent();
+            return getUnorderedAssignmentsForScenario(currentScenario);
+        }
+
+        protected abstract Collection<T> getUnorderedAssignmentsForScenario(
+                Scenario scenario);
     }
 
     protected abstract DayAssignmentsState getDayAssignmentsState();

@@ -155,6 +155,15 @@ public class GenericResourceAllocation extends
         return Collections.unmodifiableSet(genericDayAssignments);
     }
 
+    private Map<Scenario, GenericDayAssignmentsContainer> containersByScenario() {
+        Map<Scenario, GenericDayAssignmentsContainer> result = new HashMap<Scenario, GenericDayAssignmentsContainer>();
+        for (GenericDayAssignmentsContainer each : genericDayAssignmentsContainers) {
+            assert !result.containsKey(each);
+            result.put(each.getScenario(), each);
+        }
+        return result;
+    }
+
     public List<GenericDayAssignment> getOrderedAssignmentsFor(Resource resource) {
         List<GenericDayAssignment> list = getOrderedAssignmentsFor().get(
                 resource);
@@ -353,6 +362,31 @@ public class GenericResourceAllocation extends
             GenericDayAssignmentState result = new GenericDayAssignmentState();
             result.resetTo(genericDayAssignments);
             return result;
+        }
+    }
+
+    private Set<GenericDayAssignment> getUnorderedForScenario(
+            Scenario scenario) {
+        GenericDayAssignmentsContainer container = containersByScenario()
+                .get(scenario);
+        if (container == null) {
+            return new HashSet<GenericDayAssignment>();
+        }
+        return container.getDayAssignments();
+    }
+
+    private class GenericDayAssignmentsNoExplicitlySpecifiedScenario extends
+            NoExplicitlySpecifiedScenario {
+
+        @Override
+        protected Collection<GenericDayAssignment> getUnorderedAssignmentsForScenario(
+                Scenario scenario) {
+            return getUnorderedForScenario(scenario);
+        }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            return new GenericDayAssignmentState();
         }
     }
 

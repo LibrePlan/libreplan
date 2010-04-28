@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -97,6 +99,15 @@ public class SpecificResourceAllocation extends
 
     public Resource getResource() {
         return resource;
+    }
+
+    private Map<Scenario, SpecificDayAssignmentsContainer> containersByScenario() {
+        Map<Scenario, SpecificDayAssignmentsContainer> result = new HashMap<Scenario, SpecificDayAssignmentsContainer>();
+        for (SpecificDayAssignmentsContainer each : specificDayAssignmentsContainers) {
+            assert !result.containsKey(each);
+            result.put(each.getScenario(), each);
+        }
+        return result;
     }
 
     public void setResource(Resource resource) {
@@ -315,6 +326,31 @@ public class SpecificResourceAllocation extends
             result.resetTo(specificDaysAssignment);
             return result;
         }
+    }
+
+    private Set<SpecificDayAssignment> getUnorderedFor(Scenario scenario) {
+        SpecificDayAssignmentsContainer container = containersByScenario()
+                .get(scenario);
+        if (container == null) {
+            return new HashSet<SpecificDayAssignment>();
+        }
+        return container.getDayAssignments();
+    }
+
+    private class SpecificDayAssignmentsNoExplicitlySpecifiedScenario extends
+            NoExplicitlySpecifiedScenario {
+
+        @Override
+        protected Collection<SpecificDayAssignment> getUnorderedAssignmentsForScenario(
+                Scenario scenario) {
+            return getUnorderedFor(scenario);
+        }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            return new SpecificDayAssignmentsState();
+        }
+
     }
 
     private DayAssignmentsState state = new SpecificDayAssignmentsState();
