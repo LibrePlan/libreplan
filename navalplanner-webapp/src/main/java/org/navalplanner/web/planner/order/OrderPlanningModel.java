@@ -893,6 +893,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         criterionDAO.list(Criterion.class);
         TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
         forceLoadOfChildren(Arrays.asList(taskElement));
+        switchAllocationsToScenario(currentScenario, taskElement);
         final List<Resource> allResources = resourceDAO.list(Resource.class);
         final IScenarioInfo scenarioInfo = buildScenarioInfo(orderReloaded);
         PlanningState result = PlanningState.create(taskElement, orderReloaded
@@ -937,6 +938,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         forceLoadOfCriterions(each);
         if (each.getCalendar() != null) {
             BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+        }
+    }
+
+    private static void switchAllocationsToScenario(Scenario scenario,
+            TaskElement task) {
+        for (ResourceAllocation<?> each : task.getAllResourceAllocations()) {
+            each.switchToScenario(scenario);
         }
     }
 
