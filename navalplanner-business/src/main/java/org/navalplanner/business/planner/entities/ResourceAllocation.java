@@ -744,6 +744,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 each.detach();
             }
         }
+
+        protected abstract DayAssignmentsState switchTo(Scenario scenario);
     }
 
     protected abstract DayAssignmentsState getDayAssignmentsState();

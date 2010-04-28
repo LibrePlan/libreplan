@@ -253,6 +253,10 @@ public class SpecificResourceAllocation extends
             each.setSpecificResourceAllocation(outerSpecificAllocation);
         }
 
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            return this;
+        }
     }
 
     private class TransientState extends DayAssignmentsState {
@@ -304,13 +308,20 @@ public class SpecificResourceAllocation extends
         protected void setParentFor(SpecificDayAssignment each) {
             each.setSpecificResourceAllocation(outerSpecificAllocation);
         }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            SpecificDayAssignmentsState result = new SpecificDayAssignmentsState();
+            result.resetTo(specificDaysAssignment);
+            return result;
+        }
     }
 
     private DayAssignmentsState state = new SpecificDayAssignmentsState();
 
     @Override
     protected void scenarioChangedTo(Scenario scenario) {
-        // TODO complete
+        this.state = getDayAssignmentsState().switchTo(scenario);
     }
 
     @Override

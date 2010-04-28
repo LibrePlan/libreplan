@@ -291,6 +291,11 @@ public class GenericResourceAllocation extends
             genericDayAssignments.clear();
             genericDayAssignments.addAll(assignments);
         }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            return this;
+        }
     }
 
     private class TransientState extends DayAssignmentsState {
@@ -342,13 +347,20 @@ public class GenericResourceAllocation extends
             genericDayAssignments.clear();
             genericDayAssignments.addAll(assignments);
         }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            GenericDayAssignmentState result = new GenericDayAssignmentState();
+            result.resetTo(genericDayAssignments);
+            return result;
+        }
     }
 
     private DayAssignmentsState assignmentsState = new GenericDayAssignmentState();
 
     @Override
     protected void scenarioChangedTo(Scenario scenario) {
-        // TODO complete
+        assignmentsState = getDayAssignmentsState().switchTo(scenario);
     }
 
     @Override
