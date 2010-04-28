@@ -93,54 +93,20 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
+
         <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
-    <grid style="margin:10px;">
-        <columns sizable="true">
-            <column label="Project" sort="auto"/>
-            <column label="Task name" sort="auto"/>
-            <column label="Operations" width="100px"/>
-            <column label="Auto" width="50px" tooltiptext="Select " />
-        </columns>
-        <rows>
-            <row>
-                <label value="Project A"/>
-                <label value="Task A.1"/>
-                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
-                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
-                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
-            </row>
-            <row>
-                <label value="Project A"/>
-                <label value="Task A.2"/>
-                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
-                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
-                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
-            </row>
-            <row>
-                <label value="Project A"/>
-                <label value="Task A.3"/>
-                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
-                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
-                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
-            </row>
-            <row>
-                <label value="Project B"/>
-                <label value="Task B.2"/>
-                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
-                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
-                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
-            </row>
-        <row>
-                <label value="Project B"/>
-                <label value="Task B.3"/>
-                <button tooltiptext="${i18n:_('Select queue')}" sclass="icono"
-                    image="/common/img/ico_schedule1.png" hoverImage="/common/img/ico_schedule.png" />
-                <checkbox tooltiptext="${i18n:_('Select for automatic queuing')}" />
-            </row>
-        </rows>
-</grid>
-
-
+            <grid model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
+                    rowRenderer="@{limitingResourcesController.limitingResourceQueueElementsRenderer}"
+                    fixedLayout="true"
+                    style="margin: 10px" >
+                <columns sizable="true">
+                    <column label="${i18n:_('Order')}" sort="auto"/>
+                    <column label="${i18n:_('Task name')}" sort="auto"/>
+                    <column label="${i18n:_('Operations')}" width="100px"/>
+                    <column label="${i18n:_('Auto queueing')}" width="100px" />
+                </columns>
+            </grid>
         </south>
+
     </borderlayout>
 </zk>

@@ -42,8 +42,10 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.ILimitingResourceQueueElementDAO;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -69,6 +71,9 @@ import org.zkoss.ganttz.data.limitingresource.QueueTask;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -91,6 +96,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private ILimitingResourceQueueElementDAO limitingResourceQueueElementDAO;
 
     private List<LimitingResourceQueue> limitingResourceQueues;
     private Interval viewInterval;
@@ -446,6 +454,17 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 .getStart()), new LocalDate(interval.getFinish()));
     }
 
+    @Override
+    @Transactional(readOnly=true)
+    public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
+        List<LimitingResourceQueueElement> result = limitingResourceQueueElementDAO
+                .getUnassigned();
+        for (LimitingResourceQueueElement each : result) {
+            limitingResourceQueueElementDAO.reattach(each);
+            each.getResourceAllocation().getTask().getName();
+        }
+        return result;
+    }
 
 }
 
