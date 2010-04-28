@@ -138,6 +138,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         if (multipleFiltersFinder.isValidNewFilter(object)) {
             addSelectedElement(object);
             clearListbox();
+            listbox.setModel(getSubModel());
         }
         bandbox.close();
     }
