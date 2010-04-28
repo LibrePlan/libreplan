@@ -73,16 +73,26 @@ public class SpecificResourceAllocation extends
      * Constructor for hibernate. Do not use!
      */
     public SpecificResourceAllocation() {
-
+        state = buildFromDBState();
     }
 
     private SpecificResourceAllocation(ResourcesPerDay resourcesPerDay,
             Task task) {
         super(resourcesPerDay, task);
+        state = buildInitialTransientState();
     }
 
     private SpecificResourceAllocation(Task task) {
         super(task);
+        state = buildInitialTransientState();
+    }
+
+    private SpecificDayAssignmentsState buildFromDBState() {
+        return new SpecificDayAssignmentsState();
+    }
+
+    private TransientState buildInitialTransientState() {
+        return new TransientState(new HashSet<SpecificDayAssignment>());
     }
 
     public Resource getResource() {

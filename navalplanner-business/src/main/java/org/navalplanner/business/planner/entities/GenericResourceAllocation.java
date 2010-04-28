@@ -118,8 +118,11 @@ public class GenericResourceAllocation extends
         super(resourcesPerDay, task);
     }
 
+    /**
+     * Constructor for Hibernate. DO NOT USE!
+     */
     public GenericResourceAllocation() {
-
+        this.assignmentsState = buildFromDBState();
     }
 
     public static GenericResourceAllocation create(Task task) {
@@ -137,6 +140,15 @@ public class GenericResourceAllocation extends
     private GenericResourceAllocation(Task task) {
         super(task);
         this.criterions = task.getCriterions();
+        this.assignmentsState = buildInitialTransientState();
+    }
+
+    private GenericDayAssignmentState buildFromDBState() {
+        return new GenericDayAssignmentState();
+    }
+
+    private TransientState buildInitialTransientState() {
+        return new TransientState(new HashSet<GenericDayAssignment>());
     }
 
     public Set<GenericDayAssignment> getGenericDayAssignments() {
@@ -155,7 +167,8 @@ public class GenericResourceAllocation extends
     private Map<Resource, List<GenericDayAssignment>> getOrderedAssignmentsFor() {
         if (orderedDayAssignmentsByResource == null) {
             orderedDayAssignmentsByResource = DayAssignment
-                    .byResourceAndOrdered(genericDayAssignments);
+                    .byResourceAndOrdered(getDayAssignmentsState()
+                            .getUnorderedAssignments());
         }
         return orderedDayAssignmentsByResource;
     }
