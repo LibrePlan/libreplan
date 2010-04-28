@@ -97,13 +97,6 @@ public class GenericResourceAllocation extends
         }
     }
 
-    private static void initializeIfNeeded_(
-            Map<Task, List<GenericResourceAllocation>> result, Task task) {
-        if (!result.containsKey(task)) {
-            result.put(task, new ArrayList<GenericResourceAllocation>());
-        }
-    }
-
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
