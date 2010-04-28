@@ -241,7 +241,7 @@ public class SpecificResourceAllocation extends
     private DayAssignmentsState state = new SpecificDayAssignmentsState();
 
     @Override
-    protected org.navalplanner.business.planner.entities.ResourceAllocation.DayAssignmentsState getDayAssignmentsState() {
+    protected ResourceAllocation<SpecificDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
         return state;
     }
 
