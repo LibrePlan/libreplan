@@ -19,7 +19,9 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -70,6 +72,19 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
 
     public Set<GenericDayAssignment> getDayAssignments() {
         return new HashSet<GenericDayAssignment>(dayAssignments);
+    }
+
+    public void addAll(Collection<? extends GenericDayAssignment> assignments) {
+        dayAssignments.addAll(assignments);
+    }
+
+    public void removeAll(List<? extends DayAssignment> assignments) {
+        dayAssignments.removeAll(assignments);
+    }
+
+    public void resetTo(Collection<GenericDayAssignment> assignmentsCopied) {
+        dayAssignments.clear();
+        dayAssignments.addAll(assignmentsCopied);
     }
 
 }
