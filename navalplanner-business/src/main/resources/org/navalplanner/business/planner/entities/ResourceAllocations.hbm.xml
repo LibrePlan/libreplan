@@ -33,11 +33,6 @@
             <many-to-one name="resource"
                 class="org.navalplanner.business.resources.entities.Resource" />
 
-            <set name="specificDaysAssignment" cascade="all">
-                <key column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
-                <one-to-many class="SpecificDayAssignment"/>
-            </set>
-
             <set name="specificDayAssignmentsContainers" cascade="all-delete-orphan">
                 <key column="RESOURCE_ALLOCATION_ID" />
                 <one-to-many class="SpecificDayAssignmentsContainer"/>

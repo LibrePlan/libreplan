@@ -61,8 +61,6 @@ public class SpecificResourceAllocation extends
     @OnCopy(Strategy.SHARE)
     private Resource resource;
 
-    private Set<SpecificDayAssignment> specificDaysAssignment = new HashSet<SpecificDayAssignment>();
-
     private Set<SpecificDayAssignmentsContainer> specificDayAssignmentsContainers = new HashSet<SpecificDayAssignmentsContainer>();
 
     public static SpecificResourceAllocation createForTesting(
@@ -89,8 +87,8 @@ public class SpecificResourceAllocation extends
         state = buildInitialTransientState();
     }
 
-    private SpecificDayAssignmentsState buildFromDBState() {
-        return new SpecificDayAssignmentsState();
+    private DayAssignmentsState buildFromDBState() {
+        return new SpecificDayAssignmentsNoExplicitlySpecifiedScenario();
     }
 
     private TransientState buildInitialTransientState() {
@@ -185,10 +183,7 @@ public class SpecificResourceAllocation extends
     @Override
     ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
         SpecificResourceAllocation result = create(getTask());
-        result.specificDaysAssignment = new HashSet<SpecificDayAssignment>(
-                this.specificDaysAssignment);
-        result.toTransientStateWithInitial(new HashSet<SpecificDayAssignment>(
-                this.specificDaysAssignment));
+        result.toTransientStateWithInitial(getUnorderedFor(scenario));
         result.resource = getResource();
         return result;
     }
@@ -219,14 +214,34 @@ public class SpecificResourceAllocation extends
         return Collections.singletonList(resource);
     }
 
-    private class SpecificDayAssignmentsState extends DayAssignmentsState {
+    private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
 
         private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
+        private final SpecificDayAssignmentsContainer container;
+
+        private ExplicitlySpecifiedScenarioState(Scenario scenario) {
+            Validate.notNull(scenario);
+            this.container = retrieveOrCreateContainerFor(scenario);
+        }
+
+        private SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
+                Scenario scenario) {
+            Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
+            SpecificDayAssignmentsContainer retrieved = containers
+                    .get(scenario);
+            if (retrieved != null) {
+                return retrieved;
+            }
+            SpecificDayAssignmentsContainer result = SpecificDayAssignmentsContainer
+                    .create(outerSpecificAllocation, scenario);
+            specificDayAssignmentsContainers.add(result);
+            return result;
+        }
 
         @Override
         protected void addAssignments(
                 Collection<? extends SpecificDayAssignment> assignments) {
-            specificDaysAssignment.addAll(assignments);
+            container.addAll(assignments);
         }
 
         @Override
@@ -238,25 +253,24 @@ public class SpecificResourceAllocation extends
                 ResourceAllocation<?> modification) {
             SpecificResourceAllocation specificModication = (SpecificResourceAllocation) modification;
             return SpecificDayAssignment.copy(outerSpecificAllocation,
-                    specificModication.specificDaysAssignment);
+                    specificModication.getAssignments());
         }
 
         @Override
         protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
-            return specificDaysAssignment;
+            return container.getDayAssignments();
         }
 
         @Override
         protected void removeAssignments(
                 List<? extends DayAssignment> assignments) {
-            specificDaysAssignment.removeAll(assignments);
+            container.removeAll(assignments);
         }
 
         @Override
         protected void resetTo(
                 Collection<SpecificDayAssignment> assignmentsCopied) {
-            specificDaysAssignment.clear();
-            specificDaysAssignment.addAll(assignmentsCopied);
+            container.resetTo(assignmentsCopied);
         }
 
         @Override
@@ -266,7 +280,10 @@ public class SpecificResourceAllocation extends
 
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
-            return this;
+            ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
+                    scenario);
+            result.resetTo(container.getDayAssignments());
+            return result;
         }
     }
 
@@ -294,7 +311,7 @@ public class SpecificResourceAllocation extends
                 ResourceAllocation<?> modification) {
             SpecificResourceAllocation specificModication = (SpecificResourceAllocation) modification;
             return SpecificDayAssignment.copy(outerSpecificAllocation,
-                    specificModication.specificDaysAssignment);
+                    specificModication.getAssignments());
         }
 
         @Override
@@ -322,7 +339,8 @@ public class SpecificResourceAllocation extends
 
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
-            SpecificDayAssignmentsState result = new SpecificDayAssignmentsState();
+            ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
+                    scenario);
             result.resetTo(specificDaysAssignment);
             return result;
         }
@@ -348,7 +366,7 @@ public class SpecificResourceAllocation extends
 
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
-            return new SpecificDayAssignmentsState();
+            return new ExplicitlySpecifiedScenarioState(scenario);
         }
 
     }

@@ -68,7 +68,8 @@ public class ResourceAllocationDAO extends
         return (List<GenericResourceAllocation>) getSession().createCriteria(
                 GenericResourceAllocation.class).setResultTransformer(
                 Criteria.DISTINCT_ROOT_ENTITY).createCriteria(
-                "genericDayAssignments").add(
+                "genericDayAssignmentsContainers").createCriteria(
+                "dayAssignments").add(
                 Restrictions.in("resource", resources)).list();
     }
 

@@ -144,7 +144,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     @SuppressWarnings("unchecked")
     private List<Resource> findRelatedToGeneric(List<Task> taskElements) {
         String query = "SELECT DISTINCT resource FROM GenericResourceAllocation generic"
-                + " JOIN generic.genericDayAssignments dayAssignment"
+                + " JOIN generic.genericDayAssignmentsContainers container "
+                + " JOIN container.dayAssignments dayAssignment"
                 + " JOIN dayAssignment.resource resource"
                 + " WHERE generic.task IN(:taskElements)";
         return getSession().createQuery(query)
