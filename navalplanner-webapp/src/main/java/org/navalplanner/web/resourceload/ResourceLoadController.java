@@ -110,7 +110,6 @@ public class ResourceLoadController implements Composer {
             this.parent.appendChild(resourcesLoadPanel);
 
             resourcesLoadPanel.afterCompose();
-            addListeners();
             addCommands(resourcesLoadPanel);
         } catch (IllegalArgumentException e) {
             try {
