@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -35,21 +36,84 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class SpecificDayAssignment extends DayAssignment {
 
+    private abstract class ParentState {
+        abstract SpecificResourceAllocation getResourceAllocation();
+
+        abstract ParentState setParent(
+                SpecificResourceAllocation genericResourceAllocation);
+
+        abstract ParentState setParent(SpecificDayAssignmentsContainer container);
+    }
+
+    private class ContainerNotSpecified extends ParentState {
+
+        private SpecificResourceAllocation parent;
+
+        @Override
+        SpecificResourceAllocation getResourceAllocation() {
+            return parent;
+        }
+
+        @Override
+        ParentState setParent(
+                SpecificResourceAllocation genericResourceAllocation) {
+            if (parent != null) {
+                throw new IllegalStateException(
+                        "the allocation cannot be changed once it has been set");
+            }
+            this.parent = genericResourceAllocation;
+            return this;
+        }
+
+        @Override
+        ParentState setParent(SpecificDayAssignmentsContainer container) {
+            return new OnContainer(container);
+        }
+
+    }
+
+    private class OnContainer extends ParentState {
+
+        OnContainer(SpecificDayAssignmentsContainer container) {
+            Validate.notNull(container);
+            SpecificDayAssignment.this.container = container;
+        }
+
+        public OnContainer() {
+        }
+
+        @Override
+        SpecificResourceAllocation getResourceAllocation() {
+            return container.getResourceAllocation();
+        }
+
+        @Override
+        ParentState setParent(
+                SpecificResourceAllocation genericResourceAllocation) {
+            throw new IllegalStateException("parent already set");
+        }
+
+        @Override
+        ParentState setParent(SpecificDayAssignmentsContainer container) {
+            throw new IllegalStateException("parent already set");
+        }
+    }
+
     public static Set<SpecificDayAssignment> copy(
-            SpecificResourceAllocation allocation,
+            SpecificDayAssignmentsContainer allocation,
             Collection<SpecificDayAssignment> specificDaysAssignment) {
         Set<SpecificDayAssignment> result = new HashSet<SpecificDayAssignment>();
         for (SpecificDayAssignment s : specificDaysAssignment) {
             SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
                     .getResource());
-            created.setSpecificResourceAllocation(allocation);
+            created.parentState = created.parentState.setParent(allocation);
             created.associateToResource();
             result.add(created);
         }
         return result;
     }
 
-    private SpecificResourceAllocation specificResourceAllocation;
+    private ParentState parentState;
 
     private SpecificDayAssignmentsContainer container;
 
@@ -61,36 +125,33 @@ public class SpecificDayAssignment extends DayAssignment {
 
     public SpecificDayAssignment(LocalDate day, int hours, Resource resource) {
         super(day, hours, resource);
+        this.parentState = new ContainerNotSpecified();
     }
 
     /**
      * Constructor for hibernate. DO NOT USE!
      */
     public SpecificDayAssignment() {
-
+        this.parentState = new OnContainer();
     }
 
     public SpecificResourceAllocation getSpecificResourceAllocation() {
-        return specificResourceAllocation;
+        return parentState.getResourceAllocation();
     }
 
     public void setSpecificResourceAllocation(
             SpecificResourceAllocation specificResourceAllocation) {
-        if (this.specificResourceAllocation != null) {
-            throw new IllegalStateException(
-                    "the allocation cannot be changed once it has been set");
-        }
-        this.specificResourceAllocation = specificResourceAllocation;
+        this.parentState = this.parentState
+                .setParent(specificResourceAllocation);
     }
 
     @Override
     protected void detachFromAllocation() {
-        this.specificResourceAllocation = null;
     }
 
     @Override
     public boolean belongsTo(Object resourceAllocation) {
         return resourceAllocation != null
-                && specificResourceAllocation.equals(resourceAllocation);
+                && getSpecificResourceAllocation().equals(resourceAllocation);
     }
 }

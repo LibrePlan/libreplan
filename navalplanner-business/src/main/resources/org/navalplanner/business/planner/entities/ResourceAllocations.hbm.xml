@@ -132,8 +132,6 @@
 
         <!-- SpecificDayAssignment -->
         <subclass name="SpecificDayAssignment" discriminator-value="SPECIFIC_DAY">
-            <many-to-one name="specificResourceAllocation"
-                class="SpecificResourceAllocation" column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
             <many-to-one name="container" column="SPECIFIC_CONTAINER_ID" />
         </subclass>
 
