@@ -41,4 +41,6 @@ public interface IDisabilityConfiguration {
 
     public boolean isRenamingTasksEnabled();
 
+    public boolean isExpandPlanningViewCharts();
+
 }

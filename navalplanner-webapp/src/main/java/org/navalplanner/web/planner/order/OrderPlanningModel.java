@@ -46,6 +46,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -241,6 +242,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
         @Override
@@ -271,6 +275,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             List<ICommand<TaskElement>> additional) {
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
+        configuration.setExpandPlanningViewCharts(configurationDAO
+                .getConfiguration().isExpandOrderPlanningViewCharts());
+
         addAdditional(additional, configuration);
 
         ZoomLevel defaultZoomLevel = OrderPlanningModel

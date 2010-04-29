@@ -60,6 +60,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zkex.zul.api.South;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
@@ -306,6 +307,8 @@ public class Planner extends HtmlMacroComponent  {
         }
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
 
+        this.visibleChart = configuration.isExpandPlanningViewCharts();
+        ((South) getFellow("graphics")).setOpen(this.visibleChart);
     }
 
     private void resettingPreviousComponentsToNull() {
@@ -455,7 +458,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private FilterAndParentExpandedPredicates predicate;
 
-    private boolean visibleChart = false;
+    private boolean visibleChart;
 
     public void showCriticalPath() {
         Button showCriticalPathButton = (Button) getFellow("showCriticalPath");

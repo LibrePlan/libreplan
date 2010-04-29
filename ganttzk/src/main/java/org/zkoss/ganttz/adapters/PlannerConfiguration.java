@@ -148,6 +148,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private IPrintAction printAction;
 
+    private boolean expandPlanningViewCharts;
+
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -367,6 +369,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             throw new UnsupportedOperationException("print not supported");
         }
         printAction.doPrint(parameters, planner);
+    }
+
+    public void setExpandPlanningViewCharts(boolean expandPlanningViewCharts) {
+        this.expandPlanningViewCharts = expandPlanningViewCharts;
+    }
+
+    @Override
+    public boolean isExpandPlanningViewCharts() {
+        return expandPlanningViewCharts;
     }
 
 }

@@ -42,6 +42,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -159,6 +160,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
         this.tabs = entryPoints;
@@ -204,6 +208,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             ICommandOnTask<TaskElement> doubleClickCommand,
             IPredicate predicate) {
         PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
+        configuration.setExpandPlanningViewCharts(configurationDAO
+                .getConfiguration().isExpandCompanyPlanningViewCharts());
 
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
