@@ -29,7 +29,6 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.Task;
@@ -49,25 +48,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
         implements ITaskElementDAO {
-
-    @Override
-    @Transactional
-    public void removeOrphanedDayAssignments() {
-        deleteAll(getOrphanedDayAssignments());
-    }
-
-    private void deleteAll(List<DayAssignment> orphaned) {
-        for (DayAssignment dayAssignment : orphaned) {
-            getSession().delete(dayAssignment);
-        }
-    }
-
-    private List<DayAssignment> getOrphanedDayAssignments() {
-        List<DayAssignment> orphaned = new ArrayList<DayAssignment>();
-        orphaned.addAll(findOrphanedGenericDayAssignments());
-        orphaned.addAll(findOrphanedSpecificDayAssignments());
-        return orphaned;
-    }
 
     @SuppressWarnings("unchecked")
     private List<GenericDayAssignment> findOrphanedGenericDayAssignments() {

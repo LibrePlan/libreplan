@@ -143,7 +143,6 @@ public class SaveCommand implements ISaveCommand {
         }
         saveTasksToSave();
         removeTasksToRemove();
-        taskElementDAO.removeOrphanedDayAssignments();
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
     }
 
