@@ -53,6 +53,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -96,6 +97,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private List<LoadTimeLine> loadTimeLines;
     private Interval viewInterval;
 
@@ -115,6 +119,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Transactional(readOnly = true)
     public void initGlobalView(Order filterBy, boolean filterByResources) {
         this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
+        this.filterBy.useSchedulingDataFor(scenarioManager.getCurrent());
         this.filterByResources = filterByResources;
         doGlobalView();
     }
@@ -122,8 +127,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public Order getOrderByTask(TaskElement task) {
-        return orderElementDAO
-                .loadOrderAvoidingProxyFor(task.getOrderElement());
+        Order result = orderElementDAO.loadOrderAvoidingProxyFor(task
+                .getOrderElement());
+        result.useSchedulingDataFor(scenarioManager.getCurrent());
+        return result;
     }
 
     @Override
