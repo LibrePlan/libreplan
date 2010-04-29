@@ -279,6 +279,11 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 
+        Component additionalFilter = (Component) getVariable("additionalFilter", true);
+        if(additionalFilter != null) {
+            getFellow("additionalFilterInsertionPoint").appendChild(additionalFilter);
+        }
+
         timeTrackerHeader.afterCompose();
         timeTrackerComponent.afterCompose();
         listZoomLevels = (Listbox) getFellow("listZoomLevels");

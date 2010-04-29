@@ -47,6 +47,8 @@ resourcesLoadPanel = self;
         ${i18n:_('Show resources between')}:
         <combobox id="filterByNameCombo"
             onChange="resourcesLoadPanel.onSelectFilterByName(self.selectedItemApi.value)" />
+        <separator/>
+        <hbox id="additionalFilterInsertionPoint" />
        </hbox>
        </north>
 

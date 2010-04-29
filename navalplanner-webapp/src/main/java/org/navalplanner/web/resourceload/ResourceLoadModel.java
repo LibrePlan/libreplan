@@ -103,6 +103,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private boolean filterByResources = true;
 
+    private List<Resource> resourcesToShowList = new ArrayList<Resource>();
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
@@ -198,6 +200,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesToShow() {
+        if(!resourcesToShowList.isEmpty()) {
+            return getResourcesToShowReattached();
+        }
+        // if we haven't manually specified some resources to show, we load them
         if (filter()) {
             return resourcesForActiveTasks();
         } else {
@@ -649,6 +655,27 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .getStart()), new LocalDate(interval.getFinish()));
     }
 
+    @Override
+    public void setResourcesToShow(List<Resource> resourcesList) {
+        this.resourcesToShowList.clear();
+        this.resourcesToShowList.addAll(resourcesList);
+    }
+
+    private List<Resource> getResourcesToShowReattached() {
+        List<Resource> list = new ArrayList<Resource>();
+        for(Resource worker : resourcesToShowList) {
+            try {
+                //for some reason, resourcesDAO.reattach(worker) doesn't work
+                //and we have to retrieve them again with find
+                list.add(resourcesDAO.find(worker.getId()));
+            }
+            catch(InstanceNotFoundException e) {
+                //maybe it was removed by another transaction
+                //we just ignore the exception to not show the Resource
+            }
+        }
+        return list;
+    }
 }
 
 class PeriodsBuilder {

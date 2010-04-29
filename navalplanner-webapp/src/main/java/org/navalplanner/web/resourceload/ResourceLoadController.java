@@ -29,6 +29,9 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
+import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.security.SecurityUtils;
@@ -44,7 +47,12 @@ import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -73,6 +81,8 @@ public class ResourceLoadController implements Composer {
     private transient ISeeScheduledOfListener seeScheduledOfListener;
 
     private IOrderPlanningGate planningControllerEntryPoints;
+
+    private BandboxMultipleSearch bandBox;
 
     public ResourceLoadController() {
     }
@@ -165,11 +175,52 @@ public class ResourceLoadController implements Composer {
         if (resourcesLoadPanel != null) {
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
                     timeTracker);
+            if(bandBox != null && resourcesLoadPanel.getFilter()) {
+                //if the worker bandbox filter is active, we disable the name filter
+                resourcesLoadPanel.setNameFilterDisabled(
+                        !bandBox.getSelectedElements().isEmpty());
+            }
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker, parent);
+            if(filterBy == null) {
+                addWorkersBandbox();
+            }
             addListeners();
         }
+    }
+
+    private void addWorkersBandbox() {
+        bandBox = new BandboxMultipleSearch();
+        bandBox.setId("workerBandboxMultipleSearch");
+        bandBox.setWidthBandbox("285px");
+        bandBox.setWidthListbox("300px");
+        bandBox.setFinder("workerMultipleFiltersFinder");
+        bandBox.afterCompose();
+
+        Button button = new Button();
+        button.setImage("/common/img/ico_filter.png");
+        button.setTooltip(_("Filter by worker"));
+        button.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public void onEvent(Event event) throws Exception {
+                List<FilterPair> filterPairList = bandBox.getSelectedElements();
+                List<Resource> workersList = new ArrayList<Resource>();
+                for(FilterPair filterPair : filterPairList) {
+                    workersList.add((Resource)filterPair.getValue());
+                }
+                resourceLoadModel.setResourcesToShow(workersList);
+                reload(resourcesLoadPanel.getFilter());
+            }
+        });
+
+        Hbox hbox = new Hbox();
+        hbox.appendChild(bandBox);
+        hbox.appendChild(button);
+        hbox.setAlign("center");
+
+        resourcesLoadPanel.setVariable("additionalFilter", hbox, true);
     }
 
     public void filterBy(Order order) {
