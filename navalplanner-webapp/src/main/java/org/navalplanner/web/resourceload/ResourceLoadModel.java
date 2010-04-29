@@ -417,7 +417,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                         .findAllocationsRelatedTo(resource));
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
-                .getShortDescription(), sortedByStartDate, "resource", role),
+                .getName(), sortedByStartDate, "resource", role),
                 buildSecondLevel(resource, sortedByStartDate));
         return result;
 

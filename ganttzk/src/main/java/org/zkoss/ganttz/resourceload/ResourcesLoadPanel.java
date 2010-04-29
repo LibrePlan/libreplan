@@ -44,9 +44,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.api.Combobox;
 import org.zkoss.zul.api.Listbox;
 public class ResourcesLoadPanel extends HtmlMacroComponent {
 
@@ -82,6 +84,9 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private String feedBackMessage;
     private Boolean filterbyResources;
 
+    private int filterByNamePosition = 0;
+    private int numberOfGroupsByName = 10;
+
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
             TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
@@ -108,9 +113,11 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         if (filterby.equals(filterResources)) {
             this.filterbyResources = true;
             this.feedBackMessage = _("showing resources");
+            setNameFilterDisabled(false);
         } else {
             this.filterbyResources = false;
             this.feedBackMessage = _("showing criterions");
+            setNameFilterDisabled(true);
         }
         invalidatingChangeHappenedWithFeedback();
     }
@@ -229,7 +236,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private MutableTreeModel<LoadTimeLine> createModelForTree() {
         MutableTreeModel<LoadTimeLine> result = MutableTreeModel
                 .create(LoadTimeLine.class);
-        for (LoadTimeLine loadTimeLine : this.groups) {
+        for (LoadTimeLine loadTimeLine : this.getGroupsToShow()) {
             result.addToRoot(loadTimeLine);
             result = addNodes(result, loadTimeLine);
         }
@@ -276,6 +283,11 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         timeTrackerComponent.afterCompose();
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
+
+        Combobox filterByNameCombo = (Combobox) getFellow("filterByNameCombo");
+        if(filterByNameCombo.getChildren().isEmpty()) {
+            setupNameFilter(filterByNameCombo);
+        }
     }
 
     public void clearComponents() {
@@ -298,6 +310,69 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
             ISeeScheduledOfListener seeScheduledOfListener) {
         leftPane.addSeeScheduledOfListener(seeScheduledOfListener);
         resourceLoadList.addSeeScheduledOfListener(seeScheduledOfListener);
+    }
+
+    private void setupNameFilter(Combobox filterByNameCombo) {
+        int size = groups.size();
+
+        if(size > numberOfGroupsByName) {
+            int position = 0;
+            while(position < size) {
+                String firstName = groups.get(position).getConceptName();
+                String lastName;
+                int newPosition = position + numberOfGroupsByName;
+                if(newPosition - 1 < size) {
+                    lastName = groups.get(newPosition - 1)
+                    .getConceptName();
+                }
+                else {
+                    lastName = groups.get(size - 1)
+                    .getConceptName();
+                }
+
+                Comboitem item = new Comboitem();
+                item.setLabel(firstName.substring(0, 1) + " - " + lastName.substring(0, 1));
+                item.setDescription(firstName + " - " + lastName);
+                item.setValue(new Integer(position));
+                filterByNameCombo.appendChild(item);
+                position = newPosition;
+            }
+        }
+
+        Comboitem lastItem = new Comboitem();
+        lastItem.setLabel(_("All"));
+        lastItem.setDescription(_("Show all resources"));
+        lastItem.setValue(new Integer(-1));
+        filterByNameCombo.appendChild(lastItem);
+
+        filterByNameCombo.setSelectedIndex(0);
+    }
+
+    /**
+     * Returns only the LoadTimeLine objects that have to be show
+     * according to the name filter.
+     * @return
+     */
+    private List<LoadTimeLine> getGroupsToShow() {
+        if(filterByNamePosition == -1) {
+            return groups;
+        }
+        int endPosition =
+            (filterByNamePosition + numberOfGroupsByName < groups.size())?
+                filterByNamePosition + numberOfGroupsByName :
+                groups.size();
+        return groups.subList(filterByNamePosition, endPosition);
+    }
+
+    public void onSelectFilterByName(Integer filterByNamePosition) {
+            this.filterByNamePosition = filterByNamePosition.intValue();
+            this.feedBackMessage = _("filtering by name");
+            invalidatingChangeHappenedWithFeedback();
+    }
+
+    public void setNameFilterDisabled(boolean disabled) {
+        filterByNamePosition = disabled? -1 : 0;
+        ((Combobox) getFellow("filterByNameCombo")).setDisabled(disabled);
     }
 
 }
