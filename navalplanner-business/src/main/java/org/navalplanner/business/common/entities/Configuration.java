@@ -55,6 +55,10 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForUnitTypes = false;
 
+    private Boolean expandCompanyPlanningViewCharts = true;
+
+    private Boolean expandOrderPlanningViewCharts = true;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -141,6 +145,24 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForUnitTypes() {
         return generateCodeForUnitTypes;
+    }
+
+    public void setExpandCompanyPlanningViewCharts(
+            Boolean expandCompanyPlanningViewCharts) {
+        this.expandCompanyPlanningViewCharts = expandCompanyPlanningViewCharts;
+    }
+
+    public Boolean isExpandCompanyPlanningViewCharts() {
+        return expandCompanyPlanningViewCharts;
+    }
+
+    public void setExpandOrderPlanningViewCharts(
+            Boolean expandOrderPlanningViewCharts) {
+        this.expandOrderPlanningViewCharts = expandOrderPlanningViewCharts;
+    }
+
+    public Boolean isExpandOrderPlanningViewCharts() {
+        return expandOrderPlanningViewCharts;
     }
 
 }
