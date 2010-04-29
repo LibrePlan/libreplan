@@ -1,4 +1,4 @@
-﻿Assignment of resources
+Assignment of resources
 ########################
 
 .. asigacion_
@@ -11,7 +11,7 @@ The assignment of resources is one of the program's most important features, and
 
 Both types of assignment are explained in the following sections.
 
-To carry out either of the two types of resource assignment, the following steps are necessary: 
+To carry out either of the two types of resource assignment, the following steps are necessary:
 
 * Go to the planning of an order.
 * Right click on the task to be planned.
@@ -37,7 +37,7 @@ To carry out either of the two types of resource assignment, the following steps
 .. figure:: images/resource-assignment.png
    :scale: 50
 
-   Resource assignment 
+   Resource assignment
 
 * Users select "Search resources".
 * The program shows a new screen consisting of a criteria tree and a list to the right of workers that fulfil the selected criteria:
@@ -64,7 +64,7 @@ To carry out either of the two types of resource assignment, the following steps
 Specific assignment
 ===================
 
-This is the specific assignment of a resource to a project task, i.e. the user decides which specific “name and surname(s)” or “machine” must be assigned to a task.
+This is the specific assignment of a resource to a project task, i.e. the user decides which specific "name and surname(s)" or "machine" must be assigned to a task.
 
 Specific assignment can be carried out on the screen shown in this image:
 
@@ -72,7 +72,7 @@ Specific assignment can be carried out on the screen shown in this image:
 .. figure:: images/asignacion-especifica.png
    :scale: 50
 
-   Specific resource assignment 
+   Specific resource assignment
 
 When a resource is specifically assigned, the program creates daily assignments in relation to the percentage of daily assigned resources selected, by previously comparing it with the available resource calendar. For example, an assignment of 0.5 resources for a 32-hour task means that 4 hours per day are assigned to the specific resource to fulfil the task (supposing a working calendar of 8 hours per day).
 
@@ -92,7 +92,7 @@ Generic assignment occurs when users do not choose resources specifically, but l
 .. figure:: images/asignacion-xenerica.png
    :scale: 50
 
-   Generic resource assignment 
+   Generic resource assignment
 
 The assignment system uses the following assumptions as a basis:
 
@@ -105,19 +105,19 @@ The generic assignment algorithm functions in the following way:
 
 * All resources and days are treated as containers where daily assignment of hours fit, based on the maximum assignment capacity in the task calendar.
 * The system searches for the resources that fulfil the criterion.
-* The system analyses which assignments currently have different resources that fulfil criteria. 
+* The system analyses which assignments currently have different resources that fulfil criteria.
 * The resources that fulfil the criteria are chosen from those that have sufficient availability.
 * If freer resources are not available, assignments are made to the resources that have less availability.
 * Over-assignment of resources only starts when all the resources that fulfil the respective criteria are 100% assigned until the total amount required to carry out the task is attained.
 
-Generic machine assignment 
+Generic machine assignment
 --------------------------
 
 Generic machine assignment functions in the same way as worker assignment. For example, when a machine is assigned to a task, the system stores a generic assignment of hours for all machines that fulfil the criteria as described for the resources in general. However, in addition, the system performs the following procedure for machines:
 
 * For all machines chosen for generic assignment:
 
-  * It collects the machine's configuration information: alpha value, assigned workers and criteria. 
+  * It collects the machine's configuration information: alpha value, assigned workers and criteria.
   * If the machine has an assigned list of workers, the program chooses the number required by the machine depending on the assigned calendar. For example, if the machine calendar is 16 hours per day and the resource calendar is 8 hours, the program assigns two resources from the list of available resources.
   * If the machine has one or several assigned criteria, the program makes generic assignments from among the resources that fulfil the criteria assigned to the machine.
 
@@ -125,14 +125,14 @@ Generic machine assignment functions in the same way as worker assignment. For e
 Advanced assignment
 ===================
 
-Advanced assignments allow users to design assignments that are automatically carried out by the application in order to personalise them. This procedure allows users to manually choose the daily hours that are dedicated by resources to tasks that are assigned or define a function that is applied to the assignment. 
+Advanced assignments allow users to design assignments that are automatically carried out by the application in order to personalise them. This procedure allows users to manually choose the daily hours that are dedicated by resources to tasks that are assigned or define a function that is applied to the assignment.
 
 The steps to follow in order to manage advanced assignments are:
 
 * Go to the advanced assignment window. There are two ways to access advanced assignments:
 
    * Go to a specific order and change the view to advanced assignment. In this case, all the tasks on the order and assigned resources (specific and generic) will be shown.
-   * Go to the resource assignment window by clicking the "Advanced assignment" button. In this case, the assignments that show the resources (generic and specific) assigned for a task will be shown.  
+   * Go to the resource assignment window by clicking the "Advanced assignment" button. In this case, the assignments that show the resources (generic and specific) assigned for a task will be shown.
 
 .. figure:: images/advance-assignment.png
    :scale: 45
@@ -153,12 +153,12 @@ The steps to follow in order to manage advanced assignments are:
 
 
          * Date. Date on which the segment ends. If the following value is established (length), the date is calculated, alternatively, length is calculated.
-         * Defining the length of each segment. This indicates what percentage of the task’s duration is required for the segment.
+         * Defining the length of each segment. This indicates what percentage of the task's duration is required for the segment.
          * Defining the amount of work. This indicates what workload percentage is expected to be completed in this segment. The quantity of work must be incremental. For example, if there is a 10% segment, the next one must be larger (for example, 20%).
          * Segment graphs and accumulated loads.
 
 
-   * Users then click “Accept”.
+   * Users then click "Accept".
    * The program stores the function and applies it to the daily resource assignments.
 
 .. figure:: images/stretches.png

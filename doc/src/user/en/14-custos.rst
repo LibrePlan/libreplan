@@ -29,7 +29,7 @@ Managing hour types worked
 
 Users need to carry out the following steps to register hour types worked:
 
-* Select “Manage hour types worked ” on the “Administration” menu.
+* Select "Manage hour types worked"  on the "Administration" menu.
 * The program shows a list of existing hour types.
 
 .. figure:: images/hour-type-list.png
@@ -37,7 +37,7 @@ Users need to carry out the following steps to register hour types worked:
 
    Hour type list
 
-* Click “Edit” or “Create”.
+* Click "Edit" or "Create".
 * The program shows an hour type editing form.
 
 .. figure:: images/hour-type-edit.png
@@ -52,22 +52,22 @@ Users need to carry out the following steps to register hour types worked:
    * The default rate.
    * Hour type activation/de-activation.
 
-* Click “Save” or “Save and continue”.
+* Click "Save" or "Save and continue".
 
 Cost categories
 -------------------
 
 Users need to carry out the following steps to register cost categories:
 
-* Select “Manage cost categories” on the “Administration” menu.
+* Select "Manage cost categories" on the "Administration" menu.
 * The program shows a list of existing categories.
 
 .. figure:: images/category-cost-list.png
    :scale: 50
 
-   Cost category list 
+   Cost category list
 
-* Click “Edit” or “Create” button.
+* Click "Edit" or "Create" button.
 * The program shows a cost category editing form.
 
 .. figure:: images/category-cost-edit.png
@@ -85,8 +85,8 @@ Users need to carry out the following steps to register cost categories:
       * Start and finish date (the latter is optional) for the period that applies to the cost category.
       * Hourly rate for this specific category
 
-* Click “Save” or “Save and continue”.
+* Click "Save" or "Save and continue".
 
 
-The assignment of cost categories to resources is described in the chapter on resources. Go to the “Resources” section.
+The assignment of cost categories to resources is described in the chapter on resources. Go to the "Resources" section.
 

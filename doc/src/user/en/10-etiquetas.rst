@@ -1,4 +1,4 @@
-﻿Tags
+Tags
 #########
 
 .. contents::
@@ -15,12 +15,12 @@ Tag types are used to group the types of tag that users want to manage in the pr
 i. Client: Users may be interested in tagging tasks, orders or order elements in relation to the client who requests them.
 ii. Area: Users may be interested in tagging tasks, orders or order elements in relation to the areas in which they are carried out.
 
-The administration of tag types is managed from the “Administration” menu option. This is where users can edit tag types, create new tag types and add tags to tag types. Users can access the list of tags from this option.
+The administration of tag types is managed from the "Administration" menu option. This is where users can edit tag types, create new tag types and add tags to tag types. Users can access the list of tags from this option.
 
 .. figure:: images/tag-types-list.png
    :scale: 50
 
-   List of tag types 
+   List of tag types
 
 From the list of tag types, users can:
 
@@ -32,11 +32,11 @@ Editing and creating tags share the same form. From this form, the user can assi
 
 i. Select a tag to edit or click the create button for a new one.
 ii. The system shows a form with a text entry for the name and a list of text entries with existing and assigned tags.
-iii. If users wish to add a new tag, they must click on the “New tag” button.
+iii. If users wish to add a new tag, they must click on the "New tag" button.
 iv. The system shows a new row on the list with an empty text box that users must edit.
 v. Users enter a name for the tag.
 vi. The system adds the name to the list.
-vii. Users click “Save” or “Save and continue” to continue editing the form.
+vii. Users click "Save" or "Save and continue" to continue editing the form.
 
 .. figure:: images/tag-types-edition.png
    :scale: 50

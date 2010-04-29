@@ -1,4 +1,4 @@
-﻿Quality forms
+Quality forms
 ######################
 
 .. _calidad:
@@ -19,8 +19,8 @@ Quality forms consist of a list of questions or sentences that indicate the task
 
 Users must carry out the following steps to manage the quality forms:
 
-* From the “Administration” menu, access the “Quality forms” option.
-* Click edit an existing form or “Create”.
+* From the "Administration" menu, access the "Quality forms" option.
+* Click edit an existing form or "Create".
 * The program shows a form with a name, description and type.
 * Select the type.
 * The program shows the fields that are allowed for each type:
@@ -28,7 +28,7 @@ Users must carry out the following steps to manage the quality forms:
    * Percentage: question and percentage.
    * Item: question.
 
-* Click “Save” or “Save and continue”.
+* Click "Save" or "Save and continue".
 
 .. figure:: images/quality.png
    :scale: 50

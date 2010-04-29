@@ -1,4 +1,4 @@
-﻿Task planning
+Task planning
 #######################
 
 .. _planificacion:
@@ -8,7 +8,7 @@
 Task planning
 =============
 
-Planning in “NavalPlan” is a process that has been described throughout all of the chapters of the user guide, the chapters on orders and the assigning of resources being particularly important in this respect. This chapter describes basic planning procedures after the order and the Gantt charts have been configured properly. 
+Planning in "NavalPlan" is a process that has been described throughout all of the chapters of the user guide, the chapters on orders and the assigning of resources being particularly important in this respect. This chapter describes basic planning procedures after the order and the Gantt charts have been configured properly.
 
 .. figure:: images/planning-view.png
    :scale: 35
@@ -34,7 +34,7 @@ The planning view combines three different views:
    * Orange area: Indicating a resource load over 100% as a result of the current project.
    * Yellow area: Indicating a resource load over 100% as a result of other projects.
 
-* Graph view and value gained indicators. These can be viewed from the “Value gained” tab. The generated graph is based on the value gained technique and the indicators that are calculated for each of the workdays of the project. The calculated indicators are:
+* Graph view and value gained indicators. These can be viewed from the "Value gained" tab. The generated graph is based on the value gained technique and the indicators that are calculated for each of the workdays of the project. The calculated indicators are:
 
    * BCWS: accumulative time function for the number of hours planned up to a certain date. It will be 0 at the planned start of the task and the total number of planned hours at the end. As with all accumulative graphs, it will always increase. The function for a task will be the sum of the daily assignments until the calculation day. This function has values for all times, provided that resources have been assigned.
    * ACWP: accumulative time function for the hours attributed in the work reports up to a certain date.  This function will only have a value of 0 before the date of the task's first work report and its value will continue to increase as time passes and work report hours are added. It will have no value after the date of the last work report.
@@ -56,20 +56,20 @@ In the project planning, users can carry out the following procedures:
 
    * Creating a new milestone. Click the task before the milestone that is to be added and select the "Add milestone" option. Milestones can be moved by selecting the task with the mouse pointer and dragging it to the desired position.
    * Moving tasks without disturbing dependencies. Right click the body of the task, and drag it to the desired position. If no restrictions or dependencies are disturbed, the system will update the daily assignment of resources to the task and place the task in the selected date.
-   * Assign restrictions. Click the task in question and select the ”Task properties” option. A *pop-up* will appear with a “Restrictions” field that can be changed. Restrictions can conflict with dependencies, which is why each order states whether dependencies take priority or not over restrictions. The restrictions that can be established are:
+   * Assign restrictions. Click the task in question and select the "Task properties" option. A *pop-up* will appear with a "Restrictions" field that can be changed. Restrictions can conflict with dependencies, which is why each order states whether dependencies take priority or not over restrictions. The restrictions that can be established are:
 
       * *As soon as possible*: Indicating that the task must start as soon as possible.
       * *Not before*. Indicating that the task must not start before a certain date.
       * *Start on a specific date*. Indicating that the task must start on a specific date.
 
 
-The planning view also offers several procedures that ultimately function as viewing options: 
+The planning view also offers several procedures that ultimately function as viewing options:
 
 * Zoom level: Users can choose the zoom level they require. There are several zoom levels: annual, four-monthly, monthly, weekly and daily.
 * Search filters: Users can filter tasks based on labels or criteria.
 * Critical path. As a result of using the *Dijkstra* algorithm to calculate paths on graphs, the critical path was implemented which can be viewed by clicking on the "Critical path" button from the viewing options.
-* Show labels: Enabling users to view the labels assigned to tasks in a project, which can be viewed on screen or printed. 
-* Show resources: Enabling users to view the resources assigned to tasks in a project, which can be viewed on screen or printed. 
+* Show labels: Enabling users to view the labels assigned to tasks in a project, which can be viewed on screen or printed.
+* Show resources: Enabling users to view the resources assigned to tasks in a project, which can be viewed on screen or printed.
 * Print: Enabling users to print the Gantt chart being viewed at that moment.
 
 Resource load view
@@ -94,7 +94,7 @@ The order list view allows users to go to the order editing and deleting options
 
 Advanced assignment view
 ----------------------------
-The advanced assignment view is explained in depth in the “Resource assignment” chapter.
+The advanced assignment view is explained in depth in the "Resource assignment" chapter.
 
 
 
