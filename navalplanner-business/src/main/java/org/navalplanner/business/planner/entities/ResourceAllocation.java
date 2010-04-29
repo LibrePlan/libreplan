@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
@@ -300,6 +301,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private Set<LimitingResourceQueueElement> limitingResourceQueueElements = new HashSet<LimitingResourceQueueElement>();
 
+    @Min(0)
+    private int originalTotalAssignment = 0;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -337,6 +341,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public Task getTask() {
         return task;
+    }
+
+    public void setOriginalTotalAssigment(int originalTotalAssigment) {
+        this.originalTotalAssignment = originalTotalAssigment;
+    }
+
+    public int getOriginalTotalAssigment() {
+        return originalTotalAssignment;
     }
 
     public abstract ResourcesPerDayModification withDesiredResourcesPerDay(

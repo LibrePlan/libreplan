@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.navalplanner.business.planner.entities.consolidations" default-access="field">
+
+    <class name="ConsolidatedValue">
+         <id name="id" column="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <discriminator column="CONSOLIDATED_VALUE_TYPE" type="string"/>
+        <version name="version" access="property" type="long" />
+
+        <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+        <property name="value" scale="2" access="field" />
+
+        <subclass name="NonCalculatedConsolidatedValue" discriminator-value="NonCalculated">
+            <many-to-one name="advanceMeasurement" class="org.navalplanner.business.advance.entities.AdvanceMeasurement" column="ADVANCE_MEASUREMENT_ID" access="field" />
+        </subclass>
+
+        <subclass name="CalculatedConsolidatedValue" discriminator-value="Calculated">
+        </subclass>
+
+</class>
+
+<class name="Consolidation">
+        <id name="id" column="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <discriminator column="CONSOLIDATION_TYPE" type="string"/>
+        <version name="version" access="property" type="long" />
+
+        <subclass name="NonCalculatedConsolidation" discriminator-value="NonCalculated">
+
+           <many-to-one name="directAdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field"
+                class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
+
+            <set name="consolidatedValues" access="field" cascade="all,delete-orphan"
+             sort="org.navalplanner.business.planner.entities.consolidations.ConsolidatedValueComparator">
+                <key column="CONSOLIDATION_ID" />
+                <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue" />
+            </set>
+
+        </subclass>
+
+        <subclass name="CalculatedConsolidation" discriminator-value="Calculated">
+
+            <many-to-one name="indirectAdvanceAssignment" class="org.navalplanner.business.advance.entities.IndirectAdvanceAssignment" column="INADVANCE_ASSIGNMENT_ID" access="field" />
+
+            <set name="consolidatedValues" access="field" cascade="all,delete-orphan"
+                sort="org.navalplanner.business.planner.entities.consolidations.ConsolidatedValueComparator">
+                <key column="CONSOLIDATION_ID" />
+                <one-to-many class="org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue" />
+            </set>
+
+        </subclass>
+
+</class>
+
+</hibernate-mapping>

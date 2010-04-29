@@ -151,6 +151,8 @@ public abstract class DayAssignment extends BaseEntity {
     @NotNull
     private Resource resource;
 
+    private Boolean consolidated;
+
     protected DayAssignment() {
 
     }
@@ -174,6 +176,14 @@ public abstract class DayAssignment extends BaseEntity {
 
     public LocalDate getDay() {
         return day;
+    }
+
+    public void setConsolidated(Boolean consolidated) {
+        this.consolidated = consolidated;
+    }
+
+    public Boolean getConsolidated() {
+        return consolidated == null ? false : consolidated;
     }
 
     public static Comparator<DayAssignment> byDayComparator() {

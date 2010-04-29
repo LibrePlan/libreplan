@@ -44,6 +44,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -89,6 +90,9 @@ public class Task extends TaskElement {
     private SubcontractedTaskData subcontractedTaskData;
 
     private Integer priority;
+
+    @Valid
+    private Consolidation consolidation;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -578,6 +582,14 @@ public class Task extends TaskElement {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public void setConsolidation(Consolidation consolidation) {
+        this.consolidation = consolidation;
+    }
+
+    public Consolidation getConsolidation() {
+        return consolidation;
     }
 
 }

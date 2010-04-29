@@ -84,6 +84,9 @@
                 <value>
                     org/navalplanner/business/externalcompanies/entities/ExternalCompanies.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/planner/entities/AdvanceConsolidations.hbm.xml
+                </value>
             </list>
         </property>
 

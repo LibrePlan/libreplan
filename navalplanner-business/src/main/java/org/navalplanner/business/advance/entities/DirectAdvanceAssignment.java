@@ -22,7 +22,9 @@ package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -31,6 +33,7 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
 
 /**
  * Represents an {@link AdvanceAssignment} that is own of this
@@ -59,6 +62,9 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     @Valid
     private SortedSet<AdvanceMeasurement> advanceMeasurements = new TreeSet<AdvanceMeasurement>(
             new AdvanceMeasurementComparator());
+
+    @Valid
+    private Set<NonCalculatedConsolidation> nonCalculatedConsolidations = new HashSet<NonCalculatedConsolidation>();
 
     private boolean fake = false;
 
@@ -193,6 +199,15 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
             }
         }
         return true;
+    }
+
+    public void setNonCalculatedConsolidation(
+            Set<NonCalculatedConsolidation> nonCalculatedConsolidation) {
+        this.nonCalculatedConsolidations = nonCalculatedConsolidation;
+    }
+
+    public Set<NonCalculatedConsolidation> getNonCalculatedConsolidation() {
+        return nonCalculatedConsolidations;
     }
 
 }
