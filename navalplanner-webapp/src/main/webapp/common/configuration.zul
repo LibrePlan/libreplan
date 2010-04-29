@@ -89,6 +89,14 @@
                             <label value="${i18n:_('Generate code for Unit Types')}" />
                             <checkbox checked="@{configurationController.generateCodeForUnitTypes}" />
                         </row>
+                        <row>
+                            <label value="${i18n:_('Expand company planning view charts')}" />
+                            <checkbox checked="@{configurationController.expandCompanyPlanningViewCharts}" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Expand order planning view charts')}" />
+                            <checkbox checked="@{configurationController.expandOrderPlanningViewCharts}" />
+                        </row>
                     </rows>
                 </grid>
 
