@@ -139,8 +139,6 @@
 
         <!-- GenericDayAssignment -->
         <subclass name="GenericDayAssignment" discriminator-value="GENERIC_DAY">
-            <many-to-one name="genericResourceAllocation"
-                class="GenericResourceAllocation" column="GENERIC_RESOURCE_ALLOCATION_ID" />
             <many-to-one name="container" column="GENERIC_CONTAINER_ID" />
         </subclass>
         <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
