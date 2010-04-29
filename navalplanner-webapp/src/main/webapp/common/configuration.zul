@@ -62,40 +62,54 @@
                                 selectedElement="@{configurationController.defaultCalendar}" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Generate code for Criterion')}" />
-                            <checkbox checked="@{configurationController.generateCodeForCriterion}" />
+                            <label value="${i18n:_('Generate code for')}" />
+                            <grid>
+                                <columns>
+                                    <column width="50%" />
+                                    <column />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <checkbox label="${i18n:_('Criterion')}"
+                                            checked="@{configurationController.generateCodeForCriterion}" />
+                                        <checkbox label="${i18n:_('Label')}"
+                                            checked="@{configurationController.generateCodeForLabel}" />
+                                    </row>
+                                    <row>
+                                        <checkbox label="${i18n:_('Work report')}"
+                                            checked="@{configurationController.generateCodeForWorkReport}" />
+                                        <checkbox label="${i18n:_('Resources')}"
+                                            checked="@{configurationController.generateCodeForResources}" />
+                                    </row>
+                                    <row>
+                                        <checkbox label="${i18n:_('Types of work hours')}"
+                                            checked="@{configurationController.generateCodeForTypesOfWorkHours}" />
+                                        <checkbox label="${i18n:_('Material categories')}"
+                                            checked="@{configurationController.generateCodeForMaterialCategories}" />
+                                    </row>
+                                    <row>
+                                        <checkbox label="${i18n:_('Unit Types')}"
+                                            checked="@{configurationController.generateCodeForUnitTypes}" />
+                                    </row>
+                                </rows>
+                            </grid>
                         </row>
                         <row>
-                            <label value="${i18n:_('Generate code for Label')}" />
-                            <checkbox checked="@{configurationController.generateCodeForLabel}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Generate code for Work Report')}" />
-                            <checkbox checked="@{configurationController.generateCodeForWorkReport}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Generate code for Resources')}" />
-                            <checkbox checked="@{configurationController.generateCodeForResources}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Generate code for Types of work hours')}" />
-                            <checkbox checked="@{configurationController.generateCodeForTypesOfWorkHours}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Generate code for Material categories')}" />
-                            <checkbox checked="@{configurationController.generateCodeForMaterialCategories}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Generate code for Unit Types')}" />
-                            <checkbox checked="@{configurationController.generateCodeForUnitTypes}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Expand company planning view charts')}" />
-                            <checkbox checked="@{configurationController.expandCompanyPlanningViewCharts}" />
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Expand order planning view charts')}" />
-                            <checkbox checked="@{configurationController.expandOrderPlanningViewCharts}" />
+                            <label value="${i18n:_('Planning charts expanded')}" />
+                            <grid>
+                                <columns>
+                                    <column width="50%" />
+                                    <column />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <checkbox label="${i18n:_('Company view')}"
+                                            checked="@{configurationController.expandCompanyPlanningViewCharts}" />
+                                        <checkbox label="${i18n:_('Order view')}"
+                                            checked="@{configurationController.expandOrderPlanningViewCharts}" />
+                                    </row>
+                                </rows>
+                            </grid>
                         </row>
                     </rows>
                 </grid>
