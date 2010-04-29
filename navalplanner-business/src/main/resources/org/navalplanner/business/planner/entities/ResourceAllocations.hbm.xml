@@ -71,15 +71,14 @@
                 <param name="max_lo">100</param>
             </generator>
         </id>
-
-        <!-- this provokes that there can only be one SpecificDayAssignments per
-         resource allocation and scenario -->
-        <natural-id>
-            <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
-            <many-to-one name="scenario" />
-        </natural-id>
-
         <version name="version" access="property" type="long" />
+        <!-- natural-id use has to be discarded due to:
+             Resource allocation and scenario should be an unique key.
+             natural-id could be used for that but was discarded due to:
+             https://forum.hibernate.org/viewtopic.php?p=2372348
+        -->
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+        <many-to-one name="scenario" />
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="SPECIFIC_CONTAINER_ID" />
             <one-to-many class="SpecificDayAssignment"/>
@@ -92,15 +91,14 @@
                 <param name="max_lo">100</param>
             </generator>
         </id>
-
-        <!-- this provokes that there can only be one GenericDayAssignmentsContainer per
-         resource allocation and scenario -->
-        <natural-id>
-            <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
-            <many-to-one name="scenario" />
-        </natural-id>
-
         <version name="version" access="property" type="long" />
+        <!-- natural-id use has to be discarded due to:
+             Resource allocation and scenario should be an unique key.
+             natural-id could be used for that but was discarded due to:
+             https://forum.hibernate.org/viewtopic.php?p=2372348
+        -->
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+        <many-to-one name="scenario" />
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="GENERIC_CONTAINER_ID" />
             <one-to-many class="GenericDayAssignment"/>
