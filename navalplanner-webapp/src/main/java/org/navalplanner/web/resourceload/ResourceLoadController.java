@@ -175,7 +175,7 @@ public class ResourceLoadController implements Composer {
         if (resourcesLoadPanel != null) {
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
                     timeTracker);
-            if(bandBox != null && resourcesLoadPanel.getFilter()) {
+            if(bandBox != null) {
                 //if the worker bandbox filter is active, we disable the name filter
                 resourcesLoadPanel.setNameFilterDisabled(
                         !bandBox.getSelectedElements().isEmpty());

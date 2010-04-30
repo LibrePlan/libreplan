@@ -84,6 +84,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private String feedBackMessage;
     private Boolean filterbyResources;
 
+    private boolean refreshNameFilter = true;
     private int filterByNamePosition = 0;
     private int numberOfGroupsByName = 10;
 
@@ -113,12 +114,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         if (filterby.equals(filterResources)) {
             this.filterbyResources = true;
             this.feedBackMessage = _("showing resources");
-            setNameFilterDisabled(false);
         } else {
             this.filterbyResources = false;
             this.feedBackMessage = _("showing criterions");
-            setNameFilterDisabled(true);
         }
+        refreshNameFilter = true;
+        filterByNamePosition = 0;
         invalidatingChangeHappenedWithFeedback();
     }
 
@@ -289,9 +290,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
 
-        Combobox filterByNameCombo = (Combobox) getFellow("filterByNameCombo");
-        if(filterByNameCombo.getChildren().isEmpty()) {
-            setupNameFilter(filterByNameCombo);
+        if(refreshNameFilter) {
+            setupNameFilter();
         }
     }
 
@@ -317,7 +317,9 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         resourceLoadList.addSeeScheduledOfListener(seeScheduledOfListener);
     }
 
-    private void setupNameFilter(Combobox filterByNameCombo) {
+    private void setupNameFilter() {
+        Combobox filterByNameCombo = (Combobox) getFellow("filterByNameCombo");
+        filterByNameCombo.getChildren().clear();
         int size = groups.size();
 
         if(size > numberOfGroupsByName) {
@@ -346,11 +348,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
         Comboitem lastItem = new Comboitem();
         lastItem.setLabel(_("All"));
-        lastItem.setDescription(_("Show all resources"));
+        lastItem.setDescription(_("Show all elements"));
         lastItem.setValue(new Integer(-1));
         filterByNameCombo.appendChild(lastItem);
 
         filterByNameCombo.setSelectedIndex(0);
+        refreshNameFilter = false;
     }
 
     /**

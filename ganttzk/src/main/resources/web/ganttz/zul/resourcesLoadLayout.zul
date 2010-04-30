@@ -44,7 +44,7 @@ resourcesLoadPanel = self;
             onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
         </listbox>
         <separator/>
-        ${i18n:_('Show resources between')}:
+        ${i18n:_('Show elements between')}:
         <combobox id="filterByNameCombo"
             onChange="resourcesLoadPanel.onSelectFilterByName(self.selectedItemApi.value)" />
         <separator/>
