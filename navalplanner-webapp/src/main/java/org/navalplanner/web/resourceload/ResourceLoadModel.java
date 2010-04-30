@@ -247,7 +247,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         List<Criterion> criterions = Criterion
-                .sortByName(genericAllocationsByCriterion.keySet());
+                .sortByTypeAndName(genericAllocationsByCriterion.keySet());
         for (Criterion criterion : criterions) {
             List<GenericResourceAllocation> allocations = ResourceAllocation
                     .sortedByStartDate(genericAllocationsByCriterion
@@ -396,8 +396,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine createPrincipal(Criterion criterion,
             List<GenericResourceAllocation> orderedAllocations,
             TimeLineRole<BaseEntity> role) {
-        return new LoadTimeLine(criterion.getName(), createPeriods(criterion,
-                orderedAllocations), "global-generic", role);
+        return new LoadTimeLine(criterion.getType().getName() + ": " + criterion.getName(),
+                createPeriods(criterion, orderedAllocations), "global-generic", role);
     }
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
