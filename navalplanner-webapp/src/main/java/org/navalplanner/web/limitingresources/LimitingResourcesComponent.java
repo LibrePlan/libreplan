@@ -21,11 +21,14 @@
 
 package org.navalplanner.web.limitingresources;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.IDatesMapper;
@@ -47,13 +50,13 @@ public class LimitingResourcesComponent extends XulElement {
                 limitingResourceQueue);
     }
 
-    private final LimitingResourceQueue loadLine;
+    private final LimitingResourceQueue limitingResourceQueue;
     private final TimeTracker timeTracker;
     private transient IZoomLevelChangedListener zoomChangedListener;
 
     private LimitingResourcesComponent(final TimeTracker timeTracker,
             final LimitingResourceQueue limitingResourceQueue) {
-        this.loadLine = limitingResourceQueue;
+        this.limitingResourceQueue = limitingResourceQueue;
         this.timeTracker = timeTracker;
         createChildren(limitingResourceQueue, timeTracker.getMapper());
         zoomChangedListener = new IZoomLevelChangedListener() {
@@ -70,34 +73,58 @@ public class LimitingResourcesComponent extends XulElement {
 
     private void createChildren(LimitingResourceQueue limitingResourceQueue,
             IDatesMapper mapper) {
-        List<Div> divs = null;
-
-        // createDivsForPeriods(mapper, limitingResourceQueue
-        // .getLimitingResourceQueueElements());
+        List<Div> divs = createDivsForQueueElements(mapper,
+                limitingResourceQueue.getLimitingResourceQueueElements());
         if (divs != null) {
-        for (Div div : divs) {
-            appendChild(div);
+            for (Div div : divs) {
+                appendChild(div);
             }
         }
     }
 
-    public String getResourceLoadName() {
-        return loadLine.getResource().getName();
+    public String getResourceName() {
+        return limitingResourceQueue.getResource().getName();
     }
 
-    private static List<Div> createDivsForPeriods(IDatesMapper datesMapper,
+    private static List<Div> createDivsForQueueElements(
+            IDatesMapper datesMapper,
             Set<LimitingResourceQueueElement> list) {
         List<Div> result = new ArrayList<Div>();
-        for (LimitingResourceQueueElement loadPeriod : list) {
-            result.add(createDivForPeriod(datesMapper, loadPeriod));
+
+        for (LimitingResourceQueueElement queueElement : list) {
+            validateQueueElement(queueElement);
+            result.add(createDivForQueueElement(datesMapper, queueElement));
         }
+
+        // FIX: adding static elements
+        result.add(createFakeDivForQueueElement(datesMapper));
+
         return result;
     }
 
-    private static Div createDivForPeriod(IDatesMapper datesMapper,
+    private static void validateQueueElement(
+            LimitingResourceQueueElement queueElement) {
+        if ((queueElement.getStartDate() == null)
+                || (queueElement.getStartDate() == null)) {
+            throw new ValidationException(_("Invalid queue element"));
+        }
+    }
+
+    private static Div createFakeDivForQueueElement(IDatesMapper datesMapper) {
+        Div result = new Div();
+        result.setClass("queue-element");
+
+        result.setTooltiptext("Tooltip");
+
+        result.setLeft("200px");
+        result.setWidth("200px");
+        return result;
+    }
+
+    private static Div createDivForQueueElement(IDatesMapper datesMapper,
             LimitingResourceQueueElement loadPeriod) {
         Div result = new Div();
-        result.setClass("queue element");
+        result.setClass("queue-element");
 
         result.setTooltiptext("Tooltip");
 
@@ -123,9 +150,8 @@ public class LimitingResourcesComponent extends XulElement {
     }
 
     private static int getStartPixels(IDatesMapper datesMapper,
-            LimitingResourceQueueElement loadPeriod) {
-        return datesMapper.toPixels(loadPeriod.getResourceAllocation()
-                .getStartDate().toDateMidnight()
+            LimitingResourceQueueElement queueElement) {
+        return datesMapper.toPixels(queueElement.getStartDate().toDateMidnight()
                 .toDate());
     }
 

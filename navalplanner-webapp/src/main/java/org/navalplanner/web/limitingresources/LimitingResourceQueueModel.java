@@ -64,9 +64,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -205,6 +202,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<Resource> result = Resource.sortByName(resourcesDAO
                 .getAllLimitingResources());
         for (Resource each : result) {
+            each.getLimitingResourceQueue().getLimitingResourceQueueElements()
+                    .size();
             limitingResourceQueues.add(each.getLimitingResourceQueue());
         }
         return result;

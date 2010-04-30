@@ -628,7 +628,7 @@ tr.z-vbox-sep {
 }
 
 .limitingresources .z-tree-body {
-    margin-top: 4px;
+    margin-top: -4px;
 }
 
 .limitingresources td.z-tree-cell {
@@ -651,6 +651,14 @@ tr.z-vbox-sep {
 
 .limitingresourcesleftpane div.z-tree-body table {
     table-layout:auto !important;
+}
+
+.queue-element {
+    background-color: #007BBE;
+    border: solid 1px;
+    float:left;
+    height:10px;
+    position:absolute;
 }
 
 
