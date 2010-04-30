@@ -23,12 +23,12 @@ package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.IDatesMapper;
-import org.zkoss.ganttz.data.limitingresource.QueueTask;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -70,10 +70,14 @@ public class LimitingResourcesComponent extends XulElement {
 
     private void createChildren(LimitingResourceQueue limitingResourceQueue,
             IDatesMapper mapper) {
-        List<Div> divs = createDivsForPeriods(mapper, limitingResourceQueue
-                .getLimitingResourceQueueElements());
+        List<Div> divs = null;
+
+        // createDivsForPeriods(mapper, limitingResourceQueue
+        // .getLimitingResourceQueueElements());
+        if (divs != null) {
         for (Div div : divs) {
             appendChild(div);
+            }
         }
     }
 
@@ -82,7 +86,7 @@ public class LimitingResourcesComponent extends XulElement {
     }
 
     private static List<Div> createDivsForPeriods(IDatesMapper datesMapper,
-            List<LimitingResourceQueueElement> list) {
+            Set<LimitingResourceQueueElement> list) {
         List<Div> result = new ArrayList<Div>();
         for (LimitingResourceQueueElement loadPeriod : list) {
             result.add(createDivForPeriod(datesMapper, loadPeriod));
@@ -103,9 +107,9 @@ public class LimitingResourcesComponent extends XulElement {
     }
 
     private static int getWidthPixels(IDatesMapper datesMapper,
-            QueueTask loadPeriod) {
-        LocalDate start = loadPeriod.getStart();
-        LocalDate end = loadPeriod.getEnd();
+            LimitingResourceQueueElement loadPeriod) {
+        LocalDate start = loadPeriod.getStartDate();
+        LocalDate end = loadPeriod.getEndDate();
         return datesMapper
                 .toPixels(toMilliseconds(end) - toMilliseconds(start));
     }

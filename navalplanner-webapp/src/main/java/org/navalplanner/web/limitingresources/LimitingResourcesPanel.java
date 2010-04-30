@@ -22,10 +22,13 @@ package org.navalplanner.web.limitingresources;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -41,9 +44,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.api.Listbox;
 
 public class LimitingResourcesPanel extends HtmlMacroComponent {
 
@@ -61,7 +64,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private LimitingResourcesList limitingResourcesList;
 
-    private List<LimitingResourceQueue> groups;
+    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
 
     private MutableTreeModel<LimitingResourceQueue> treeModel;
 
@@ -74,6 +77,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private Listbox listZoomLevels;
 
+    @Autowired
+    IResourceDAO resourcesDAO;
+
     private static final String filterResources = _("Filter by resources");
     private static final String filterCriterions = _("Filter by criterions");
     private boolean filterbyResources = true;
@@ -85,7 +91,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     public void init(List<LimitingResourceQueue> groups, TimeTracker timeTracker) {
-        this.groups = groups;
+        this.limitingResourceQueues = groups;
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
@@ -112,20 +118,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     public boolean getFilter() {
         return filterbyResources;
     }
-
-    // public void onApplyFilter() {
-    // zoomListeners
-    // .fireEvent(new IListenerNotification<IFilterChangedListener>() {
-    // @Override
-    // public void doNotify(IFilterChangedListener listener) {
-    // listener.filterChanged(getFilter());
-    // }
-    // });
-    // }
-    //
-    // public void addFilterListener(IFilterChangedListener listener) {
-    // zoomListeners.addListener(listener);
-    // }
 
     public ListModel getZoomLevels() {
         return new SimpleListModel(ZoomLevel.values());
@@ -193,7 +185,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
         MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
                 .create(LimitingResourceQueue.class);
-        for (LimitingResourceQueue LimitingResourceQueue : this.groups) {
+        for (LimitingResourceQueue LimitingResourceQueue : this.limitingResourceQueues) {
             result.addToRoot(LimitingResourceQueue);
         }
         return result;
@@ -217,31 +209,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         super.afterCompose();
 
+        // Insert resourcesList left pane component
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
+        // Insert timetracker watermarks and limitingResourcesQueues
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel")
                 .appendChild(limitingResourcesList);
 
-        /* ----------- All dependencies stuff ----------- */
-
-        // Div source = new Div();
-        // Div destination = new Div();
-        //
-        // LimitingDependencyComponent limitingDependencyComponent = new
-        // LimitingDependencyComponent(
-        // source, destination);
-        //
-        // dependencyList = new LimitingDependencyList(null);
-        // dependencyList.addDependencyComponent(limitingDependencyComponent);
-        // dependencyList.afterCompose();
-        //
-        // getFellow("insertionPointRightPanel").appendChild(dependencyList);
-
-        /* ----------- All dependencies stuff ----------- */
-
-
+        // Insert timetracker headers
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 

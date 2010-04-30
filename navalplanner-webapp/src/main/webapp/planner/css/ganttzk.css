@@ -631,6 +631,29 @@ tr.z-vbox-sep {
     margin-top: 4px;
 }
 
+.limitingresources td.z-tree-cell {
+    paddding-top: 2px;
+    border-bottom: 1px dotted #CCCCCC;
+}
+
+.limitingresourcesleftpane .secondlevel {
+    display: inline;
+}
+
+.limitingresourcesleftpane .secondlevel .z-label,
+.limitingresourcesleftpane .z-tree-body {
+    white-space: nowrap;
+}
+
+.limitingresourcesleftpane div.z-tree-body {
+    overflow: visible;
+}
+
+.limitingresourcesleftpane div.z-tree-body table {
+    table-layout:auto !important;
+}
+
+
 /* ---------- End Limiting resources ----------------- */
 
 

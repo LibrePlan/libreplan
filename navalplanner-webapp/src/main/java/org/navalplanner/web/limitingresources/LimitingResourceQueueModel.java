@@ -28,9 +28,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
@@ -63,7 +61,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.limitingresource.QueueTask;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -96,7 +93,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Autowired
     private ILimitingResourceQueueElementDAO limitingResourceQueueElementDAO;
 
-    private List<LimitingResourceQueue> limitingResourceQueues;
+    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
 
     private Interval viewInterval;
 
@@ -154,8 +151,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void doGlobalView() {
         limitingResourceQueues = calculateLimitingResourceQueues();
         if (!limitingResourceQueues.isEmpty()) {
-            viewInterval = LimitingResourceQueue
-                    .getIntervalFrom(limitingResourceQueues);
+            // Build interval
+            // viewInterval =
+            // LimitingResourceQueue.getIntervalFrom(limitingResourceQueues);
+            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
         } else {
             viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
         }
@@ -203,11 +202,12 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private List<Resource> allLimitingResources() {
-        List<Resource> allResources = resourcesDAO.getAllNonLimitingResources();
-        foreach (Resource each : allResources) {
-            each.getLimitingResourceQueue();
+        List<Resource> result = Resource.sortByName(resourcesDAO
+                .getAllLimitingResources());
+        for (Resource each : result) {
+            limitingResourceQueues.add(each.getLimitingResourceQueue());
         }
-        return Resource.sortByName(resourcesDAO.getAllNonLimitingResources());
+        return result;
     }
 
     private TimeLineRole<BaseEntity> getCurrentTimeLineRole(BaseEntity entity) {
@@ -217,39 +217,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private List<LimitingResourceQueue> groupsFor(List<Resource> allResources) {
         List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
         for (Resource resource : allResources) {
-            LimitingResourceQueue group = fillQueue(resource);
+            LimitingResourceQueue group = resource.getLimitingResourceQueue();
             result.add(group);
         }
         return result;
     }
-
-    private LimitingResourceQueue fillQueue(Resource resource) {
-        List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
-                .sortedByStartDate(resourceAllocationDAO
-                        .findAllocationsRelatedTo(resource));
-
-        TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
-
-        // Create ganttzk limitingResourceQueues
-        LimitingResourceQueue result = new LimitingResourceQueue(buildTimeLine(
-                resource, resource.getShortDescription(), sortedByStartDate,
-                "resource", role));
-
-        System.out.println("Allocations " + resource.getName() + " - "
-                + sortedByStartDate.size() + result.getResourceName());
-
-        return result;
-    }
-
-    private LimitingResourceQueue buildTimeLine(Resource resource, String name,
-            List<? extends ResourceAllocation<?>> sortedByStartDate,
-            String type, TimeLineRole<BaseEntity> role) {
-        return new LimitingResourceQueue(name, PeriodsBuilder.build(
-                QueueTaskGenerator.onResource(resource), sortedByStartDate),
-                type, role);
-    }
-
-
 
     private void initializeIfNeeded(
             Map<Order, List<ResourceAllocation<?>>> result, Order order) {
@@ -327,142 +299,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             limitingResourceQueueElementDAO.reattach(each);
             each.getResourceAllocation().getTask().getName();
         }
-        return result;
-    }
-
-}
-
-class PeriodsBuilder {
-
-    private final List<? extends ResourceAllocation<?>> sortedByStartDate;
-
-    private final List<QueueTaskGenerator> loadPeriodsGenerators = new LinkedList<QueueTaskGenerator>();
-
-    private final QueueTaskGeneratorFactory factory;
-
-    private PeriodsBuilder(QueueTaskGeneratorFactory factory,
-            List<? extends ResourceAllocation<?>> sortedByStartDate) {
-        this.factory = factory;
-        this.sortedByStartDate = sortedByStartDate;
-    }
-
-    public static List<QueueTask> build(QueueTaskGeneratorFactory factory,
-            List<? extends ResourceAllocation<?>> sortedByStartDate) {
-        return new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
-    }
-
-    private List<QueueTask> buildPeriods() {
-        for (ResourceAllocation<?> resourceAllocation : sortedByStartDate) {
-            loadPeriodsGenerators.add(factory.create(resourceAllocation));
-        }
-        joinPeriodGenerators();
-        return toGenerators(loadPeriodsGenerators);
-    }
-
-    private List<QueueTask> toGenerators(List<QueueTaskGenerator> generators) {
-        List<QueueTask> result = new ArrayList<QueueTask>();
-        for (QueueTaskGenerator queueTaskGenerator : generators) {
-            result.add(queueTaskGenerator.build());
-        }
-        return result;
-    }
-
-    private void joinPeriodGenerators() {
-        ListIterator<QueueTaskGenerator> iterator = loadPeriodsGenerators
-                .listIterator();
-        while (iterator.hasNext()) {
-            final QueueTaskGenerator current = findNextOneOverlapping(iterator);
-            if (current != null) {
-                rewind(iterator, current);
-                iterator.remove();
-                QueueTaskGenerator next = iterator.next();
-                iterator.remove();
-                List<QueueTaskGenerator> generated = current.join(next);
-                final QueueTaskGenerator positionToComeBack = generated.get(0);
-                final List<QueueTaskGenerator> remaining = loadPeriodsGenerators
-                        .subList(iterator.nextIndex(), loadPeriodsGenerators
-                                .size());
-                List<QueueTaskGenerator> generatorsSortedByStartDate = mergeListsKeepingByStartSortOrder(
-                        generated, remaining);
-                final int takenFromRemaining = generatorsSortedByStartDate
-                        .size()
-                        - generated.size();
-                removeNextElements(iterator, takenFromRemaining);
-                addAtCurrentPosition(iterator, generatorsSortedByStartDate);
-                rewind(iterator, positionToComeBack);
-            }
-        }
-    }
-
-    private QueueTaskGenerator findNextOneOverlapping(
-            ListIterator<QueueTaskGenerator> iterator) {
-        while (iterator.hasNext()) {
-            QueueTaskGenerator current = iterator.next();
-            if (!iterator.hasNext()) {
-                return null;
-            }
-            QueueTaskGenerator next = peekNext(iterator);
-            if (current.overlaps(next)) {
-                return current;
-            }
-        }
-        return null;
-    }
-
-    private void addAtCurrentPosition(
-            ListIterator<QueueTaskGenerator> iterator,
-            List<QueueTaskGenerator> sortedByStartDate) {
-        for (QueueTaskGenerator l : sortedByStartDate) {
-            iterator.add(l);
-        }
-    }
-
-    private void removeNextElements(ListIterator<QueueTaskGenerator> iterator,
-            final int elementsNumber) {
-        for (int i = 0; i < elementsNumber; i++) {
-            iterator.next();
-            iterator.remove();
-        }
-    }
-
-    private void rewind(ListIterator<QueueTaskGenerator> iterator,
-            QueueTaskGenerator nextOne) {
-        while (peekNext(iterator) != nextOne) {
-            iterator.previous();
-        }
-    }
-
-    private List<QueueTaskGenerator> mergeListsKeepingByStartSortOrder(
-            List<QueueTaskGenerator> joined, List<QueueTaskGenerator> remaining) {
-        List<QueueTaskGenerator> result = new ArrayList<QueueTaskGenerator>();
-        ListIterator<QueueTaskGenerator> joinedIterator = joined.listIterator();
-        ListIterator<QueueTaskGenerator> remainingIterator = remaining
-                .listIterator();
-        while (joinedIterator.hasNext() && remainingIterator.hasNext()) {
-            QueueTaskGenerator fromJoined = peekNext(joinedIterator);
-            QueueTaskGenerator fromRemaining = peekNext(remainingIterator);
-            if (fromJoined.getStart().compareTo(fromRemaining.getStart()) <= 0) {
-                result.add(fromJoined);
-                joinedIterator.next();
-            } else {
-                result.add(fromRemaining);
-                remainingIterator.next();
-            }
-        }
-        if (joinedIterator.hasNext()) {
-            result.addAll(joined.subList(joinedIterator.nextIndex(), joined
-                    .size()));
-        }
-        return result;
-    }
-
-    private QueueTaskGenerator peekNext(
-            ListIterator<QueueTaskGenerator> iterator) {
-        if (!iterator.hasNext()) {
-            return null;
-        }
-        QueueTaskGenerator result = iterator.next();
-        iterator.previous();
         return result;
     }
 

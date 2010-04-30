@@ -25,7 +25,7 @@ import java.util.List;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 

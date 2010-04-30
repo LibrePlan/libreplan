@@ -87,7 +87,7 @@ public class LimitingResourcesController implements Composer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
-        // reload();
+        reload();
     }
 
     public void reload() {
