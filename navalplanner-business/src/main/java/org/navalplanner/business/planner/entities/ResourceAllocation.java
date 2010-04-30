@@ -996,4 +996,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      */
     public abstract List<Resource> querySuitableResources(IResourceDAO resourceDAO);
 
+    public abstract void makeAssignmentsContainersDontPoseAsTransientAnyMore();
+
 }

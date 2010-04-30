@@ -493,4 +493,11 @@ public class GenericResourceAllocation extends
         return result;
     }
 
+    @Override
+    public void makeAssignmentsContainersDontPoseAsTransientAnyMore() {
+        for (GenericDayAssignmentsContainer each : genericDayAssignmentsContainers) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
 }

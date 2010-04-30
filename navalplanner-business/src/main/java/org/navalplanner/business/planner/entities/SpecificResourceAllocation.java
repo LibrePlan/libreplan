@@ -383,4 +383,11 @@ public class SpecificResourceAllocation extends
         return state;
     }
 
+    @Override
+    public void makeAssignmentsContainersDontPoseAsTransientAnyMore() {
+        for (SpecificDayAssignmentsContainer each : specificDayAssignmentsContainers) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
 }

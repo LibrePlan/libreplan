@@ -223,6 +223,7 @@ public class SaveCommand implements ISaveCommand {
             Set<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.dontPoseAsTransientObjectAnymore();
+            each.makeAssignmentsContainersDontPoseAsTransientAnyMore();
             for (DayAssignment eachAssignment : each.getAssignments()) {
                 eachAssignment.dontPoseAsTransientObjectAnymore();
             }
