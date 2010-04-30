@@ -25,7 +25,7 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;

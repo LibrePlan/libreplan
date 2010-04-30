@@ -112,5 +112,15 @@
         </mold>
     </component>
 
+    <!-- Depencencies displayed in limiting resources window -->
+    <component>
+        <component-name>limitingdependencylist</component-name>
+        <component-class>org.navalplanner.web.limitingresources.LimitingDependencyList</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>/limitingresources/limitingdependencylist.dsp</mold-uri>
+        </mold>
+    </component>
+
 
 </language-addon>

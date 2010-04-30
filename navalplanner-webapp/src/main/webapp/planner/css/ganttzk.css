@@ -114,6 +114,13 @@
     height: 23px;
 }
 
+#listdetails_container .z-textbox-readonly,
+#listdetails_container .z-textbox-text-disd {
+    background-color: #f0f0f0;
+    color: #000000 !important;
+}
+
+
 .taskdetail_grid table {
     height: 30px;
     width: 285px; /* Ganntz.ListdetailsWidth */

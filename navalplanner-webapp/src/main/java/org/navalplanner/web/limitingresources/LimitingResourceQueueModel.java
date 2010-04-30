@@ -32,8 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
@@ -47,12 +45,11 @@ import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -66,7 +63,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
 import org.zkoss.ganttz.data.limitingresource.QueueTask;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -101,6 +97,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private ILimitingResourceQueueElementDAO limitingResourceQueueElementDAO;
 
     private List<LimitingResourceQueue> limitingResourceQueues;
+
     private Interval viewInterval;
 
     private Order filterBy;
@@ -206,7 +203,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private List<Resource> allLimitingResources() {
-        return Resource.sortByName(resourcesDAO.getAllLimitingResources());
+        List<Resource> allResources = resourcesDAO.getAllNonLimitingResources();
+        foreach (Resource each : allResources) {
+            each.getLimitingResourceQueue();
+        }
+        return Resource.sortByName(resourcesDAO.getAllNonLimitingResources());
     }
 
     private TimeLineRole<BaseEntity> getCurrentTimeLineRole(BaseEntity entity) {
@@ -216,15 +217,13 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private List<LimitingResourceQueue> groupsFor(List<Resource> allResources) {
         List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
         for (Resource resource : allResources) {
-            LimitingResourceQueue group = buildGroup(resource);
-            if (!group.isEmpty()) {
-                result.add(group);
-            }
+            LimitingResourceQueue group = fillQueue(resource);
+            result.add(group);
         }
         return result;
     }
 
-    private LimitingResourceQueue buildGroup(Resource resource) {
+    private LimitingResourceQueue fillQueue(Resource resource) {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
                         .findAllocationsRelatedTo(resource));
@@ -250,82 +249,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 type, role);
     }
 
-    private List<LimitingResourceQueue> buildSecondLevel(Resource resource,
-            List<ResourceAllocation<?>> sortedByStartDate) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(sortedByStartDate);
 
-        if (filter()) {
-            // build time lines for current order
-            result.addAll(buildTimeLinesForOrder(resource, byOrder
-                    .get(filterBy)));
-            byOrder.remove(filterBy);
-            // build time lines for other orders
-            LimitingResourceQueue lineOthersOrders = buildTimeLinesForOtherOrders(
-                    resource, byOrder);
-            if (lineOthersOrders != null) {
-                result.add(lineOthersOrders);
-            }
-        } else {
-            // result.addAll(buildTimeLinesGroupForOrder(resource, byOrder));
-        }
-        return result;
-    }
-
-    private LimitingResourceQueue buildTimeLinesForOtherOrders(
-            Resource resource, Map<Order, List<ResourceAllocation<?>>> byOrder) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    private List<LimitingResourceQueue> buildTimeLinesForEachTask(
-            Criterion criterion,
-            List<ResourceAllocation<?>> allocations) {
-        Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
-                .byTask(allocations);
-
-        List<LimitingResourceQueue> secondLevel = new ArrayList<LimitingResourceQueue>();
-        for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
-            Task task = entry.getKey();
-            Set<Criterion> criterions = task.getCriterions();
-            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
-
-            /**
-             * Each resource line has the same role than its allocated task, so
-             * that link with the resource allocation screen
-             */
-
-        }
-        return secondLevel;
-    }
-
-    private String getDescriptionResourceWithCriterions(Resource resource) {
-        Set<CriterionSatisfaction> criterionSatisfactions = resource
-                .getCriterionSatisfactions();
-        return resource.getShortDescription()
-                + getCriterionSatisfactionDescription(criterionSatisfactions);
-    }
-
-    private String getCriterionSatisfactionDescription(
-            Set<CriterionSatisfaction> satisfactions) {
-        if (satisfactions.isEmpty()) {
-            return _("");
-        }
-        List<Criterion> criterions = new ArrayList<Criterion>();
-        for (CriterionSatisfaction satisfaction : satisfactions) {
-            criterions.add(satisfaction.getCriterion());
-        }
-        return " :: " + getName(criterions);
-    }
-
-    private List<ResourceAllocation<?>> getAllSortedValues(
-            Map<Order, List<ResourceAllocation<?>>> byOrder) {
-        List<ResourceAllocation<?>> resourceAllocations = new ArrayList<ResourceAllocation<?>>();
-        for (List<ResourceAllocation<?>> listAllocations : byOrder.values()) {
-            resourceAllocations.addAll(listAllocations);
-        }
-        return ResourceAllocation.sortedByStartDate(resourceAllocations);
-    }
 
     private void initializeIfNeeded(
             Map<Order, List<ResourceAllocation<?>>> result, Order order) {
@@ -352,71 +276,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private List<LimitingResourceQueue> buildTimeLinesForOrder(
-            Resource resource,
-            List<ResourceAllocation<?>> sortedByStartDate) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        // Add all time lines
-        // result.addAll(buildTimeLinesForEachTask(resource,
-        // onlySpecific(sortedByStartDate)));
-        // result.addAll(buildTimeLinesForEachCriterion(resource,
-        // onlyGeneric(sortedByStartDate)));
-        return result;
-    }
 
     private List<GenericResourceAllocation> onlyGeneric(
             List<ResourceAllocation<?>> sortedByStartDate) {
         return ResourceAllocation.getOfType(GenericResourceAllocation.class,
                 sortedByStartDate);
-    }
-
-    private List<SpecificResourceAllocation> onlySpecific(
-            List<ResourceAllocation<?>> sortedByStartDate) {
-        return ResourceAllocation.getOfType(SpecificResourceAllocation.class,
-                sortedByStartDate);
-    }
-
-    private List<LimitingResourceQueue> buildTimeLinesForEachCriterion(
-            Resource resource, List<GenericResourceAllocation> sortdByStartDate) {
-        Map<Set<Criterion>, List<GenericResourceAllocation>> byCriterions = GenericResourceAllocation
-                .byCriterions(sortdByStartDate);
-
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        for (Entry<Set<Criterion>, List<GenericResourceAllocation>> entry : byCriterions
-                .entrySet()) {
-
-            Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
-                    .byTask(new ArrayList<ResourceAllocation<?>>(entry
-                            .getValue()));
-
-            for (Entry<Task, List<ResourceAllocation<?>>> entryTask : byTask
-                    .entrySet()) {
-
-                Task task = entryTask.getKey();
-                List<GenericResourceAllocation> resouceAllocations = onlyGeneric(entryTask
-                        .getValue());
-                TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
-            }
-        }
-        return result;
-    }
-
-    private List<LimitingResourceQueue> buildTimeLinesForEachTask(
-            Resource resource,
-            List<SpecificResourceAllocation> sortedByStartDate) {
-
-        List<ResourceAllocation<?>> listOnlySpecific = new ArrayList<ResourceAllocation<?>>(
-                sortedByStartDate);
-        Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
-                .byTask(listOnlySpecific);
-
-        List<LimitingResourceQueue> secondLevel = new ArrayList<LimitingResourceQueue>();
-        for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
-            Task task = entry.getKey();
-            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
-
-        }
-        return secondLevel;
     }
 
     public static String getName(Collection<? extends Criterion> criterions,

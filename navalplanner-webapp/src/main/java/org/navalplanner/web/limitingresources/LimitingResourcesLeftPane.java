@@ -24,14 +24,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
-import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
@@ -67,7 +63,7 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
             @Override
             public void render(Treeitem item, Object data)
                     throws Exception {
-                LoadTimeLine line = (LoadTimeLine) data;
+                LimitingResourceQueue line = (LimitingResourceQueue) data;
                 item.setOpen(false);
                 item.setValue(line);
 
@@ -77,32 +73,14 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
                 item.appendChild(row);
                 row.appendChild(cell);
                 cell.appendChild(component);
-                // collapse(line);
-                addExpandedListener(item, line);
             }
 
-            private void addExpandedListener(final Treeitem item,
-                    final LoadTimeLine line) {
-                item.addEventListener("onOpen", new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        OpenEvent openEvent = (OpenEvent) event;
-//                        if (openEvent.isOpen()) {
-//                            List<LoadTimeLine> closed = calculatedClosedItems(item);
-//                            expand(line, closed);
-//                        } else {
-//                            collapse(line);
-//                        }
-                    }
-                });
-            }
-
-            private Component createComponent(LoadTimeLine line) {
+            private Component createComponent(LimitingResourceQueue line) {
                 return isTopLevel(line) ? createFirstLevel(line)
                         : createSecondLevel(line);
             }
 
-            private boolean isTopLevel(LoadTimeLine line) {
+            private boolean isTopLevel(LimitingResourceQueue line) {
                 int[] path = modelForTree.getPath(modelForTree.getRoot(), line);
                 return path.length == 0;
             }
@@ -114,13 +92,14 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         limitingResourcesList.collapse(line);
     }
 
-    private void expand(LoadTimeLine line, List<LimitingResourceQueue> closed) {
+    private void expand(LimitingResourceQueue line,
+            List<LimitingResourceQueue> closed) {
         // unnecesary
         // limitingResourcesList.expand(line, closed);
     }
 
-    private List<LoadTimeLine> calculatedClosedItems(Treeitem item) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+    private List<LimitingResourceQueue> calculatedClosedItems(Treeitem item) {
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
         Treechildren treeChildren = item.getTreechildren();
         if (treeChildren != null) {
             List<Treeitem> myTreeItems = (List<Treeitem>) treeChildren
@@ -138,19 +117,16 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         return result;
     }
 
-    private List<LoadTimeLine> getLineChildrenBy(Treeitem item) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        LoadTimeLine line = getLineByTreeitem(item);
-        if (line != null) {
-            result.addAll(line.getAllChildren());
-        }
+    private List<LimitingResourceQueue> getLineChildrenBy(Treeitem item) {
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
+        LimitingResourceQueue line = getLineByTreeitem(item);
         return result;
     }
 
-    private LoadTimeLine getLineByTreeitem(Treeitem child) {
-        LoadTimeLine line = null;
+    private LimitingResourceQueue getLineByTreeitem(Treeitem child) {
+        LimitingResourceQueue line = null;
         try {
-            line = (LoadTimeLine) child.getValue();
+            line = (LimitingResourceQueue) child.getValue();
         } catch (Exception e) {
             return null;
         }
@@ -161,36 +137,27 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         return (Tree) getFellow("loadsTree");
     }
 
-    private Component createFirstLevel(LoadTimeLine principal) {
+    private Component createFirstLevel(LimitingResourceQueue principal) {
         Div result = createLabelWithName(principal);
         result.setSclass("firstlevel");
         return result;
     }
 
-    private Component createSecondLevel(LoadTimeLine loadTimeLine) {
+    private Component createSecondLevel(LimitingResourceQueue loadTimeLine) {
         Div result = createLabelWithName(loadTimeLine);
         result.setSclass("secondlevel");
         return result;
     }
 
-    private Div createLabelWithName(LoadTimeLine principal) {
+    private Div createLabelWithName(LimitingResourceQueue principal) {
         Div result = new Div();
         Label label = new Label();
-        final String conceptName = principal.getConceptName();
+        final String conceptName = principal.getResource().getName();
         label.setValue(conceptName);
-        limitValue(result, label, 40);
         result.appendChild(label);
         return result;
     }
 
-    private static void limitValue(Div parent, Label label, int maxLength) {
-        String originalValue = label.getValue();
-        if (originalValue == null || originalValue.length() <= maxLength) {
-            return;
-        }
-        label.setValue(originalValue.substring(0, maxLength - 3) + "...");
-        label.setTooltip(createPopup(parent, originalValue));
-    }
 
     private static Popup createPopup(Div parent, String originalValue) {
         Popup result = new Popup();

@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.IDatesMapper;
-import org.zkoss.ganttz.data.limitingresource.LimitingResourceQueue;
 import org.zkoss.ganttz.data.limitingresource.QueueTask;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -70,44 +71,31 @@ public class LimitingResourcesComponent extends XulElement {
     private void createChildren(LimitingResourceQueue limitingResourceQueue,
             IDatesMapper mapper) {
         List<Div> divs = createDivsForPeriods(mapper, limitingResourceQueue
-                .getQueueTasks());
+                .getLimitingResourceQueueElements());
         for (Div div : divs) {
             appendChild(div);
         }
     }
 
     public String getResourceLoadName() {
-        return loadLine.getResourceName();
+        return loadLine.getResource().getName();
     }
-
-    public String getResourceLoadType() {
-        return loadLine.getType();
-    }
-
 
     private static List<Div> createDivsForPeriods(IDatesMapper datesMapper,
-            List<QueueTask> list) {
+            List<LimitingResourceQueueElement> list) {
         List<Div> result = new ArrayList<Div>();
-        for (QueueTask loadPeriod : list) {
+        for (LimitingResourceQueueElement loadPeriod : list) {
             result.add(createDivForPeriod(datesMapper, loadPeriod));
         }
         return result;
     }
 
     private static Div createDivForPeriod(IDatesMapper datesMapper,
-            QueueTask loadPeriod) {
+            LimitingResourceQueueElement loadPeriod) {
         Div result = new Div();
-        result.setClass(String.format("taskassignmentinterval %s", loadPeriod
-                .getLoadLevel().getCategory()));
+        result.setClass("queue element");
 
-        String load = "Load: " + loadPeriod.getLoadLevel().getPercentage()
-                + "% , ";
-        if (loadPeriod.getLoadLevel().getPercentage() == Integer.MAX_VALUE) {
-            load = "";
-        }
-        result.setTooltiptext(load
-                + "total work hours: " + loadPeriod.getTotalResourceWorkHours()
-                + " , " + "assigned hours: " + loadPeriod.getAssignedHours());
+        result.setTooltiptext("Tooltip");
 
         result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));
@@ -131,8 +119,9 @@ public class LimitingResourcesComponent extends XulElement {
     }
 
     private static int getStartPixels(IDatesMapper datesMapper,
-            QueueTask loadPeriod) {
-        return datesMapper.toPixels(loadPeriod.getStart().toDateMidnight()
+            LimitingResourceQueueElement loadPeriod) {
+        return datesMapper.toPixels(loadPeriod.getResourceAllocation()
+                .getStartDate().toDateMidnight()
                 .toDate());
     }
 
