@@ -105,6 +105,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<Resource> resourcesToShowList = new ArrayList<Resource>();
 
+    private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
@@ -179,6 +181,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
+        if(!criteriaToShowList.isEmpty()) {
+            return resourceAllocationDAO
+                    .findGenericAllocationsBySomeCriterion(criteriaToShowList);
+        }
         if (filter()) {
             List<Criterion> criterions = new ArrayList<Criterion>();
             List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
@@ -661,6 +667,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
         this.resourcesToShowList.addAll(resourcesList);
     }
 
+    @Override
+    public void clearResourcesToShow() {
+        resourcesToShowList.clear();
+    }
+
     private List<Resource> getResourcesToShowReattached() {
         List<Resource> list = new ArrayList<Resource>();
         for(Resource worker : resourcesToShowList) {
@@ -675,6 +686,17 @@ public class ResourceLoadModel implements IResourceLoadModel {
             }
         }
         return list;
+    }
+
+    @Override
+    public void clearCriteriaToShow() {
+        criteriaToShowList.clear();
+    }
+
+    @Override
+    public void setCriteriaToShow(List<Criterion> criteriaList) {
+        criteriaToShowList.clear();
+        criteriaToShowList.addAll(criteriaList);
     }
 }
 

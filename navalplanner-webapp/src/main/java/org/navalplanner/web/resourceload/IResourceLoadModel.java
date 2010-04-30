@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -46,4 +47,11 @@ public interface IResourceLoadModel {
     boolean userCanRead(Order order, String loginName);
 
     void setResourcesToShow(List<Resource> resourcesList);
+
+    void clearResourcesToShow();
+
+    void setCriteriaToShow(List<Criterion> criteriaList);
+
+    void clearCriteriaToShow();
+
 }
