@@ -47,6 +47,8 @@ public class DerivedDayAssignment extends DayAssignment {
     @NotNull
     private DerivedAllocation allocation;
 
+    private DerivedDayAssignmentsContainer container;
+
     private DerivedDayAssignment(LocalDate day, int hours, Resource resource,
             DerivedAllocation derivedAllocation) {
         super(day, hours, resource);

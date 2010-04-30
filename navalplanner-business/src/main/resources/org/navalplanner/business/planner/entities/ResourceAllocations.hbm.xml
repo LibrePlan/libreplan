@@ -95,6 +95,26 @@
         </set>
     </class>
 
+    <class name="DerivedDayAssignmentsContainer">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <!-- natural-id use has to be discarded due to:
+             Resource allocation and scenario should be an unique key.
+             natural-id could be used for that but was discarded due to:
+             https://forum.hibernate.org/viewtopic.php?p=2372348
+        -->
+        <many-to-one name="resourceAllocation" column="DERIVED_ALLOCATION_ID"/>
+        <many-to-one name="scenario" />
+        <set name="dayAssignments" cascade="all-delete-orphan">
+            <key column="DERIVED_CONTAINER_ID" />
+            <one-to-many class="DerivedDayAssignment"/>
+        </set>
+    </class>
+
     <class name="LimitingResourceQueueElement" table="limiting_resource_queue_element">
         <id name="id" type="long" access="property">
             <generator class="hilo">
@@ -141,6 +161,7 @@
         </subclass>
         <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
             <many-to-one name="allocation" column="DERIVED_ALLOCATION_ID"/>
+            <many-to-one name="container" column="DERIVED_CONTAINER_ID" />
         </subclass>
     </class>
 
@@ -189,6 +210,10 @@
         <set name="assignments" cascade="all">
             <key column="DERIVED_ALLOCATION_ID"/>
             <one-to-many class="DerivedDayAssignment"/>
+        </set>
+        <set name="derivedDayAssignmentsContainers" cascade="all-delete-orphan">
+            <key column="DERIVED_ALLOCATION_ID" />
+            <one-to-many class="DerivedDayAssignmentsContainer"/>
         </set>
     </class>
 </hibernate-mapping>

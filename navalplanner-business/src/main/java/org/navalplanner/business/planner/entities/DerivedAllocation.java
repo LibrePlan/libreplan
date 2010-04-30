@@ -90,6 +90,8 @@ public class DerivedAllocation extends BaseEntity {
     @OnCopy(Strategy.IGNORE)
     private Set<DerivedDayAssignment> detached = new HashSet<DerivedDayAssignment>();
 
+    private Set<DerivedDayAssignmentsContainer> derivedDayAssignmentsContainers = new HashSet<DerivedDayAssignmentsContainer>();
+
     public BigDecimal getAlpha() {
         return configurationUnit.getAlpha();
     }
