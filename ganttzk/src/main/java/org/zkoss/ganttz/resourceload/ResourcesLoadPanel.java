@@ -376,8 +376,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public void setNameFilterDisabled(boolean disabled) {
-        filterByNamePosition = disabled? -1 : 0;
-        ((Combobox) getFellow("filterByNameCombo")).setDisabled(disabled);
+        Combobox combo = ((Combobox) getFellow("filterByNameCombo"));
+        if(combo.isDisabled() != disabled) {
+            filterByNamePosition = disabled? -1 :
+                ((Integer)combo.getSelectedItemApi().getValue()).intValue();
+            combo.setDisabled(disabled);
+        }
     }
 
 }
