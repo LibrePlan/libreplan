@@ -87,6 +87,7 @@ import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
@@ -300,7 +301,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
         configuration
+                .addCommandOnTask(buildAdvanceConsolidationCommand(editTaskController));
+        configuration
                 .addCommandOnTask(buildSubcontractCommand(editTaskController));
+
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
         Tabbox chartComponent = new Tabbox();
@@ -755,6 +759,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return taskPropertiesCommand;
     }
 
+    private IAdvanceConsolidationCommand buildAdvanceConsolidationCommand(
+            EditTaskController editTaskController) {
+        IAdvanceConsolidationCommand advanceConsolidationCommand = getAdvanceConsolidationCommand();
+        advanceConsolidationCommand.initialize(editTaskController,
+                planningState);
+        return advanceConsolidationCommand;
+    }
+
     private IAddMilestoneCommand buildMilestoneCommand() {
         IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
         addMilestoneCommand.setState(planningState);
@@ -1015,6 +1027,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IDeleteMilestoneCommand getDeleteMilestoneCommand();
 
     protected abstract ITaskPropertiesCommand getTaskPropertiesCommand();
+
+    protected abstract IAdvanceConsolidationCommand getAdvanceConsolidationCommand();
 
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 

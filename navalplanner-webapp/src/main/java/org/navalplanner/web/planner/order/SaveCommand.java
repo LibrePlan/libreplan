@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,8 +43,13 @@ import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
+import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
+import org.navalplanner.business.planner.entities.consolidations.Consolidation;
+import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -175,6 +181,29 @@ public class SaveCommand implements ISaveCommand {
             for (TaskElement each : taskElement.getChildren()) {
                 dontPoseAsTransient(each);
             }
+        }
+        if (taskElement instanceof Task) {
+            dontPoseAsTransient(((Task) taskElement).getConsolidation());
+        }
+    }
+
+    private void dontPoseAsTransient(Consolidation consolidation) {
+        if (consolidation != null) {
+            consolidation.dontPoseAsTransientObjectAnymore();
+            if (consolidation.isCalculated()) {
+                dontPoseAsTransient(((CalculatedConsolidation) consolidation)
+                        .getCalculatedConsolidatedValues());
+            } else {
+                dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
+                        .getNonCalculatedConsolidatedValues());
+            }
+        }
+    }
+
+    private void dontPoseAsTransient(
+            SortedSet<? extends ConsolidatedValue> values) {
+        for (ConsolidatedValue value : values) {
+            value.dontPoseAsTransientObjectAnymore();
         }
     }
 
