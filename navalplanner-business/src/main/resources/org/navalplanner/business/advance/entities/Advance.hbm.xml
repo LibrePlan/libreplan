@@ -54,9 +54,8 @@
         <set name="nonCalculatedConsolidations"
             cascade="none"
             inverse="true"
-            access="field"
-             >
-                <key column="ADVANCE_ASSIGNMENT_ID" />
+            access="field">
+                <key column="DIR_ADVANCE_ASSIGNMENT_ID" />
                 <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation" />
         </set>
 
@@ -71,7 +70,7 @@
             cascade="none"
             inverse="true"
             access="field">
-                <key column="ADVANCE_ASSIGNMENT_ID" />
+                <key column="IND_ADVANCE_ASSIGNMENT_ID" />
                 <one-to-many class="org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation" />
         </set>
 

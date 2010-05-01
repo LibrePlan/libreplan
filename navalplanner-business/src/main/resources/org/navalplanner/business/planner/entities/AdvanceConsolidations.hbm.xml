@@ -15,30 +15,37 @@
         <property name="value" scale="2" access="field" />
 
         <subclass name="NonCalculatedConsolidatedValue" discriminator-value="NonCalculated">
+            <many-to-one name="consolidation" class="NonCalculatedConsolidation" column="CONSOLIDATION_ID" access="field" />
             <many-to-one name="advanceMeasurement" class="org.navalplanner.business.advance.entities.AdvanceMeasurement" column="ADVANCE_MEASUREMENT_ID" access="field" />
         </subclass>
 
         <subclass name="CalculatedConsolidatedValue" discriminator-value="Calculated">
+            <many-to-one name="consolidation" class="CalculatedConsolidation" column="CONSOLIDATION_ID" access="field" />
         </subclass>
 
 </class>
 
 <class name="Consolidation">
         <id name="id" column="id" type="long" access="property">
-            <generator class="hilo">
-                <param name="max_lo">100</param>
+         <generator class="foreign">
+                <param name="property">task</param>
             </generator>
         </id>
         <discriminator column="CONSOLIDATION_TYPE" type="string"/>
         <version name="version" access="property" type="long" />
 
+        <one-to-one name="task" class="org.navalplanner.business.planner.entities.Task" constrained="true"/>
+
         <subclass name="NonCalculatedConsolidation" discriminator-value="NonCalculated">
 
-           <many-to-one name="directAdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field"
+           <many-to-one name="directAdvanceAssignment" column="DIR_ADVANCE_ASSIGNMENT_ID" access="field"
                 class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
 
-            <set name="consolidatedValues" access="field" cascade="all,delete-orphan"
-             sort="org.navalplanner.business.planner.entities.consolidations.ConsolidatedValueComparator">
+            <set name="consolidatedValues"
+                access="field"
+                cascade="all,delete-orphan"
+                inverse="true"
+                sort="org.navalplanner.business.planner.entities.consolidations.ConsolidatedValueComparator">
                 <key column="CONSOLIDATION_ID" />
                 <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue" />
             </set>
@@ -47,9 +54,13 @@
 
         <subclass name="CalculatedConsolidation" discriminator-value="Calculated">
 
-            <many-to-one name="indirectAdvanceAssignment" class="org.navalplanner.business.advance.entities.IndirectAdvanceAssignment" column="INADVANCE_ASSIGNMENT_ID" access="field" />
+            <many-to-one name="indirectAdvanceAssignment" column="IND_ADVANCE_ASSIGNMENT_ID" access="field"
+            class="org.navalplanner.business.advance.entities.IndirectAdvanceAssignment"/>
 
-            <set name="consolidatedValues" access="field" cascade="all,delete-orphan"
+            <set name="consolidatedValues"
+                access="field"
+                cascade="all,delete-orphan"
+                inverse="true"
                 sort="org.navalplanner.business.planner.entities.consolidations.ConsolidatedValueComparator">
                 <key column="CONSOLIDATION_ID" />
                 <one-to-many class="org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue" />

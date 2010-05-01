@@ -49,7 +49,7 @@
             </component>
 
             <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"
-                cascade="all" access="field"/>
+                cascade="all"/>
 
             <set name="resourceAllocations" cascade="all-delete-orphan">
                 <key column="TASK" />

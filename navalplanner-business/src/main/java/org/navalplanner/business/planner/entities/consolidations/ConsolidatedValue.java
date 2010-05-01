@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities.consolidations;
 
+import java.math.BigDecimal;
+
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -27,25 +29,27 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class ConsolidatedValue extends BaseEntity {
+public abstract class ConsolidatedValue extends BaseEntity {
 
     private LocalDate date;
-    private int value;
+    private BigDecimal value;
+
+    public abstract boolean isCalculated();
 
     protected ConsolidatedValue() {
 
     }
 
-    protected ConsolidatedValue(LocalDate date, int value) {
+    protected ConsolidatedValue(LocalDate date, BigDecimal value) {
         this.date = date;
         this.value = value;
     }
 
-    public void setValue(int value) {
+    public void setValue(BigDecimal value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 

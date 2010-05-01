@@ -23,12 +23,33 @@ package org.navalplanner.business.planner.entities.consolidations;
 import java.util.SortedSet;
 
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.Task;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public abstract class Consolidation extends BaseEntity {
 
-    public abstract SortedSet<ConsolidatedValue> getConsolidatedValues();
+    public abstract SortedSet<? extends ConsolidatedValue> getConsolidatedValues();
+
+    public abstract boolean isCalculated();
+
+    private Task task;
+
+    protected Consolidation() {
+
+    }
+
+    protected Consolidation(Task task) {
+        this.task = task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public Task getTask() {
+        return task;
+    }
 
 }

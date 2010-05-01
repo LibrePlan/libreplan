@@ -24,6 +24,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
+import org.navalplanner.business.planner.entities.Task;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -36,15 +37,17 @@ public class CalculatedConsolidation extends Consolidation {
 
     private IndirectAdvanceAssignment indirectAdvanceAssignment;
 
-    public static CalculatedConsolidation create(
+    public static CalculatedConsolidation create(Task task,
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
-        return create(new CalculatedConsolidation(indirectAdvanceAssignment));
+        return create(new CalculatedConsolidation(task,
+                indirectAdvanceAssignment));
     }
 
-    public static CalculatedConsolidation create(
+    public static CalculatedConsolidation create(Task task,
             IndirectAdvanceAssignment indirectAdvanceAssignment,
             SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
-        return create(new CalculatedConsolidation(indirectAdvanceAssignment,
+        return create(new CalculatedConsolidation(task,
+                indirectAdvanceAssignment,
                 consolidatedValues));
     }
 
@@ -52,21 +55,26 @@ public class CalculatedConsolidation extends Consolidation {
 
     }
 
-    protected CalculatedConsolidation(
+    protected CalculatedConsolidation(Task task,
             IndirectAdvanceAssignment indirectAdvanceAssignment,
             SortedSet<CalculatedConsolidatedValue> consolidatedValues) {
-        this(indirectAdvanceAssignment);
+        this(task, indirectAdvanceAssignment);
         this.setConsolidatedValues(consolidatedValues);
     }
 
-    public CalculatedConsolidation(
+    public CalculatedConsolidation(Task task,
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
+        super(task);
         this.indirectAdvanceAssignment = indirectAdvanceAssignment;
     }
 
     @Override
     public SortedSet<ConsolidatedValue> getConsolidatedValues() {
         return new TreeSet<ConsolidatedValue>(consolidatedValues);
+    }
+
+    public SortedSet<CalculatedConsolidatedValue> getCalculatedConsolidatedValues() {
+        return consolidatedValues;
     }
 
     public void setConsolidatedValues(
@@ -83,4 +91,15 @@ public class CalculatedConsolidation extends Consolidation {
         return indirectAdvanceAssignment;
     }
 
+    public void addConsolidatedValue(CalculatedConsolidatedValue value) {
+        if (!consolidatedValues.contains(value)) {
+            value.setConsolidation(this);
+            this.consolidatedValues.add(value);
+        }
+    }
+
+    @Override
+    public boolean isCalculated() {
+        return true;
+    }
 }

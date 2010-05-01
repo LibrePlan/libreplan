@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities.consolidations;
 
+import java.math.BigDecimal;
+
 import org.joda.time.LocalDate;
 
 /**
@@ -28,19 +30,34 @@ import org.joda.time.LocalDate;
 
 public class CalculatedConsolidatedValue extends ConsolidatedValue {
 
+    private CalculatedConsolidation consolidation;
+
     public static CalculatedConsolidatedValue create() {
         return create(new CalculatedConsolidatedValue());
     }
 
-    public static CalculatedConsolidatedValue create(LocalDate date, int value) {
+    public static CalculatedConsolidatedValue create(LocalDate date,
+            BigDecimal value) {
         return create(new CalculatedConsolidatedValue(date, value));
     }
 
-    protected CalculatedConsolidatedValue(LocalDate date, int value) {
+    protected CalculatedConsolidatedValue(LocalDate date, BigDecimal value) {
         super(date, value);
     }
 
     protected CalculatedConsolidatedValue() {
     }
 
+    public void setConsolidation(CalculatedConsolidation consolidation) {
+        this.consolidation = consolidation;
+    }
+
+    public CalculatedConsolidation getConsolidation() {
+        return consolidation;
+    }
+
+    @Override
+    public boolean isCalculated() {
+        return true;
+    }
 }

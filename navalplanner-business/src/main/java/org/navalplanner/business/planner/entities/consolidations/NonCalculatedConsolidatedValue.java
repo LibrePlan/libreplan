@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities.consolidations;
 
+import java.math.BigDecimal;
+
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 
@@ -29,6 +31,8 @@ import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 
 public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
 
+    private NonCalculatedConsolidation consolidation;
+
     private AdvanceMeasurement advanceMeasurement;
 
     public static NonCalculatedConsolidatedValue create() {
@@ -36,15 +40,27 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            int value) {
+            BigDecimal value) {
         return create(new NonCalculatedConsolidatedValue(date, value));
     }
 
-    protected NonCalculatedConsolidatedValue(LocalDate date, int value) {
+    public static NonCalculatedConsolidatedValue create(LocalDate date,
+            BigDecimal value, AdvanceMeasurement advanceMeasurement) {
+        return create(new NonCalculatedConsolidatedValue(date, value,
+                advanceMeasurement));
+    }
+
+    protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
+            AdvanceMeasurement advanceMeasurement) {
+        this(date, value);
+        this.advanceMeasurement = advanceMeasurement;
+    }
+
+    protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value) {
         super(date, value);
     }
 
-    public NonCalculatedConsolidatedValue() {
+    protected NonCalculatedConsolidatedValue() {
     }
 
     public void setAdvanceMeasurement(AdvanceMeasurement advanceMeasurement) {
@@ -55,4 +71,16 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
         return advanceMeasurement;
     }
 
+    public void setConsolidation(NonCalculatedConsolidation consolidation) {
+        this.consolidation = consolidation;
+    }
+
+    public NonCalculatedConsolidation getConsolidation() {
+        return consolidation;
+    }
+
+    @Override
+    public boolean isCalculated() {
+        return false;
+    }
 }

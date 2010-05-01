@@ -33,15 +33,15 @@ public class ConsolidatedValueComparator implements
 
     @Override
     public int compare(ConsolidatedValue arg0, ConsolidatedValue arg1) {
-        if (arg0.getDate() == arg1.getDate()) {
+        if (arg1.getDate() == arg0.getDate()) {
             return 0;
         }
-        if (arg0.getDate() == null) {
+        if (arg1.getDate() == null) {
             return -1;
         }
-        if (arg1.getDate() == null) {
+        if (arg0.getDate() == null) {
             return 1;
         }
-        return arg1.getDate().compareTo(arg0.getDate());
+        return arg0.getDate().compareTo(arg1.getDate());
     }
 }

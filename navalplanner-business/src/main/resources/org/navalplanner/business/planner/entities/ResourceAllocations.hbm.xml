@@ -108,7 +108,6 @@
 
         <property name="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate" not-null="true"/>
 
-
         <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
           column="RESOURCE_ID" not-null="true">
         </many-to-one>

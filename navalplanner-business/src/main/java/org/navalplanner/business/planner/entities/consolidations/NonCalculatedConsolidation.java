@@ -24,6 +24,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.planner.entities.Task;
 
 
 /**
@@ -37,15 +38,17 @@ public class NonCalculatedConsolidation extends Consolidation {
 
     private DirectAdvanceAssignment directAdvanceAssignment;
 
-    public static NonCalculatedConsolidation create(
+    public static NonCalculatedConsolidation create(Task task,
             DirectAdvanceAssignment directAdvanceAssignment) {
-        return create(new NonCalculatedConsolidation(directAdvanceAssignment));
+        return create(new NonCalculatedConsolidation(task,
+                directAdvanceAssignment));
     }
 
-    public static NonCalculatedConsolidation create(
+    public static NonCalculatedConsolidation create(Task task,
             DirectAdvanceAssignment directAdvanceAssignment,
             SortedSet<NonCalculatedConsolidatedValue> consolidatedValues) {
-        return create(new NonCalculatedConsolidation(directAdvanceAssignment,
+        return create(new NonCalculatedConsolidation(task,
+                directAdvanceAssignment,
                 consolidatedValues));
     }
 
@@ -53,21 +56,26 @@ public class NonCalculatedConsolidation extends Consolidation {
 
     }
 
-    protected NonCalculatedConsolidation(
+    protected NonCalculatedConsolidation(Task task,
             DirectAdvanceAssignment directAdvanceAssignment,
             SortedSet<NonCalculatedConsolidatedValue> consolidatedValues) {
-        this(directAdvanceAssignment);
+        this(task, directAdvanceAssignment);
         this.setConsolidatedValues(consolidatedValues);
     }
 
-    public NonCalculatedConsolidation(
+    public NonCalculatedConsolidation(Task task,
             DirectAdvanceAssignment directAdvanceAssignment) {
+        super(task);
         this.directAdvanceAssignment = directAdvanceAssignment;
     }
 
     @Override
     public SortedSet<ConsolidatedValue> getConsolidatedValues() {
         return new TreeSet<ConsolidatedValue>(consolidatedValues);
+    }
+
+    public SortedSet<NonCalculatedConsolidatedValue> getNonCalculatedConsolidatedValues() {
+        return consolidatedValues;
     }
 
     public void setConsolidatedValues(
@@ -82,6 +90,18 @@ public class NonCalculatedConsolidation extends Consolidation {
 
     public DirectAdvanceAssignment getDirectAdvanceAssignment() {
         return directAdvanceAssignment;
+    }
+
+    public void addConsolidatedValue(NonCalculatedConsolidatedValue value) {
+        if (!consolidatedValues.contains(value)) {
+            value.setConsolidation(this);
+            this.consolidatedValues.add(value);
+        }
+    }
+
+    @Override
+    public boolean isCalculated() {
+        return false;
     }
 
 }
