@@ -102,4 +102,5 @@ public class CalculatedConsolidation extends Consolidation {
     public boolean isCalculated() {
         return true;
     }
+
 }

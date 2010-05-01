@@ -27,7 +27,7 @@
 
 <class name="Consolidation">
         <id name="id" column="id" type="long" access="property">
-         <generator class="foreign">
+             <generator class="foreign">
                 <param name="property">task</param>
             </generator>
         </id>

@@ -141,8 +141,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     deleteConsolidationIfIsNeeded(dto);
                 }
             }
-
-            assignConsolidatioToTask();
         }
     }
 
@@ -156,14 +154,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 consolidation = NonCalculatedConsolidation.create(task,
                         spreadAdvance);
             }
+            task.setConsolidation(consolidation);
         }
-    }
-
-    private void assignConsolidatioToTask() {
-        if (consolidation.getConsolidatedValues().isEmpty()) {
-            consolidation = null;
-        }
-        task.setConsolidation(consolidation);
     }
 
     private IndirectAdvanceAssignment getIndirecAdvanceAssignment() {

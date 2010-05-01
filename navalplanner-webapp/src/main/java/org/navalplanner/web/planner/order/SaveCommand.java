@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
@@ -46,9 +47,11 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
+import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +72,9 @@ import org.zkoss.zul.Messagebox;
 public class SaveCommand implements ISaveCommand {
 
     private static final Log LOG = LogFactory.getLog(SaveCommand.class);
+
+    @Autowired
+    private IConsolidationDAO consolidationDAO;
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -142,6 +148,7 @@ public class SaveCommand implements ISaveCommand {
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
             removeDetachedDerivedDayAssignments(taskElement);
+            removeEmptyConsolidation(taskElement);
             taskElementDAO.save(taskElement);
             dontPoseAsTransient(taskElement);
         }
@@ -157,6 +164,47 @@ public class SaveCommand implements ISaveCommand {
                 eachDerived.clearDetached();
             }
         }
+    }
+
+    private void removeEmptyConsolidation(TaskElement taskElement) {
+        if ((taskElement.isLeaf()) && (!taskElement.isMilestone())) {
+            Consolidation consolidation = ((Task) taskElement)
+                    .getConsolidation();
+            if ((consolidation != null)
+                    && (isEmptyConsolidation(consolidation))) {
+                if (!consolidation.isNewObject()) {
+                    try {
+                        consolidationDAO.remove(consolidation.getId());
+                    } catch (InstanceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                ((Task) taskElement).setConsolidation(null);
+            }
+        }
+    }
+
+    private boolean isEmptyConsolidation(final Consolidation consolidation) {
+        return transactionService
+                .runOnTransaction(new IOnTransaction<Boolean>() {
+            @Override
+            public Boolean execute() {
+
+                consolidationDAO.reattach(consolidation);
+                if (consolidation instanceof CalculatedConsolidation) {
+                    SortedSet<CalculatedConsolidatedValue> consolidatedValues = ((CalculatedConsolidation) consolidation)
+                            .getCalculatedConsolidatedValues();
+                    return consolidatedValues.isEmpty();
+                }
+                if (consolidation instanceof NonCalculatedConsolidation) {
+                    SortedSet<NonCalculatedConsolidatedValue> consolidatedValues = ((NonCalculatedConsolidation) consolidation)
+                            .getNonCalculatedConsolidatedValues();
+                    return consolidatedValues.isEmpty();
+                }
+                return false;
+
+            }
+        });
     }
 
     private void removeAssigments(Set<DerivedDayAssignment> detached) {
