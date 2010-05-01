@@ -99,4 +99,11 @@ public interface IManageOrderElementAdvancesModel {
     public boolean isQualityForm(AdvanceAssignment advance);
 
     public boolean lessThanPreviousMeasurements();
+
+    public boolean hasConsolidatedAdvances(AdvanceAssignment advance);
+
+    public boolean hasConsolidatedAdvances(AdvanceMeasurement advanceMeasurement);
+
+    public boolean findIndirectConsolidation(
+            AdvanceMeasurement advanceMeasurement);
 }
