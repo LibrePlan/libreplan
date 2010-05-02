@@ -38,6 +38,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 
@@ -215,5 +216,11 @@ public abstract class DayAssignment extends BaseEntity {
     }
 
     public abstract boolean belongsTo(Object allocation);
+
+    /**
+     * @return <code>null</code> if {@link DayAssignment this} day assignment
+     *         still has not been explicitly associated to a {@link Scenario}
+     */
+    public abstract Scenario getScenario();
 
 }

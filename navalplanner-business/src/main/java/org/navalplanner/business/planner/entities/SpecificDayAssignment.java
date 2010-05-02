@@ -27,8 +27,9 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 
 /**
@@ -45,6 +46,8 @@ public class SpecificDayAssignment extends DayAssignment {
                 SpecificResourceAllocation genericResourceAllocation);
 
         abstract ParentState setParent(SpecificDayAssignmentsContainer container);
+
+        abstract Scenario getScenario();
     }
 
     private class ContainerNotSpecified extends ParentState {
@@ -70,6 +73,11 @@ public class SpecificDayAssignment extends DayAssignment {
         @Override
         ParentState setParent(SpecificDayAssignmentsContainer container) {
             return new OnContainer(container);
+        }
+
+        @Override
+        Scenario getScenario() {
+            return null;
         }
 
     }
@@ -98,6 +106,11 @@ public class SpecificDayAssignment extends DayAssignment {
         @Override
         ParentState setParent(SpecificDayAssignmentsContainer container) {
             throw new IllegalStateException("parent already set");
+        }
+
+        @Override
+        Scenario getScenario() {
+            return container.getScenario();
         }
     }
 
@@ -152,5 +165,10 @@ public class SpecificDayAssignment extends DayAssignment {
     public boolean belongsTo(Object resourceAllocation) {
         return resourceAllocation != null
                 && getSpecificResourceAllocation().equals(resourceAllocation);
+    }
+
+    @Override
+    public Scenario getScenario() {
+        return parentState.getScenario();
     }
 }

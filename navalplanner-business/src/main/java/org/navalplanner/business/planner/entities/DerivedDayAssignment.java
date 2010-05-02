@@ -23,6 +23,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 
@@ -47,6 +48,8 @@ public class DerivedDayAssignment extends DayAssignment {
 
     private abstract class ParentState {
         protected abstract DerivedAllocation getAllocation();
+
+        public abstract Scenario getScenario();
     }
 
     private class TransientParentState extends ParentState {
@@ -62,6 +65,11 @@ public class DerivedDayAssignment extends DayAssignment {
         protected DerivedAllocation getAllocation() {
             return this.parent;
         }
+
+        @Override
+        public Scenario getScenario() {
+            return null;
+        }
     }
 
     private class ContainerParentState extends ParentState {
@@ -72,6 +80,11 @@ public class DerivedDayAssignment extends DayAssignment {
         @Override
         protected DerivedAllocation getAllocation() {
             return container.getResourceAllocation();
+        }
+
+        @Override
+        public Scenario getScenario() {
+            return container.getScenario();
         }
     }
 
@@ -122,6 +135,11 @@ public class DerivedDayAssignment extends DayAssignment {
     public boolean belongsTo(Object allocation) {
         return allocation != null
                 && parentState.getAllocation().equals(allocation);
+    }
+
+    @Override
+    public Scenario getScenario() {
+        return parentState.getScenario();
     }
 
 }
