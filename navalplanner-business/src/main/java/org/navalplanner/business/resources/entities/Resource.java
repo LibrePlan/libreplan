@@ -55,6 +55,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * This class acts as the base class for all resources.
@@ -128,11 +129,12 @@ public abstract class Resource extends IntegrationEntity {
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
+        dayAssignmentsState.clearCachedData();
     }
 
     private List<DayAssignment> getAssignmentsForDay(LocalDate date) {
         if (assignmentsByDayCached == null) {
-            assignmentsByDayCached = DayAssignment.byDay(dayAssignments);
+            assignmentsByDayCached = DayAssignment.byDay(getAssignments());
         }
         List<DayAssignment> list = assignmentsByDayCached.get(date);
         if (list == null){
@@ -140,6 +142,68 @@ public abstract class Resource extends IntegrationEntity {
         }
         return list;
     }
+
+    private abstract class DayAssignmentsState {
+
+        private List<DayAssignment> cachedAssignments;
+
+        abstract List<DayAssignment> calculateAssignments();
+
+        List<DayAssignment> getAssignments() {
+            if (cachedAssignments != null) {
+                return cachedAssignments;
+            }
+            return cachedAssignments = calculateAssignments();
+        }
+
+        void clearCachedData() {
+            cachedAssignments = null;
+        }
+    }
+
+    private class UsingScenarioManager extends DayAssignmentsState {
+
+        @Override
+        List<DayAssignment> calculateAssignments() {
+            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            Scenario current = Registry.getScenarioManager().getCurrent();
+            for (DayAssignment each : dayAssignments) {
+                if (each.getScenario() != null
+                        && each.getScenario().equals(current)) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+    }
+
+    private class OnSpecifiedScenario extends DayAssignmentsState {
+        private final Scenario currentScenario;
+
+        private OnSpecifiedScenario(Scenario currentScenario) {
+            Validate.notNull(currentScenario);
+            this.currentScenario = currentScenario;
+        }
+
+        @Override
+        List<DayAssignment> calculateAssignments() {
+            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            Scenario current = Registry.getScenarioManager().getCurrent();
+            for (DayAssignment each : dayAssignments) {
+                if (isTransient(each)
+                        || each.getScenario().equals(current)) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        private boolean isTransient(DayAssignment each) {
+            return each.getScenario() == null;
+        }
+    }
+
+    private DayAssignmentsState dayAssignmentsState = new UsingScenarioManager();
 
     @Valid
     public Set<CriterionSatisfaction> getCriterionSatisfactions() {
@@ -793,7 +857,11 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public List<DayAssignment> getAssignments() {
-        return new ArrayList<DayAssignment>(dayAssignments);
+        return dayAssignmentsState.getAssignments();
+    }
+
+    public void useScenario(Scenario scenario) {
+        dayAssignmentsState = new OnSpecifiedScenario(scenario);
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end) {

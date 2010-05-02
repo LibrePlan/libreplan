@@ -223,6 +223,16 @@ public abstract class PlanningState {
             this.resources = OrderPlanningModel
                     .loadRequiredDataFor(new HashSet<Resource>(
                     initialResources));
+            associateWithScenario(this.resources);
+        }
+
+        private void associateWithScenario(
+                Collection<? extends Resource> resources) {
+            Scenario currentScenario = getCurrentScenario();
+            for (Resource each : resources) {
+                each.useScenario(currentScenario);
+
+            }
         }
 
         @Override
@@ -265,6 +275,7 @@ public abstract class PlanningState {
         private void addingNewlyCreated(IResourceDAO resourceDAO) {
             Set<Resource> newResources = getNewResources(resourceDAO);
             OrderPlanningModel.loadRequiredDataFor(newResources);
+            associateWithScenario(newResources);
             resources.addAll(newResources);
         }
 
