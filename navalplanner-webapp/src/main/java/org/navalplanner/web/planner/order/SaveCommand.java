@@ -35,7 +35,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -92,10 +91,6 @@ public class SaveCommand implements ISaveCommand {
     @Override
     public void setState(PlanningState state) {
         this.state = state;
-    }
-
-    @Override
-    public void setOrder(Order order) {
     }
 
     @Override

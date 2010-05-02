@@ -809,7 +809,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private ISaveCommand buildSaveCommand() {
         ISaveCommand saveCommand = getSaveCommand();
         saveCommand.setState(planningState);
-        saveCommand.setOrder(orderReloaded);
         return saveCommand;
     }
 
