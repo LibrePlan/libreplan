@@ -20,7 +20,6 @@
 package org.navalplanner.business.planner.entities;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -44,36 +43,82 @@ public class DerivedDayAssignment extends DayAssignment {
     public DerivedDayAssignment() {
     }
 
-    @NotNull
-    private DerivedAllocation allocation;
+    private abstract class ParentState {
+        protected abstract DerivedAllocation getAllocation();
+    }
+
+    private class TransientParentState extends ParentState {
+
+        private final DerivedAllocation parent;
+
+        private TransientParentState(DerivedAllocation parent) {
+            Validate.notNull(parent);
+            this.parent = parent;
+        }
+
+        @Override
+        protected DerivedAllocation getAllocation() {
+            return this.parent;
+        }
+    }
+
+    private class ContainerParentState extends ParentState {
+
+        public ContainerParentState() {
+        }
+
+        @Override
+        protected DerivedAllocation getAllocation() {
+            return container.getResourceAllocation();
+        }
+    }
 
     private DerivedDayAssignmentsContainer container;
 
-    private DerivedDayAssignment(LocalDate day, int hours, Resource resource,
-            DerivedAllocation derivedAllocation) {
+    private ParentState parentState;
+
+    private DerivedDayAssignment(LocalDate day, int hours, Resource resource) {
         super(day, hours, resource);
-        Validate.notNull(derivedAllocation);
         Validate.isTrue(resource instanceof Worker);
-        this.allocation = derivedAllocation;
     }
 
-    @Override
-    protected void detachFromAllocation() {
-        this.allocation = null;
+    private DerivedDayAssignment(LocalDate day, int hours, Resource resource,
+            DerivedAllocation derivedAllocation) {
+        this(day, hours, resource);
+        this.parentState = new TransientParentState(derivedAllocation);
+    }
+
+    private DerivedDayAssignment(LocalDate day, int hours, Resource resource,
+            DerivedDayAssignmentsContainer container) {
+        this(day, hours, resource);
+        Validate.notNull(container);
+        this.container = container;
+        this.parentState = new ContainerParentState();
     }
 
     public DerivedAllocation getAllocation() {
-        return allocation;
+        return parentState.getAllocation();
     }
 
-    DerivedDayAssignment copyAsChildOf(DerivedAllocation allocation) {
+    DerivedDayAssignment copyAsChildOf(DerivedDayAssignmentsContainer container) {
         return create(this.getDay(), this.getHours(), this.getResource(),
-                allocation);
+                container);
+    }
+
+    private static DerivedDayAssignment create(LocalDate day, int hours,
+            Resource resource, DerivedDayAssignmentsContainer container) {
+        return create(new DerivedDayAssignment(day, hours, resource, container));
+    }
+
+    DerivedDayAssignment copyAsChildOf(DerivedAllocation derivedAllocation) {
+        return create(this.getDay(), this.getHours(), this.getResource(),
+                derivedAllocation);
     }
 
     @Override
     public boolean belongsTo(Object allocation) {
-        return allocation != null && this.allocation.equals(allocation);
+        return allocation != null
+                && parentState.getAllocation().equals(allocation);
     }
 
 }

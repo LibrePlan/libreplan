@@ -146,10 +146,6 @@ public class SpecificDayAssignment extends DayAssignment {
     }
 
     @Override
-    protected void detachFromAllocation() {
-    }
-
-    @Override
     public boolean belongsTo(Object resourceAllocation) {
         return resourceAllocation != null
                 && getSpecificResourceAllocation().equals(resourceAllocation);

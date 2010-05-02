@@ -31,8 +31,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
@@ -170,7 +175,57 @@ public class DerivedAllocationTest {
         givenADerivedAllocation();
         givenDayAssignments(new LocalDate(2008, 12, 1), worker, 8, 8, 8, 8);
         derivedAllocation.resetAssignmentsTo(dayAssignments);
-        assertThat(derivedAllocation.getAssignments(), equalTo(dayAssignments));
+        assertThat(derivedAllocation.getAssignments(),
+                compareValuesExceptParent(dayAssignments));
+    }
+
+    private Matcher<List<DerivedDayAssignment>> compareValuesExceptParent(
+            DerivedDayAssignment... derivedDayAssignments) {
+        return compareValuesExceptParent(Arrays.asList(derivedDayAssignments));
+    }
+
+    private Matcher<List<DerivedDayAssignment>> compareValuesExceptParent(
+            final List<DerivedDayAssignment> expected) {
+        return new BaseMatcher<List<DerivedDayAssignment>>() {
+
+            @Override
+            public boolean matches(Object object) {
+                if (!(object instanceof Collection<?>)) {
+                    return false;
+                }
+                Collection<DerivedDayAssignment> arg = (Collection<DerivedDayAssignment>) object;
+                if (arg.size() != expected.size()) {
+                    return false;
+                }
+                Iterator<DerivedDayAssignment> argIterator = arg.iterator();
+                Iterator<DerivedDayAssignment> expectedIterator = expected
+                        .iterator();
+                while (argIterator.hasNext()) {
+                    DerivedDayAssignment dayAssignment = argIterator.next();
+                    DerivedDayAssignment expectedAssignment = expectedIterator.next();
+                    Resource resource = dayAssignment.getResource();
+                    Resource expectedResource = expectedAssignment
+                            .getResource();
+                    LocalDate day = dayAssignment.getDay();
+                    LocalDate expectedDay = expectedAssignment.getDay();
+                    int hours = dayAssignment.getHours();
+                    int expectedHours = expectedAssignment
+                                                    .getHours();
+                    if (!resource.equals(expectedResource)
+                            || !day.equals(expectedDay)
+                            || hours != expectedHours) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("must have the same values than "
+                        + expected);
+            }
+        };
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -182,14 +237,17 @@ public class DerivedAllocationTest {
         derivedAllocation.resetAssignmentsTo(dayAssignments);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void theDerivedDayAssignmentsMustBeForTheSameDerivedAllocation() {
+    @Test
+    public void whenResettingAssignmentsTheParentIsChanged() {
         givenADerivedAllocation();
         DerivedAllocation another = DerivedAllocation.create(derivedFrom,
                 configurationUnit);
         givenDayAssignments(another, new LocalDate(2008, 12, 1), worker, 8, 8,
                 8);
         derivedAllocation.resetAssignmentsTo(dayAssignments);
+        for (DerivedDayAssignment each : derivedAllocation.getAssignments()) {
+            assertTrue(each.belongsTo(derivedAllocation));
+        }
     }
 
     @Test
@@ -204,8 +262,9 @@ public class DerivedAllocationTest {
                 startInterval, 3, worker, derivedAllocation);
         derivedAllocation.resetAssignmentsTo(startInterval, finishInterval,
                 Arrays.asList(newAssignment));
-        assertThat(derivedAllocation.getAssignments(), equalTo(Arrays.asList(
-                dayAssignments.get(0), dayAssignments.get(1), newAssignment)));
+        assertThat(derivedAllocation.getAssignments(),
+                compareValuesExceptParent(dayAssignments.get(0), dayAssignments
+                        .get(1), newAssignment));
     }
 
     @Test
@@ -243,29 +302,6 @@ public class DerivedAllocationTest {
         givenADerivedAllocation();
         derivedAllocation.dontPoseAsTransientObjectAnymore();
         derivedAllocation.asDerivedFrom(GenericResourceAllocation.create());
-    }
-
-    @Test
-    public void copyAssignmentsAsChildrenOfReturnsCopiesTheAssignments() {
-        givenADerivedAllocation();
-        givenDayAssignments(new LocalDate(2008, 12, 1), worker, 8, 8, 8, 8);
-        derivedAllocation.resetAssignmentsTo(dayAssignments);
-        DerivedAllocation anotherDerived = createNiceMock(DerivedAllocation.class);
-        replay(anotherDerived);
-
-        List<DerivedDayAssignment> withNewParent = derivedAllocation
-                .copyAssignmentsAsChildrenOf(anotherDerived);
-
-        assertThat(dayAssignments.size(), equalTo(withNewParent.size()));
-        for (int i = 0; i < dayAssignments.size(); i++) {
-            DerivedDayAssignment original = dayAssignments.get(i);
-            DerivedDayAssignment moved = withNewParent.get(i);
-            assertThat(original.getDay(), equalTo(moved.getDay()));
-            assertThat(original.getHours(), equalTo(moved.getHours()));
-            assertThat(original.getResource(), equalTo(moved.getResource()));
-            assertThat(original.getAllocation(), equalTo(derivedAllocation));
-            assertThat(moved.getAllocation(), equalTo(anotherDerived));
-        }
     }
 
 }

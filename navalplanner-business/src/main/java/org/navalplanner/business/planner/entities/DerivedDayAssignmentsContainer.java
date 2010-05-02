@@ -20,8 +20,11 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
@@ -34,12 +37,26 @@ import org.navalplanner.business.util.deepcopy.Strategy;
  */
 public class DerivedDayAssignmentsContainer extends BaseEntity {
 
+    public static DerivedDayAssignmentsContainer create(
+            DerivedAllocation derivedAllocation, Scenario scenario) {
+        return create(new DerivedDayAssignmentsContainer(derivedAllocation,
+                scenario));
+    }
+
     private DerivedAllocation resourceAllocation;
 
     @OnCopy(Strategy.SHARE)
     private Scenario scenario;
 
     private Set<DerivedDayAssignment> dayAssignments = new HashSet<DerivedDayAssignment>();
+
+    private DerivedDayAssignmentsContainer(
+            DerivedAllocation resourceAllocation, Scenario scenario) {
+        Validate.notNull(resourceAllocation);
+        Validate.notNull(scenario);
+        this.resourceAllocation = resourceAllocation;
+        this.scenario = scenario;
+    }
 
     /**
      * Constructor for HIBERNATE. DO NOT USE!
@@ -57,5 +74,30 @@ public class DerivedDayAssignmentsContainer extends BaseEntity {
 
     public Scenario getScenario() {
         return scenario;
+    }
+
+    public void resetAssignmentsTo(List<DerivedDayAssignment> newAssignments) {
+        dayAssignments.clear();
+        dayAssignments.addAll(newAssignments);
+    }
+
+    public void resetAssignmentsTo(LocalDate startInclusive,
+            LocalDate endExclusive, List<DerivedDayAssignment> newAssignments) {
+        checkAreValid(newAssignments);
+        List<DerivedDayAssignment> toBeRemoved = DayAssignment.getAtInterval(
+                DayAssignment.orderedByDay(getDayAssignments()),
+                startInclusive, endExclusive);
+        dayAssignments.removeAll(toBeRemoved);
+        dayAssignments.addAll(DayAssignment.getAtInterval(newAssignments,
+                startInclusive, endExclusive));
+    }
+
+    private void checkAreValid(List<DerivedDayAssignment> newAssignments) {
+        String errorMessage = "the new assignments added must have"
+                + " the allocation that this container is associated with";
+        for (DerivedDayAssignment each : newAssignments) {
+            Validate.isTrue(each.getAllocation().equals(resourceAllocation),
+                    errorMessage);
+        }
     }
 }

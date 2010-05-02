@@ -936,10 +936,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
         setWithoutApply(modifications.getAssignmentFunction());
-        mergeDerivedAllocations(modifications.getDerivedAllocations());
+        mergeDerivedAllocations(scenario, modifications.getDerivedAllocations());
     }
 
-    private void mergeDerivedAllocations(
+    private void mergeDerivedAllocations(Scenario scenario,
             Set<DerivedAllocation> derivedAllocations) {
         Map<MachineWorkersConfigurationUnit, DerivedAllocation> newMap = DerivedAllocation
                 .byConfigurationUnit(derivedAllocations);
@@ -951,10 +951,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             final DerivedAllocation modification = entry.getValue();
             DerivedAllocation current = currentMap.get(key);
             if (current == null) {
-                currentMap.put(key, modification.asDerivedFrom(this));
+                DerivedAllocation derived = modification.asDerivedFrom(this);
+                derived.useScenario(scenario);
+                currentMap.put(key, derived);
             } else {
-                current.resetAssignmentsTo(modification
-                        .copyAssignmentsAsChildrenOf(current));
+                current.useScenario(scenario);
+                current.resetAssignmentsTo(modification.getAssignments());
             }
         }
         resetDerivedAllocationsTo(currentMap.values());

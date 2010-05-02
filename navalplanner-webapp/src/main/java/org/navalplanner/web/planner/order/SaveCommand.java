@@ -43,6 +43,7 @@ import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.planner.entities.DerivedDayAssignmentsContainer;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -161,7 +162,6 @@ public class SaveCommand implements ISaveCommand {
 
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
-            removeDetachedDerivedDayAssignments(taskElement);
             taskElementDAO.save(taskElement);
             if (taskElement.getTaskSource() != null
                     && taskElement.getTaskSource().isNewObject()) {
@@ -183,25 +183,6 @@ public class SaveCommand implements ISaveCommand {
         for (TaskElement each : taskElement.getChildren()) {
             saveTaskSources(each);
         }
-    }
-
-    private void removeDetachedDerivedDayAssignments(TaskElement taskElement) {
-        for (ResourceAllocation<?> each : taskElement.getSatisfiedResourceAllocations()) {
-            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
-                removeAssigments(eachDerived.getDetached());
-                eachDerived.clearDetached();
-            }
-        }
-    }
-
-    private void removeAssigments(Set<DerivedDayAssignment> detached) {
-        List<DerivedDayAssignment> toRemove = new ArrayList<DerivedDayAssignment>();
-        for (DerivedDayAssignment eachAssignment : detached) {
-            if (!eachAssignment.isNewObject()) {
-                toRemove.add(eachAssignment);
-            }
-        }
-        dayAssignmentDAO.removeDerived(toRemove);
     }
 
     // newly added TaskElement such as milestones must be called
@@ -229,6 +210,11 @@ public class SaveCommand implements ISaveCommand {
             }
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 eachDerived.dontPoseAsTransientObjectAnymore();
+                Collection<DerivedDayAssignmentsContainer> containers = eachDerived
+                        .getContainers();
+                for (DerivedDayAssignmentsContainer eachContainer : containers) {
+                    eachContainer.dontPoseAsTransientObjectAnymore();
+                }
                 for (DerivedDayAssignment eachAssignment : eachDerived
                         .getAssignments()) {
                     eachAssignment.dontPoseAsTransientObjectAnymore();

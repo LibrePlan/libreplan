@@ -212,10 +212,7 @@ public abstract class DayAssignment extends BaseEntity {
 
     final void detach() {
         getResource().removeAssignments(Arrays.asList(this));
-        detachFromAllocation();
     }
-
-    protected abstract void detachFromAllocation();
 
     public abstract boolean belongsTo(Object allocation);
 

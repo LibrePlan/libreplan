@@ -160,7 +160,6 @@
             <many-to-one name="container" column="GENERIC_CONTAINER_ID" />
         </subclass>
         <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
-            <many-to-one name="allocation" column="DERIVED_ALLOCATION_ID"/>
             <many-to-one name="container" column="DERIVED_CONTAINER_ID" />
         </subclass>
     </class>
@@ -207,10 +206,6 @@
                      name="derivedFrom" />
         <many-to-one class="org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit"
             name="configurationUnit" not-null="true"/>
-        <set name="assignments" cascade="all">
-            <key column="DERIVED_ALLOCATION_ID"/>
-            <one-to-many class="DerivedDayAssignment"/>
-        </set>
         <set name="derivedDayAssignmentsContainers" cascade="all-delete-orphan">
             <key column="DERIVED_ALLOCATION_ID" />
             <one-to-many class="DerivedDayAssignmentsContainer"/>

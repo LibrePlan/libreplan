@@ -32,10 +32,10 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.util.deepcopy.OnCopy;
-import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -85,24 +85,196 @@ public class DerivedAllocation extends BaseEntity {
     @NotNull
     private MachineWorkersConfigurationUnit configurationUnit;
 
-    private Set<DerivedDayAssignment> assignments = new HashSet<DerivedDayAssignment>();
-
-    @OnCopy(Strategy.IGNORE)
-    private Set<DerivedDayAssignment> detached = new HashSet<DerivedDayAssignment>();
-
     private Set<DerivedDayAssignmentsContainer> derivedDayAssignmentsContainers = new HashSet<DerivedDayAssignmentsContainer>();
+
+    private Map<Scenario, DerivedDayAssignmentsContainer> byScenario() {
+        Map<Scenario, DerivedDayAssignmentsContainer> result = new HashMap<Scenario, DerivedDayAssignmentsContainer>();
+        for (DerivedDayAssignmentsContainer each : derivedDayAssignmentsContainers) {
+            result.put(each.getScenario(), each);
+        }
+        return result;
+    }
+
+    private DerivedDayAssignmentsContainer retrieveOrCreate(
+            Scenario scenario) {
+        DerivedDayAssignmentsContainer result = byScenario().get(scenario);
+        if (result == null) {
+            result = DerivedDayAssignmentsContainer.create(this, scenario);
+            derivedDayAssignmentsContainers.add(result);
+        }
+        return result;
+    }
+
+    private DayAssignmentsState dayAssignmentsState;
+
+    private abstract class DayAssignmentsState {
+        List<DerivedDayAssignment> getAssignments() {
+            return DayAssignment.orderedByDay(getUnorderedAssignments());
+        }
+
+        int getHours() {
+            return DayAssignment.sum(getUnorderedAssignments());
+        }
+
+        abstract void resetAssignmentsTo(
+                List<DerivedDayAssignment> dayAssignments);
+
+        abstract void resetAssignmentsTo(LocalDate startInclusive,
+                LocalDate endExclusive,
+                List<DerivedDayAssignment> newAssignments);
+
+        protected abstract Collection<DerivedDayAssignment> getUnorderedAssignments();
+
+        abstract DayAssignmentsState useScenario(Scenario scenario);
+
+    }
+
+    private class NotSpecifiedScenarioState extends DayAssignmentsState {
+
+        @Override
+        protected Collection<DerivedDayAssignment> getUnorderedAssignments() {
+            Scenario current = Registry.getScenarioManager().getCurrent();
+            DerivedDayAssignmentsContainer container = byScenario()
+                    .get(current);
+            if (container == null) {
+                return new ArrayList<DerivedDayAssignment>();
+            }
+            return container.getDayAssignments();
+        }
+
+        @Override
+        void resetAssignmentsTo(List<DerivedDayAssignment> dayAssignments) {
+            throwNotModifiable();
+        }
+
+        @Override
+        void resetAssignmentsTo(LocalDate startInclusive,
+                LocalDate endExclusive,
+                List<DerivedDayAssignment> newAssignments) {
+            throwNotModifiable();
+        }
+
+        private void throwNotModifiable() {
+            throw new IllegalStateException(
+                    "the scenario has not been specified");
+        }
+
+        @Override
+        DayAssignmentsState useScenario(Scenario scenario) {
+            throwNotModifiable();
+            // not reachable
+            return null;
+        }
+    }
+
+    private class TransientState extends DayAssignmentsState {
+
+        private List<DerivedDayAssignment> assignments = new ArrayList<DerivedDayAssignment>();
+
+        @Override
+        public Collection<DerivedDayAssignment> getUnorderedAssignments() {
+            return assignments;
+        }
+
+        @Override
+        void resetAssignmentsTo(List<DerivedDayAssignment> dayAssignments) {
+            assignments = copyAssignmentsAsChildrenOf(dayAssignments);
+        }
+
+        private List<DerivedDayAssignment> copyAssignmentsAsChildrenOf(
+                List<DerivedDayAssignment> dayAssignments) {
+            List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
+            for (DerivedDayAssignment each : dayAssignments) {
+                result.add(each.copyAsChildOf(DerivedAllocation.this));
+            }
+            return result;
+        }
+
+        @Override
+        void resetAssignmentsTo(LocalDate startInclusive,
+                LocalDate endExclusive,
+                List<DerivedDayAssignment> newAssignments) {
+            checkAreValid(newAssignments);
+            List<DerivedDayAssignment> toBeRemoved = DayAssignment
+                    .getAtInterval(getAssignments(), startInclusive,
+                            endExclusive);
+            assignments.removeAll(toBeRemoved);
+            detachAssignments(toBeRemoved);
+            assignments.addAll(DayAssignment.getAtInterval(newAssignments,
+                    startInclusive, endExclusive));
+        }
+
+        @Override
+        DayAssignmentsState useScenario(Scenario scenario) {
+            return new SpecifiedScenarioState(scenario, assignments);
+        }
+    }
+
+    private class SpecifiedScenarioState extends DayAssignmentsState {
+        private final Scenario scenario;
+
+        private SpecifiedScenarioState(Scenario scenario) {
+            Validate.notNull(scenario);
+            this.scenario = scenario;
+        }
+
+        public SpecifiedScenarioState(Scenario scenario,
+                List<DerivedDayAssignment> assignments) {
+            this(scenario);
+            resetAssignmentsTo(copyToThisAllocation(assignments));
+        }
+
+        @Override
+        protected Collection<DerivedDayAssignment> getUnorderedAssignments() {
+            DerivedDayAssignmentsContainer container = retrieveOrCreate(scenario);
+            return container.getDayAssignments();
+        }
+
+
+        @Override
+        void resetAssignmentsTo(List<DerivedDayAssignment> dayAssignments) {
+            DerivedDayAssignmentsContainer container = retrieveOrCreate(scenario);
+            container.resetAssignmentsTo(copyToThisAllocation(dayAssignments));
+        }
+
+        @Override
+        void resetAssignmentsTo(LocalDate startInclusive,
+                LocalDate endExclusive,
+                List<DerivedDayAssignment> newAssignments) {
+            DerivedDayAssignmentsContainer container = retrieveOrCreate(scenario);
+            container.resetAssignmentsTo(startInclusive, endExclusive,
+                    copyToThisAllocation(newAssignments));
+        }
+
+        private List<DerivedDayAssignment> copyToThisAllocation(
+                List<DerivedDayAssignment> newAssignments) {
+            DerivedDayAssignmentsContainer container = retrieveOrCreate(scenario);
+            List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
+            for (DerivedDayAssignment each : newAssignments) {
+                result.add(each.copyAsChildOf(container));
+            }
+            return result;
+        }
+
+        @Override
+        DayAssignmentsState useScenario(Scenario scenario) {
+            return new SpecifiedScenarioState(scenario);
+        }
+
+    }
 
     public BigDecimal getAlpha() {
         return configurationUnit.getAlpha();
     }
 
     public List<Resource> getResources() {
-        return new ArrayList<Resource>(DayAssignment
-                .getAllResources(assignments));
+        Set<Resource> result = DayAssignment
+                .getAllResources(dayAssignmentsState.getUnorderedAssignments());
+        return new ArrayList<Resource>(result);
     }
 
     public int getHours() {
-        return DayAssignment.sum(assignments);
+        return dayAssignmentsState.getHours();
     }
 
     public String getName() {
@@ -113,7 +285,7 @@ public class DerivedAllocation extends BaseEntity {
      * Constructor for hibernate. DO NOT USE!
      */
     public DerivedAllocation() {
-
+        this.dayAssignmentsState = new NotSpecifiedScenarioState();
     }
 
     public DerivedAllocation(ResourceAllocation<?> derivedFrom,
@@ -126,6 +298,7 @@ public class DerivedAllocation extends BaseEntity {
                 configurationUnit));
         this.derivedFrom = derivedFrom;
         this.configurationUnit = configurationUnit;
+        this.dayAssignmentsState = new TransientState();
     }
 
     public MachineWorkersConfigurationUnit getConfigurationUnit() {
@@ -137,10 +310,7 @@ public class DerivedAllocation extends BaseEntity {
     }
 
     public void resetAssignmentsTo(List<DerivedDayAssignment> dayAssignments) {
-        checkAreValid(dayAssignments);
-        detachAssignments(this.assignments);
-        this.assignments.clear();
-        this.assignments.addAll(dayAssignments);
+        dayAssignmentsState.resetAssignmentsTo(dayAssignments);
     }
 
     public DerivedAllocation asDerivedFrom(ResourceAllocation<?> allocation)
@@ -171,42 +341,27 @@ public class DerivedAllocation extends BaseEntity {
 
     public void resetAssignmentsTo(LocalDate startInclusive,
             LocalDate endExclusive, List<DerivedDayAssignment> newAssignments) {
-        checkAreValid(newAssignments);
-        List<DerivedDayAssignment> toBeRemoved = DayAssignment.getAtInterval(
-                getAssignments(), startInclusive, endExclusive);
-        assignments.removeAll(toBeRemoved);
-        detachAssignments(toBeRemoved);
-        assignments.addAll(DayAssignment.getAtInterval(newAssignments,
-                startInclusive, endExclusive));
+        dayAssignmentsState.resetAssignmentsTo(startInclusive, endExclusive,
+                newAssignments);
     }
 
     private void detachAssignments(Collection<DerivedDayAssignment> toBeRemoved) {
         for (DerivedDayAssignment each : toBeRemoved) {
             each.detach();
         }
-        detached.addAll(toBeRemoved);
     }
 
     public List<DerivedDayAssignment> getAssignments() {
-        return DayAssignment.orderedByDay(new ArrayList<DerivedDayAssignment>(
-                assignments));
+        return dayAssignmentsState.getAssignments();
     }
 
-    public List<DerivedDayAssignment> copyAssignmentsAsChildrenOf(
-            DerivedAllocation allocation) {
-        List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
-        for (DerivedDayAssignment each : getAssignments()) {
-            result.add(each.copyAsChildOf(allocation));
-        }
-        return result;
+    public void useScenario(Scenario scenario) {
+        this.dayAssignmentsState = dayAssignmentsState.useScenario(scenario);
     }
 
-    public Set<DerivedDayAssignment> getDetached() {
-        return new HashSet<DerivedDayAssignment>(detached);
-    }
-
-    public void clearDetached() {
-        detached.clear();
+    public Set<DerivedDayAssignmentsContainer> getContainers() {
+        return new HashSet<DerivedDayAssignmentsContainer>(
+                derivedDayAssignmentsContainers);
     }
 
 }
