@@ -23,6 +23,8 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 
 /**
@@ -75,6 +77,7 @@ public class DerivedDayAssignment extends DayAssignment {
 
     private DerivedDayAssignmentsContainer container;
 
+    @OnCopy(Strategy.IGNORE)
     private ParentState parentState;
 
     private DerivedDayAssignment(LocalDate day, int hours, Resource resource) {

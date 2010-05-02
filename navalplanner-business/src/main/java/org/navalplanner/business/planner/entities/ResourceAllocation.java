@@ -318,6 +318,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      */
     public abstract List<Resource> getAssociatedResources();
 
+    @OnCopy(Strategy.IGNORE)
     private Scenario currentScenario;
 
     public void switchToScenario(Scenario scenario) {

@@ -36,6 +36,8 @@ import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -105,6 +107,7 @@ public class DerivedAllocation extends BaseEntity {
         return result;
     }
 
+    @OnCopy(Strategy.IGNORE)
     private DayAssignmentsState dayAssignmentsState;
 
     private abstract class DayAssignmentsState {
