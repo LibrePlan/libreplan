@@ -71,7 +71,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.api.Tabpanel;
 
 /**
  * Controller for {@link ResourceAllocation} view.
@@ -121,8 +120,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Tab workerSearchTab;
 
-    private Tabpanel tabpanel;
-
     public static void registerNeededScripts() {
         getScriptsRegister()
                 .register(ScriptsRequiredByAdvancedAllocation.class);
@@ -136,7 +133,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        tabpanel = (Tabpanel) comp;
         allResourcesPerDay = new Decimalbox();
         newAllocationSelector.setLimitingResourceFilter(false);
         makeReadyInputsForCalculationTypes();
