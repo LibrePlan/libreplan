@@ -47,6 +47,8 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
 
     private final MutableTreeModel<LimitingResourceQueue> timelinesTree;
 
+    private List<LimitingResourcesComponent> limitingResourcesComponents = new ArrayList<LimitingResourcesComponent>();
+
     public LimitingResourcesList(TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
         this.timelinesTree = timelinesTree;
@@ -86,6 +88,7 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
         for (LimitingResourceQueue LimitingResourceQueue : children) {
             LimitingResourcesComponent component = LimitingResourcesComponent
                     .create(timetracker, LimitingResourceQueue);
+            limitingResourcesComponents.add(component);
             appendChild(component);
             fromTimeLineToComponent.put(LimitingResourceQueue, component);
         }
@@ -107,5 +110,8 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
     @Override
     public void afterCompose() {
         super.afterCompose();
+        for (LimitingResourcesComponent each : limitingResourcesComponents) {
+            each.afterCompose();
+        }
     }
 }

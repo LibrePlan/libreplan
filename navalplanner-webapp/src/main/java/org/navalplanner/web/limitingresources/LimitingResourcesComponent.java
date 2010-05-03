@@ -35,6 +35,10 @@ import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.MenuBuilder;
+import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
@@ -42,7 +46,8 @@ import org.zkoss.zul.impl.XulElement;
  * This class wraps ResourceLoad data inside an specific HTML Div component.
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class LimitingResourcesComponent extends XulElement {
+public class LimitingResourcesComponent extends XulElement implements
+        AfterCompose {
 
     public static LimitingResourcesComponent create(TimeTracker timeTracker,
             LimitingResourceQueue limitingResourceQueue) {
@@ -53,6 +58,7 @@ public class LimitingResourcesComponent extends XulElement {
     private final LimitingResourceQueue limitingResourceQueue;
     private final TimeTracker timeTracker;
     private transient IZoomLevelChangedListener zoomChangedListener;
+    private List<Div> queueElementDivs = new ArrayList<Div>();
 
     private LimitingResourcesComponent(final TimeTracker timeTracker,
             final LimitingResourceQueue limitingResourceQueue) {
@@ -79,6 +85,7 @@ public class LimitingResourcesComponent extends XulElement {
             for (Div div : divs) {
                 appendChild(div);
             }
+            queueElementDivs.addAll(divs);
         }
     }
 
@@ -96,9 +103,6 @@ public class LimitingResourcesComponent extends XulElement {
             result.add(createDivForQueueElement(datesMapper, queueElement));
         }
 
-        // FIX: adding static elements
-        result.add(createFakeDivForQueueElement(datesMapper));
-
         return result;
     }
 
@@ -110,26 +114,37 @@ public class LimitingResourcesComponent extends XulElement {
         }
     }
 
-    private static Div createFakeDivForQueueElement(IDatesMapper datesMapper) {
-        Div result = new Div();
-        result.setClass("queue-element");
+    private void appendMenu(Div divElement) {
+        if (divElement.getPage() != null) {
+            MenuBuilder<Div> menuBuilder = MenuBuilder.on(divElement.getPage(),
+                    queueElementDivs);
+            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png",
+                    new ItemAction<Div>() {
+                        @Override
+                        public void onEvent(Div choosen, Event event) {
+                            unnasign(choosen);
+                        }
+                    });
+            divElement.setContext(menuBuilder.createWithoutSettingContext());
+        }
+    }
 
-        result.setTooltiptext("Tooltip");
-
-        result.setLeft("200px");
-        result.setWidth("200px");
-        return result;
+    // FIXME: Implement real unnasign operation
+    private void unnasign(Div choosen) {
+        choosen.detach();
     }
 
     private static Div createDivForQueueElement(IDatesMapper datesMapper,
-            LimitingResourceQueueElement loadPeriod) {
+            LimitingResourceQueueElement queueElement) {
         Div result = new Div();
         result.setClass("queue-element");
 
-        result.setTooltiptext("Tooltip");
+        result.setTooltiptext(queueElement.getLimitingResourceQueue()
+                .getResource().getName());
 
-        result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
-        result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));
+        result.setLeft(forCSS(getStartPixels(datesMapper, queueElement)));
+        result.setWidth(forCSS(getWidthPixels(datesMapper, queueElement)));
+
         return result;
     }
 
@@ -153,6 +168,17 @@ public class LimitingResourcesComponent extends XulElement {
             LimitingResourceQueueElement queueElement) {
         return datesMapper.toPixels(queueElement.getStartDate().toDateMidnight()
                 .toDate());
+    }
+
+    private void appendContextMenus() {
+        for (Div each : queueElementDivs) {
+            appendMenu(each);
+        }
+    }
+
+    @Override
+    public void afterCompose() {
+        appendContextMenus();
     }
 
 }

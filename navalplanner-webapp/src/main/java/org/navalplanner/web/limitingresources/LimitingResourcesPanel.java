@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Separator;
@@ -217,6 +218,20 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel")
                 .appendChild(limitingResourcesList);
+        limitingResourcesList.afterCompose();
+
+        Div source = new Div();
+        Div destination = new Div();
+
+        LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
+                source, destination);
+
+        LimitingDependencyList dependencyList = new LimitingDependencyList(null);
+        dependencyList.addDependencyComponent(limitingDependencyComponent);
+
+        getFellow("insertionPointRightPanel").appendChild(dependencyList);
+
+        dependencyList.afterCompose();
 
         // Insert timetracker headers
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
