@@ -467,6 +467,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             removingAssignments(getAssignments(startInclusive, endExclusive));
             addingAssignments(assignmentsCreated);
             setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+            setOriginalTotalAssigment(getAssignedHours());
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
@@ -562,6 +563,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private void resetAssignmentsTo(List<T> assignments) {
         removingAssignments(getAssignments());
         addingAssignments(assignments);
+        setOriginalTotalAssigment(getAssignedHours());
     }
 
     protected abstract void addingAssignments(
@@ -655,6 +657,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public ResourceAllocation<T> copy() {
         ResourceAllocation<T> copy = createCopy();
         copy.resourcesPerDay = resourcesPerDay;
+        copy.originalTotalAssignment = originalTotalAssignment;
         copy.task = task;
         copy.assignmentFunction = assignmentFunction;
         return copy;
@@ -795,6 +798,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
+        setOriginalTotalAssigment(modifications.getOriginalTotalAssigment());
         setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(modifications.getDerivedAllocations());
     }
