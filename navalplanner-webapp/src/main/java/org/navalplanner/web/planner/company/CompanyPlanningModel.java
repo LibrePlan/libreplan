@@ -62,7 +62,6 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
-import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
@@ -150,9 +149,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Autowired
     private ICostCalculator hoursCostCalculator;
-
-    @Autowired
-    private OrderCRUDController orderCRUDController;
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
@@ -553,10 +549,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         keepAliveZoomListeners.add(zoomListener);
 
         return zoomListener;
-    }
-
-    private PlannerConfiguration<TaskElement> createConfiguration() {
-        return createConfiguration(null);
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
