@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.zkoss.ganttz.limitingresources;
+package org.navalplanner.web.limitingresources;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
