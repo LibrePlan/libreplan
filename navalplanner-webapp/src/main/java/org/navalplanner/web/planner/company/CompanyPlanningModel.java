@@ -157,6 +157,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private IScenarioManager scenarioManager;
 
+    private Scenario currentScenario;
+
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
         this.tabs = entryPoints;
@@ -601,12 +603,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return result;
         }
 
-        Scenario scenario = scenarioManager.getCurrent();
+        currentScenario = scenarioManager.getCurrent();
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
-                user, scenario);
+                user, currentScenario);
 
         for (Order order : list) {
-            order.useSchedulingDataFor(scenario);
+            order.useSchedulingDataFor(currentScenario);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
             if (associatedTaskElement != null) {
@@ -698,8 +700,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO
-                    .list(DayAssignment.class);
+            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario);
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
@@ -709,8 +710,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
                 Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO
-                    .list(DayAssignment.class);
+            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario);
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);

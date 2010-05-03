@@ -20,11 +20,17 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.hibernate.Query;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.planner.entities.GenericDayAssignment;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -46,6 +52,39 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         for (DerivedDayAssignment each : assignments) {
             getSession().delete(each);
         }
+    }
+
+    @Override
+    public List<DayAssignment> getAllFor(Scenario scenario) {
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
+        result.addAll(getSpecific(scenario));
+        result.addAll(getGeneric(scenario));
+        result.addAll(getDerived(scenario));
+        return result;
+    }
+
+    private List<DerivedDayAssignment> getDerived(Scenario scenario) {
+        String queryString = "select d from DerivedDayAssignmentsContainer c "
+                + "JOIN c.dayAssignments d where c.scenario = :scenario";
+        Query query = getSession().createQuery(queryString)
+                .setParameter("scenario", scenario);
+        return query.list();
+    }
+
+    private List<GenericDayAssignment> getGeneric(Scenario scenario) {
+        String queryString = "select d from GenericDayAssignmentsContainer c "
+                + "JOIN c.dayAssignments d where c.scenario = :scenario";
+        Query query = getSession().createQuery(queryString).setParameter(
+                "scenario", scenario);
+        return query.list();
+    }
+
+    private List<SpecificDayAssignment> getSpecific(Scenario scenario) {
+        String queryString = "select d from SpecificDayAssignmentsContainer c "
+                + "JOIN c.dayAssignments d where c.scenario = :scenario";
+        Query query = getSession().createQuery(queryString).setParameter(
+                "scenario", scenario);
+        return query.list();
     }
 
 }

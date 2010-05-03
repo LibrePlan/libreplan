@@ -21,10 +21,12 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * DAO interface for {@link DayAssignment}
@@ -37,5 +39,7 @@ public interface IDayAssignmentDAO extends
 
     public void removeDerived(
             Collection<? extends DerivedDayAssignment> derivedAllocations);
+
+    public List<DayAssignment> getAllFor(Scenario scenario);
 
 }
