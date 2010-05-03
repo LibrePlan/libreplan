@@ -852,8 +852,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Collection<DerivedAllocation> derivedAllocations) {
         // avoiding error: A collection with cascade="all-delete-orphan" was no
         // longer referenced by the owning entity instance
-        derivedAllocations.clear();
-        derivedAllocations.addAll(derivedAllocations);
+        this.derivedAllocations.clear();
+        this.derivedAllocations.addAll(derivedAllocations);
     }
 
     public Set<DerivedAllocation> getDerivedAllocations() {
