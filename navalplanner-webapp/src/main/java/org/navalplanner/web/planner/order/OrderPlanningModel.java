@@ -889,11 +889,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if (!orderReloaded.isSomeTaskElementScheduled()) {
             return PlanningState.createEmpty(currentScenario);
         }
+        final List<Resource> allResources = resourceDAO.list(Resource.class);
         criterionDAO.list(Criterion.class);
         TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
         forceLoadOfChildren(Arrays.asList(taskElement));
         switchAllocationsToScenario(currentScenario, taskElement);
-        final List<Resource> allResources = resourceDAO.list(Resource.class);
         final IScenarioInfo scenarioInfo = buildScenarioInfo(orderReloaded);
         PlanningState result = PlanningState.create(taskElement, orderReloaded
                 .getAssociatedTasks(), allResources, criterionDAO, resourceDAO,
