@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.entities.consolidations;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 
@@ -37,12 +38,17 @@ public class CalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static CalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value) {
-        return create(new CalculatedConsolidatedValue(date, value));
+            BigDecimal value,
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+        return create(new CalculatedConsolidatedValue(date, value,
+                pendingConsolidatedHours));
     }
 
-    protected CalculatedConsolidatedValue(LocalDate date, BigDecimal value) {
-        super(date, value);
+    protected CalculatedConsolidatedValue(
+            LocalDate date,
+            BigDecimal value,
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+        super(date, value, pendingConsolidatedHours);
     }
 
     protected CalculatedConsolidatedValue() {

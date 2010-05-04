@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.entities.consolidations;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
@@ -40,24 +41,32 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value) {
-        return create(new NonCalculatedConsolidatedValue(date, value));
+            BigDecimal value,
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+        return create(new NonCalculatedConsolidatedValue(date, value,
+                pendingConsolidatedHours));
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value, AdvanceMeasurement advanceMeasurement) {
+            BigDecimal value,
+            AdvanceMeasurement advanceMeasurement,
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
         return create(new NonCalculatedConsolidatedValue(date, value,
-                advanceMeasurement));
+                advanceMeasurement, pendingConsolidatedHours));
     }
 
     protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
-            AdvanceMeasurement advanceMeasurement) {
-        this(date, value);
+            AdvanceMeasurement advanceMeasurement,
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+        this(date, value, pendingConsolidatedHours);
         this.advanceMeasurement = advanceMeasurement;
     }
 
-    protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value) {
-        super(date, value);
+    protected NonCalculatedConsolidatedValue(
+            LocalDate date,
+            BigDecimal value,
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+        super(date, value, pendingConsolidatedHours);
     }
 
     protected NonCalculatedConsolidatedValue() {

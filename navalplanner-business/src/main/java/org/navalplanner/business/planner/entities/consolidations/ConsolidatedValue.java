@@ -21,9 +21,13 @@
 package org.navalplanner.business.planner.entities.consolidations;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -33,6 +37,7 @@ public abstract class ConsolidatedValue extends BaseEntity {
 
     private LocalDate date;
     private BigDecimal value;
+    private Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours = new HashSet<PendingConsolidatedHoursPerResourceAllocation>();
 
     public abstract boolean isCalculated();
 
@@ -40,9 +45,13 @@ public abstract class ConsolidatedValue extends BaseEntity {
 
     }
 
-    protected ConsolidatedValue(LocalDate date, BigDecimal value) {
+    protected ConsolidatedValue(
+            LocalDate date,
+            BigDecimal value,
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
         this.date = date;
         this.value = value;
+        this.pendingConsolidatedHours = pendingConsolidatedHours;
     }
 
     public void setValue(BigDecimal value) {
@@ -59,6 +68,26 @@ public abstract class ConsolidatedValue extends BaseEntity {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setPendingConsolidatedHours(Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+        this.pendingConsolidatedHours = pendingConsolidatedHours;
+    }
+
+    public Set<PendingConsolidatedHoursPerResourceAllocation> getPendingConsolidatedHours() {
+        return pendingConsolidatedHours;
+    }
+
+    public static Set<PendingConsolidatedHoursPerResourceAllocation> createPendingConsolidatedHours(
+            LocalDate consolidatedDate,
+            Collection<? extends ResourceAllocation> allocations) {
+        Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours = new HashSet<PendingConsolidatedHoursPerResourceAllocation>();
+        for (ResourceAllocation allocation : allocations) {
+            pendingConsolidatedHours
+                    .add(PendingConsolidatedHoursPerResourceAllocation.create(
+                            consolidatedDate, allocation));
+        }
+        return pendingConsolidatedHours;
     }
 
 }
