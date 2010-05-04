@@ -611,14 +611,13 @@ public class ManageOrderElementAdvancesModel implements
     public boolean hasConsolidatedAdvances(
             AdvanceMeasurement advanceMeasurement) {
 
-        if (advanceMeasurement.isNewObject()) {
+        if (advanceMeasurement.isNewObject() || isIndirectAdvanceAssignment) {
             return false;
         }
 
         if (!advanceMeasurement.getNonCalculatedConsolidatedValues().isEmpty()) {
             return true;
         }
-
         return findIndirectConsolidation(advanceMeasurement);
     }
 
