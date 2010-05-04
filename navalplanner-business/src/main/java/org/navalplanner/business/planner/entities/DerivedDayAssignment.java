@@ -44,6 +44,7 @@ public class DerivedDayAssignment extends DayAssignment {
      * Constructor for Hibernate. DO NOT USE!
      */
     public DerivedDayAssignment() {
+        parentState = new ContainerParentState();
     }
 
     private abstract class ParentState {
