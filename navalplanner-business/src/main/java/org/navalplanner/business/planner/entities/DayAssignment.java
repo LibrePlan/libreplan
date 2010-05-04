@@ -182,7 +182,7 @@ public abstract class DayAssignment extends BaseEntity {
         this.consolidated = consolidated;
     }
 
-    public Boolean getConsolidated() {
+    public Boolean isConsolidated() {
         return consolidated == null ? false : consolidated;
     }
 

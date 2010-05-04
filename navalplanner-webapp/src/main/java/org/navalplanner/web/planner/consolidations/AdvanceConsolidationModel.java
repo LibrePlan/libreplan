@@ -41,6 +41,7 @@ import org.navalplanner.business.planner.entities.consolidations.ConsolidatedVal
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
+import org.navalplanner.business.planner.entities.consolidations.PendingConsolidatedHoursPerResourceAllocation;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -141,6 +142,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     deleteConsolidationIfIsNeeded(dto);
                 }
             }
+
         }
     }
 
@@ -193,14 +195,24 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private ConsolidatedValue createNewConsolidatedValue(
             AdvanceConsolidationDTO dto) {
-        if (consolidation.isCalculated()) {
-            return CalculatedConsolidatedValue.create(LocalDate
-                    .fromDateFields(dto.getDate()), dto.getValue());
-        } else {
-            return NonCalculatedConsolidatedValue.create(LocalDate
+        if (consolidation != null && task != null) {
+
+            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours = ConsolidatedValue
+                    .createPendingConsolidatedHours(LocalDate
+                            .fromDateFields(dto.getDate()), task
+                            .getAllResourceAllocations());
+
+            if (consolidation.isCalculated()) {
+                return CalculatedConsolidatedValue.create(LocalDate
+                        .fromDateFields(dto.getDate()), dto.getValue(),
+                        pendingConsolidatedHours);
+            } else {
+                return NonCalculatedConsolidatedValue.create(LocalDate
                     .fromDateFields(dto.getDate()), dto.getValue(), dto
-                    .getAdvanceMeasurement());
+                        .getAdvanceMeasurement(), pendingConsolidatedHours);
+            }
         }
+        return null;
     }
 
     private void deleteConsolidationIfIsNeeded(AdvanceConsolidationDTO dto) {
