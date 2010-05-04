@@ -164,9 +164,7 @@ public class DerivedAllocation extends BaseEntity {
 
         @Override
         DayAssignmentsState useScenario(Scenario scenario) {
-            throwNotModifiable();
-            // not reachable
-            return null;
+            return new SpecifiedScenarioState(scenario);
         }
     }
 
