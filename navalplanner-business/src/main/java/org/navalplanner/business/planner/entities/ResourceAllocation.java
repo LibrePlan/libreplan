@@ -325,9 +325,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         Validate.notNull(scenario);
         currentScenario = scenario;
         scenarioChangedTo(currentScenario);
+        switchDerivedAllocationsTo(scenario);
     }
 
     protected abstract void scenarioChangedTo(Scenario scenario);
+
+    private void switchDerivedAllocationsTo(Scenario scenario) {
+        for (DerivedAllocation each : derivedAllocations) {
+            each.useScenario(scenario);
+        }
+    }
 
     protected void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
