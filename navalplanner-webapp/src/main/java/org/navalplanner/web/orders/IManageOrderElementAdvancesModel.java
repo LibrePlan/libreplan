@@ -62,7 +62,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public boolean isReadOnlyAdvanceMeasurements();
 
-    public void cleanAdvance();
+    public void cleanAdvance(DirectAdvanceAssignment advance);
 
     public boolean isPrecisionValid(AdvanceMeasurement advanceMeasurement);
 
@@ -106,4 +106,6 @@ public interface IManageOrderElementAdvancesModel {
 
     public boolean findIndirectConsolidation(
             AdvanceMeasurement advanceMeasurement);
+
+    public void resetAdvanceAssignment();
 }

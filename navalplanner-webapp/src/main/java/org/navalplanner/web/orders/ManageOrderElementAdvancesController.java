@@ -165,17 +165,33 @@ public class ManageOrderElementAdvancesController extends
         return orderElementModel.getOrderElement();
     }
 
+    private void resetAdvancesGrid() {
+        manageOrderElementAdvancesModel.resetAdvanceAssignment();
+        this.indexSelectedItem = -1;
+        reloadAdvances();
+    }
+
+    private void reloadAdvances() {
+        Util.reloadBindings(self);
+        if (indexSelectedItem > -1) {
+            editAdvances.setSelectedItem(editAdvances
+                    .getItemAtIndex(indexSelectedItem));
+            editAdvances.invalidate();
+        }
+    }
+
     private Listbox editAdvances;
 
     public void prepareEditAdvanceMeasurements(Listitem selectedItem) {
         AdvanceAssignment advanceAssignment = (AdvanceAssignment) selectedItem
                 .getValue();
         if (advanceAssignment.getAdvanceType() != null) {
-        validateListAdvanceMeasurement();
-        manageOrderElementAdvancesModel
+            validateListAdvanceMeasurement();
+            manageOrderElementAdvancesModel
                 .prepareEditAdvanceMeasurements(advanceAssignment);
-        this.indexSelectedItem = editAdvances.getIndexOfItem(editAdvances.getSelectedItem());
-        Util.reloadBindings(self);
+            this.indexSelectedItem = editAdvances.getIndexOfItem(editAdvances
+                    .getSelectedItem());
+            reloadAdvances();
         } else {
             Component comboAdvanceType = selectedItem.getFirstChild()
                     .getFirstChild();
@@ -188,14 +204,12 @@ public class ManageOrderElementAdvancesController extends
 
     public void goToCreateLineAdvanceAssignment() {
         manageOrderElementAdvancesModel.addNewLineAdvaceAssignment();
-        manageOrderElementAdvancesModel.prepareEditAdvanceMeasurements(null);
-        this.indexSelectedItem = -1;
-        Util.reloadBindings(self);
+        resetAdvancesGrid();
     }
 
     public void goToCreateLineAdvanceMeasurement() {
         manageOrderElementAdvancesModel.addNewLineAdvaceMeasurement();
-        Util.reloadBindings(self);
+        reloadAdvances();
     }
 
     public void goToRemoveLineAdvanceAssignment(){
@@ -205,7 +219,7 @@ public class ManageOrderElementAdvancesController extends
                     .getValue();
             manageOrderElementAdvancesModel
                     .removeLineAdvanceAssignment(advanceAssignment);
-            Util.reloadBindings(self);
+            reloadAdvances();
         }
     }
 
@@ -219,7 +233,7 @@ public class ManageOrderElementAdvancesController extends
             if (advanceMeasurement != null) {
                 manageOrderElementAdvancesModel
                         .removeLineAdvanceMeasurement(advanceMeasurement);
-                Util.reloadBindings(self);
+                reloadAdvances();
             }
         }
     }
@@ -307,8 +321,9 @@ public class ManageOrderElementAdvancesController extends
                     @Override
                     public void onEvent(Event event) throws Exception {
                         setMaxValue(listItem,comboAdvanceTypes);
-                        cleanFields();
+                        cleanFields(advance);
                         setPercentage();
+                        resetAdvancesGrid();
                     }
         });
 
@@ -395,7 +410,7 @@ public class ManageOrderElementAdvancesController extends
                     showMessagesConsolidation(1);
                 } else {
                     setPercentage();
-                    Util.reloadBindings(self);
+                    reloadAdvances();
                 }
                     }
                 });
@@ -540,7 +555,7 @@ public class ManageOrderElementAdvancesController extends
                 } else {
                     selectedAdvances.remove(advance);
                 }
-                Util.reloadBindings(self);
+                reloadAdvances();
             }
         });
 
@@ -563,7 +578,11 @@ public class ManageOrderElementAdvancesController extends
                 } else {
                     manageOrderElementAdvancesModel
                         .removeLineAdvanceAssignment(advance);
-                    Util.reloadBindings(self);
+                    if (indexSelectedItem == editAdvances
+                            .getIndexOfItem(listItem)) {
+                        indexSelectedItem = -1;
+                    }
+                    reloadAdvances();
                 }
             }
         });
@@ -710,9 +729,9 @@ public class ManageOrderElementAdvancesController extends
         }
     }
 
-    private void cleanFields(){
-        this.manageOrderElementAdvancesModel.cleanAdvance();
-        Util.reloadBindings(self);
+    private void cleanFields(DirectAdvanceAssignment advance) {
+            this.manageOrderElementAdvancesModel
+                    .cleanAdvance((DirectAdvanceAssignment) advance);
     }
 
     private void setReportGlobalAdvance(final Listitem item){
@@ -900,8 +919,7 @@ public class ManageOrderElementAdvancesController extends
                     if (!manageOrderElementAdvancesModel
                             .hasConsolidatedAdvances(advanceMeasurement)) {
                         advanceMeasurement.setValue(value);
-                        Util.reloadBindings(chart);
-                        Util.reloadBindings(editAdvances);
+                        reloadAdvances();
                     }
                 }
             });
@@ -963,7 +981,7 @@ public class ManageOrderElementAdvancesController extends
                         advanceMeasurement.setDate(new LocalDate(value));
                         manageOrderElementAdvancesModel
                             .sortListAdvanceMeasurement();
-                        Util.reloadBindings(self);
+                        reloadAdvances();
                     }
                 }
             });
@@ -1076,7 +1094,7 @@ public class ManageOrderElementAdvancesController extends
                     } else {
                         manageOrderElementAdvancesModel
                             .removeLineAdvanceMeasurement(advance);
-                        Util.reloadBindings(self);
+                        reloadAdvances();
                     }
                 }
             });

@@ -318,16 +318,16 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void cleanAdvance(){
-        if (this.advanceAssignment != null) {
-            this.advanceAssignment.setReportGlobalAdvance(false);
-            List<AdvanceMeasurement> listAdvanceMeasurements = new ArrayList<AdvanceMeasurement>(
-                    this.advanceAssignment.getAdvanceMeasurements());
-            for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
-                advanceMeasurement.setValue(BigDecimal.ZERO);
-                advanceMeasurement.setDate(null);
-            }
+    public void cleanAdvance(DirectAdvanceAssignment advanceAssignment) {
+        if (advanceAssignment != null) {
+            advanceAssignment.setReportGlobalAdvance(false);
+            advanceAssignment.getAdvanceMeasurements().clear();
         }
+    }
+
+    @Override
+    public void resetAdvanceAssignment() {
+        this.advanceAssignment = null;
     }
 
     @Override
@@ -630,8 +630,9 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    @Transactional(readOnly=true)
-    public boolean findIndirectConsolidation(AdvanceMeasurement advanceMeasurement){
+    @Transactional(readOnly = true)
+    public boolean findIndirectConsolidation(
+            AdvanceMeasurement advanceMeasurement) {
 
         AdvanceAssignment advance = advanceMeasurement.getAdvanceAssignment();
         if ((orderElement != null) && (orderElement.getParent() != null) && (advance instanceof DirectAdvanceAssignment)) {
