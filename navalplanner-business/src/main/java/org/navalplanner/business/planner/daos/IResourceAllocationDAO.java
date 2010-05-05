@@ -68,4 +68,8 @@ public interface IResourceAllocationDAO extends
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
             List<Criterion> criterions);
 
+    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
+            List<Criterion> criterions, Date intervalFilterStartDate,
+            Date intervalFilterEndDate);
+
 }

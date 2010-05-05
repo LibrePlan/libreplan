@@ -186,7 +186,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
         if(!criteriaToShowList.isEmpty()) {
             return resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(criteriaToShowList);
+                    .findGenericAllocationsBySomeCriterion(criteriaToShowList, initDateFilter, endDateFilter);
         }
         if (filter()) {
             List<Criterion> criterions = new ArrayList<Criterion>();
@@ -202,7 +202,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 }
             }
             return resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(criterions);
+                    .findGenericAllocationsBySomeCriterion(criterions, initDateFilter, endDateFilter);
         } else {
             return resourceAllocationDAO.findGenericAllocationsByCriterion(initDateFilter, endDateFilter);
         }

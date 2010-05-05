@@ -232,6 +232,38 @@ public class ResourceAllocationDAO extends
         return stripAllocationsWithoutAssignations(byCriterion(list));
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
+            List<Criterion> criterions, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        if (criterions.isEmpty()) {
+            return new HashMap<Criterion, List<GenericResourceAllocation>>();
+        }
+        String query = "select generic, criterion "
+            + "from GenericResourceAllocation as generic "
+            + "join generic.criterions as criterion ";
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            query += "inner join generic.task as task ";
+        }
+        query += "where criterion in(:criterions) ";
+        if(intervalFilterEndDate != null) {
+            query += "and task.startDate <= :intervalFilterEndDate ";
+        }
+        if(intervalFilterStartDate != null) {
+            query += "and task.endDate >= :intervalFilterStartDate ";
+        }
+
+        Query q = getSession().createQuery(query);
+        q.setParameterList("criterions", criterions);
+        if(intervalFilterStartDate != null) {
+            q.setParameter("intervalFilterStartDate", intervalFilterStartDate);
+        }
+        if(intervalFilterEndDate != null) {
+            q.setParameter("intervalFilterEndDate", intervalFilterEndDate);
+        }
+        return stripAllocationsWithoutAssignations(byCriterion(q.list()));
+    }
+
     private Map<Criterion, List<GenericResourceAllocation>> byCriterion(
             List<Object> results) {
 
