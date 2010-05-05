@@ -1048,6 +1048,17 @@ span.z-dottree-line {
 .perspective-active.order-load .z-button-cm {
     background-image: url(../img/ico_order-load.png);
 }
+.perspective.limiting-resources .z-button-cm,
+.perspective-active.limiting-resources .z-button-cm {
+    background-image: url(../img/ico_order-load.png);
+}
+.perspective.limiting-resources {
+    /* FIX: Temporary disabled */
+    display: none;
+}
+.perspective.order-limiting-resources {
+    display: none;
+}
 .perspective.order-data .z-button-cm,
 .perspective-active.order-data .z-button-cm {
     background-image: url(../img/ico_order-data.png);
@@ -1143,7 +1154,7 @@ span.z-dottree-line {
 tr.z-tree-row-seld, tr.z-list-item-seld,
 .z-combobox-pp .z-combo-item-seld {
     background-color: #fdd772;
-    color: #FFFFFF;
+    color: #000000;
 }
 
 .timeplot-canvas {

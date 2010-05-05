@@ -222,7 +222,6 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         Label label = new Label();
         final String conceptName = principal.getConceptName();
         label.setValue(conceptName);
-        limitValue(result, label, 40);
         result.appendChild(label);
         return result;
     }

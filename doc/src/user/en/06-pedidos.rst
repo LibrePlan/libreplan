@@ -1,4 +1,4 @@
-﻿Orders and order elements
+Orders and order elements
 ##############################
 
 .. contents::
@@ -13,10 +13,10 @@ The following sections will describe the operations that users can carry out wit
 Order
 ======
 
-An order is a project or work that a client requests from a company. The order for the planned works identifies the project in the company.  The difference with comprehensive management programs such as “NavalPlan” is that they only need to use certain order details. These details are:
+An order is a project or work that a client requests from a company. The order for the planned works identifies the project in the company.  The difference with comprehensive management programs such as "NavalPlan" is that they only need to use certain order details. These details are:
 
-* Order name 
-* Order code 
+* Order name
+* Order code
 * Total amount of order
 * Estimated start date
 * End date
@@ -211,7 +211,7 @@ Apart from the required criterion, one or various hour groups that are part of t
 * The system creates an hour group by default, which is associated to the order element. The details that can be modified for an hour group are:
 
    * Code for the hour group if it is not automatically generated.
-   * Type of criterion. Users can choose to assign a machine or worker criterion. 
+   * Type of criterion. Users can choose to assign a machine or worker criterion.
    * Number of hours in the hour group.
    * List of criteria to be applied to the hour group. To add new criteria, users have to click "Add criterion" and select one from the search engine, which appears after clicking the button.
 
@@ -253,7 +253,7 @@ Working with materials is carried out as follows:
 * The system shows the materials that belong to the selected categories.
 * From the materials list, users select the materials to assign to the order element.
 * Users click "Assign".
-* The system shows the selected list of materials on the "Materials" tab with new fields to complete. 
+* The system shows the selected list of materials on the "Materials" tab with new fields to complete.
 
 .. figure:: images/order-element-material-assign.png
    :scale: 50
@@ -269,7 +269,7 @@ For subsequent monitoring of materials, it is possible to change the status of a
 * The program shows two rows with the material divided.
 * Users change the status of the row containing the material.
 
-The advantage of using this dividing tool is the possibility of receiving partial deliveries of material without having to wait to receive it all in order to mark it as received. 
+The advantage of using this dividing tool is the possibility of receiving partial deliveries of material without having to wait to receive it all in order to mark it as received.
 
 Managing quality forms
 ------------------------------------
@@ -290,7 +290,7 @@ To manage quality forms:
 * The program has a search engine for quality forms. There are two types of quality forms: according to element or percentage.
 
    * Element: Every element is independent.
-   * Percentage: Every question increases progress in the order element by a percentage. It must be possible for percentages to be increased to 100%. 
+   * Percentage: Every question increases progress in the order element by a percentage. It must be possible for percentages to be increased to 100%.
 
 * Users select one of the forms created in the administration interface and click "Assign".
 * The program assigns the form chosen from the list of forms assigned to the order element.

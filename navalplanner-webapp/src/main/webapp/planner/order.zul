@@ -33,6 +33,10 @@
     macroURI="/planner/_tabPanelLimitingResourceAllocation.zul"
     inline="true" ?>
 
+<?component name="tabPanelAdvanceConsolidation"
+    macroURI="/planner/_tabPanelAdvanceConsolidations.zul"
+    inline="true" ?>
+
 <?component name="tabPanelSubcontract"
     macroURI="/planner/_tabPanelSubcontract.zul"
     inline="true" ?>
@@ -47,6 +51,7 @@
         allocationController = editController.resourceAllocationController;
         limitingAllocationController = editController.limitingResourceAllocationController;
         allocationController.switcher = switcher;
+        advanceController = editController.advanceConsolidationController;
         subController = editController.subcontractController;
     ]]>
     </zscript>
@@ -66,12 +71,14 @@
                 <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}" />
                 <tab id="resourceAllocationTab" label="${i18n:_('Non limiting resource allocation')}" />
                 <tab id="limitingResourceAllocationTab" label="${i18n:_('Limiting resource allocation')}" />
+                <tab id="advanceConsolidationTab" label="${i18n:_('Advance consolidation')}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}" />
             </tabs>
             <tabpanels>
                 <tabPanelTaskProperties id="taskPropertiesTabpanel" />
                 <tabPanelNonLimitingResourceAllocation id="resourceAllocationTabpanel" />
                 <tabPanelLimitingResourceAllocation id="limitingResourceAllocationTabpanel" />
+                <tabPanelAdvanceConsolidation id="advanceConsolidationTabpanel"/>
                 <tabPanelSubcontract id="subcontractTabpanel" />
             </tabpanels>
         </tabbox>

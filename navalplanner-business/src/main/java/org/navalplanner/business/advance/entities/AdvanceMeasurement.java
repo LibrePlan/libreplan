@@ -22,13 +22,16 @@ package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 
 public class AdvanceMeasurement extends BaseEntity {
 
@@ -52,6 +55,9 @@ public class AdvanceMeasurement extends BaseEntity {
     private AdvanceAssignment advanceAssignment;
 
     private Date communicationDate;
+
+    @Valid
+    private Set<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues = new HashSet<NonCalculatedConsolidatedValue>();
 
     public AdvanceMeasurement() {
     }
@@ -164,5 +170,14 @@ public class AdvanceMeasurement extends BaseEntity {
             return true;
         }
         return false;
+    }
+
+    public void setNonCalculatedConsolidatedValues(
+            Set<NonCalculatedConsolidatedValue> nonCalculatedConsolidatedValues) {
+        this.nonCalculatedConsolidatedValues = nonCalculatedConsolidatedValues;
+    }
+
+    public Set<NonCalculatedConsolidatedValue> getNonCalculatedConsolidatedValues() {
+        return nonCalculatedConsolidatedValues;
     }
 }

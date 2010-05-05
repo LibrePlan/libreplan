@@ -51,7 +51,7 @@
             </vbox>
         </panelchildren>
     </panel>
-    <panel title="@{manageOrderElementAdvancesController.getInfoAdvance}" border="normal">
+    <panel id="panelAdvanceMeasurement" title="@{manageOrderElementAdvancesController.getInfoAdvance}" border="normal">
         <panelchildren>
             <hbox>
                 <vbox>

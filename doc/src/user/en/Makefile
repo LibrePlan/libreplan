@@ -4,7 +4,7 @@
 #
 
 RST_HTML_FLAGS = --link-stylesheet --stylesheet-path=html/lsr.css
-RST_TEX_FLAGS  = --documentclass=igaliabk --font-encoding=OT1
+RST_TEX_FLAGS  = --documentclass=igaliabk --font-encoding=OT1  --output-encoding=utf-8
 OUTPUT_BASE    = output
 
 rst_srcs   := $(filter-out index.rst,$(wildcard *.rst))

@@ -50,12 +50,30 @@
                 <key column="ADVANCE_ASSIGNMENT_ID" />
                 <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
         </set>
+
+        <set name="nonCalculatedConsolidations"
+            cascade="none"
+            inverse="true"
+            access="field">
+                <key column="DIR_ADVANCE_ASSIGNMENT_ID" />
+                <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation" />
+        </set>
+
     </joined-subclass>
 
     <joined-subclass name="IndirectAdvanceAssignment">
         <key column="ADVANCE_ASSIGNMENT_ID"></key>
 
         <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="INDIRECT_ORDER_ELEMENT_ID"/>
+
+        <set name="calculatedConsolidations"
+            cascade="none"
+            inverse="true"
+            access="field">
+                <key column="IND_ADVANCE_ASSIGNMENT_ID" />
+                <one-to-many class="org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation" />
+        </set>
+
     </joined-subclass>
 
 </class>
@@ -73,6 +91,12 @@
     <property name="value" scale="2" access="field" />
     <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field" />
     <property name="communicationDate" access="field" />
+
+    <set name="nonCalculatedConsolidatedValues" access="field" cascade="none" inverse="true">
+        <key column="ADVANCE_MEASUREMENT_ID" />
+        <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue" />
+    </set>
+
 </class>
 
 <class name="AdvanceAssignmentTemplate">

@@ -157,8 +157,10 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     private List<Resource> findRelatedToSpecific(List<Task> taskElements) {
         List<Resource> list = getSession()
                 .createQuery(
-                        "SELECT DISTINCT specificAllocation.resource FROM SpecificResourceAllocation specificAllocation "
-                                + " WHERE specificAllocation.task IN(:taskElements)")
+                        "SELECT DISTINCT specificAllocation.resource "
+                                + "FROM SpecificResourceAllocation specificAllocation "
+                                + "WHERE specificAllocation.task IN(:taskElements) "
+                                + "and specificAllocation.specificDaysAssignment IS NOT EMPTY")
                 .setParameterList(
                 "taskElements",
                 taskElements).list();

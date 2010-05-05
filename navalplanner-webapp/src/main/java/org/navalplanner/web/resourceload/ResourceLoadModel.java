@@ -107,6 +107,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private boolean filterByResources = true;
 
+    private List<Resource> resourcesToShowList = new ArrayList<Resource>();
+
+    private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
@@ -184,6 +188,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
+        if(!criteriaToShowList.isEmpty()) {
+            return resourceAllocationDAO
+                    .findGenericAllocationsBySomeCriterion(criteriaToShowList);
+        }
         if (filter()) {
             List<Criterion> criterions = new ArrayList<Criterion>();
             List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
@@ -205,6 +213,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesToShow() {
+        if(!resourcesToShowList.isEmpty()) {
+            return getResourcesToShowReattached();
+        }
+        // if we haven't manually specified some resources to show, we load them
         if (filter()) {
             return resourcesForActiveTasks();
         } else {
@@ -248,7 +260,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         List<Criterion> criterions = Criterion
-                .sortByName(genericAllocationsByCriterion.keySet());
+                .sortByTypeAndName(genericAllocationsByCriterion.keySet());
         for (Criterion criterion : criterions) {
             List<GenericResourceAllocation> allocations = ResourceAllocation
                     .sortedByStartDate(genericAllocationsByCriterion
@@ -397,8 +409,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine createPrincipal(Criterion criterion,
             List<GenericResourceAllocation> orderedAllocations,
             TimeLineRole<BaseEntity> role) {
-        return new LoadTimeLine(criterion.getName(), createPeriods(criterion,
-                orderedAllocations), "global-generic", role);
+        return new LoadTimeLine(criterion.getType().getName() + ": " + criterion.getName(),
+                createPeriods(criterion, orderedAllocations), "global-generic", role);
     }
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
@@ -424,7 +436,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                         .findAllocationsRelatedTo(resource));
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
-                .getShortDescription(), sortedByStartDate, "resource", role),
+                .getName(), sortedByStartDate, "resource", role),
                 buildSecondLevel(resource, sortedByStartDate));
         return result;
 
@@ -656,6 +668,43 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .getStart()), new LocalDate(interval.getFinish()));
     }
 
+    @Override
+    public void setResourcesToShow(List<Resource> resourcesList) {
+        this.resourcesToShowList.clear();
+        this.resourcesToShowList.addAll(resourcesList);
+    }
+
+    @Override
+    public void clearResourcesToShow() {
+        resourcesToShowList.clear();
+    }
+
+    private List<Resource> getResourcesToShowReattached() {
+        List<Resource> list = new ArrayList<Resource>();
+        for(Resource worker : resourcesToShowList) {
+            try {
+                //for some reason, resourcesDAO.reattach(worker) doesn't work
+                //and we have to retrieve them again with find
+                list.add(resourcesDAO.find(worker.getId()));
+            }
+            catch(InstanceNotFoundException e) {
+                //maybe it was removed by another transaction
+                //we just ignore the exception to not show the Resource
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public void clearCriteriaToShow() {
+        criteriaToShowList.clear();
+    }
+
+    @Override
+    public void setCriteriaToShow(List<Criterion> criteriaList) {
+        criteriaToShowList.clear();
+        criteriaToShowList.addAll(criteriaList);
+    }
 }
 
 class PeriodsBuilder {

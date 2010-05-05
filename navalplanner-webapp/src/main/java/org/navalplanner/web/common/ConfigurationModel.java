@@ -339,4 +339,38 @@ public class ConfigurationModel implements IConfigurationModel {
         orderSequences.remove(orderSequence);
     }
 
+    @Override
+    public void setExpandCompanyPlanningViewCharts(
+            Boolean expandCompanyPlanningViewCharts) {
+        if (configuration != null) {
+            configuration
+                    .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
+        }
+    }
+
+    @Override
+    public Boolean isExpandCompanyPlanningViewCharts() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.isExpandCompanyPlanningViewCharts();
+    }
+
+    @Override
+    public void setExpandOrderPlanningViewCharts(
+            Boolean expandOrderPlanningViewCharts) {
+        if (configuration != null) {
+            configuration
+                .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
+        }
+    }
+
+    @Override
+    public Boolean isExpandOrderPlanningViewCharts() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.isExpandOrderPlanningViewCharts();
+    }
+
 }

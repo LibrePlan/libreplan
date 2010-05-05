@@ -40,7 +40,7 @@ public class CalendarDataDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "calendar-data";
 
-    @XmlElementWrapper(name = "hors-per-day-list")
+    @XmlElementWrapper(name = "hours-per-day-list")
     @XmlElement(name = "hours-per-day")
     public List<HoursPerDayDTO> hoursPerDays = new ArrayList<HoursPerDayDTO>();
 

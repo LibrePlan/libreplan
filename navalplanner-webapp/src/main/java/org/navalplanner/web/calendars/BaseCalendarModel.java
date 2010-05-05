@@ -433,6 +433,14 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
+    public boolean isFirstVersion() {
+        if (getBaseCalendar() != null) {
+            return getBaseCalendar().isFirstVersion(selectedDate);
+        }
+        return false;
+    }
+
+    @Override
     public String getName() {
         if (getBaseCalendar() != null) {
             return getBaseCalendar().getName();

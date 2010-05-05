@@ -28,6 +28,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -51,6 +53,8 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -176,10 +180,22 @@ public class ManageOrderElementAdvancesModel implements
     private void forceLoadAdvanceAssignmentsAndMeasurements() {
         for (DirectAdvanceAssignment each : orderElement
                 .getDirectAdvanceAssignments()) {
-            each.getAdvanceMeasurements().size();
+            forceLoadAdvanceConsolidatedValues(each);
+            each.getNonCalculatedConsolidation().size();
         }
         if (orderElement instanceof OrderLineGroup) {
             ((OrderLineGroup) orderElement).getIndirectAdvanceAssignments().size();
+            for (IndirectAdvanceAssignment each : ((OrderLineGroup) orderElement)
+                    .getIndirectAdvanceAssignments()) {
+                each.getCalculatedConsolidation().size();
+            }
+        }
+    }
+
+    private void forceLoadAdvanceConsolidatedValues(
+            DirectAdvanceAssignment advance) {
+        for (AdvanceMeasurement measurement : advance.getAdvanceMeasurements()) {
+            measurement.getNonCalculatedConsolidatedValues().size();
         }
     }
 
@@ -302,16 +318,16 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void cleanAdvance(){
-        if (this.advanceAssignment != null) {
-            this.advanceAssignment.setReportGlobalAdvance(false);
-            List<AdvanceMeasurement> listAdvanceMeasurements = new ArrayList<AdvanceMeasurement>(
-                    this.advanceAssignment.getAdvanceMeasurements());
-            for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
-                advanceMeasurement.setValue(BigDecimal.ZERO);
-                advanceMeasurement.setDate(null);
-            }
+    public void cleanAdvance(DirectAdvanceAssignment advanceAssignment) {
+        if (advanceAssignment != null) {
+            advanceAssignment.setReportGlobalAdvance(false);
+            advanceAssignment.getAdvanceMeasurements().clear();
         }
+    }
+
+    @Override
+    public void resetAdvanceAssignment() {
+        this.advanceAssignment = null;
     }
 
     @Override
@@ -563,10 +579,119 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     @Transactional(readOnly = true)
+    public boolean hasConsolidatedAdvances(AdvanceAssignment advance) {
+        if (advance instanceof DirectAdvanceAssignment) {
+            if ((advance.getReportGlobalAdvance())
+                    && (!((DirectAdvanceAssignment) advance)
+                            .getNonCalculatedConsolidation().isEmpty())) {
+                return true;
+            }
+            return (!((DirectAdvanceAssignment) advance).isFake())
+                    && (containsAnyConsolidatedAdvanceMeasurement((DirectAdvanceAssignment) advance));
+
+        } else {
+            return ((advance.getReportGlobalAdvance()) && (!((IndirectAdvanceAssignment) advance)
+                    .getCalculatedConsolidation().isEmpty()));
+        }
+    }
+
+    private boolean containsAnyConsolidatedAdvanceMeasurement(
+            DirectAdvanceAssignment advance) {
+        Iterator<AdvanceMeasurement> iterator = advance
+                .getAdvanceMeasurements().iterator();
+        while (iterator.hasNext()) {
+            if (hasConsolidatedAdvances(iterator.next())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasConsolidatedAdvances(
+            AdvanceMeasurement advanceMeasurement) {
+
+        if (advanceMeasurement.isNewObject() || isIndirectAdvanceAssignment) {
+            return false;
+        }
+
+        if (!advanceMeasurement.getNonCalculatedConsolidatedValues().isEmpty()) {
+            return true;
+        }
+        return findIndirectConsolidation(advanceMeasurement);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean isQualityForm(AdvanceAssignment advance) {
         AdvanceType advanceType = advance.getAdvanceType();
         advanceTypeDAO.reattach(advanceType);
         return advanceType.isQualityForm();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean findIndirectConsolidation(
+            AdvanceMeasurement advanceMeasurement) {
+
+        AdvanceAssignment advance = advanceMeasurement.getAdvanceAssignment();
+        if ((orderElement != null) && (orderElement.getParent() != null) && (advance instanceof DirectAdvanceAssignment)) {
+
+            List<String> types = new ArrayList<String>();
+
+            types.add(advance.getAdvanceType().getUnitName());
+            if (advance.getReportGlobalAdvance()) {
+                types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
+            }
+
+            Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
+                    orderElement, types);
+
+            for (IndirectAdvanceAssignment indirect : indirects) {
+                if (findConsolidatedAdvance(indirect
+                    .getCalculatedConsolidation(), advanceMeasurement)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Set<IndirectAdvanceAssignment> getSpreadIndirectAdvanceAssignmentWithSameType(
+            OrderElement orderElement, List<String> types) {
+
+        orderElementDAO.reattach(orderElement);
+        Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
+
+        for (IndirectAdvanceAssignment indirect : orderElement
+                .getIndirectAdvanceAssignments()) {
+            if ((indirect.getReportGlobalAdvance())
+                    && (types.contains(indirect.getAdvanceType().getUnitName()))) {
+                result.add(indirect);
+            }
+        }
+
+        OrderElement parent = orderElement.getParent();
+        if (parent != null) {
+            result.addAll(getSpreadIndirectAdvanceAssignmentWithSameType(
+                    parent, types));
+        }
+
+        return result;
+    }
+
+    private boolean findConsolidatedAdvance(
+            Set<CalculatedConsolidation> consolidations,
+            AdvanceMeasurement advance) {
+        for (CalculatedConsolidation consolidation : consolidations) {
+            for (CalculatedConsolidatedValue value : consolidation
+                    .getCalculatedConsolidatedValues()) {
+                if (value.getDate().compareTo(advance.getDate()) == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

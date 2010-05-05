@@ -36,8 +36,6 @@ import org.zkoss.zul.SimpleTreeNode;
  */
 public class BaseCalendarsTreeModel extends SimpleTreeModel {
 
-    private static Map<BaseCalendar, List<BaseCalendar>> relationParentChildren = new HashMap<BaseCalendar, List<BaseCalendar>>();
-
     public BaseCalendarsTreeModel(BaseCalendarTreeRoot root) {
         super(createRootNodeAndDescendants(root, root.getRootCalendars(), root
                 .getDerivedCalendars()));
@@ -47,65 +45,55 @@ public class BaseCalendarsTreeModel extends SimpleTreeModel {
             BaseCalendarTreeRoot root, List<BaseCalendar> rootCalendars,
             List<BaseCalendar> derivedCalendars) {
 
-        fillHashParentChildren(rootCalendars, derivedCalendars);
-
-        return new SimpleTreeNode(root, asNodes(rootCalendars));
+        Map<BaseCalendar, List<BaseCalendar>> parentChildren = createRelationParentChildren(
+                        rootCalendars, derivedCalendars);
+        return new SimpleTreeNode(root, asNodes(parentChildren, rootCalendars));
     }
 
-    private static List<SimpleTreeNode> asNodes(List<BaseCalendar> baseCalendars) {
+    private static List<SimpleTreeNode> asNodes(
+            Map<BaseCalendar, List<BaseCalendar>> relationParentChildren,
+            List<BaseCalendar> baseCalendars) {
         if (baseCalendars == null) {
             return new ArrayList<SimpleTreeNode>();
         }
 
         ArrayList<SimpleTreeNode> result = new ArrayList<SimpleTreeNode>();
         for (BaseCalendar baseCalendar : baseCalendars) {
-            result.add(asNode(baseCalendar));
+            result.add(asNode(relationParentChildren, baseCalendar));
         }
 
         return result;
     }
 
-    private static SimpleTreeNode asNode(BaseCalendar baseCalendar) {
+    private static SimpleTreeNode asNode(
+            Map<BaseCalendar, List<BaseCalendar>> relationParentChildren,
+            BaseCalendar baseCalendar) {
         List<BaseCalendar> children = relationParentChildren.get(baseCalendar);
-        return new SimpleTreeNode(baseCalendar, asNodes(children));
+        return new SimpleTreeNode(baseCalendar, asNodes(relationParentChildren,
+                children));
     }
 
-    private static void fillHashParentChildren(
+    private static Map<BaseCalendar, List<BaseCalendar>> createRelationParentChildren(
             List<BaseCalendar> rootCalendars,
             List<BaseCalendar> derivedCalendars) {
+        Map<BaseCalendar, List<BaseCalendar>> result = new HashMap<BaseCalendar, List<BaseCalendar>>();
         for (BaseCalendar root : rootCalendars) {
-            relationParentChildren.put(root, new ArrayList<BaseCalendar>());
+            result.put(root, new ArrayList<BaseCalendar>());
         }
 
         for (BaseCalendar derived : derivedCalendars) {
             BaseCalendar parent = derived.getParent();
-            List<BaseCalendar> siblings = relationParentChildren.get(parent);
+            List<BaseCalendar> siblings = result.get(parent);
 
             if (siblings == null) {
                 siblings = new ArrayList<BaseCalendar>();
                 siblings.add(derived);
-                relationParentChildren.put(parent, siblings);
+                result.put(parent, siblings);
             } else {
                 siblings.add(derived);
             }
         }
-    }
-
-    @Override
-    public boolean isLeaf(Object node) {
-        if (node == null) {
-            return true;
-        }
-
-        SimpleTreeNode simpleTreeNode = (SimpleTreeNode) node;
-        BaseCalendar baseCalendar = (BaseCalendar) simpleTreeNode.getData();
-
-        List<BaseCalendar> children = relationParentChildren.get(baseCalendar);
-        if (children == null) {
-            return true;
-        }
-
-        return children.isEmpty();
+        return result;
     }
 
 }

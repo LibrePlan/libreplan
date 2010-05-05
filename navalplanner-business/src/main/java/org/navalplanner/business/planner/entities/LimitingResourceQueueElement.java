@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.Date;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 
@@ -38,21 +39,18 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private Date earlierStartDateBecauseOfGantt;
 
-   public Date getEarlierStartDateBecauseOfGantt() {
-        return earlierStartDateBecauseOfGantt;
-    }
+    private QueuePosition startQueuePosition;
 
-    public void setEarlierStartDateBecauseOfGantt(
-            Date earlierStartDateBecauseOfGantt) {
-        this.earlierStartDateBecauseOfGantt = earlierStartDateBecauseOfGantt;
-    }
+    private QueuePosition endQueuePosition;
 
-public static LimitingResourceQueueElement create() {
+    private long creationTimestamp;
+
+    public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
     }
 
     protected LimitingResourceQueueElement() {
-
+        creationTimestamp = (new Date()).getTime();
     }
 
     public ResourceAllocation<?> getResourceAllocation() {
@@ -69,6 +67,55 @@ public static LimitingResourceQueueElement create() {
 
     public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
         this.limitingResourceQueue = limitingResourceQueue;
+    }
+
+    public LocalDate getStartDate() {
+        return startQueuePosition.getDate();
+    }
+
+    public void setStartDate(LocalDate date) {
+        startQueuePosition.setDate(date);
+    }
+
+    public int getStartHour() {
+        return startQueuePosition.getHour();
+    }
+
+    public void setStartHour(int hour) {
+        startQueuePosition.setHour(hour);
+    }
+
+    public LocalDate getEndDate() {
+        return endQueuePosition.getDate();
+    }
+
+    public void setEndDate(LocalDate date) {
+        endQueuePosition.setDate(date);
+    }
+
+    public int getEndHour() {
+        return endQueuePosition.getHour();
+    }
+
+    public void setEndHour(int hour) {
+        endQueuePosition.setHour(hour);
+    }
+
+    public Date getEarlierStartDateBecauseOfGantt() {
+        return earlierStartDateBecauseOfGantt;
+    }
+
+    public void setEarlierStartDateBecauseOfGantt(
+            Date earlierStartDateBecauseOfGantt) {
+        this.earlierStartDateBecauseOfGantt = earlierStartDateBecauseOfGantt;
+    }
+
+    public long getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
+    public void setCreationTimestamp(long creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
     }
 
 }

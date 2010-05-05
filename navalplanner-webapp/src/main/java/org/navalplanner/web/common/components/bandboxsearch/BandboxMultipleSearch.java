@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -134,10 +135,13 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     private void pickElementFromListAndCloseBandbox() {
-        final Object object = getSelectedItem().getValue();
-        if (multipleFiltersFinder.isValidNewFilter(object)) {
-            addSelectedElement(object);
-            clearListbox();
+        if(getSelectedItem() != null) {
+            final Object object = getSelectedItem().getValue();
+            if (multipleFiltersFinder.isValidNewFilter(object)) {
+                addSelectedElement(object);
+                clearListbox();
+                listbox.setModel(getSubModel());
+            }
         }
         bandbox.close();
     }
@@ -238,7 +242,12 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     private Listitem getSelectedItem() {
-        return (Listitem) listbox.getSelectedItems().iterator().next();
+        try {
+            return (Listitem) listbox.getSelectedItems().iterator().next();
+        }
+        catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     public void setDisabled(boolean disabled) {

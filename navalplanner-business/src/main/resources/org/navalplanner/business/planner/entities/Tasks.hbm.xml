@@ -47,6 +47,10 @@
                 </property>
                 <property name="constraintDate" />
             </component>
+
+            <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"
+                cascade="all"/>
+
             <set name="resourceAllocations" cascade="all-delete-orphan">
                 <key column="TASK" />
                 <one-to-many class="ResourceAllocation" />

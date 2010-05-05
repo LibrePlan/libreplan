@@ -410,7 +410,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             InputElement codeBox = (InputElement)
                 ((Treecell)row.getChildren().get(1)).getChildren().get(0);
             InputElement nameBox = (InputElement)
-                ((Treecell)row.getChildren().get(2)).getChildren().get(1);
+                ((Treecell)row.getChildren().get(2)).getChildren().get(0);
             InputElement hoursBox = (InputElement)
                 ((Treecell)row.getChildren().get(3)).getChildren().get(0);
             InputElement initDateBox = (InputElement)
@@ -423,30 +423,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         @Override
         protected void addDescriptionCell(OrderElement element) {
-            addTaskNumberCell(element);
+            addTaskNameCell(element);
         }
 
-        private void addTaskNumberCell(final OrderElement orderElementForThisRow) {
+        private void addTaskNameCell(final OrderElement orderElementForThisRow) {
             int[] path = getModel().getPath(orderElementForThisRow);
             String cssClass = "depth_" + path.length;
 
-            Label taskNumber = new Label(pathAsString(path));
-            taskNumber.setSclass("tasknumber");
-            taskNumber.addEventListener(Events.ON_DOUBLE_CLICK,
-                    new EventListener() {
-
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            IOrderElementModel model = orderModel
-                                    .getOrderElementModel(orderElementForThisRow);
-                            orderElementController.openWindow(model);
-                            // Util.reloadBindings(tree);
-                        }
-
-                    });
-
-            // TODO It would be needed to expand the width for the numbers
-            // to make it ready for 2 and 3 digit numbers
             Textbox textBox = Util.bind(new Textbox(),
                     new Util.Getter<String>() {
 
@@ -464,7 +447,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 textBox.setDisabled(true);
             }
-            addCell(cssClass, taskNumber, textBox);
+            addCell(cssClass, textBox);
             registerKeyboardListener(textBox);
         }
 
@@ -584,6 +567,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 notifyDateboxCantBeCreated(dateboxName, currentOrderElement
                         .getCode());
             }
+            registerFocusEvent(dinamicDatebox.getDateTextBox());
             addCell(cell);
         }
 

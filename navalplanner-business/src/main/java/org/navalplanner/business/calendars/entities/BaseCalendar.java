@@ -211,11 +211,6 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
     public void addExceptionDay(CalendarException day)
             throws IllegalArgumentException {
-        if (day.getDate().compareTo(new LocalDate()) <= 0) {
-            throw new IllegalArgumentException(
-                    "You can not modify the past adding a new exception day");
-        }
-
         if (isExceptionDayAlreadyInExceptions(day)) {
             throw new IllegalArgumentException(
                     "This day is already in the exception days");
@@ -230,11 +225,6 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
     public void removeExceptionDay(LocalDate date)
             throws IllegalArgumentException {
-        if (date.compareTo(new LocalDate()) <= 0) {
-            throw new IllegalArgumentException(
-                    "You can not modify the past removing an exception day");
-        }
-
         CalendarException day = getOwnExceptionDay(date);
         if (day == null) {
             throw new IllegalArgumentException(
@@ -440,11 +430,6 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * new calendar will be used from that date onwards.
      */
     public void newVersion(LocalDate date) throws IllegalArgumentException {
-        if (date.compareTo(new LocalDate()) <= 0) {
-            throw new IllegalArgumentException(
-                    "Date for new version must be greater than current date");
-        }
-
         CalendarData calendarData = getCalendarDataBeforeTheLastIfAny();
         if ((calendarData.getExpiringDate() != null)
                 && (date.compareTo(calendarData.getExpiringDate()) <= 0)) {
@@ -650,11 +635,6 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
                     + "because of this is the last version");
         }
 
-        if (expiringDate.compareTo(new LocalDate()) <= 0) {
-            throw new IllegalArgumentException(
-                    "This date must be greater than current date");
-        }
-
         Integer index = calendarDataVersions.indexOf(calendarData);
         if (index > 0) {
             CalendarData preivousCalendarData = calendarDataVersions
@@ -707,10 +687,20 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         return isLastVersion(new LocalDate(date));
     }
 
+    public boolean isFirstVersion(Date date) {
+        return isFirstVersion(new LocalDate(date));
+    }
+
     public boolean isLastVersion(LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
         Integer index = calendarDataVersions.indexOf(calendarData);
         return (index == (calendarDataVersions.size() - 1));
+    }
+
+    public boolean isFirstVersion(LocalDate date) {
+        CalendarData calendarData = getCalendarData(date);
+        Integer index = calendarDataVersions.indexOf(calendarData);
+        return (index == 0);
     }
 
     /**
@@ -759,13 +749,8 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
                 throw new IllegalArgumentException(
                         "You can not remove the current calendar data");
             }
-            if (validFrom.compareTo(new LocalDate()) > 0) {
-                calendarDataVersions.remove(lastCalendarData);
-                getLastCalendarData().removeExpiringDate();
-            } else {
-                throw new IllegalArgumentException(
-                        "You can not modify the past removing a calendar data");
-            }
+            calendarDataVersions.remove(lastCalendarData);
+            getLastCalendarData().removeExpiringDate();
         } else {
             throw new IllegalArgumentException(
                     "You just can remove the last calendar data");

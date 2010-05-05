@@ -346,4 +346,24 @@ public class ConfigurationController extends GenericForwardComposer {
 
     }
 
+    public void setExpandCompanyPlanningViewCharts(
+            Boolean expandCompanyPlanningViewCharts) {
+        configurationModel
+                .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
+    }
+
+    public Boolean isExpandCompanyPlanningViewCharts() {
+        return configurationModel.isExpandCompanyPlanningViewCharts();
+    }
+
+    public void setExpandOrderPlanningViewCharts(
+            Boolean expandOrderPlanningViewCharts) {
+        configurationModel
+                .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
+    }
+
+    public Boolean isExpandOrderPlanningViewCharts() {
+        return configurationModel.isExpandOrderPlanningViewCharts();
+    }
+
 }

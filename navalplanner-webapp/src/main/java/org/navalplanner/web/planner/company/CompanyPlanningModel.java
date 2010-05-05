@@ -42,6 +42,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -82,6 +83,7 @@ import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
+import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
@@ -154,6 +156,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private MultipleTabsPlannerController tabs;
 
+    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     @Autowired
     private IScenarioManager scenarioManager;
 
@@ -205,6 +212,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             IPredicate predicate) {
 
         PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
+        configuration.setExpandPlanningViewCharts(configurationDAO
+                .getConfiguration().isExpandCompanyPlanningViewCharts());
 
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
@@ -247,20 +256,24 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         configuration.setSecondLevelModificators(new BankHolidaysMarker());
         planner.setConfiguration(configuration);
-        Timeplot chartLoadTimeplot = new Timeplot();
-        Timeplot chartEarnedValueTimeplot = new Timeplot();
+        Timeplot chartLoadTimeplot = createEmptyTimeplot();
+        Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
         CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
         earnedValueChartFiller.calculateValues(planner.getTimeTracker()
                 .getRealInterval());
         appendTabpanels(chartComponent, chartLoadTimeplot,
                 chartEarnedValueTimeplot, earnedValueChartFiller);
 
-        setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner
-                .getTimeTracker(), planner.getZoomLevel());
+        setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
         Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
-                earnedValueChartFiller, planner.getTimeTracker(),
-                planner.getZoomLevel());
+                earnedValueChartFiller, planner);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+    }
+
+    private Timeplot createEmptyTimeplot() {
+        Timeplot timeplot = new Timeplot();
+        timeplot.appendChild(new Plotinfo());
+        return timeplot;
     }
 
     private void appendTabs(Tabbox chartComponent) {
@@ -486,6 +499,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setCriticalPathEnabled(false);
         configuration.setExpandAllEnabled(false);
         configuration.setFlattenTreeEnabled(false);
+        configuration.setRenamingTasksEnabled(false);
     }
 
     private void addAdditionalCommands(
@@ -518,17 +532,43 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private Chart setupChart(Timeplot chartComponent,
-            IChartFiller loadChartFiller, TimeTracker timeTracker,
-            ZoomLevel defaultZoomLevel) {
+            IChartFiller loadChartFiller, Planner planner) {
+        TimeTracker timeTracker = planner.getTimeTracker();
         Chart loadChart = new Chart(chartComponent, loadChartFiller,
                 timeTracker);
-        loadChart.setZoomLevel(defaultZoomLevel);
-        loadChart.fillChart();
-        timeTracker.addZoomListener(fillOnZoomChange(loadChart));
+        loadChart.setZoomLevel(planner.getZoomLevel());
+        if (planner.isVisibleChart()) {
+            loadChart.fillChart();
+        }
+        timeTracker.addZoomListener(fillOnZoomChange(planner, loadChart));
+        planner
+                .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
         return loadChart;
     }
 
-    private IZoomLevelChangedListener fillOnZoomChange(
+    private IChartVisibilityChangedListener fillOnChartVisibilityChange(
+            final Chart loadChart) {
+        IChartVisibilityChangedListener chartVisibilityChangedListener = new IChartVisibilityChangedListener() {
+
+            @Override
+            public void chartVisibilityChanged(final boolean visible) {
+                transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        if (visible) {
+                            loadChart.fillChart();
+                        }
+                        return null;
+                    }
+                });
+            }
+        };
+        keepAliveChartVisibilityListeners.add(chartVisibilityChangedListener);
+        return chartVisibilityChangedListener;
+    }
+
+    private IZoomLevelChangedListener fillOnZoomChange(final Planner planner,
             final Chart loadChart) {
 
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
@@ -541,7 +581,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                     @Override
                     public Void execute() {
-                        loadChart.fillChart();
+                        if (planner.isVisibleChart()) {
+                            loadChart.fillChart();
+                        }
                         return null;
                     }
                 });

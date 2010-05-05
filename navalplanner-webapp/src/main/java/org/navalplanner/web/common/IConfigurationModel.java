@@ -76,6 +76,15 @@ public interface IConfigurationModel {
     void removeOrderSequence(OrderSequence orderSequence)
             throws IllegalArgumentException;
 
+    void setExpandCompanyPlanningViewCharts(
+            Boolean expandCompanyPlanningViewCharts);
+
+    Boolean isExpandCompanyPlanningViewCharts();
+
+    void setExpandOrderPlanningViewCharts(Boolean expandOrderPlanningViewCharts);
+
+    Boolean isExpandOrderPlanningViewCharts();
+
     /*
      * Final conversation steps
      */

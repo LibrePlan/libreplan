@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -42,9 +44,17 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignmentsContainer;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
+import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
+import org.navalplanner.business.planner.entities.consolidations.Consolidation;
+import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
+import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +75,9 @@ import org.zkoss.zul.Messagebox;
 public class SaveCommand implements ISaveCommand {
 
     private static final Log LOG = LogFactory.getLog(SaveCommand.class);
+
+    @Autowired
+    private IConsolidationDAO consolidationDAO;
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -150,6 +163,7 @@ public class SaveCommand implements ISaveCommand {
 
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
+            removeEmptyConsolidation(taskElement);
             taskElementDAO.save(taskElement);
             if (taskElement.getTaskSource() != null
                     && taskElement.getTaskSource().isNewObject()) {
@@ -173,6 +187,47 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
+    private void removeEmptyConsolidation(TaskElement taskElement) {
+        if ((taskElement.isLeaf()) && (!taskElement.isMilestone())) {
+            Consolidation consolidation = ((Task) taskElement)
+                    .getConsolidation();
+            if ((consolidation != null)
+                    && (isEmptyConsolidation(consolidation))) {
+                if (!consolidation.isNewObject()) {
+                    try {
+                        consolidationDAO.remove(consolidation.getId());
+                    } catch (InstanceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                ((Task) taskElement).setConsolidation(null);
+            }
+        }
+    }
+
+    private boolean isEmptyConsolidation(final Consolidation consolidation) {
+        return transactionService
+                .runOnTransaction(new IOnTransaction<Boolean>() {
+            @Override
+            public Boolean execute() {
+
+                consolidationDAO.reattach(consolidation);
+                if (consolidation instanceof CalculatedConsolidation) {
+                    SortedSet<CalculatedConsolidatedValue> consolidatedValues = ((CalculatedConsolidation) consolidation)
+                            .getCalculatedConsolidatedValues();
+                    return consolidatedValues.isEmpty();
+                }
+                if (consolidation instanceof NonCalculatedConsolidation) {
+                    SortedSet<NonCalculatedConsolidatedValue> consolidatedValues = ((NonCalculatedConsolidation) consolidation)
+                            .getNonCalculatedConsolidatedValues();
+                    return consolidatedValues.isEmpty();
+                }
+                return false;
+
+            }
+        });
+    }
+
     // newly added TaskElement such as milestones must be called
     // dontPoseAsTransientObjectAnymore
     private void dontPoseAsTransient(TaskElement taskElement) {
@@ -185,6 +240,29 @@ public class SaveCommand implements ISaveCommand {
             for (TaskElement each : taskElement.getChildren()) {
                 dontPoseAsTransient(each);
             }
+        }
+        if (taskElement instanceof Task) {
+            dontPoseAsTransient(((Task) taskElement).getConsolidation());
+        }
+    }
+
+    private void dontPoseAsTransient(Consolidation consolidation) {
+        if (consolidation != null) {
+            consolidation.dontPoseAsTransientObjectAnymore();
+            if (consolidation.isCalculated()) {
+                dontPoseAsTransient(((CalculatedConsolidation) consolidation)
+                        .getCalculatedConsolidatedValues());
+            } else {
+                dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
+                        .getNonCalculatedConsolidatedValues());
+            }
+        }
+    }
+
+    private void dontPoseAsTransient(
+            SortedSet<? extends ConsolidatedValue> values) {
+        for (ConsolidatedValue value : values) {
+            value.dontPoseAsTransientObjectAnymore();
         }
     }
 
@@ -208,6 +286,13 @@ public class SaveCommand implements ISaveCommand {
                     eachAssignment.dontPoseAsTransientObjectAnymore();
                 }
             }
+            dontPoseAsTransient(each.getLimitingResourceQueueElement());
+        }
+    }
+
+    private void dontPoseAsTransient(LimitingResourceQueueElement element) {
+        if (element != null) {
+            element.dontPoseAsTransientObjectAnymore();
         }
     }
 

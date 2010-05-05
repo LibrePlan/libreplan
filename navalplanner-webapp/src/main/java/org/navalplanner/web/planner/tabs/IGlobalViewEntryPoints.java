@@ -37,6 +37,9 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint("company_load")
     public void goToCompanyLoad();
 
+    @EntryPoint("limiting_resources")
+    public void goToLimitingResources();
+
     @EntryPoint("orders_list")
     public void goToOrdersList();
 
@@ -45,5 +48,7 @@ public interface IGlobalViewEntryPoints {
 
     @EntryPoint( { "orderElement", "order" })
     public void goToOrderElementDetails(OrderElement orderElement, Order order);
+
+    void goToCompanyLimitingResources();
 
 }

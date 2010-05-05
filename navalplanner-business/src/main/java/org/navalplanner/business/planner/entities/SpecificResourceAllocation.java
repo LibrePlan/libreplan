@@ -58,6 +58,13 @@ public class SpecificResourceAllocation extends
                 task));
     }
 
+    public static SpecificResourceAllocation create(Resource resource, Task task) {
+        SpecificResourceAllocation result = create(new SpecificResourceAllocation(
+                task));
+        result.setResource(resource);
+        return result;
+    }
+
     @NotNull
     @OnCopy(Strategy.SHARE)
     private Resource resource;

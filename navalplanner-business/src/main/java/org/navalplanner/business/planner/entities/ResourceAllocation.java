@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
@@ -300,9 +301,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     @OnCopy(Strategy.SHARE)
     private ResourcesPerDay resourcesPerDay;
 
+    private Integer intendedTotalHours;
+
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();
 
-    private LimitingResourceQueueElement limitingResourceQueueElement;
+    private Set<LimitingResourceQueueElement> limitingResourceQueueElements = new HashSet<LimitingResourceQueueElement>();
+
+    @Min(0)
+    private int originalTotalAssignment = 0;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -359,6 +365,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public Task getTask() {
         return task;
+    }
+
+    public void setOriginalTotalAssigment(int originalTotalAssigment) {
+        this.originalTotalAssignment = originalTotalAssigment;
+    }
+
+    public int getOriginalTotalAssigment() {
+        return originalTotalAssignment;
     }
 
     public abstract ResourcesPerDayModification withDesiredResourcesPerDay(
@@ -477,6 +491,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             removingAssignments(getAssignments(startInclusive, endExclusive));
             addingAssignments(assignmentsCreated);
             setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+            setOriginalTotalAssigment(getAssignedHours());
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
@@ -557,6 +572,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         assert isUnsatisfied();
     }
 
+    public boolean isLimiting() {
+        return getLimitingResourceQueueElement() != null;
+    }
+
     public boolean isSatisfied() {
         return hasAssignments();
     }
@@ -568,6 +587,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private void resetAssignmentsTo(List<T> assignments) {
         removingAssignments(getAssignments());
         addingAssignments(assignments);
+        setOriginalTotalAssigment(getAssignedHours());
     }
 
     protected final void addingAssignments(Collection<? extends T> assignments) {
@@ -665,6 +685,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         Validate.notNull(scenario);
         ResourceAllocation<T> copy = createCopy(scenario);
         copy.resourcesPerDay = resourcesPerDay;
+        copy.originalTotalAssignment = originalTotalAssignment;
         copy.task = task;
         copy.assignmentFunction = assignmentFunction;
         return copy;
@@ -943,6 +964,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         switchToScenario(scenario);
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
+        setOriginalTotalAssigment(modifications.getOriginalTotalAssigment());
         setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(scenario, modifications.getDerivedAllocations());
     }
@@ -989,12 +1011,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public LimitingResourceQueueElement getLimitingResourceQueueElement() {
-        return limitingResourceQueueElement;
+        return (!limitingResourceQueueElements.isEmpty()) ? (LimitingResourceQueueElement) limitingResourceQueueElements.iterator().next() : null;
     }
 
-    public void setLimitingResourceQueueElement(
-            LimitingResourceQueueElement limitingResourceQueueElement) {
-        this.limitingResourceQueueElement = limitingResourceQueueElement;
+    public void setLimitingResourceQueueElement(LimitingResourceQueueElement element) {
+        limitingResourceQueueElements.clear();
+        element.setResourceAllocation(this);
+        limitingResourceQueueElements.add(element);
+    }
+
+    public Integer getIntendedTotalHours() {
+        return intendedTotalHours;
+    }
+
+    public void setIntendedTotalHours(Integer intendedTotalHours) {
+        this.intendedTotalHours = intendedTotalHours;
     }
 
     /**

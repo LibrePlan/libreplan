@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -90,6 +92,9 @@ public class Task extends TaskElement {
 
     private Integer priority;
 
+    @Valid
+    private Consolidation consolidation;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -122,6 +127,10 @@ public class Task extends TaskElement {
                 .getTotalHours();
     }
 
+    public int getTotalHours() {
+        return (getTaskSource() != null) ? getTaskSource().getTotalHours() : 0;
+    }
+
     @Override
     public boolean isLeaf() {
         return true;
@@ -133,10 +142,15 @@ public class Task extends TaskElement {
     }
 
     public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
-        List<ResourceAllocation<?>> filtered = ResourceAllocation
-                .getSatisfied(resourceAllocations);
-        return Collections.unmodifiableSet(new HashSet<ResourceAllocation<?>>(
-                filtered));
+        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+
+        if (isLimiting()) {
+            result.addAll(getLimitingResourceAllocations());
+        } else {
+            result.addAll(ResourceAllocation
+                    .getSatisfied(resourceAllocations));
+        }
+        return Collections.unmodifiableSet(result);
     }
 
     @Override
@@ -144,19 +158,44 @@ public class Task extends TaskElement {
         return Collections.unmodifiableSet(resourceAllocations);
     }
 
+    public Set<ResourceAllocation<?>> getLimitingResourceAllocations() {
+        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+        for (ResourceAllocation<?> each: resourceAllocations) {
+            if (each.isLimiting()) {
+                result.add(each);
+            }
+        }
+        return Collections.unmodifiableSet(result);
+    }
+
+    public Set<ResourceAllocation<?>> getNonLimitingResourceAllocations() {
+        Set<ResourceAllocation<?>> result = new HashSet<ResourceAllocation<?>>();
+        for (ResourceAllocation<?> each: resourceAllocations) {
+            if (!each.isLimiting()) {
+                result.add(each);
+            }
+        }
+        return Collections.unmodifiableSet(result);
+    }
+
     public boolean isLimiting() {
-        // FIXME: Task is limiting if its resourceAllocation is associated with
-        // a LimitingResourceQueueElement
-        return false;
+        return !(getLimitingResourceAllocations().isEmpty());
     }
 
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
+        addResourceAllocation(resourceAllocation, true);
+    }
+
+    public void addResourceAllocation(ResourceAllocation<?> resourceAllocation,
+            boolean generateDayAssignments) {
         if (!resourceAllocation.getTask().equals(this)) {
             throw new IllegalArgumentException(
                     "the resourceAllocation's task must be this task");
         }
         resourceAllocations.add(resourceAllocation);
-        resourceAllocation.associateAssignmentsToResource();
+        if (generateDayAssignments) {
+            resourceAllocation.associateAssignmentsToResource();
+        }
     }
 
     public void removeResourceAllocation(
@@ -395,6 +434,14 @@ public class Task extends TaskElement {
 
     private void reassign(Scenario onScenario,
             AllocationModificationStrategy strategy) {
+        if (isLimiting()) {
+            Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
+            ResourceAllocation<?> resourceAlloation = resourceAllocations
+                    .iterator().next();
+            resourceAlloation.getLimitingResourceQueueElement()
+                    .setEarlierStartDateBecauseOfGantt(getStartDate());
+            return;
+        }
         List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
                 getSatisfiedResourceAllocations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
@@ -486,10 +533,18 @@ public class Task extends TaskElement {
         return subcontractedTaskData;
     }
 
-    public void removeAllResourceAllocations() {
+    public void removeAllSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             removeResourceAllocation(resourceAllocation);
+        }
+    }
+
+    public void removeAllResourceAllocations() {
+        for (Iterator<ResourceAllocation<?>> i = resourceAllocations.iterator(); i
+                .hasNext();) {
+            ResourceAllocation<?> each = i.next();
+            removeResourceAllocation(each);
         }
     }
 
@@ -532,6 +587,14 @@ public class Task extends TaskElement {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public void setConsolidation(Consolidation consolidation) {
+        this.consolidation = consolidation;
+    }
+
+    public Consolidation getConsolidation() {
+        return consolidation;
     }
 
 }

@@ -58,6 +58,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.impl.api.InputElement;
 
 public abstract class TreeController<T extends ITreeNode<T>> extends
         GenericForwardComposer {
@@ -318,6 +319,20 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public Renderer() {
         }
 
+        protected void registerFocusEvent(final InputElement inputElement) {
+            inputElement.addEventListener(Events.ON_FOCUS,
+                    new EventListener() {
+
+                private Treeitem item = (Treeitem) getCurrentTreeRow().getParent();
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    item.setSelected(true);
+                    Util.reloadBindings(item.getParent());
+                }
+            });
+        }
+
         protected Treecell addCell(Component... components) {
             return addCell(null, components);
         }
@@ -329,6 +344,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             }
             for (Component component : components) {
                 cell.appendChild(component);
+                if(component instanceof InputElement) {
+                    registerFocusEvent((InputElement) component);
+                }
             }
             currentTreeRow.appendChild(cell);
             return cell;
@@ -424,6 +442,16 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
                     markModifiedTreeitem((Treerow) cell.getParent());
                     onDoubleClickForSchedulingStateCell(currentElement);
+                }
+            });
+            cell.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                private Treeitem item = (Treeitem) getCurrentTreeRow().getParent();
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    item.setSelected(true);
+                    Util.reloadBindings(item.getParent());
                 }
             });
             schedulingState.addTypeChangeListener(

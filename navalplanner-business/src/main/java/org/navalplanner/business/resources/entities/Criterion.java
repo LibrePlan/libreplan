@@ -84,6 +84,26 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         return result;
     }
 
+    public static List<Criterion> sortByTypeAndName(Collection<Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(result, new Comparator<Criterion>() {
+
+            @Override
+            public int compare(Criterion o1, Criterion o2) {
+                if (o1.getName() == null || o1.getType().getName() == null) {
+                    return 1;
+                }
+                if (o2.getName() == null || o2.getType().getName() == null) {
+                    return -1;
+                }
+                String name1 = o1.getType().getName() + " " + o1.getName();
+                String name2 = o2.getType().getName() + " " + o2.getName();
+                return name1.compareTo(name2);
+            }
+        });
+        return result;
+    }
+
     public void updateUnvalidated(String name, Boolean active) {
 
         if (!StringUtils.isBlank(name)) {

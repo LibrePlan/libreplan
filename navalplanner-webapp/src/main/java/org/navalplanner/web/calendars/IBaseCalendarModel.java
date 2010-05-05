@@ -150,6 +150,8 @@ public interface IBaseCalendarModel {
 
     boolean isLastVersion();
 
+    boolean isFirstVersion();
+
     String getName();
 
     LocalDate getValidFrom(CalendarData calendarData);

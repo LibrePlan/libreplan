@@ -46,6 +46,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -77,7 +78,6 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
@@ -90,6 +90,7 @@ import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
@@ -108,6 +109,7 @@ import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
+import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -218,9 +220,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private ICriterionDAO criterionDAO;
 
     @Autowired
-    private IWorkReportLineDAO workReportLineDAO;
-
-    @Autowired
     private ITaskElementDAO taskDAO;
 
     @Autowired
@@ -245,6 +244,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private Order orderReloaded;
+
+    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator = new Resource.AllResourceAssignments();
 
@@ -326,6 +330,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         currentScenario = scenarioManager.getCurrent();
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
+        configuration.setExpandPlanningViewCharts(configurationDAO
+                .getConfiguration().isExpandOrderPlanningViewCharts());
+
         addAdditional(additional, configuration);
 
         ZoomLevel defaultZoomLevel = OrderPlanningModel
@@ -348,7 +355,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
         configuration
+                .addCommandOnTask(buildAdvanceConsolidationCommand(editTaskController));
+        configuration
                 .addCommandOnTask(buildSubcontractCommand(editTaskController));
+
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
         Tabbox chartComponent = new Tabbox();
@@ -360,8 +370,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configureModificators(orderReloaded, configuration);
         planner.setConfiguration(configuration);
 
-        Timeplot chartLoadTimeplot = new Timeplot();
-        Timeplot chartEarnedValueTimeplot = new Timeplot();
+        Timeplot chartLoadTimeplot = createEmptyTimeplot();
+        Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
         OrderEarnedValueChartFiller earnedValueChartFiller = new OrderEarnedValueChartFiller(
                 orderReloaded);
         earnedValueChartFiller.calculateValues(planner.getTimeTracker()
@@ -371,17 +381,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         Chart loadChart = setupChart(orderReloaded,
                 new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
-                planner.getTimeTracker(),
-                planner.getZoomLevel());
+                planner);
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 loadChart);
         Chart earnedValueChart = setupChart(orderReloaded,
                 earnedValueChartFiller,
-                chartEarnedValueTimeplot, planner
-                        .getTimeTracker(), planner.getZoomLevel());
+                chartEarnedValueTimeplot, planner);
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+    }
+
+    private Timeplot createEmptyTimeplot() {
+        Timeplot timeplot = new Timeplot();
+        timeplot.appendChild(new Plotinfo());
+        return timeplot;
     }
 
     private void addPrintSupport(
@@ -698,24 +712,31 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void refillLoadChartWhenNeeded(
-            PlannerConfiguration<?> configuration, Planner planner,
+            PlannerConfiguration<?> configuration, final Planner planner,
             ISaveCommand saveCommand, final Chart loadChart) {
-        planner.getTimeTracker().addZoomListener(fillOnZoomChange(loadChart));
+        planner.getTimeTracker().addZoomListener(
+                fillOnZoomChange(loadChart, planner));
+        planner
+                .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
         if(saveCommand != null) {
-            saveCommand.addListener(fillChartOnSave(loadChart));
+            saveCommand.addListener(fillChartOnSave(loadChart, planner));
         }
         taskElementAdapter.addListener(readOnlyProxy(transactionService,
                 IOnMoveListener.class, new IOnMoveListener() {
                     @Override
                     public void moved(TaskElement taskElement) {
-                        loadChart.fillChart();
+                        if (planner.isVisibleChart()) {
+                            loadChart.fillChart();
+                        }
                     }
                 }));
         configuration.addReloadChartListener(readOnlyProxy(transactionService,
                 IReloadChartListener.class, new IReloadChartListener() {
                     @Override
                     public void reloadChart() {
-                        loadChart.fillChart();
+                        if (planner.isVisibleChart()) {
+                            loadChart.fillChart();
+                        }
                     }
                 }));
     }
@@ -792,6 +813,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return taskPropertiesCommand;
     }
 
+    private IAdvanceConsolidationCommand buildAdvanceConsolidationCommand(
+            EditTaskController editTaskController) {
+        IAdvanceConsolidationCommand advanceConsolidationCommand = getAdvanceConsolidationCommand();
+        advanceConsolidationCommand.initialize(editTaskController,
+                planningState);
+        return advanceConsolidationCommand;
+    }
+
     private IAddMilestoneCommand buildMilestoneCommand() {
         IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
         addMilestoneCommand.setState(planningState);
@@ -820,16 +849,41 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private Chart setupChart(Order orderReloaded,
             IChartFiller loadChartFiller, Timeplot chartComponent,
-            TimeTracker timeTracker,
-            ZoomLevel defaultZoomLevel) {
+            Planner planner) {
+        TimeTracker timeTracker = planner.getTimeTracker();
         Chart result = new Chart(chartComponent, loadChartFiller,
                 timeTracker);
-        result.setZoomLevel(defaultZoomLevel);
-        result.fillChart();
+        result.setZoomLevel(planner.getZoomLevel());
+        if (planner.isVisibleChart()) {
+            result.fillChart();
+        }
         return result;
     }
 
-    private IZoomLevelChangedListener fillOnZoomChange(final Chart loadChart) {
+    private IChartVisibilityChangedListener fillOnChartVisibilityChange(
+            final Chart loadChart) {
+        IChartVisibilityChangedListener chartVisibilityChangedListener = new IChartVisibilityChangedListener() {
+
+            @Override
+            public void chartVisibilityChanged(final boolean visible) {
+                transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                if (visible) {
+                                    loadChart.fillChart();
+                                }
+                                return null;
+                            }
+                        });
+            }
+        };
+        keepAliveChartVisibilityListeners.add(chartVisibilityChangedListener);
+        return chartVisibilityChangedListener;
+    }
+
+    private IZoomLevelChangedListener fillOnZoomChange(final Chart loadChart,
+            final Planner planner) {
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
             @Override
@@ -840,7 +894,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                             @Override
                             public Void execute() {
-                                loadChart.fillChart();
+                                if (planner.isVisibleChart()) {
+                                    loadChart.fillChart();
+                                }
                                 return null;
                             }
                         });
@@ -852,7 +908,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return zoomListener;
     }
 
-    private IAfterSaveListener fillChartOnSave(final Chart loadChart) {
+    private IAfterSaveListener fillChartOnSave(final Chart loadChart,
+            final Planner planner) {
         IAfterSaveListener result = new IAfterSaveListener() {
 
                     @Override
@@ -861,7 +918,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                             @Override
                             public Void execute() {
-                                loadChart.fillChart();
+                                if (planner.isVisibleChart()) {
+                                    loadChart.fillChart();
+                                }
                                 return null;
                             }
                         });
@@ -893,6 +952,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         criterionDAO.list(Criterion.class);
         TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
         forceLoadOfChildren(Arrays.asList(taskElement));
+        forceLoadDayAssignments(orderReloaded.getResources());
         switchAllocationsToScenario(currentScenario, taskElement);
         final IScenarioInfo scenarioInfo = buildScenarioInfo(orderReloaded);
         PlanningState result = PlanningState.create(taskElement, orderReloaded
@@ -902,6 +962,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         forceLoadOfWorkingHours(result.getInitial());
         forceLoadOfLabels(result.getInitial());
         return result;
+    }
+
+    private void forceLoadDayAssignments(Set<Resource> resources) {
+        for (Resource resource : resources) {
+            resource.getAssignments().size();
+        }
     }
 
     private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
@@ -1041,6 +1107,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IDeleteMilestoneCommand getDeleteMilestoneCommand();
 
     protected abstract ITaskPropertiesCommand getTaskPropertiesCommand();
+
+    protected abstract IAdvanceConsolidationCommand getAdvanceConsolidationCommand();
 
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 

@@ -1,4 +1,4 @@
-﻿Criteria
+Criteria
 #########
 
 .. contents::
@@ -10,7 +10,7 @@ Several operations can be carried out with criteria in the program:
 * Criteria administration
 * Allocation of criteria to resources.
 * Allocation of criteria to tasks.
-* Filtering entities according to criteria. Tasks and order items can be filtered according to criteria to carry out operations in the program. 
+* Filtering entities according to criteria. Tasks and order items can be filtered according to criteria to carry out operations in the program.
 
 Only the first function out of the three described above will be explained in this section. The two kinds of allocation will be dealt with later, the allocation of resources in the chapter on "Resource management" and the filtering function in the chapter on "Task planning".
 

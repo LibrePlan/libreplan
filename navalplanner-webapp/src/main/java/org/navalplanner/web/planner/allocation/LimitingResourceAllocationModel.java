@@ -20,26 +20,26 @@
 
 package org.navalplanner.web.planner.allocation;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -64,120 +64,87 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Autowired
     private ICriterionDAO criterionDAO;
 
+    @Autowired
+    private ITaskElementDAO taskDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
     private Task task;
 
-    private List<LimitingResourceAllocationRow> resourceAllocations = new ArrayList<LimitingResourceAllocationRow>();
+    private List<LimitingAllocationRow> limitingAllocationRows = new ArrayList<LimitingAllocationRow>();
 
     @Override
     public void init(Task task) {
         this.task = task;
-        this.resourceAllocations = new ArrayList<LimitingResourceAllocationRow>();
+        limitingAllocationRows = LimitingAllocationRow.toRows(task);
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Integer getOrderHours() {
         if (task == null) {
             return 0;
         }
-        return AggregatedHoursGroup.sum(task.getAggregatedByCriterions());
-    }
-
-    public class LimitingResourceAllocationRow {
-
-        private static final int DEFAULT_PRIORITY = 5;
-
-        private AllocationType type = AllocationType.GENERIC;
-
-        private int hours = 0;
-
-        private int priority = DEFAULT_PRIORITY;
-
-        public LimitingResourceAllocationRow() {
-
-        }
-
-        public LimitingResourceAllocationRow(AllocationType type, int hours) {
-            this(type, hours, DEFAULT_PRIORITY);
-        }
-
-        public LimitingResourceAllocationRow(AllocationType type, int hours, int priority) {
-            this.type = type;
-            this.hours = hours;
-            this.priority = priority;
-        }
-
-        public String getAllocationType() {
-            return type.toString();
-        }
-
-        public String getAllocation() {
-            if (AllocationType.GENERIC.equals(type)) {
-                return _("Criteria");
-            }
-            if (AllocationType.SPECIFIC.equals(type)) {
-                return _("Resource");
-            }
-            return "";
-        }
-
-        public int getHours() {
-            return hours;
-        }
-
-        public void setHours(int hours) {
-            this.hours = hours;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-
-        public String getPriorityStr() {
-            return (new Integer(priority)).toString();
-        }
-
-        public void setPriorityStr(String priority) {
-            this.priority = toNumber(priority);
-        }
-
-        private int toNumber(String str) {
-            if (NumberUtils.isNumber(str)) {
-                int result = NumberUtils.toInt(str);
-                return (result >= 1 && result <= 10) ? result : 1;
-            }
-            return 1;
-        }
-
-    };
-
-    private void addSpecificResourceAllocation(Resource resource) {
-        LimitingResourceAllocationRow resourceAllocation = new LimitingResourceAllocationRow(
-                AllocationType.SPECIFIC, getSumHoursGroups());
-        resourceAllocations.add(resourceAllocation);
-    }
-
-    private int getSumHoursGroups() {
-        return task.getTaskSource().getTotalHours();
-    }
-
-    private void addGenericResourceAllocation(Resource resource) {
-        LimitingResourceAllocationRow resourceAllocation = new LimitingResourceAllocationRow(
-                AllocationType.GENERIC, getSumHoursGroups());
-        resourceAllocations.add(resourceAllocation);
+        return AggregatedHoursGroup.sum(getHoursAggregatedByCriteria());
     }
 
     @Override
-    public void addGeneric(Set<Criterion> criterions,
+    @Transactional(readOnly = true)
+    public void addGeneric(Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
         if (resources.size() >= 1) {
-            addGenericResourceAllocation(getFirstChild(resources));
+            reattachResources(resources);
+            addGenericResourceAllocation(criteria, resources);
         }
     }
 
+    private void reattachResources(Collection<? extends Resource> resources) {
+        for (Resource each: resources) {
+            resourceDAO.reattach(each);
+        }
+    }
+
+    private void addGenericResourceAllocation(Set<Criterion> criteria,
+            Collection<? extends Resource> resources) {
+        if (isNew(criteria, resources)) {
+            limitingAllocationRows.clear();
+            LimitingAllocationRow allocationRow = LimitingAllocationRow.create(
+                    criteria, resources, task, LimitingAllocationRow.DEFAULT_PRIORITY);
+            limitingAllocationRows.add(allocationRow);
+        }
+    }
+
+    private boolean isNew(Set<Criterion> criteria, Collection<? extends Resource> resources) {
+        LimitingAllocationRow allocationRow = getLimitingAllocationRow();
+
+        if (allocationRow == null || allocationRow.isSpecific()) {
+            return true;
+        }
+
+        Set<Long> allocatedResourcesIds = allocationRow.getResourcesIds();
+        for (Resource each: resources) {
+            if (!allocatedResourcesIds.contains(each.getId())) {
+                return true;
+            }
+        }
+
+        Set<Long> allocatedCriteriaIds = allocationRow.getCriteriaIds();
+        for (Criterion each: criteria) {
+            if (!allocatedCriteriaIds.contains(each.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
+    @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         if (resources.size() >= 1) {
-            addSpecificResourceAllocation(getFirstChild(resources));
+            Resource resource = getFirstChild(resources);
+            resourceDAO.reattach(resource);
+            addSpecificResourceAllocation(resource);
         }
     }
 
@@ -185,9 +152,58 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         return collection.iterator().next();
     }
 
+    private void addSpecificResourceAllocation(Resource resource) {
+        if (isNew(resource)) {
+            limitingAllocationRows.clear();
+            LimitingAllocationRow allocationRow = LimitingAllocationRow.create(
+                    resource, task, LimitingAllocationRow.DEFAULT_PRIORITY);
+            limitingAllocationRows.add(allocationRow);
+        }
+    }
+
+    private boolean isNew(Resource resource) {
+        LimitingAllocationRow allocationRow = getLimitingAllocationRow();
+
+        if (allocationRow == null || allocationRow.isGeneric()) {
+            return true;
+        }
+
+        final Resource taskResource = getAssociatedResource();
+        if (taskResource != null) {
+            return (!resource.getId().equals(taskResource.getId()));
+        }
+        return true;
+    }
+
+    private Resource getAssociatedResource() {
+        ResourceAllocation<?> resourceAllocation = getAssociatedResourceAllocation();
+        if (resourceAllocation != null) {
+            List<Resource> resources = resourceAllocation.getAssociatedResources();
+            if (resources != null && resources.size() >= 1) {
+                return (Resource) resources.iterator().next();
+            }
+        }
+        return null;
+    }
+
+    private ResourceAllocation<?> getAssociatedResourceAllocation() {
+        LimitingAllocationRow allocationRow = getLimitingAllocationRow();
+        if (allocationRow != null) {
+            return allocationRow.getResourceAllocation();
+        }
+        return null;
+    }
+
+    private LimitingAllocationRow getLimitingAllocationRow() {
+        if (limitingAllocationRows.size() >= 1) {
+            return limitingAllocationRows.get(0);
+        }
+        return null;
+    }
+
     @Override
-    public List<LimitingResourceAllocationRow> getResourceAllocations() {
-        return Collections.unmodifiableList(resourceAllocations);
+    public List<LimitingAllocationRow> getResourceAllocationRows() {
+        return Collections.unmodifiableList(limitingAllocationRows);
     }
 
     @Override
@@ -243,8 +259,22 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     }
 
     @Override
-    public void removeAllResourceAllocations() {
-        resourceAllocations.clear();
+    @Transactional(readOnly=true)
+    public void confirmSave() {
+        taskDAO.reattach(task);
+        ResourceAllocation<?> resourceAllocation = getAssociatedResourceAllocation();
+        if (resourceAllocation != null && resourceAllocation.isNewObject()) {
+            task.removeAllResourceAllocations();
+            addResourceAllocation(task, resourceAllocation);
+        }
+        taskDAO.save(task);
+    }
+
+    private void addResourceAllocation(Task task, ResourceAllocation<?> resourceAllocation) {
+        LimitingResourceQueueElement element = LimitingResourceQueueElement.create();
+        element.setEarlierStartDateBecauseOfGantt(task.getStartDate());
+        resourceAllocation.setLimitingResourceQueueElement(element);
+        task.addResourceAllocation(resourceAllocation, false);
     }
 
 }

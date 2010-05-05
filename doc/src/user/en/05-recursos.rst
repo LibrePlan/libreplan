@@ -1,4 +1,4 @@
-﻿Management of resources
+Management of resources
 #######################
 
 .. _recursos:

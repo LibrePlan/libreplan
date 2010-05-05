@@ -91,8 +91,7 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Exception Type')}" />
-                            <combobox id="exceptionTypes"
-                                disabled="@{calendarController.editionController.isSelectedDateFromPast}">
+                            <combobox id="exceptionTypes">
                                 <comboitem self="@{each='calendarExceptionType'}"
                                     value="@{calendarExceptionType}"
                                     label="@{calendarExceptionType.name}" />
@@ -101,18 +100,15 @@
                         <row>
                             <label value="${i18n:_('Start Date')}" />
                             <datebox id="exceptionStartDate"
-                                disabled="@{calendarController.editionController.isSelectedDateFromPast}"
                                 value="@{calendarController.editionController.selectedDay}" />
                         </row>
                         <row>
                             <label value="${i18n:_('End Date')}" />
-                            <datebox id="exceptionEndDate"
-                                disabled="@{calendarController.editionController.isSelectedDateFromPast}"/>
+                            <datebox id="exceptionEndDate" />
                         </row>
                         <row>
                             <label value="${i18n:_('Hours')}" />
-                            <intbox id="exceptionHours"
-                                disabled="@{calendarController.editionController.isSelectedDateFromPast}" />
+                            <intbox id="exceptionHours" />
                         </row>
                     </rows>
                     </grid>
@@ -132,11 +128,9 @@
 
                 <hbox>
                     <button label="${i18n:_('Create exception')}"
-                        disabled="@{calendarController.editionController.isSelectedDateFromPast}"
                         onClick="calendarController.editionController.createException();"
                         visible="@{calendarController.editionController.isNotOwnExceptionDay}" />
                     <button label="${i18n:_('Update exception')}"
-                        disabled="@{calendarController.editionController.isSelectedDateFromPast}"
                         onClick="calendarController.editionController.updateException();"
                         visible="@{calendarController.editionController.isOwnExceptionDay}" />
                 </hbox>
@@ -180,8 +174,7 @@
                     <vbox>
                         <label value="@{calendarController.editionController.calendarType}" />
                         <combobox id="parentCalendars"
-                            visible="@{calendarController.editionController.isDerived}"
-                            disabled="@{calendarController.editionController.isDateValidFromPast}">
+                            visible="@{calendarController.editionController.isDerived}">
                             <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
                                 label="@{baseCalnedar.name}" />
                         </combobox>
@@ -191,7 +184,7 @@
                 <hbox visible="@{calendarController.editionController.isEditing}">
                     <label value="${i18n:_('Valid from')}" />
                     <datebox id="dateValidFrom" value="@{calendarController.editionController.dateValidFrom}"
-                        disabled="@{calendarController.editionController.isDateValidFromPast}" />
+                        disabled="@{calendarController.editionController.isFirstVersion}" />
                     <label value="${i18n:_('to')}" />
                     <datebox id="expiringDate" value="@{calendarController.editionController.expiringDate}"
                         disabled="@{calendarController.editionController.isLastVersion}" />

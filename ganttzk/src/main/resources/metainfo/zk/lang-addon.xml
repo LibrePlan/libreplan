@@ -48,6 +48,7 @@
         <macro-uri>~./ganttz/resourceload/leftPane.zul</macro-uri>
     </component>
 
+
 	<component>
 		<component-name>leftPane</component-name>
 		<component-class>org.zkoss.ganttz.LeftPane</component-class>
@@ -78,6 +79,7 @@
 			<mold-uri>~./ganttz/resourceload/resourceload.dsp</mold-uri>
 		</mold>
 	</component>
+
 
 	<component>
         <component-name>taskRow</component-name>
@@ -144,6 +146,7 @@
 			<mold-uri>~./ganttz/dependency.dsp</mold-uri>
 		</mold>
 	</component>
+
 
 	<component>
 		<component-name>timetracker</component-name>

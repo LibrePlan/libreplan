@@ -33,6 +33,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
+import org.navalplanner.web.limitingresources.LimitingResourcesController;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.company.CompanyPlanningController;
@@ -131,6 +132,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     private ITab resourceLoadTab;
 
+    private ITab limitingResourcesTab;
+
     private ITab ordersTab;
 
     private TabSwitcher tabsSwitcher;
@@ -143,6 +146,12 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private ResourceLoadController resourceLoadControllerGlobal;
+
+    @Autowired
+    private LimitingResourcesController limitingResourcesController;
+
+    @Autowired
+    private LimitingResourcesController limitingResourcesControllerGlobal;
 
     private org.zkoss.zk.ui.Component breadcrumbs;
 
@@ -193,6 +202,12 @@ public class MultipleTabsPlannerController implements Composer,
                     }
 
                 }, breadcrumbs);
+
+        /* FIX */
+        limitingResourcesTab = LimitingResourcesTabCreator.create(mode,
+                limitingResourcesController, upCommand(),
+                limitingResourcesControllerGlobal, breadcrumbs);
+
         ordersTab = OrdersTabCreator.create(mode, orderCRUDController,
                 breadcrumbs, new IOrderPlanningGate() {
 
@@ -222,6 +237,8 @@ public class MultipleTabsPlannerController implements Composer,
         return TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
+.add(
+                tabWithNameReloading(limitingResourcesTab, typeChanged))
             .add(tabWithNameReloading(ordersTab, typeChanged))
             .add(visibleOnlyAtOrderMode(advancedAllocation));
     }
@@ -348,6 +365,11 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
+    public void goToCompanyLimitingResources() {
+        getTabsRegistry().show(limitingResourcesTab);
+    }
+
+    @Override
     public void goToOrdersList() {
         // ordersTab.show();
         getTabsRegistry().show(ordersTab);
@@ -369,6 +391,11 @@ public class MultipleTabsPlannerController implements Composer,
         getTabsRegistry().show(ordersTab);
         mode.goToOrderMode(order);
         orderCRUDController.highLight(orderElement);
+    }
+
+    @Override
+    public void goToLimitingResources() {
+        getTabsRegistry().show(limitingResourcesTab);
     }
 
 }

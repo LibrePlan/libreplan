@@ -37,7 +37,8 @@ public enum PredefinedCalendarExceptionTypes {
 
     private PredefinedCalendarExceptionTypes(String name, String color,
             Boolean notAssignable) {
-        calendarExceptionType = CalendarExceptionType.create(name, color,
+        // Using the name as code in order to be more human friendly
+        calendarExceptionType = CalendarExceptionType.create(name, name, color,
                 notAssignable);
     }
 

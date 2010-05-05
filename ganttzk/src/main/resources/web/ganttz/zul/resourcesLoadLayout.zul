@@ -43,6 +43,12 @@ resourcesLoadPanel = self;
             model="${resourcesLoadPanel.filters}"
             onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
         </listbox>
+        <separator/>
+        ${i18n:_('Show elements between')}:
+        <combobox id="filterByNameCombo"
+            onChange="resourcesLoadPanel.onSelectFilterByName(self.selectedItemApi.value)" />
+        <separator/>
+        <hbox id="additionalFilterInsertionPoint" />
        </hbox>
        </north>
 

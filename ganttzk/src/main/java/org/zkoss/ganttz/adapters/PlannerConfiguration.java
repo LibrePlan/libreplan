@@ -134,6 +134,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean flattenTreeEnabled = true;
 
+    private boolean renamingTasksEnabled = true;
+
     // private String identifier = null;
 
     private IDetailItemModificator firstLevelModificators = SeveralModificators
@@ -145,6 +147,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     private List<IReloadChartListener> reloadChartListeners = new ArrayList<IReloadChartListener>();
 
     private IPrintAction printAction;
+
+    private boolean expandPlanningViewCharts;
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -298,6 +302,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         return flattenTreeEnabled;
     }
 
+    public void setRenamingTasksEnabled(boolean renamingTasksEnabled) {
+        this.renamingTasksEnabled = renamingTasksEnabled;
+    }
+
+    @Override
+    public boolean isRenamingTasksEnabled() {
+        return renamingTasksEnabled;
+    }
+
     public IDetailItemModificator getSecondLevelModificators() {
         return secondLevelModificators;
     }
@@ -356,6 +369,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             throw new UnsupportedOperationException("print not supported");
         }
         printAction.doPrint(parameters, planner);
+    }
+
+    public void setExpandPlanningViewCharts(boolean expandPlanningViewCharts) {
+        this.expandPlanningViewCharts = expandPlanningViewCharts;
+    }
+
+    @Override
+    public boolean isExpandPlanningViewCharts() {
+        return expandPlanningViewCharts;
     }
 
 }

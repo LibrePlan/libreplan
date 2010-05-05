@@ -29,6 +29,10 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
+import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.security.SecurityUtils;
@@ -44,7 +48,12 @@ import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -74,6 +83,11 @@ public class ResourceLoadController implements Composer {
 
     private IOrderPlanningGate planningControllerEntryPoints;
 
+    private BandboxMultipleSearch bandBox;
+
+    private boolean currentFilterByResources = true;
+    private boolean filterHasChanged = false;
+
     public ResourceLoadController() {
     }
 
@@ -98,6 +112,9 @@ public class ResourceLoadController implements Composer {
 
     private void reload(boolean filterByResources) {
         try {
+            this.filterHasChanged = (filterByResources != currentFilterByResources);
+            this.currentFilterByResources = filterByResources;
+
             if (filterBy == null) {
                 resourceLoadModel.initGlobalView(filterByResources);
             } else {
@@ -110,7 +127,6 @@ public class ResourceLoadController implements Composer {
             this.parent.appendChild(resourcesLoadPanel);
 
             resourcesLoadPanel.afterCompose();
-            addListeners();
             addCommands(resourcesLoadPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -164,13 +180,89 @@ public class ResourceLoadController implements Composer {
 
     private void buildResourcesLoadPanel() {
         if (resourcesLoadPanel != null) {
+            if(bandBox != null) {
+                //if the filter has changed, we have to clear the model and
+                //the bandbox, and change its finder
+                if(filterHasChanged) {
+                    if(currentFilterByResources) {
+                        bandBox.setFinder("workerMultipleFiltersFinder");
+                        resourceLoadModel.clearCriteriaToShow();
+                    }
+                    else {
+                        bandBox.setFinder("criterionMultipleFiltersFinder");
+                        resourceLoadModel.clearResourcesToShow();
+                    }
+                    bandBox.clear();
+                    bandBox.afterCompose();
+                }
+
+                //if the bandbox filter is active, we disable the name filter
+                resourcesLoadPanel.setNameFilterDisabled(
+                        !bandBox.getSelectedElements().isEmpty());
+            }
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
                     timeTracker);
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker, parent);
+            if(filterBy == null) {
+                addWorkersBandbox();
+            }
             addListeners();
         }
+    }
+
+    private void addWorkersBandbox() {
+        bandBox = new BandboxMultipleSearch();
+        bandBox.setId("workerBandboxMultipleSearch");
+        bandBox.setWidthBandbox("285px");
+        bandBox.setWidthListbox("300px");
+        bandBox.setFinder("workerMultipleFiltersFinder");
+        bandBox.afterCompose();
+
+        Button button = new Button();
+        button.setImage("/common/img/ico_filter.png");
+        button.setTooltip(_("Filter by worker"));
+        button.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if(currentFilterByResources) {
+                    filterResourcesFromBandbox();
+                }
+                else {
+                    filterCriteriaFromBandbox();
+                }
+            }
+        });
+
+        Hbox hbox = new Hbox();
+        hbox.appendChild(bandBox);
+        hbox.appendChild(button);
+        hbox.setAlign("center");
+
+        resourcesLoadPanel.setVariable("additionalFilter", hbox, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void filterResourcesFromBandbox() {
+        List<FilterPair> filterPairList = bandBox.getSelectedElements();
+        List<Resource> workersList = new ArrayList<Resource>();
+        for(FilterPair filterPair : filterPairList) {
+            workersList.add((Resource)filterPair.getValue());
+        }
+        resourceLoadModel.setResourcesToShow(workersList);
+        reload(true);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void filterCriteriaFromBandbox() {
+        List<FilterPair> filterPairList = bandBox.getSelectedElements();
+        List<Criterion> criteriaList = new ArrayList<Criterion>();
+        for(FilterPair filterPair : filterPairList) {
+            criteriaList.add((Criterion)filterPair.getValue());
+        }
+        resourceLoadModel.setCriteriaToShow(criteriaList);
+        reload(false);
     }
 
     public void filterBy(Order order) {

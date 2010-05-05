@@ -1,4 +1,4 @@
-﻿Calendars
+Calendars
 ###########
 
 .. contents::
@@ -114,7 +114,7 @@ The following must be carried out to set up a default calendar:
 
 * Go to the *Administration* menu.
 * Click the *Configuration* procedure.
-* Where *Default calendar* appears, select the calendar to be used as the program’s default calendar.
+* Where *Default calendar* appears, select the calendar to be used as the program's default calendar.
 * Click *Save*.
 
 .. figure:: images/default-calendar.png

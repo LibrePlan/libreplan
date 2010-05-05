@@ -196,19 +196,6 @@ public abstract class BaseCalendarEditionController extends
         return baseCalendarModel.isDerived();
     }
 
-    public boolean isDateValidFromPast() {
-        if (!isEditing()) {
-            return false;
-        }
-
-        Date dateValidFrom = baseCalendarModel.getDateValidFrom();
-        if (dateValidFrom != null) {
-            return isPast(dateValidFrom);
-        }
-
-        return true;
-    }
-
     private boolean isPast(Date date) {
         LocalDate localDate = new LocalDate(date);
         LocalDate currentLocalDate = new LocalDate();
@@ -262,9 +249,7 @@ public abstract class BaseCalendarEditionController extends
 
             });
 
-            if (isDateValidFromPast()) {
-                hoursIntbox.setDisabled(true);
-            } else if (baseCalendarModel.isDerived()
+            if (baseCalendarModel.isDerived()
                     && baseCalendarModel.isDefault(day)) {
                 hoursIntbox.setDisabled(true);
             }
@@ -301,10 +286,6 @@ public abstract class BaseCalendarEditionController extends
                             }
 
                         });
-
-                if (isDateValidFromPast()) {
-                    defaultCheckbox.setDisabled(true);
-                }
 
                 defaultListcell.appendChild(defaultCheckbox);
                 item.appendChild(defaultListcell);
@@ -474,19 +455,6 @@ public abstract class BaseCalendarEditionController extends
         return baseCalendarModel.getHoursOfDay();
     }
 
-    public boolean isSelectedDateFromPast() {
-        Date selectedDay = baseCalendarModel.getSelectedDay();
-        if (selectedDay != null) {
-            return isPast(selectedDay);
-        }
-
-        return true;
-    }
-
-    public boolean isNotSelectedDateFromPast() {
-        return !isSelectedDateFromPast();
-    }
-
     public void createException() {
         Combobox exceptionTypes = (Combobox) window.getFellow("exceptionTypes");
         CalendarExceptionType type = (CalendarExceptionType) exceptionTypes
@@ -514,13 +482,6 @@ public abstract class BaseCalendarEditionController extends
                     _("You should select a end date for the exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
-        }
-        if (startDate.compareTo(new Date()) <= 0) {
-            throw new WrongValueException(
-                    dateboxStartDate,
-                    _("Exception start date should be greater than current date"));
-        } else {
-            Clients.closeErrorBox(dateboxStartDate);
         }
         if (startDate.compareTo(endDate) > 0) {
             throw new WrongValueException(
@@ -694,9 +655,7 @@ public abstract class BaseCalendarEditionController extends
             LocalDate validFrom = baseCalendarModel.getValidFrom(calendarData);
             if ((validFrom == null)
                     || (!baseCalendarModel.getLastCalendarData().equals(
-                            calendarData))
-                    || (validFrom.compareTo(
-                            new LocalDate()) <= 0)) {
+                            calendarData))) {
                 result.setDisabled(true);
             }
             return result;
@@ -741,6 +700,10 @@ public abstract class BaseCalendarEditionController extends
 
     public boolean isLastVersion() {
         return baseCalendarModel.isLastVersion();
+    }
+
+    public boolean isFirstVersion() {
+        return baseCalendarModel.isFirstVersion();
     }
 
     public void goToDate(Date date) {
@@ -903,9 +866,6 @@ public abstract class BaseCalendarEditionController extends
                             reloadDayInformation();
                         }
                     });
-            if (isSelectedDateFromPast()) {
-                result.setDisabled(true);
-            }
             return result;
         }
 
@@ -955,13 +915,6 @@ public abstract class BaseCalendarEditionController extends
                     _("You should select a end date for the exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
-        }
-        if (startDate.compareTo(new Date()) <= 0) {
-            throw new WrongValueException(
-                    dateboxStartDate,
-                    _("Exception start date should be greater than current date"));
-        } else {
-            Clients.closeErrorBox(dateboxStartDate);
         }
         if (startDate.compareTo(endDate) > 0) {
             throw new WrongValueException(

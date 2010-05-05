@@ -122,7 +122,7 @@ public class Worker extends Resource {
     }
 
     public String getName() {
-        return firstName + " " + surname;
+        return getSurname() + ", " + getFirstName();
     }
 
     @NotEmpty(message="worker's NIF not specified")

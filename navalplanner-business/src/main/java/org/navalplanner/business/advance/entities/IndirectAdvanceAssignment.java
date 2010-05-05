@@ -20,7 +20,12 @@
 
 package org.navalplanner.business.advance.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 
 /**
  * Represents an {@link AdvanceAssignment} that is defined in some of the
@@ -29,6 +34,9 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class IndirectAdvanceAssignment extends AdvanceAssignment {
+
+    @Valid
+    private Set<CalculatedConsolidation> calculatedConsolidations = new HashSet<CalculatedConsolidation>();
 
     public static IndirectAdvanceAssignment create() {
         IndirectAdvanceAssignment indirectAdvanceAssignment = new IndirectAdvanceAssignment();
@@ -61,6 +69,15 @@ public class IndirectAdvanceAssignment extends AdvanceAssignment {
 
     private IndirectAdvanceAssignment(boolean reportGlobalAdvance) {
         super(reportGlobalAdvance);
+    }
+
+    public void setCalculatedConsolidation(
+            Set<CalculatedConsolidation> calculatedConsolidations) {
+        this.calculatedConsolidations = calculatedConsolidations;
+    }
+
+    public Set<CalculatedConsolidation> getCalculatedConsolidation() {
+        return calculatedConsolidations;
     }
 
 }
