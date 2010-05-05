@@ -55,6 +55,9 @@ public interface IResourceAllocationDAO extends
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion();
 
+    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
+            Date intervalFilterStartDate, Date intervalFilterEndDate);
+
     List<SpecificDayAssignment> getSpecificAssignmentsBetween(
             Collection<Resource> relatedToOne,
             LocalDate start, LocalDate end);

@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -165,6 +166,38 @@ public class ResourceAllocationDAO extends
                         + "join generic.criterions as criterion")
                 .list();
         return stripAllocationsWithoutAssignations(byCriterion(results));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
+            Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        String query = "select generic, criterion "
+            + "from GenericResourceAllocation as generic "
+            + "join generic.criterions as criterion ";
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            query += "inner join generic.task as task ";
+            if(intervalFilterEndDate != null) {
+                query += "where task.startDate <= :intervalFilterEndDate ";
+            }
+            if(intervalFilterStartDate != null) {
+                if(intervalFilterEndDate != null) {
+                    query += "and ";
+                }
+                else {
+                    query += "where ";
+                }
+                query += "task.endDate >= :intervalFilterStartDate ";
+            }
+        }
+        Query q = getSession().createQuery(query);
+        if(intervalFilterStartDate != null) {
+            q.setParameter("intervalFilterStartDate", intervalFilterStartDate);
+        }
+        if(intervalFilterEndDate != null) {
+            q.setParameter("intervalFilterEndDate", intervalFilterEndDate);
+        }
+        return stripAllocationsWithoutAssignations(byCriterion(q.list()));
     }
 
     @SuppressWarnings("unchecked")
