@@ -96,6 +96,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public void init(List<LoadTimeLine> groups, TimeTracker timeTracker) {
+        refreshNameFilter = true;
         this.groups = groups;
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();

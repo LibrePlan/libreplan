@@ -107,6 +107,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
 
+    private Date initDateFilter;
+    private Date endDateFilter;
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
@@ -201,7 +204,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             return resourceAllocationDAO
                     .findGenericAllocationsBySomeCriterion(criterions);
         } else {
-            return resourceAllocationDAO.findGenericAllocationsByCriterion();
+            return resourceAllocationDAO.findGenericAllocationsByCriterion(initDateFilter, endDateFilter);
         }
     }
 
@@ -426,7 +429,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine buildGroup(Resource resource) {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
-                        .findAllocationsRelatedTo(resource));
+                        .findAllocationsRelatedTo(resource, initDateFilter, endDateFilter));
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
                 .getName(), sortedByStartDate, "resource", role),
@@ -697,6 +700,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public void setCriteriaToShow(List<Criterion> criteriaList) {
         criteriaToShowList.clear();
         criteriaToShowList.addAll(criteriaList);
+    }
+
+    @Override
+    public void setEndDateFilter(Date value) {
+        endDateFilter = value;
+    }
+
+    @Override
+    public void setInitDateFilter(Date value) {
+        initDateFilter = value;
     }
 }
 

@@ -253,6 +253,7 @@ public class ResourceLoadController implements Composer {
         initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
+                resourceLoadModel.setInitDateFilter(initDate.getValue());
                 reload(currentFilterByResources);
             }
         });
@@ -260,6 +261,7 @@ public class ResourceLoadController implements Composer {
         endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
+                resourceLoadModel.setEndDateFilter(endDate.getValue());
                 reload(currentFilterByResources);
             }
         });

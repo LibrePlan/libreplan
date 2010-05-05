@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.resourceload;
 
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
@@ -53,5 +54,9 @@ public interface IResourceLoadModel {
     void setCriteriaToShow(List<Criterion> criteriaList);
 
     void clearCriteriaToShow();
+
+    void setInitDateFilter(Date value);
+
+    void setEndDateFilter(Date value);
 
 }
