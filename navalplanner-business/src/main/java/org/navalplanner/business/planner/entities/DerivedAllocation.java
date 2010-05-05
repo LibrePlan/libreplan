@@ -87,6 +87,7 @@ public class DerivedAllocation extends BaseEntity {
     @NotNull
     private MachineWorkersConfigurationUnit configurationUnit;
 
+    @OnCopy(Strategy.IGNORE)
     private Set<DerivedDayAssignmentsContainer> derivedDayAssignmentsContainers = new HashSet<DerivedDayAssignmentsContainer>();
 
     private Map<Scenario, DerivedDayAssignmentsContainer> byScenario() {

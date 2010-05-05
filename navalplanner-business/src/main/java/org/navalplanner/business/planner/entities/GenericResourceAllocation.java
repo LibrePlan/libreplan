@@ -102,6 +102,7 @@ public class GenericResourceAllocation extends
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
     @Valid
+    @OnCopy(Strategy.IGNORE)
     private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
 
     @OnCopy(Strategy.IGNORE)

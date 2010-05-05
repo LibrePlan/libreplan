@@ -70,6 +70,7 @@ public class SpecificResourceAllocation extends
     private Resource resource;
 
     @Valid
+    @OnCopy(Strategy.IGNORE)
     private Set<SpecificDayAssignmentsContainer> specificDayAssignmentsContainers = new HashSet<SpecificDayAssignmentsContainer>();
 
     public static SpecificResourceAllocation createForTesting(
