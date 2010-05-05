@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.daos;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,27 +58,63 @@ public class ResourceAllocationDAO extends
     public List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
             List<Resource> resources) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        result.addAll(findSpecificAllocationsRelatedTo(resources));
-        result.addAll(findGenericAllocationsFor(resources));
+        result.addAll(findSpecificAllocationsRelatedTo(resources, null, null));
+        result.addAll(findGenericAllocationsFor(resources, null, null));
+        return result;
+    }
+
+    @Override
+    public List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
+            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        result.addAll(findSpecificAllocationsRelatedTo(resources, intervalFilterStartDate, intervalFilterEndDate));
+        result.addAll(findGenericAllocationsFor(resources, intervalFilterStartDate, intervalFilterEndDate));
         return result;
     }
 
     @SuppressWarnings("unchecked")
     private List<GenericResourceAllocation> findGenericAllocationsFor(
-            List<Resource> resources) {
-        return (List<GenericResourceAllocation>) getSession().createCriteria(
-                GenericResourceAllocation.class).setResultTransformer(
-                Criteria.DISTINCT_ROOT_ENTITY).createCriteria(
-                "genericDayAssignments").add(
-                Restrictions.in("resource", resources)).list();
+            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        if(resources.isEmpty()) {
+            return new ArrayList<GenericResourceAllocation>();
+        }
+        Criteria criteria  = getSession().createCriteria(GenericResourceAllocation.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+            .createCriteria("genericDayAssignments")
+            .add(Restrictions.in("resource", resources));
+
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            Criteria dateCriteria = criteria.createCriteria("task");
+            if(intervalFilterEndDate != null) {
+                dateCriteria.add(Restrictions.le("startDate", intervalFilterEndDate));
+            }
+            if(intervalFilterStartDate != null) {
+                dateCriteria.add(Restrictions.ge("endDate", intervalFilterStartDate));
+            }
+        }
+        return (List<GenericResourceAllocation>) criteria.list();
     }
 
     @SuppressWarnings("unchecked")
     private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
-            List<Resource> resources) {
-        return (List<SpecificResourceAllocation>) getSession().createCriteria(
-                SpecificResourceAllocation.class).add(
-                Restrictions.in("resource", resources)).list();
+            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        if(resources.isEmpty()) {
+            return new ArrayList<SpecificResourceAllocation>();
+        }
+        Criteria criteria  = getSession().createCriteria(
+                SpecificResourceAllocation.class);
+        criteria.add(Restrictions.in("resource", resources));
+
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            Criteria dateCriteria = criteria.createCriteria("task");
+            if(intervalFilterEndDate != null) {
+                dateCriteria.add(Restrictions.le("startDate", intervalFilterEndDate));
+            }
+            if(intervalFilterStartDate != null) {
+                dateCriteria.add(Restrictions.ge("endDate", intervalFilterStartDate));
+            }
+        }
+        return (List<SpecificResourceAllocation>) criteria.list();
     }
 
     @Override
@@ -85,6 +122,13 @@ public class ResourceAllocationDAO extends
             Resource resource) {
         return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
                 .asList(resource)));
+    }
+
+    @Override
+    public List<ResourceAllocation<?>> findAllocationsRelatedTo(
+            Resource resource, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
+                .asList(resource), intervalFilterStartDate, intervalFilterEndDate));
     }
 
     private <R extends ResourceAllocation<?>> List<R> stripAllocationsWithoutAssignations(

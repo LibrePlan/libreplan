@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,13 @@ public interface IResourceAllocationDAO extends
     List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
             List<Resource> resources);
 
+    List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
+            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate);
+
     List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource);
+
+    List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource,
+            Date intervalFilterStartDate, Date intervalFilterEndDate);
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion();
 
@@ -57,4 +64,5 @@ public interface IResourceAllocationDAO extends
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
             List<Criterion> criterions);
+
 }
