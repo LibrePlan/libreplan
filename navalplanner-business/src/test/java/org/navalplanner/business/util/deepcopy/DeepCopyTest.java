@@ -376,4 +376,14 @@ public class DeepCopyTest {
         assertTrue(subclass.isAfterCopyHookCalled());
     }
 
+    @Test
+    public void equalObjectsButDifferentAreNotReused() {
+        EntityA entityA = new EntityA();
+        DeepCopy deepCopy = new DeepCopy();
+        entityA.setSet1(new HashSet<Object>());
+        entityA.setSet2(new HashSet<Object>());
+        EntityA copied = deepCopy.copy(entityA);
+        assertNotSame(copied.getSet1(), copied.getSet2());
+    }
+
 }

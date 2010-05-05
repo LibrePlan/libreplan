@@ -115,6 +115,10 @@ public class EntityExamples {
 
         private boolean secondHookCalled = false;
 
+        private Set<Object> set1;
+
+        private Set<Object> set2;
+
         public String getStringProperty() {
             return stringProperty;
         }
@@ -260,6 +264,22 @@ public class EntityExamples {
 
         public boolean isSecondHookCalled() {
             return secondHookCalled;
+        }
+
+        public Set<Object> getSet1() {
+            return set1;
+        }
+
+        public void setSet1(Set<Object> set1) {
+            this.set1 = set1;
+        }
+
+        public Set<Object> getSet2() {
+            return set2;
+        }
+
+        public void setSet2(Set<Object> set2) {
+            this.set2 = set2;
         }
 
     }

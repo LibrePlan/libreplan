@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -268,8 +269,38 @@ public class DeepCopy {
             .<ICustomCopy> asList(new DateCopy(), new SetCopy(), new MapCopy(),
                     new ListCopy());
 
-    private Map<Object, Object> alreadyCopiedObjects = new HashMap<Object, Object>();
+    private Map<ByIdentity, Object> alreadyCopiedObjects = new HashMap<ByIdentity, Object>();
 
+    private class ByIdentity {
+        private final Object wrapped;
+
+        ByIdentity(Object wrapped) {
+            Validate.notNull(wrapped);
+            this.wrapped = wrapped;
+        }
+
+        @Override
+        public int hashCode() {
+            return wrapped.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj instanceof ByIdentity) {
+                ByIdentity other = (ByIdentity) obj;
+                return this.wrapped == other.wrapped;
+            }
+            return false;
+        }
+
+    }
+
+    private ByIdentity byIdentity(Object value) {
+        return new ByIdentity(value);
+    }
 
     public <T> T copy(T entity) {
         return copy(entity, null);
@@ -280,8 +311,8 @@ public class DeepCopy {
             return null;
         }
         T value = desproxify(couldBeProxyValue);
-        if (alreadyCopiedObjects.containsKey(value)) {
-            return (T) alreadyCopiedObjects.get(value);
+        if (alreadyCopiedObjects.containsKey(byIdentity(value))) {
+            return (T) alreadyCopiedObjects.get(byIdentity(value));
         }
         if (Strategy.SHARE == strategy || isImmutable(value)) {
             return value;
@@ -289,12 +320,12 @@ public class DeepCopy {
         ICustomCopy copier = findCopier(value);
         if (copier != null) {
             Object resultData = copier.instantiateCopy(strategy, value);
-            alreadyCopiedObjects.put(value, resultData);
+            alreadyCopiedObjects.put(byIdentity(value), resultData);
             copier.copyDataToResult(this, value, strategy, resultData);
             return (T) resultData;
         }
         T result = instantiateUsingDefaultConstructor(getTypedClassFrom(value));
-        alreadyCopiedObjects.put(value, result);
+        alreadyCopiedObjects.put(byIdentity(value), result);
         copyProperties(value, result);
         callAferCopyHooks(result);
         return result;
@@ -440,7 +471,7 @@ public class DeepCopy {
     }
 
     public <T> DeepCopy replace(T toBeReplaced, T substitution) {
-        alreadyCopiedObjects.put(toBeReplaced, substitution);
+        alreadyCopiedObjects.put(byIdentity(toBeReplaced), substitution);
         return this;
     }
 }
