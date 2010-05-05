@@ -411,8 +411,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
             List<GenericResourceAllocation> value) {
-        return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(criterion,
-                resourcesDAO), value);
+        if(initDateFilter != null || endDateFilter != null) {
+            return PeriodsBuilder
+                .build(LoadPeriodGenerator.onCriterion(criterion,
+                    resourcesDAO), value,
+                    initDateFilter, endDateFilter);
+        }
+        return PeriodsBuilder
+            .build(LoadPeriodGenerator.onCriterion(criterion,
+                    resourcesDAO), value);
     }
 
     private List<LoadTimeLine> groupsFor(List<Resource> allResources) {
@@ -616,8 +623,17 @@ public class ResourceLoadModel implements IResourceLoadModel {
             List<? extends ResourceAllocation<?>> sortedByStartDate,
             String type,
             TimeLineRole<BaseEntity> role) {
-        return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
-                .onResource(resource), sortedByStartDate), type, role);
+        List<LoadPeriod> loadPeriods;
+        if(initDateFilter != null || endDateFilter != null) {
+            loadPeriods = PeriodsBuilder
+                .build(LoadPeriodGenerator.onResource(resource), sortedByStartDate,
+                        initDateFilter, endDateFilter);
+        }
+        else {
+            loadPeriods = PeriodsBuilder
+                .build(LoadPeriodGenerator.onResource(resource), sortedByStartDate);
+        }
+        return new LoadTimeLine(name, loadPeriods, type, role);
     }
 
     private LoadTimeLine buildTimeLine(Criterion criterion, String name,
@@ -643,8 +659,18 @@ public class ResourceLoadModel implements IResourceLoadModel {
             TimeLineRole<BaseEntity> role) {
         LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
                 .onResourceSatisfying(resource, criterions);
-        return new LoadTimeLine(getName(criterions, task), PeriodsBuilder
-                .build(periodGeneratorFactory, allocationsSortedByStartDate),
+        List<LoadPeriod> loadPeriods;
+        if(initDateFilter != null || endDateFilter != null) {
+            loadPeriods = PeriodsBuilder
+                .build(periodGeneratorFactory, allocationsSortedByStartDate,
+                initDateFilter, endDateFilter);
+        }
+        else {
+            loadPeriods = PeriodsBuilder
+                .build(periodGeneratorFactory, allocationsSortedByStartDate);
+        }
+
+        return new LoadTimeLine(getName(criterions, task), loadPeriods,
                 type, role);
     }
 
@@ -730,6 +756,35 @@ class PeriodsBuilder {
     public static List<LoadPeriod> build(LoadPeriodGeneratorFactory factory,
             List<? extends ResourceAllocation<?>> sortedByStartDate) {
         return new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
+    }
+
+    public static List<LoadPeriod> build(LoadPeriodGeneratorFactory factory,
+            List<? extends ResourceAllocation<?>> sortedByStartDate,
+            Date startDateFilter, Date endDateFilter) {
+        List<LoadPeriod> list = new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
+        List<LoadPeriod> toReturn = new ArrayList<LoadPeriod>();
+        for(LoadPeriod loadPeriod : list) {
+            LocalDate finalStartDate = loadPeriod.getStart();
+            LocalDate finalEndDate = loadPeriod.getEnd();
+            if(startDateFilter != null) {
+                LocalDate startDateFilterLocalDate = new LocalDate(startDateFilter.getTime());
+                if(finalStartDate.compareTo(startDateFilterLocalDate) < 0) {
+                    finalStartDate = startDateFilterLocalDate;
+                }
+            }
+            if(endDateFilter != null) {
+                LocalDate endDateFilterLocalDate = new LocalDate(endDateFilter.getTime());
+                if(loadPeriod.getEnd().compareTo(endDateFilterLocalDate) > 0) {
+                    finalEndDate = endDateFilterLocalDate;
+                }
+            }
+            if(finalStartDate.compareTo(finalEndDate) < 0) {
+                toReturn.add(new LoadPeriod(finalStartDate, finalEndDate,
+                        loadPeriod.getTotalResourceWorkHours(),
+                        loadPeriod.getAssignedHours(), loadPeriod.getLoadLevel()));
+            }
+        }
+        return toReturn;
     }
 
     private List<LoadPeriod> buildPeriods() {
