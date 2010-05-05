@@ -53,7 +53,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -207,6 +209,7 @@ public class ResourceLoadController implements Composer {
                     .getLoadTimeLines(), timeTracker, parent);
             if(filterBy == null) {
                 addWorkersBandbox();
+                addTimeFilter();
             }
             addListeners();
         }
@@ -240,7 +243,34 @@ public class ResourceLoadController implements Composer {
         hbox.appendChild(button);
         hbox.setAlign("center");
 
-        resourcesLoadPanel.setVariable("additionalFilter", hbox, true);
+        resourcesLoadPanel.setVariable("additionalFilter2", hbox, true);
+    }
+
+    private void addTimeFilter() {
+        Label label1 = new Label(_("Show load between"));
+        Label label2 = new Label(_("and"));
+        final Datebox initDate = new Datebox();
+        initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                reload(currentFilterByResources);
+            }
+        });
+        final Datebox endDate = new Datebox();
+        endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                reload(currentFilterByResources);
+            }
+        });
+        Hbox hbox = new Hbox();
+        hbox.appendChild(label1);
+        hbox.appendChild(initDate);
+        hbox.appendChild(label2);
+        hbox.appendChild(endDate);
+        hbox.setAlign("center");
+
+        resourcesLoadPanel.setVariable("additionalFilter1", hbox, true);
     }
 
     @SuppressWarnings("unchecked")

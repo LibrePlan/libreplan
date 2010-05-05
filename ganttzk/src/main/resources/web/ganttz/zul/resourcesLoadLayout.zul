@@ -38,6 +38,8 @@ resourcesLoadPanel = self;
             onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
         </listbox>
         <separator/>
+        <hbox id="additionalFilterInsertionPoint1" />
+        <separator/>
         Filter:
         <listbox id="listFilters" mold="select" rows="1" width="150px"
             model="${resourcesLoadPanel.filters}"
@@ -48,7 +50,7 @@ resourcesLoadPanel = self;
         <combobox id="filterByNameCombo"
             onChange="resourcesLoadPanel.onSelectFilterByName(self.selectedItemApi.value)" />
         <separator/>
-        <hbox id="additionalFilterInsertionPoint" />
+        <hbox id="additionalFilterInsertionPoint2" />
        </hbox>
        </north>
 

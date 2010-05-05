@@ -280,9 +280,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 
-        Component additionalFilter = (Component) getVariable("additionalFilter", true);
+        // Insert additional filters if any
+        Component additionalFilter = (Component) getVariable("additionalFilter1", true);
         if(additionalFilter != null) {
-            getFellow("additionalFilterInsertionPoint").appendChild(additionalFilter);
+            getFellow("additionalFilterInsertionPoint1").appendChild(additionalFilter);
+        }
+        additionalFilter = (Component) getVariable("additionalFilter2", true);
+        if(additionalFilter != null) {
+            getFellow("additionalFilterInsertionPoint2").appendChild(additionalFilter);
         }
 
         timeTrackerHeader.afterCompose();
