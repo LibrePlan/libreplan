@@ -304,7 +304,8 @@ public class GenericResourceAllocation extends
 
         @Override
         protected void resetTo(Collection<GenericDayAssignment> assignments) {
-            container.resetTo(assignments);
+            container
+                    .resetTo(GenericDayAssignment.copy(container, assignments));
         }
 
         @Override
