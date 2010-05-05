@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -153,6 +154,7 @@ public class GenericDayAssignment extends DayAssignment {
         parentState = new OnContainer();
     }
 
+    @NotNull
     private GenericDayAssignmentsContainer container;
 
     @OnCopy(Strategy.IGNORE)

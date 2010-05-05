@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
@@ -61,6 +62,7 @@ public class SpecificResourceAllocation extends
     @OnCopy(Strategy.SHARE)
     private Resource resource;
 
+    @Valid
     private Set<SpecificDayAssignmentsContainer> specificDayAssignmentsContainers = new HashSet<SpecificDayAssignmentsContainer>();
 
     public static SpecificResourceAllocation createForTesting(

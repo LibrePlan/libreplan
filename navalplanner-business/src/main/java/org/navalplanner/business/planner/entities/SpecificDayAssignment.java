@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -131,6 +132,7 @@ public class SpecificDayAssignment extends DayAssignment {
     @OnCopy(Strategy.IGNORE)
     private ParentState parentState;
 
+    @NotNull
     private SpecificDayAssignmentsContainer container;
 
     public static SpecificDayAssignment create(LocalDate day, int hours,

@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
@@ -44,11 +46,14 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
                 scenario));
     }
 
+    @NotNull
     private GenericResourceAllocation resourceAllocation;
 
     @OnCopy(Strategy.SHARE)
+    @NotNull
     private Scenario scenario;
 
+    @Valid
     private Set<GenericDayAssignment> dayAssignments = new HashSet<GenericDayAssignment>();
 
     private GenericDayAssignmentsContainer(GenericResourceAllocation resourceAllocation,

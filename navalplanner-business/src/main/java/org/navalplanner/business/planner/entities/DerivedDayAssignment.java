@@ -20,6 +20,7 @@
 package org.navalplanner.business.planner.entities;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -89,6 +90,7 @@ public class DerivedDayAssignment extends DayAssignment {
         }
     }
 
+    @NotNull
     private DerivedDayAssignmentsContainer container;
 
     @OnCopy(Strategy.IGNORE)

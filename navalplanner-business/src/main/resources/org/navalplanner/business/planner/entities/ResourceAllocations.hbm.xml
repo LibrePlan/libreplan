@@ -67,8 +67,8 @@
              natural-id could be used for that but was discarded due to:
              https://forum.hibernate.org/viewtopic.php?p=2372348
         -->
-        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
-        <many-to-one name="scenario" />
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" not-null="true"/>
+        <many-to-one name="scenario" not-null="true"/>
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="SPECIFIC_CONTAINER_ID" />
             <one-to-many class="SpecificDayAssignment"/>
@@ -87,8 +87,8 @@
              natural-id could be used for that but was discarded due to:
              https://forum.hibernate.org/viewtopic.php?p=2372348
         -->
-        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
-        <many-to-one name="scenario" />
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" not-null="true"/>
+        <many-to-one name="scenario" not-null="true"/>
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="GENERIC_CONTAINER_ID" />
             <one-to-many class="GenericDayAssignment"/>
@@ -157,10 +157,10 @@
 
         <!-- GenericDayAssignment -->
         <subclass name="GenericDayAssignment" discriminator-value="GENERIC_DAY">
-            <many-to-one name="container" column="GENERIC_CONTAINER_ID" />
+            <many-to-one name="container" column="GENERIC_CONTAINER_ID" not-null="true"/>
         </subclass>
         <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
-            <many-to-one name="container" column="DERIVED_CONTAINER_ID" />
+            <many-to-one name="container" column="DERIVED_CONTAINER_ID" not-null="true"/>
         </subclass>
     </class>
 
