@@ -74,8 +74,6 @@ public class FormBinder {
 
     private AllocationResult lastAllocation;
 
-    private Datebox taskStartDateBox;
-
     private Datebox endDate;
 
     private Button applyButton;
@@ -247,18 +245,6 @@ public class FormBinder {
         return allocationRowsHandler.getCalculatedValue();
     }
 
-    public void setTaskStartDateBox(Datebox taskStartDateBox) {
-        this.taskStartDateBox = taskStartDateBox;
-        this.taskStartDateBox.setDisabled(true);
-        loadValueForTaskStartDateBox();
-        onChangeEnableApply(taskStartDateBox);
-    }
-
-    private void loadValueForTaskStartDateBox() {
-        this.taskStartDateBox.setValue(allocationRowsHandler.getTask()
-                .getStartDate());
-    }
-
     private void onChangeEnableApply(InputElement inputElement) {
         inputElement.addEventListener(Events.ON_CHANGE, onChangeEnableApply);
 
@@ -366,22 +352,34 @@ public class FormBinder {
 
     private void reloadValues() {
         loadHoursValues();
-        loadIsSatisfiedValues();
         loadValueForAssignedHoursComponent();
-        loadValueForTaskStartDateBox();
         loadValueForEndDate();
         loadDerivedAllocations();
+        loadSclassRowSatisfied();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadSclassRowSatisfied() {
+        try {
+            List<org.zkoss.zul.Row> rows = (List<org.zkoss.zul.Row>) allocationsGrid
+                    .getRows().getChildren();
+            for (org.zkoss.zul.Row row : rows) {
+                if (row.getValue() instanceof AllocationRow) {
+                    if (!((AllocationRow) row.getValue()).isSatisfied()) {
+                        row.setSclass("allocation-not-satisfied");
+                    } else {
+                        row.setSclass("allocation-satisfied");
+                    }
+                }
+            }
+        } catch (ClassCastException e) {
+            throw new RuntimeException();
+        }
     }
 
     private void loadHoursValues() {
         for (AllocationRow each : rows) {
             each.loadHours();
-        }
-    }
-
-    private void loadIsSatisfiedValues() {
-        for (AllocationRow each : rows) {
-            each.loadSatisfied();
         }
     }
 
@@ -603,11 +601,6 @@ public class FormBinder {
             sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
         }
         return sum;
-    }
-
-    public void setStartDate(Date date) {
-        taskStartDateBox.setValue(date);
-        doApply();
     }
 
 }

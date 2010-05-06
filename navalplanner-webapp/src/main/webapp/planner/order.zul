@@ -62,7 +62,7 @@
     </div>
 
     <window id="editTaskWindow" apply="${editController}" border="normal"
-        width="650px" visible="false">
+        width="870px" visible="false">
 
         <vbox id="messagesContainer" />
 

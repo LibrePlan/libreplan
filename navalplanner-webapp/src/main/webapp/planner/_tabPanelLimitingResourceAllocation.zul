@@ -38,22 +38,22 @@
                     <caption label="${i18n:_('Order Element Information')}:" />
                     <grid id="gridLimitingOrderElementHours">
                         <columns>
-                              <column label="${i18n:_('Criteria')}" width="200px" />
-                              <column label="${i18n:_('Type')}" width="200px" />
-                              <column label="${i18n:_('Hours')}" />
+                              <column label="${i18n:_('Criteria')}" width="200px" align="center"/>
+                              <column label="${i18n:_('Type')}" width="200px" align="center"/>
+                              <column label="${i18n:_('Hours')}" align="center"/>
                         </columns>
                     </grid>
                     <grid>
                           <columns>
-                              <column width="200px" />
-                              <column width="200px" />
+                              <column width="200px" align="center"/>
+                              <column width="200px" align="center"/>
                               <column />
                           </columns>
                           <rows>
                             <row>
                                 <label  />
                                 <label value="${i18n:_('Total Estimated hours')}:" />
-                                <intbox value="@{limitingAllocationController.orderHours}" disabled="${true}" />
+                                <label value="@{limitingAllocationController.orderHours}"/>
                             </row>
                           </rows>
                     </grid>

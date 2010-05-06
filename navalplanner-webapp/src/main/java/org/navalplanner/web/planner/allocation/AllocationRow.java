@@ -42,7 +42,6 @@ import org.navalplanner.web.planner.allocation.ResourceAllocationController.Deri
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Detail;
@@ -176,8 +175,6 @@ public abstract class AllocationRow {
     private final Decimalbox resourcesPerDayInput = new Decimalbox();
 
     private Grid derivedAllocationsGrid;
-
-    private Checkbox satisfiedCheckbox;
 
     private void initializeResourcesPerDayInput() {
         resourcesPerDayInput.setConstraint(new SimpleConstraint(
@@ -417,21 +414,6 @@ public abstract class AllocationRow {
         } else {
             return false;
         }
-    }
-
-    public Checkbox getSatisfiedCheckbox() {
-        if (satisfiedCheckbox != null) {
-            satisfiedCheckbox.setChecked(isSatisfied());
-            return satisfiedCheckbox;
-        }
-        Checkbox result = new Checkbox();
-        result.setChecked(isSatisfied());
-        result.setDisabled(true);
-        return satisfiedCheckbox = result;
-    }
-
-    public void loadSatisfied() {
-        satisfiedCheckbox.setChecked(isSatisfied());
     }
 
 }
