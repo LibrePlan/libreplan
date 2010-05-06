@@ -381,7 +381,28 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     public void onSelectFilterByName(Integer filterByNamePosition) {
             this.filterByNamePosition = filterByNamePosition.intValue();
             this.feedBackMessage = _("filtering by name");
-            invalidatingChangeHappenedWithFeedback();
+            changeNameFilterWithFeedback();
+    }
+
+    private void changeNameFilterWithFeedback() {
+        LongOperationFeedback.execute(componentOnWhichGiveFeedback,
+                new ILongOperation() {
+
+            @Override
+            public void doAction() throws Exception {
+                treeModel = createModelForTree();
+                timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
+                resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
+                leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
+                registerNeededScripts();
+                afterCompose();
+            }
+
+            @Override
+            public String getName() {
+                return getFeedBackMessage();
+            }
+        });
     }
 
     public void setNameFilterDisabled(boolean disabled) {
