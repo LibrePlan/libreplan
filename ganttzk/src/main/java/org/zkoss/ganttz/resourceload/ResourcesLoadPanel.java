@@ -88,6 +88,9 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private int filterByNamePosition = 0;
     private int numberOfGroupsByName = 10;
 
+    private WeakReferencedListeners<IFilterChangedListener> nameFilterListener =
+        WeakReferencedListeners.create();
+
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
             TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
@@ -395,6 +398,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
                 leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
                 registerNeededScripts();
+                nameFilterListener.fireEvent(new IListenerNotification<IFilterChangedListener>() {
+                    @Override
+                    public void doNotify(IFilterChangedListener listener) {
+                        listener.filterChanged(getFilter());
+                    }
+                });
                 afterCompose();
             }
 
@@ -412,6 +421,11 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 ((Integer)combo.getSelectedItemApi().getValue()).intValue();
             combo.setDisabled(disabled);
         }
+    }
+
+    public void addNameFilterListener(
+            IFilterChangedListener iFilterChangedListener) {
+        nameFilterListener.addListener(iFilterChangedListener);
     }
 
 }

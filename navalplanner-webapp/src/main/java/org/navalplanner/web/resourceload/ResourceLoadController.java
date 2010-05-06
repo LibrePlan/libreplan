@@ -160,7 +160,16 @@ public class ResourceLoadController implements Composer {
             }
         };
         resourcesLoadPanel.addFilterListener(filterChangedListener);
-        addSchedulingScreenListeners();
+        addNameFilterListener();
+    }
+
+    private void addNameFilterListener() {
+        resourcesLoadPanel.addNameFilterListener(new IFilterChangedListener() {
+            @Override
+            public void filterChanged(boolean filter) {
+                addSchedulingScreenListeners();
+            }
+        });
     }
 
     private void addSchedulingScreenListeners() {
@@ -215,6 +224,9 @@ public class ResourceLoadController implements Composer {
             }
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
                     timeTracker);
+            if(filterHasChanged) {
+                addNameFilterListener();
+            }
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker, parent);
