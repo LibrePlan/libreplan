@@ -59,4 +59,8 @@ public interface IResourceLoadModel {
 
     void setEndDateFilter(Date value);
 
+    Date getInitDateFilter();
+
+    Date getEndDateFilter();
+
 }

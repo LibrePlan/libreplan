@@ -118,8 +118,14 @@ public class ResourceLoadController implements Composer {
             this.currentFilterByResources = filterByResources;
 
             if (filterBy == null) {
+                if(resourcesLoadPanel == null) {
+                    resetAdditionalFilters();
+                }
                 resourceLoadModel.initGlobalView(filterByResources);
             } else {
+                if(resourcesLoadPanel == null) {
+                    resetAdditionalFilters();
+                }
                 resourceLoadModel.initGlobalView(filterBy, filterByResources);
             }
             timeTracker = buildTimeTracker();
@@ -250,6 +256,7 @@ public class ResourceLoadController implements Composer {
         Label label1 = new Label(_("Show load between"));
         Label label2 = new Label(_("and"));
         final Datebox initDate = new Datebox();
+        initDate.setValue(resourceLoadModel.getInitDateFilter());
         initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -258,6 +265,7 @@ public class ResourceLoadController implements Composer {
             }
         });
         final Datebox endDate = new Datebox();
+        endDate.setValue(resourceLoadModel.getEndDateFilter());
         endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -273,6 +281,14 @@ public class ResourceLoadController implements Composer {
         hbox.setAlign("center");
 
         resourcesLoadPanel.setVariable("additionalFilter1", hbox, true);
+    }
+
+    private void resetAdditionalFilters() {
+        resourceLoadModel.setInitDateFilter(null);
+        resourceLoadModel.setEndDateFilter(null);
+
+        resourceLoadModel.setCriteriaToShow(new ArrayList<Criterion>());
+        resourceLoadModel.setResourcesToShow(new ArrayList<Resource>());
     }
 
     @SuppressWarnings("unchecked")

@@ -737,6 +737,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public void setInitDateFilter(Date value) {
         initDateFilter = value;
     }
+
+    @Override
+    public Date getEndDateFilter() {
+        return endDateFilter;
+    }
+
+    @Override
+    public Date getInitDateFilter() {
+        return initDateFilter;
+    }
 }
 
 class PeriodsBuilder {
