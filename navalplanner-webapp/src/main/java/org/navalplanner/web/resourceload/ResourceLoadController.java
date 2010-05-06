@@ -229,7 +229,7 @@ public class ResourceLoadController implements Composer {
     private void addWorkersBandbox() {
         bandBox = new BandboxMultipleSearch();
         bandBox.setId("workerBandboxMultipleSearch");
-        bandBox.setWidthBandbox("285px");
+        bandBox.setWidthBandbox("185px");
         bandBox.setWidthListbox("300px");
         bandBox.setFinder("workerMultipleFiltersFinder");
         bandBox.afterCompose();
@@ -258,10 +258,11 @@ public class ResourceLoadController implements Composer {
     }
 
     private void addTimeFilter() {
-        Label label1 = new Label(_("Show load between"));
-        Label label2 = new Label(_("and"));
+        Label label1 = new Label(_("Time filter") + ":");
+        Label label2 = new Label("-");
         final Datebox initDate = new Datebox();
         initDate.setValue(resourceLoadModel.getInitDateFilter());
+        initDate.setWidth("75px");
         initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -271,6 +272,7 @@ public class ResourceLoadController implements Composer {
         });
         final Datebox endDate = new Datebox();
         endDate.setValue(resourceLoadModel.getEndDateFilter());
+        endDate.setWidth("75px");
         endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
