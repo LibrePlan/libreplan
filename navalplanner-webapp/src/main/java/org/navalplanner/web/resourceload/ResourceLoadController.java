@@ -136,6 +136,7 @@ public class ResourceLoadController implements Composer {
             this.parent.appendChild(resourcesLoadPanel);
 
             resourcesLoadPanel.afterCompose();
+            addSchedulingScreenListeners();
             addCommands(resourcesLoadPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -159,7 +160,10 @@ public class ResourceLoadController implements Composer {
             }
         };
         resourcesLoadPanel.addFilterListener(filterChangedListener);
+        addSchedulingScreenListeners();
+    }
 
+    private void addSchedulingScreenListeners() {
         /* Listener to show the scheduling screen */
         seeScheduledOfListener = new ISeeScheduledOfListener() {
 
