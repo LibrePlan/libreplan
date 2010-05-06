@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -124,7 +125,7 @@ public class ResourceLoadController implements Composer {
                 resourceLoadModel.initGlobalView(filterByResources);
             } else {
                 if(resourcesLoadPanel == null) {
-                    resetAdditionalFilters();
+                    deleteAdditionalFilters();
                 }
                 resourceLoadModel.initGlobalView(filterBy, filterByResources);
             }
@@ -284,6 +285,16 @@ public class ResourceLoadController implements Composer {
     }
 
     private void resetAdditionalFilters() {
+        Date initDateValue = new Date();
+        initDateValue.setDate(initDateValue.getDate() -15);
+        resourceLoadModel.setInitDateFilter(initDateValue);
+        resourceLoadModel.setEndDateFilter(null);
+
+        resourceLoadModel.setCriteriaToShow(new ArrayList<Criterion>());
+        resourceLoadModel.setResourcesToShow(new ArrayList<Resource>());
+    }
+
+    private void deleteAdditionalFilters() {
         resourceLoadModel.setInitDateFilter(null);
         resourceLoadModel.setEndDateFilter(null);
 
