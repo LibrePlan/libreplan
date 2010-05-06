@@ -116,13 +116,13 @@ public class SpecificDayAssignment extends DayAssignment {
     }
 
     public static Set<SpecificDayAssignment> copy(
-            SpecificDayAssignmentsContainer allocation,
+            SpecificDayAssignmentsContainer container,
             Collection<SpecificDayAssignment> specificDaysAssignment) {
         Set<SpecificDayAssignment> result = new HashSet<SpecificDayAssignment>();
         for (SpecificDayAssignment s : specificDaysAssignment) {
             SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
                     .getResource());
-            created.parentState = created.parentState.setParent(allocation);
+            created.parentState = created.parentState.setParent(container);
             created.associateToResource();
             result.add(created);
         }
