@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +80,7 @@ public class DerivedDayAssignmentsContainer extends BaseEntity {
 
     public void resetAssignmentsTo(List<DerivedDayAssignment> newAssignments) {
         dayAssignments.clear();
-        dayAssignments.addAll(newAssignments);
+        dayAssignments.addAll(copyToThisAllocation(newAssignments));
     }
 
     public void resetAssignmentsTo(LocalDate startInclusive,
@@ -88,8 +90,17 @@ public class DerivedDayAssignmentsContainer extends BaseEntity {
                 DayAssignment.orderedByDay(getDayAssignments()),
                 startInclusive, endExclusive);
         dayAssignments.removeAll(toBeRemoved);
-        dayAssignments.addAll(DayAssignment.getAtInterval(newAssignments,
-                startInclusive, endExclusive));
+        dayAssignments.addAll(copyToThisAllocation(DayAssignment.getAtInterval(
+                newAssignments, startInclusive, endExclusive)));
+    }
+
+    private List<DerivedDayAssignment> copyToThisAllocation(
+            Collection<? extends DerivedDayAssignment> newAssignments) {
+        List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
+        for (DerivedDayAssignment each : newAssignments) {
+            result.add(each.copyAsChildOf(this));
+        }
+        return result;
     }
 
     private void checkAreValid(List<DerivedDayAssignment> newAssignments) {

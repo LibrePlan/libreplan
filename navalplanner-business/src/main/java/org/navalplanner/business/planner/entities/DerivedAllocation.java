@@ -223,7 +223,7 @@ public class DerivedAllocation extends BaseEntity {
         public SpecifiedScenarioState(Scenario scenario,
                 List<DerivedDayAssignment> assignments) {
             this(scenario);
-            resetAssignmentsTo(copyToThisAllocation(assignments));
+            resetAssignmentsTo(assignments);
         }
 
         @Override
@@ -236,7 +236,7 @@ public class DerivedAllocation extends BaseEntity {
         @Override
         void resetAssignmentsTo(List<DerivedDayAssignment> dayAssignments) {
             DerivedDayAssignmentsContainer container = retrieveOrCreate(scenario);
-            container.resetAssignmentsTo(copyToThisAllocation(dayAssignments));
+            container.resetAssignmentsTo(dayAssignments);
         }
 
         @Override
@@ -245,17 +245,7 @@ public class DerivedAllocation extends BaseEntity {
                 List<DerivedDayAssignment> newAssignments) {
             DerivedDayAssignmentsContainer container = retrieveOrCreate(scenario);
             container.resetAssignmentsTo(startInclusive, endExclusive,
-                    copyToThisAllocation(newAssignments));
-        }
-
-        private List<DerivedDayAssignment> copyToThisAllocation(
-                List<DerivedDayAssignment> newAssignments) {
-            DerivedDayAssignmentsContainer container = retrieveOrCreate(scenario);
-            List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
-            for (DerivedDayAssignment each : newAssignments) {
-                result.add(each.copyAsChildOf(container));
-            }
-            return result;
+                    newAssignments);
         }
 
         @Override
