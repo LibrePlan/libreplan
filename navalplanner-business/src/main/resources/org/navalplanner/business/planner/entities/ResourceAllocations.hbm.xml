@@ -71,7 +71,7 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" not-null="false" unique="true" />
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" cascade="all" not-null="false" unique="true" />
 
         <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" />
 

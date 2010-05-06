@@ -20,33 +20,40 @@
 
 package org.navalplanner.web.limitingresources;
 
-import static org.navalplanner.web.I18nHelper._;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedSet;
 
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.ILimitingResourceQueueDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueElementDAO;
-import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.DateAndHour;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElementGap;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -61,7 +68,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
@@ -69,17 +75,11 @@ import org.zkoss.ganttz.util.Interval;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
-    @Autowired
-    private IResourceDAO resourcesDAO;
+    private final ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay
+            .amount(new BigDecimal(1));
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
-
-    @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
-    private IResourceAllocationDAO resourceAllocationDAO;
 
     @Autowired
     private IUserDAO userDAO;
@@ -90,28 +90,186 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Autowired
     private ILimitingResourceQueueElementDAO limitingResourceQueueElementDAO;
 
-    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
+    @Autowired
+    private ILimitingResourceQueueDAO limitingResourceQueueDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ITaskElementDAO taskDAO;
 
     private Interval viewInterval;
 
-    private Order filterBy;
+    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
 
-    private boolean filterByResources = true;
+    private List<LimitingResourceQueueElement> unassignedLimitingResourceQueueElements = new ArrayList<LimitingResourceQueueElement>();
+
+    private List<LimitingResourceQueueElement> toBeSaved = new ArrayList<LimitingResourceQueueElement>();
 
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
-        filterBy = null;
-        this.filterByResources = filterByResources;
         doGlobalView();
     }
 
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(Order filterBy, boolean filterByResources) {
-        this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
-        this.filterByResources = filterByResources;
         doGlobalView();
+    }
+
+    private void doGlobalView() {
+        loadUnassignedLimitingResourceQueueElements();
+        loadLimitingResourceQueues();
+        final Date startingDate = getEarliestDate();
+        viewInterval = new Interval(startingDate, plusFiveYears(startingDate));
+    }
+
+    private Date getEarliestDate() {
+        final LimitingResourceQueueElement element = getEarliestQueueElement();
+        return (element != null) ? element.getStartDate()
+                .toDateTimeAtCurrentTime().toDate() : new Date();
+    }
+
+    private LimitingResourceQueueElement getEarliestQueueElement() {
+        LimitingResourceQueueElement earliestQueueElement = null;
+
+        if (!limitingResourceQueues.isEmpty()) {
+            for (LimitingResourceQueue each : limitingResourceQueues) {
+                LimitingResourceQueueElement element = getFirstLimitingResourceQueueElement(each);
+                if (element == null) {
+                    continue;
+                }
+                if (earliestQueueElement == null
+                        || isEarlier(element, earliestQueueElement)) {
+                    earliestQueueElement = element;
+                }
+            }
+        }
+        return earliestQueueElement;
+    }
+
+    private boolean isEarlier(LimitingResourceQueueElement arg1,
+            LimitingResourceQueueElement arg2) {
+        return (arg1.getStartDate().isBefore(arg2.getStartDate()));
+    }
+
+    private LimitingResourceQueueElement getFirstLimitingResourceQueueElement(
+            LimitingResourceQueue queue) {
+        return getFirstChild(queue.getLimitingResourceQueueElements());
+    }
+
+    private LimitingResourceQueueElement getFirstChild(
+            SortedSet<LimitingResourceQueueElement> elements) {
+        return (elements.isEmpty()) ? null : elements.iterator().next();
+    }
+
+    private Date plusFiveYears(Date date) {
+        return (new LocalDate(date)).plusYears(5).toDateTimeAtCurrentTime()
+                .toDate();
+    }
+
+    /**
+     * Loads unassigned {@link LimitingResourceQueueElement} from DB
+     *
+     * @return
+     */
+    private void loadUnassignedLimitingResourceQueueElements() {
+        unassignedLimitingResourceQueueElements.clear();
+        unassignedLimitingResourceQueueElements
+                .addAll(initializeLimitingResourceQueueElements(limitingResourceQueueElementDAO
+                        .getUnassigned()));
+    }
+
+    private List<LimitingResourceQueueElement> initializeLimitingResourceQueueElements(
+            List<LimitingResourceQueueElement> elements) {
+        for (LimitingResourceQueueElement each : elements) {
+            initializeLimitingResourceQueueElement(each);
+        }
+        return elements;
+    }
+
+    private void initializeLimitingResourceQueueElement(
+            LimitingResourceQueueElement element) {
+        ResourceAllocation<?> resourceAllocation = element
+                .getResourceAllocation();
+        resourceAllocation = initializeResourceAllocationIfNecessary(resourceAllocation);
+        element.setResourceAllocation(resourceAllocation);
+        resourceAllocation.getTask().getName();
+        initializeCalendarIfAny(element.getResource());
+    }
+
+    private void initializeCalendarIfAny(Resource resource) {
+        if (resource != null) {
+            resourceDAO.reattach(resource);
+            initializeCalendarIfAny(resource.getCalendar());
+        }
+    }
+
+    private void initializeCalendarIfAny(BaseCalendar calendar) {
+        if (calendar != null) {
+            Hibernate.initialize(calendar);
+            initializeCalendarAvailabilities(calendar);
+            initializeCalendarExceptions(calendar);
+            initializeCalendarDataVersions(calendar);
+        }
+    }
+
+    private void initializeCalendarAvailabilities(BaseCalendar calendar) {
+        for (CalendarAvailability each : calendar.getCalendarAvailabilities()) {
+            Hibernate.initialize(each);
+        }
+    }
+
+    private void initializeCalendarExceptions(BaseCalendar calendar) {
+        for (CalendarException each : calendar.getExceptions()) {
+            Hibernate.initialize(each);
+        }
+    }
+
+    private void initializeCalendarDataVersions(BaseCalendar calendar) {
+        for (CalendarData each : calendar.getCalendarDataVersions()) {
+            Hibernate.initialize(each);
+            Hibernate.initialize(each.getHoursPerDay());
+            initializeCalendarIfAny(each.getParent());
+        }
+    }
+
+    private ResourceAllocation<?> initializeResourceAllocationIfNecessary(
+            ResourceAllocation<?> resourceAllocation) {
+        if (resourceAllocation instanceof HibernateProxy) {
+            resourceAllocation = (ResourceAllocation<?>) ((HibernateProxy) resourceAllocation)
+                    .getHibernateLazyInitializer().getImplementation();
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
+                Hibernate.initialize(specific.getAssignments());
+            }
+        }
+        return resourceAllocation;
+    }
+
+    private void loadLimitingResourceQueues() {
+        limitingResourceQueues.clear();
+        limitingResourceQueues
+                .addAll(initializeLimitingResourceQueues(limitingResourceQueueDAO
+                        .getAll()));
+    }
+
+    private List<LimitingResourceQueue> initializeLimitingResourceQueues(
+            List<LimitingResourceQueue> queues) {
+        for (LimitingResourceQueue each : queues) {
+            initializeLimitingResourceQueue(each);
+        }
+        return queues;
+    }
+
+    private void initializeLimitingResourceQueue(LimitingResourceQueue queue) {
+        Hibernate.initialize(queue.getResource());
+        for (LimitingResourceQueueElement each : queue
+                .getLimitingResourceQueueElements()) {
+            initializeLimitingResourceQueueElement(each);
+        }
     }
 
     @Override
@@ -119,6 +277,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     public Order getOrderByTask(TaskElement task) {
         return orderElementDAO
                 .loadOrderAvoidingProxyFor(task.getOrderElement());
+    }
+
+    @Override
+    public Interval getViewInterval() {
+        return viewInterval;
     }
 
     @Override
@@ -145,142 +308,14 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return false;
     }
 
-    private void doGlobalView() {
-        limitingResourceQueues = calculateLimitingResourceQueues();
-        if (!limitingResourceQueues.isEmpty()) {
-            // Build interval
-            // viewInterval =
-            // LimitingResourceQueue.getIntervalFrom(limitingResourceQueues);
-            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
-        } else {
-            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
-        }
-    }
-
-    private Date plusFiveYears(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR, 5);
-        return calendar.getTime();
-    }
-
-    private List<LimitingResourceQueue> calculateLimitingResourceQueues() {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        result.addAll(groupsFor(resourcesToShow()));
-        return result;
-    }
-
-    private List<Resource> resourcesToShow() {
-        if (filter()) {
-            return resourcesForActiveTasks();
-        } else {
-            return allLimitingResources();
-        }
-    }
-
-    private boolean filter() {
-        return filterBy != null;
-    }
-
-    private List<Resource> resourcesForActiveTasks() {
-        return Resource.sortByName(resourcesDAO
-                .findResourcesRelatedTo(justTasks(filterBy
-                        .getAllChildrenAssociatedTaskElements())));
-    }
-
-    private List<Task> justTasks(Collection<? extends TaskElement> tasks) {
-        List<Task> result = new ArrayList<Task>();
-        for (TaskElement taskElement : tasks) {
-            if (taskElement instanceof Task) {
-                result.add((Task) taskElement);
-            }
-        }
-        return result;
-    }
-
-    private List<Resource> allLimitingResources() {
-        List<Resource> result = Resource.sortByName(resourcesDAO
-                .getAllLimitingResources());
-        for (Resource each : result) {
-            each.getLimitingResourceQueue().getLimitingResourceQueueElements()
-                    .size();
-            limitingResourceQueues.add(each.getLimitingResourceQueue());
-        }
-        return result;
-    }
-
-    private TimeLineRole<BaseEntity> getCurrentTimeLineRole(BaseEntity entity) {
-        return new TimeLineRole<BaseEntity>(entity);
-    }
-
-    private List<LimitingResourceQueue> groupsFor(List<Resource> allResources) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        for (Resource resource : allResources) {
-            LimitingResourceQueue group = resource.getLimitingResourceQueue();
-            result.add(group);
-        }
-        return result;
-    }
-
-    private void initializeIfNeeded(
-            Map<Order, List<ResourceAllocation<?>>> result, Order order) {
-        if (!result.containsKey(order)) {
-            result.put(order, new ArrayList<ResourceAllocation<?>>());
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public Map<Order, List<ResourceAllocation<?>>> byOrder(
-            Collection<ResourceAllocation<?>> allocations) {
-        Map<Order, List<ResourceAllocation<?>>> result = new HashMap<Order, List<ResourceAllocation<?>>>();
-        for (ResourceAllocation<?> resourceAllocation : allocations) {
-            if ((resourceAllocation.isSatisfied())
-                    && (resourceAllocation.getTask() != null)) {
-                OrderElement orderElement = resourceAllocation.getTask()
-                        .getOrderElement();
-                Order order = orderElementDAO
-                        .loadOrderAvoidingProxyFor(orderElement);
-                initializeIfNeeded(result, order);
-                result.get(order).add(resourceAllocation);
-            }
-        }
-        return result;
-    }
-
-
-    private List<GenericResourceAllocation> onlyGeneric(
-            List<ResourceAllocation<?>> sortedByStartDate) {
-        return ResourceAllocation.getOfType(GenericResourceAllocation.class,
-                sortedByStartDate);
-    }
-
-    public static String getName(Collection<? extends Criterion> criterions,
-            Task task) {
-        String prefix = task.getName();
-        return (prefix + " :: " + getName(criterions));
-    }
-
-    public static String getName(Collection<? extends Criterion> criterions) {
-        if (criterions.isEmpty()) {
-            return _("[generic all workers]");
-        }
-        String[] names = new String[criterions.size()];
-        int i = 0;
-        for (Criterion criterion : criterions) {
-            names[i++] = criterion.getName();
-        }
-        return (Arrays.toString(names));
-    }
-
-
     @Override
     public List<LimitingResourceQueue> getLimitingResourceQueues() {
-        return limitingResourceQueues;
+        return Collections.unmodifiableList(limitingResourceQueues);
     }
 
-    @Override
-    public Interval getViewInterval() {
-        return viewInterval;
+    public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
+        return Collections
+                .unmodifiableList(unassignedLimitingResourceQueueElements);
     }
 
     public ZoomLevel calculateInitialZoomLevel() {
@@ -290,15 +325,256 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    @Transactional(readOnly=true)
-    public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
-        List<LimitingResourceQueueElement> result = limitingResourceQueueElementDAO
-                .getUnassigned();
-        for (LimitingResourceQueueElement each : result) {
-            limitingResourceQueueElementDAO.reattach(each);
-            each.getResourceAllocation().getTask().getName();
+    @Transactional(readOnly = true)
+    public void assignLimitingResourceQueueElement(
+            final LimitingResourceQueueElement element) {
+
+        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+        LimitingResourceQueue queue = retrieveQueueByResourceFromModel(queueElement
+                .getResource());
+
+        DateAndHour startTime = findStartTimeInQueueForQueueElement(queue, queueElement);
+        DateAndHour[] startAndEndTime = allocateDayAssignments(queueElement
+                .getResourceAllocation(), startTime);
+        updateStartAndEndTimes(queueElement, startAndEndTime);
+        addLimitingResourceQueueElement(queue, queueElement);
+        toBeSaved.add(queueElement);
+    }
+
+    private DateAndHour findStartTimeInQueueForQueueElement(
+            LimitingResourceQueue queue, LimitingResourceQueueElement candidate) {
+
+        final SortedSet<LimitingResourceQueueElement> elements = queue.getLimitingResourceQueueElements();
+        if (!elements.isEmpty()) {
+            final List<LimitingResourceQueueElementGap> gapList = buildGapList(candidate, elements);
+            final DateAndHour startTime = findStartTimeInGapList(candidate
+                    .getIntentedTotalHours(), gapList);
+            return (startTime != null) ? startTime : afterLastElement(elements);
+        }
+        return new DateAndHour(new LocalDate(candidate.getEarlierStartDateBecauseOfGantt()), 0);
+    }
+
+    private DateAndHour afterLastElement(
+            SortedSet<LimitingResourceQueueElement> elements) {
+        return elements.last().getEndTime();
+    }
+
+    private DateAndHour findStartTimeInGapList(Integer hours,
+            List<LimitingResourceQueueElementGap> gapList) {
+        for (LimitingResourceQueueElementGap each : gapList) {
+            if (each.canFit(hours)) {
+                return each.getStartTime();
+            }
+        }
+        return null;
+    }
+
+    private List<LimitingResourceQueueElementGap> buildGapList(LimitingResourceQueueElement candidate,
+            final SortedSet<LimitingResourceQueueElement> elements) {
+        List<LimitingResourceQueueElementGap> result = new ArrayList<LimitingResourceQueueElementGap>();
+
+        // If start time of candidate element to fit in queue is before first
+        // element, create a gap between candidate and the first element of the
+        // queue
+        DateAndHour candidateTime = new DateAndHour(new LocalDate(candidate
+                .getEarlierStartDateBecauseOfGantt()), 0);
+        final LimitingResourceQueueElement firstElement = elements.first();
+        if (candidateTime.compareTo(firstElement.getStartTime()) <= 0) {
+            result.add(createGap(firstElement.getResource(), candidateTime,
+                    firstElement.getStartTime()));
+        }
+
+        // Only include gaps from candidate start time on
+        for (Iterator<LimitingResourceQueueElement> i = elements.iterator(); i
+                .hasNext();) {
+            LimitingResourceQueueElement current = i.next();
+            if (i.hasNext()) {
+                LimitingResourceQueueElement next = i.next();
+                if (candidateTime.compareTo(current.getEndTime()) > 1) {
+                    final DateAndHour startTime = current.getEndTime();
+                    final DateAndHour endTime = next.getStartTime();
+                    result.add(createGap(current.getResource(), startTime, endTime));
+                }
+            }
         }
         return result;
+    }
+
+    public LimitingResourceQueueElementGap createGap(Resource resource, DateAndHour startTime,
+            DateAndHour endTime) {
+        return LimitingResourceQueueElementGap.create(resource, startTime, endTime);
+    }
+
+    private void updateStartAndEndTimes(LimitingResourceQueueElement element,
+            DateAndHour[] startAndEndTime) {
+
+        final DateAndHour startTime = startAndEndTime[0];
+        final DateAndHour endTime = startAndEndTime[1];
+
+        element.setStartDate(startTime.getDate());
+        element.setStartHour(startTime.getHour());
+        element.setEndDate(endTime.getDate());
+        element.setEndHour(endTime.getHour());
+
+        // Update starting and ending dates for associated Task
+        Task task = element.getResourceAllocation().getTask();
+        updateStartingAndEndingDate(task, startTime.getDate(), endTime
+                .getDate());
+    }
+
+    private void updateStartingAndEndingDate(Task task, LocalDate startDate,
+            LocalDate endDate) {
+        task.setStartDate(toDate(startDate));
+        task.setEndDate(endDate.toDateTimeAtStartOfDay().toDate());
+        task.explicityMoved(toDate(startDate));
+    }
+
+    private Date toDate(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDate();
+    }
+
+    private void addLimitingResourceQueueElement(LimitingResourceQueue queue,
+            LimitingResourceQueueElement element) {
+        queue.addLimitingResourceQueueElement(element);
+        unassignedLimitingResourceQueueElements.remove(element);
+    }
+
+    private LimitingResourceQueue retrieveQueueByResourceFromModel(Resource resource) {
+        return findQueueByResource(limitingResourceQueues, resource);
+    }
+
+    private LimitingResourceQueue findQueueByResource(
+            List<LimitingResourceQueue> queues, Resource resource) {
+        for (LimitingResourceQueue each : queues) {
+            if (each.getResource().getId().equals(resource.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
+    private LimitingResourceQueueElement retrieveQueueElementFromModel(
+            LimitingResourceQueueElement element) {
+        return findQueueElement(unassignedLimitingResourceQueueElements,
+                element);
+    }
+
+    private LimitingResourceQueueElement findQueueElement(
+            List<LimitingResourceQueueElement> elements,
+            LimitingResourceQueueElement element) {
+        for (LimitingResourceQueueElement each : elements) {
+            if (each.getId().equals(element.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
+    private DateAndHour[] allocateDayAssignments(
+            ResourceAllocation<?> resourceAllocation, DateAndHour startingTime) {
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            return allocateDayAssignments(
+                    (SpecificResourceAllocation) resourceAllocation,
+                    startingTime);
+        }
+        if (resourceAllocation instanceof GenericResourceAllocation) {
+            // TODO: Generate day assignments for generic resource allocation
+        }
+        return null;
+    }
+
+    private DateAndHour[] allocateDayAssignments(
+            SpecificResourceAllocation resourceAllocation,
+            DateAndHour startTime) {
+
+        List<SpecificDayAssignment> assignments = new ArrayList<SpecificDayAssignment>();
+
+        DateAndHour newStartTime = startTime;
+
+        LocalDate date = startTime.getDate();
+        int totalHours = resourceAllocation.getIntendedTotalHours();
+
+        // Generate first day assignment
+        int hoursToAllocate = hoursCanWorkOnDay(resourceAllocation, date, startTime.getHour());
+        if (hoursToAllocate != 0) {
+            SpecificDayAssignment dayAssignment = SpecificDayAssignment.create(
+                    date, hoursToAllocate, resourceAllocation.getResource());
+            totalHours -= addDayAssignment(assignments, dayAssignment);
+        } else {
+            newStartTime = new DateAndHour(date.plusDays(1), 0);
+        }
+
+        // Generate rest of day assignments
+        for (date = date.plusDays(1); totalHours > 0; date = date.plusDays(1)) {
+            totalHours -= addDayAssignment(assignments, generateDayAssignment(
+                    resourceAllocation, date, totalHours));
+        }
+        resourceAllocation.allocateLimitingDayAssignments(assignments);
+
+        DateAndHour newEndTime = new DateAndHour(date, getEndingTime(assignments));
+        DateAndHour[] startAndEndTime = {newStartTime, newEndTime};
+        return startAndEndTime;
+    }
+
+    private DayAssignment getLastDayAssignment(List<SpecificDayAssignment> dayAssignments) {
+        return dayAssignments.get(dayAssignments.size() - 1);
+    }
+
+    private int getEndingTime(List<SpecificDayAssignment> dayAssignments) {
+        return (dayAssignments.isEmpty()) ? 0 : getLastDayAssignment(dayAssignments).getHours();
+    }
+
+    private int addDayAssignment(List<SpecificDayAssignment> list, SpecificDayAssignment dayAssignment) {
+        if (dayAssignment != null) {
+            list.add(dayAssignment);
+            return dayAssignment.getHours();
+        }
+        return 0;
+    }
+
+    private int hoursCanWorkOnDay(final SpecificResourceAllocation resourceAllocation,
+            final LocalDate date, int alreadyWorked) {
+        final ResourceCalendar calendar = resourceAllocation.getResource()
+                .getCalendar();
+        int hoursCanAllocate = calendar.toHours(date, ONE_RESOURCE_PER_DAY);
+        return hoursCanAllocate - alreadyWorked;
+    }
+
+    private SpecificDayAssignment generateDayAssignment(
+            final SpecificResourceAllocation resourceAllocation,
+            final LocalDate date, int intentedHours) {
+
+        final ResourceCalendar calendar = resourceAllocation.getResource()
+                .getCalendar();
+
+        int hoursCanAllocate = calendar.toHours(date, ONE_RESOURCE_PER_DAY);
+        if (hoursCanAllocate > 0) {
+            int hoursToAllocate = Math.min(intentedHours, hoursCanAllocate);
+            return SpecificDayAssignment.create(date, hoursToAllocate,
+                    resourceAllocation.getResource());
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void confirm() {
+        saveModifiedQueueElements();
+        loadLimitingResourceQueues();
+        loadUnassignedLimitingResourceQueueElements();
+    }
+
+    private void saveModifiedQueueElements() {
+        for (LimitingResourceQueueElement each : toBeSaved) {
+            limitingResourceQueueElementDAO.save(each);
+            saveAssociatedTask(each);
+        }
+        toBeSaved.clear();
+    }
+
+    private void saveAssociatedTask(LimitingResourceQueueElement element) {
+        Task task = element.getResourceAllocation().getTask();
+        taskDAO.save(task);
     }
 
 }

@@ -88,11 +88,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     public LimitingResourcesPanel(List<LimitingResourceQueue> groups,
             TimeTracker timeTracker) {
         init(groups, timeTracker);
-
     }
 
     public void init(List<LimitingResourceQueue> groups, TimeTracker timeTracker) {
-        this.limitingResourceQueues = groups;
+        limitingResourceQueues.addAll(groups);
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
@@ -101,6 +100,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         leftPane = new LimitingResourcesLeftPane(treeModel,
                 limitingResourcesList);
         registerNeededScripts();
+    }
+
+    public void resetLimitingResourceQueues(List<LimitingResourceQueue> queues) {
+        limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
+        limitingResourceQueues.addAll(queues);
+    }
+
+    public void reloadLimitingResourcesList() {
+        limitingResourcesList.setModel(createModelForTree());
+        limitingResourcesList.invalidate();
     }
 
     public ListModel getFilters() {
@@ -233,6 +242,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         dependencyList.afterCompose();
 
+        limitingResourcesList.invalidate();
+
         // Insert timetracker headers
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
@@ -250,12 +261,11 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private TimeTrackerComponent createTimeTrackerHeader() {
-        return new TimeTrackerComponent(
-                timeTracker) {
+        return new TimeTrackerComponent(timeTracker) {
 
-         @Override
-         protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-         }
+            @Override
+            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+            }
         };
     }
 

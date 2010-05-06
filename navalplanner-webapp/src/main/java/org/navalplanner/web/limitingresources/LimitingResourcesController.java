@@ -30,6 +30,7 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -70,6 +72,8 @@ public class LimitingResourcesController implements Composer {
     private LimitingResourcesPanel limitingResourcesPanel;
 
     private TimeTracker timeTracker;
+
+    private Grid gridUnassignedLimitingResourceQueueElements;
 
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
@@ -111,6 +115,8 @@ public class LimitingResourcesController implements Composer {
             this.parent.getChildren().clear();
             this.parent.appendChild(limitingResourcesPanel);
             limitingResourcesPanel.afterCompose();
+            gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
+                    .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -150,6 +156,13 @@ public class LimitingResourcesController implements Composer {
                 SeveralModificators.create(new BankHolidaysMarker()), parent);
     }
 
+    private void updateLimitingResourceQueues() {
+        limitingResourcesPanel
+                .resetLimitingResourceQueues(limitingResourceQueueModel
+                        .getLimitingResourceQueues());
+        limitingResourcesPanel.reloadLimitingResourcesList();
+    }
+
     private LimitingResourcesPanel buildLimitingResourcesPanel() {
         LimitingResourcesPanel result = new LimitingResourcesPanel(
                 limitingResourceQueueModel.getLimitingResourceQueues(),
@@ -164,6 +177,20 @@ public class LimitingResourcesController implements Composer {
 
     public void filterBy(Order order) {
         this.filterBy = order;
+    }
+
+    public void saveQueues() {
+        limitingResourceQueueModel.confirm();
+        notifyUserThatSavingIsDone();
+    }
+
+    private void notifyUserThatSavingIsDone() {
+        try {
+            Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK,
+                    Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public LimitingResourceQueueElementsRenderer getLimitingResourceQueueElementsRenderer() {
@@ -184,16 +211,22 @@ public class LimitingResourcesController implements Composer {
 
         private Button assignButton(final LimitingResourceQueueElement element) {
             Button result = new Button();
-            result.setLabel("Assign");
+            result.setLabel(_("Assign"));
             result.setTooltiptext(_("Assign to queue"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    // FIXME: assign element to queue
+                    assignLimitingResourceQueueElement(element);
                 }
             });
             return result;
+        }
+
+        private void assignLimitingResourceQueueElement(LimitingResourceQueueElement element) {
+            limitingResourceQueueModel.assignLimitingResourceQueueElement(element);
+            Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+            updateLimitingResourceQueues();
         }
 
         private Checkbox automaticQueueing(final LimitingResourceQueueElement element) {

@@ -109,7 +109,7 @@ public class LimitingResourcesComponent extends XulElement implements
     private static void validateQueueElement(
             LimitingResourceQueueElement queueElement) {
         if ((queueElement.getStartDate() == null)
-                || (queueElement.getStartDate() == null)) {
+                || (queueElement.getEndDate() == null)) {
             throw new ValidationException(_("Invalid queue element"));
         }
     }

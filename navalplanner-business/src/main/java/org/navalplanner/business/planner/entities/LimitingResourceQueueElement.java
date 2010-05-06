@@ -25,6 +25,7 @@ import java.util.Date;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  *
@@ -51,6 +52,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     protected LimitingResourceQueueElement() {
         creationTimestamp = (new Date()).getTime();
+        startQueuePosition = new QueuePosition();
+        startQueuePosition.setHour(0);
+        endQueuePosition = new QueuePosition();
+        endQueuePosition.setHour(0);
     }
 
     public ResourceAllocation<?> getResourceAllocation() {
@@ -116,6 +121,27 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void setCreationTimestamp(long creationTimestamp) {
         this.creationTimestamp = creationTimestamp;
+    }
+
+    public Resource getResource() {
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
+            return specific.getResource();
+        }
+        return null;
+    }
+
+    public Integer getIntentedTotalHours() {
+        return (getResourceAllocation() != null) ? getResourceAllocation()
+                .getIntendedTotalHours() : null;
+    }
+
+    public DateAndHour getStartTime() {
+        return new DateAndHour(getStartDate(), getStartHour());
+    }
+
+    public DateAndHour getEndTime() {
+        return new DateAndHour(getEndDate(), getEndHour());
     }
 
 }

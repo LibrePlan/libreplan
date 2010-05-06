@@ -20,8 +20,11 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * DAO interface for {@link ILimitingResourceQueueDAO}
@@ -30,5 +33,9 @@ import org.navalplanner.business.resources.entities.LimitingResourceQueue;
  */
 public interface ILimitingResourceQueueDAO extends
         IGenericDAO<LimitingResourceQueue, Long> {
+
+    LimitingResourceQueue findQueueByResource(Resource resource);
+
+    List<LimitingResourceQueue> getAll();
 
 }

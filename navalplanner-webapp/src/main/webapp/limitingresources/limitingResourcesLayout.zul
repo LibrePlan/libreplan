@@ -26,40 +26,52 @@ resourcesLoadPanel = self;
 ]]>
 </zscript>
 
-
     <borderlayout sclass="resourcesloadlayout" width="auto">
-       <north height="30px" border="0" sclass="toolbar-box">
-       <hbox align="center" id="toolbar">
-        <separator/>
-        <label>${i18n:_('Zoom')}:</label>
-        <listbox id="listZoomLevels" mold="select" rows="1"
-            model="${resourcesLoadPanel.zoomLevels}"
-            onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
-        </listbox>
 
-            <separator/>
-            <label>${i18n:_('Pagination')}:</label>
-            <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
-            onClick="advancedAllocationController.paginationDown();" disabled="true" />
-            <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
-            onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
-            <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
-            onClick="advancedAllocationController.paginationUp();" />
+        <!-- Top control button bar -->
+        <north height="30px" border="0" sclass="toolbar-box">
+            <hbox align="center" id="toolbar">
 
+                <separator/>
 
-        <separator/>
-        Filter:
-        <listbox id="listFilters" mold="select" rows="1" width="200px"
-            model="${resourcesLoadPanel.filters}"
-            onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);" >
-        </listbox>
-	<button image="/common/img/ico_filter.png" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to resource load satisfying required criteria')}"
-        onClick="resourcesLoadPanel.onApplyFilter()"/>
+                <button image="/common/img/ico_save.png" style="margin-top: -4px"
+                    tooltiptext="${i18n:_('Save')}"
+                    onClick="limitingResourcesController.saveQueues()"/>
 
-       </hbox>
-       </north>
+                <separator/>
 
+                <!-- Zoom -->
+                <label>${i18n:_('Zoom')}:</label>
+                <listbox id="listZoomLevels" mold="select" rows="1"
+                    model="${resourcesLoadPanel.zoomLevels}"
+                    onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
+                </listbox>
+
+                <separator/>
+
+                <!-- Pagination -->
+                <label>${i18n:_('Pagination')}:</label>
+                <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
+                    onClick="advancedAllocationController.paginationDown();" disabled="true" />
+                <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
+                    onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
+                <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
+                    onClick="advancedAllocationController.paginationUp();" />
+
+                <separator/>
+
+                <!-- Filter -->
+                <label>${i18n:_('Filter')}:</label>
+                <listbox id="listFilters" mold="select" rows="1" width="200px"
+                    model="${resourcesLoadPanel.filters}"
+                    onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);" />
+                <button image="/common/img/ico_filter.png" style="margin-top: -4px"
+                    tooltiptext="${i18n:_('Apply filtering to resource load satisfying required criteria')}"
+                    onClick="resourcesLoadPanel.onApplyFilter()"/>
+            </hbox>
+        </north>
+
+        <!-- List of queues -->
         <center border="0">
             <borderlayout sclass="resourcesload limitingresources">
                 <west size="250px" flex="true" collapsible="true"
@@ -89,13 +101,14 @@ resourcesLoadPanel = self;
                             <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
                         </center>
                     </borderlayout>
-
                 </center>
             </borderlayout>
         </center>
 
+        <!-- List of unassigned queue elements -->
         <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
-            <grid model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
+            <grid id="gridUnassignedLimitingResourceQueueElements"
+                    model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
                     rowRenderer="@{limitingResourcesController.limitingResourceQueueElementsRenderer}"
                     fixedLayout="true"
                     style="margin: 10px" >

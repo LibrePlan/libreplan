@@ -295,7 +295,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     @NotNull
     private ResourcesPerDay resourcesPerDay;
 
-    private Integer intendedTotalHours;
+    private Integer intendedTotalHours = 0;
 
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();
 
@@ -564,6 +564,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         removingAssignments(getAssignments());
         addingAssignments(assignments);
         setOriginalTotalAssigment(getAssignedHours());
+    }
+
+    public void allocateLimitingDayAssignments(List<T> assignments) {
+        assert isLimiting();
+        resetAssignmentsTo(assignments);
     }
 
     protected abstract void addingAssignments(

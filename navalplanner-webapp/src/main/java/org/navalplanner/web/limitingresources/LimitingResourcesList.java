@@ -35,8 +35,10 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
 
 /**
- * Component to include a list of ResourceLoads inside the ResourcesLoadPanel.
+ * Component to include a list of {@link LimitingResourceQueue} inside the {@link LimitingResourcesPanel}
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class LimitingResourcesList extends HtmlMacroComponent implements
         AfterCompose {
@@ -45,29 +47,42 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
 
     private Map<LimitingResourceQueue, LimitingResourcesComponent> fromTimeLineToComponent = new HashMap<LimitingResourceQueue, LimitingResourcesComponent>();
 
-    private final MutableTreeModel<LimitingResourceQueue> timelinesTree;
+    private MutableTreeModel<LimitingResourceQueue> model;
+
+    private TimeTracker timeTracker;
 
     private List<LimitingResourcesComponent> limitingResourcesComponents = new ArrayList<LimitingResourcesComponent>();
 
     public LimitingResourcesList(TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
-        this.timelinesTree = timelinesTree;
+
+        this.model = timelinesTree;
+
         zoomListener = adjustTimeTrackerSizeListener();
         timeTracker.addZoomListener(zoomListener);
-        LimitingResourceQueue current = timelinesTree.getRoot();
-        List<LimitingResourceQueue> toInsert = new ArrayList<LimitingResourceQueue>();
-        fill(timelinesTree, current, toInsert);
-        insertAsComponents(timeTracker, toInsert);
+        this.timeTracker = timeTracker;
+
+        insertAsComponents(timelinesTree.asList());
     }
 
-    private void fill(MutableTreeModel<LimitingResourceQueue> timelinesTree,
-            LimitingResourceQueue current, List<LimitingResourceQueue> result) {
-        final int length = timelinesTree.getChildCount(current);
-        for (int i = 0; i < length; i++) {
-            LimitingResourceQueue child = timelinesTree.getChild(current, i);
-            result.add(child);
-            fill(timelinesTree, child, result);
+    private void insertAsComponents(List<LimitingResourceQueue> children) {
+        for (LimitingResourceQueue each : children) {
+            LimitingResourcesComponent component = LimitingResourcesComponent
+                    .create(timeTracker, each);
+            this.appendChild(component);
+            fromTimeLineToComponent.put(each, component);
         }
+    }
+
+    public void setModel(MutableTreeModel<LimitingResourceQueue> model) {
+        this.model = model;
+    }
+
+    public void invalidate() {
+        fromTimeLineToComponent.clear();
+        this.getChildren().clear();
+        insertAsComponents(model.asList());
+        super.invalidate();
     }
 
     private IZoomLevelChangedListener adjustTimeTrackerSizeListener() {
@@ -83,24 +98,8 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
         };
     }
 
-    private void insertAsComponents(TimeTracker timetracker,
-            List<LimitingResourceQueue> children) {
-        for (LimitingResourceQueue LimitingResourceQueue : children) {
-            LimitingResourcesComponent component = LimitingResourcesComponent
-                    .create(timetracker, LimitingResourceQueue);
-            limitingResourcesComponents.add(component);
-            appendChild(component);
-            fromTimeLineToComponent.put(LimitingResourceQueue, component);
-        }
-    }
-
     public void collapse(LimitingResourceQueue line) {
-    }
 
-    private LimitingResourcesComponent getComponentFor(LimitingResourceQueue l) {
-        LimitingResourcesComponent resourceLoadComponent = fromTimeLineToComponent
-                .get(l);
-        return resourceLoadComponent;
     }
 
     public void expand(LimitingResourceQueue line,
