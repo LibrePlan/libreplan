@@ -83,6 +83,7 @@ public class Task extends TaskElement {
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
+    @Valid
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
     private TaskStartConstraint startConstraint = new TaskStartConstraint();

@@ -209,8 +209,6 @@ public class TaskTest {
         SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         resourceAllocation.setLimitingResourceQueueElement(element);
         task.addResourceAllocation(resourceAllocation);
-        taskElementDAO.save(task);
-
         assertTrue(task.getLimitingResourceAllocations().size() == 1);
     }
 
@@ -219,8 +217,6 @@ public class TaskTest {
         Task task = createValidTask();
         SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         task.addResourceAllocation(resourceAllocation);
-        taskElementDAO.save(task);
-
         assertTrue(task.getNonLimitingResourceAllocations().size() == 1);
     }
 
