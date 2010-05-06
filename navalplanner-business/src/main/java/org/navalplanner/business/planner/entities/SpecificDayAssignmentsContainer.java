@@ -83,16 +83,21 @@ public class SpecificDayAssignmentsContainer extends BaseEntity {
     }
 
     public void addAll(Collection<? extends SpecificDayAssignment> assignments) {
-        dayAssignments.addAll(assignments);
+        dayAssignments.addAll(copyToThisContainer(assignments));
     }
 
     public void removeAll(List<? extends DayAssignment> assignments) {
         dayAssignments.removeAll(assignments);
     }
 
-    public void resetTo(Collection<SpecificDayAssignment> assignmentsCopied) {
+    public void resetTo(Collection<SpecificDayAssignment> assignments) {
         dayAssignments.clear();
-        dayAssignments.addAll(assignmentsCopied);
+        dayAssignments.addAll(copyToThisContainer(assignments));
+    }
+
+    private Set<SpecificDayAssignment> copyToThisContainer(
+            Collection<? extends SpecificDayAssignment> assignments) {
+        return SpecificDayAssignment.copy(this, assignments);
     }
 
 }

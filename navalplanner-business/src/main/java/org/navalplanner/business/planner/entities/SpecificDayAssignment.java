@@ -117,7 +117,7 @@ public class SpecificDayAssignment extends DayAssignment {
 
     public static Set<SpecificDayAssignment> copy(
             SpecificDayAssignmentsContainer container,
-            Collection<SpecificDayAssignment> specificDaysAssignment) {
+            Collection<? extends SpecificDayAssignment> specificDaysAssignment) {
         Set<SpecificDayAssignment> result = new HashSet<SpecificDayAssignment>();
         for (SpecificDayAssignment s : specificDaysAssignment) {
             SpecificDayAssignment created = create(s.getDay(), s.getHours(), s

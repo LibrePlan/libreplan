@@ -298,17 +298,8 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        protected Collection<GenericDayAssignment> copyAssignmentsFrom(
-                ResourceAllocation<?> modification) {
-            GenericResourceAllocation allocation = (GenericResourceAllocation) modification;
-            return GenericDayAssignment.copy(container, allocation
-                    .getAssignments());
-        }
-
-        @Override
         protected void resetTo(Collection<GenericDayAssignment> assignments) {
-            container
-                    .resetTo(GenericDayAssignment.copy(container, assignments));
+            container.resetTo(assignments);
         }
 
         @Override
@@ -351,13 +342,6 @@ public class GenericResourceAllocation extends
         protected void addAssignments(
                 Collection<? extends GenericDayAssignment> assignments) {
             genericDayAssignments.addAll(assignments);
-        }
-
-        @Override
-        protected Collection<GenericDayAssignment> copyAssignmentsFrom(
-                ResourceAllocation<?> modification) {
-            throw new UnsupportedOperationException(
-                    "merging assignments it's not allowed on transient state");
         }
 
         @Override

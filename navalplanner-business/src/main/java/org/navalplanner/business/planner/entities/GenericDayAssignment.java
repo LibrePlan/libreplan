@@ -123,7 +123,7 @@ public class GenericDayAssignment extends DayAssignment {
 
     public static Set<GenericDayAssignment> copy(
             GenericDayAssignmentsContainer newParent,
-            Collection<GenericDayAssignment> assignemnts) {
+            Collection<? extends GenericDayAssignment> assignemnts) {
         Set<GenericDayAssignment> result = new HashSet<GenericDayAssignment>();
         for (GenericDayAssignment a : assignemnts) {
             GenericDayAssignment created = copy(newParent, a);

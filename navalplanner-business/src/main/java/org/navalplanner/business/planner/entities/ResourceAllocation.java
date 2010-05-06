@@ -759,16 +759,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         protected abstract void addAssignments(
                 Collection<? extends T> assignments);
 
+        @SuppressWarnings("unchecked")
         public void mergeAssignments(ResourceAllocation<?> modification) {
             detachAssignments();
-            resetTo(copyAssignmentsFrom(modification));
+            resetTo(((ResourceAllocation<T>) modification).getAssignments());
             clearCachedData();
         }
 
         protected abstract void resetTo(Collection<T> assignmentsCopied);
-
-        protected abstract Collection<T> copyAssignmentsFrom(
-                ResourceAllocation<?> modification);
 
         void detachAssignments() {
             for (DayAssignment each : getUnorderedAssignments()) {
@@ -818,14 +816,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         protected final void clearFieldsCalculatedFromAssignments() {
             modificationsNotAllowed();
-        }
-
-        @Override
-        protected final Collection<T> copyAssignmentsFrom(
-                ResourceAllocation<?> modification) {
-            modificationsNotAllowed();
-            throw new RuntimeException(
-                    "unreachable, just for satisfying the compiler");
         }
 
         private void modificationsNotAllowed() {

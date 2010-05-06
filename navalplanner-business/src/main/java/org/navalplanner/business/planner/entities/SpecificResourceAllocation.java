@@ -259,14 +259,6 @@ public class SpecificResourceAllocation extends
         }
 
         @Override
-        protected Collection<SpecificDayAssignment> copyAssignmentsFrom(
-                ResourceAllocation<?> modification) {
-            SpecificResourceAllocation specificModication = (SpecificResourceAllocation) modification;
-            return SpecificDayAssignment.copy(container, specificModication
-                    .getAssignments());
-        }
-
-        @Override
         protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
             return container.getDayAssignments();
         }
@@ -314,13 +306,6 @@ public class SpecificResourceAllocation extends
 
         @Override
         protected void clearFieldsCalculatedFromAssignments() {
-        }
-
-        @Override
-        protected Collection<SpecificDayAssignment> copyAssignmentsFrom(
-                ResourceAllocation<?> modification) {
-            throw new UnsupportedOperationException(
-                    "merging assignments it's not allowed on transient state");
         }
 
         @Override
