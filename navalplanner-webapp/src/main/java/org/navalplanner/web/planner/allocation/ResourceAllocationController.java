@@ -72,6 +72,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Window;
 
 /**
  * Controller for {@link ResourceAllocation} view.
@@ -109,6 +110,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Checkbox recommendedAllocationCheckbox;
 
+    private Checkbox extendedViewCheckbox;
+
     private Datebox taskEndDate;
 
     private Decimalbox allResourcesPerDay;
@@ -120,6 +123,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Tab tbResourceAllocation;
 
     private Tab workerSearchTab;
+
+    private Window editTaskWindow;
 
     public static void registerNeededScripts() {
         getScriptsRegister()
@@ -136,6 +141,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         taskEndDate = new Datebox();
         allResourcesPerDay = new Decimalbox();
+        allResourcesPerDay.setWidth("80px");
         newAllocationSelector.setLimitingResourceFilter(false);
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
@@ -145,6 +151,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         final String width = "90px";
         taskEndDate.setWidth(width);
         assignedHoursComponent = new Intbox();
+        assignedHoursComponent.setWidth("80px");
     }
 
     private void prepareCalculationTypesGrid() {
@@ -293,8 +300,37 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     /**
+     * Shows the extended view of the resources allocations
+     */
+    public void onCheckExtendedView() {
+        if (isExtendedView()) {
+            editTaskWindow.setWidth("970px");
+        } else {
+            editTaskWindow.setWidth("870px");
+        }
+        editTaskWindow.invalidate();
+        Util.reloadBindings(allocationsGrid);
+    }
+
+    public boolean isExtendedView() {
+        return extendedViewCheckbox.isChecked();
+    }
+
+    public int getColspanHours() {
+        if (isExtendedView()) {
+            return 4;
+        }
+        return 1;
+    }
+
+    public int getColspanResources() {
+        if (isExtendedView()) {
+            return 3;
+        }
+        return 1;
+    }
+    /**
      * Close search worker in worker search tab
-     *
      * @param e
      */
     public void onCloseSelectWorkers() {
@@ -532,8 +568,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private void renderResourceAllocation(Row row, final AllocationRow data)
                 throws Exception {
             row.setValue(data);
+            append(row, data.createDetail());
             append(row, new Label(data.getName()));
+            append(row, new Label(Integer.toString(data.getOriginalHours())));
+            append(row, new Label(Integer.toString(data.getTotalHours())));
+            append(row,
+                    new Label(Integer.toString(data.getConsolidatedHours())));
             append(row, data.getHoursInput());
+            append(row, new Label(data.getTotalResourcesPerday().getAmount()
+                    .toString()));
+            append(row, new Label(data.getConsolidatedResourcesPerday()
+                    .getAmount().toString()));
             append(row, data.getResourcesPerDayInput());
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
@@ -555,10 +600,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private void renderAggregatingRow(Row row) {
             ResourceAllocationController controller = ResourceAllocationController.this;
+            append(row, new Label());
             append(row, new Label(_("Sum of all rows")));
-            append(row, CalculationTypeRadio.NUMBER_OF_HOURS.input(controller));
-            append(row, CalculationTypeRadio.RESOURCES_PER_DAY
-                    .input(controller));
+            append(row, new Label("0"));
+            append(row, new Label("0"));
+            append(row, new Label("0"));
+                append(row, CalculationTypeRadio.NUMBER_OF_HOURS
+                        .input(controller));
+            append(row, new Label("0"));
+            append(row, new Label("0"));
+                append(row, CalculationTypeRadio.RESOURCES_PER_DAY
+                        .input(controller));
             append(row, new Label());
         }
 

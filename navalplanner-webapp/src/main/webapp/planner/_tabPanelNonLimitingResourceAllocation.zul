@@ -61,7 +61,7 @@
                 </groupbox>
 
                 <groupbox mold="3d" style="margin-top: 5px" closable="false" width="320px" height="170px">
-                    <caption label="${i18n:_('Calculation type')}" />
+                    <caption label="${i18n:_('Allocation configuration')}" />
                     <hbox>
                         <label value = "${i18n:_('Task start :')}" />
                         <label value="@{allocationController.taskStart,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
@@ -77,6 +77,9 @@
                     </radiogroup>
                     <hbox>
                         <checkbox id="recommendedAllocationCheckbox" label="${i18n:_('Recommended Allocation')}"/>
+                        <separator orient="horizontal" spacing="10px"/>
+                        <checkbox id="extendedViewCheckbox" label="${i18n:_('Extended view')}"
+                            onCheck="allocationController.onCheckExtendedView()"/>
                     </hbox>
                 </groupbox>
                 </hbox>
@@ -87,11 +90,24 @@
                         model="@{allocationController.resourceAllocations}"
                         rowRenderer="@{allocationController.resourceAllocationRenderer}"
                         style="margin-bottom: 5px" fixedLayout="true">
+                        <auxhead>
+                            <auxheader colspan="1"/>
+                            <auxheader label="${i18n:_('Name')}" colspan="1" align="center"/>
+                            <auxheader label="${i18n:_('Hours')}" colspan="@{allocationController.colspanHours}" align="center"/>
+                            <auxheader label="${i18n:_('Resources Per Day')}" colspan="@{allocationController.colspanResources}" align="center"/>
+                            <auxheader label="${i18n:_('Operations')}" colspan="1" align="center"/>
+                        </auxhead>
                         <columns>
-                            <column label="${i18n:_('Name')}" align="center"/>
-                            <column label="${i18n:_('Hours')}" align="center"/>
-                            <column label="${i18n:_('Resources Per Day')}" align="center"/>
-                            <column width="80px" label="${i18n:_('Operations')}" align="center"/>
+                            <column width="30px"/>
+                            <column />
+                            <column label="${i18n:_('Original')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
+                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
+                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
+                            <column label="${i18n:_('Non Consolidated')}" align="center"/>
+                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
+                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
+                            <column label="${i18n:_('Non Consolidated')}" align="center"/>
+                            <column label="" align="center" width="80px"/>
                         </columns>
                     </grid>
                 </groupbox>

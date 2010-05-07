@@ -168,7 +168,19 @@ public abstract class AllocationRow {
 
     private String name;
 
-    private ResourcesPerDay resourcesPerDay;
+    private int originalHours;
+
+    private int totalHours;
+
+    private int consolidatedHours;
+
+    private int nonConsolidatedHours;
+
+    private ResourcesPerDay totalResourcesPerday;
+
+    private ResourcesPerDay nonConsolidatedResourcesPerDay;
+
+    private ResourcesPerDay consolidatedResourcesPerday;
 
     private Intbox hoursInput = new Intbox();
 
@@ -179,6 +191,7 @@ public abstract class AllocationRow {
     private void initializeResourcesPerDayInput() {
         resourcesPerDayInput.setConstraint(new SimpleConstraint(
                 SimpleConstraint.NO_NEGATIVE));
+        resourcesPerDayInput.setWidth("80px");
         Util.bind(resourcesPerDayInput, new Util.Getter<BigDecimal>() {
 
             @Override
@@ -191,15 +204,22 @@ public abstract class AllocationRow {
             @Override
             public void set(BigDecimal value) {
                 BigDecimal amount = value == null ? new BigDecimal(0) : value;
-                resourcesPerDay = ResourcesPerDay.amount(amount);
+                nonConsolidatedResourcesPerDay = ResourcesPerDay.amount(amount);
             }
         });
     }
 
     public AllocationRow() {
-        resourcesPerDay = ResourcesPerDay.amount(0);
+        originalHours = 0;
+        totalHours = 0;
+        consolidatedHours = 0;
+        nonConsolidatedHours = 0;
+        consolidatedResourcesPerday = ResourcesPerDay.amount(0);
+        nonConsolidatedResourcesPerDay = ResourcesPerDay.amount(0);
+        totalResourcesPerday = ResourcesPerDay.amount(0);
         initializeResourcesPerDayInput();
         hoursInput.setValue(0);
+        hoursInput.setWidth("80px");
         hoursInput.setDisabled(true);
         hoursInput.setConstraint(new SimpleConstraint(
                 SimpleConstraint.NO_NEGATIVE));
@@ -252,7 +272,7 @@ public abstract class AllocationRow {
     }
 
     public ResourcesPerDay getResourcesPerDay() {
-        return this.resourcesPerDay;
+        return this.nonConsolidatedResourcesPerDay;
     }
 
     public ResourcesPerDay getResourcesPerDayFromInput() {
@@ -262,7 +282,7 @@ public abstract class AllocationRow {
     }
 
     public void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
-        this.resourcesPerDay = resourcesPerDay;
+        this.nonConsolidatedResourcesPerDay = resourcesPerDay;
         resourcesPerDayInput.setValue(getAmount(resourcesPerDay));
     }
 
@@ -414,6 +434,55 @@ public abstract class AllocationRow {
         } else {
             return false;
         }
+    }
+
+    public void setOriginalHours(int originalHours) {
+        this.originalHours = originalHours;
+    }
+
+    public int getOriginalHours() {
+        return originalHours;
+    }
+
+    public void setTotalHours(int totalHours) {
+        this.totalHours = totalHours;
+    }
+
+    public int getTotalHours() {
+        return totalHours;
+    }
+
+    public void setConsolidatedHours(int consolidatedHours) {
+        this.consolidatedHours = consolidatedHours;
+    }
+
+    public int getConsolidatedHours() {
+        return consolidatedHours;
+    }
+
+    public void setNonConsolidatedHours(int nonConsolidatedHours) {
+        this.nonConsolidatedHours = nonConsolidatedHours;
+    }
+
+    public int getNonConsolidatedHours() {
+        return nonConsolidatedHours;
+    }
+
+    public void setTotalResourcesPerday(ResourcesPerDay totalResourcesPerday) {
+        this.totalResourcesPerday = totalResourcesPerday;
+    }
+
+    public ResourcesPerDay getTotalResourcesPerday() {
+        return totalResourcesPerday;
+    }
+
+    public void setConsolidatedResourcesPerday(
+            ResourcesPerDay consolidatedResourcesPerday) {
+        this.consolidatedResourcesPerday = consolidatedResourcesPerday;
+    }
+
+    public ResourcesPerDay getConsolidatedResourcesPerday() {
+        return consolidatedResourcesPerday;
     }
 
 }
