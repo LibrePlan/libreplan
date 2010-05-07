@@ -1316,3 +1316,14 @@ tr.z-tree-row-seld td.z-row-inner {
 tr.z-tree-row-seld .z-row-cnt {
     color: #FFFFFF;
 }
+
+/* color code for order state */
+.order-open-unassigned {
+    color: #AACCEE;
+}
+.order-open-assigned {
+    color: #007BBE;
+}
+.order-closed {
+    color: #000000;
+}
