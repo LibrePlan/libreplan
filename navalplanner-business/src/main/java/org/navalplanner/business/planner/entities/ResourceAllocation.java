@@ -750,11 +750,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public LocalDate getStartDate() {
-        List<? extends DayAssignment> assignments = getAssignments();
-        if (assignments.isEmpty()) {
-            return null;
-        }
-        return assignments.get(0).getDay();
+        return LocalDate.fromDateFields(task.getStartDate());
     }
 
     public LocalDate getEndDate() {
