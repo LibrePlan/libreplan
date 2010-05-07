@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
-import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.ProportionalDistributor;
@@ -83,9 +82,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private ITaskSourceDAO taskSourceDAO;
 
     private Task task;
-
-    @Autowired
-    private IBaseCalendarDAO calendarDAO;
 
     @Autowired
     private ICriterionDAO criterionDAO;
