@@ -60,6 +60,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.impl.api.InputElement;
@@ -67,6 +68,13 @@ import org.zkoss.zul.impl.api.InputElement;
 public class FormBinder {
 
     private Intbox allHoursInput;
+
+    private Label allOriginalHours;
+    private Label allTotalHours;
+    private Label allConsolidatedHours;
+
+    private Label allTotalResourcesPerDay;
+    private Label allConsolidatedResourcesPerDay;
 
     private final AllocationRowsHandler allocationRowsHandler;
 
@@ -241,6 +249,30 @@ public class FormBinder {
         return result;
     }
 
+    private int sumAllOriginalHours() {
+        int result = 0;
+        for (AllocationRow each : rows) {
+            result += each.getOriginalHours();
+        }
+        return result;
+    }
+
+    private int sumAllTotalHours() {
+        int result = 0;
+        for (AllocationRow each : rows) {
+            result += each.getTotalHours();
+        }
+        return result;
+    }
+
+    private int sumAllConsolidatedHours() {
+        int result = 0;
+        for (AllocationRow each : rows) {
+            result += each.getConsolidatedHours();
+        }
+        return result;
+    }
+
     public CalculatedValue getCalculatedValue() {
         return allocationRowsHandler.getCalculatedValue();
     }
@@ -316,6 +348,7 @@ public class FormBinder {
         allHoursInputComponentDisabilityRule();
         bindAllResourcesPerDayToRows();
         allResourcesPerDayVisibilityRule();
+        loadAggregatedCalculations();
         return result;
     }
 
@@ -601,6 +634,74 @@ public class FormBinder {
             sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
         }
         return sum;
+    }
+
+    private BigDecimal sumAllTotalResourcesPerDay() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (AllocationRow each : rows) {
+            sum = sum.add(each.getTotalResourcesPerDay().getAmount());
+        }
+        return sum;
+    }
+
+    private BigDecimal sumAllConsolidatedResourcesPerDay() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (AllocationRow each : rows) {
+            sum = sum.add(each.getConsolidatedResourcesPerDay().getAmount());
+        }
+        return sum;
+    }
+
+    public void setAllOriginalHours(Label allOriginalHours) {
+        this.allOriginalHours = allOriginalHours;
+    }
+
+    public Label getAllOriginalHours() {
+        return allOriginalHours;
+    }
+
+    public void setAllTotalHours(Label allTotalHours) {
+        this.allTotalHours = allTotalHours;
+    }
+
+    public Label getAllTotalHours() {
+        return allTotalHours;
+    }
+
+    public void setAllConsolidatedHours(Label alCo1nsolidatedHours) {
+        this.allConsolidatedHours = alCo1nsolidatedHours;
+    }
+
+    public Label getAllConsolidatedHours() {
+        return allConsolidatedHours;
+    }
+
+    public void setAllTotalResourcesPerDay(Label allTotalResourcesPerDay) {
+        this.allTotalResourcesPerDay = allTotalResourcesPerDay;
+    }
+
+    public Label getAllTotalResourcesPerDay() {
+        return allTotalResourcesPerDay;
+    }
+
+    public void setAllConsolidatedResourcesPerDay(
+            Label allConsolidatedResourcesPerDay) {
+        this.allConsolidatedResourcesPerDay = allConsolidatedResourcesPerDay;
+    }
+
+    public Label getAllConsolidatedResourcesPerDay() {
+        return allConsolidatedResourcesPerDay;
+    }
+
+    public void loadAggregatedCalculations() {
+        allOriginalHours.setValue(Integer.toString(sumAllOriginalHours()));
+        allTotalHours.setValue(Integer.toString(sumAllTotalHours()));
+        allConsolidatedHours.setValue(Integer
+                .toString(sumAllConsolidatedHours()));
+        allTotalResourcesPerDay.setValue(sumAllTotalResourcesPerDay()
+                .toString());
+        allConsolidatedResourcesPerDay
+                .setValue(sumAllConsolidatedResourcesPerDay().toString());
     }
 
 }

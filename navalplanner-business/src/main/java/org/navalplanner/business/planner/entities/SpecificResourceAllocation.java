@@ -104,6 +104,25 @@ public class SpecificResourceAllocation extends
                 .orderedByDay(specificDaysAssignment);
     }
 
+    private List<SpecificDayAssignment> getDayAssignmentsByConsolidated(
+            boolean consolidated) {
+        List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
+        for (SpecificDayAssignment day : getAssignments()) {
+            if (day.isConsolidated() == consolidated) {
+                result.add(day);
+            }
+        }
+        return result;
+    }
+
+    public List<SpecificDayAssignment> getNonConsolidatedAssignments() {
+        return getDayAssignmentsByConsolidated(false);
+    }
+
+    public List<SpecificDayAssignment> getConsolidatedAssignments() {
+        return getDayAssignmentsByConsolidated(true);
+    }
+
     @Override
     protected void addingAssignments(
             Collection<? extends SpecificDayAssignment> assignments) {

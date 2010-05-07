@@ -116,6 +116,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Decimalbox allResourcesPerDay;
 
+    private Label allOriginalHours;
+    private Label allTotalHours;
+    private Label allConsolidatedHours;
+
+    private Label allTotalResourcesPerDay;
+    private Label allConsolidatedResourcesPerDay;
+
     private Button applyButton;
 
     private NewAllocationSelector newAllocationSelector;
@@ -143,8 +150,18 @@ public class ResourceAllocationController extends GenericForwardComposer {
         allResourcesPerDay = new Decimalbox();
         allResourcesPerDay.setWidth("80px");
         newAllocationSelector.setLimitingResourceFilter(false);
+        initAllocationLabels();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
+    }
+
+    private void initAllocationLabels() {
+        allOriginalHours = new Label();
+        allTotalHours = new Label();
+        allConsolidatedHours = new Label();
+
+        allTotalResourcesPerDay = new Label();
+        allConsolidatedResourcesPerDay = new Label();
     }
 
     private void makeReadyInputsForCalculationTypes() {
@@ -196,9 +213,18 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     context, planningState);
             formBinder = allocationRows
                     .createFormBinder(resourceAllocationModel);
+
+            formBinder.setAllOriginalHours(allOriginalHours);
+            formBinder.setAllTotalHours(allTotalHours);
+            formBinder.setAllConsolidatedHours(allConsolidatedHours);
             formBinder.setAssignedHoursComponent(assignedHoursComponent);
-            formBinder.setEndDate(taskEndDate);
+
+            formBinder.setAllTotalResourcesPerDay(allTotalResourcesPerDay);
+            formBinder
+                    .setAllConsolidatedResourcesPerDay(allConsolidatedResourcesPerDay);
             formBinder.setAllResourcesPerDay(allResourcesPerDay);
+
+            formBinder.setEndDate(taskEndDate);
             formBinder.setApplyButton(applyButton);
             formBinder.setAllocationsGrid(allocationsGrid);
             formBinder.setMessagesForUser(messagesForUser);
@@ -575,9 +601,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
             append(row,
                     new Label(Integer.toString(data.getConsolidatedHours())));
             append(row, data.getHoursInput());
-            append(row, new Label(data.getTotalResourcesPerday().getAmount()
+            append(row, new Label(data.getTotalResourcesPerDay().getAmount()
                     .toString()));
-            append(row, new Label(data.getConsolidatedResourcesPerday()
+            append(row, new Label(data.getConsolidatedResourcesPerDay()
                     .getAmount().toString()));
             append(row, data.getResourcesPerDayInput());
             // On click delete button
@@ -602,14 +628,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
             ResourceAllocationController controller = ResourceAllocationController.this;
             append(row, new Label());
             append(row, new Label(_("Sum of all rows")));
-            append(row, new Label("0"));
-            append(row, new Label("0"));
-            append(row, new Label("0"));
-                append(row, CalculationTypeRadio.NUMBER_OF_HOURS
+            append(row, allOriginalHours);
+            append(row, allTotalHours);
+            append(row, allConsolidatedHours);
+            append(row, CalculationTypeRadio.NUMBER_OF_HOURS
                         .input(controller));
-            append(row, new Label("0"));
-            append(row, new Label("0"));
-                append(row, CalculationTypeRadio.RESOURCES_PER_DAY
+            append(row, allTotalResourcesPerDay);
+            append(row, allConsolidatedResourcesPerDay);
+            append(row, CalculationTypeRadio.RESOURCES_PER_DAY
                         .input(controller));
             append(row, new Label());
         }

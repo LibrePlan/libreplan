@@ -397,7 +397,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             resourcesPerDay, startInclusive,
                             endExclusive);
                     resetAssignmentsTo(assignmentsCreated);
-                    setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+                    setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
                 }
             };
         }
@@ -457,7 +457,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             List<T> assignmentsCreated = createAssignments(startInclusive, end,
                     hours);
             resetAssignmentsTo(assignmentsCreated);
-            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+            setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
         }
 
         private void allocate(LocalDate startInclusive, LocalDate endExclusive,
@@ -466,7 +466,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     endExclusive, hours);
             removingAssignments(getAssignments(startInclusive, endExclusive));
             addingAssignments(assignmentsCreated);
-            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+            setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
             setOriginalTotalAssigment(getAssignedHours());
         }
 
@@ -582,9 +582,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getWorkHoursPerDay().toHours(day, resourcesPerDay);
     }
 
-    private ResourcesPerDay calculateResourcesPerDayFromAssignments() {
+    private ResourcesPerDay calculateResourcesPerDayFromAssignments(
+            List<? extends DayAssignment> dayAssignments) {
         Map<LocalDate, List<DayAssignment>> byDay = DayAssignment
-                .byDay(getAssignments());
+                .byDay(dayAssignments);
         int sumTotalHours = 0;
         int sumWorkableHours = 0;
         final ResourcesPerDay one = ResourcesPerDay.amount(1);
@@ -689,10 +690,30 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return DayAssignment.sum(getAssignments());
     }
 
+    public int getConsolidatedHours() {
+        return DayAssignment.sum(getConsolidatedAssignments());
+    }
+
+    public int getNonConsolidatedHours() {
+        return DayAssignment.sum(getNonConsolidatedAssignments());
+    }
+
     /**
      * @return a list of {@link DayAssignment} ordered by date
      */
     public abstract List<? extends DayAssignment> getAssignments();
+
+    public abstract List<? extends DayAssignment> getNonConsolidatedAssignments();
+
+    public abstract List<? extends DayAssignment> getConsolidatedAssignments();
+
+    public ResourcesPerDay getNonConsolidatedResourcePerDay() {
+        return calculateResourcesPerDayFromAssignments(getNonConsolidatedAssignments());
+    }
+
+    public ResourcesPerDay getConsolidatedResourcePerDay() {
+        return calculateResourcesPerDayFromAssignments(getConsolidatedAssignments());
+    }
 
     public ResourcesPerDay getResourcesPerDay() {
         return resourcesPerDay;

@@ -266,6 +266,25 @@ public class GenericResourceAllocation extends
                 .orderedByDay(genericDayAssignments);
     }
 
+    private List<GenericDayAssignment> getDayAssignmentsByConsolidated(
+            boolean consolidated) {
+        List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
+        for (GenericDayAssignment day : getAssignments()) {
+            if (day.isConsolidated() == consolidated) {
+                result.add(day);
+            }
+        }
+        return result;
+    }
+
+    public List<GenericDayAssignment> getNonConsolidatedAssignments() {
+        return getDayAssignmentsByConsolidated(false);
+    }
+
+    public List<GenericDayAssignment> getConsolidatedAssignments() {
+        return getDayAssignmentsByConsolidated(true);
+    }
+
     @Override
     protected Class<GenericDayAssignment> getDayAssignmentType() {
         return GenericDayAssignment.class;
