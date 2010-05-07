@@ -163,6 +163,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    private List<Order> ordersToShow;
+
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
         this.tabs = entryPoints;
@@ -599,7 +601,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         List<TaskElement> toShow;
-        toShow = sortByStartDate(retainOnlyTopLevel(predicate));
+        toShow = retainOnlyTopLevel(predicate);
 
         forceLoadOfDataAssociatedTo(toShow);
         forceLoadOfDependenciesCollections(toShow);
@@ -615,18 +617,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private List<TaskElement> sortByStartDate(List<TaskElement> list) {
-        List<TaskElement> result = new ArrayList<TaskElement>(list);
-        Collections.sort(result, new Comparator<TaskElement>() {
+    private List<Order> sortByStartDate(List<Order> list) {
+        List<Order> result = new ArrayList<Order>(list);
+        Collections.sort(result, new Comparator<Order>() {
             @Override
-            public int compare(TaskElement o1, TaskElement o2) {
-                if (o1.getStartDate() == null) {
+            public int compare(Order o1, Order o2) {
+                if (o1.getInitDate() == null) {
                     return -1;
                 }
-                if (o2.getStartDate() == null) {
+                if (o2.getInitDate() == null) {
                     return 1;
                 }
-                return o1.getStartDate().compareTo(o2.getStartDate());
+                return o1.getInitDate().compareTo(o2.getInitDate());
             }
         });
         return result;
@@ -635,6 +637,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
+        ordersToShow = new ArrayList<Order>();
 
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
@@ -645,7 +648,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return result;
         }
 
-        List<Order> list = orderDAO.getOrdersByReadAuthorization(user);
+        List<Order> list = sortByStartDate(orderDAO.getOrdersByReadAuthorization(user));
 
         for (Order order : list) {
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
@@ -653,6 +656,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             if (associatedTaskElement != null) {
                 if (predicate == null || predicate.accepts(order)) {
                     result.add(associatedTaskElement);
+                    ordersToShow.add(order);
                 }
             }
         }
@@ -697,6 +701,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
+
+    @Override
+    public List<Order> getOrdersToShow() {
+        return ordersToShow;
+    }
 
     private class CompanyLoadChartFiller extends ChartFiller {
 

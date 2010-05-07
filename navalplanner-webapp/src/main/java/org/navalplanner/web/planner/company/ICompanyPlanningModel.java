@@ -21,7 +21,9 @@
 package org.navalplanner.web.planner.company;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.zkoss.ganttz.IPredicate;
@@ -47,5 +49,7 @@ public interface ICompanyPlanningModel {
             ICommandOnTask<TaskElement> doubleClickCommand, IPredicate predicate);
 
     public void setTabsController(MultipleTabsPlannerController tabsController);
+
+    List<Order> getOrdersToShow();
 
 }
