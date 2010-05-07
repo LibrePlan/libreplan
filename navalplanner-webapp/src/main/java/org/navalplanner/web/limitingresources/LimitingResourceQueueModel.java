@@ -495,8 +495,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         int totalHours = resourceAllocation.getIntendedTotalHours();
 
         // Generate first day assignment
-        int hoursToAllocate = hoursCanWorkOnDay(resourceAllocation, date, startTime.getHour());
-        if (hoursToAllocate != 0) {
+        int hoursCanAllocate = hoursCanWorkOnDay(resourceAllocation, date, startTime.getHour());
+        if (hoursCanAllocate > 0) {
+            int hoursToAllocate = Math.min(totalHours, hoursCanAllocate);
             SpecificDayAssignment dayAssignment = SpecificDayAssignment.create(
                     date, hoursToAllocate, resourceAllocation.getResource());
             totalHours -= addDayAssignment(assignments, dayAssignment);

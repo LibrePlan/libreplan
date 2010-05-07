@@ -113,8 +113,9 @@ resourcesLoadPanel = self;
                     fixedLayout="true"
                     style="margin: 10px" >
                 <columns sizable="true">
-                    <column label="${i18n:_('Order')}" sort="auto"/>
-                    <column label="${i18n:_('Task name')}" sort="auto"/>
+                    <column label="${i18n:_('Order')}" sort="auto(orderName)"/>
+                    <column label="${i18n:_('Task name')}" sort="auto(taskName)"/>
+                    <column label="${i18n:_('Date')}" sort="auto(date)"/>
                     <column label="${i18n:_('Operations')}" width="100px"/>
                     <column label="${i18n:_('Auto queueing')}" width="100px" />
                 </columns>

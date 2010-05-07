@@ -22,14 +22,18 @@ package org.navalplanner.web.limitingresources;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.jfree.util.Log;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
@@ -171,8 +175,77 @@ public class LimitingResourcesController implements Composer {
         return result;
     }
 
-    public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
-        return limitingResourceQueueModel.getUnassignedLimitingResourceQueueElements();
+    /**
+     * Returns unassigned {@link LimitingResourceQueueElement}
+     *
+     * It's necessary to convert elements to a DTO that encapsulates properties
+     * such as task name or order name, since the only way of sorting by these
+     * fields is by having properties getTaskName or getOrderName on the
+     * elements returned
+     *
+     * @return
+     */
+    public List<LimitingResourceQueueElementDTO> getUnassignedLimitingResourceQueueElements() {
+        List<LimitingResourceQueueElementDTO> result = new ArrayList<LimitingResourceQueueElementDTO>();
+        for (LimitingResourceQueueElement each : limitingResourceQueueModel
+                .getUnassignedLimitingResourceQueueElements()) {
+            result.add(toUnassignedLimitingResourceQueueElementDTO(each));
+        }
+        return result;
+    }
+
+    private LimitingResourceQueueElementDTO toUnassignedLimitingResourceQueueElementDTO(
+            LimitingResourceQueueElement element) {
+        final Task task = element.getResourceAllocation().getTask();
+        final Order order = limitingResourceQueueModel.getOrderByTask(task);
+        return new LimitingResourceQueueElementDTO(element, order
+                .getName(), task.getName(), element
+                .getEarlierStartDateBecauseOfGantt());
+    }
+
+    /**
+     * DTO for list of unassigned {@link LimitingResourceQueueElement}
+     *
+     * @author Diego Pino Garcia <dpino@igalia.com>
+     *
+     */
+    public class LimitingResourceQueueElementDTO {
+
+        private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+
+        private LimitingResourceQueueElement original;
+
+        private String orderName;
+
+        private String taskName;
+
+        private String date;
+
+        public LimitingResourceQueueElementDTO(
+                LimitingResourceQueueElement element, String orderName,
+                String taskName, Date date) {
+            this.original = element;
+            this.orderName = orderName;
+            this.taskName = taskName;
+            this.date = DATE_FORMAT.format(date);
+        }
+
+        public LimitingResourceQueueElement getOriginal() {
+            return original;
+        }
+
+        public String getOrderName() {
+            return orderName;
+        }
+
+        public String getTaskName() {
+            return taskName;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
     }
 
     public void filterBy(Order order) {
@@ -201,15 +274,17 @@ public class LimitingResourcesController implements Composer {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            LimitingResourceQueueElement element = (LimitingResourceQueueElement) data;
+            LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
-            row.appendChild(label(getTaskName(element)));
-            row.appendChild(label(getOrderName(element)));
+            row.appendChild(label(element.getTaskName()));
+            row.appendChild(label(element.getOrderName()));
+            row.appendChild(label(element.getDate()));
             row.appendChild(assignButton(element));
             row.appendChild(automaticQueueing(element));
         }
 
-        private Button assignButton(final LimitingResourceQueueElement element) {
+        private Button assignButton(
+                final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
             result.setLabel(_("Assign"));
             result.setTooltiptext(_("Assign to queue"));
@@ -223,13 +298,23 @@ public class LimitingResourcesController implements Composer {
             return result;
         }
 
-        private void assignLimitingResourceQueueElement(LimitingResourceQueueElement element) {
-            limitingResourceQueueModel.assignLimitingResourceQueueElement(element);
+        private void assignLimitingResourceQueueElement(
+                LimitingResourceQueueElementDTO dto) {
+
+            LimitingResourceQueueElement element = dto.getOriginal();
+            if (element.getResourceAllocation() instanceof GenericResourceAllocation) {
+                // TODO: Generic resources allocation
+                Log.error("Allocation of generic resources is not supported yet");
+                return;
+            }
+            limitingResourceQueueModel
+                    .assignLimitingResourceQueueElement(element);
             Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
             updateLimitingResourceQueues();
         }
 
-        private Checkbox automaticQueueing(final LimitingResourceQueueElement element) {
+        private Checkbox automaticQueueing(
+                final LimitingResourceQueueElementDTO element) {
             Checkbox result = new Checkbox();
             result.setTooltiptext(_("Select for automatic queuing"));
             return result;
@@ -237,22 +322,6 @@ public class LimitingResourcesController implements Composer {
 
         private Label label(String value) {
             return new Label(value);
-        }
-
-        private TaskElement getTask(LimitingResourceQueueElement element) {
-            return element.getResourceAllocation().getTask();
-        }
-
-        private String getTaskName(LimitingResourceQueueElement element) {
-            return getTask(element).getName();
-        }
-
-        private Order getOrder(LimitingResourceQueueElement element) {
-            return limitingResourceQueueModel.getOrderByTask(getTask(element));
-        }
-
-        private String getOrderName(LimitingResourceQueueElement element) {
-            return getOrder(element).getName();
         }
 
     }
