@@ -655,3 +655,27 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     }
 
 }
+
+interface IReentranceCases {
+    public void ifNewEntrance();
+}
+
+class ReentranceGuard {
+    private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
+        protected Boolean initialValue() {
+            return false;
+        };
+    };
+
+    public void entranceRequested(IReentranceCases reentranceCases) {
+        if (inside.get()) {
+            return;
+        }
+        inside.set(true);
+        try {
+            reentranceCases.ifNewEntrance();
+        } finally {
+            inside.set(false);
+        }
+    }
+}
