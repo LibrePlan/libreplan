@@ -69,6 +69,8 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
 
     private List<Task> topLevelTasks = new ArrayList<Task>();
 
+    private Map<Task, TaskContainer> fromChildToParent = new HashMap<Task, TaskContainer>();
+
     private final List<Constraint<Date>> globalStartConstraints;
 
     private final List<Constraint<Date>> globalEndConstraints;
@@ -358,6 +360,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
             parentShrinkingEnforcerByTask.put(task, parentShrinkingEnforcer);
             List<Dependency> dependenciesToAdd = new ArrayList<Dependency>();
             for (Task child : task.getTasks()) {
+                fromChildToParent.put(child, (TaskContainer) task);
                 addTask(child);
                 dependenciesToAdd.add(new Dependency(child, task,
                         DependencyType.END_END, false));
@@ -376,6 +379,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         graph.removeVertex(task);
         rulesEnforcersByTask.remove(task);
         topLevelTasks.remove(task);
+        fromChildToParent.remove(task);
         update(outgoing);
         if (task.isContainer()) {
             for (Task t : task.getTasks()) {
