@@ -20,8 +20,11 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -45,6 +48,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
     private QueuePosition endQueuePosition;
 
     private long creationTimestamp;
+
+    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin;
+
+    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny;
 
     public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
@@ -144,4 +151,24 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return new DateAndHour(getEndDate(), getEndHour());
     }
 
+    public void add(LimitingResourceQueueDependency d) {
+        Validate.notNull(d);
+        if (d.getHasAsOrigin().equals(this)) {
+            dependenciesAsOrigin.add(d);
+        } else if (d.getHasAsDestiny().equals(this)) {
+            dependenciesAsDestiny.add(d);
+        } else {
+            throw new IllegalArgumentException("It cannot be added a dependency" +
+                    " in which the current queue element is neither origin" +
+                    " not desinty");
+        }
+    }
+
+    public Set<LimitingResourceQueueDependency> getDependenciesAsOrigin() {
+        return Collections.unmodifiableSet(dependenciesAsOrigin);
+    }
+
+    public Set<LimitingResourceQueueDependency> getDependenciesAsDestiny() {
+        return Collections.unmodifiableSet(dependenciesAsDestiny);
+    }
 }

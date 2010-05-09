@@ -87,6 +87,12 @@
             column="ORIGIN" />
         <many-to-one class="TaskElement" name="destination"
             column="DESTINATION" />
+        <many-to-one class="LimitingResourceQueueDependency"
+            name="queueDependency"
+            column="queue_dependency"
+            cascade="all"
+            unique="true"
+         />
         <property name="type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.planner.entities.Dependency$Type</param>

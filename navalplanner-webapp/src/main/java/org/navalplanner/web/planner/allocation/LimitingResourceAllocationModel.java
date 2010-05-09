@@ -265,12 +265,12 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         ResourceAllocation<?> resourceAllocation = getAssociatedResourceAllocation();
         if (resourceAllocation != null && resourceAllocation.isNewObject()) {
             task.removeAllResourceAllocations();
-            addResourceAllocation(task, resourceAllocation);
+            addAssociatedLimitingResourceQueueElement(task, resourceAllocation);
         }
         taskDAO.save(task);
     }
 
-    private void addResourceAllocation(Task task, ResourceAllocation<?> resourceAllocation) {
+    private void addAssociatedLimitingResourceQueueElement(Task task, ResourceAllocation<?> resourceAllocation) {
         LimitingResourceQueueElement element = LimitingResourceQueueElement.create();
         element.setEarlierStartDateBecauseOfGantt(task.getStartDate());
         resourceAllocation.setLimitingResourceQueueElement(element);

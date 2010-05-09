@@ -45,6 +45,8 @@ public class Dependency extends BaseEntity {
 
     private TaskElement destination;
 
+    private LimitingResourceQueueDependency queueDependency;
+
     private Type type;
 
     /**
@@ -74,6 +76,14 @@ public class Dependency extends BaseEntity {
 
     public Type getType() {
         return type;
+    }
+
+    public void setQueueDependency(LimitingResourceQueueDependency queueDependency) {
+        this.queueDependency = queueDependency;
+    }
+
+    public LimitingResourceQueueDependency getQueueDependency() {
+        return queueDependency;
     }
 
 }

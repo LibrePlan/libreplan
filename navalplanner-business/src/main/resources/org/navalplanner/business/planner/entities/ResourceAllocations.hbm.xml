@@ -89,6 +89,48 @@
             <property name="hour" column="END_HOUR" />
         </component>
 
+        <set name="dependenciesAsOrigin" cascade="all, delete-orphan">
+            <key column="origin_queue_element_id"/>
+            <one-to-many class="LimitingResourceQueueDependency"/>
+        </set>
+
+        <set name="dependenciesAsDestiny" cascade="all, delete-orphan">
+            <key column="destiny_queue_element_id"/>
+            <one-to-many class="LimitingResourceQueueDependency"/>
+        </set>
+
+    </class>
+
+    <!-- LimitingResourceQueueDependency -->
+    <class name="LimitingResourceQueueDependency" table="limiting_resource_queue_dependency">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <property name="type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.planner.entities.LimitingResourceQueueDependency$Type</param>
+            </type>
+        </property>
+
+        <many-to-one name="hasAsOrigin"
+            class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
+            column="origin_queue_element_id"
+            not-null="true">
+        </many-to-one>
+
+        <many-to-one name="hasAsDestiny"
+            class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
+            column="destiny_queue_element_id"
+            not-null="true">
+        </many-to-one>
+
+        <one-to-one name="ganttDependency"
+            class="Dependency"
+            property-ref="queueDependency">
+        </one-to-one>
     </class>
 
     <!-- DayAssignment -->
