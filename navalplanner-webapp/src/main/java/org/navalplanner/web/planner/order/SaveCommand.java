@@ -40,6 +40,7 @@ import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
@@ -223,6 +224,8 @@ public class SaveCommand implements ISaveCommand {
         if (taskElement.isNewObject()) {
             taskElement.dontPoseAsTransientObjectAnymore();
         }
+        dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
+        dontPoseAsTransient(taskElement.getDependenciesWithThisDestination());
         Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
         dontPoseAsTransient(resourceAllocations);
         if (!taskElement.isLeaf()) {
@@ -232,6 +235,13 @@ public class SaveCommand implements ISaveCommand {
         }
         if (taskElement instanceof Task) {
             dontPoseAsTransient(((Task) taskElement).getConsolidation());
+        }
+    }
+
+    private void dontPoseAsTransient(
+            Collection<? extends Dependency> dependencies) {
+        for (Dependency each : dependencies) {
+            each.dontPoseAsTransientObjectAnymore();
         }
     }
 
