@@ -186,16 +186,16 @@ zkLimitingDependency.draw = function(dependency) {
 	switch(dependency.getAttribute('type'))
     {
 	case zkLimitingDependencies.constants.START_START:
-		parameter = 5;
+		verticalSeparation = 5;
 		break;
 	case zkLimitingDependencies.constants.END_END:
-		parameter = 10;
+		verticalSeparation = 10;
 		break;
 	case zkLimitingDependencies.constants.END_START:
 	default:
-		parameter = 15;
+		verticalSeparation = 15;
     }
-	zkLimitingDependencies.newdraw(dependency,  orig, dest, parameter);
+	zkLimitingDependencies.newdraw(dependency,  orig, dest, verticalSeparation);
 
 }
 

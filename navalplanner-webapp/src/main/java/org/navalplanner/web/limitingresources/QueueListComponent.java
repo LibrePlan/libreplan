@@ -53,8 +53,6 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private List<QueueComponent> limitingResourcesComponents = new ArrayList<QueueComponent>();
 
-    private MutableTreeModel<LimitingResourceQueue> timelinesTree;
-
     private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
 
     public QueueListComponent(TimeTracker timeTracker,
@@ -71,10 +69,15 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private void insertAsComponents(List<LimitingResourceQueue> children) {
         for (LimitingResourceQueue each : children) {
-            LimitingResourcesComponent component = LimitingResourcesComponent
-                    .create(timeTracker, each);
+            QueueComponent component = QueueComponent.create(timeTracker, each);
             this.appendChild(component);
-            fromTimeLineToComponent.put(each, component);
+            fromQueueToElement.put(each, component);
+
+            // FIXME: Added for temporary dependencies
+            limitingResourcesComponents.add(component);
+            if (!component.getQueueTasks().isEmpty()) {
+                queueTasks.addAll(component.getQueueTasks());
+            }
         }
     }
 
@@ -83,7 +86,7 @@ public class QueueListComponent extends HtmlMacroComponent implements
     }
 
     public void invalidate() {
-        fromTimeLineToComponent.clear();
+        fromQueueToElement.clear();
         this.getChildren().clear();
         insertAsComponents(model.asList());
         super.invalidate();
@@ -102,37 +105,11 @@ public class QueueListComponent extends HtmlMacroComponent implements
         };
     }
 
-    private void insertAsComponents(TimeTracker timetracker,
-            List<LimitingResourceQueue> children) {
-        for (LimitingResourceQueue LimitingResourceQueue : children) {
-            QueueComponent component = QueueComponent
-                    .create(timetracker, LimitingResourceQueue);
-            limitingResourcesComponents.add(component);
-            appendChild(component);
-            queueTasks.addAll(component.getQueueTasks());
-            fromQueueToElement.put(LimitingResourceQueue, component);
-        }
-    }
-
-
-    public void collapse(LimitingResourceQueue line) {
-	}
-
-
-    private QueueComponent getComponentFor(LimitingResourceQueue l) {
-        QueueComponent resourceLoadComponent = fromQueueToElement
-                .get(l);
-        return resourceLoadComponent;
-    }
-
-    public void expand(LimitingResourceQueue line,
-            List<LimitingResourceQueue> closed) {
-    }
-
     @Override
     public void afterCompose() {
         super.afterCompose();
         for (QueueComponent each : limitingResourcesComponents) {
+            System.out.println("Composing!");
             each.afterCompose();
         }
     }

@@ -165,7 +165,7 @@
 }
 
 /* -------------- Dependencies -------------- */
-#listdependencies, #listlimitingdependencies {
+#listdependencies {
     position: relative;
     width: 400px;
     float: left;
@@ -183,20 +183,12 @@
     z-index:0;
 }
 
-#listdependencies .end,
-#listdependencies .start {
+.end,.start {
     height: 1px;
-}
-#listdependencies .mid {
-    width: 1px;
 }
 
-#listlimitingdependencies .end,
-#listlimitingdependencies .start {
+.mid {
     width: 1px;
-}
-#listlimitingdependencies .mid {
-    height: 1px;
 }
 
 .completion {

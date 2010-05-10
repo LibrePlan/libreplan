@@ -104,8 +104,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     public void reloadLimitingResourcesList() {
-        limitingResourcesList.setModel(createModelForTree());
-        limitingResourcesList.invalidate();
+        queueListComponent.setModel(createModelForTree());
+        queueListComponent.invalidate();
     }
 
     public ListModel getFilters() {
@@ -223,10 +223,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         // FIXME: Insert calculated dependencies
         dependencyList = new LimitingDependencyList(this);
 
-        if (queueListComponent.getQueueTasks().size() > 2) {
-            QueueTask source = queueListComponent.getQueueTasks().get(0);
-            QueueTask destination = queueListComponent.getQueueTasks().get(1);
-            QueueTask destination2 = queueListComponent.getQueueTasks().get(2);
+        System.out
+                .println("tasks!" + queueListComponent.getQueueTasks().size());
+        // for (LimitingResourceQueue each: limitingResourceQueues) {
+        // each.getLimitingResourceQueueElements();
+        // }
+
+        if (queueListComponent.getQueueTasks().size() > 3) {
+            QueueTask source = queueListComponent.getQueueTasks().get(1);
+            QueueTask destination = queueListComponent.getQueueTasks().get(2);
+            QueueTask destination2 = queueListComponent.getQueueTasks().get(3);
 
             LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
                     source, destination);
@@ -250,7 +256,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         dependencyList.afterCompose();
         queueListComponent.afterCompose();
 
-        limitingResourcesList.invalidate();
+        queueListComponent.invalidate();
 
         // Insert timetracker headers
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();

@@ -21,7 +21,6 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -32,7 +31,6 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
@@ -87,35 +85,26 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         };
     }
 
-    private void collapse(LimitingResourceQueue line) {
-        // unnecesary
-        limitingResourcesList.collapse(line);
-    }
-
-    private void expand(LimitingResourceQueue line,
-            List<LimitingResourceQueue> closed) {
-        // unnecesary
-        // limitingResourcesList.expand(line, closed);
-    }
-
-    private List<LimitingResourceQueue> calculatedClosedItems(Treeitem item) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        Treechildren treeChildren = item.getTreechildren();
-        if (treeChildren != null) {
-            List<Treeitem> myTreeItems = (List<Treeitem>) treeChildren
-                    .getChildren();
-            Iterator<Treeitem> iterator = myTreeItems.iterator();
-            while (iterator.hasNext()) {
-                Treeitem child = (Treeitem) iterator.next();
-                if (!child.isOpen()) {
-                    result.addAll(getLineChildrenBy(child));
-                } else {
-                    result.addAll(calculatedClosedItems(child));
-                }
-            }
-        }
-        return result;
-    }
+    // private List<LimitingResourceQueue> calculatedClosedItems(Treeitem item)
+    // {
+    // List<LimitingResourceQueue> result = new
+    // ArrayList<LimitingResourceQueue>();
+    // Treechildren treeChildren = item.getTreechildren();
+    // if (treeChildren != null) {
+    // List<Treeitem> myTreeItems = (List<Treeitem>) treeChildren
+    // .getChildren();
+    // Iterator<Treeitem> iterator = myTreeItems.iterator();
+    // while (iterator.hasNext()) {
+    // Treeitem child = (Treeitem) iterator.next();
+    // if (!child.isOpen()) {
+    // result.addAll(getLineChildrenBy(child));
+    // } else {
+    // result.addAll(calculatedClosedItems(child));
+    // }
+    // }
+    // }
+    // return result;
+    // }
 
     private List<LimitingResourceQueue> getLineChildrenBy(Treeitem item) {
         List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();

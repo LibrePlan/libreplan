@@ -120,8 +120,7 @@ public class QueueComponent extends XulElement implements
     private void appendMenu(QueueTask divElement) {
         if (divElement.getPage() != null) {
             MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement
-                    .getPage(),
- queueTasks);
+                    .getPage(), queueTasks);
             menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png",
                     new ItemAction<QueueTask>() {
                         @Override
