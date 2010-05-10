@@ -89,11 +89,11 @@
     </component>
 
     <component>
-        <component-name>LimitingResourcesList</component-name>
-        <component-class>org.navalplanner.web.limitingresources.LimitingResourcesList</component-class>
+        <component-name>queueListComponent</component-name>
+        <component-class>org.navalplanner.web.limitingresources.QueueListComponent</component-class>
         <mold>
             <mold-name>default</mold-name>
-            <mold-uri>/limitingresources/limitingresourceslist.dsp</mold-uri>
+            <mold-uri>/limitingresources/queuelistcomponent.dsp</mold-uri>
         </mold>
     </component>
 

@@ -39,7 +39,6 @@ import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -58,7 +57,11 @@ public class QueueComponent extends XulElement implements
     private final LimitingResourceQueue limitingResourceQueue;
     private final TimeTracker timeTracker;
     private transient IZoomLevelChangedListener zoomChangedListener;
-    private List<Div> queueElementDivs = new ArrayList<Div>();
+    private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
+
+    public List<QueueTask> getQueueTasks() {
+        return queueTasks;
+    }
 
     private QueueComponent(final TimeTracker timeTracker,
             final LimitingResourceQueue limitingResourceQueue) {
@@ -79,13 +82,13 @@ public class QueueComponent extends XulElement implements
 
     private void createChildren(LimitingResourceQueue limitingResourceQueue,
             IDatesMapper mapper) {
-        List<Div> divs = createDivsForQueueElements(mapper,
+        List<QueueTask> divs = createDivsForQueueElements(mapper,
                 limitingResourceQueue.getLimitingResourceQueueElements());
         if (divs != null) {
-            for (Div div : divs) {
+            for (QueueTask div : divs) {
                 appendChild(div);
             }
-            queueElementDivs.addAll(divs);
+            queueTasks.addAll(divs);
         }
     }
 
@@ -93,10 +96,10 @@ public class QueueComponent extends XulElement implements
         return limitingResourceQueue.getResource().getName();
     }
 
-    private static List<Div> createDivsForQueueElements(
+    private static List<QueueTask> createDivsForQueueElements(
             IDatesMapper datesMapper,
             Set<LimitingResourceQueueElement> list) {
-        List<Div> result = new ArrayList<Div>();
+        List<QueueTask> result = new ArrayList<QueueTask>();
 
         for (LimitingResourceQueueElement queueElement : list) {
             validateQueueElement(queueElement);
@@ -114,14 +117,15 @@ public class QueueComponent extends XulElement implements
         }
     }
 
-    private void appendMenu(Div divElement) {
+    private void appendMenu(QueueTask divElement) {
         if (divElement.getPage() != null) {
-            MenuBuilder<Div> menuBuilder = MenuBuilder.on(divElement.getPage(),
-                    queueElementDivs);
+            MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement
+                    .getPage(),
+ queueTasks);
             menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png",
-                    new ItemAction<Div>() {
+                    new ItemAction<QueueTask>() {
                         @Override
-                        public void onEvent(Div choosen, Event event) {
+                        public void onEvent(QueueTask choosen, Event event) {
                             unnasign(choosen);
                         }
                     });
@@ -130,13 +134,14 @@ public class QueueComponent extends XulElement implements
     }
 
     // FIXME: Implement real unnasign operation
-    private void unnasign(Div choosen) {
+    private void unnasign(QueueTask choosen) {
         choosen.detach();
     }
 
-    private static Div createDivForQueueElement(IDatesMapper datesMapper,
+    private static QueueTask createDivForQueueElement(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
-        Div result = new Div();
+
+        QueueTask result = new QueueTask(queueElement);
         result.setClass("queue-element");
 
         result.setTooltiptext(queueElement.getLimitingResourceQueue()
@@ -171,7 +176,7 @@ public class QueueComponent extends XulElement implements
     }
 
     private void appendContextMenus() {
-        for (Div each : queueElementDivs) {
+        for (QueueTask each : queueTasks) {
             appendMenu(each);
         }
     }

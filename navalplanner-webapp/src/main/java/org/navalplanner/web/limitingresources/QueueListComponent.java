@@ -40,20 +40,24 @@ import org.zkoss.zk.ui.ext.AfterCompose;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class LimitingResourcesList extends HtmlMacroComponent implements
+public class QueueListComponent extends HtmlMacroComponent implements
         AfterCompose {
 
     private final IZoomLevelChangedListener zoomListener;
-
-    private Map<LimitingResourceQueue, QueueComponent> fromTimeLineToComponent = new HashMap<LimitingResourceQueue, QueueComponent>();
 
     private MutableTreeModel<LimitingResourceQueue> model;
 
     private TimeTracker timeTracker;
 
+    private Map<LimitingResourceQueue, QueueComponent> fromQueueToElement = new HashMap<LimitingResourceQueue, QueueComponent>();
+
     private List<QueueComponent> limitingResourcesComponents = new ArrayList<QueueComponent>();
 
-    public LimitingResourcesList(TimeTracker timeTracker,
+    private MutableTreeModel<LimitingResourceQueue> timelinesTree;
+
+    private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
+
+    public QueueListComponent(TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
 
         this.model = timelinesTree;
@@ -90,9 +94,9 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                response(null, new AuInvoke(LimitingResourcesList.this,
+                response(null, new AuInvoke(QueueListComponent.this,
                         "adjustTimeTrackerSize"));
-                response(null, new AuInvoke(LimitingResourcesList.this,
+                response(null, new AuInvoke(QueueListComponent.this,
                         "adjustResourceLoadRows"));
             }
         };
@@ -105,7 +109,8 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
                     .create(timetracker, LimitingResourceQueue);
             limitingResourcesComponents.add(component);
             appendChild(component);
-            fromTimeLineToComponent.put(LimitingResourceQueue, component);
+            queueTasks.addAll(component.getQueueTasks());
+            fromQueueToElement.put(LimitingResourceQueue, component);
         }
     }
 
@@ -115,7 +120,7 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
 
 
     private QueueComponent getComponentFor(LimitingResourceQueue l) {
-        QueueComponent resourceLoadComponent = fromTimeLineToComponent
+        QueueComponent resourceLoadComponent = fromQueueToElement
                 .get(l);
         return resourceLoadComponent;
     }
@@ -131,4 +136,9 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
             each.afterCompose();
         }
     }
+
+    public List<QueueTask> getQueueTasks() {
+        return queueTasks;
+    }
+
 }

@@ -41,11 +41,11 @@ import org.zkoss.zul.api.Tree;
 public class LimitingResourcesLeftPane extends HtmlMacroComponent {
 
     private MutableTreeModel<LimitingResourceQueue> modelForTree;
-    private final LimitingResourcesList limitingResourcesList;
+    private final QueueListComponent limitingResourcesList;
 
     public LimitingResourcesLeftPane(
             MutableTreeModel<LimitingResourceQueue> treeModel,
-            LimitingResourcesList resourceLoadList) {
+            QueueListComponent resourceLoadList) {
         this.limitingResourcesList = resourceLoadList;
         this.modelForTree = treeModel;
     }

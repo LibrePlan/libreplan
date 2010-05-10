@@ -33,6 +33,19 @@ zkLimitingDependencies.constants = {
     END_END: "END_END"
 };
 
+zkLimitingDependencies.CORNER_WIDTH = 20;
+zkLimitingDependencies.HEIGHT = 10;
+zkLimitingDependencies.HALF_HEIGHT = 5;
+zkLimitingDependencies.DEPENDENCY_PADDING = 4;
+zkLimitingDependencies.HALF_DEPENDENCY_PADDING = 2;
+
+zkLimitingDependencies.addRelatedDependency = function(cmp, dependency) {
+	if (!cmp['relatedDependencies']) {
+		cmp.relatedDependencies = [];
+	}
+	cmp.relatedDependencies.push(dependency);
+}
+
 zkLimitingDependencies.getImagesDir = function() {
     return "/" + webapp_context_path + "/zkau/web/ganttz/img/";
 }
@@ -53,7 +66,7 @@ zkLimitingDependencies.findImageElement = function(arrow, name) {
 }
 
 function get_origin() {
-    return YAHOO.util.Dom.getXY('listdependencies');
+    return YAHOO.util.Dom.getXY('listlimitingdependencies');
 }
 
 zkLimitingDependencies.findPos = function(obj) {
@@ -304,7 +317,7 @@ zkLimitingDependency.init = function(dependency) {
 		var origin = zkLimitingDependency.origin(dependency);
 		var destination = zkLimitingDependency.destination(dependency);
 		zkLimitingDependency.draw(dependency);
-		zkTask.addRelatedDependency(origin, dependency);
-		zkTask.addRelatedDependency(destination, dependency);
+		zkLimitingDependency.addRelatedDependency(origin, dependency);
+		zkLimitingDependency.addRelatedDependency(destination, dependency);
 	});
 }

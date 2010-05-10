@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,18 +62,13 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private LimitingResourcesLeftPane leftPane;
 
-    private LimitingResourcesList limitingResourcesList;
+    private QueueListComponent queueListComponent;
 
     private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
 
     private MutableTreeModel<LimitingResourceQueue> treeModel;
 
     private TimeTracker timeTracker;
-
-    // private LimitingDependencyList dependencyList;
-
-    // private WeakReferencedListeners<IFilterChangedListener> zoomListeners =
-    // WeakReferencedListeners.create();
 
     private Listbox listZoomLevels;
 
@@ -97,10 +91,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-        limitingResourcesList = new LimitingResourcesList(timeTracker,
+        queueListComponent = new QueueListComponent(timeTracker,
                 treeModel);
         leftPane = new LimitingResourcesLeftPane(treeModel,
-                limitingResourcesList);
+                queueListComponent);
         registerNeededScripts();
     }
 
@@ -210,7 +204,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         return new TimeTrackerComponent(timeTracker) {
             @Override
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-                response("", new AuInvoke(limitingResourcesList,
+                response("", new AuInvoke(queueListComponent,
                         "adjustScrollHorizontalPosition", pixelsDisplacement
                                 + ""));
             }
@@ -222,32 +216,29 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         super.afterCompose();
 
-        // Insert resourcesList left pane component
+        // Insert leftPane component with limitingresources list
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
         // Insert timetracker watermarks and limitingResourcesQueues
+        QueueTask source = queueListComponent.getQueueTasks().get(0);
+        QueueTask destination = queueListComponent.getQueueTasks().get(1);
 
-        QueueTask source = new QueueTask(new LocalDate(), new LocalDate()
-                .plusMonths(1), 100, 50);
-        QueueTask destination = new QueueTask(new LocalDate(), new LocalDate()
-                .plusMonths(2), 100, 50);
         LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
                 source, destination);
 
         dependencyList = new LimitingDependencyList(null);
 
         dependencyList.addDependencyComponent(limitingDependencyComponent);
-        limitingDependencyComponent.afterCompose();
         limitingDependencyComponent.setParent(dependencyList);
 
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel")
-                .appendChild(limitingResourcesList);
+                .appendChild(queueListComponent);
         getFellow("insertionPointRightPanel").appendChild(dependencyList);
 
         dependencyList.afterCompose();
-        limitingResourcesList.afterCompose();
+        queueListComponent.afterCompose();
 
         limitingResourcesList.invalidate();
 

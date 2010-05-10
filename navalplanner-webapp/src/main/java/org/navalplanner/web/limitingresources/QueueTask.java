@@ -43,6 +43,10 @@ public class QueueTask extends Div {
 
     private final int assignedHours;
 
+    public QueueTask(LimitingResourceQueueElement element) {
+        this(element.getStartDate(), element.getEndDate(), 10, 10);
+    }
+
     public QueueTask(LocalDate start, LocalDate end,
             int totalResourceWorkHours, int assignedHours) {
         Validate.notNull(start);
