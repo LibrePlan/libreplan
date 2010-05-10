@@ -224,7 +224,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel").appendChild(queueListComponent);
         queueListComponent.afterCompose();
-        queueListComponent.invalidate();
 
         // FIXME: Obtaing real dependency list
         // dependencyList = generateSimulatedDependencyList();
