@@ -32,6 +32,7 @@ import org.joda.time.Days;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class TaskMilestone extends TaskElement {
 
@@ -133,6 +134,11 @@ public class TaskMilestone extends TaskElement {
     @Override
     public boolean isMilestone() {
         return true;
+    }
+
+    @Override
+    public boolean hasLimitedResourceAllocation() {
+        return false;
     }
 
 }

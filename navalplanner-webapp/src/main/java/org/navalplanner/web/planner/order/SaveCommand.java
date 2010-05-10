@@ -71,7 +71,13 @@ import org.zkoss.zul.Messagebox;
 /**
  * A command that saves the changes in the taskElements.
  * It can be considered the final step in the conversation <br />
+ *
+ * In the save operation it is also kept the consistency of the
+ * LimitingResourceQueueDependencies with the Dependecies between
+ * the task of the planning gantt.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @OnConcurrentModification(goToPage = "/planner/index.zul;company_scheduling")
 public class SaveCommand implements ISaveCommand {
@@ -92,9 +98,6 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private ILimitingResourceQueueDependencyDAO limitingResourceQueueDependencyDAO;
-
-    @Autowired
-    private IDependencyDAO dependencyDAO;
 
     private PlanningState state;
 
@@ -139,8 +142,6 @@ public class SaveCommand implements ISaveCommand {
     private void doTheSaving() {
         saveTasksToSave();
         removeTasksToRemove();
-        //dependencyDAO.removeOrphanedDependencies();
-        //limitingResourceQueueDependencyDAO.removeOrphanedQueueDependencies();
         taskElementDAO.removeOrphanedDayAssignments();
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
     }
@@ -279,12 +280,13 @@ public class SaveCommand implements ISaveCommand {
                 calculateQueueElementFromDependency((Task) d.getOrigin());
             LimitingResourceQueueElement destiny =
                 calculateQueueElementFromDependency((Task) d.getDestination());
-            // TODO: Convert from enum type in Dependency
+
             LimitingResourceQueueDependency queueDependency =
                 LimitingResourceQueueDependency.create(origin,
                     destiny,
                     d,
-                    LimitingResourceQueueDependency.Type.END_START);
+                    LimitingResourceQueueDependency.
+                        convertFromTypeToQueueDepedencyType(d.getType()));
             d.setQueueDependency(queueDependency);
             limitingResourceQueueDependencyDAO.save(queueDependency);
         }

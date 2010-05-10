@@ -19,12 +19,12 @@
 
         <one-to-one name="taskSource" cascade="none"/>
 
-        <set name="dependenciesWithThisOrigin" cascade="all">
+        <set name="dependenciesWithThisOrigin" cascade="all-delete-orphan">
             <key column="ORIGIN"></key>
             <one-to-many class="Dependency" />
         </set>
 
-        <set name="dependenciesWithThisDestination" cascade="all">
+        <set name="dependenciesWithThisDestination" cascade="all-delete-orphan">
             <key column="DESTINATION"></key>
             <one-to-many class="Dependency" />
         </set>
@@ -87,11 +87,10 @@
             column="ORIGIN" />
         <many-to-one class="TaskElement" name="destination"
             column="DESTINATION" />
-        <many-to-one class="LimitingResourceQueueDependency"
+        <many-to-one class="LimitingResourceQueueDependency" cascade="all"
             name="queueDependency"
             column="queue_dependency"
-            cascade="all"
-            unique="true"
+            unique="false"
          />
         <property name="type">
             <type name="org.hibernate.type.EnumType">

@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -32,8 +33,11 @@ import org.navalplanner.business.resources.entities.Resource;
 
 /**
  *
- * @author Diego Pino Garcia <dpino@igalia.com>
+ * Entity which represents an element in the queue which represents
+ * the limiting resources.
  *
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class LimitingResourceQueueElement extends BaseEntity {
 
@@ -49,9 +53,11 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private long creationTimestamp;
 
-    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin;
+    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin =
+        new HashSet<LimitingResourceQueueDependency>();
 
-    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny;
+    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny =
+        new HashSet<LimitingResourceQueueDependency>();
 
     public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
@@ -162,6 +168,13 @@ public class LimitingResourceQueueElement extends BaseEntity {
                     " in which the current queue element is neither origin" +
                     " not desinty");
         }
+    }
+
+    public void remove(LimitingResourceQueueDependency d) {
+        if (dependenciesAsOrigin.contains(d))
+            dependenciesAsOrigin.remove(d);
+        if (dependenciesAsDestiny.contains(d))
+            dependenciesAsDestiny.remove(d);
     }
 
     public Set<LimitingResourceQueueDependency> getDependenciesAsOrigin() {

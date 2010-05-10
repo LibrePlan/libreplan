@@ -442,4 +442,5 @@ public abstract class TaskElement extends BaseEntity {
         return "assigned";
     }
 
+    public abstract boolean hasLimitedResourceAllocation();
 }

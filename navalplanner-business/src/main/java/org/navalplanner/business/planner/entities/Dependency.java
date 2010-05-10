@@ -24,7 +24,11 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
+ * Entity which represents an associated with properties
+ * between two @{link Task}
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class Dependency extends BaseEntity {
 
@@ -86,4 +90,12 @@ public class Dependency extends BaseEntity {
         return queueDependency;
     }
 
+    public boolean isDependencyBetweenLimitedAllocatedTasks() {
+        return getOrigin().hasLimitedResourceAllocation() &&
+            getDestination().hasLimitedResourceAllocation();
+    }
+
+    public boolean hasLimitedQueueDependencyAssociated() {
+        return queueDependency != null;
+    }
 }

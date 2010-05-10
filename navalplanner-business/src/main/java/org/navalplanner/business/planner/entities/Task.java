@@ -592,4 +592,10 @@ public class Task extends TaskElement {
         return consolidation;
     }
 
+    @Override
+    public boolean hasLimitedResourceAllocation() {
+        return !getLimitingResourceAllocations().isEmpty();
+
+    }
+
 }
