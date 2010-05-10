@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,8 +41,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
-import org.zkoss.ganttz.data.limitingresource.QueueTask;
-import org.zkoss.ganttz.data.resourceload.LoadLevel;
 
 interface QueueTaskGeneratorFactory {
     QueueTaskGenerator create(ResourceAllocation<?> allocation);
@@ -203,21 +200,10 @@ abstract class QueueTaskGenerator {
 
     public QueueTask build() {
         return new QueueTask(start, end, getTotalWorkHours(),
-                getHoursAssigned(), new LoadLevel(
-                calculateLoadPercentage()));
+                getHoursAssigned());
     }
 
     protected abstract int getTotalWorkHours();
-
-    private int calculateLoadPercentage() {
-        final int totalResourceWorkHours = getTotalWorkHours();
-        int assigned = getHoursAssigned();
-        if (totalResourceWorkHours == 0) {
-            return assigned == 0 ? 0 : Integer.MAX_VALUE;
-        }
-        double proportion = assigned / (double) totalResourceWorkHours;
-        return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
-    }
 
     protected abstract int getHoursAssigned();
 

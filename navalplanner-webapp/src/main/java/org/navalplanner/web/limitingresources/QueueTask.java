@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.zkoss.ganttz.data.limitingresource;
+package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +28,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.zkoss.ganttz.data.resourceload.LoadLevel;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.zkoss.zul.Div;
 
-public class QueueTask {
+public class QueueTask extends Div {
 
     private static final Log LOG = LogFactory.getLog(QueueTask.class);
 
@@ -38,23 +39,19 @@ public class QueueTask {
 
     private final LocalDate end;
 
-    private final LoadLevel loadLevel;
-
     private final int totalResourceWorkHours;
 
     private final int assignedHours;
 
     public QueueTask(LocalDate start, LocalDate end,
-            int totalResourceWorkHours, int assignedHours, LoadLevel loadLevel) {
+            int totalResourceWorkHours, int assignedHours) {
         Validate.notNull(start);
         Validate.notNull(end);
-        Validate.notNull(loadLevel);
         Validate.notNull(totalResourceWorkHours);
         Validate.notNull(assignedHours);
         Validate.isTrue(!start.isAfter(end));
         this.start = start;
         this.end = end;
-        this.loadLevel = loadLevel;
         this.totalResourceWorkHours = totalResourceWorkHours;
         this.assignedHours = assignedHours;
     }
@@ -66,10 +63,6 @@ public class QueueTask {
     public LocalDate getEnd() {
         return end;
     }
-
-    // public boolean overlaps(QueueTask other) {
-    // return start.isBefore(other.end) && end.isAfter(other.start);
-    // }
 
     /**
      * @param loadPeriods
@@ -114,15 +107,16 @@ public class QueueTask {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public LoadLevel getLoadLevel() {
-        return loadLevel;
-    }
-
     public int getTotalResourceWorkHours() {
         return totalResourceWorkHours;
     }
 
     public int getAssignedHours() {
         return assignedHours;
+    }
+
+    public LimitingResourceQueueElement getQueueElement() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

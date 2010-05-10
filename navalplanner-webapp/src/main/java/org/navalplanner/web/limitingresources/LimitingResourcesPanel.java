@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Separator;
@@ -229,8 +229,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .appendChild(limitingResourcesList);
         limitingResourcesList.afterCompose();
 
-        Div source = new Div();
-        Div destination = new Div();
+        QueueTask source = new QueueTask(new LocalDate(), new LocalDate(), 100,
+                50);
+        QueueTask destination = new QueueTask(new LocalDate(), new LocalDate(),
+                100, 50);
 
         LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
                 source, destination);

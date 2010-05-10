@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.limitingresources;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -31,22 +29,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.FunctionalityExposedForExtensions;
-import org.zkoss.ganttz.GanttPanel;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
-import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -95,7 +87,6 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         void toggleDependencyExistence(boolean visible) {
             if (visible) {
                 appendChild(dependencyComponent);
-                addContextMenu(dependencyComponent);
             } else {
                 removeChild(dependencyComponent);
             }
@@ -128,29 +119,23 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     void addDependencyComponent(
             final LimitingDependencyComponent dependencyComponent) {
-        Div source = dependencyComponent.getSource();
-        Div destination = dependencyComponent.getDestination();
+        QueueTask source = dependencyComponent.getSource();
+        QueueTask destination = dependencyComponent.getDestination();
         // DependencyVisibilityToggler visibilityToggler = new
         // DependencyVisibilityToggler(
-        // source.getTask(), destination.getTask(), dependencyComponent);
-        // source.getTask().addVisibilityPropertiesChangeListener(
-        // visibilityToggler);
-        // destination.getTask().addVisibilityPropertiesChangeListener(
-        // visibilityToggler);
-        // boolean dependencyMustBeVisible = visibilityToggler
-        // .dependencyMustBeVisible();
-        // visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
-        // if (dependencyMustBeVisible) {
-        // dependencyComponent.redrawDependency();
-        // }
-    }
-
-    private void addContextMenu(LimitingDependencyComponent dependencyComponent) {
-        dependencyComponent.setContext(getContextMenu());
-    }
-
-    private GanttPanel getGanttPanel() {
-        return (GanttPanel) getParent();
+        // source.getQueueElement(), destination.getQueueElement(),
+        // dependencyComponent);
+//        source.getQueueElement().addVisibilityPropertiesChangeListener(
+//                visibilityToggler);
+//        destination.getQueueElement().addVisibilityPropertiesChangeListener(
+//                visibilityToggler);
+//        boolean dependencyMustBeVisible = visibilityToggler.dependencyMustBeVisible();
+//        visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
+//        if (dependencyMustBeVisible) {
+//            dependencyComponent.redrawDependency();
+//        }
+        // Always
+        dependencyComponent.redrawDependency();
     }
 
     public void setDependencyComponents(
@@ -166,9 +151,9 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    if (!isInPage()) {
-                        return;
-                    }
+                    // if (!isInPage()) {
+                    // return;
+                    // }
                     for (LimitingDependencyComponent dependencyComponent : getLimitingDependencyComponents()) {
                         dependencyComponent.zoomChanged();
                     }
@@ -176,61 +161,21 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             };
             // getTimeTracker().addZoomListener(listener);
         }
-        // addContextMenu();
     }
 
-    private boolean isInPage() {
-        return getParent() != null && getGanttPanel() != null
-                && getGanttPanel().getParent() != null;
-    }
+    // private TimeTracker getTimeTracker() {
+    // return getTimeTrackerComponent().getTimeTracker();
+    // }
+    //
+    // private TimeTrackerComponent getTimeTrackerComponent() {
+    // return getPage().getTimeTrackerComponent();
+    // }
 
-    private TimeTracker getTimeTracker() {
-        return getTimeTrackerComponent().getTimeTracker();
-    }
+    // private boolean isInPage() {
+    // return getParent() != null && getGanttPanel() != null
+    // && getGanttPanel().getParent() != null;
+    // }
 
-    private void addContextMenu() {
-        for (LimitingDependencyComponent dependencyComponent : getLimitingDependencyComponents()) {
-            addContextMenu(dependencyComponent);
-        }
-    }
-
-    private Menupopup contextMenu;
-
-    private Menupopup getContextMenu() {
-        if (contextMenu == null) {
-            MenuBuilder<LimitingDependencyComponent> contextMenuBuilder = MenuBuilder
-                    .on(getPage(), getLimitingDependencyComponents()).item(_("Erase"),
-                            "/common/img/ico_borrar.png",
-                            new ItemAction<LimitingDependencyComponent>() {
-                                @Override
-                                public void onEvent(
-                                        final LimitingDependencyComponent choosen,
-                                        Event event) {
-//                                    context
-//                                            .removeDependency(choosen.getDependency());
-                                }
-                            });
-            contextMenuBuilder.item(_("Set End-Start"), null,
-                    new ChangeTypeAction(
-                    DependencyType.END_START));
-
-            contextMenuBuilder.item(_("Set Start-Start"), null,
-                    new ChangeTypeAction(
-                    DependencyType.START_START));
-
-            contextMenuBuilder.item(_("Set End-End"), null,
-                    new ChangeTypeAction(
-                    DependencyType.END_END));
-
-            contextMenu = contextMenuBuilder.create();
-
-        }
-        return contextMenu;
-    }
-
-    private TimeTrackerComponent getTimeTrackerComponent() {
-        return getGanttPanel().getTimeTrackerComponent();
-    }
 
     public void redrawDependenciesConnectedTo(TaskComponent taskComponent) {
         redrawDependencyComponents(getDependencyComponentsConnectedTo(taskComponent));
