@@ -220,43 +220,17 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
-        // FIXME: Insert calculated dependencies
-        dependencyList = new LimitingDependencyList(this);
-
-        System.out
-                .println("tasks!" + queueListComponent.getQueueTasks().size());
-        // for (LimitingResourceQueue each: limitingResourceQueues) {
-        // each.getLimitingResourceQueueElements();
-        // }
-
-        if (queueListComponent.getQueueTasks().size() > 3) {
-            QueueTask source = queueListComponent.getQueueTasks().get(1);
-            QueueTask destination = queueListComponent.getQueueTasks().get(2);
-            QueueTask destination2 = queueListComponent.getQueueTasks().get(3);
-
-            LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
-                    source, destination);
-            LimitingDependencyComponent limitingDependencyComponent2 = new LimitingDependencyComponent(
-                    source, destination2);
-
-            dependencyList.addDependencyComponent(limitingDependencyComponent);
-            dependencyList.addDependencyComponent(limitingDependencyComponent2);
-
-            // Extra
-            QueueTask destination3 = queueListComponent.getQueueTasks().get(3);
-            LimitingDependencyComponent limitingDependencyComponent3 = new LimitingDependencyComponent(
-                    source, destination3);
-            dependencyList.addDependencyComponent(limitingDependencyComponent3);
-        }
-
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
         getFellow("insertionPointRightPanel").appendChild(queueListComponent);
-        getFellow("insertionPointRightPanel").appendChild(dependencyList);
-
-        dependencyList.afterCompose();
         queueListComponent.afterCompose();
-
         queueListComponent.invalidate();
+
+        // FIXME: Obtaing real dependency list
+        // dependencyList = generateSimulatedDependencyList();
+        if (dependencyList != null) {
+            dependencyList.afterCompose();
+            getFellow("insertionPointRightPanel").appendChild(dependencyList);
+        }
 
         // Insert timetracker headers
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
@@ -268,6 +242,27 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
     }
 
+    private LimitingDependencyList generateSimulatedDependencyList() {
+        dependencyList = new LimitingDependencyList(this);
+        List<QueueTask> queueTasks = queueListComponent.getQueueTasks();
+        if (queueTasks.size() > 3) {
+            QueueTask source = queueTasks.get(1);
+            QueueTask destination = queueTasks.get(2);
+            QueueTask destination2 = queueTasks.get(3);
+            QueueTask destination3 = queueTasks.get(3);
+
+            LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
+                    source, destination);
+            LimitingDependencyComponent limitingDependencyComponent2 = new LimitingDependencyComponent(
+                    source, destination2);
+            LimitingDependencyComponent limitingDependencyComponent3 = new LimitingDependencyComponent(
+                    source, destination3);
+            dependencyList.addDependencyComponent(limitingDependencyComponent);
+            dependencyList.addDependencyComponent(limitingDependencyComponent2);
+            dependencyList.addDependencyComponent(limitingDependencyComponent3);
+        }
+        return dependencyList;
+    }
 
     public void clearComponents() {
         getFellow("insertionPointLeftPanel").getChildren().clear();

@@ -128,21 +128,25 @@ zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 	if (yend > yorig) {
 		depstart.style.top = yorig + "px";
 		depstart.style.height = ( height - param ) + "px";
-	} else if (yend = yorig) {
+	} else if (yend == yorig) {
 		depstart.style.top = yorig + "px";
 		depstart.style.height = param + "px";
 	} else if (yend < yorig) {
-		depstart.style.top = yorig + "px";
+		depstart.style.top = ( yend + param ) + "px";
 		depstart.style.height = ( height - param ) + "px";
 	}
 
 	// --------- Second segment -----------
 	var depmid = this.findImageElement(arrow, 'mid');
 	depmid.style.width = width + "px";
-	depmid.style.left = depstart.style.left;
+	if (xorig < xend ) {
+		depmid.style.left = xorig + "px";
+	} else {
+		depmid.style.left = xend + "px";
+	}
 	if (yend > yorig) {
 		depmid.style.top = ( yend - param ) + "px";
-	} else if (yend = yorig) {
+	} else if (yend == yorig) {
 		depmid.style.top = ( yend + param ) + "px";
 	} else if (yend < yorig) {
 		depmid.style.top = ( yend + param ) + "px";
@@ -154,12 +158,12 @@ zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 	if (yend > yorig) {
 		depend.style.top = ( yend - param ) + "px";
 		depend.style.height = param + "px";
-	} else if (yend = yorig) {
+	} else if (yend == yorig) {
 		depend.style.top = yorig + "px";
 		depend.style.height = param + "px";
 	} else if (yend < yorig) {
-		depend.style.top = yorig + "px";
-		depend.style.height = ( height - param ) + "px";
+		depend.style.top = yend + "px";
+		depend.style.height = param + "px";
 	}
 
 	// --------- Arrow -----------
@@ -168,35 +172,38 @@ zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 	if (yend > yorig) {
 		deparrow.src = this.getImagesDir()+"arrow2.png";
 		deparrow.style.top = ( yend - param ) + "px";
-	} else if (yend = yorig) {
+	} else if (yend == yorig) {
 		deparrow.src = this.getImagesDir()+"arrow4.png";
 		deparrow.style.top = yorig + "px";
 	} else if (yend < yorig) {
 		deparrow.src = this.getImagesDir()+"arrow4.png";
-		deparrow.style.top = yorig + "px";
+		deparrow.style.top = yend + "px";
 	}
 }
 
 
 zkLimitingDependency.draw = function(dependency) {
-	var orig = zkLimitingDependencies.findPos(this.origin(dependency));
-	var dest = zkLimitingDependencies.findPos(this.destination(dependency));
+	var posOrig = this.origin(dependency);
+	var posDest = this.destination(dependency);
+    if ( ( posOrig  != null )  && ( posDest!= null ) ) {
+        var orig = zkLimitingDependencies.findPos(posOrig);
+        var dest = zkLimitingDependencies.findPos(posDest);
 
-	var verticalSeparation = 15;
-	switch(dependency.getAttribute('type'))
-    {
-	case zkLimitingDependencies.constants.START_START:
-		verticalSeparation = 5;
-		break;
-	case zkLimitingDependencies.constants.END_END:
-		verticalSeparation = 10;
-		break;
-	case zkLimitingDependencies.constants.END_START:
-	default:
-		verticalSeparation = 15;
-    }
-	zkLimitingDependencies.newdraw(dependency,  orig, dest, verticalSeparation);
-
+		var verticalSeparation = 15;
+		switch(dependency.getAttribute('type'))
+	    {
+		case zkLimitingDependencies.constants.START_START:
+			verticalSeparation = 5;
+			break;
+		case zkLimitingDependencies.constants.END_END:
+			verticalSeparation = 10;
+			break;
+		case zkLimitingDependencies.constants.END_START:
+		default:
+			verticalSeparation = 15;
+	    }
+		zkLimitingDependencies.newdraw(dependency,  orig, dest, verticalSeparation);
+	}
 }
 
 zkLimitingDependency.init = function(dependency) {

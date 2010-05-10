@@ -51,10 +51,6 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private Map<LimitingResourceQueue, QueueComponent> fromQueueToElement = new HashMap<LimitingResourceQueue, QueueComponent>();
 
-    private List<QueueComponent> limitingResourcesComponents = new ArrayList<QueueComponent>();
-
-    private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
-
     public QueueListComponent(TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
 
@@ -72,12 +68,6 @@ public class QueueListComponent extends HtmlMacroComponent implements
             QueueComponent component = QueueComponent.create(timeTracker, each);
             this.appendChild(component);
             fromQueueToElement.put(each, component);
-
-            // FIXME: Added for temporary dependencies
-            limitingResourcesComponents.add(component);
-            if (!component.getQueueTasks().isEmpty()) {
-                queueTasks.addAll(component.getQueueTasks());
-            }
         }
     }
 
@@ -108,14 +98,14 @@ public class QueueListComponent extends HtmlMacroComponent implements
     @Override
     public void afterCompose() {
         super.afterCompose();
-        for (QueueComponent each : limitingResourcesComponents) {
-            System.out.println("Composing!");
-            each.afterCompose();
-        }
     }
 
     public List<QueueTask> getQueueTasks() {
-        return queueTasks;
+        List<QueueTask> result = new ArrayList<QueueTask>();
+        for (QueueComponent each : fromQueueToElement.values()) {
+            result.addAll(each.getQueueTasks());
+        }
+        return result;
     }
 
 }
