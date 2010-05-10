@@ -26,6 +26,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 
 public class QueueTask extends Div {
@@ -55,6 +59,21 @@ public class QueueTask extends Div {
         this.end = end;
         this.totalResourceWorkHours = totalResourceWorkHours;
         this.assignedHours = assignedHours;
+        setAction("onmouseover: zkLimitingDependencies.showDependenciesForQueueElement('"
+                + getUuid()
+                + "');onmouseout: zkLimitingDependencies.hideDependenciesForQueueElement('"
+                + getUuid() + "')");
+
+        final String taskUid = this.getUuid();
+        this.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Clients
+                        .evalJavaScript("zkLimitingDependencies.toggleDependenciesForQueueElement('"
+                                + taskUid + "')");
+            }
+        });
+
     }
 
     public LocalDate getStart() {

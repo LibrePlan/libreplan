@@ -192,12 +192,28 @@
     width: 1px;
 }
 
+
+/* Hidden by default */
+#listlimitingdependencies .dependency {
+    display: none;
+}
+
+#listlimitingdependencies .end,#listlimitingdependencies .start,
+#listlimitingdependencies .mid, #listlimitingdependencies .arrow {
+    cursor: default;
+}
+
 #listlimitingdependencies .end,
 #listlimitingdependencies .start {
      width: 1px;
 }
 #listlimitingdependencies .mid {
     height: 1px;
+}
+
+.toggled {
+    display: inline !important;
+    opacity: 0.2;
 }
 
 .completion {

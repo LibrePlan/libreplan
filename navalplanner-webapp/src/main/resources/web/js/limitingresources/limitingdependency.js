@@ -37,6 +37,39 @@ zkLimitingDependencies.HEIGHT = 12;
 zkLimitingDependencies.ARROW_PADDING = 10;
 zkLimitingDependencies.HALF_ARROW_PADDING = 5;
 
+/* TODO: Optimize function */
+zkLimitingDependencies.showDependenciesForQueueElement = function (task) {
+	var dependencies = YAHOO.util.Selector.query('.dependency');
+	for (var i = 0; i < dependencies.length; i++) {
+		if ( (dependencies[i].getAttribute("idTaskOrig") ==  task) || (dependencies[i].getAttribute("idTaskEnd") ==  task) ) {
+			dependencies[i].style.display ="inline";
+			dependencies[i].style.opacity ="1";
+		}
+	}
+}
+
+/* TODO: Optimize function */
+zkLimitingDependencies.hideDependenciesForQueueElement = function (task) {
+	var dependencies = YAHOO.util.Selector.query('.dependency');
+	for (var i = 0; i < dependencies.length; i++) {
+		if ( (dependencies[i].getAttribute("idTaskOrig") ==  task) || (dependencies[i].getAttribute("idTaskEnd") ==  task) ) {
+			dependencies[i].style.display ="none";
+			dependencies[i].style.removeProperty("opacity");
+		}
+	}
+}
+
+/* TODO: Optimize function */
+zkLimitingDependencies.toggleDependenciesForQueueElement = function (task) {
+	var dependencies = YAHOO.util.Selector.query('.dependency');
+	for (var i = 0; i < dependencies.length; i++) {
+		if ( (dependencies[i].getAttribute("idTaskOrig") ==  task) || (dependencies[i].getAttribute("idTaskEnd") ==  task) ) {
+			dependencies[i].setAttribute("class", "dependency toggled");
+		}
+	}
+}
+
+
 zkLimitingDependencies.addRelatedDependency = function(cmp, dependency) {
 	if (!cmp['relatedDependencies']) {
 		cmp.relatedDependencies = [];
