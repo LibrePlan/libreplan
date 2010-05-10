@@ -32,11 +32,10 @@ zkLimitingDependencies.constants = {
     END_END: "END_END"
 };
 
-zkLimitingDependencies.CORNER_WIDTH = 20;
-zkLimitingDependencies.HEIGHT = 10;
-zkLimitingDependencies.HALF_HEIGHT = 5;
-zkLimitingDependencies.DEPENDENCY_PADDING = 4;
-zkLimitingDependencies.HALF_DEPENDENCY_PADDING = 2;
+zkLimitingDependencies.CORNER = 4;
+zkLimitingDependencies.HEIGHT = 12;
+zkLimitingDependencies.ARROW_PADDING = 10;
+zkLimitingDependencies.HALF_ARROW_PADDING = 5;
 
 zkLimitingDependencies.addRelatedDependency = function(cmp, dependency) {
 	if (!cmp['relatedDependencies']) {
@@ -116,9 +115,16 @@ zkLimitingDependency.destination = function(dependency) {
 /* ----------- Generic Limiting dependency draw function ---------- */
 zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 	var xorig = orig[0];
-	var yorig = orig[1];
+	var yorig = orig[1] - zkLimitingDependencies.CORNER;
 	var xend = dest[0];
-	var yend = dest[1];
+	var yend = dest[1] - zkLimitingDependencies.CORNER;
+
+	if (yend < yorig) {
+		yend = yend + zkLimitingDependencies.HEIGHT;
+	} else {
+		yorig = yorig + zkLimitingDependencies.HEIGHT;
+	}
+
 	var width = Math.abs(xend - xorig);
 	var height = Math.abs(yorig - yend);
 
@@ -168,10 +174,10 @@ zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 
 	// --------- Arrow -----------
     var deparrow = this.findImageElement(arrow, 'arrow');
-    deparrow.style.left = xend - 5 + "px";
+    deparrow.style.left = ( xend - zkLimitingDependencies.HALF_ARROW_PADDING ) + "px";
 	if (yend > yorig) {
 		deparrow.src = this.getImagesDir()+"arrow2.png";
-		deparrow.style.top = ( yend - param ) + "px";
+		deparrow.style.top = ( yend - zkLimitingDependencies.ARROW_PADDING ) + "px";
 	} else if (yend == yorig) {
 		deparrow.src = this.getImagesDir()+"arrow4.png";
 		deparrow.style.top = yorig + "px";
@@ -193,10 +199,12 @@ zkLimitingDependency.draw = function(dependency) {
 		switch(dependency.getAttribute('type'))
 	    {
 		case zkLimitingDependencies.constants.START_START:
-			verticalSeparation = 5;
+			verticalSeparation = 20;
+			orig[0] = orig[0] - zkLimitingDependencies.CORNER;
+			dest[0] = dest[0] - zkLimitingDependencies.CORNER;
 			break;
 		case zkLimitingDependencies.constants.END_END:
-			verticalSeparation = 10;
+			verticalSeparation = 25;
 			break;
 		case zkLimitingDependencies.constants.END_START:
 		default:

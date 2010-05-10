@@ -51,13 +51,15 @@ public class LimitingDependencyComponent extends XulElement implements
 
     private IConstraintViolationListener<Date> violationListener;
 
+    public LimitingDependencyComponent(QueueTask source, QueueTask destination,
+            DependencyType type) {
+        this(source, destination);
+        this.type = type;
+    }
+
     public LimitingDependencyComponent(QueueTask source, QueueTask destination) {
         Validate.notNull(source);
         Validate.notNull(destination);
-        // Validate.isTrue(source.getTask() == dependency.getSource());
-        // Validate.isTrue(destination.getTask() ==
-        // dependency.getDestination());
-        // this.type = dependency.getType();
         this.source = source;
         this.destination = destination;
         // this.dependency = dependency;

@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -245,11 +246,12 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private LimitingDependencyList generateSimulatedDependencyList() {
         dependencyList = new LimitingDependencyList(this);
         List<QueueTask> queueTasks = queueListComponent.getQueueTasks();
-        if (queueTasks.size() > 3) {
+        if (queueTasks.size() > 4) {
             QueueTask source = queueTasks.get(1);
             QueueTask destination = queueTasks.get(2);
             QueueTask destination2 = queueTasks.get(3);
             QueueTask destination3 = queueTasks.get(3);
+            QueueTask destination4 = queueTasks.get(4);
 
             LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
                     source, destination);
@@ -257,9 +259,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                     source, destination2);
             LimitingDependencyComponent limitingDependencyComponent3 = new LimitingDependencyComponent(
                     source, destination3);
+            LimitingDependencyComponent limitingDependencyComponent4 = new LimitingDependencyComponent(
+                    source, destination3, DependencyType.START_START);
+            LimitingDependencyComponent limitingDependencyComponent5 = new LimitingDependencyComponent(
+                    destination3, destination4);
+
             dependencyList.addDependencyComponent(limitingDependencyComponent);
             dependencyList.addDependencyComponent(limitingDependencyComponent2);
             dependencyList.addDependencyComponent(limitingDependencyComponent3);
+            dependencyList.addDependencyComponent(limitingDependencyComponent4);
+            dependencyList.addDependencyComponent(limitingDependencyComponent5);
         }
         return dependencyList;
     }
