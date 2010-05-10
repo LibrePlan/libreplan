@@ -165,6 +165,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private List<Order> ordersToShow;
 
+    private Date filterStartDate;
+    private Date filterFinishDate;
+
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
         this.tabs = entryPoints;
@@ -707,6 +710,26 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return ordersToShow;
     }
 
+    @Override
+    public void setFilterStartDate(Date filterStartDate) {
+        this.filterStartDate = filterStartDate;
+    }
+
+    @Override
+    public Date getFilterStartDate() {
+        return filterStartDate;
+    }
+
+    @Override
+    public void setFilterFinishDate(Date filterFinishDate) {
+        this.filterFinishDate = filterFinishDate;
+    }
+
+    @Override
+    public Date getFilterFinishDate() {
+        return filterFinishDate;
+    }
+
     private class CompanyLoadChartFiller extends ChartFiller {
 
         @Override
@@ -719,20 +742,20 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             resetMinimumAndMaximumValueForChart();
 
-            Plotinfo plotInfoLoad = createPlotinfo(getLoad(interval.getStart(),
-                    interval.getFinish()), interval);
+            Date start = filterStartDate!=null ? filterStartDate : interval.getStart();
+            Date finish = filterFinishDate!=null ? filterFinishDate : interval.getFinish();
+
+            Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish), interval);
             plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
 
             Plotinfo plotInfoMax = createPlotinfo(
-                    getCalendarMaximumAvailability(interval.getStart(),
-                            interval.getFinish()), interval);
+                    getCalendarMaximumAvailability(start, finish), interval);
             plotInfoMax.setLineColor(COLOR_CAPABILITY_LINE);
             plotInfoMax.setFillColor("#FFFFFF");
             plotInfoMax.setLineWidth(2);
 
-            Plotinfo plotInfoOverload = createPlotinfo(getOverload(interval
-                    .getStart(), interval.getFinish()), interval);
+            Plotinfo plotInfoOverload = createPlotinfo(getOverload(start, finish), interval);
             plotInfoOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
             plotInfoOverload.setLineWidth(0);
 
@@ -748,8 +771,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO
-                    .list(DayAssignment.class);
+            List<DayAssignment> dayAssignments = getFilteredDayAssignments(start, finish);
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
@@ -759,8 +781,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
                 Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO
-                    .list(DayAssignment.class);
+            List<DayAssignment> dayAssignments = getFilteredDayAssignments(start, finish);
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
@@ -777,6 +798,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             }
 
             return mapDayAssignments;
+        }
+
+        private List<DayAssignment> getFilteredDayAssignments(Date start, Date finish) {
+            return dayAssignmentDAO.listFilteredByDate(
+                    new LocalDate(start.getTime()), new LocalDate(finish.getTime()));
         }
 
         private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(

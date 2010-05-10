@@ -21,6 +21,7 @@
 package org.navalplanner.web.planner.company;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
@@ -51,5 +52,13 @@ public interface ICompanyPlanningModel {
     public void setTabsController(MultipleTabsPlannerController tabsController);
 
     List<Order> getOrdersToShow();
+
+    void setFilterStartDate(Date filterStartDate);
+
+    Date getFilterStartDate();
+
+    void setFilterFinishDate(Date filterFinishDate);
+
+    Date getFilterFinishDate();
 
 }

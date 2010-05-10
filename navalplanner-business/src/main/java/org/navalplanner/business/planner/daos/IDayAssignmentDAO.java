@@ -21,7 +21,9 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
@@ -37,5 +39,7 @@ public interface IDayAssignmentDAO extends
 
     public void removeDerived(
             Collection<? extends DerivedDayAssignment> derivedAllocations);
+
+    List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end);
 
 }

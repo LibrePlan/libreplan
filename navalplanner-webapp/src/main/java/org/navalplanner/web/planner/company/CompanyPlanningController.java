@@ -142,6 +142,7 @@ public class CompanyPlanningController implements Composer{
             }
         }
         filterStartDate.setValue(startDate);
+        model.setFilterStartDate(startDate);
     }
 
     public void setConfigurationForPlanner() {
@@ -228,6 +229,9 @@ public class CompanyPlanningController implements Composer{
     }
 
     private void filterByPredicate(IPredicate predicate) {
+        model.setFilterStartDate(filterStartDate.getValue());
+        model.setFilterFinishDate(filterFinishDate.getValue());
+
         // Recalculate predicate
         model.setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, predicate);

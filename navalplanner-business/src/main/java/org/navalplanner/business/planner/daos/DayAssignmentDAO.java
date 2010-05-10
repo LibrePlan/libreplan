@@ -21,7 +21,11 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
@@ -48,4 +52,16 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         }
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end) {
+        Criteria criteria  = getSession().createCriteria(DayAssignment.class);
+        if(init != null) {
+            criteria.add(Restrictions.ge("day", init));
+        }
+        if(end != null) {
+            criteria.add(Restrictions.le("day", end));
+        }
+        return criteria.list();
+    }
 }
