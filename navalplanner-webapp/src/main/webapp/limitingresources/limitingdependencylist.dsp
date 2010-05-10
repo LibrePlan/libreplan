@@ -3,9 +3,9 @@
 
 <c:set var="self" value="${requestScope.arg.self}"/>
 
-<div id="${self.uuid}" z.type="ganttz.dependencylist.Dependencylist" z.autoz="true"${self.outerAttrs}">
+<div id="${self.uuid}" z.type="limitingresources.limitingdependencylist.LimitingDependencylist" z.autoz="true"${self.outerAttrs}">
 
-<div id="listdependencies">
+<div id="listlimitingdependencies">
     <c:forEach var="child" items="${self.children}">
         ${z:redraw(child, null)}
     </c:forEach>

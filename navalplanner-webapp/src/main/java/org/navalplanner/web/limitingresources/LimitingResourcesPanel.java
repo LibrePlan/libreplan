@@ -85,6 +85,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private static final String filterCriterions = _("Filter by criterions");
     private boolean filterbyResources = true;
 
+    private LimitingDependencyList dependencyList;
+
     public LimitingResourcesPanel(List<LimitingResourceQueue> groups,
             TimeTracker timeTracker) {
         init(groups, timeTracker);
@@ -184,7 +186,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private void registerNeededScripts() {
-        // getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
+        // getScriptsRegister().register(
+        // ScriptsRequiredByLimitingResourcesPanel.class);
     }
 
     private IScriptsRegister getScriptsRegister() {
@@ -224,25 +227,27 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         leftPane.afterCompose();
 
         // Insert timetracker watermarks and limitingResourcesQueues
-        getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
-        getFellow("insertionPointRightPanel")
-                .appendChild(limitingResourcesList);
-        limitingResourcesList.afterCompose();
 
-        QueueTask source = new QueueTask(new LocalDate(), new LocalDate(), 100,
-                50);
-        QueueTask destination = new QueueTask(new LocalDate(), new LocalDate(),
-                100, 50);
-
+        QueueTask source = new QueueTask(new LocalDate(), new LocalDate()
+                .plusMonths(1), 100, 50);
+        QueueTask destination = new QueueTask(new LocalDate(), new LocalDate()
+                .plusMonths(2), 100, 50);
         LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
                 source, destination);
 
-        LimitingDependencyList dependencyList = new LimitingDependencyList(null);
-        dependencyList.addDependencyComponent(limitingDependencyComponent);
+        dependencyList = new LimitingDependencyList(null);
 
+        dependencyList.addDependencyComponent(limitingDependencyComponent);
+        limitingDependencyComponent.afterCompose();
+        limitingDependencyComponent.setParent(dependencyList);
+
+        getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
+        getFellow("insertionPointRightPanel")
+                .appendChild(limitingResourcesList);
         getFellow("insertionPointRightPanel").appendChild(dependencyList);
 
         dependencyList.afterCompose();
+        limitingResourcesList.afterCompose();
 
         limitingResourcesList.invalidate();
 
@@ -255,6 +260,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
     }
+
 
     public void clearComponents() {
         getFellow("insertionPointLeftPanel").getChildren().clear();
@@ -270,5 +276,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             }
         };
     }
+
 
 }

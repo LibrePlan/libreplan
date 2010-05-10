@@ -132,10 +132,9 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 //        boolean dependencyMustBeVisible = visibilityToggler.dependencyMustBeVisible();
 //        visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
 //        if (dependencyMustBeVisible) {
-//            dependencyComponent.redrawDependency();
-//        }
-        // Always
         dependencyComponent.redrawDependency();
+//        }
+        // dependencyComponent.redrawDependency();
     }
 
     public void setDependencyComponents(
@@ -161,6 +160,7 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             };
             // getTimeTracker().addZoomListener(listener);
         }
+        redrawDependencies();
     }
 
     // private TimeTracker getTimeTracker() {
@@ -206,7 +206,7 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         }
     }
 
-    public void taskRemoved(Task task) {
+    public void taskRemoved(QueueTask task) {
         for (LimitingDependencyComponent dependencyComponent : LimitingDependencyList.this
                 .getLimitingDependencyComponents()) {
             if (dependencyComponent.contains(task)) {

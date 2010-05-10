@@ -45,13 +45,13 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
 
     private final IZoomLevelChangedListener zoomListener;
 
-    private Map<LimitingResourceQueue, LimitingResourcesComponent> fromTimeLineToComponent = new HashMap<LimitingResourceQueue, LimitingResourcesComponent>();
+    private Map<LimitingResourceQueue, QueueComponent> fromTimeLineToComponent = new HashMap<LimitingResourceQueue, QueueComponent>();
 
     private MutableTreeModel<LimitingResourceQueue> model;
 
     private TimeTracker timeTracker;
 
-    private List<LimitingResourcesComponent> limitingResourcesComponents = new ArrayList<LimitingResourcesComponent>();
+    private List<QueueComponent> limitingResourcesComponents = new ArrayList<QueueComponent>();
 
     public LimitingResourcesList(TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
@@ -98,8 +98,26 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
         };
     }
 
-    public void collapse(LimitingResourceQueue line) {
+    private void insertAsComponents(TimeTracker timetracker,
+            List<LimitingResourceQueue> children) {
+        for (LimitingResourceQueue LimitingResourceQueue : children) {
+            QueueComponent component = QueueComponent
+                    .create(timetracker, LimitingResourceQueue);
+            limitingResourcesComponents.add(component);
+            appendChild(component);
+            fromTimeLineToComponent.put(LimitingResourceQueue, component);
+        }
+    }
 
+
+    public void collapse(LimitingResourceQueue line) {
+	}
+
+
+    private QueueComponent getComponentFor(LimitingResourceQueue l) {
+        QueueComponent resourceLoadComponent = fromTimeLineToComponent
+                .get(l);
+        return resourceLoadComponent;
     }
 
     public void expand(LimitingResourceQueue line,
@@ -109,7 +127,7 @@ public class LimitingResourcesList extends HtmlMacroComponent implements
     @Override
     public void afterCompose() {
         super.afterCompose();
-        for (LimitingResourcesComponent each : limitingResourcesComponents) {
+        for (QueueComponent each : limitingResourcesComponents) {
             each.afterCompose();
         }
     }

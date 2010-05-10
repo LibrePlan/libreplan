@@ -46,12 +46,12 @@ import org.zkoss.zul.impl.XulElement;
  * This class wraps ResourceLoad data inside an specific HTML Div component.
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class LimitingResourcesComponent extends XulElement implements
+public class QueueComponent extends XulElement implements
         AfterCompose {
 
-    public static LimitingResourcesComponent create(TimeTracker timeTracker,
+    public static QueueComponent create(TimeTracker timeTracker,
             LimitingResourceQueue limitingResourceQueue) {
-        return new LimitingResourcesComponent(timeTracker,
+        return new QueueComponent(timeTracker,
                 limitingResourceQueue);
     }
 
@@ -60,7 +60,7 @@ public class LimitingResourcesComponent extends XulElement implements
     private transient IZoomLevelChangedListener zoomChangedListener;
     private List<Div> queueElementDivs = new ArrayList<Div>();
 
-    private LimitingResourcesComponent(final TimeTracker timeTracker,
+    private QueueComponent(final TimeTracker timeTracker,
             final LimitingResourceQueue limitingResourceQueue) {
         this.limitingResourceQueue = limitingResourceQueue;
         this.timeTracker = timeTracker;

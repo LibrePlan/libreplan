@@ -27,7 +27,6 @@ import java.util.Date;
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -121,7 +120,7 @@ public class LimitingDependencyComponent extends XulElement implements
         response("zoomChanged", new AuInvoke(this, "draw"));
     }
 
-    public boolean contains(Task task) {
+    public boolean contains(QueueTask task) {
         return false;
         // Task sourceTask = getSource().getTask();
         // Task destinationTask = getDestination().getTask();
