@@ -31,11 +31,11 @@
                 </hbox>
             </vbox>
             <vbox>
-            <listbox id="editAdvances" height="200px"
+            <listbox id="editAdvances" height="170px"
                      model="@{manageOrderElementAdvancesController.advanceAssignments}"
                      itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
                      onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem);"
-                     pageSize="10">
+                     pageSize="4">
                     <listhead sizable="true">
                          <listheader label="${i18n:_('Type')}" tooltiptext="Advance unit type" />
                          <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value"/>
@@ -62,7 +62,7 @@
                     <listbox id="editAdvancesMeasurement" height="200px"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
-                             mold="paging" pageSize="10" sclass="advance-measurement">
+                             mold="paging" pageSize="5" sclass="advance-measurement">
                             <listhead>
                                 <listheader label="${i18n:_('Value')}" />
                                 <listheader label="${i18n:_('Percentage')}" />

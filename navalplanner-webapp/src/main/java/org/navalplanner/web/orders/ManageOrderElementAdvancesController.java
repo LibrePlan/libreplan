@@ -68,6 +68,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.XYModel;
 
 /**
@@ -93,6 +94,8 @@ public class ManageOrderElementAdvancesController extends
     private Set<AdvanceAssignment> selectedAdvances = new HashSet<AdvanceAssignment>();
 
     private Component messagesContainerAdvances;
+
+    private Tabbox tabboxOrderElement;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -139,6 +142,7 @@ public class ManageOrderElementAdvancesController extends
                     Level.ERROR, e.getMessage());
             LOG.error(_("Couldn't find element: {0}", e.getKey()), e);
         }
+        increaseScreenHeight();
         return false;
     }
 
@@ -165,6 +169,20 @@ public class ManageOrderElementAdvancesController extends
         return orderElementModel.getOrderElement();
     }
 
+    private void increaseScreenHeight() {
+        if (tabboxOrderElement != null) {
+            tabboxOrderElement.setHeight("680px");
+            tabboxOrderElement.invalidate();
+        }
+    }
+
+    private void resetScreenHeight() {
+        if (tabboxOrderElement != null) {
+            tabboxOrderElement.setHeight("620px");
+            tabboxOrderElement.invalidate();
+        }
+    }
+
     private void resetAdvancesGrid() {
         manageOrderElementAdvancesModel.resetAdvanceAssignment();
         this.indexSelectedItem = -1;
@@ -173,6 +191,7 @@ public class ManageOrderElementAdvancesController extends
 
     private void reloadAdvances() {
         Util.reloadBindings(self);
+        resetScreenHeight();
         if (indexSelectedItem > -1) {
             editAdvances.setSelectedItem(editAdvances
                     .getItemAtIndex(indexSelectedItem));
@@ -522,7 +541,8 @@ public class ManageOrderElementAdvancesController extends
             new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                setReportGlobalAdvance(listItem);
+                        resetScreenHeight();
+                        setReportGlobalAdvance(listItem);
             }
         });
         Listcell listCell = new Listcell();
@@ -1135,6 +1155,7 @@ public class ManageOrderElementAdvancesController extends
             break;
         }
         if (!StringUtils.isBlank(message)) {
+            increaseScreenHeight();
             messagesForUser.showMessage(Level.ERROR, message);
         }
     }
