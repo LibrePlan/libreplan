@@ -28,11 +28,12 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.DependencyList;
-import org.zkoss.ganttz.FunctionalityExposedForExtensions;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
@@ -105,10 +106,10 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     private transient IZoomLevelChangedListener listener;
 
-    private final FunctionalityExposedForExtensions<?> context;
+    private final LimitingResourcesPanel panel;
 
-    public LimitingDependencyList(FunctionalityExposedForExtensions<?> context) {
-        this.context = context;
+    public LimitingDependencyList(LimitingResourcesPanel panel) {
+        this.panel = panel;
     }
 
     private List<LimitingDependencyComponent> getLimitingDependencyComponents() {
@@ -134,6 +135,7 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 //        if (dependencyMustBeVisible) {
         dependencyComponent.redrawDependency();
 //        }
+        dependencyComponent.setParent(this);
         // dependencyComponent.redrawDependency();
     }
 
@@ -150,26 +152,24 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    // if (!isInPage()) {
-                    // return;
-                    // }
                     for (LimitingDependencyComponent dependencyComponent : getLimitingDependencyComponents()) {
                         dependencyComponent.zoomChanged();
                     }
                 }
             };
-            // getTimeTracker().addZoomListener(listener);
+            getTimeTracker().addZoomListener(listener);
         }
         redrawDependencies();
     }
 
-    // private TimeTracker getTimeTracker() {
-    // return getTimeTrackerComponent().getTimeTracker();
-    // }
-    //
-    // private TimeTrackerComponent getTimeTrackerComponent() {
-    // return getPage().getTimeTrackerComponent();
-    // }
+    private TimeTracker getTimeTracker() {
+        return getTimeTrackerComponent().getTimeTracker();
+    }
+
+    private TimeTrackerComponent getTimeTrackerComponent() {
+        return panel.getTimeTrackerComponent();
+    }
+
 
     // private boolean isInPage() {
     // return getParent() != null && getGanttPanel() != null

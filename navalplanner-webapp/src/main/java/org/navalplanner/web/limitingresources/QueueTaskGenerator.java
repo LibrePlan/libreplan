@@ -32,7 +32,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
@@ -329,23 +328,5 @@ class QueueTaskGeneratorOnCriterion extends QueueTaskGenerator {
     }
 
     private Map<Resource, List<SpecificDayAssignment>> specificByResourceCached = new HashMap<Resource, List<SpecificDayAssignment>>();
-
-    private List<SpecificDayAssignment> getSpecificOrderedAssignmentsFor(
-            Resource resource) {
-        if (!specificByResourceCached.containsKey(resource)) {
-            specificByResourceCached.put(resource, DayAssignment
-                    .specific(DayAssignment.orderedByDay(resource
-                            .getAssignments())));
-        }
-        return specificByResourceCached.get(resource);
-    }
-
-    private int sum(List<SpecificDayAssignment> specific) {
-        int result = 0;
-        for (SpecificDayAssignment s : specific) {
-            result += s.getHours();
-        }
-        return result;
-    }
 
 }

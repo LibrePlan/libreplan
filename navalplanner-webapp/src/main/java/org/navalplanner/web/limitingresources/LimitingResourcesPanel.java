@@ -220,21 +220,31 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
-        // Insert timetracker watermarks and limitingResourcesQueues
-        QueueTask source = queueListComponent.getQueueTasks().get(0);
-        QueueTask destination = queueListComponent.getQueueTasks().get(1);
+        // FIXME: Insert calculated dependencies
+        dependencyList = new LimitingDependencyList(this);
 
-        LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
-                source, destination);
+        if (queueListComponent.getQueueTasks().size() > 2) {
+            QueueTask source = queueListComponent.getQueueTasks().get(0);
+            QueueTask destination = queueListComponent.getQueueTasks().get(1);
+            QueueTask destination2 = queueListComponent.getQueueTasks().get(2);
 
-        dependencyList = new LimitingDependencyList(null);
+            LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
+                    source, destination);
+            LimitingDependencyComponent limitingDependencyComponent2 = new LimitingDependencyComponent(
+                    source, destination2);
 
-        dependencyList.addDependencyComponent(limitingDependencyComponent);
-        limitingDependencyComponent.setParent(dependencyList);
+            dependencyList.addDependencyComponent(limitingDependencyComponent);
+            dependencyList.addDependencyComponent(limitingDependencyComponent2);
+
+            // Extra
+            QueueTask destination3 = queueListComponent.getQueueTasks().get(3);
+            LimitingDependencyComponent limitingDependencyComponent3 = new LimitingDependencyComponent(
+                    source, destination3);
+            dependencyList.addDependencyComponent(limitingDependencyComponent3);
+        }
 
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
-        getFellow("insertionPointRightPanel")
-                .appendChild(queueListComponent);
+        getFellow("insertionPointRightPanel").appendChild(queueListComponent);
         getFellow("insertionPointRightPanel").appendChild(dependencyList);
 
         dependencyList.afterCompose();
@@ -257,6 +267,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointLeftPanel").getChildren().clear();
         getFellow("insertionPointRightPanel").getChildren().clear();
         getFellow("insertionPointTimetracker").getChildren().clear();
+    }
+
+    public TimeTrackerComponent getTimeTrackerComponent() {
+        return timeTrackerComponent;
     }
 
     private TimeTrackerComponent createTimeTrackerHeader() {
