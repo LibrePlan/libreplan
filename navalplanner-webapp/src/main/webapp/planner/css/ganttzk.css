@@ -183,12 +183,12 @@
     z-index:0;
 }
 
-#listdependencies .end,
-#listdependencies .start {
+#ganttpanel .end,
+#ganttpanel .start {
      height: 1px;
 }
 
-#listdependencies .mid {
+#ganttpanel .mid {
     width: 1px;
 }
 
