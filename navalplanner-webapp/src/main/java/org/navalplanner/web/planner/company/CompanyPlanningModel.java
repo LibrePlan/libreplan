@@ -954,7 +954,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
             List<WorkReportLine> workReportLines = workReportLineDAO
-                    .list(WorkReportLine.class);
+                    .findFilteredByDate(filterStartDate, filterFinishDate);
 
             if (workReportLines.isEmpty()) {
                 return result;

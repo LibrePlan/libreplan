@@ -21,6 +21,7 @@
 package org.navalplanner.business.workreports.daos;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -70,6 +71,19 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         criteria.add(Restrictions.in("orderElement", orderElements));
         if (sortByDate) {
             criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+        }
+        return criteria.list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<WorkReportLine> findFilteredByDate(Date start, Date end) {
+        Criteria criteria  = getSession().createCriteria(WorkReportLine.class);
+        if(start != null) {
+            criteria.add(Restrictions.ge("date", start));
+        }
+        if(end != null) {
+            criteria.add(Restrictions.le("date", end));
         }
         return criteria.list();
     }

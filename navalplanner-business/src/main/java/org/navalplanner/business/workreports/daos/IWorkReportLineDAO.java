@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.workreports.daos;
 
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
@@ -40,5 +41,7 @@ public interface IWorkReportLineDAO extends
     List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement);
 
     List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement, boolean sortByDate);
+
+    List<WorkReportLine> findFilteredByDate(Date start, Date end);
 
 }
