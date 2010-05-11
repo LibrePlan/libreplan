@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -107,6 +108,14 @@ public class QueueListComponent extends HtmlMacroComponent implements
         List<QueueTask> result = new ArrayList<QueueTask>();
         for (QueueComponent each : fromQueueToElement.values()) {
             result.addAll(each.getQueueTasks());
+        }
+        return result;
+    }
+
+    public Map<LimitingResourceQueueElement, QueueTask> getLimitingResourceElementToQueueTaskMap() {
+        Map<LimitingResourceQueueElement, QueueTask> result = new HashMap<LimitingResourceQueueElement, QueueTask>();
+        for (QueueTask each : getQueueTasks()) {
+            result.put(each.getLimitingResourceQueueElement(), each);
         }
         return result;
     }

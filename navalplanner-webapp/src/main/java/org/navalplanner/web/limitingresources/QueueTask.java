@@ -40,25 +40,16 @@ public class QueueTask extends Div {
 
     private final LocalDate end;
 
-    private final int totalResourceWorkHours;
-
-    private final int assignedHours;
+    private final LimitingResourceQueueElement element;
 
     public QueueTask(LimitingResourceQueueElement element) {
-        this(element.getStartDate(), element.getEndDate(), 10, 10);
-    }
-
-    public QueueTask(LocalDate start, LocalDate end,
-            int totalResourceWorkHours, int assignedHours) {
-        Validate.notNull(start);
-        Validate.notNull(end);
-        Validate.notNull(totalResourceWorkHours);
-        Validate.notNull(assignedHours);
-        Validate.isTrue(!start.isAfter(end));
-        this.start = start;
-        this.end = end;
-        this.totalResourceWorkHours = totalResourceWorkHours;
-        this.assignedHours = assignedHours;
+        Validate.notNull(element.getStartDate());
+        Validate.notNull(element.getEndDate());
+        Validate
+                .isTrue(!(element.getStartDate()).isAfter(element.getEndDate()));
+        this.start = element.getStartDate();
+        this.end = element.getEndDate();
+        this.element = element;
         setAction("onmouseover: zkLimitingDependencies.showDependenciesForQueueElement('"
                 + getUuid()
                 + "');onmouseout: zkLimitingDependencies.hideDependenciesForQueueElement('"
@@ -89,12 +80,7 @@ public class QueueTask extends Div {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public int getTotalResourceWorkHours() {
-        return totalResourceWorkHours;
+    public LimitingResourceQueueElement getLimitingResourceQueueElement() {
+        return element;
     }
-
-    public int getAssignedHours() {
-        return assignedHours;
-    }
-
 }

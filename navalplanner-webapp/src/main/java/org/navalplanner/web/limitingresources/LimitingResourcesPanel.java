@@ -24,12 +24,14 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -225,8 +227,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointRightPanel").appendChild(queueListComponent);
         queueListComponent.afterCompose();
 
-        // FIXME: Obtaing real dependency list
-        // dependencyList = generateSimulatedDependencyList();
+        dependencyList = generateDependencyComponentsList();
         if (dependencyList != null) {
             dependencyList.afterCompose();
             getFellow("insertionPointRightPanel").appendChild(dependencyList);
@@ -242,35 +243,25 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
     }
 
-    private LimitingDependencyList generateSimulatedDependencyList() {
+    private LimitingDependencyList generateDependencyComponentsList() {
         dependencyList = new LimitingDependencyList(this);
-        List<QueueTask> queueTasks = queueListComponent.getQueueTasks();
-        if (queueTasks.size() > 4) {
-            QueueTask source = queueTasks.get(1);
-            QueueTask destination = queueTasks.get(2);
-            QueueTask destination2 = queueTasks.get(3);
-            QueueTask destination3 = queueTasks.get(3);
-            QueueTask destination4 = queueTasks.get(4);
+        Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
+                .getLimitingResourceElementToQueueTaskMap();
 
-            LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
-                    source, destination);
-            LimitingDependencyComponent limitingDependencyComponent2 = new LimitingDependencyComponent(
-                    source, destination2);
-            LimitingDependencyComponent limitingDependencyComponent3 = new LimitingDependencyComponent(
-                    source, destination3);
-            LimitingDependencyComponent limitingDependencyComponent4 = new LimitingDependencyComponent(
-                    source, destination3, DependencyType.START_START);
-            LimitingDependencyComponent limitingDependencyComponent5 = new LimitingDependencyComponent(
-                    destination3, destination4);
-
-            dependencyList.addDependencyComponent(limitingDependencyComponent);
-            dependencyList.addDependencyComponent(limitingDependencyComponent2);
-            dependencyList.addDependencyComponent(limitingDependencyComponent3);
-            dependencyList.addDependencyComponent(limitingDependencyComponent4);
-            dependencyList.addDependencyComponent(limitingDependencyComponent5);
+        for (LimitingResourceQueueElement queueElement : queueElementsMap
+                .keySet()) {
+            for (LimitingResourceQueueDependency dependency : queueElement
+                    .getDependenciesAsOrigin()) {
+                LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
+                        queueElementsMap.get(dependency.getHasAsOrigin()),
+                        queueElementsMap.get(dependency.getHasAsDestiny()));
+                dependencyList
+                        .addDependencyComponent(limitingDependencyComponent);
+            }
         }
         return dependencyList;
     }
+
 
     public void clearComponents() {
         getFellow("insertionPointLeftPanel").getChildren().clear();

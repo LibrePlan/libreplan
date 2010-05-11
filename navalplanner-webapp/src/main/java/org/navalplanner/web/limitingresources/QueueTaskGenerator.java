@@ -197,11 +197,6 @@ abstract class QueueTaskGenerator {
                 && other.end.compareTo(end) <= 0;
     }
 
-    public QueueTask build() {
-        return new QueueTask(start, end, getTotalWorkHours(),
-                getHoursAssigned());
-    }
-
     protected abstract int getTotalWorkHours();
 
     protected abstract int getHoursAssigned();
