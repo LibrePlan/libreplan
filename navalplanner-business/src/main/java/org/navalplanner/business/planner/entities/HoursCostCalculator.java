@@ -51,6 +51,12 @@ public class HoursCostCalculator implements ICostCalculator {
 
     @Override
     public SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task) {
+        return getAdvanceCost(task, null, null);
+    }
+
+    @Override
+    public SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task,
+            LocalDate filterStartDate, LocalDate filterEndDate) {
         DirectAdvanceAssignment advanceAssignment = task.getOrderElement()
                 .getReportGlobalAdvanceAssignment();
 
@@ -59,19 +65,25 @@ public class HoursCostCalculator implements ICostCalculator {
         }
 
         return calculateHoursPerDay(task.getHoursSpecifiedAtOrder(),
-                advanceAssignment.getAdvanceMeasurements());
+                advanceAssignment.getAdvanceMeasurements(),
+                filterStartDate, filterEndDate);
     }
 
     private SortedMap<LocalDate, BigDecimal> calculateHoursPerDay(
             Integer totalHours,
-            SortedSet<AdvanceMeasurement> advanceMeasurements) {
+            SortedSet<AdvanceMeasurement> advanceMeasurements,
+            LocalDate filterStartDate, LocalDate filterEndDate) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
         for (AdvanceMeasurement advanceMeasurement : advanceMeasurements) {
-            BigDecimal cost = advanceMeasurement.getValue().setScale(2)
-                    .multiply(new BigDecimal(totalHours)).divide(
-                            new BigDecimal(100));
-            result.put(advanceMeasurement.getDate(), cost);
+            LocalDate day = advanceMeasurement.getDate();
+            if(((filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
+                    ((filterEndDate == null) || day.compareTo(filterEndDate) <= 0)) {
+                BigDecimal cost = advanceMeasurement.getValue().setScale(2)
+                        .multiply(new BigDecimal(totalHours)).divide(
+                                new BigDecimal(100));
+                result.put(day, cost);
+            }
         }
 
         return result;
@@ -79,6 +91,12 @@ public class HoursCostCalculator implements ICostCalculator {
 
     @Override
     public SortedMap<LocalDate, BigDecimal> getEstimatedCost(Task task) {
+        return getEstimatedCost(task, null, null);
+    }
+
+    @Override
+    public SortedMap<LocalDate, BigDecimal> getEstimatedCost(Task task,
+            LocalDate filterStartDate, LocalDate filterEndDate) {
         if (task.isSubcontracted()) {
             return getAdvanceCost(task);
         }
@@ -93,12 +111,15 @@ public class HoursCostCalculator implements ICostCalculator {
 
         for (DayAssignment dayAssignment : dayAssignments) {
             LocalDate day = dayAssignment.getDay();
-            BigDecimal cost = new BigDecimal(dayAssignment.getHours());
+            if(((filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
+                    ((filterEndDate == null) || day.compareTo(filterEndDate) <= 0)) {
+                BigDecimal cost = new BigDecimal(dayAssignment.getHours());
 
-            if (!result.containsKey(day)) {
-                result.put(day, BigDecimal.ZERO);
+                if (!result.containsKey(day)) {
+                    result.put(day, BigDecimal.ZERO);
+                }
+                result.put(day, result.get(day).add(cost));
             }
-            result.put(day, result.get(day).add(cost));
         }
 
         return result;

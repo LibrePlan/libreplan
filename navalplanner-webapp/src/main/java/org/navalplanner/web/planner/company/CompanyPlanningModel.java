@@ -720,6 +720,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return filterStartDate;
     }
 
+    private LocalDate getFilterStartLocalDate() {
+        return filterStartDate != null ?
+                LocalDate.fromDateFields(filterStartDate) : null;
+    }
+
     @Override
     public void setFilterFinishDate(Date filterFinishDate) {
         this.filterFinishDate = filterFinishDate;
@@ -728,6 +733,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Override
     public Date getFilterFinishDate() {
         return filterFinishDate;
+    }
+
+    private LocalDate getFilterFinishLocalDate() {
+        return filterFinishDate != null ?
+                LocalDate.fromDateFields(filterFinishDate) : null;
     }
 
     private class CompanyLoadChartFiller extends ChartFiller {
@@ -913,14 +923,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            List<TaskElement> list = taskElementDAO.list(TaskElement.class);
+            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
 
             SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
                 if (taskElement instanceof Task) {
                     addCost(estimatedCost, hoursCostCalculator
-                            .getEstimatedCost((Task) taskElement));
+                            .getEstimatedCost((Task) taskElement,
+                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
                 }
             }
 
@@ -963,14 +974,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = taskElementDAO.list(TaskElement.class);
+            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
 
             SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
                 if (taskElement instanceof Task) {
                     addCost(advanceCost, hoursCostCalculator
-                            .getAdvanceCost((Task) taskElement));
+                            .getAdvanceCost((Task) taskElement,
+                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
                 }
             }
 
