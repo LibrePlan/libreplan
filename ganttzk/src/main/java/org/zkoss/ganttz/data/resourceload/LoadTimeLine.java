@@ -178,8 +178,8 @@ public class LoadTimeLine {
     public List<LoadTimeLine> getAllChildren() {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for (LoadTimeLine child : children) {
-            result.addAll(child.getAllChildren());
             result.add(child);
+            result.addAll(child.getAllChildren());
         }
         return result;
     }
