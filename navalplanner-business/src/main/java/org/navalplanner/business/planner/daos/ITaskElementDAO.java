@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -48,5 +49,7 @@ public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
 
     List<CompletedEstimatedHoursPerTaskDTO> getCompletedEstimatedHoursPerTaskReport(
             Order order, LocalDate deadline);
+
+    List<TaskElement> listFilteredByDate(Date start, Date end);
 
 }
