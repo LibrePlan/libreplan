@@ -478,4 +478,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
     }
 
+    @Override
+    public GanttDiagramGraph getGanttDiagramGraph() {
+        return diagramGraph;
+    }
+
 }
