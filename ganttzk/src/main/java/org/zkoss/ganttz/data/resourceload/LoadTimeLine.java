@@ -71,7 +71,6 @@ public class LoadTimeLine {
         this.timeLineRole = principal.getRole();
         this.type = principal.getType();
         Validate.notNull(children);
-        allChildrenAreNotEmpty(children);
         this.children = Collections
                 .unmodifiableList(new ArrayList<LoadTimeLine>(children));
 

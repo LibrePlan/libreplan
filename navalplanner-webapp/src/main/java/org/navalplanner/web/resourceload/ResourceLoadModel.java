@@ -808,7 +808,10 @@ class PeriodsBuilder {
     private List<LoadPeriod> toGenerators(List<LoadPeriodGenerator> generators) {
         List<LoadPeriod> result = new ArrayList<LoadPeriod>();
         for (LoadPeriodGenerator loadPeriodGenerator : generators) {
-            result.add(loadPeriodGenerator.build());
+            LoadPeriod period = loadPeriodGenerator.build();
+            if (period != null) {
+                result.add(period);
+            }
         }
         return result;
     }
