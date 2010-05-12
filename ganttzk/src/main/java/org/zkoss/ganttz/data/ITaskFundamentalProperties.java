@@ -78,6 +78,10 @@ public interface ITaskFundamentalProperties {
 
     public boolean isSubcontracted();
 
+    public boolean isLimiting();
+
+    public boolean isLimitingAndHasDayAssignments();
+
     public boolean canBeExplicitlyResized();
 
     public String getAssignedStatus();

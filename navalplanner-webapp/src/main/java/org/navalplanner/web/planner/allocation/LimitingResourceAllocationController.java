@@ -68,6 +68,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
     private Tab tabLimitingResourceAllocation;
 
+    private Tab tabLimitingWorkerSearch;
+
     private Grid gridLimitingOrderElementHours;
 
     private Grid gridLimitingAllocations;
@@ -93,6 +95,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
             IMessagesForUser messagesForUser) {
         try {
             resourceAllocationModel.init(task);
+            tabLimitingWorkerSearch.setDisabled(existsResourceAllocationWithDayAssignments());
             limitingNewAllocationSelector.setAllocationsAdder(resourceAllocationModel);
             gridLimitingOrderElementHours.setModel(new ListModelList(
                     resourceAllocationModel.getHoursAggregatedByCriteria()));
@@ -173,7 +176,9 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
         }
 
         private Intbox intboxHours(final LimitingAllocationRow resourceAllocation) {
-            return bindToHours(new Intbox(), resourceAllocation);
+            Intbox result = bindToHours(new Intbox(), resourceAllocation);
+            result.setDisabled(resourceAllocation.hasDayAssignments());
+            return result;
         }
 
         private Intbox bindToHours(Intbox intbox, final LimitingAllocationRow resourceAllocation) {
@@ -195,7 +200,9 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
         }
 
         private Listbox listboxPriority(final LimitingAllocationRow resourceAllocation) {
-            return bindToPriority(buildPriorityList(resourceAllocation.getPriority()), resourceAllocation);
+            Listbox result = bindToPriority(buildPriorityList(resourceAllocation.getPriority()), resourceAllocation);
+            result.setDisabled(resourceAllocation.hasDayAssignments());
+            return result;
         }
 
         private Listbox buildPriorityList(int selectedValue) {
@@ -236,6 +243,19 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
             return cell.getLabel();
         }
 
+    }
+
+    public boolean existsResourceAllocationWithDayAssignments() {
+        final LimitingAllocationRow limitingAllocationRow = getLimitingAllocationRow();
+        return (limitingAllocationRow != null) ? limitingAllocationRow
+                .hasDayAssignments() : false;
+    }
+
+    private LimitingAllocationRow getLimitingAllocationRow() {
+        final List<LimitingAllocationRow> limitingAllocationRows = resourceAllocationModel
+                .getResourceAllocationRows();
+        return (limitingAllocationRows.size() > 0) ? limitingAllocationRows
+                .get(0) : null;
     }
 
 }

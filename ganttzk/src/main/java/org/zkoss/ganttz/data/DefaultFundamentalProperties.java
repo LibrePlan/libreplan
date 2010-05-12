@@ -61,7 +61,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
             long lengthMilliseconds, String notes,
             Date hoursAdvanceEndDate,
             Date advanceEndDate,
-			BigDecimal hoursAdvancePercentage, BigDecimal advancePercentage) {
+            BigDecimal hoursAdvancePercentage, BigDecimal advancePercentage) {
         this.name = name;
         this.beginDate = beginDate.getTime();
         this.lengthMilliseconds = lengthMilliseconds;
@@ -164,6 +164,14 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     public boolean isSubcontracted() {
+        return false;
+    }
+
+    public boolean isLimiting() {
+        return false;
+    }
+
+    public boolean isLimitingAndHasDayAssignments() {
         return false;
     }
 

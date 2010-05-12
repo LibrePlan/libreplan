@@ -181,6 +181,16 @@ public class Task extends TaskElement {
         return !(getLimitingResourceAllocations().isEmpty());
     }
 
+    private ResourceAllocation<?> getAssociatedLimitingResourceAllocation() {
+        Set<ResourceAllocation<?>> resourceAllocations = getLimitingResourceAllocations();
+        return (resourceAllocations.size() > 0) ? resourceAllocations.iterator().next() : null;
+    }
+
+    public boolean isLimitingAndHasDayAssignments() {
+        ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
+        return (resourceAllocation != null) ? resourceAllocation.isLimitingAndHasDayAssignments() : false;
+    }
+
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         addResourceAllocation(resourceAllocation, true);
     }

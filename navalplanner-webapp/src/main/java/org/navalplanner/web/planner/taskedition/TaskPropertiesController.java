@@ -184,6 +184,12 @@ public class TaskPropertiesController extends GenericForwardComposer {
         setOldState(null);
         originalState = getResourceAllocationType(currentTaskElement);
 
+        final boolean disabled = currentTaskElement.isSubcontracted()
+                || currentTaskElement.isLimitingAndHasDayAssignments();
+        startConstraintTypes.setDisabled(disabled);
+        startConstraintDate.setDisabled(disabled);
+        lbResourceAllocationType.setDisabled(disabled);
+
         taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         updateComponentValuesForTask();
     }
@@ -335,6 +341,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
             }
 
         });
+
     }
 
     private boolean thereIsTransition(ResourceAllocationTypeEnum newState) {

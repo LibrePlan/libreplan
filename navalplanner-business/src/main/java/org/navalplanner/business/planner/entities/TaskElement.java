@@ -409,6 +409,14 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public boolean isLimiting() {
+        return false;
+    }
+
+    public boolean isLimitingAndHasDayAssignments() {
+        return false;
+    }
+
     public TaskElement getTopMost() {
         TaskElement result = this;
         while (result.getParent() != null) {

@@ -234,4 +234,8 @@ public class LimitingAllocationRow {
                 && resourceAllocation instanceof GenericResourceAllocation;
     }
 
+    public boolean hasDayAssignments() {
+        return resourceAllocation.hasAssignments();
+    }
+
 }

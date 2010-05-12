@@ -552,6 +552,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getLimitingResourceQueueElement() != null;
     }
 
+    public boolean isLimitingAndHasDayAssignments() {
+        return isLimiting() && hasAssignments();
+    }
+
     public boolean isSatisfied() {
         return hasAssignments();
     }

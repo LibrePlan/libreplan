@@ -561,6 +561,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return taskElement.isSubcontracted();
         }
 
+        @Override
+        public boolean isLimiting() {
+            return taskElement.isLimiting();
+        }
+
+        @Override
+        public boolean isLimitingAndHasDayAssignments() {
+            return taskElement.isLimitingAndHasDayAssignments();
+        }
+
         private void stepsBeforePossibleReallocation() {
             taskDAO.reattach(taskElement);
             reattachAllResourcesForTask();

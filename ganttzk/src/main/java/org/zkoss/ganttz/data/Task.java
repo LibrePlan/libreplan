@@ -311,6 +311,14 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.isSubcontracted();
     }
 
+    public boolean isLimiting() {
+        return fundamentalProperties.isLimiting();
+    }
+
+    public boolean isLimitingAndHasDayAssignments() {
+        return fundamentalProperties.isLimitingAndHasDayAssignments();
+    }
+
     public boolean canBeExplicitlyResized() {
         return fundamentalProperties.canBeExplicitlyResized();
     }
