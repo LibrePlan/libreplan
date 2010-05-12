@@ -566,6 +566,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         setOriginalTotalAssigment(getAssignedHours());
     }
 
+    public void removeLimitingDayAssignments() {
+        allocateLimitingDayAssignments(Collections.<T>emptyList());
+    }
+
     public void allocateLimitingDayAssignments(List<T> assignments) {
         assert isLimiting();
         resetAssignmentsTo(assignments);

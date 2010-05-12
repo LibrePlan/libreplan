@@ -109,4 +109,6 @@ public interface ILimitingResourceQueueModel {
 
     boolean userCanRead(Order order, String loginName);
 
+    void unschedule(LimitingResourceQueueElement element);
+
 }

@@ -37,6 +37,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
@@ -132,9 +133,19 @@ public class QueueComponent extends XulElement implements
         }
     }
 
-    // FIXME: Implement real unnasign operation
     private void unnasign(QueueTask choosen) {
-        choosen.detach();
+        final LimitingResourcesPanel panel = getLimitingResourcesPanel(choosen.getParent());
+        panel.unschedule(choosen);
+    }
+
+    private LimitingResourcesPanel getLimitingResourcesPanel(Component comp) {
+        if (comp == null) {
+            return null;
+        }
+        if (comp instanceof LimitingResourcesPanel) {
+            return (LimitingResourcesPanel) comp;
+        }
+        return getLimitingResourcesPanel(comp.getParent());
     }
 
     private static QueueTask createDivForQueueElement(IDatesMapper datesMapper,

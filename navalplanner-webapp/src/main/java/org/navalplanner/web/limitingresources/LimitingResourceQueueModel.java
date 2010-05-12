@@ -202,7 +202,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private void initializeCalendarIfAny(Resource resource) {
         if (resource != null) {
-            resourceDAO.reattach(resource);
+            resource.getName();
             initializeCalendarIfAny(resource.getCalendar());
         }
     }
@@ -466,6 +466,20 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return null;
     }
 
+    private LimitingResourceQueue retrieveQueueFromModel(LimitingResourceQueue queue) {
+        return findQueue(limitingResourceQueues, queue);
+    }
+
+    private LimitingResourceQueue findQueue(List<LimitingResourceQueue> queues,
+            LimitingResourceQueue queue) {
+        for (LimitingResourceQueue each : limitingResourceQueues) {
+            if (each.getId().equals(queue.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
     private LimitingResourceQueueElement retrieveQueueElementFromModel(
             LimitingResourceQueueElement element) {
         return findQueueElement(unassignedLimitingResourceQueueElements,
@@ -589,6 +603,24 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void saveAssociatedTask(LimitingResourceQueueElement element) {
         Task task = element.getResourceAllocation().getTask();
         taskDAO.save(task);
+    }
+
+    @Override
+    public void unschedule(LimitingResourceQueueElement element) {
+        LimitingResourceQueue queue = retrieveQueueFromModel(element.getLimitingResourceQueue());
+
+        queue.removeLimitingResourceQueueElement(element);
+
+        // Set as unassigned element
+        element.setLimitingResourceQueue(null);
+        element.setStartDate(null);
+        element.setStartHour(0);
+        element.setEndDate(null);
+        element.setEndHour(0);
+
+        element.getResourceAllocation().removeLimitingDayAssignments();
+        unassignedLimitingResourceQueueElements.add(element);
+        toBeSaved.add(element);
     }
 
 }

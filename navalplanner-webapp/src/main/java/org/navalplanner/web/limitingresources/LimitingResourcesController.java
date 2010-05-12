@@ -34,6 +34,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
@@ -51,6 +52,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -161,19 +163,8 @@ public class LimitingResourcesController implements Composer {
                 SeveralModificators.create(new BankHolidaysMarker()), parent);
     }
 
-    private void updateLimitingResourceQueues() {
-        limitingResourcesPanel
-                .resetLimitingResourceQueues(limitingResourceQueueModel
-                        .getLimitingResourceQueues());
-        limitingResourcesPanel.reloadLimitingResourcesList();
-    }
-
     private LimitingResourcesPanel buildLimitingResourcesPanel() {
-        LimitingResourcesPanel result = new LimitingResourcesPanel(
-                limitingResourceQueueModel.getLimitingResourceQueues(),
-                timeTracker);
-        result.setVariable("limitingResourcesController", this, true);
-        return result;
+        return new LimitingResourcesPanel(this, timeTracker);
     }
 
     /**
@@ -328,7 +319,7 @@ public class LimitingResourcesController implements Composer {
             limitingResourceQueueModel
                     .assignLimitingResourceQueueElement(element);
             Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
-            updateLimitingResourceQueues();
+            limitingResourcesPanel.reloadLimitingResourcesList();
         }
 
         private Checkbox automaticQueueing(
@@ -342,6 +333,16 @@ public class LimitingResourcesController implements Composer {
             return new Label(value);
         }
 
+    }
+
+    public List<LimitingResourceQueue> getLimitingResourceQueues() {
+        return limitingResourceQueueModel.getLimitingResourceQueues();
+    }
+
+    public void unschedule(QueueTask task) {
+        limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
+        Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+        task.detach();
     }
 
 }

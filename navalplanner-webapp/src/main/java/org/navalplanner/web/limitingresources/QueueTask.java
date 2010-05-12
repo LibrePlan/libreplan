@@ -64,7 +64,6 @@ public class QueueTask extends Div {
                                 + taskUid + "')");
             }
         });
-
     }
 
     public LocalDate getStart() {
@@ -83,4 +82,5 @@ public class QueueTask extends Div {
     public LimitingResourceQueueElement getLimitingResourceQueueElement() {
         return element;
     }
+
 }

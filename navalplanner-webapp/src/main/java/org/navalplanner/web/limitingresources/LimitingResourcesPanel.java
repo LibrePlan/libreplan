@@ -20,9 +20,8 @@
 
 package org.navalplanner.web.limitingresources;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.navalplanner.web.I18nHelper._;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -61,13 +60,13 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         public String getImage();
     }
 
+    private LimitingResourcesController limitingResourcesController;
+
     private TimeTrackerComponent timeTrackerComponent;
 
     private LimitingResourcesLeftPane leftPane;
 
     private QueueListComponent queueListComponent;
-
-    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
 
     private MutableTreeModel<LimitingResourceQueue> treeModel;
 
@@ -84,31 +83,44 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private LimitingDependencyList dependencyList;
 
-    public LimitingResourcesPanel(List<LimitingResourceQueue> groups,
+    public LimitingResourcesPanel(LimitingResourcesController limitingResourcesController,
             TimeTracker timeTracker) {
-        init(groups, timeTracker);
+        init(limitingResourcesController, timeTracker);
     }
 
-    public void init(List<LimitingResourceQueue> groups, TimeTracker timeTracker) {
-        limitingResourceQueues.addAll(groups);
+    public void init(LimitingResourcesController limitingResourcesController,
+            TimeTracker timeTracker) {
+        this.limitingResourcesController = limitingResourcesController;
         this.timeTracker = timeTracker;
+        this.setVariable("limitingResourcesController",
+                limitingResourcesController, true);
+
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
         queueListComponent = new QueueListComponent(timeTracker,
                 treeModel);
+
         leftPane = new LimitingResourcesLeftPane(treeModel,
                 queueListComponent);
         registerNeededScripts();
     }
 
-    public void resetLimitingResourceQueues(List<LimitingResourceQueue> queues) {
-        limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
-        limitingResourceQueues.addAll(queues);
-    }
-
     public void reloadLimitingResourcesList() {
         queueListComponent.setModel(createModelForTree());
         queueListComponent.invalidate();
+    }
+
+    private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
+        MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
+                .create(LimitingResourceQueue.class);
+        for (LimitingResourceQueue LimitingResourceQueue : getLimitingResourceQueues()) {
+            result.addToRoot(LimitingResourceQueue);
+        }
+        return result;
+    }
+
+    private List<LimitingResourceQueue> getLimitingResourceQueues() {
+        return limitingResourcesController.getLimitingResourceQueues();
     }
 
     public ListModel getFilters() {
@@ -192,16 +204,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .retrieve();
     }
 
-    private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
-        MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
-                .create(LimitingResourceQueue.class);
-        for (LimitingResourceQueue LimitingResourceQueue : this.limitingResourceQueues) {
-            result.addToRoot(LimitingResourceQueue);
-        }
-        return result;
-    }
-
-
     private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
             TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
@@ -282,5 +284,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         };
     }
 
+    public void unschedule(QueueTask task) {
+        limitingResourcesController.unschedule(task);
+    }
 
 }
