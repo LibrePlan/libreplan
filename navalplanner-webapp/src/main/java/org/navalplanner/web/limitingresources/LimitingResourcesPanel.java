@@ -254,11 +254,14 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .keySet()) {
             for (LimitingResourceQueueDependency dependency : queueElement
                     .getDependenciesAsOrigin()) {
-                LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
-                        queueElementsMap.get(dependency.getHasAsOrigin()),
-                        queueElementsMap.get(dependency.getHasAsDestiny()));
-                dependencyList
-                        .addDependencyComponent(limitingDependencyComponent);
+
+                if (queueElementsMap.containsKey(dependency.getHasAsDestiny())) {
+                    LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
+                            queueElementsMap.get(dependency.getHasAsOrigin()),
+                            queueElementsMap.get(dependency.getHasAsDestiny()));
+                    dependencyList
+                            .addDependencyComponent(limitingDependencyComponent);
+                }
             }
         }
         return dependencyList;
