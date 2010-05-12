@@ -39,11 +39,15 @@ public class DateAndHour implements Comparable<DateAndHour> {
 
     private int compareHour(int hour) {
         int deltaHour = this.hour - hour;
-        return (deltaHour != 0) ? Math.abs(deltaHour) : 0;
+        return (deltaHour != 0) ? deltaHour / Math.abs(deltaHour) : 0;
     }
 
     public String toString() {
         return date + "; " + hour;
+    }
+
+    public static DateAndHour Max(DateAndHour arg0, DateAndHour arg1) {
+        return (arg0.compareTo(arg1) > 0) ? arg0 : arg1;
     }
 
 }

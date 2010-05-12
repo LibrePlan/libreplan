@@ -35,10 +35,6 @@ public class LimitingResourceQueueElementGap {
                     - startHour;
             int hoursInBetween = calendar.getWorkableHours(startDate
                     .plusDays(1), endDate.minusDays(1));
-            if (hoursAtStart <= 0) {
-                startDate = startDate.plusDays(1);
-                startHour = 0;
-            }
             hoursInGap = hoursAtStart + hoursInBetween + endHour;
         }
 
@@ -61,13 +57,26 @@ public class LimitingResourceQueueElementGap {
     }
 
     /**
-     * Returns true if hours for this gap is big enough for fitting hours
+     * Returns true if the gap starts after earlierStartDateBecauseOfGantt and
+     * if it's big enough for fitting candidate
      *
      * @param hours
      * @return
      */
-    public boolean canFit(Integer hours) {
-        return hoursInGap.compareTo(hours) >= 0;
+    public boolean canFit(LimitingResourceQueueElement candidate) {
+        final LocalDate earlierStartDateBecauseOfGantt = new LocalDate(
+                candidate.getEarlierStartDateBecauseOfGantt());
+        final LocalDate startDate = startTime.getDate();
+        if (earlierStartDateBecauseOfGantt.isBefore(startDate)
+                || earlierStartDateBecauseOfGantt.isEqual(startDate)) {
+            return hoursInGap - candidate.getIntentedTotalHours() >= 0;
+        }
+        return false;
+    }
+
+    public String toString() {
+        return startTime.getDate() + " - " + startTime.getHour() + "; "
+                + endTime.getDate() + " - " + endTime.getHour();
     }
 
 }

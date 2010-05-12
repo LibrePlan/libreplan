@@ -347,22 +347,27 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         final SortedSet<LimitingResourceQueueElement> elements = queue.getLimitingResourceQueueElements();
         if (!elements.isEmpty()) {
             final List<LimitingResourceQueueElementGap> gapList = buildGapList(candidate, elements);
-            final DateAndHour startTime = findStartTimeInGapList(candidate
-                    .getIntentedTotalHours(), gapList);
-            return (startTime != null) ? startTime : afterLastElement(elements);
+            final DateAndHour startTime = findStartTimeInGapList(candidate, gapList);
+            return (startTime != null) ? startTime : afterLastElement(candidate, elements);
         }
-        return new DateAndHour(new LocalDate(candidate.getEarlierStartDateBecauseOfGantt()), 0);
+        return getStartTimeBecauseOfGantt(candidate);
     }
 
-    private DateAndHour afterLastElement(
+    private DateAndHour afterLastElement(LimitingResourceQueueElement candidate,
             SortedSet<LimitingResourceQueueElement> elements) {
-        return elements.last().getEndTime();
+        final DateAndHour lastElementEndTime = elements.last().getEndTime();
+        final DateAndHour candidateStartTime = getStartTimeBecauseOfGantt(candidate);
+        return DateAndHour.Max(lastElementEndTime, candidateStartTime);
     }
 
-    private DateAndHour findStartTimeInGapList(Integer hours,
+    private DateAndHour getStartTimeBecauseOfGantt(LimitingResourceQueueElement element) {
+        return new DateAndHour(new LocalDate(element.getEarlierStartDateBecauseOfGantt()), 0);
+    }
+
+    private DateAndHour findStartTimeInGapList(LimitingResourceQueueElement candidate,
             List<LimitingResourceQueueElementGap> gapList) {
         for (LimitingResourceQueueElementGap each : gapList) {
-            if (each.canFit(hours)) {
+            if (each.canFit(candidate)) {
                 return each.getStartTime();
             }
         }
@@ -376,25 +381,33 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         // If start time of candidate element to fit in queue is before first
         // element, create a gap between candidate and the first element of the
         // queue
-        DateAndHour candidateTime = new DateAndHour(new LocalDate(candidate
-                .getEarlierStartDateBecauseOfGantt()), 0);
+        DateAndHour startTimeBecauseOfGantt = getStartTimeBecauseOfGantt(candidate);
         final LimitingResourceQueueElement firstElement = elements.first();
-        if (candidateTime.compareTo(firstElement.getStartTime()) <= 0) {
-            result.add(createGap(firstElement.getResource(), candidateTime,
+        if (startTimeBecauseOfGantt.compareTo(firstElement.getStartTime()) < 0) {
+            result.add(createGap(firstElement.getResource(), startTimeBecauseOfGantt,
                     firstElement.getStartTime()));
         }
 
+        LimitingResourceQueueElement current, next;
         // Only include gaps from candidate start time on
         for (Iterator<LimitingResourceQueueElement> i = elements.iterator(); i
                 .hasNext();) {
-            LimitingResourceQueueElement current = i.next();
+
+            current = i.next();
             if (i.hasNext()) {
-                LimitingResourceQueueElement next = i.next();
-                if (candidateTime.compareTo(current.getEndTime()) > 1) {
-                    final DateAndHour startTime = current.getEndTime();
-                    final DateAndHour endTime = next.getStartTime();
-                    result.add(createGap(current.getResource(), startTime, endTime));
+                next = i.next();
+                DateAndHour startTime = current.getEndTime();
+                final DateAndHour endTime = next.getStartTime();
+
+                if (startTime.compareTo(startTimeBecauseOfGantt) <= 0) {
+                    if (endTime.compareTo(startTimeBecauseOfGantt) <= 0) {
+                        // Start and end of the gap are before earlierStartDateBecauseOfGanttTime
+                        continue;
+                    }
+                    // earliestStartDateBecauseOfGantt is in between
+                    startTime = startTimeBecauseOfGantt;
                 }
+                result.add(createGap(current.getResource(), startTime, endTime));
             }
         }
         return result;

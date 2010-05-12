@@ -34,6 +34,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
@@ -189,12 +190,12 @@ public class LimitingResourcesController implements Composer {
         List<LimitingResourceQueueElementDTO> result = new ArrayList<LimitingResourceQueueElementDTO>();
         for (LimitingResourceQueueElement each : limitingResourceQueueModel
                 .getUnassignedLimitingResourceQueueElements()) {
-            result.add(toUnassignedLimitingResourceQueueElementDTO(each));
+            result.add(toLimitingResourceQueueElementDTO(each));
         }
         return result;
     }
 
-    private LimitingResourceQueueElementDTO toUnassignedLimitingResourceQueueElementDTO(
+    private LimitingResourceQueueElementDTO toLimitingResourceQueueElementDTO(
             LimitingResourceQueueElement element) {
         final Task task = element.getResourceAllocation().getTask();
         final Order order = limitingResourceQueueModel.getOrderByTask(task);
@@ -221,6 +222,10 @@ public class LimitingResourcesController implements Composer {
 
         private String date;
 
+        private Integer hoursToAllocate;
+
+        private String resourceName;
+
         public LimitingResourceQueueElementDTO(
                 LimitingResourceQueueElement element, String orderName,
                 String taskName, Date date) {
@@ -228,6 +233,9 @@ public class LimitingResourcesController implements Composer {
             this.orderName = orderName;
             this.taskName = taskName;
             this.date = DATE_FORMAT.format(date);
+            this.hoursToAllocate = element.getIntentedTotalHours();
+            final Resource resource = element.getResource();
+            this.resourceName = (resource != null) ? resource.getName() : "";
         }
 
         public LimitingResourceQueueElement getOriginal() {
@@ -244,6 +252,14 @@ public class LimitingResourcesController implements Composer {
 
         public String getDate() {
             return date;
+        }
+
+        public Integer getHoursToAllocate() {
+            return (hoursToAllocate != null) ? hoursToAllocate : 0;
+        }
+
+        public String getResourceName() {
+            return resourceName;
         }
 
     }
@@ -278,7 +294,9 @@ public class LimitingResourcesController implements Composer {
 
             row.appendChild(label(element.getTaskName()));
             row.appendChild(label(element.getOrderName()));
+            row.appendChild(label(element.getResourceName()));
             row.appendChild(label(element.getDate()));
+            row.appendChild(label(element.getHoursToAllocate().toString()));
             row.appendChild(assignButton(element));
             row.appendChild(automaticQueueing(element));
         }
