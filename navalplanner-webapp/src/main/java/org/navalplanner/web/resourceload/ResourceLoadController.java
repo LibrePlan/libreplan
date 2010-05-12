@@ -114,40 +114,29 @@ public class ResourceLoadController implements Composer {
     }
 
     private void reload(boolean filterByResources) {
-        try {
-            this.filterHasChanged = (filterByResources != currentFilterByResources);
-            this.currentFilterByResources = filterByResources;
+        this.filterHasChanged = (filterByResources != currentFilterByResources);
+        this.currentFilterByResources = filterByResources;
 
-            if (filterBy == null) {
-                if(resourcesLoadPanel == null) {
-                    resetAdditionalFilters();
-                }
-                resourceLoadModel.initGlobalView(filterByResources);
-            } else {
-                if(resourcesLoadPanel == null) {
-                    deleteAdditionalFilters();
-                }
-                resourceLoadModel.initGlobalView(filterBy, filterByResources);
+        if (filterBy == null) {
+            if (resourcesLoadPanel == null) {
+                resetAdditionalFilters();
             }
-            timeTracker = buildTimeTracker();
-            buildResourcesLoadPanel();
-
-            this.parent.getChildren().clear();
-            this.parent.appendChild(resourcesLoadPanel);
-
-            resourcesLoadPanel.afterCompose();
-            addSchedulingScreenListeners();
-            addCommands(resourcesLoadPanel);
-        } catch (IllegalArgumentException e) {
-            try {
-                Messagebox
-                        .show(
-                                _("Some lines have not allocation periods.\nBelow it shows the load all company resources"),
-                                _("Error"), Messagebox.OK, Messagebox.ERROR);
-            } catch (InterruptedException o) {
-                throw new RuntimeException(e);
+            resourceLoadModel.initGlobalView(filterByResources);
+        } else {
+            if (resourcesLoadPanel == null) {
+                deleteAdditionalFilters();
             }
+            resourceLoadModel.initGlobalView(filterBy, filterByResources);
         }
+        timeTracker = buildTimeTracker();
+        buildResourcesLoadPanel();
+
+        this.parent.getChildren().clear();
+        this.parent.appendChild(resourcesLoadPanel);
+
+        resourcesLoadPanel.afterCompose();
+        addSchedulingScreenListeners();
+        addCommands(resourcesLoadPanel);
     }
 
     private void addListeners() {
