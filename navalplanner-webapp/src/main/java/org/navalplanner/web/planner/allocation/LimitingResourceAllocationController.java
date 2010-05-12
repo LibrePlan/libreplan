@@ -97,6 +97,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
             gridLimitingOrderElementHours.setModel(new ListModelList(
                     resourceAllocationModel.getHoursAggregatedByCriteria()));
             gridLimitingOrderElementHours.setRowRenderer(createOrderElementHoursRenderer());
+            Util.reloadBindings(gridLimitingAllocations);
         } catch (Exception e) {
             LOG.error(e.getStackTrace());
         }

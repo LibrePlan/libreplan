@@ -47,13 +47,13 @@
                           <columns>
                               <column width="200px" align="center"/>
                               <column width="200px" align="center"/>
-                              <column />
+                              <column align="center"/>
                           </columns>
                           <rows>
                             <row>
-                                <label  />
+                                <label />
                                 <label value="${i18n:_('Total Estimated hours')}:" />
-                                <label value="@{limitingAllocationController.orderHours}"/>
+                                <label value="@{limitingAllocationController.orderHours}" />
                             </row>
                           </rows>
                     </grid>

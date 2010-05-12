@@ -295,7 +295,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     @NotNull
     private ResourcesPerDay resourcesPerDay;
 
-    private Integer intendedTotalHours = 0;
+    private Integer intendedTotalHours;
 
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();
 

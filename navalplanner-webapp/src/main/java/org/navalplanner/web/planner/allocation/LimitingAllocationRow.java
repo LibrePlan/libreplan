@@ -74,20 +74,30 @@ public class LimitingAllocationRow {
 
     private LimitingAllocationRow(ResourceAllocation<?> resourceAllocation,
             Task task) {
+        init(resourceAllocation, task);
+    }
+
+    private void init(ResourceAllocation<?> resourceAllocation,
+            Task task) {
+        initializeIntentedTotalHoursIfNeeded(resourceAllocation, task);
         this.resourceAllocation = resourceAllocation;
         this.task = task;
-        this.hours = calculateTotalHours();
+        this.hours = resourceAllocation.getIntendedTotalHours();
         this.priority = task.getPriority();
     }
 
     /**
-     * Returns initial total hours
+     * Sets resourceAllocation.intentedTotalHours to task.totalHours if null
      *
-     * @return
+     * @param resourceAllocation
+     * @param task
      */
-    private Integer calculateTotalHours() {
-        return (resourceAllocation != null && resourceAllocation.getIntendedTotalHours() != null) ?
-                resourceAllocation.getIntendedTotalHours() : task.getTotalHours();
+    private void initializeIntentedTotalHoursIfNeeded(
+            ResourceAllocation<?> resourceAllocation, Task task) {
+        Integer intentedTotalHours = resourceAllocation.getIntendedTotalHours();
+        if (intentedTotalHours == null) {
+            resourceAllocation.setIntendedTotalHours(task.getTotalHours());
+        }
     }
 
     public static LimitingAllocationRow create(Set<Criterion> criteria,
@@ -111,13 +121,8 @@ public class LimitingAllocationRow {
 
     private LimitingAllocationRow(ResourceAllocation<?> resourceAllocation,
             Task task, int priority) {
-
-        this.resourceAllocation = resourceAllocation;
-        this.task = task;
-        this.hours = calculateTotalHours();
-
         task.setPriority(priority);
-        this.priority = task.getPriority();
+        init(resourceAllocation, task);
     }
 
     public AllocationType getAllocationType() {
