@@ -192,7 +192,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         public void onLengthChange(long previousLength, long newLength);
     }
 
-    private class DeferedNotifier {
+    public class DeferedNotifier {
 
         private Map<Task, NotificationPendingForTask> notificationsPending = new LinkedHashMap<Task, NotificationPendingForTask>();
 
@@ -209,7 +209,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
             return result;
         }
 
-        public void add(Task task, LengthNotification notification) {
+        void add(Task task, LengthNotification notification) {
             retrieveOrCreateFor(task).setLengthNofitication(notification);
         }
 
@@ -488,6 +488,34 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
                     }
                 }
             };
+        }
+
+        DeferedNotifier manualNotification(final IAction action) {
+            final DeferedNotifier result = new DeferedNotifier();
+            positionsUpdatingGuard.entranceRequested(new IReentranceCases() {
+
+                @Override
+                public void ifAlreadyInside() {
+                    throw new RuntimeException("it cannot do a manual notification if it's already inside");
+                }
+
+                @Override
+                public void ifNewEntrance() {
+                    preAndPostActions.doAction(new IAction() {
+
+                        @Override
+                        public void doAction() {
+                            deferedNotifier.set(result);
+                            try {
+                                action.doAction();
+                            } finally {
+                                deferedNotifier.set(null);
+                            }
+                        }
+                    });
+                }
+            });
+            return result;
         }
 
         private void taskPositionModified(final Task task) {
@@ -871,6 +899,10 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
 
     public void enforceRestrictions(final Task task) {
         enforcer.taskPositionModified(task);
+    }
+
+    public DeferedNotifier manualNotificationOn(IAction action) {
+        return enforcer.manualNotification(action);
     }
 
     public boolean contains(Dependency dependency) {
