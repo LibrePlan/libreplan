@@ -193,18 +193,9 @@ public class QueueComponent extends XulElement implements
     }
 
     private void unnasign(QueueTask choosen) {
-        final LimitingResourcesPanel panel = getLimitingResourcesPanel(choosen.getParent());
+        final LimitingResourcesPanel panel = LimitingResourcesPanel
+                .getLimitingResourcesPanel(choosen.getParent());
         panel.unschedule(choosen);
-    }
-
-    private LimitingResourcesPanel getLimitingResourcesPanel(Component comp) {
-        if (comp == null) {
-            return null;
-        }
-        if (comp instanceof LimitingResourcesPanel) {
-            return (LimitingResourcesPanel) comp;
-        }
-        return getLimitingResourcesPanel(comp.getParent());
     }
 
     private void appendContextMenus() {

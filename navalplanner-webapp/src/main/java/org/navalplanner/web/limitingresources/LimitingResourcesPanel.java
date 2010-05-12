@@ -81,7 +81,24 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private static final String filterCriterions = _("Filter by criterions");
     private boolean filterbyResources = true;
 
-    private LimitingDependencyList dependencyList;
+    private LimitingDependencyList dependencyList = new LimitingDependencyList(this);
+
+    /**
+     * Returns the closest upper {@link LimitingResourcesPanel} instance going
+     * all the way up from comp
+     *
+     * @param comp
+     * @return
+     */
+    public static LimitingResourcesPanel getLimitingResourcesPanel(Component comp) {
+        if (comp == null) {
+            return null;
+        }
+        if (comp instanceof LimitingResourcesPanel) {
+            return (LimitingResourcesPanel) comp;
+        }
+        return getLimitingResourcesPanel(comp.getParent());
+    }
 
     public LimitingResourcesPanel(LimitingResourcesController limitingResourcesController,
             TimeTracker timeTracker) {
@@ -245,27 +262,48 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {
-        dependencyList = new LimitingDependencyList(this);
-        Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
+        final Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
                 .getLimitingResourceElementToQueueTaskMap();
 
         for (LimitingResourceQueueElement queueElement : queueElementsMap
                 .keySet()) {
             for (LimitingResourceQueueDependency dependency : queueElement
                     .getDependenciesAsOrigin()) {
-
-                if (queueElementsMap.containsKey(dependency.getHasAsDestiny())) {
-                    LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
-                            queueElementsMap.get(dependency.getHasAsOrigin()),
-                            queueElementsMap.get(dependency.getHasAsDestiny()));
-                    dependencyList
-                            .addDependencyComponent(limitingDependencyComponent);
-                }
+                addDependencyComponent(dependencyList, queueElementsMap, dependency);
             }
         }
         return dependencyList;
     }
 
+    public void addDependencyComponent(LimitingResourceQueueDependency dependency) {
+        final Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
+                .getLimitingResourceElementToQueueTaskMap();
+        addDependencyComponent(dependencyList, queueElementsMap, dependency);
+    }
+
+    private void addDependencyComponent(
+            LimitingDependencyList dependencyList,
+            Map<LimitingResourceQueueElement, QueueTask> queueElementsMap,
+            LimitingResourceQueueDependency dependency) {
+
+        LimitingDependencyComponent component = createDependencyComponent(queueElementsMap, dependency);
+        if (component != null) {
+            dependencyList.addDependencyComponent(component);
+        }
+    }
+
+    private LimitingDependencyComponent createDependencyComponent(
+            Map<LimitingResourceQueueElement, QueueTask> queueElementsMap,
+            LimitingResourceQueueDependency dependency) {
+
+        final QueueTask origin = queueElementsMap.get(dependency
+                .getHasAsOrigin());
+        final QueueTask destination = queueElementsMap.get(dependency
+                .getHasAsDestiny());
+        return (origin != null && destination != null) ? new LimitingDependencyComponent(
+                origin, destination)
+                : null;
+    }
 
     public void clearComponents() {
         getFellow("insertionPointLeftPanel").getChildren().clear();
