@@ -289,6 +289,7 @@ public class SaveCommand implements ISaveCommand {
                         convertFromTypeToQueueDepedencyType(d.getType()));
             d.setQueueDependency(queueDependency);
             limitingResourceQueueDependencyDAO.save(queueDependency);
+            queueDependency.dontPoseAsTransientObjectAnymore();
         }
     }
 
