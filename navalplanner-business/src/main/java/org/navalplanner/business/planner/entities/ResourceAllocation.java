@@ -878,8 +878,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public void setLimitingResourceQueueElement(LimitingResourceQueueElement element) {
         limitingResourceQueueElements.clear();
-        element.setResourceAllocation(this);
-        limitingResourceQueueElements.add(element);
+        if (element != null) {
+            element.setResourceAllocation(this);
+            limitingResourceQueueElements.add(element);
+        }
     }
 
     public Integer getIntendedTotalHours() {

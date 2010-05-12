@@ -54,6 +54,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -288,8 +289,38 @@ public class LimitingResourcesController implements Composer {
             row.appendChild(label(element.getResourceName()));
             row.appendChild(label(element.getDate()));
             row.appendChild(label(element.getHoursToAllocate().toString()));
-            row.appendChild(assignButton(element));
+            row.appendChild(operations(element));
             row.appendChild(automaticQueueing(element));
+        }
+
+        private Hbox operations(LimitingResourceQueueElementDTO element) {
+            Hbox hbox = new Hbox();
+            hbox.appendChild(assignButton(element));
+            hbox.appendChild(removeButton(element));
+            return hbox;
+        }
+
+        private Button removeButton(final LimitingResourceQueueElementDTO element) {
+            Button result = new Button();
+            result.setLabel(_("Remove"));
+            result.setTooltiptext(_("Remove limiting resource element"));
+            result.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    removeUnassignedLimitingResourceQueueElement(element);
+                }
+            });
+            return result;
+        }
+
+        private void removeUnassignedLimitingResourceQueueElement(
+                LimitingResourceQueueElementDTO dto) {
+
+            LimitingResourceQueueElement element = dto.getOriginal();
+            limitingResourceQueueModel
+                    .removeUnassignedLimitingResourceQueueElement(element);
+            Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
         }
 
         private Button assignButton(

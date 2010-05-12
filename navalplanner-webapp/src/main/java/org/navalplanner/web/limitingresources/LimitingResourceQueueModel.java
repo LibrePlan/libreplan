@@ -22,10 +22,13 @@ package org.navalplanner.web.limitingresources;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 
 import org.hibernate.Hibernate;
@@ -39,12 +42,16 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.daos.IDependencyDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueDAO;
+import org.navalplanner.business.planner.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueElementDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DateAndHour;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElementGap;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -53,7 +60,6 @@ import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -94,10 +100,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private ILimitingResourceQueueDAO limitingResourceQueueDAO;
 
     @Autowired
-    private IResourceDAO resourceDAO;
+    private ITaskElementDAO taskDAO;
 
     @Autowired
-    private ITaskElementDAO taskDAO;
+    private ILimitingResourceQueueDependencyDAO limitingResourceQueueDependencyDAO;
 
     private Interval viewInterval;
 
@@ -105,7 +111,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private List<LimitingResourceQueueElement> unassignedLimitingResourceQueueElements = new ArrayList<LimitingResourceQueueElement>();
 
-    private List<LimitingResourceQueueElement> toBeSaved = new ArrayList<LimitingResourceQueueElement>();
+    private Set<LimitingResourceQueueElement> toBeRemoved = new HashSet<LimitingResourceQueueElement>();
+
+    private Set<LimitingResourceQueueElement> toBeSaved = new HashSet<LimitingResourceQueueElement>();
 
     @Override
     @Transactional(readOnly = true)
@@ -196,8 +204,21 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 .getResourceAllocation();
         resourceAllocation = initializeResourceAllocationIfNecessary(resourceAllocation);
         element.setResourceAllocation(resourceAllocation);
-        resourceAllocation.getTask().getName();
+        initializeTask(resourceAllocation.getTask());
         initializeCalendarIfAny(element.getResource());
+    }
+
+    private void initializeTask(Task task) {
+        Hibernate.initialize(task);
+        for (ResourceAllocation<?> each: task.getAllResourceAllocations()) {
+            Hibernate.initialize(each);
+        }
+        for (Dependency each: task.getDependenciesWithThisOrigin()) {
+            Hibernate.initialize(each);
+        }
+        for (Dependency each: task.getDependenciesWithThisDestination()) {
+            Hibernate.initialize(each);
+        }
     }
 
     private void initializeCalendarIfAny(Resource resource) {
@@ -245,6 +266,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
                 Hibernate.initialize(specific.getAssignments());
             }
+            Hibernate.initialize(resourceAllocation.getLimitingResourceQueueElement());
         }
         return resourceAllocation;
     }
@@ -325,7 +347,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void assignLimitingResourceQueueElement(
             final LimitingResourceQueueElement element) {
 
@@ -338,7 +359,13 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 .getResourceAllocation(), startTime);
         updateStartAndEndTimes(queueElement, startAndEndTime);
         addLimitingResourceQueueElement(queue, queueElement);
-        toBeSaved.add(queueElement);
+        markAsModified(queueElement);
+    }
+
+    private void markAsModified(LimitingResourceQueueElement element) {
+        if (!toBeSaved.contains(element)) {
+            toBeSaved.add(element);
+        }
     }
 
     private DateAndHour findStartTimeInQueueForQueueElement(
@@ -482,12 +509,18 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private LimitingResourceQueueElement retrieveQueueElementFromModel(
             LimitingResourceQueueElement element) {
-        return findQueueElement(unassignedLimitingResourceQueueElements,
-                element);
+        final LimitingResourceQueue queue = element.getLimitingResourceQueue();
+        if (queue != null) {
+            return findQueueElement(queue.getLimitingResourceQueueElements(),
+                    element);
+        } else {
+            return findQueueElement(unassignedLimitingResourceQueueElements,
+                    element);
+        }
     }
 
     private LimitingResourceQueueElement findQueueElement(
-            List<LimitingResourceQueueElement> elements,
+            Collection<LimitingResourceQueueElement> elements,
             LimitingResourceQueueElement element) {
         for (LimitingResourceQueueElement each : elements) {
             if (each.getId().equals(element.getId())) {
@@ -587,40 +620,133 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     @Transactional
     public void confirm() {
-        saveModifiedQueueElements();
-        loadLimitingResourceQueues();
-        loadUnassignedLimitingResourceQueueElements();
+        applyChanges();
     }
 
-    private void saveModifiedQueueElements() {
-        for (LimitingResourceQueueElement each : toBeSaved) {
-            limitingResourceQueueElementDAO.save(each);
-            saveAssociatedTask(each);
+    private void applyChanges() {
+        removeQueueElements();
+        saveQueueElements();
+    }
+
+    private void saveQueueElements() {
+        for (LimitingResourceQueueElement each: toBeSaved) {
+            if (each != null) {
+                saveQueueElement(each);
+            }
         }
         toBeSaved.clear();
     }
 
-    private void saveAssociatedTask(LimitingResourceQueueElement element) {
-        Task task = element.getResourceAllocation().getTask();
-        taskDAO.save(task);
+    private void saveQueueElement(LimitingResourceQueueElement element) {
+        limitingResourceQueueElementDAO.save(element);
+        taskDAO.save(getAssociatedTask(element));
     }
 
+    private Task getAssociatedTask(LimitingResourceQueueElement element) {
+        return element.getResourceAllocation().getTask();
+    }
+
+    private void removeQueueElements() {
+        for (LimitingResourceQueueElement each: toBeRemoved) {
+            removeQueueElement(each);
+        }
+        toBeRemoved.clear();
+    }
+
+    private void removeQueueElement(LimitingResourceQueueElement element) {
+        Task task = getAssociatedTask(element);
+        removeQueueDependenciesIfAny(task);
+        removeQueueElementById(element.getId());
+    }
+
+    private void removeQueueElementById(Long id) {
+        try {
+            limitingResourceQueueElementDAO.remove(id);
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Trying to remove non-existing entity");
+        }
+    }
+
+    private void removeQueueDependenciesIfAny(Task task) {
+        for (Dependency each: task.getDependenciesWithThisOrigin()) {
+            removeQueueDependencyIfAny(each);
+        }
+        for (Dependency each: task.getDependenciesWithThisDestination()) {
+            removeQueueDependencyIfAny(each);
+        }
+    }
+
+    private void removeQueueDependencyIfAny(Dependency dependency) {
+        LimitingResourceQueueDependency queueDependency = dependency.getQueueDependency();
+        if (queueDependency != null) {
+            queueDependency.getHasAsOrigin().remove(queueDependency);
+            queueDependency.getHasAsDestiny().remove(queueDependency);
+            dependency.setQueueDependency(null);
+            dependencyDAO.save(dependency);
+            removeQueueDependencyById(queueDependency.getId());
+        }
+    }
+
+    @Autowired
+    private IDependencyDAO dependencyDAO;
+
+    private void removeQueueDependencyById(Long id) {
+        try {
+            limitingResourceQueueDependencyDAO.remove(id);
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Trying to remove non-existing entity");
+        }
+    }
+
+    /**
+     * Unschedules an element from the list of queue elements. The element is
+     * later added to the list of unassigned elements
+     */
     @Override
     public void unschedule(LimitingResourceQueueElement element) {
+        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
         LimitingResourceQueue queue = retrieveQueueFromModel(element.getLimitingResourceQueue());
 
-        queue.removeLimitingResourceQueueElement(element);
+        queue.removeLimitingResourceQueueElement(queueElement);
 
         // Set as unassigned element
-        element.setLimitingResourceQueue(null);
-        element.setStartDate(null);
-        element.setStartHour(0);
-        element.setEndDate(null);
-        element.setEndHour(0);
+        queueElement.setLimitingResourceQueue(null);
+        queueElement.setStartDate(null);
+        queueElement.setStartHour(0);
+        queueElement.setEndDate(null);
+        queueElement.setEndHour(0);
 
-        element.getResourceAllocation().removeLimitingDayAssignments();
-        unassignedLimitingResourceQueueElements.add(element);
-        toBeSaved.add(element);
+        queueElement.getResourceAllocation().removeLimitingDayAssignments();
+        unassignedLimitingResourceQueueElements.add(queueElement);
+        markAsModified(queueElement);
+    }
+
+    /**
+     * Removes an {@link LimitingResourceQueueElement} from the list of
+     * unassigned elements
+     *
+     */
+    @Override
+    public void removeUnassignedLimitingResourceQueueElement(
+            LimitingResourceQueueElement element) {
+        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+
+        queueElement.getResourceAllocation().setLimitingResourceQueueElement(null);
+        queueElement.getResourceAllocation().getTask()
+                .removeAllResourceAllocations();
+        unassignedLimitingResourceQueueElements.remove(queueElement);
+        markAsRemoved(queueElement);
+    }
+
+    private void markAsRemoved(LimitingResourceQueueElement element) {
+        if (toBeSaved.contains(element)) {
+            toBeSaved.remove(element);
+        }
+        if (!toBeRemoved.contains(element)) {
+            toBeRemoved.add(element);
+        }
     }
 
 }

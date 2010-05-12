@@ -111,4 +111,7 @@ public interface ILimitingResourceQueueModel {
 
     void unschedule(LimitingResourceQueueElement element);
 
+    void removeUnassignedLimitingResourceQueueElement(
+            LimitingResourceQueueElement element);
+
 }
