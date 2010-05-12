@@ -25,27 +25,5 @@
 			org.springframework.security.context.ThreadLocalSecurityContextHolderStrategy=contextHolder
 		</value>
 	</preference>
-    <!-- Look org.zkoss.zk.ui.Desktop.setServerPushDelay(int, int, int) -->
-	<preference>
-        <name>PollingServerPush.delay.min</name>
-        <value>100</value>
-    </preference>
-
-    <preference>
-        <name>PollingServerPush.delay.max</name>
-        <value>1000</value>
-    </preference>
-
-    <preference>
-        <name>PollingServerPush.delay.factor</name>
-        <value>2</value>
-    </preference>
-
-    <preference>
-        <name>ThreadLocal</name>
-        <value>
-            org.springframework.security.context.ThreadLocalSecurityContextHolderStrategy=contextHolder
-        </value>
-    </preference>
 
 </zk>
