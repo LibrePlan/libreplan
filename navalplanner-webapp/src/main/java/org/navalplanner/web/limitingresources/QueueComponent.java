@@ -83,72 +83,41 @@ public class QueueComponent extends XulElement implements
 
     private void createChildren(LimitingResourceQueue limitingResourceQueue,
             IDatesMapper mapper) {
-        List<QueueTask> divs = createDivsForQueueElements(mapper,
+        List<QueueTask> queueTasks = createQueueTasks(mapper,
                 limitingResourceQueue.getLimitingResourceQueueElements());
-        if (divs != null) {
-            for (QueueTask div : divs) {
-                appendChild(div);
-            }
-            queueTasks.addAll(divs);
+        if (queueTasks != null) {
+            appendQueueTasks(queueTasks);
         }
     }
 
-    public String getResourceName() {
-        return limitingResourceQueue.getResource().getName();
+    private void appendQueueTasks(List<QueueTask> queueTasks) {
+        for (QueueTask each: queueTasks) {
+            appendQueueTask(each);
+        }
     }
 
-    private static List<QueueTask> createDivsForQueueElements(
+    private void appendQueueTask(QueueTask queueTask) {
+        queueTasks.add(queueTask);
+        appendChild(queueTask);
+    }
+
+    private static List<QueueTask> createQueueTasks(
             IDatesMapper datesMapper,
             Set<LimitingResourceQueueElement> list) {
+
         List<QueueTask> result = new ArrayList<QueueTask>();
-
-        for (LimitingResourceQueueElement queueElement : list) {
-            validateQueueElement(queueElement);
-            result.add(createDivForQueueElement(datesMapper, queueElement));
+        for (LimitingResourceQueueElement each : list) {
+            result.add(createQueueTask(datesMapper, each));
         }
-
         return result;
     }
 
-    private static void validateQueueElement(
-            LimitingResourceQueueElement queueElement) {
-        if ((queueElement.getStartDate() == null)
-                || (queueElement.getEndDate() == null)) {
-            throw new ValidationException(_("Invalid queue element"));
-        }
+    private static QueueTask createQueueTask(IDatesMapper datesMapper, LimitingResourceQueueElement element) {
+        validateQueueElement(element);
+        return createDivForElement(datesMapper, element);
     }
 
-    private void appendMenu(QueueTask divElement) {
-        if (divElement.getPage() != null) {
-            MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement
-                    .getPage());
-            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png",
-                    new ItemAction<QueueTask>() {
-                        @Override
-                        public void onEvent(QueueTask choosen, Event event) {
-                            unnasign(choosen);
-                        }
-                    });
-            divElement.setContext(menuBuilder.createWithoutSettingContext());
-        }
-    }
-
-    private void unnasign(QueueTask choosen) {
-        final LimitingResourcesPanel panel = getLimitingResourcesPanel(choosen.getParent());
-        panel.unschedule(choosen);
-    }
-
-    private LimitingResourcesPanel getLimitingResourcesPanel(Component comp) {
-        if (comp == null) {
-            return null;
-        }
-        if (comp instanceof LimitingResourcesPanel) {
-            return (LimitingResourcesPanel) comp;
-        }
-        return getLimitingResourcesPanel(comp.getParent());
-    }
-
-    private static QueueTask createDivForQueueElement(IDatesMapper datesMapper,
+    private static QueueTask createDivForElement(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
 
         QueueTask result = new QueueTask(queueElement);
@@ -183,6 +152,59 @@ public class QueueComponent extends XulElement implements
             LimitingResourceQueueElement queueElement) {
         return datesMapper.toPixels(queueElement.getStartDate().toDateMidnight()
                 .toDate());
+    }
+
+    public void appendQueueElement(LimitingResourceQueueElement element) {
+        QueueTask queueTask = createQueueTask(element);
+        appendQueueTask(queueTask);
+        appendMenu(queueTask);
+    }
+
+    private QueueTask createQueueTask(LimitingResourceQueueElement element) {
+        validateQueueElement(element);
+        return createDivForElement(timeTracker.getMapper(), element);
+    }
+
+    public String getResourceName() {
+        return limitingResourceQueue.getResource().getName();
+    }
+
+    private static void validateQueueElement(
+            LimitingResourceQueueElement queueElement) {
+        if ((queueElement.getStartDate() == null)
+                || (queueElement.getEndDate() == null)) {
+            throw new ValidationException(_("Invalid queue element"));
+        }
+    }
+
+    private void appendMenu(QueueTask divElement) {
+        if (divElement.getPage() != null) {
+            MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement
+                    .getPage(), divElement);
+            menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png",
+                    new ItemAction<QueueTask>() {
+                        @Override
+                        public void onEvent(QueueTask choosen, Event event) {
+                            unnasign(choosen);
+                        }
+                    });
+            divElement.setContext(menuBuilder.createWithoutSettingContext());
+        }
+    }
+
+    private void unnasign(QueueTask choosen) {
+        final LimitingResourcesPanel panel = getLimitingResourcesPanel(choosen.getParent());
+        panel.unschedule(choosen);
+    }
+
+    private LimitingResourcesPanel getLimitingResourcesPanel(Component comp) {
+        if (comp == null) {
+            return null;
+        }
+        if (comp instanceof LimitingResourcesPanel) {
+            return (LimitingResourcesPanel) comp;
+        }
+        return getLimitingResourcesPanel(comp.getParent());
     }
 
     private void appendContextMenus() {

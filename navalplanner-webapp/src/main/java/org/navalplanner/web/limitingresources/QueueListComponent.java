@@ -50,7 +50,7 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private TimeTracker timeTracker;
 
-    private Map<LimitingResourceQueue, QueueComponent> fromQueueToElement = new HashMap<LimitingResourceQueue, QueueComponent>();
+    private Map<LimitingResourceQueue, QueueComponent> fromQueueToComponent = new HashMap<LimitingResourceQueue, QueueComponent>();
 
     public QueueListComponent(TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
@@ -66,10 +66,14 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private void insertAsComponents(List<LimitingResourceQueue> children) {
         for (LimitingResourceQueue each : children) {
-            QueueComponent component = QueueComponent.create(timeTracker, each);
-            this.appendChild(component);
-            fromQueueToElement.put(each, component);
+            insertAsComponent(each);
         }
+    }
+
+    private void insertAsComponent(LimitingResourceQueue queue) {
+        QueueComponent component = QueueComponent.create(timeTracker, queue);
+        this.appendChild(component);
+        fromQueueToComponent.put(queue, component);
     }
 
     public void setModel(MutableTreeModel<LimitingResourceQueue> model) {
@@ -77,10 +81,16 @@ public class QueueListComponent extends HtmlMacroComponent implements
     }
 
     public void invalidate() {
-        fromQueueToElement.clear();
+        fromQueueToComponent.clear();
         this.getChildren().clear();
         insertAsComponents(model.asList());
         super.invalidate();
+    }
+
+    public void appendQueueElement(LimitingResourceQueueElement element) {
+        QueueComponent queueComponent = fromQueueToComponent.get(element
+                .getLimitingResourceQueue());
+        queueComponent.appendQueueElement(element);
     }
 
     private IZoomLevelChangedListener adjustTimeTrackerSizeListener() {
@@ -99,14 +109,14 @@ public class QueueListComponent extends HtmlMacroComponent implements
     @Override
     public void afterCompose() {
         super.afterCompose();
-        for (QueueComponent each : fromQueueToElement.values()) {
+        for (QueueComponent each : fromQueueToComponent.values()) {
             each.afterCompose();
         }
     }
 
     public List<QueueTask> getQueueTasks() {
         List<QueueTask> result = new ArrayList<QueueTask>();
-        for (QueueComponent each : fromQueueToElement.values()) {
+        for (QueueComponent each : fromQueueToComponent.values()) {
             result.addAll(each.getQueueTasks());
         }
         return result;

@@ -350,7 +350,7 @@ public class LimitingResourcesController implements Composer {
             limitingResourceQueueModel
                     .assignLimitingResourceQueueElement(element);
             Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
-            limitingResourcesPanel.reloadLimitingResourcesList();
+            limitingResourcesPanel.appendQueueElementToQueue(element);
         }
 
         private Checkbox automaticQueueing(

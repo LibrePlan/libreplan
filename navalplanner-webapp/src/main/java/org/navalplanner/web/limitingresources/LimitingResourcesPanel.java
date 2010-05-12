@@ -105,9 +105,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         registerNeededScripts();
     }
 
-    public void reloadLimitingResourcesList() {
-        queueListComponent.setModel(createModelForTree());
-        queueListComponent.invalidate();
+    public void appendQueueElementToQueue(LimitingResourceQueueElement element) {
+        queueListComponent.appendQueueElement(element);
     }
 
     private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
