@@ -23,10 +23,12 @@ package org.navalplanner.web.limitingresources;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.data.Dependency;
@@ -112,31 +114,25 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         this.panel = panel;
     }
 
+    @SuppressWarnings("unchecked")
     private List<LimitingDependencyComponent> getLimitingDependencyComponents() {
-        List<Object> children = getChildren();
         return ComponentsFinder.findComponentsOfType(
-                LimitingDependencyComponent.class, children);
+                LimitingDependencyComponent.class, getChildren());
     }
 
-    void addDependencyComponent(
+    public void addDependencyComponent(
             final LimitingDependencyComponent dependencyComponent) {
-        QueueTask source = dependencyComponent.getSource();
-        QueueTask destination = dependencyComponent.getDestination();
-        // DependencyVisibilityToggler visibilityToggler = new
-        // DependencyVisibilityToggler(
-        // source.getQueueElement(), destination.getQueueElement(),
-        // dependencyComponent);
-//        source.getQueueElement().addVisibilityPropertiesChangeListener(
-//                visibilityToggler);
-//        destination.getQueueElement().addVisibilityPropertiesChangeListener(
-//                visibilityToggler);
-//        boolean dependencyMustBeVisible = visibilityToggler.dependencyMustBeVisible();
-//        visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
-//        if (dependencyMustBeVisible) {
         dependencyComponent.redrawDependency();
-//        }
         dependencyComponent.setParent(this);
-        // dependencyComponent.redrawDependency();
+    }
+
+    public void removeDependencyComponents(QueueTask queueTask) {
+        for (LimitingDependencyComponent dependency : getLimitingDependencyComponents()) {
+            if (dependency.getSource().equals(queueTask)
+                    || dependency.getDestination().equals(queueTask)) {
+                removeChild(dependency);
+            }
+        }
     }
 
     public void setDependencyComponents(
@@ -223,4 +219,5 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             }
         }
     }
+
 }

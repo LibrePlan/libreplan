@@ -373,7 +373,6 @@ public class LimitingResourcesController implements Composer {
     public void unschedule(QueueTask task) {
         limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
         Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
-        task.detach();
     }
 
 }

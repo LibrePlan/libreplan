@@ -326,6 +326,12 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     public void unschedule(QueueTask task) {
         limitingResourcesController.unschedule(task);
+        removeQueueTask(task);
+    }
+
+    private void removeQueueTask(QueueTask task) {
+        task.detach();
+        dependencyList.removeDependencyComponents(task);
     }
 
 }
