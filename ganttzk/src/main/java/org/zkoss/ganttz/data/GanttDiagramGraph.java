@@ -20,21 +20,22 @@
 
 package org.zkoss.ganttz.data;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.WeakHashMap;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
@@ -63,10 +64,6 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     private final DirectedGraph<Task, Dependency> graph = new SimpleDirectedGraph<Task, Dependency>(
             Dependency.class);
 
-    private Map<Task, DependencyRulesEnforcer> rulesEnforcersByTask = new HashMap<Task, DependencyRulesEnforcer>();
-
-    private Map<Task, ParentShrinkingEnforcer> parentShrinkingEnforcerByTask = new WeakHashMap<Task, ParentShrinkingEnforcer>();
-
     private List<Task> topLevelTasks = new ArrayList<Task>();
 
     private Map<Task, TaskContainer> fromChildToParent = new HashMap<Task, TaskContainer>();
@@ -75,7 +72,11 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
 
     private final List<Constraint<Date>> globalEndConstraints;
 
+    private DependenciesEnforcer enforcer = new DependenciesEnforcer();
+
     private final boolean dependenciesConstraintsHavePriority;
+
+    private final ReentranceGuard positionsUpdatingGuard = new ReentranceGuard();
 
     private final PreAndPostNotReentrantActionsWrapper preAndPostActions = new PreAndPostNotReentrantActionsWrapper() {
 
@@ -122,22 +123,6 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         postGraphChangeListeners.remove(postGraphChangeListener);
     }
 
-    private PropertyChangeListener decorateWithPreAndPostActions(
-            final PropertyChangeListener listener) {
-        return new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                preAndPostActions.doAction(new IAction() {
-                    @Override
-                    public void doAction() {
-                        listener.propertyChange(evt);
-                    }
-                });
-            }
-        };
-    }
-
     public GanttDiagramGraph(List<Constraint<Date>> globalStartConstraints,
             List<Constraint<Date>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
@@ -146,192 +131,8 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 
-    private List<DependencyRulesEnforcer> getOutgoing(Task task) {
-        ArrayList<DependencyRulesEnforcer> result = new ArrayList<DependencyRulesEnforcer>();
-        for (Dependency dependency : graph.outgoingEdgesOf(task)) {
-            result.add(rulesEnforcersByTask.get(dependency.getDestination()));
-        }
-        return result;
-    }
-
-    private class ParentShrinkingEnforcer {
-
-        private final TaskContainer container;
-
-        private final Map<Task, Object> alreadyRegistered = new WeakHashMap<Task, Object>();
-
-        private ParentShrinkingEnforcer(final TaskContainer container) {
-            if (container == null) {
-                throw new IllegalArgumentException("container cannot be null");
-            }
-            this.container = container;
-            registerListeners();
-        }
-
-        void registerListeners() {
-            for (Task subtask : this.container.getTasks()) {
-                if (alreadyRegistered.containsKey(subtask)) {
-                    continue;
-                }
-                subtask
-                        .addFundamentalPropertiesChangeListener(decorateWithPreAndPostActions(new PropertyChangeListener() {
-
-                            @Override
-                            public void propertyChange(PropertyChangeEvent evt) {
-                                enforce();
-                            }
-                        }));
-            }
-        }
-
-        void enforce() {
-            Date newBeginDate = this.container
-                    .getSmallestBeginDateFromChildren();
-            this.container.setBeginDate(newBeginDate);
-            Date newEndDate = this.container.getBiggestDateFromChildren();
-            this.container.setEndDate(newEndDate);
-        }
-
-    }
-
-    private class DependencyRulesEnforcer {
-        private final Task task;
-
-        private DependencyRulesEnforcer(Task task) {
-            if (task == null) {
-                throw new IllegalArgumentException("task cannot be null");
-            }
-            this.task = task;
-            this.task
-                    .addFundamentalPropertiesChangeListener(decorateWithPreAndPostActions(new PropertyChangeListener() {
-
-                        @Override
-                        public void propertyChange(PropertyChangeEvent evt) {
-                            DependencyRulesEnforcer.this.enforce();
-                            updateOutgoing(DependencyRulesEnforcer.this.task);
-                        }
-                    }));
-        }
-
-        void enforce() {
-            Set<Dependency> incoming = graph.incomingEdgesOf(task);
-            enforceStartDate(incoming);
-            enforceEndDate(incoming);
-        }
-
-        @SuppressWarnings("unchecked")
-        private void enforceEndDate(Set<Dependency> incoming) {
-            Constraint<Date> currentLength = task.getCurrentLengthConstraint();
-            Constraint<Date> respectStartDate = task
-                    .getEndDateBiggerThanStartDate();
-            Date newEnd = Constraint.<Date> initialValue(null)
-                                    .withConstraints(currentLength)
-                                    .withConstraints(Dependency
-                                            .getEndConstraints(incoming))
-                                    .withConstraints(respectStartDate)
-                                    .apply();
-            if (!task.getEndDate().equals(newEnd)) {
-                task.setEndDate(newEnd);
-            }
-        }
-
-        private void enforceStartDate(Set<Dependency> incoming) {
-            Date newStart = calculateStartDateFor(task, incoming);
-            Date childrenEarliest = getEarliestStartDateOfChildren(task);
-            newStart = maxNotNull(newStart, childrenEarliest);
-            if (!task.getBeginDate().equals(newStart)) {
-                task.setBeginDate(newStart);
-            }
-        }
-
-        private Date getEarliestStartDateOfChildren(Task task) {
-            if (!task.isContainer()) {
-                return null;
-            }
-            List<Date> startDates = getChildrenStartDates((TaskContainer) task);
-            if (!startDates.isEmpty()) {
-                return Collections.min(startDates);
-            }
-            return null;
-        }
-
-        private List<Date> getChildrenStartDates(TaskContainer container) {
-            List<Task> children = container.getTasks();
-            List<Date> startDates = new ArrayList<Date>();
-            for (Task each : children) {
-                Set<Dependency> incomingDependencies = withoutDependencyFrom(
-                        container, graph.incomingEdgesOf(each));
-                Date dateWithoutContainerInfluence = calculateStartDateFor(
-                        each, incomingDependencies);
-                if (dateWithoutContainerInfluence != null) {
-                    startDates.add(dateWithoutContainerInfluence);
-                }
-            }
-            return startDates;
-        }
-
-        private Set<Dependency> withoutDependencyFrom(TaskContainer container,
-                Set<Dependency> incoming) {
-            Set<Dependency> result = new HashSet<Dependency>();
-            for (Dependency each : incoming) {
-                if (!each.getSource().equals(container)) {
-                    result.add(each);
-                }
-            }
-            return result;
-        }
-
-        private Date maxNotNull(Date... dates) {
-            List<Date> list = new ArrayList<Date>();
-            for (Date each : dates) {
-                if (each != null) {
-                    list.add(each);
-                }
-            }
-            if (list.isEmpty()) {
-                return null;
-            }
-            return Collections.max(list);
-        }
-    }
-
-    private Date calculateStartDateFor(Task task,
-            Set<Dependency> withDependencies) {
-        List<Constraint<Date>> dependencyConstraints = Dependency
-                .getStartConstraints(withDependencies);
-        Date newStart;
-        if (dependenciesConstraintsHavePriority) {
-            newStart = Constraint.<Date> initialValue(null)
-                                 .withConstraints(task.getStartConstraints())
-                                 .withConstraints(dependencyConstraints)
-                                 .withConstraints(globalStartConstraints)
-                                 .apply();
-
-        } else {
-            newStart = Constraint.<Date> initialValue(null)
-                                 .withConstraints(dependencyConstraints)
-                                 .withConstraints(task.getStartConstraints())
-                                 .withConstraints(globalStartConstraints)
-                                 .apply();
-        }
-        return newStart;
-    }
-
     public void enforceAllRestrictions() {
-        preAndPostActions.doAction(new IAction() {
-
-            @Override
-            public void doAction() {
-                for (DependencyRulesEnforcer rulesEnforcer : rulesEnforcersByTask
-                        .values()) {
-                    rulesEnforcer.enforce();
-                }
-                for (ParentShrinkingEnforcer parentShrinkingEnforcer : parentShrinkingEnforcerByTask
-                        .values()) {
-                    parentShrinkingEnforcer.enforce();
-                }
-            }
-        });
+        enforcer.enforceRestrictionsOn(getTopLevelTasks());
     }
 
     public void addTopLevel(Task task) {
@@ -353,11 +154,8 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
 
     public void addTask(Task task) {
         graph.addVertex(task);
-        rulesEnforcersByTask.put(task, new DependencyRulesEnforcer(task));
+        task.registerDependenciesEnforcerHook(enforcer);
         if (task.isContainer()) {
-            ParentShrinkingEnforcer parentShrinkingEnforcer = new ParentShrinkingEnforcer(
-                    (TaskContainer) task);
-            parentShrinkingEnforcerByTask.put(task, parentShrinkingEnforcer);
             List<Dependency> dependenciesToAdd = new ArrayList<Dependency>();
             for (Task child : task.getTasks()) {
                 fromChildToParent.put(child, (TaskContainer) task);
@@ -374,34 +172,694 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         }
     }
 
-    public void remove(Task task) {
-        List<DependencyRulesEnforcer> outgoing = getOutgoing(task);
+    public interface IDependenciesEnforcerHook {
+        public void setStartDate(Date previousStart, long previousLength,
+                Date newStart);
+
+        public void setLengthMilliseconds(long previousLengthMilliseconds,
+                long newLengthMilliseconds);
+    }
+
+    public interface IDependenciesEnforcerHookFactory {
+        public IDependenciesEnforcerHook create(Task task,
+                INotificationAfterDependenciesEnforcement notification);
+    }
+
+    public interface INotificationAfterDependenciesEnforcement {
+        public void onStartDateChange(Date previousStart, long previousLength,
+                Date newStart);
+
+        public void onLengthChange(long previousLength, long newLength);
+    }
+
+    private class DeferedNotifier {
+
+        private Map<Task, NotificationPendingForTask> notificationsPending = new LinkedHashMap<Task, NotificationPendingForTask>();
+
+        public void add(Task task, StartDateNofitication notification) {
+            retrieveOrCreateFor(task).setStartDateNofitication(notification);
+        }
+
+        private NotificationPendingForTask retrieveOrCreateFor(Task task) {
+            NotificationPendingForTask result = notificationsPending.get(task);
+            if (result == null) {
+                result = new NotificationPendingForTask();
+                notificationsPending.put(task, result);
+            }
+            return result;
+        }
+
+        public void add(Task task, LengthNotification notification) {
+            retrieveOrCreateFor(task).setLengthNofitication(notification);
+        }
+
+        public void doNotifications() {
+            for (NotificationPendingForTask each : notificationsPending
+                    .values()) {
+                each.doNotification();
+            }
+            notificationsPending.clear();
+        }
+
+    }
+
+    private static class NotificationPendingForTask {
+        private StartDateNofitication startDateNofitication;
+
+        private LengthNotification lengthNofitication;
+
+        void setStartDateNofitication(
+                StartDateNofitication startDateNofitication) {
+            this.startDateNofitication = this.startDateNofitication == null ? startDateNofitication
+                    : this.startDateNofitication
+                            .coalesce(startDateNofitication);
+        }
+
+        void setLengthNofitication(LengthNotification lengthNofitication) {
+            this.lengthNofitication = this.lengthNofitication == null ? lengthNofitication
+                    : this.lengthNofitication.coalesce(lengthNofitication);
+        }
+
+        void doNotification() {
+            if (startDateNofitication != null) {
+                startDateNofitication.doNotification();
+            }
+            if (lengthNofitication != null) {
+                lengthNofitication.doNotification();
+            }
+        }
+    }
+
+    private class StartDateNofitication {
+
+        private final INotificationAfterDependenciesEnforcement notification;
+        private final Date previousStart;
+        private final long previousLength;
+        private final Date newStart;
+
+        public StartDateNofitication(
+                INotificationAfterDependenciesEnforcement notification,
+                Date previousStart, long previousLength, Date newStart) {
+            this.notification = notification;
+            this.previousStart = previousStart;
+            this.previousLength = previousLength;
+            this.newStart = newStart;
+        }
+
+        public StartDateNofitication coalesce(
+                StartDateNofitication startDateNofitication) {
+            return new StartDateNofitication(notification, previousStart,
+                    previousLength, startDateNofitication.newStart);
+        }
+
+        void doNotification() {
+            notification.onStartDateChange(previousStart, previousLength,
+                    newStart);
+        }
+    }
+
+    private class LengthNotification {
+
+        private final INotificationAfterDependenciesEnforcement notification;
+        private final long previousLengthMilliseconds;
+        private final long newLengthMilliseconds;
+
+        public LengthNotification(
+                INotificationAfterDependenciesEnforcement notification,
+                long previousLengthMilliseconds, long lengthMilliseconds) {
+            this.notification = notification;
+            this.previousLengthMilliseconds = previousLengthMilliseconds;
+            this.newLengthMilliseconds = lengthMilliseconds;
+
+        }
+
+        public LengthNotification coalesce(LengthNotification lengthNofitication) {
+            return new LengthNotification(notification,
+                    previousLengthMilliseconds,
+                    lengthNofitication.newLengthMilliseconds);
+        }
+
+        void doNotification() {
+            notification.onLengthChange(previousLengthMilliseconds,
+                    newLengthMilliseconds);
+        }
+    }
+
+    private class DependenciesEnforcer implements
+            IDependenciesEnforcerHookFactory {
+
+        private ThreadLocal<DeferedNotifier> deferedNotifier = new ThreadLocal<DeferedNotifier>();
+
+        @Override
+        public IDependenciesEnforcerHook create(Task task,
+                INotificationAfterDependenciesEnforcement notificator) {
+            return onlyEnforceDependenciesOnEntrance(onEntrance(task),
+                    onNotification(task, notificator));
+        }
+
+        private IDependenciesEnforcerHook onEntrance(final Task task) {
+            return new IDependenciesEnforcerHook() {
+
+                @Override
+                public void setStartDate(Date previousStart,
+                        long previousLength, Date newStart) {
+                    taskPositionModified(task);
+                }
+
+                @Override
+                public void setLengthMilliseconds(
+                        long previousLengthMilliseconds, long lengthMilliseconds) {
+                    taskPositionModified(task);
+                }
+            };
+        }
+
+        private IDependenciesEnforcerHook onNotification(final Task task,
+                final INotificationAfterDependenciesEnforcement notification) {
+            return new IDependenciesEnforcerHook() {
+
+                @Override
+                public void setStartDate(Date previousStart,
+                        long previousLength, Date newStart) {
+                    StartDateNofitication startDateNotification = new StartDateNofitication(
+                            notification,
+                                    previousStart, previousLength, newStart);
+                    deferedNotifier.get().add(task, startDateNotification);
+
+                }
+
+                @Override
+                public void setLengthMilliseconds(
+                        long previousLengthMilliseconds,
+                        long newLengthMilliseconds) {
+                    LengthNotification lengthNotification = new LengthNotification(
+                            notification, previousLengthMilliseconds,
+                            newLengthMilliseconds);
+                    deferedNotifier.get().add(task, lengthNotification);
+                }
+            };
+
+        }
+
+        private IDependenciesEnforcerHook onlyEnforceDependenciesOnEntrance(
+                final IDependenciesEnforcerHook onEntrance,
+                final IDependenciesEnforcerHook notification) {
+            return new IDependenciesEnforcerHook() {
+
+                @Override
+                public void setStartDate(final Date previousStart,
+                        final long previousLength, final Date newStart) {
+                    positionsUpdatingGuard
+                            .entranceRequested(new IReentranceCases() {
+
+                                @Override
+                                public void ifNewEntrance() {
+                                    onNewEntrance(new IAction() {
+
+                                        @Override
+                                        public void doAction() {
+                                            notification.setStartDate(
+                                                    previousStart,
+                                                    previousLength, newStart);
+                                            onEntrance.setStartDate(
+                                                    previousStart,
+                                                    previousLength, newStart);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void ifAlreadyInside() {
+                                    notification.setStartDate(previousStart,
+                                            previousLength, newStart);
+
+                                }
+                            });
+                }
+
+                @Override
+                public void setLengthMilliseconds(
+                        final long previousLengthMilliseconds,
+                        final long lengthMilliseconds) {
+                    positionsUpdatingGuard
+                            .entranceRequested(new IReentranceCases() {
+
+                                @Override
+                                public void ifNewEntrance() {
+                                    onNewEntrance(new IAction() {
+
+                                        @Override
+                                        public void doAction() {
+                                            notification.setLengthMilliseconds(
+                                                    previousLengthMilliseconds,
+                                                    lengthMilliseconds);
+                                            onEntrance.setLengthMilliseconds(
+                                                    previousLengthMilliseconds,
+                                                    lengthMilliseconds);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void ifAlreadyInside() {
+                                    notification.setLengthMilliseconds(
+                                            previousLengthMilliseconds,
+                                            lengthMilliseconds);
+                                }
+                            });
+                }
+            };
+
+        }
+
+        void enforceRestrictionsOn(Collection<? extends Task> tasks) {
+            List<Recalculation> allRecalculations = new ArrayList<Recalculation>();
+            for (Task each : tasks) {
+                allRecalculations.addAll(getRecalculationsNeededFrom(each));
+            }
+            enforceRestrictionsOn(allRecalculations);
+        }
+
+        void enforceRestrictionsOn(Task task) {
+            enforceRestrictionsOn(getRecalculationsNeededFrom(task));
+        }
+
+        void enforceRestrictionsOn(final List<Recalculation> recalculations) {
+            executeWithPreAndPostActionsOnlyIfNewEntrance(new IAction() {
+                @Override
+                public void doAction() {
+                    doRecalculations(recalculations);
+                }
+            });
+        }
+
+        private void executeWithPreAndPostActionsOnlyIfNewEntrance(
+                final IAction action) {
+            positionsUpdatingGuard.entranceRequested(new IReentranceCases() {
+
+                @Override
+                public void ifAlreadyInside() {
+                    action.doAction();
+                }
+
+                @Override
+                public void ifNewEntrance() {
+                    onNewEntrance(action);
+                }
+            });
+        }
+
+        private void onNewEntrance(final IAction action) {
+            preAndPostActions.doAction(decorateWithNotifications(action));
+        }
+
+        private IAction decorateWithNotifications(final IAction action) {
+            return new IAction() {
+
+                @Override
+                public void doAction() {
+                    deferedNotifier.set(new DeferedNotifier());
+                    try {
+                        action.doAction();
+                    } finally {
+                        DeferedNotifier notifier = deferedNotifier.get();
+                        notifier.doNotifications();
+                        deferedNotifier.set(null);
+                    }
+                }
+            };
+        }
+
+        private void taskPositionModified(final Task task) {
+            executeWithPreAndPostActionsOnlyIfNewEntrance(new IAction() {
+                @Override
+                public void doAction() {
+                    List<Recalculation> recalculationsNeededFrom = getRecalculationsNeededFrom(task);
+                    doRecalculations(recalculationsNeededFrom);
+                }
+            });
+        }
+
+        private void doRecalculations(List<Recalculation> recalculationsNeeded) {
+            Set<Task> allModified = new HashSet<Task>();
+            List<Recalculation> calculated = new ArrayList<Recalculation>();
+            for (Recalculation each : recalculationsNeeded) {
+                if (each.haveToDoCalculation()) {
+                    calculated.add(each);
+                }
+                boolean modified = each.doRecalculation();
+                if (modified) {
+                    allModified.add(each.taskPoint.task);
+                }
+            }
+            List<TaskContainer> shrunkContainers = shrunkContainersOfModified(allModified);
+            for (Task each : getTaskAffectedByShrinking(shrunkContainers)) {
+                doRecalculations(getRecalculationsNeededFrom(each));
+            }
+        }
+
+        private List<Task> getTaskAffectedByShrinking(
+                List<TaskContainer> shrunkContainers) {
+            List<Task> tasksAffectedByShrinking = new ArrayList<Task>();
+            for (TaskContainer each : shrunkContainers) {
+                for (Dependency eachDependency : graph.outgoingEdgesOf(each)) {
+                    if (eachDependency.getType() == DependencyType.START_START
+                            && eachDependency.isVisible()) {
+                        tasksAffectedByShrinking.add(eachDependency
+                                .getDestination());
+                    }
+                }
+            }
+            return tasksAffectedByShrinking;
+        }
+
+        private List<TaskContainer> shrunkContainersOfModified(
+                Set<Task> allModified) {
+            Set<TaskContainer> topmostToShrink = getTopMostThatCouldPotentiallyNeedShrinking(allModified);
+            List<TaskContainer> allToShrink = new ArrayList<TaskContainer>();
+            for (TaskContainer each : topmostToShrink) {
+                allToShrink.addAll(getContainersBottomUp(each));
+            }
+            List<TaskContainer> result = new ArrayList<TaskContainer>();
+            for (TaskContainer each : allToShrink) {
+                boolean modified = enforceParentShrinkage(each);
+                if (modified) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        private Set<TaskContainer> getTopMostThatCouldPotentiallyNeedShrinking(
+                Collection<Task> modified) {
+            Set<TaskContainer> result = new HashSet<TaskContainer>();
+            for (Task each : modified) {
+                Task t = getTopmostFor(each);
+                if (t.isContainer()) {
+                    result.add((TaskContainer) t);
+                }
+            }
+            return result;
+        }
+
+        private Collection<? extends TaskContainer> getContainersBottomUp(
+                TaskContainer container) {
+            List<TaskContainer> result = new ArrayList<TaskContainer>();
+            List<Task> tasks = container.getTasks();
+            for (Task each : tasks) {
+                if (each.isContainer()) {
+                    TaskContainer childContainer = (TaskContainer) each;
+                    result.addAll(getContainersBottomUp(childContainer));
+                    result.add(childContainer);
+                }
+            }
+            result.add(container);
+            return result;
+        }
+
+
+
+        boolean enforceParentShrinkage(TaskContainer container) {
+            Date oldBeginDate = container.getBeginDate();
+            Date firstStart = container.getSmallestBeginDateFromChildren();
+            Date previousEnd = container.getEndDate();
+            if (firstStart.after(oldBeginDate)) {
+                container.setBeginDate(firstStart);
+                container.setEndDate(previousEnd);
+                return true;
+            }
+            return false;
+        }
+
+
+
+
+
+
+
+
+    }
+
+    List<Recalculation> getRecalculationsNeededFrom(Task task) {
+        List<Recalculation> result = new LinkedList<Recalculation>();
+        Set<Recalculation> parentRecalculationsAlreadyDone = new HashSet<Recalculation>();
+        Recalculation first = recalculationFor(TaskPoint.both(task));
+        Queue<Recalculation> pendingOfNavigate = new LinkedList<Recalculation>();
+        result.addAll(getParentsRecalculations(parentRecalculationsAlreadyDone,
+                first.taskPoint));
+        result.add(first);
+        pendingOfNavigate.offer(first);
+        while (!pendingOfNavigate.isEmpty()) {
+            Recalculation current = pendingOfNavigate.poll();
+            for (TaskPoint each : getImmendiateReachableFrom(current.taskPoint)) {
+                Recalculation recalculationToAdd = recalculationFor(each);
+                ListIterator<Recalculation> listIterator = result
+                        .listIterator();
+                while (listIterator.hasNext()) {
+                    Recalculation previous = listIterator.next();
+                    if (previous.equals(recalculationToAdd)) {
+                        listIterator.remove();
+                        recalculationToAdd = previous;
+                        break;
+                    }
+                }
+                recalculationToAdd.fromParent(current);
+                result.addAll(getParentsRecalculations(
+                        parentRecalculationsAlreadyDone, each));
+                result.add(recalculationToAdd);
+                pendingOfNavigate.offer(recalculationToAdd);
+            }
+        }
+        return result;
+    }
+
+    private List<Recalculation> getParentsRecalculations(
+            Set<Recalculation> parentRecalculationsAlreadyDone,
+            TaskPoint taskPoint) {
+        List<Recalculation> result = new ArrayList<Recalculation>();
+        for (TaskPoint eachParent : parentsRecalculationsNeededFor(taskPoint)) {
+            Recalculation parentRecalculation = parentRecalculation(eachParent.task);
+            if (!parentRecalculationsAlreadyDone
+                    .contains(parentRecalculation)) {
+                parentRecalculationsAlreadyDone.add(parentRecalculation);
+                result.add(parentRecalculation);
+            }
+        }
+        return result;
+    }
+
+    private Set<TaskPoint> parentsRecalculationsNeededFor(TaskPoint current) {
+        Set<TaskPoint> result = new LinkedHashSet<TaskPoint>();
+        if (current.pointType == PointType.BOTH) {
+            List<Task> path = fromTaskToTop(current.task);
+            if (path.size() > 1) {
+                path = path.subList(1, path.size());
+                Collections.reverse(path);
+                result.addAll(asBothPoints(path));
+            }
+        }
+        return result;
+    }
+
+    private Collection<? extends TaskPoint> asBothPoints(List<Task> parents) {
+        List<TaskPoint> result = new ArrayList<TaskPoint>();
+        for (Task each : parents) {
+            result.add(TaskPoint.both(each));
+        }
+        return result;
+    }
+
+    private List<Task> fromTaskToTop(Task task) {
+        List<Task> result = new ArrayList<Task>();
+        Task current = task;
+        while (current != null) {
+            result.add(current);
+            current = fromChildToParent.get(current);
+        }
+        return result;
+    }
+
+    private Recalculation parentRecalculation(Task task) {
+        return new Recalculation(TaskPoint.both(task), true);
+    }
+
+    private Recalculation recalculationFor(TaskPoint taskPoint) {
+        return new Recalculation(taskPoint, false);
+    }
+
+    private class Recalculation {
+
+        private final boolean parentRecalculation;
+
+        private final TaskPoint taskPoint;
+
+        private Set<Recalculation> parents = new HashSet<Recalculation>();
+
+        private boolean recalculationCalled = false;
+
+        private boolean dataPointModified = false;
+
+        Recalculation(TaskPoint taskPoint, boolean isParentRecalculation) {
+            Validate.notNull(taskPoint);
+            this.taskPoint = taskPoint;
+            this.parentRecalculation = isParentRecalculation;
+        }
+
+        public void fromParent(Recalculation parent) {
+            parents.add(parent);
+        }
+
+        boolean doRecalculation() {
+            recalculationCalled = true;
+            dataPointModified = haveToDoCalculation()
+                    && taskChangesPosition();
+            return dataPointModified;
+        }
+
+        private boolean haveToDoCalculation() {
+            return (parents.isEmpty() || parentsHaveBeenModified());
+        }
+
+        private boolean taskChangesPosition() {
+            PointType pointType = taskPoint.pointType;
+            Task task = taskPoint.task;
+            switch (pointType) {
+            case BOTH:
+                return enforceStartAndEnd(task);
+            case END:
+                return enforceEnd(task);
+            default:
+                return false;
+            }
+        }
+
+        private boolean parentsHaveBeenModified() {
+            for (Recalculation each : parents) {
+                if (!each.recalculationCalled) {
+                    throw new RuntimeException(
+                            "the parent must be called first");
+                }
+                if (each.dataPointModified) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean enforceStartAndEnd(Task task) {
+            Set<Dependency> incoming = graph.incomingEdgesOf(task);
+            Date previousEndDate = task.getEndDate();
+            boolean startDateChanged = enforceStartDate(task, incoming);
+            boolean endDateChanged = enforceEndDate(task, previousEndDate,
+                    incoming);
+            return startDateChanged || endDateChanged;
+        }
+
+        private boolean enforceEnd(Task task) {
+            Set<Dependency> incoming = graph.incomingEdgesOf(task);
+            Date previousEndDate = task.getEndDate();
+            return enforceEndDate(task, previousEndDate, incoming);
+        }
+
+        @SuppressWarnings("unchecked")
+        private boolean enforceEndDate(Task task, Date previousEndDate,
+                Set<Dependency> incoming) {
+            Constraint<Date> currentLength = task.getCurrentLengthConstraint();
+            Constraint<Date> respectStartDate = task
+                    .getEndDateBiggerThanStartDate();
+            Date newEnd = Constraint.<Date> initialValue(null).withConstraints(
+                    currentLength).withConstraints(
+                    Dependency.getEndConstraints(incoming)).withConstraints(
+                    respectStartDate).apply();
+            if (!task.getEndDate().equals(newEnd)) {
+                task.setEndDate(newEnd);
+            }
+            return !previousEndDate.equals(newEnd);
+        }
+
+        private boolean enforceStartDate(Task task, Set<Dependency> incoming) {
+            Date newStart = calculateStartDateFor(task, incoming);
+            if (!task.getBeginDate().equals(newStart)) {
+                task.setBeginDate(newStart);
+                return true;
+            }
+            return false;
+        }
+
+        private Date calculateStartDateFor(Task task,
+                Set<Dependency> withDependencies) {
+            List<Constraint<Date>> dependencyConstraints = Dependency
+                    .getStartConstraints(withDependencies);
+            Date newStart;
+            if (dependenciesConstraintsHavePriority) {
+                newStart = Constraint.<Date> initialValue(null)
+                        .withConstraints(task.getStartConstraints())
+                        .withConstraints(dependencyConstraints)
+                        .withConstraints(globalStartConstraints).apply();
+
+            } else {
+                newStart = Constraint.<Date> initialValue(null)
+                        .withConstraints(dependencyConstraints)
+                        .withConstraints(task.getStartConstraints())
+                        .withConstraints(globalStartConstraints).apply();
+            }
+            return newStart;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                            .append(parentRecalculation)
+                            .append(taskPoint)
+                            .toHashCode();
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s, parentRecalculation: %s, parents: %s",
+                    taskPoint, parentRecalculation, asSimpleString(parents));
+        }
+
+        private String asSimpleString(
+                Collection<? extends Recalculation> recalculations) {
+            StringBuilder result = new StringBuilder();
+            result.append("[");
+            for (Recalculation each : recalculations) {
+                result.append(each.taskPoint).append(", ");
+            }
+            result.append("]");
+            return result.toString();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Recalculation) {
+                Recalculation other = (Recalculation) obj;
+                return new EqualsBuilder().append(parentRecalculation, other.parentRecalculation)
+                                          .append(taskPoint, other.taskPoint)
+                                          .isEquals();
+            }
+            return false;
+        }
+    }
+
+    public void remove(final Task task) {
+        Set<Task> needingEnforcing = getOutgoingTasksFor(task);
         graph.removeVertex(task);
-        rulesEnforcersByTask.remove(task);
         topLevelTasks.remove(task);
         fromChildToParent.remove(task);
-        update(outgoing);
         if (task.isContainer()) {
             for (Task t : task.getTasks()) {
                 remove(t);
             }
         }
-    }
-
-    private void updateOutgoing(Task task) {
-        update(getOutgoing(task));
-    }
-
-    private void update(List<DependencyRulesEnforcer> outgoing) {
-        for (DependencyRulesEnforcer rulesEnforcer : outgoing) {
-            rulesEnforcer.enforce();
-        }
+        enforcer.enforceRestrictionsOn(needingEnforcing);
     }
 
     public void remove(Dependency dependency) {
         graph.removeEdge(dependency);
         Task destination = dependency.getDestination();
-        rulesEnforcersByTask.get(destination).enforce();
+        enforcer.enforceRestrictionsOn(destination);
     }
 
     public void add(Dependency dependency) {
@@ -412,20 +870,11 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     }
 
     public void enforceRestrictions(final Task task) {
-        preAndPostActions.doAction(new IAction() {
-            @Override
-            public void doAction() {
-                getEnforcer(task).enforce();
-            }
-        });
+        enforcer.taskPositionModified(task);
     }
 
     public boolean contains(Dependency dependency) {
         return graph.containsEdge(dependency);
-    }
-
-    private DependencyRulesEnforcer getEnforcer(Task destination) {
-        return rulesEnforcersByTask.get(destination);
     }
 
     @Override
@@ -449,10 +898,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     }
 
     public void childrenAddedTo(TaskContainer task) {
-        ParentShrinkingEnforcer parentShrinkingEnforcer = parentShrinkingEnforcerByTask
-                .get(task);
-        parentShrinkingEnforcer.registerListeners();
-        parentShrinkingEnforcer.enforce();
+        enforcer.enforceRestrictionsOn(task);
     }
 
     @Override
@@ -608,6 +1054,11 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         }
 
         @Override
+        public String toString() {
+            return String.format("%s(%s)", task, pointType);
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (obj instanceof TaskPoint) {
                 TaskPoint other = (TaskPoint) obj;
@@ -647,6 +1098,16 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         return result;
     }
 
+
+
+    private Task getTopmostFor(Task task) {
+        Task result = task;
+        while (fromChildToParent.containsKey(result)) {
+            result = fromChildToParent.get(task);
+        }
+        return result;
+    }
+
     private Set<TaskPoint> getImmendiateReachableFrom(TaskPoint current) {
         Set<TaskPoint> result = new HashSet<TaskPoint>();
         Set<Dependency> outgoingEdgesOf = graph.outgoingEdgesOf(current.task);
@@ -662,6 +1123,8 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
 
 interface IReentranceCases {
     public void ifNewEntrance();
+
+    public void ifAlreadyInside();
 }
 
 class ReentranceGuard {
@@ -673,6 +1136,7 @@ class ReentranceGuard {
 
     public void entranceRequested(IReentranceCases reentranceCases) {
         if (inside.get()) {
+            reentranceCases.ifAlreadyInside();
             return;
         }
         inside.set(true);

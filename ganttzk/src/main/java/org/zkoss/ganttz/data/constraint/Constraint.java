@@ -33,6 +33,21 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
  */
 public abstract class Constraint<T> {
 
+    public static <T> Constraint<T> emptyConstraint() {
+        return new Constraint<T>() {
+
+            @Override
+            protected T applyConstraintTo(T currentValue) {
+                return currentValue;
+            }
+
+            @Override
+            public boolean isSatisfiedBy(T value) {
+                return true;
+            }
+        };
+    }
+
     public interface IConstraintViolationListener<T> {
         public void constraintViolated(Constraint<T> constraint, T value);
     }
