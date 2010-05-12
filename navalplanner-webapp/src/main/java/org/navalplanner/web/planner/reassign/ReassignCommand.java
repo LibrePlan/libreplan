@@ -126,8 +126,6 @@ public class ReassignCommand implements IReassignCommand {
             IDesktopUpdate notifyChanges = changesNotificatorFor(each.ganntTask);
             transactionService
                     .runOnReadOnlyTransaction(reassignmentTransaction(each));
-            updater.doUpdate(notifyChanges);
-            updater.doUpdate(showCompleted(i, total));
             updater.doUpdate(and(notifyChanges, showCompleted(i, total)));
             i++;
         }
