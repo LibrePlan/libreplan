@@ -102,8 +102,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Intbox assignedHoursComponent;
 
-    private Datebox taskStartDatebox = new Datebox();
-
     private Grid calculationTypesGrid;
 
     private Radiogroup calculationTypeSelector;
@@ -183,13 +181,21 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(Integer column, CalculationTypeRadio data) {
-                return data.createComponent(getController());
+                return data.createComponent(getController(),
+                        getCalculationTypeRadio());
             }
         };
     }
 
     private Datebox getTaskEndDate() {
         return taskEndDate;
+    }
+
+    private CalculationTypeRadio getCalculationTypeRadio() {
+        if (formBinder != null) {
+            return CalculationTypeRadio.from(formBinder.getCalculatedValue());
+        }
+        return null;
     }
 
     public ResourceAllocationController getController() {
@@ -230,9 +236,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.setMessagesForUser(messagesForUser);
             formBinder.setWorkerSearchTab(workerSearchTab);
             formBinder.setCheckbox(recommendedAllocationCheckbox);
+
             CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                     .from(formBinder.getCalculatedValue());
             calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
+
             tbResourceAllocation.setSelected(true);
             orderElementHoursGrid.setModel(new ListModelList(
                     resourceAllocationModel.getHoursAggregatedByCriterions()));
@@ -421,39 +429,52 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 ResourceAllocationController resourceAllocationController);
 
         public Component createComponent(
-                ResourceAllocationController resourceAllocationController) {
+                ResourceAllocationController resourceAllocationController,
+                CalculationTypeRadio calculationTypeRadio) {
             if (this.equals(END_DATE)) {
-                return createHbox(resourceAllocationController.taskEndDate);
+                return createHbox(resourceAllocationController.taskEndDate,
+                        calculationTypeRadio);
             } else {
-                return createRadio();
+                return createRadio(calculationTypeRadio);
             }
         }
 
-        public Radio createRadio() {
+        public Radio createRadio(CalculationTypeRadio calculationTypeRadio) {
             Radio result = new Radio();
             result.setLabel(getName());
             result.setValue(toString());
+            result.setChecked(isSameCalculationTypeRadio(result,
+                    calculationTypeRadio));
             return result;
         }
 
-        public Hbox createHbox(Datebox datebox) {
+        public Hbox createHbox(Datebox datebox,
+                CalculationTypeRadio calculationTypeRadio) {
             Hbox hbox = new Hbox();
             hbox.setSpacing("65px");
-            Radio radio = createRadio();
+            Radio radio = createRadio(calculationTypeRadio);
 
             hbox.appendChild(radio);
             hbox.appendChild(datebox);
             return hbox;
         }
 
-        public void doTheSelectionOn(Radiogroup radiogroup) {
-            for (int i = 0; i < radiogroup.getItemCount(); i++) {
-                Radio radio = radiogroup.getItemAtIndex(i);
-                if (name().equals(radio.getValue())) {
-                    radiogroup.setSelectedIndex(i);
-                    break;
-                }
+        public boolean isSameCalculationTypeRadio(Radio radio,
+                CalculationTypeRadio calculationTypeRadio) {
+            if (calculationTypeRadio != null) {
+                return name().equals(calculationTypeRadio.name());
             }
+            return false;
+        }
+
+        public void doTheSelectionOn(final Radiogroup radiogroup) {
+                for (int i = 0; i < radiogroup.getItemCount(); i++) {
+                    Radio radio = radiogroup.getItemAtIndex(i);
+                    if (name().equals(radio.getValue())) {
+                        radiogroup.setSelectedIndex(i);
+                        break;
+                    }
+                }
         }
 
         private final CalculatedValue calculatedValue;
