@@ -180,6 +180,10 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return true;
     }
 
+    public boolean hasConsolidations() {
+        return false;
+    }
+
     @Override
     public String getAssignedStatus() {
         return "unassigned";

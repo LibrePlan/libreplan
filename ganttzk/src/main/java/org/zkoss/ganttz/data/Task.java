@@ -365,6 +365,10 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.isLimitingAndHasDayAssignments();
     }
 
+    public boolean hasConsolidations() {
+        return fundamentalProperties.hasConsolidations();
+    }
+
     public boolean canBeExplicitlyResized() {
         return fundamentalProperties.canBeExplicitlyResized();
     }

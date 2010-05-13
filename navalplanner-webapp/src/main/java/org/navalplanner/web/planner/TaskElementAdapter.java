@@ -571,6 +571,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return taskElement.isLimitingAndHasDayAssignments();
         }
 
+        public boolean hasConsolidations() {
+            return taskElement.hasConsolidations();
+        }
+
         private void stepsBeforePossibleReallocation() {
             taskDAO.reattach(taskElement);
             reattachAllResourcesForTask();

@@ -104,4 +104,8 @@ public class NonCalculatedConsolidation extends Consolidation {
         return false;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return consolidatedValues.isEmpty();
+    }
 }

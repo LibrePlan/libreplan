@@ -608,4 +608,7 @@ public class Task extends TaskElement {
 
     }
 
+    public boolean hasConsolidations() {
+        return ((consolidation != null) && (!consolidation.isEmpty()));
+    }
 }

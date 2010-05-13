@@ -34,6 +34,8 @@ public abstract class Consolidation extends BaseEntity {
 
     public abstract boolean isCalculated();
 
+    public abstract boolean isEmpty();
+
     private Task task;
 
     protected Consolidation() {

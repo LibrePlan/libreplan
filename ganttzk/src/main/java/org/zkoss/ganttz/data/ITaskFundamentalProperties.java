@@ -82,6 +82,8 @@ public interface ITaskFundamentalProperties {
 
     public boolean isLimitingAndHasDayAssignments();
 
+    public boolean hasConsolidations();
+
     public boolean canBeExplicitlyResized();
 
     public String getAssignedStatus();

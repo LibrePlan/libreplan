@@ -417,6 +417,11 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public boolean hasConsolidations() {
+        // Just Task could be consolidated
+        return false;
+    }
+
     public TaskElement getTopMost() {
         TaskElement result = this;
         while (result.getParent() != null) {

@@ -937,6 +937,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if (each.getCalendar() != null) {
             BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
         }
+        each.hasConsolidations();
     }
 
     /**
