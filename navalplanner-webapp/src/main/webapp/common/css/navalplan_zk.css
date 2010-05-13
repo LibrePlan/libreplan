@@ -830,6 +830,10 @@ div.z-grid {
     margin-right:5px;
 }
 
+.resourcesloadlayout .legend-container {
+    width:186px;
+}
+
 
 /* Graphical improvements */
 

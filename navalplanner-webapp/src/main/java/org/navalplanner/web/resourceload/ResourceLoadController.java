@@ -425,12 +425,9 @@ public class ResourceLoadController implements Composer {
 
         Tabpanels chartTabpanels = new Tabpanels();
         Tabpanel loadChartPannel = new Tabpanel();
-        // FIXME CSS problem and remove next line
-        // CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
-        // buildLoadChart());
-        loadChartPannel.appendChild(buildLoadChart());
+        CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
+                buildLoadChart());
         chartTabpanels.appendChild(loadChartPannel);
-
         chartComponent.appendChild(chartTabpanels);
 
         return chartComponent;
