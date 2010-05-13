@@ -366,4 +366,14 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isExpandOrderPlanningViewCharts();
     }
 
+    public void setExpandResourceLoadViewCharts(
+            Boolean expandResourceLoadViewCharts) {
+        configurationModel
+                .setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
+    }
+
+    public Boolean isExpandResourceLoadViewCharts() {
+        return configurationModel.isExpandResourceLoadViewCharts();
+    }
+
 }

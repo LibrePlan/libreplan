@@ -108,6 +108,10 @@
                                         <checkbox label="${i18n:_('Order view')}"
                                             checked="@{configurationController.expandOrderPlanningViewCharts}" />
                                     </row>
+                                    <row>
+                                        <checkbox label="${i18n:_('Resource load view')}"
+                                            checked="@{configurationController.expandResourceLoadViewCharts}" />
+                                    </row>
                                 </rows>
                             </grid>
                         </row>
