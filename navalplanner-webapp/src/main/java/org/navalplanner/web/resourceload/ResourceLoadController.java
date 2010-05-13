@@ -255,13 +255,13 @@ public class ResourceLoadController implements Composer {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker, parent, resourceLoadModel
                     .isExpandResourceLoadViewCharts());
-            resourcesLoadPanel.setLoadChart(buildChart());
             if(filterBy == null) {
                 addWorkersBandbox();
                 addTimeFilter();
             }
             addListeners();
         }
+        resourcesLoadPanel.setLoadChart(buildChart());
     }
 
     private void addWorkersBandbox() {
