@@ -671,6 +671,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 IOnMoveListener.class, new IOnMoveListener() {
                     @Override
                     public void moved(TaskElement taskElement) {
+                        if (isExecutingOutsideZKExecution()) {
+                            return;
+                        }
                         if (planner.isVisibleChart()) {
                             loadChart.fillChart();
                         }
@@ -685,6 +688,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                         }
                     }
                 }));
+    }
+
+    private boolean isExecutingOutsideZKExecution() {
+        return Executions.getCurrent() == null;
     }
 
     private void addAdditional(List<ICommand<TaskElement>> additional,
