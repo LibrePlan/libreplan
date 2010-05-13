@@ -754,15 +754,19 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
         rowsCached = new ArrayList<Row>();
         for (AllocationInput allocationInput : allocationInputs) {
-            Row groupingRow = buildGroupingRow(allocationInput);
-            groupingRows.put(allocationInput, groupingRow);
-            rowsCached.add(groupingRow);
-            List<Row> genericRows = genericRows(allocationInput);
-            groupingRow.listenTo(genericRows);
-            rowsCached.addAll(genericRows);
-            List<Row> specificRows = specificRows(allocationInput);
-            groupingRow.listenTo(specificRows);
-            rowsCached.addAll(specificRows);
+            if (allocationInput.getAggregate()
+                    .getAllocationsSortedByStartDate().isEmpty()) {
+            } else {
+                Row groupingRow = buildGroupingRow(allocationInput);
+                groupingRows.put(allocationInput, groupingRow);
+                rowsCached.add(groupingRow);
+                List<Row> genericRows = genericRows(allocationInput);
+                groupingRow.listenTo(genericRows);
+                rowsCached.addAll(genericRows);
+                List<Row> specificRows = specificRows(allocationInput);
+                groupingRow.listenTo(specificRows);
+                rowsCached.addAll(specificRows);
+            }
         }
         return filterRows(rowsCached);
     }
@@ -808,7 +812,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 specificResourceAllocation.getResource()
                         .getName(), 1, Arrays
                 .asList(specificResourceAllocation), specificResourceAllocation
-                .getResource().getShortDescription());
+                .getResource().getShortDescription(),
+                specificResourceAllocation.getResource().isLimitingResource());
     }
 
     private List<Row> genericRows(AllocationInput allocationInput) {
@@ -827,7 +832,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         return Row.createRow(messages, restriction,
                 ResourceLoadModel
                 .getName(genericResourceAllocation.getCriterions()), 1, Arrays
-                .asList(genericResourceAllocation));
+                .asList(genericResourceAllocation), genericResourceAllocation
+                .isLimiting());
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
@@ -835,7 +841,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 .createRestriction();
         String taskName = _("{0}", allocationInput.getTaskName());
         Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
-                allocationInput.getAllocationsSortedByStartDate());
+                allocationInput.getAllocationsSortedByStartDate(), false);
         return groupingRow;
     }
 
@@ -951,16 +957,19 @@ class Row {
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
  List<? extends ResourceAllocation<?>> allocations,
-            String description) {
-        Row newRow = new Row(messages, restriction, name, level, allocations);
+            String description, boolean limiting) {
+        Row newRow = new Row(messages, restriction, name, level, allocations,
+                limiting);
         newRow.setDescription(description);
         return newRow;
     }
 
     static Row createRow(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction, String name,
-            int level, List<? extends ResourceAllocation<?>> allocations) {
-        return new Row(messages, restriction, name, level, allocations);
+            int level, List<? extends ResourceAllocation<?>> allocations,
+            boolean limiting) {
+        return new Row(messages, restriction, name, level, allocations,
+                limiting);
     }
 
     public void markErrorOnTotal(String message) {
@@ -1040,11 +1049,12 @@ class Row {
     }
 
     private Component buildAllHours() {
-        return isGroupingRow() ? new Label() : noNegativeIntbox();
+        return (isGroupingRow() || isLimiting) ? new Label()
+                : noNegativeIntbox();
     }
 
     private void addListenerIfNeeded(Component allHoursComponent) {
-        if (isGroupingRow()) {
+        if (isGroupingRow() || isLimiting) {
             return;
         }
         final Intbox intbox = (Intbox) allHoursComponent;
@@ -1072,7 +1082,7 @@ class Row {
     }
 
     private void reloadAllHours() {
-        if (isGroupingRow()) {
+        if (isGroupingRow() || isLimiting) {
             Label label = (Label) allHoursInput;
             int totalHours = aggregate.getTotalHours();
             if (label != null) {
@@ -1085,12 +1095,17 @@ class Row {
         } else {
             Intbox intbox = (Intbox) allHoursInput;
             intbox.setValue(aggregate.getTotalHours());
+            if (isLimiting) {
+                intbox.setDisabled(true);
+            }
         }
     }
 
     Component getFunction() {
         if (isGroupingRow()) {
             return new Label();
+        } else if (isLimiting) {
+            return new Label(_("Limiting assignment"));
         } else {
             Hbox hbox = new Hbox();
 
@@ -1238,6 +1253,8 @@ class Row {
     private IAssignmentFunctionConfiguration[] functions = { none,
             defaultStrechesFunction, strechesWithInterpolation };
 
+    private boolean isLimiting;
+
     private Combobox getAssignmentFunctionsCombo() {
         AssignmentFunction assignmentFunction = getAllocation()
                 .getAssignmentFunction();
@@ -1289,11 +1306,13 @@ class Row {
     private Row(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
-            List<? extends ResourceAllocation<?>> allocations) {
+ List<? extends ResourceAllocation<?>> allocations,
+            boolean limiting) {
         this.messages = messages;
         this.restriction = restriction;
         this.name = name;
         this.level = level;
+        this.isLimiting = limiting;
         this.aggregate = new AggregateOfResourceAllocations(
                 new ArrayList<ResourceAllocation<?>>(allocations));
     }
@@ -1358,6 +1377,9 @@ class Row {
         } else {
             Intbox intbox = (Intbox) component;
             intbox.setValue(getHoursForDetailItem(item));
+            if (isLimiting) {
+                intbox.setDisabled(true);
+            }
         }
     }
 
