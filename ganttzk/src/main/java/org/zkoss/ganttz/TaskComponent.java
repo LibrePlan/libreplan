@@ -255,23 +255,22 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     protected String calculateClass() {
-        String classText;
+        String cssClass = (isSubcontracted() ? "box subcontracted-task"
+                : "box standard-task")
+                + (isResizingTasksEnabled() ? " yui-resize" : "");
 
-        if (getSclass() == null || getSclass().equals("null")) {
-            classText = "box";
-        } else {
-            classText = getSclass();
-        }
-        if (task.isInCriticalPath()) {
-            classText += " critical";
-        }
-        if (task.isSubcontracted()) {
-            classText += " subcontracted-task";
+        if (task instanceof TaskContainer) {
+            if (task.isExpanded()) {
+                cssClass += " expanded";
+            } else {
+                cssClass += " closed";
+            }
         }
 
-        classText += " " + getTask().getAssignedStatus();
+        cssClass += (task.isInCriticalPath() ? " critical" : "");
+        cssClass += " " + getTask().getAssignedStatus();
 
-        return classText;
+        return cssClass;
     }
 
     protected void updateClass() {
