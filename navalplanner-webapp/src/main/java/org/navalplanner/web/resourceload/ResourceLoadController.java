@@ -124,6 +124,8 @@ public class ResourceLoadController implements Composer {
 
     private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
 
+    private Chart loadChart;
+
     public ResourceLoadController() {
     }
 
@@ -436,7 +438,7 @@ public class ResourceLoadController implements Composer {
     private Timeplot buildLoadChart() {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
-        Chart loadChart = new Chart(chartLoadTimeplot,
+        loadChart = new Chart(chartLoadTimeplot,
                 new ResourceLoadChartFiller(), timeTracker);
         loadChart.setZoomLevel(zoomLevel);
         if (resourcesLoadPanel.isVisibleChart()) {
