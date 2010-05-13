@@ -632,6 +632,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         List<Recalculation> result = new LinkedList<Recalculation>();
         Set<Recalculation> parentRecalculationsAlreadyDone = new HashSet<Recalculation>();
         Recalculation first = recalculationFor(TaskPoint.both(task));
+        first.couldHaveBeenModifiedBeforehand();
         Queue<Recalculation> pendingOfNavigate = new LinkedList<Recalculation>();
         result.addAll(getParentsRecalculations(parentRecalculationsAlreadyDone,
                 first.taskPoint));
@@ -727,10 +728,16 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
 
         private boolean dataPointModified = false;
 
+        private boolean couldHaveBeenModifiedBeforehand = false;
+
         Recalculation(TaskPoint taskPoint, boolean isParentRecalculation) {
             Validate.notNull(taskPoint);
             this.taskPoint = taskPoint;
             this.parentRecalculation = isParentRecalculation;
+        }
+
+        public void couldHaveBeenModifiedBeforehand() {
+            couldHaveBeenModifiedBeforehand = true;
         }
 
         public void fromParent(Recalculation parent) {
@@ -767,7 +774,8 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
                     throw new RuntimeException(
                             "the parent must be called first");
                 }
-                if (each.dataPointModified) {
+                if (each.dataPointModified
+                        || each.couldHaveBeenModifiedBeforehand) {
                     return true;
                 }
             }
