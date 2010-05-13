@@ -17,7 +17,7 @@ body {
 }
 
 .entrar {
-    cursor: hand;
+    cursor: pointer;
     background-color: #E4F3D9; /* green0 (normal background) */
     color: #58A758; /* green3 (text) */
     border: 1px solid #439e32; /* green4 (border) */

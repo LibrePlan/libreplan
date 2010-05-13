@@ -138,7 +138,6 @@
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
-    cursor: hand;
 }
 
 /* Task lane properties */
@@ -479,6 +478,7 @@ tr.z-vbox-sep {
     height: 10px;
     position: absolute;
     border-left: solid 1px white;
+    cursor: pointer;
 }
 
 .FULL_LOAD {
@@ -605,10 +605,12 @@ tr.z-vbox-sep {
 
 .resourceload-resource div {
     border: solid 1px;
+    cursor: default;
 }
 
 .resourceload-global-generic div {
     border: solid 1px;
+    cursor: default;
 }
 
 .row_resourceload.resourceload-global-generic,
