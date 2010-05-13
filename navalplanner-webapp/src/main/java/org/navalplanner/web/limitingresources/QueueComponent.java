@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -40,6 +40,7 @@ import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -129,19 +130,53 @@ public class QueueComponent extends XulElement implements
         result.setLeft(forCSS(getStartPixels(datesMapper, queueElement)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, queueElement)));
 
+        result.appendChild(generateNonWorkableShade(datesMapper, queueElement));
+
         return result;
     }
 
-    private static int getWidthPixels(IDatesMapper datesMapper,
-            LimitingResourceQueueElement loadPeriod) {
-        LocalDate start = loadPeriod.getStartDate();
-        LocalDate end = loadPeriod.getEndDate();
-        return datesMapper
-                .toPixels(toMilliseconds(end) - toMilliseconds(start));
+    private static Div generateNonWorkableShade(IDatesMapper datesMapper,
+            LimitingResourceQueueElement queueElement) {
+        int workableHours = queueElement.getResource().getCalendar()
+                .getCapacityAt(queueElement.getEndDate());
+
+        int shadeWidth = new Long((24 - workableHours)
+                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                / datesMapper.getMilisecondsPerPixel()).intValue();
+
+        int shadeLeft = new Long((workableHours - queueElement.getEndHour())
+                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                / datesMapper.getMilisecondsPerPixel()).intValue()
+                + shadeWidth;
+        ;
+
+        Div notWorkableHoursShade = new Div();
+        notWorkableHoursShade
+                .setTooltiptext(_("Workable capacity for this period ")
+                        + workableHours + _(" hours"));
+
+        notWorkableHoursShade.setContext("");
+        notWorkableHoursShade.setSclass("not-workable-hours");
+
+        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: "
+                + shadeWidth + "px;");
+        return notWorkableHoursShade;
     }
 
-    private static long toMilliseconds(LocalDate localDate) {
-        return localDate.toDateMidnight().getMillis();
+    private static int getWidthPixels(IDatesMapper datesMapper,
+            LimitingResourceQueueElement queueElement) {
+        return datesMapper.toPixels(getEndMillis(queueElement)
+                - getStartMillis(queueElement));
+    }
+
+    private static long getStartMillis(LimitingResourceQueueElement queueElement) {
+        return queueElement.getStartDate().toDateMidnight().getMillis()
+                + (queueElement.getStartHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
+    }
+
+    private static long getEndMillis(LimitingResourceQueueElement queueElement) {
+        return queueElement.getEndDate().toDateMidnight().getMillis()
+                + (queueElement.getEndHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
     }
 
     private static String forCSS(int pixels) {
@@ -150,8 +185,10 @@ public class QueueComponent extends XulElement implements
 
     private static int getStartPixels(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
-        return datesMapper.toPixels(queueElement.getStartDate().toDateMidnight()
-                .toDate());
+        return datesMapper
+                .toPixelsAbsolute((queueElement.getStartDate().toDateMidnight()
+.getMillis() + queueElement.getStartHour()
+                * DatesMapperOnInterval.MILISECONDS_PER_HOUR));
     }
 
     public void appendQueueElement(LimitingResourceQueueElement element) {

@@ -24,6 +24,8 @@ import java.util.Date;
 
 public interface IDatesMapper {
 
+    final long MILISECONDS_PER_HOUR = 3600000;
+
     int toPixels(Date date);
 
     Date toDate(int pixel);
@@ -31,5 +33,9 @@ public interface IDatesMapper {
     int toPixels(long milliseconds);
 
     long toMilliseconds(int pixels);
+
+    int toPixelsAbsolute(long milliseconds);
+
+    long getMilisecondsPerPixel();
 
 }

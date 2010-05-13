@@ -1327,3 +1327,14 @@ tr.z-tree-row-seld .z-row-cnt {
 .order-closed {
     color: #000000;
 }
+
+/* ----------- Limiting Resources window ------- */
+.not-workable-hours {
+    position:relative;
+    z-index: -2;
+    top: -1px;
+    height: 12px;
+    float:right;
+    background-color: #CCCCCC;
+}
+
