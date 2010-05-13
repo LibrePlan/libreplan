@@ -1135,7 +1135,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
     private Task getTopmostFor(Task task) {
         Task result = task;
         while (fromChildToParent.containsKey(result)) {
-            result = fromChildToParent.get(task);
+            result = fromChildToParent.get(result);
         }
         return result;
     }
