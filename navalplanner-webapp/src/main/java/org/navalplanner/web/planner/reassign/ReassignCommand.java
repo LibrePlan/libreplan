@@ -194,11 +194,13 @@ public class ReassignCommand implements IReassignCommand {
                                             notBlockingDesktopUpdates));
                 } finally {
                     notBlockingDesktopUpdates.finish();
-                    waitUntilFinish(previousNotifications);
                     if (notifications != null) {
                         // null if error
+                        waitUntilFinish(previousNotifications);
                         updater.doUpdate(and(doNotifications(notifications),
                                 reloadCharts(context), showEnd()));
+                    } else {
+                        updater.doUpdate(showEnd());
                     }
                 }
             }
