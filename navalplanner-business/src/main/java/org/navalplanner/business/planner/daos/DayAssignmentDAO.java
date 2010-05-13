@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -29,6 +30,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -64,4 +66,14 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         }
         return criteria.list();
     }
+
+    @Override
+    public List<DayAssignment> findByResources(List<Resource> resources) {
+        if (resources.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getSession().createCriteria(DayAssignment.class).add(
+                Restrictions.in("resource", resources)).list();
+    }
+
 }

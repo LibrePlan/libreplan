@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -62,5 +63,9 @@ public interface IResourceLoadModel {
     Date getInitDateFilter();
 
     Date getEndDateFilter();
+
+    List<DayAssignment> getDayAssignments();
+
+    List<Resource> getResources();
 
 }

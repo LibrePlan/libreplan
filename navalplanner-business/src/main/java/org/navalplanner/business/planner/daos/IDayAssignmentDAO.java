@@ -27,6 +27,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * DAO interface for {@link DayAssignment}
@@ -41,5 +42,7 @@ public interface IDayAssignmentDAO extends
             Collection<? extends DerivedDayAssignment> derivedAllocations);
 
     List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end);
+
+    public List<DayAssignment> findByResources(List<Resource> resources);
 
 }

@@ -36,14 +36,18 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -59,6 +63,7 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -109,6 +114,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private Date initDateFilter;
     private Date endDateFilter;
+
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
+
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -746,6 +757,25 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     public Date getInitDateFilter() {
         return initDateFilter;
+    }
+
+    @Transactional(readOnly = true)
+    public List<DayAssignment> getDayAssignments() {
+        return dayAssignmentDAO.findByResources(getResources());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Resource> getResources() {
+        List<Resource> resources = resourcesToShow();
+        for (Resource resource : resources) {
+            resourcesDAO.reattach(resource);
+            ResourceCalendar calendar = resource.getCalendar();
+            baseCalendarDAO.reattach(calendar);
+            BaseCalendarModel.forceLoadBaseCalendar(calendar);
+            resource.getAssignments().size();
+        }
+        return resources;
     }
 }
 

@@ -87,7 +87,9 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="170px" collapsible="true" title="Graphics">
+        <south height="170px" collapsible="true" title="Graphics"
+            sclass="scheduling-graphics" id="graphics"
+            onOpen="resourcesLoadPanel.changeChartVisibility(event.open);">
             <div id="insertionPointChart" />
         </south>
     </borderlayout>

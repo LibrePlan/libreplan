@@ -25,6 +25,7 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
@@ -93,11 +94,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private Component loadChart;
 
+    private boolean visibleChart = true;
+
+    private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners = WeakReferencedListeners
+            .create();
+
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
-            TimeTracker timeTracker, Component componentOnWhichGiveFeedback,
-            Component loadChart) {
+            TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
-        this.loadChart = loadChart;
         init(groups, timeTracker);
 
     }
@@ -433,6 +437,31 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     public void addNameFilterListener(
             IFilterChangedListener iFilterChangedListener) {
         nameFilterListener.addListener(iFilterChangedListener);
+    }
+
+    public void changeChartVisibility(boolean visible) {
+        visibleChart = visible;
+        chartVisibilityListeners
+                .fireEvent(new IListenerNotification<IChartVisibilityChangedListener>() {
+                    @Override
+                    public void doNotify(
+                            IChartVisibilityChangedListener listener) {
+                        listener.chartVisibilityChanged(visibleChart);
+                    }
+                });
+    }
+
+    public boolean isVisibleChart() {
+        return visibleChart;
+    }
+
+    public void addChartVisibilityListener(
+            IChartVisibilityChangedListener chartVisibilityChangedListener) {
+        chartVisibilityListeners.addListener(chartVisibilityChangedListener);
+    }
+
+    public void setLoadChart(Component loadChart) {
+        this.loadChart = loadChart;
     }
 
 }

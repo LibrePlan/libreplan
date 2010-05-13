@@ -321,7 +321,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         });
     }
 
-    private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
+    public static void appendLoadChartAndLegend(Tabpanel loadChartPannel,
             Timeplot loadChart) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
@@ -334,7 +334,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         loadChartPannel.appendChild(hbox);
     }
 
-    private org.zkoss.zk.ui.Component getLoadChartLegend() {
+    public static org.zkoss.zk.ui.Component getLoadChartLegend() {
         Hbox hbox = new Hbox();
         hbox.setClass("legend-container");
         hbox.setAlign("center");
