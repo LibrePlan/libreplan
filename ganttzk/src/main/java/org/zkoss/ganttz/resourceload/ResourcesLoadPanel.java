@@ -91,9 +91,13 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private WeakReferencedListeners<IFilterChangedListener> nameFilterListener =
         WeakReferencedListeners.create();
 
+    private Component loadChart;
+
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
-            TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
+            TimeTracker timeTracker, Component componentOnWhichGiveFeedback,
+            Component loadChart) {
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
+        this.loadChart = loadChart;
         init(groups, timeTracker);
 
     }
@@ -302,12 +306,15 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         if(refreshNameFilter) {
             setupNameFilter();
         }
+
+        getFellow("insertionPointChart").appendChild(loadChart);
     }
 
     public void clearComponents() {
         getFellow("insertionPointLeftPanel").getChildren().clear();
         getFellow("insertionPointRightPanel").getChildren().clear();
         getFellow("insertionPointTimetracker").getChildren().clear();
+        getFellow("insertionPointChart").getChildren().clear();
     }
 
     private TimeTrackerComponent createTimeTrackerHeader() {

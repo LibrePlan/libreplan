@@ -41,6 +41,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkforge.timeplot.Plotinfo;
+import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.resourceload.ISeeScheduledOfListener;
@@ -218,7 +220,7 @@ public class ResourceLoadController implements Composer {
             }
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
-                    .getLoadTimeLines(), timeTracker, parent);
+                    .getLoadTimeLines(), timeTracker, parent, buildLoadChart());
             if(filterBy == null) {
                 addWorkersBandbox();
                 addTimeFilter();
@@ -374,5 +376,17 @@ public class ResourceLoadController implements Composer {
             }
         }
 }
+
+
+    private org.zkoss.zk.ui.Component buildLoadChart() {
+        Timeplot chartLoadTimeplot = createEmptyTimeplot();
+        return chartLoadTimeplot;
+    }
+
+    private Timeplot createEmptyTimeplot() {
+        Timeplot timeplot = new Timeplot();
+        timeplot.appendChild(new Plotinfo());
+        return timeplot;
+    }
 
 }

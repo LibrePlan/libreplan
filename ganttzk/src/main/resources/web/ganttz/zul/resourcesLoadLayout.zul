@@ -87,35 +87,8 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="170px" collapsible="true" title="Resources load graph legend">
-            <borderlayout>
-                <center sclass="legend-gap">
-                    <vbox pack="center" align="center" height="150px" width="100%">
-                    <vbox sclass="legend">
-
-                        <hbox pack="center" sclass="legend-title">
-                            <n:label class="title">${i18n:_('Assignation percentage')}</n:label>
-                        </hbox>
-
-                        <hbox pack="center" sclass="legend-row">
-                            <n:div class="resourceload SOME_LOAD" />
-                            <n:label>${i18n:_('0% - 100%')}</n:label>
-                        </hbox>
-
-                        <hbox pack="center" sclass="legend-row">
-                            <n:div class="resourceload FULL_LOAD" />
-                            <n:label>${i18n:_('100%')}</n:label>
-                        </hbox>
-
-                        <hbox pack="center" sclass="legend-row">
-                            <n:div class="resourceload OVERLOAD" />
-                            <n:label>${i18n:_('+ 100%')}</n:label>
-                        </hbox>
-
-                    </vbox>
-                    </vbox>
-                </center>
-            </borderlayout>
+        <south height="170px" collapsible="true" title="Graphics">
+            <div id="insertionPointChart" />
         </south>
     </borderlayout>
 </zk>
