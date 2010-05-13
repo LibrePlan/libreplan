@@ -44,6 +44,7 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zkex.zul.api.South;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ListModel;
@@ -99,11 +100,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners = WeakReferencedListeners
             .create();
 
-    public ResourcesLoadPanel(List<LoadTimeLine> groups,
-            TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
-        this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
-        init(groups, timeTracker);
+    private final boolean expandResourceLoadViewCharts;
 
+    public ResourcesLoadPanel(List<LoadTimeLine> groups,
+            TimeTracker timeTracker, Component componentOnWhichGiveFeedback,
+            boolean expandResourceLoadViewCharts) {
+        this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
+        this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
+        init(groups, timeTracker);
     }
 
     public void init(List<LoadTimeLine> groups, TimeTracker timeTracker) {
@@ -312,6 +316,9 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         }
 
         getFellow("insertionPointChart").appendChild(loadChart);
+
+        this.visibleChart = expandResourceLoadViewCharts;
+        ((South) getFellow("graphics")).setOpen(this.visibleChart);
     }
 
     public void clearComponents() {

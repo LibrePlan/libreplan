@@ -253,7 +253,8 @@ public class ResourceLoadController implements Composer {
             }
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
-                    .getLoadTimeLines(), timeTracker, parent);
+                    .getLoadTimeLines(), timeTracker, parent, resourceLoadModel
+                    .isExpandResourceLoadViewCharts());
             resourcesLoadPanel.setLoadChart(buildChart());
             if(filterBy == null) {
                 addWorkersBandbox();

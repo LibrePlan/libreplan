@@ -39,6 +39,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -120,6 +121,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -777,6 +781,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         return resources;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isExpandResourceLoadViewCharts() {
+        return configurationDAO.getConfiguration()
+                .isExpandResourceLoadViewCharts();
+    }
+
 }
 
 class PeriodsBuilder {

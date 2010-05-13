@@ -68,4 +68,6 @@ public interface IResourceLoadModel {
 
     List<Resource> getResources();
 
+    boolean isExpandResourceLoadViewCharts();
+
 }
