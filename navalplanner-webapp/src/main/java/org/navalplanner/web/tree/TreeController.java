@@ -450,7 +450,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    item.setSelected(true);
+                    boolean selected = (!item.isSelected());
+                    item.setSelected(selected);
                     Util.reloadBindings(item.getParent());
                 }
             });
