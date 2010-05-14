@@ -123,6 +123,20 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         postGraphChangeListeners.remove(postGraphChangeListener);
     }
 
+    public void addPreChangeListeners(
+            Collection<? extends IGraphChangeListener> preChangeListeners) {
+        for (IGraphChangeListener each : preChangeListeners) {
+            addPreGraphChangeListener(each);
+        }
+    }
+
+    public void addPostChangeListeners(
+            Collection<? extends IGraphChangeListener> postChangeListeners) {
+        for (IGraphChangeListener each : postChangeListeners) {
+            addPostGraphChangeListener(each);
+        }
+    }
+
     public GanttDiagramGraph(List<Constraint<Date>> globalStartConstraints,
             List<Constraint<Date>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
@@ -1158,7 +1172,6 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         }
         return result;
     }
-
 }
 
 interface IReentranceCases {
