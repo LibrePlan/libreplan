@@ -667,18 +667,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if(saveCommand != null) {
             saveCommand.addListener(fillChartOnSave(loadChart, planner));
         }
-        configuration.addPostGraphChangeListener(new IGraphChangeListener() {
-
-            @Override
-            public void execute() {
-                if (isExecutingOutsideZKExecution()) {
-                    return;
-                }
-                if (planner.isVisibleChart()) {
-                    loadChart.fillChart();
-                }
-            }
-        });
+        configuration.addPostGraphChangeListener(readOnlyProxy(
+                transactionService, IGraphChangeListener.class, new IGraphChangeListener() {
+                    @Override
+                    public void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return;
+                        }
+                        if (planner.isVisibleChart()) {
+                            loadChart.fillChart();
+                        }
+                    }
+                }));
         configuration.addReloadChartListener(readOnlyProxy(transactionService,
                 IReloadChartListener.class, new IReloadChartListener() {
                     @Override
