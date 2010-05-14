@@ -78,7 +78,6 @@ import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
-import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
@@ -111,6 +110,7 @@ import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
@@ -667,18 +667,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if(saveCommand != null) {
             saveCommand.addListener(fillChartOnSave(loadChart, planner));
         }
-        taskElementAdapter.addListener(readOnlyProxy(transactionService,
-                IOnMoveListener.class, new IOnMoveListener() {
-                    @Override
-                    public void moved(TaskElement taskElement) {
-                        if (isExecutingOutsideZKExecution()) {
-                            return;
-                        }
-                        if (planner.isVisibleChart()) {
-                            loadChart.fillChart();
-                        }
-                    }
-                }));
+        configuration.addPostGraphChangeListener(new IGraphChangeListener() {
+
+            @Override
+            public void execute() {
+                if (isExecutingOutsideZKExecution()) {
+                    return;
+                }
+                if (planner.isVisibleChart()) {
+                    loadChart.fillChart();
+                }
+            }
+        });
         configuration.addReloadChartListener(readOnlyProxy(transactionService,
                 IReloadChartListener.class, new IReloadChartListener() {
                     @Override
