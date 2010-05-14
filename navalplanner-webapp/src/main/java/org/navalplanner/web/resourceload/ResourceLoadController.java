@@ -137,7 +137,6 @@ public class ResourceLoadController implements Composer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
-        reload();
     }
 
     public void reload() {
