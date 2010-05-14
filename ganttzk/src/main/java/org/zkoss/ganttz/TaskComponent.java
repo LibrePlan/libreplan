@@ -183,24 +183,8 @@ public class TaskComponent extends Div implements AfterCompose {
         setHeight(HEIGHT_PER_TASK + "px");
         setContext("idContextMenuTaskAssignment");
         this.task = task;
-        String cssClass = "";
-        if (task.isSubcontracted()) {
-            cssClass = "box subcontracted-task";
-        } else {
-            if (task.isContainer()) {
-                if (task.isExpanded()) {
-                    cssClass = "box standard-task expanded";
-                } else {
-                    cssClass = "box standard-task closed";
-                }
-            } else {
-                cssClass = "box standard-task";
-            }
+        setClass(calculateCSSClass());
 
-            cssClass += " " + getTask().getAssignedStatus();
-
-            setClass(cssClass);
-        }
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
         taskViolationListener = new IConstraintViolationListener<Date>() {
@@ -219,63 +203,37 @@ public class TaskComponent extends Div implements AfterCompose {
                 if (canShowResourcesText()) {
                     smartUpdate("resourcesText", getResourcesText());
                 }
-                String cssClass = calculateCssClass();
+                String cssClass = calculateCSSClass();
 
                 response("setClass", new AuInvoke(TaskComponent.this,
                         "setClass", cssClass));
-            }
-
-            private String calculateCssClass() {
-                String cssClass = (isSubcontracted() ? "box subcontracted-task"
-                        : "box standard-task")
-                        + (isResizingTasksEnabled() ? " yui-resize" : "");
-
-                if (getTask() instanceof TaskContainer) {
-                    if (getTask().isExpanded()) {
-                        cssClass += " expanded";
-                    } else {
-                        cssClass += " closed";
-                    }
-                }
-
-                cssClass += " " + getTask().getAssignedStatus();
-
-                return cssClass;
             }
 
         };
         this.task.addReloadListener(reloadResourcesTextRequested);
     }
 
-    /**
-     * Note: This method is intended to be overridden.
-     */
-    protected boolean canShowResourcesText() {
-        return true;
-    }
-
-    protected String calculateClass() {
-        String cssClass = (isSubcontracted() ? "box subcontracted-task"
-                : "box standard-task")
-                + (isResizingTasksEnabled() ? " yui-resize" : "");
-
-        if (task instanceof TaskContainer) {
-            if (task.isExpanded()) {
-                cssClass += " expanded";
-            } else {
-                cssClass += " closed";
-            }
+    /* Generate CSS class attribute depending on task properties */
+    protected String calculateCSSClass() {
+        String cssClass = isSubcontracted() ? "box subcontracted-task"
+                : "box standard-task";
+        cssClass += isResizingTasksEnabled() ? " yui-resize" : "";
+        if (isContainer()) {
+            cssClass += task.isExpanded() ? " expanded" : " closed ";
         }
-
-        cssClass += (task.isInCriticalPath() ? " critical" : "");
-        cssClass += " " + getTask().getAssignedStatus();
-
+        cssClass += task.isInCriticalPath() ? " critical" : "";
+        cssClass += " " + task.getAssignedStatus();
+        if (task.isLimiting()) {
+            cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "
+                    : " limiting-unassigned ";
+        }
         return cssClass;
     }
 
+
     protected void updateClass() {
         response(null, new AuInvoke(this, "setClass",
-                new Object[] { calculateClass() }));
+                new Object[] { calculateCSSClass() }));
     }
 
     public final void afterCompose() {
@@ -308,6 +266,13 @@ public class TaskComponent extends Div implements AfterCompose {
                 .addCriticalPathPropertyChangeListener(criticalPathPropertyListener);
 
         updateClass();
+    }
+
+    /**
+     * Note: This method is intended to be overridden.
+     */
+    protected boolean canShowResourcesText() {
+        return true;
     }
 
     private String _color;
@@ -355,7 +320,8 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public boolean isResizingTasksEnabled() {
-        return disabilityConfiguration.isResizingTasksEnabled()
+        return (disabilityConfiguration != null)
+                && disabilityConfiguration.isResizingTasksEnabled()
                 && !task.isSubcontracted() && task.canBeExplicitlyResized();
     }
 
@@ -547,6 +513,10 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public boolean isSubcontracted() {
         return task.isSubcontracted();
+    }
+
+    public boolean isContainer() {
+        return task.isContainer();
     }
 
     @Override

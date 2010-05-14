@@ -210,6 +210,16 @@
     height: 1px;
 }
 
+div.box.limiting-assigned {
+    background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
+    -moz-border-radius: 15px;
+}
+
+div.box.limiting-unassigned {
+    background-color: #c1d9d1; /* LIMITING_RESOURCES_GREEN */
+    -moz-border-radius: 15px;
+}
+
 .toggled {
     display: inline !important;
     opacity: 0.2;
@@ -685,7 +695,8 @@ div.limitingresourcesleftpane  {
 }
 
 .queue-element {
-    background-color: #007BBE;
+    background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
+    -moz-border-radius: 12px;
     border: solid 1px;
     float:left;
     height:10px;
