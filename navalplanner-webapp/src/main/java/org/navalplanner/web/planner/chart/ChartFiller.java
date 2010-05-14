@@ -204,11 +204,17 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private void fillZeroValueFromStart(PrintWriter writer) {
-            printLine(writer, start, BigDecimal.ZERO);
-            if (startIsPreviousToPreviousDayToFirstAssignment()) {
-                printLine(writer, previousDayToFirstAssignment(),
-                        BigDecimal.ZERO);
+            if (!startIsDayOfFirstAssignment()) {
+                printLine(writer, start, BigDecimal.ZERO);
+                if (startIsPreviousToPreviousDayToFirstAssignment()) {
+                    printLine(writer, previousDayToFirstAssignment(),
+                            BigDecimal.ZERO);
+                }
             }
+        }
+
+        private boolean startIsDayOfFirstAssignment() {
+            return !map.isEmpty() && start.compareTo(map.firstKey()) == 0;
         }
 
         private boolean startIsPreviousToPreviousDayToFirstAssignment() {
@@ -221,10 +227,17 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private void fillZeroValueToFinish(PrintWriter writer) {
-            if (finishIsPosteriorToNextDayToLastAssignment()) {
-                printLine(writer, nextDayToLastAssignment(), BigDecimal.ZERO);
+            if (!finishIsDayOfLastAssignment()) {
+                if (finishIsPosteriorToNextDayToLastAssignment()) {
+                    printLine(writer, nextDayToLastAssignment(),
+                            BigDecimal.ZERO);
+                }
+                printLine(writer, finish, BigDecimal.ZERO);
             }
-            printLine(writer, finish, BigDecimal.ZERO);
+        }
+
+        private boolean finishIsDayOfLastAssignment() {
+            return !map.isEmpty() && start.compareTo(map.lastKey()) == 0;
         }
 
         private boolean finishIsPosteriorToNextDayToLastAssignment() {
