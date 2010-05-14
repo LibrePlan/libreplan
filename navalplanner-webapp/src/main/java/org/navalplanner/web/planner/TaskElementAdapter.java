@@ -44,7 +44,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
@@ -86,8 +85,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
-    private Order order;
-
     @Autowired
     private IAdHocTransactionService transactionService;
 
@@ -105,11 +102,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
-
-    @Override
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
     public TaskElementAdapter() {
     }

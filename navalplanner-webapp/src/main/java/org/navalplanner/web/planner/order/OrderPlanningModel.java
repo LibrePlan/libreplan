@@ -885,7 +885,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private PlannerConfiguration<TaskElement> createConfiguration(
             Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
-        taskElementAdapter.setOrder(orderReloaded);
         planningState = createPlanningStateFor(orderReloaded);
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
