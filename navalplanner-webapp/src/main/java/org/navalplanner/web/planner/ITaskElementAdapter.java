@@ -30,14 +30,6 @@ import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
  */
 public interface ITaskElementAdapter extends IAdapterToTaskFundamentalProperties<TaskElement>{
 
-    public interface IOnMoveListener {
-        public void moved(TaskElement taskElement);
-    }
-
-    public void addListener(IOnMoveListener moveListener);
-
-    public void removeListener(IOnMoveListener moveListener);
-
     void setOrder(Order order);
 
 }

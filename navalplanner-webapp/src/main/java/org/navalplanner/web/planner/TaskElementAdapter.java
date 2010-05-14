@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
@@ -107,8 +106,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
-    private List<IOnMoveListener> listeners = new ArrayList<IOnMoveListener>();
-
     @Override
     public void setOrder(Order order) {
         this.order = order;
@@ -164,7 +161,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         public Long execute() {
                             stepsBeforePossibleReallocation();
                             Long result = setBeginDateInsideTransaction(beginDate);
-                            fireTaskElementMoved(taskElement);
                             return result;
                         }
                     });
@@ -215,7 +211,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                             return null;
                         }
                     });
-            fireTaskElementMoved(taskElement);
         }
 
         private void updateEndDate(long lengthMilliseconds) {
@@ -670,23 +665,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         Type type = toDomainType(dependency.getType());
         source.removeDependencyWithDestination(dependency.getDestination(),
                 type);
-    }
-
-    private void fireTaskElementMoved(TaskElement taskElement) {
-        for (IOnMoveListener moveListener : listeners) {
-            moveListener.moved(taskElement);
-        }
-    }
-
-    @Override
-    public void addListener(IOnMoveListener moveListener) {
-        Validate.notNull(moveListener);
-        listeners.add(moveListener);
-    }
-
-    @Override
-    public void removeListener(IOnMoveListener moveListener) {
-        listeners.remove(moveListener);
     }
 
 }
