@@ -563,7 +563,8 @@ public class Task extends TaskElement {
 
     @Override
     protected boolean canBeResized() {
-        return calculatedValue != CalculatedValue.END_DATE;
+        return ((calculatedValue != CalculatedValue.END_DATE) || (resourceAllocations
+                .isEmpty()));
     }
 
     @Override
