@@ -27,13 +27,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.jfree.util.Log;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
@@ -226,8 +231,27 @@ public class LimitingResourcesController implements Composer {
             this.taskName = taskName;
             this.date = DATE_FORMAT.format(date);
             this.hoursToAllocate = element.getIntentedTotalHours();
-            final Resource resource = element.getResource();
-            this.resourceName = (resource != null) ? resource.getName() : "";
+            this.resourceName = getResourceName(element.getResourceAllocation());
+        }
+
+        private String getResourceName(ResourceAllocation<?> resourceAllocation) {
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                final Resource resource = ((SpecificResourceAllocation) resourceAllocation)
+                        .getResource();
+                return (resource != null) ? resource.getName() : "";
+            } else if (resourceAllocation instanceof GenericResourceAllocation) {
+                Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation).getCriterions();
+                return getCriteriaNames(criteria);
+            }
+            return StringUtils.EMPTY;
+        }
+
+        private String getCriteriaNames(Set<Criterion> criteria) {
+            List<String> names = new ArrayList<String>();
+            for (Criterion each: criteria) {
+                names.add(each.getName());
+            }
+            return StringUtils.join(names, ",");
         }
 
         public LimitingResourceQueueElement getOriginal() {

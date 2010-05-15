@@ -60,6 +60,7 @@ import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -263,13 +264,21 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         if (resourceAllocation instanceof HibernateProxy) {
             resourceAllocation = (ResourceAllocation<?>) ((HibernateProxy) resourceAllocation)
                     .getHibernateLazyInitializer().getImplementation();
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-                Hibernate.initialize(specific.getAssignments());
+            if (resourceAllocation instanceof GenericResourceAllocation) {
+                GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
+                initializeCriteria(generic.getCriterions());
             }
+            Hibernate.initialize(resourceAllocation.getAssignments());
             Hibernate.initialize(resourceAllocation.getLimitingResourceQueueElement());
         }
         return resourceAllocation;
+    }
+
+    private void initializeCriteria(Set<Criterion> criteria) {
+        for (Criterion each: criteria) {
+            Hibernate.initialize(each);
+            Hibernate.initialize(each.getType());
+        }
     }
 
     private void loadLimitingResourceQueues() {
