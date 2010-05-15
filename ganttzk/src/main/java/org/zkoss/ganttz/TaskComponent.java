@@ -331,7 +331,13 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     void doUpdatePosition(String leftX, String topY) {
+        Date startBeforeMoving = this.task.getBeginDate();
         this.task.moveTo(getMapper().toDate(stripPx(leftX)));
+        boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
+                startBeforeMoving);
+        if (remainsInOriginalPosition) {
+            updateProperties();
+        }
     }
 
     void doUpdateSize(String size) {
