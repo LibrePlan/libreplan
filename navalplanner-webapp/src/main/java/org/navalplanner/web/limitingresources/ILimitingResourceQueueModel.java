@@ -65,12 +65,17 @@ public interface ILimitingResourceQueueModel {
      * that fits the initial intented hours assigned to
      * element.resourceallocation.
      *
-     * The method also generates {@link DayAssignment} once ne the allocation is
+     * The method also generates {@link DayAssignment} once the allocation is
      * done
+     *
+     * Returns true if the process was successful. The only case were an
+     * allocation cannot be done is if there's not any queue that can hold the
+     * element (only for a generic allocation, there's not any queue that
+     * matches the criteria of the element)
      *
      * @param element
      */
-    void assignLimitingResourceQueueElement(LimitingResourceQueueElement element);
+    boolean assignLimitingResourceQueueElement(LimitingResourceQueueElement element);
 
     ZoomLevel calculateInitialZoomLevel();
 

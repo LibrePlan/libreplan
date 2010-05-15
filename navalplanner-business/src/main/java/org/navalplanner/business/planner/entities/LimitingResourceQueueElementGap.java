@@ -1,3 +1,23 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ *                    Desenvolvemento Tecnolóxico de Galicia
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.navalplanner.business.planner.entities;
 
 import org.joda.time.LocalDate;
@@ -9,7 +29,7 @@ import org.navalplanner.business.resources.entities.Resource;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-public class LimitingResourceQueueElementGap {
+public class LimitingResourceQueueElementGap implements Comparable<LimitingResourceQueueElementGap> {
 
     private DateAndHour startTime;
 
@@ -19,28 +39,34 @@ public class LimitingResourceQueueElementGap {
 
     public LimitingResourceQueueElementGap(Resource resource, DateAndHour startTime,
             DateAndHour endTime) {
-        this(resource, startTime.getDate(), startTime.getHour(), endTime.getDate(), endTime.getHour());
+        this.startTime = startTime;
+        this.endTime = endTime;
+        hoursInGap = calculateHoursInGap(resource, startTime, endTime);
     }
 
-    public LimitingResourceQueueElementGap(Resource resource, LocalDate startDate,
+    private Integer calculateHoursInGap(Resource resource, DateAndHour startTime, DateAndHour endTime) {
+        return (endTime == null) ? Integer.MAX_VALUE : calculateHoursInGap(
+                resource, startTime.getDate(), startTime.getHour(), endTime
+                        .getDate(), endTime.getHour());
+    }
+
+    public int getHoursInGap() {
+        return hoursInGap;
+    }
+
+    private Integer calculateHoursInGap(Resource resource, LocalDate startDate,
             int startHour, LocalDate endDate, int endHour) {
 
         final ResourceCalendar calendar = resource.getCalendar();
 
-        // Calculate hours in range of dates
         if (startDate.equals(endDate)) {
-            hoursInGap = endHour - startHour;
+            return calendar.getCapacityAt(startDate) - Math.max(startHour, endHour);
         } else {
-            int hoursAtStart = calendar.getCapacityAt(startDate)
-                    - startHour;
+            int hoursAtStart = calendar.getCapacityAt(startDate) - startHour;
             int hoursInBetween = calendar.getWorkableHours(startDate
                     .plusDays(1), endDate.minusDays(1));
-            hoursInGap = hoursAtStart + hoursInBetween + endHour;
+            return hoursAtStart + hoursInBetween + endHour;
         }
-
-        // Set start and end time for gap
-        startTime = new DateAndHour(startDate, startHour);
-        endTime = new DateAndHour(endDate, endHour);
     }
 
     public static LimitingResourceQueueElementGap create(Resource resource, DateAndHour startTime,
@@ -75,8 +101,23 @@ public class LimitingResourceQueueElementGap {
     }
 
     public String toString() {
-        return startTime.getDate() + " - " + startTime.getHour() + "; "
-                + endTime.getDate() + " - " + endTime.getHour();
+        String result = startTime.getDate() + " - " + startTime.getHour();
+        if (endTime != null) {
+            result += "; " + endTime.getDate() + " - " + endTime.getHour();
+        }
+        return result;
+    }
+
+    @Override
+    public int compareTo(LimitingResourceQueueElementGap o) {
+        if (o == null) {
+            return 1;
+        }
+        return this.getStartTime().compareTo(o.getStartTime());
+    }
+
+    public boolean isBefore(LimitingResourceQueueElementGap gap) {
+        return (compareTo(gap) < 0);
     }
 
 }

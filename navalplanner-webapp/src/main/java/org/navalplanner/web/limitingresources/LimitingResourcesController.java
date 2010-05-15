@@ -358,15 +358,22 @@ public class LimitingResourcesController implements Composer {
                 LimitingResourceQueueElementDTO dto) {
 
             LimitingResourceQueueElement element = dto.getOriginal();
-            if (element.getResourceAllocation() instanceof GenericResourceAllocation) {
-                // TODO: Generic resources allocation
-                Log.error("Allocation of generic resources is not supported yet");
-                return;
+            if (limitingResourceQueueModel
+                    .assignLimitingResourceQueueElement(element)) {
+                Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+                limitingResourcesPanel.appendQueueElementToQueue(element);
+            } else {
+                showErrorMessage(_("Cannot allocate selected element. There is not any queue " +
+                        "that matches resource allocation criteria at any interval of time"));
             }
-            limitingResourceQueueModel
-                    .assignLimitingResourceQueueElement(element);
-            Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
-            limitingResourcesPanel.appendQueueElementToQueue(element);
+        }
+
+        private void showErrorMessage(String error) {
+            try {
+                Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
+            } catch (InterruptedException e) {
+
+            }
         }
 
         private Checkbox automaticQueueing(

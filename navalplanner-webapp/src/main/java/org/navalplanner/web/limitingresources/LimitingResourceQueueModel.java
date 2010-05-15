@@ -25,9 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -50,6 +52,7 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DateAndHour;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
@@ -61,6 +64,9 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionCompounder;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -206,7 +212,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         resourceAllocation = initializeResourceAllocationIfNecessary(resourceAllocation);
         element.setResourceAllocation(resourceAllocation);
         initializeTask(resourceAllocation.getTask());
-        initializeCalendarIfAny(element.getResource());
+        initializeResourceIfAny(element.getResource());
     }
 
     private void initializeTask(Task task) {
@@ -219,13 +225,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
         for (Dependency each: task.getDependenciesWithThisDestination()) {
             Hibernate.initialize(each);
-        }
-    }
-
-    private void initializeCalendarIfAny(Resource resource) {
-        if (resource != null) {
-            resource.getName();
-            initializeCalendarIfAny(resource.getCalendar());
         }
     }
 
@@ -276,9 +275,13 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private void initializeCriteria(Set<Criterion> criteria) {
         for (Criterion each: criteria) {
-            Hibernate.initialize(each);
-            Hibernate.initialize(each.getType());
+            initializeCriterion(each);
         }
+    }
+
+    private void initializeCriterion(Criterion criterion) {
+        Hibernate.initialize(criterion);
+        Hibernate.initialize(criterion.getType());
     }
 
     private void loadLimitingResourceQueues() {
@@ -297,10 +300,22 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private void initializeLimitingResourceQueue(LimitingResourceQueue queue) {
-        Hibernate.initialize(queue.getResource());
+        initializeResourceIfAny(queue.getResource());
         for (LimitingResourceQueueElement each : queue
                 .getLimitingResourceQueueElements()) {
             initializeLimitingResourceQueueElement(each);
+        }
+    }
+
+    private void initializeResourceIfAny(Resource resource) {
+        if (resource != null) {
+            Hibernate.initialize(resource);
+            for (CriterionSatisfaction each : resource
+                    .getCriterionSatisfactions()) {
+                Hibernate.initialize(each);
+                initializeCriterion(each.getCriterion());
+                initializeCalendarIfAny(resource.getCalendar());
+            }
         }
     }
 
@@ -357,19 +372,198 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    public void assignLimitingResourceQueueElement(
-            final LimitingResourceQueueElement element) {
+    public boolean assignLimitingResourceQueueElement(
+            LimitingResourceQueueElement element) {
+
+        LimitingResourceQueue queue = null;
+        DateAndHour startTime = null;
 
         LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
-        LimitingResourceQueue queue = retrieveQueueByResourceFromModel(queueElement
-                .getResource());
+        final DateAndHour startDateBecauseOfGantt = getStartTimeBecauseOfGantt(element);
 
-        DateAndHour startTime = findStartTimeInQueueForQueueElement(queue, queueElement);
-        DateAndHour[] startAndEndTime = allocateDayAssignments(queueElement
-                .getResourceAllocation(), startTime);
+        final ResourceAllocation<?> resourceAllocation = queueElement.getResourceAllocation();
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            // Retrieve queue
+            queue = retrieveQueueByResourceFromModel(queueElement.getResource());
+            // Set start time
+            final LimitingResourceQueueElementGap firstGap = getFirstValidGap(queue, queueElement);
+            startTime = firstGap.getStartTime();
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            // Get the first gap for all the queues that can allocate the
+            // element during a certain interval of time
+            Map<LimitingResourceQueueElementGap, LimitingResourceQueue> firstGapsForQueues = findFirstGapsInAllQueues(
+                    element, startDateBecauseOfGantt);
+            // Among those queues, get the earliest gap
+            LimitingResourceQueueElementGap earliestGap = findEarliestGap(firstGapsForQueues
+                    .keySet());
+            if (earliestGap == null) {
+                return false;
+            }
+            // Select queue and start time
+            queue = firstGapsForQueues.get(earliestGap);
+            startTime = earliestGap.getStartTime();
+        }
+
+        // Generate day assignments and adjust start and end times for element
+        List<DayAssignment> dayAssignments = generateDayAssignments(queueElement
+                .getResourceAllocation(), queue.getResource(), startTime);
+        DateAndHour[] startAndEndTime = calculateStartAndEndTime(dayAssignments);
         updateStartAndEndTimes(queueElement, startAndEndTime);
+        // Add element to queue
         addLimitingResourceQueueElement(queue, queueElement);
         markAsModified(queueElement);
+        return true;
+    }
+
+    private LimitingResourceQueueElementGap getFirstValidGap(LimitingResourceQueue queue,
+            LimitingResourceQueueElement element) {
+
+        final Resource resource = queue.getResource();
+        final List<LimitingResourceQueueElement> elements = new LinkedList<LimitingResourceQueueElement>(
+                queue.getLimitingResourceQueueElements());
+        final int size = elements.size();
+
+        // Iterate through queue elements
+        for (int pos = 0; pos <= size; pos++) {
+
+            LimitingResourceQueueElementGap gap = getGapInQueueAtPosition(
+                    resource, elements, element, pos);
+
+            // The queue cannot hold this element (perhaps queue.resource
+            // doesn't meet element.criteria)
+            if (gap == null) {
+                return null;
+            }
+
+            if (canFitIntoGap(element, gap, resource)) {
+                return gap;
+            }
+        }
+        return null;
+    }
+
+    private boolean canFitIntoGap(LimitingResourceQueueElement element,
+            LimitingResourceQueueElementGap gap, final Resource resource) {
+
+        final boolean canfit = gap.canFit(element);
+        final ResourceAllocation<?> resourceAllocation = element
+                .getResourceAllocation();
+
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            return canfit;
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            // Resource must satisfy element.criteria during for the
+            // period of time the element will be allocated in the
+            // queue
+            final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
+            List<DayAssignment> dayAssignments = generateDayAssignments(
+                    resourceAllocation, resource, gap.getStartTime());
+            DateAndHour[] startAndEndTime = calculateStartAndEndTime(dayAssignments);
+            return canfit
+                    && (satisfiesCriteriaDuringInterval(resource, generic
+                            .getCriterions(), startAndEndTime));
+        }
+        return false;
+    }
+
+    private boolean satisfiesCriteriaDuringInterval(Resource resource, Set<Criterion> criteria, DateAndHour[] interval) {
+        final Date startDate = interval[0].getDate().toDateTimeAtStartOfDay().toDate();
+        final Date endDate = interval[1].getDate().toDateTimeAtStartOfDay().toDate();
+        return satisfiesCriteriaDuringInterval(resource, criteria, startDate, endDate);
+    }
+
+    private boolean satisfiesCriteriaDuringInterval(Resource resource, Set<Criterion> criteria, Date startDate, Date endDate) {
+        ICriterion compositedCriterion = CriterionCompounder.buildAnd(criteria)
+                .getResult();
+        return compositedCriterion.isSatisfiedBy(resource, startDate, endDate);
+    }
+
+    private LimitingResourceQueueElementGap getGapInQueueAtPosition(
+            Resource resource, List<LimitingResourceQueueElement> elements,
+            LimitingResourceQueueElement element, int pos) {
+
+        final int size = elements.size();
+        final DateAndHour startTimeBecauseOfGantt = getStartTimeBecauseOfGantt(element);
+
+        if (size > 0) {
+
+            if (pos == size) {
+                return createLastGap(element, elements.get(size - 1), resource);
+            }
+
+            LimitingResourceQueueElement current = elements.get(pos);
+            // First element
+            if (pos == 0
+                    && startTimeBecauseOfGantt.getDate().isBefore(
+                            current.getStartDate())) {
+                return LimitingResourceQueueElementGap.create(resource,
+                        startTimeBecauseOfGantt, current.getStartTime());
+            }
+
+            // Rest of elements
+            if (pos + 1 < size) {
+                LimitingResourceQueueElement next = elements.get(pos + 1);
+                if (startTimeBecauseOfGantt.isBefore(current.getEndTime())) {
+                    return LimitingResourceQueueElementGap.create(resource,
+                            current.getEndTime(), next.getStartTime());
+                } else {
+                    return LimitingResourceQueueElementGap.create(resource,
+                            DateAndHour.Max(current.getEndTime(),
+                                    startTimeBecauseOfGantt), next
+                                    .getStartTime());
+                }
+            } else {
+                // Current was the last element
+                return createLastGap(element, current, resource);
+            }
+        }
+        return null;
+    }
+
+    private LimitingResourceQueueElementGap createLastGap(
+            LimitingResourceQueueElement candidate,
+            LimitingResourceQueueElement element, Resource resource) {
+
+        DateAndHour startTime = DateAndHour.Max(
+                getStartTimeBecauseOfGantt(candidate), element.getEndTime());
+        return LimitingResourceQueueElementGap
+                .create(resource, startTime, null);
+    }
+
+    private Map<LimitingResourceQueueElementGap, LimitingResourceQueue> findFirstGapsInAllQueues(
+            LimitingResourceQueueElement element,
+            DateAndHour startDateBecauseOfGantt) {
+
+        Map<LimitingResourceQueueElementGap, LimitingResourceQueue> result = new HashMap<LimitingResourceQueueElementGap, LimitingResourceQueue>();
+
+        for (LimitingResourceQueue each : limitingResourceQueues) {
+            LimitingResourceQueueElementGap gap = getFirstValidGap(each, element);
+            if (gap != null) {
+                result.put(gap, each);
+            }
+        }
+        return result;
+    }
+
+    private LimitingResourceQueueElementGap findEarliestGap(Set<LimitingResourceQueueElementGap> gaps) {
+        LimitingResourceQueueElementGap earliestGap = null;
+        for (LimitingResourceQueueElementGap each: gaps) {
+            if (earliestGap == null || each.isBefore(earliestGap)) {
+                earliestGap = each;
+            }
+        }
+        return earliestGap;
+    }
+
+    private DateAndHour[] calculateStartAndEndTime(List<DayAssignment> dayAssignments) {
+        DateAndHour[] result = new DateAndHour[2];
+
+        final DayAssignment start = dayAssignments.get(0);
+        final DayAssignment end = dayAssignments.get(dayAssignments.size() - 1);
+        result[0] = new DateAndHour(start.getDay(), start.getHours());
+        result[1] = new DateAndHour(end.getDay(), end.getHours());
+
+        return result;
     }
 
     private void markAsModified(LimitingResourceQueueElement element) {
@@ -378,76 +572,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
     }
 
-    private DateAndHour findStartTimeInQueueForQueueElement(
-            LimitingResourceQueue queue, LimitingResourceQueueElement candidate) {
-
-        final SortedSet<LimitingResourceQueueElement> elements = queue.getLimitingResourceQueueElements();
-        if (!elements.isEmpty()) {
-            final List<LimitingResourceQueueElementGap> gapList = buildGapList(candidate, elements);
-            final DateAndHour startTime = findStartTimeInGapList(candidate, gapList);
-            return (startTime != null) ? startTime : afterLastElement(candidate, elements);
-        }
-        return getStartTimeBecauseOfGantt(candidate);
-    }
-
-    private DateAndHour afterLastElement(LimitingResourceQueueElement candidate,
-            SortedSet<LimitingResourceQueueElement> elements) {
-        final DateAndHour lastElementEndTime = elements.last().getEndTime();
-        final DateAndHour candidateStartTime = getStartTimeBecauseOfGantt(candidate);
-        return DateAndHour.Max(lastElementEndTime, candidateStartTime);
-    }
-
     private DateAndHour getStartTimeBecauseOfGantt(LimitingResourceQueueElement element) {
         return new DateAndHour(new LocalDate(element.getEarlierStartDateBecauseOfGantt()), 0);
-    }
-
-    private DateAndHour findStartTimeInGapList(LimitingResourceQueueElement candidate,
-            List<LimitingResourceQueueElementGap> gapList) {
-        for (LimitingResourceQueueElementGap each : gapList) {
-            if (each.canFit(candidate)) {
-                return each.getStartTime();
-            }
-        }
-        return null;
-    }
-
-    private List<LimitingResourceQueueElementGap> buildGapList(LimitingResourceQueueElement candidate,
-            final SortedSet<LimitingResourceQueueElement> elements) {
-        List<LimitingResourceQueueElementGap> result = new ArrayList<LimitingResourceQueueElementGap>();
-
-        // If start time of candidate element to fit in queue is before first
-        // element, create a gap between candidate and the first element of the
-        // queue
-        DateAndHour startTimeBecauseOfGantt = getStartTimeBecauseOfGantt(candidate);
-        final LimitingResourceQueueElement firstElement = elements.first();
-        if (startTimeBecauseOfGantt.compareTo(firstElement.getStartTime()) < 0) {
-            result.add(createGap(firstElement.getResource(), startTimeBecauseOfGantt,
-                    firstElement.getStartTime()));
-        }
-
-        LimitingResourceQueueElement current, next;
-        // Only include gaps from candidate start time on
-        for (Iterator<LimitingResourceQueueElement> i = elements.iterator(); i
-                .hasNext();) {
-
-            current = i.next();
-            if (i.hasNext()) {
-                next = i.next();
-                DateAndHour startTime = current.getEndTime();
-                final DateAndHour endTime = next.getStartTime();
-
-                if (startTime.compareTo(startTimeBecauseOfGantt) <= 0) {
-                    if (endTime.compareTo(startTimeBecauseOfGantt) <= 0) {
-                        // Start and end of the gap are before earlierStartDateBecauseOfGanttTime
-                        continue;
-                    }
-                    // earliestStartDateBecauseOfGantt is in between
-                    startTime = startTimeBecauseOfGantt;
-                }
-                result.add(createGap(current.getResource(), startTime, endTime));
-            }
-        }
-        return result;
     }
 
     public LimitingResourceQueueElementGap createGap(Resource resource, DateAndHour startTime,
@@ -540,62 +666,43 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return null;
     }
 
-    private DateAndHour[] allocateDayAssignments(
-            ResourceAllocation<?> resourceAllocation, DateAndHour startingTime) {
+    private DayAssignment createDayAssignment(ResourceAllocation<?> resourceAllocation,
+            Resource resource, LocalDate date, int hoursToAllocate) {
         if (resourceAllocation instanceof SpecificResourceAllocation) {
-            return allocateDayAssignments(
-                    (SpecificResourceAllocation) resourceAllocation,
-                    startingTime);
-        }
-        if (resourceAllocation instanceof GenericResourceAllocation) {
-            // TODO: Generate day assignments for generic resource allocation
+            return SpecificDayAssignment.create(date, hoursToAllocate, resource);
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            return GenericDayAssignment.create(date, hoursToAllocate, resource);
         }
         return null;
     }
 
-    private DateAndHour[] allocateDayAssignments(
-            SpecificResourceAllocation resourceAllocation,
+    private List<DayAssignment> generateDayAssignments(
+            ResourceAllocation<?> resourceAllocation,
+            Resource resource,
             DateAndHour startTime) {
 
-        List<SpecificDayAssignment> assignments = new ArrayList<SpecificDayAssignment>();
-
-        DateAndHour newStartTime = startTime;
+        List<DayAssignment> assignments = new ArrayList<DayAssignment>();
 
         LocalDate date = startTime.getDate();
         int totalHours = resourceAllocation.getIntendedTotalHours();
 
         // Generate first day assignment
-        int hoursCanAllocate = hoursCanWorkOnDay(resourceAllocation, date, startTime.getHour());
+        int hoursCanAllocate = hoursCanWorkOnDay(resource, date, startTime.getHour());
         if (hoursCanAllocate > 0) {
             int hoursToAllocate = Math.min(totalHours, hoursCanAllocate);
-            SpecificDayAssignment dayAssignment = SpecificDayAssignment.create(
-                    date, hoursToAllocate, resourceAllocation.getResource());
+            DayAssignment dayAssignment = createDayAssignment(resourceAllocation, resource, date, hoursToAllocate);
             totalHours -= addDayAssignment(assignments, dayAssignment);
-        } else {
-            newStartTime = new DateAndHour(date.plusDays(1), 0);
         }
 
         // Generate rest of day assignments
         for (date = date.plusDays(1); totalHours > 0; date = date.plusDays(1)) {
             totalHours -= addDayAssignment(assignments, generateDayAssignment(
-                    resourceAllocation, date, totalHours));
+                    resourceAllocation, resource, date, totalHours));
         }
-        resourceAllocation.allocateLimitingDayAssignments(assignments);
-
-        DateAndHour newEndTime = new DateAndHour(date, getEndingTime(assignments));
-        DateAndHour[] startAndEndTime = {newStartTime, newEndTime};
-        return startAndEndTime;
+        return assignments;
     }
 
-    private DayAssignment getLastDayAssignment(List<SpecificDayAssignment> dayAssignments) {
-        return dayAssignments.get(dayAssignments.size() - 1);
-    }
-
-    private int getEndingTime(List<SpecificDayAssignment> dayAssignments) {
-        return (dayAssignments.isEmpty()) ? 0 : getLastDayAssignment(dayAssignments).getHours();
-    }
-
-    private int addDayAssignment(List<SpecificDayAssignment> list, SpecificDayAssignment dayAssignment) {
+    private int addDayAssignment(List<DayAssignment> list, DayAssignment dayAssignment) {
         if (dayAssignment != null) {
             list.add(dayAssignment);
             return dayAssignment.getHours();
@@ -603,26 +710,24 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return 0;
     }
 
-    private int hoursCanWorkOnDay(final SpecificResourceAllocation resourceAllocation,
+    private int hoursCanWorkOnDay(final Resource resource,
             final LocalDate date, int alreadyWorked) {
-        final ResourceCalendar calendar = resourceAllocation.getResource()
-                .getCalendar();
+        final ResourceCalendar calendar = resource.getCalendar();
         int hoursCanAllocate = calendar.toHours(date, ONE_RESOURCE_PER_DAY);
         return hoursCanAllocate - alreadyWorked;
     }
 
-    private SpecificDayAssignment generateDayAssignment(
-            final SpecificResourceAllocation resourceAllocation,
+    private DayAssignment generateDayAssignment(
+            final ResourceAllocation<?> resourceAllocation,
+            Resource resource,
             final LocalDate date, int intentedHours) {
 
-        final ResourceCalendar calendar = resourceAllocation.getResource()
-                .getCalendar();
+        final ResourceCalendar calendar = resource.getCalendar();
 
         int hoursCanAllocate = calendar.toHours(date, ONE_RESOURCE_PER_DAY);
         if (hoursCanAllocate > 0) {
             int hoursToAllocate = Math.min(intentedHours, hoursCanAllocate);
-            return SpecificDayAssignment.create(date, hoursToAllocate,
-                    resourceAllocation.getResource());
+            return createDayAssignment(resourceAllocation, resource, date, hoursToAllocate);
         }
         return null;
     }
