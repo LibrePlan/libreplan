@@ -221,7 +221,7 @@ public class LimitingResourcesController implements Composer {
 
         private Integer hoursToAllocate;
 
-        private String resourceName;
+        private String resourceOrCriteria;
 
         public LimitingResourceQueueElementDTO(
                 LimitingResourceQueueElement element, String orderName,
@@ -231,27 +231,19 @@ public class LimitingResourcesController implements Composer {
             this.taskName = taskName;
             this.date = DATE_FORMAT.format(date);
             this.hoursToAllocate = element.getIntentedTotalHours();
-            this.resourceName = getResourceName(element.getResourceAllocation());
+            this.resourceOrCriteria = getResourceOrCriteria(element.getResourceAllocation());
         }
 
-        private String getResourceName(ResourceAllocation<?> resourceAllocation) {
+        private String getResourceOrCriteria(ResourceAllocation<?> resourceAllocation) {
             if (resourceAllocation instanceof SpecificResourceAllocation) {
                 final Resource resource = ((SpecificResourceAllocation) resourceAllocation)
                         .getResource();
                 return (resource != null) ? resource.getName() : "";
             } else if (resourceAllocation instanceof GenericResourceAllocation) {
                 Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation).getCriterions();
-                return getCriteriaNames(criteria);
+                return Criterion.getNames(criteria);
             }
             return StringUtils.EMPTY;
-        }
-
-        private String getCriteriaNames(Set<Criterion> criteria) {
-            List<String> names = new ArrayList<String>();
-            for (Criterion each: criteria) {
-                names.add(each.getName());
-            }
-            return StringUtils.join(names, ",");
         }
 
         public LimitingResourceQueueElement getOriginal() {
@@ -274,8 +266,8 @@ public class LimitingResourcesController implements Composer {
             return (hoursToAllocate != null) ? hoursToAllocate : 0;
         }
 
-        public String getResourceName() {
-            return resourceName;
+        public String getResourceOrCriteria() {
+            return resourceOrCriteria;
         }
 
     }
@@ -310,7 +302,7 @@ public class LimitingResourcesController implements Composer {
 
             row.appendChild(label(element.getOrderName()));
             row.appendChild(label(element.getTaskName()));
-            row.appendChild(label(element.getResourceName()));
+            row.appendChild(label(element.getResourceOrCriteria()));
             row.appendChild(label(element.getDate()));
             row.appendChild(label(element.getHoursToAllocate().toString()));
             row.appendChild(operations(element));

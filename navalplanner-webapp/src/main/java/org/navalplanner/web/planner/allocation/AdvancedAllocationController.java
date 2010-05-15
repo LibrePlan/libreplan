@@ -50,6 +50,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -829,9 +830,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation,
             Restriction restriction) {
-        return Row.createRow(messages, restriction,
-                ResourceLoadModel
-                .getName(genericResourceAllocation.getCriterions()), 1, Arrays
+        return Row.createRow(messages, restriction, Criterion
+                .getNames(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation), genericResourceAllocation
                 .isLimiting());
     }

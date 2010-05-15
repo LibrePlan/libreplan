@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.resources.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +49,8 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class Criterion extends IntegrationEntity implements ICriterion {
+
+    private static final String ALL_WORKERS = _("[generic all workers]");
 
     public static Criterion createUnvalidated(String code, String name,
         CriterionType type, Criterion parent, Boolean active) {
@@ -102,6 +105,20 @@ public class Criterion extends IntegrationEntity implements ICriterion {
             }
         });
         return result;
+    }
+
+    /**
+     * Returns a string of criterion names separated by comma
+     *
+     * @param criteria
+     * @return
+     */
+    public static String getNames(Collection<? extends Criterion> criteria) {
+        List<String> names = new ArrayList<String>();
+        for (Criterion each: criteria) {
+            names.add(each.getName());
+        }
+        return (names.isEmpty()) ? Criterion.ALL_WORKERS : StringUtils.join(names, ",");
     }
 
     public void updateUnvalidated(String name, Boolean active) {
@@ -303,4 +320,5 @@ public class Criterion extends IntegrationEntity implements ICriterion {
     protected ICriterionDAO getIntegrationEntityDAO() {
         return Registry.getCriterionDAO();
     }
+
 }

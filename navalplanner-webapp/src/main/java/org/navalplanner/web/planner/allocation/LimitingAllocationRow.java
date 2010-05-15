@@ -138,20 +138,12 @@ public class LimitingAllocationRow {
         final AllocationType type = getAllocationType();
         if (AllocationType.GENERIC.equals(type)) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            return formatCriteria(generic.getCriterions());
+            return Criterion.getNames(generic.getCriterions());
         }
         if (AllocationType.SPECIFIC.equals(type)) {
             return formatResources(resourceAllocation.getAssociatedResources());
         }
         return "";
-    }
-
-    private String formatCriteria(Set<Criterion> criteria) {
-        List<String> criteriaNames = new ArrayList<String>();
-        for (Criterion each: criteria) {
-            criteriaNames.add(each.getName());
-        }
-        return (criteriaNames.isEmpty()) ? _("[generic all workers]") : StringUtils.join(criteriaNames, ",");
     }
 
     private String formatResources(List<Resource> resources) {
