@@ -246,6 +246,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void initializeCalendarExceptions(BaseCalendar calendar) {
         for (CalendarException each : calendar.getExceptions()) {
             Hibernate.initialize(each);
+            Hibernate.initialize(each.getType());
         }
     }
 
