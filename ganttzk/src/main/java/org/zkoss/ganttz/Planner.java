@@ -257,9 +257,8 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
 
-        this.diagramGraph = new GanttDiagramGraph(configuration
-                .getStartConstraints(), configuration.getEndConstraints(),
-                configuration.isDependenciesConstraintsHavePriority());
+        this.diagramGraph = GanttDiagramGraph.create(configuration
+                .getStartConstraints(), configuration.getEndConstraints(), configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration, diagramGraph);
         diagramGraph.addPreChangeListeners(configuration

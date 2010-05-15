@@ -61,6 +61,14 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         public void execute();
     }
 
+    public static GanttDiagramGraph create(
+            List<Constraint<Date>> globalStartConstraints,
+            List<Constraint<Date>> globalEndConstraints,
+            boolean dependenciesConstraintsHavePriority) {
+        return new GanttDiagramGraph(globalStartConstraints,
+                globalEndConstraints, dependenciesConstraintsHavePriority);
+    }
+
     private final DirectedGraph<Task, Dependency> graph = new SimpleDirectedGraph<Task, Dependency>(
             Dependency.class);
 
@@ -137,7 +145,7 @@ public class GanttDiagramGraph implements ICriticalPathCalculable<Task> {
         }
     }
 
-    public GanttDiagramGraph(List<Constraint<Date>> globalStartConstraints,
+    private GanttDiagramGraph(List<Constraint<Date>> globalStartConstraints,
             List<Constraint<Date>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
         this.globalStartConstraints = globalStartConstraints;
