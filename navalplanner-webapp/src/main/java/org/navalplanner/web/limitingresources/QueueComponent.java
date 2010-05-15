@@ -137,8 +137,10 @@ public class QueueComponent extends XulElement implements
 
     private static Div generateNonWorkableShade(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
-        int workableHours = queueElement.getResource().getCalendar()
-                .getCapacityAt(queueElement.getEndDate());
+
+        int workableHours = queueElement.getLimitingResourceQueue()
+                .getResource().getCalendar().getCapacityAt(
+                        queueElement.getEndDate());
 
         int shadeWidth = new Long((24 - workableHours)
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR
