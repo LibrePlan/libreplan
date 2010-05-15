@@ -284,8 +284,8 @@ public class LimitingResourcesController implements Composer {
         public void render(Row row, Object data) throws Exception {
             LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
-            row.appendChild(label(element.getTaskName()));
             row.appendChild(label(element.getOrderName()));
+            row.appendChild(label(element.getTaskName()));
             row.appendChild(label(element.getResourceName()));
             row.appendChild(label(element.getDate()));
             row.appendChild(label(element.getHoursToAllocate().toString()));
