@@ -19,42 +19,15 @@
  */
 package org.zkoss.ganttz.util;
 
-import org.apache.commons.lang.Validate;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
 
 /**
+ * Represents some computation to execute. It's usually used to execute some
+ * computation in a context.
+ * @see PreAndPostNotReentrantActionsWrapper
+ *      {@link GanttDiagramGraph#manualNotificationOn(IAction)}
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public abstract class PreAndPostNotReentrantActionsWrapper {
-
-    private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return false;
-        }
-    };
-
-    public void doAction(IAction action) {
-        Validate.notNull(action);
-        if (inside.get()) {
-            action.doAction();
-        } else {
-            executeWithPreAndPostActions(action);
-        }
-    }
-
-    private void executeWithPreAndPostActions(IAction action) {
-        preAction();
-        inside.set(true);
-        try {
-            action.doAction();
-        } finally {
-            inside.set(false);
-            postAction();
-        }
-    }
-
-    protected abstract void postAction();
-
-    protected abstract void preAction();
-
+public interface IAction {
+    public void doAction();
 }

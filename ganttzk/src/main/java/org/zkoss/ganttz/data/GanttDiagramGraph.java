@@ -44,8 +44,8 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
+import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
-import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper.IAction;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the

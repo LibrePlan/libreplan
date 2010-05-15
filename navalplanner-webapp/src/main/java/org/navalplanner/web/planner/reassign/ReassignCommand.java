@@ -54,11 +54,11 @@ import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.GanttDiagramGraph.DeferedNotifier;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
-import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper.IAction;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.util.Clients;
 
