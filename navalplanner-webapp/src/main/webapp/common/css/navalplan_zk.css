@@ -830,6 +830,10 @@ div.z-grid {
     margin-right:5px;
 }
 
+.resourcesloadlayout .legend-container {
+    width:186px;
+}
+
 
 /* Graphical improvements */
 
@@ -1261,6 +1265,30 @@ overflow: visible;
     background-color: #CDE6F5;
 }
 
+/* Resource allocation*/
+.allocation-not-satisfied .resource-allocation tr.z-grid-odd td.z-row-inner, .allocation-not-satisfied tr.z-grid-odd {
+    background-color: #EECCCC;
+}
+
+.allocation-not-satisfied td.z-row-inner {
+    background-color: #EECCCC;
+}
+
+.assignedresources .allocation-not-satisfied td.z-row-inner {
+    background-color: #EECCCC;
+}
+
+.allocation-satisfied .resource-allocation tr.z-grid-odd td.z-row-inner, .allocation-satisfied tr.z-grid-odd {
+    background-color: none;
+}
+
+.allocation-satisfied td.z-row-inner {
+    background-color: none;
+}
+
+.assignedresources .allocation-satisfied td.z-row-inner {
+    background-color: none;
+}
 
 /* Advanced allocation */
 
@@ -1273,7 +1301,7 @@ overflow: visible;
 }
 
 .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
-    background-color: #E8E8E8;
+    background-color: #f9f9f9;
 }
 
 
@@ -1292,3 +1320,25 @@ tr.z-tree-row-seld td.z-row-inner {
 tr.z-tree-row-seld .z-row-cnt {
     color: #FFFFFF;
 }
+
+/* color code for order state */
+.order-open-unassigned {
+    color: #AACCEE;
+}
+.order-open-assigned {
+    color: #007BBE;
+}
+.order-closed {
+    color: #000000;
+}
+
+/* ----------- Limiting Resources window ------- */
+.not-workable-hours {
+    position:relative;
+    z-index: -2;
+    top: -1px;
+    height: 12px;
+    float:right;
+    background-color: #CCCCCC;
+}
+

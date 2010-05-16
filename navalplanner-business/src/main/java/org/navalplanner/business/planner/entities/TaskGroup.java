@@ -36,6 +36,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class TaskGroup extends TaskElement {
 
@@ -174,6 +175,11 @@ public class TaskGroup extends TaskElement {
 
     @Override
     public boolean isMilestone() {
+        return false;
+    }
+
+    @Override
+    public boolean hasLimitedResourceAllocation() {
         return false;
     }
 }

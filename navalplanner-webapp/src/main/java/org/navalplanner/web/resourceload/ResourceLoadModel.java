@@ -36,14 +36,19 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -60,6 +65,7 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -110,6 +116,18 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<Resource> resourcesToShowList = new ArrayList<Resource>();
 
     private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
+
+    private Date initDateFilter;
+    private Date endDateFilter;
+
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
+
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -190,7 +208,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
         if(!criteriaToShowList.isEmpty()) {
             return resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(criteriaToShowList);
+                    .findGenericAllocationsBySomeCriterion(criteriaToShowList, initDateFilter, endDateFilter);
         }
         if (filter()) {
             List<Criterion> criterions = new ArrayList<Criterion>();
@@ -206,9 +224,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 }
             }
             return resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(criterions);
+                    .findGenericAllocationsBySomeCriterion(criterions, initDateFilter, endDateFilter);
         } else {
-            return resourceAllocationDAO.findGenericAllocationsByCriterion();
+            return resourceAllocationDAO.findGenericAllocationsByCriterion(initDateFilter, endDateFilter);
         }
     }
 
@@ -403,7 +421,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         for (CriterionSatisfaction satisfaction : satisfactions) {
             criterions.add(satisfaction.getCriterion());
         }
-        return " :: " + getName(criterions);
+        return " :: " + Criterion.getNames(criterions);
     }
 
     private LoadTimeLine createPrincipal(Criterion criterion,
@@ -415,8 +433,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
             List<GenericResourceAllocation> value) {
-        return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(criterion,
-                resourcesDAO), value);
+        if(initDateFilter != null || endDateFilter != null) {
+            return PeriodsBuilder
+                .build(LoadPeriodGenerator.onCriterion(criterion,
+                    resourcesDAO), value,
+                    initDateFilter, endDateFilter);
+        }
+        return PeriodsBuilder
+            .build(LoadPeriodGenerator.onCriterion(criterion,
+                    resourcesDAO), value);
     }
 
     private List<LoadTimeLine> groupsFor(List<Resource> allResources) {
@@ -433,7 +458,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine buildGroup(Resource resource) {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
-                        .findAllocationsRelatedTo(resource));
+                        .findAllocationsRelatedTo(resource, initDateFilter, endDateFilter));
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
                 .getName(), sortedByStartDate, "resource", role),
@@ -601,27 +626,24 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public static String getName(Collection<? extends Criterion> criterions,
             Task task) {
         String prefix = task.getName();
-        return (prefix + " :: " + getName(criterions));
-    }
-
-    public static String getName(Collection<? extends Criterion> criterions) {
-        if (criterions.isEmpty()) {
-            return _("[generic all workers]");
-        }
-        String[] names = new String[criterions.size()];
-        int i = 0;
-        for (Criterion criterion : criterions) {
-            names[i++] = criterion.getName();
-        }
-        return (Arrays.toString(names));
+        return (prefix + " :: " + Criterion.getNames(criterions));
     }
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,
             List<? extends ResourceAllocation<?>> sortedByStartDate,
             String type,
             TimeLineRole<BaseEntity> role) {
-        return new LoadTimeLine(name, PeriodsBuilder.build(LoadPeriodGenerator
-                .onResource(resource), sortedByStartDate), type, role);
+        List<LoadPeriod> loadPeriods;
+        if(initDateFilter != null || endDateFilter != null) {
+            loadPeriods = PeriodsBuilder
+                .build(LoadPeriodGenerator.onResource(resource), sortedByStartDate,
+                        initDateFilter, endDateFilter);
+        }
+        else {
+            loadPeriods = PeriodsBuilder
+                .build(LoadPeriodGenerator.onResource(resource), sortedByStartDate);
+        }
+        return new LoadTimeLine(name, loadPeriods, type, role);
     }
 
     private LoadTimeLine buildTimeLine(Criterion criterion, String name,
@@ -647,8 +669,18 @@ public class ResourceLoadModel implements IResourceLoadModel {
             TimeLineRole<BaseEntity> role) {
         LoadPeriodGeneratorFactory periodGeneratorFactory = LoadPeriodGenerator
                 .onResourceSatisfying(resource, criterions);
-        return new LoadTimeLine(getName(criterions, task), PeriodsBuilder
-                .build(periodGeneratorFactory, allocationsSortedByStartDate),
+        List<LoadPeriod> loadPeriods;
+        if(initDateFilter != null || endDateFilter != null) {
+            loadPeriods = PeriodsBuilder
+                .build(periodGeneratorFactory, allocationsSortedByStartDate,
+                initDateFilter, endDateFilter);
+        }
+        else {
+            loadPeriods = PeriodsBuilder
+                .build(periodGeneratorFactory, allocationsSortedByStartDate);
+        }
+
+        return new LoadTimeLine(getName(criterions, task), loadPeriods,
                 type, role);
     }
 
@@ -705,6 +737,53 @@ public class ResourceLoadModel implements IResourceLoadModel {
         criteriaToShowList.clear();
         criteriaToShowList.addAll(criteriaList);
     }
+
+    @Override
+    public void setEndDateFilter(Date value) {
+        endDateFilter = value;
+    }
+
+    @Override
+    public void setInitDateFilter(Date value) {
+        initDateFilter = value;
+    }
+
+    @Override
+    public Date getEndDateFilter() {
+        return endDateFilter;
+    }
+
+    @Override
+    public Date getInitDateFilter() {
+        return initDateFilter;
+    }
+
+    @Transactional(readOnly = true)
+    public List<DayAssignment> getDayAssignments() {
+        return dayAssignmentDAO.findByResources(getResources());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Resource> getResources() {
+        List<Resource> resources = resourcesToShow();
+        for (Resource resource : resources) {
+            resourcesDAO.reattach(resource);
+            ResourceCalendar calendar = resource.getCalendar();
+            baseCalendarDAO.reattach(calendar);
+            BaseCalendarModel.forceLoadBaseCalendar(calendar);
+            resource.getAssignments().size();
+        }
+        return resources;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isExpandResourceLoadViewCharts() {
+        return configurationDAO.getConfiguration()
+                .isExpandResourceLoadViewCharts();
+    }
+
 }
 
 class PeriodsBuilder {
@@ -726,6 +805,35 @@ class PeriodsBuilder {
         return new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
     }
 
+    public static List<LoadPeriod> build(LoadPeriodGeneratorFactory factory,
+            List<? extends ResourceAllocation<?>> sortedByStartDate,
+            Date startDateFilter, Date endDateFilter) {
+        List<LoadPeriod> list = new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
+        List<LoadPeriod> toReturn = new ArrayList<LoadPeriod>();
+        for(LoadPeriod loadPeriod : list) {
+            LocalDate finalStartDate = loadPeriod.getStart();
+            LocalDate finalEndDate = loadPeriod.getEnd();
+            if(startDateFilter != null) {
+                LocalDate startDateFilterLocalDate = new LocalDate(startDateFilter.getTime());
+                if(finalStartDate.compareTo(startDateFilterLocalDate) < 0) {
+                    finalStartDate = startDateFilterLocalDate;
+                }
+            }
+            if(endDateFilter != null) {
+                LocalDate endDateFilterLocalDate = new LocalDate(endDateFilter.getTime());
+                if(loadPeriod.getEnd().compareTo(endDateFilterLocalDate) > 0) {
+                    finalEndDate = endDateFilterLocalDate;
+                }
+            }
+            if(finalStartDate.compareTo(finalEndDate) < 0) {
+                toReturn.add(new LoadPeriod(finalStartDate, finalEndDate,
+                        loadPeriod.getTotalResourceWorkHours(),
+                        loadPeriod.getAssignedHours(), loadPeriod.getLoadLevel()));
+            }
+        }
+        return toReturn;
+    }
+
     private List<LoadPeriod> buildPeriods() {
         for (ResourceAllocation<?> resourceAllocation : sortedByStartDate) {
             loadPeriodsGenerators.add(factory.create(resourceAllocation));
@@ -737,7 +845,10 @@ class PeriodsBuilder {
     private List<LoadPeriod> toGenerators(List<LoadPeriodGenerator> generators) {
         List<LoadPeriod> result = new ArrayList<LoadPeriod>();
         for (LoadPeriodGenerator loadPeriodGenerator : generators) {
-            result.add(loadPeriodGenerator.build());
+            LoadPeriod period = loadPeriodGenerator.build();
+            if (period != null) {
+                result.add(period);
+            }
         }
         return result;
     }

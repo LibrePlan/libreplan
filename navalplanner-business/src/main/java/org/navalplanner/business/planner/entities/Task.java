@@ -183,6 +183,16 @@ public class Task extends TaskElement {
         return !(getLimitingResourceAllocations().isEmpty());
     }
 
+    private ResourceAllocation<?> getAssociatedLimitingResourceAllocation() {
+        Set<ResourceAllocation<?>> resourceAllocations = getLimitingResourceAllocations();
+        return (resourceAllocations.size() > 0) ? resourceAllocations.iterator().next() : null;
+    }
+
+    public boolean isLimitingAndHasDayAssignments() {
+        ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
+        return (resourceAllocation != null) ? resourceAllocation.isLimitingAndHasDayAssignments() : false;
+    }
+
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         addResourceAllocation(resourceAllocation, true);
     }
@@ -559,7 +569,8 @@ public class Task extends TaskElement {
 
     @Override
     protected boolean canBeResized() {
-        return calculatedValue != CalculatedValue.END_DATE;
+        return ((calculatedValue != CalculatedValue.END_DATE) || (resourceAllocations
+                .isEmpty()));
     }
 
     @Override
@@ -598,4 +609,13 @@ public class Task extends TaskElement {
         return consolidation;
     }
 
+    @Override
+    public boolean hasLimitedResourceAllocation() {
+        return !getLimitingResourceAllocations().isEmpty();
+
+    }
+
+    public boolean hasConsolidations() {
+        return ((consolidation != null) && (!consolidation.isEmpty()));
+    }
 }

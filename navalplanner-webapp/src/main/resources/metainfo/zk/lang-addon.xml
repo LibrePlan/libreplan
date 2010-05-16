@@ -89,11 +89,11 @@
     </component>
 
     <component>
-        <component-name>LimitingResourcesList</component-name>
-        <component-class>org.navalplanner.web.limitingresources.LimitingResourcesList</component-class>
+        <component-name>queueListComponent</component-name>
+        <component-class>org.navalplanner.web.limitingresources.QueueListComponent</component-class>
         <mold>
             <mold-name>default</mold-name>
-            <mold-uri>/limitingresources/limitingresourceslist.dsp</mold-uri>
+            <mold-uri>/limitingresources/queuelistcomponent.dsp</mold-uri>
         </mold>
     </component>
 
@@ -104,11 +104,11 @@
     </component>
 
     <component>
-        <component-name>limitingresources</component-name><!-- Limiting resources queue -->
-        <component-class>org.navalplanner.web.limitingresources.LimitingResourcesComponent</component-class>
+        <component-name>queuecomponent</component-name><!-- Limiting resources queue -->
+        <component-class>org.navalplanner.web.limitingresources.QueueComponent</component-class>
         <mold>
             <mold-name>default</mold-name>
-            <mold-uri>/limitingresources/limitingresources.dsp</mold-uri>
+            <mold-uri>/limitingresources/queuecomponent.dsp</mold-uri>
         </mold>
     </component>
 
@@ -121,6 +121,16 @@
             <mold-uri>/limitingresources/limitingdependencylist.dsp</mold-uri>
         </mold>
     </component>
+
+    <component>
+        <component-name>limitingdependency</component-name>
+        <component-class>org.navalplanner.web.limitingresources.LimitingDependencyComponent</component-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>/limitingresources/limitingdependency.dsp</mold-uri>
+        </mold>
+    </component>
+
 
 
 </language-addon>

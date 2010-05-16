@@ -85,8 +85,19 @@ public class SpecificAllocationRow extends AllocationRow {
 
     public static SpecificAllocationRow from(SpecificResourceAllocation specific) {
         SpecificAllocationRow result = forResource(specific.getResource());
-        result.setResourcesPerDay(specific.getResourcesPerDay());
         result.setOrigin(specific);
+
+        result.setOriginalHours(specific.getOriginalTotalAssigment());
+        result.setTotalHours(specific.getAssignedHours());
+        result.setConsolidatedHours(specific.getConsolidatedHours());
+        result.setNonConsolidatedHours(specific.getNonConsolidatedHours());
+
+        result.setNonConsolidatedResourcesPerDay(specific
+                .getNonConsolidatedResourcePerDay());
+        result.setConsolidatedResourcesPerDay(specific
+                .getConsolidatedResourcePerDay());
+        result.setTotalResourcesPerDay(specific.getResourcesPerDay());
+
         return result;
     }
 
@@ -94,7 +105,7 @@ public class SpecificAllocationRow extends AllocationRow {
         SpecificAllocationRow result = new SpecificAllocationRow();
         result.setName(resource.getShortDescription());
         result.setResource(resource);
-        result.setResourcesPerDay(ResourcesPerDay.amount(1));
+        result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(1));
         return result;
     }
 
@@ -103,7 +114,7 @@ public class SpecificAllocationRow extends AllocationRow {
     @Override
     public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
         return ResourcesPerDayModification.create(createSpecific(task),
-                getResourcesPerDay());
+                getNonConsolidatedResourcesPerDay());
     }
 
     private SpecificResourceAllocation createSpecific(Task task) {

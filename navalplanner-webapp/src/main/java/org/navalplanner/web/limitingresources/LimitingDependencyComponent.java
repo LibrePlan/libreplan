@@ -25,15 +25,12 @@ import java.beans.PropertyChangeListener;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
-import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -44,9 +41,9 @@ import org.zkoss.zul.impl.XulElement;
 public class LimitingDependencyComponent extends XulElement implements
         AfterCompose {
 
-    private Div source;
+    private QueueTask source;
 
-    private Div destination;
+    private QueueTask destination;
 
     private DependencyType type;
 
@@ -54,13 +51,15 @@ public class LimitingDependencyComponent extends XulElement implements
 
     private IConstraintViolationListener<Date> violationListener;
 
-    public LimitingDependencyComponent(Div source, Div destination) {
+    public LimitingDependencyComponent(QueueTask source, QueueTask destination,
+            DependencyType type) {
+        this(source, destination);
+        this.type = type;
+    }
+
+    public LimitingDependencyComponent(QueueTask source, QueueTask destination) {
         Validate.notNull(source);
         Validate.notNull(destination);
-        // Validate.isTrue(source.getTask() == dependency.getSource());
-        // Validate.isTrue(destination.getTask() ==
-        // dependency.getDestination());
-        // this.type = dependency.getType();
         this.source = source;
         this.destination = destination;
         // this.dependency = dependency;
@@ -100,8 +99,8 @@ public class LimitingDependencyComponent extends XulElement implements
 
     }
 
-    private TaskComponent findTaskComponent(String idTaskOrig) {
-        return (TaskComponent) getFellow(idTaskOrig);
+    private QueueTask findTaskComponent(String idTaskOrig) {
+        return (QueueTask) getFellow(idTaskOrig);
     }
 
     /**
@@ -123,18 +122,18 @@ public class LimitingDependencyComponent extends XulElement implements
         response("zoomChanged", new AuInvoke(this, "draw"));
     }
 
-    public boolean contains(Task task) {
+    public boolean contains(QueueTask task) {
         return false;
         // Task sourceTask = getSource().getTask();
         // Task destinationTask = getDestination().getTask();
         // return task.equals(sourceTask) || task.equals(destinationTask);
     }
 
-    public Div getSource() {
+    public QueueTask getSource() {
         return source;
     }
 
-    public Div getDestination() {
+    public QueueTask getDestination() {
         return destination;
     }
 

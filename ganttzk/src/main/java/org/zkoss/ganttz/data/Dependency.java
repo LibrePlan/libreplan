@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKAdapter;
 import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
@@ -167,8 +168,9 @@ public class Dependency implements IDependency<Task> {
         return new Dependency(source, destination, type, visible);
     }
 
-    public TaskPoint getDestinationPoint() {
-        return new TaskPoint(destination, type.getPointModified());
+    public TaskPoint<Task, Dependency> getDestinationPoint() {
+        return new TaskPoint<Task, Dependency>(new GanttZKAdapter(),
+                destination, type.getPointModified());
     }
 
 }

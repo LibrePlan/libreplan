@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
 import org.zkoss.ganttz.extensions.ICommand;
@@ -149,6 +150,10 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     private IPrintAction printAction;
 
     private boolean expandPlanningViewCharts;
+
+    private final List<IGraphChangeListener> preGraphChangeListeners = new ArrayList<IGraphChangeListener>();
+
+    private final List<IGraphChangeListener> postGraphChangeListeners = new ArrayList<IGraphChangeListener>();
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -378,6 +383,26 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isExpandPlanningViewCharts() {
         return expandPlanningViewCharts;
+    }
+
+    public void addPreGraphChangeListener(
+            IGraphChangeListener preGraphChangeListener) {
+        Validate.notNull(preGraphChangeListener);
+        preGraphChangeListeners.add(preGraphChangeListener);
+    }
+
+    public void addPostGraphChangeListener(
+            IGraphChangeListener postGraphChangeListener) {
+        Validate.notNull(postGraphChangeListener);
+        postGraphChangeListeners.add(postGraphChangeListener);
+    }
+
+    public List<IGraphChangeListener> getPreChangeListeners() {
+        return Collections.unmodifiableList(preGraphChangeListeners);
+    }
+
+    public List<IGraphChangeListener> getPostChangeListeners() {
+        return Collections.unmodifiableList(postGraphChangeListeners);
     }
 
 }

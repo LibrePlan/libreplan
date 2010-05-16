@@ -166,6 +166,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private Scenario currentScenario;
 
+    private List<Order> ordersToShow;
+
+    private Date filterStartDate;
+    private Date filterFinishDate;
+
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
         this.tabs = entryPoints;
@@ -320,7 +325,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         });
     }
 
-    private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
+    public static void appendLoadChartAndLegend(Tabpanel loadChartPannel,
             Timeplot loadChart) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
@@ -333,7 +338,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         loadChartPannel.appendChild(hbox);
     }
 
-    private org.zkoss.zk.ui.Component getLoadChartLegend() {
+    public static org.zkoss.zk.ui.Component getLoadChartLegend() {
         Hbox hbox = new Hbox();
         hbox.setClass("legend-container");
         hbox.setAlign("center");
@@ -599,7 +604,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         List<TaskElement> toShow;
-        toShow = sortByStartDate(retainOnlyTopLevel(predicate));
+        toShow = retainOnlyTopLevel(predicate);
 
         forceLoadOfDataAssociatedTo(toShow);
         forceLoadOfDependenciesCollections(toShow);
@@ -615,18 +620,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private List<TaskElement> sortByStartDate(List<TaskElement> list) {
-        List<TaskElement> result = new ArrayList<TaskElement>(list);
-        Collections.sort(result, new Comparator<TaskElement>() {
+    private List<Order> sortByStartDate(List<Order> list) {
+        List<Order> result = new ArrayList<Order>(list);
+        Collections.sort(result, new Comparator<Order>() {
             @Override
-            public int compare(TaskElement o1, TaskElement o2) {
-                if (o1.getStartDate() == null) {
+            public int compare(Order o1, Order o2) {
+                if (o1.getInitDate() == null) {
                     return -1;
                 }
-                if (o2.getStartDate() == null) {
+                if (o2.getInitDate() == null) {
                     return 1;
                 }
-                return o1.getStartDate().compareTo(o2.getStartDate());
+                return o1.getInitDate().compareTo(o2.getInitDate());
             }
         });
         return result;
@@ -635,6 +640,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
+        ordersToShow = new ArrayList<Order>();
 
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
@@ -648,7 +654,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         currentScenario = scenarioManager.getCurrent();
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
                 user, currentScenario);
-
         for (Order order : list) {
             order.useSchedulingDataFor(currentScenario);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
@@ -656,6 +661,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             if (associatedTaskElement != null) {
                 if (predicate == null || predicate.accepts(order)) {
                     result.add(associatedTaskElement);
+                    ordersToShow.add(order);
                 }
             }
         }
@@ -701,6 +707,41 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
+    @Override
+    public List<Order> getOrdersToShow() {
+        return ordersToShow;
+    }
+
+    @Override
+    public void setFilterStartDate(Date filterStartDate) {
+        this.filterStartDate = filterStartDate;
+    }
+
+    @Override
+    public Date getFilterStartDate() {
+        return filterStartDate;
+    }
+
+    private LocalDate getFilterStartLocalDate() {
+        return filterStartDate != null ?
+                LocalDate.fromDateFields(filterStartDate) : null;
+    }
+
+    @Override
+    public void setFilterFinishDate(Date filterFinishDate) {
+        this.filterFinishDate = filterFinishDate;
+    }
+
+    @Override
+    public Date getFilterFinishDate() {
+        return filterFinishDate;
+    }
+
+    private LocalDate getFilterFinishLocalDate() {
+        return filterFinishDate != null ?
+                LocalDate.fromDateFields(filterFinishDate) : null;
+    }
+
     private class CompanyLoadChartFiller extends ChartFiller {
 
         @Override
@@ -713,20 +754,21 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             resetMinimumAndMaximumValueForChart();
 
-            Plotinfo plotInfoLoad = createPlotinfo(getLoad(interval.getStart(),
-                    interval.getFinish()), interval);
+            Date start = filterStartDate!=null ? filterStartDate : interval.getStart();
+            Date finish = filterFinishDate != null ? filterFinishDate
+                    : interval.getFinish();
+
+            Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish), interval);
             plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
 
             Plotinfo plotInfoMax = createPlotinfo(
-                    getCalendarMaximumAvailability(interval.getStart(),
-                            interval.getFinish()), interval);
+                    getCalendarMaximumAvailability(start, finish), interval);
             plotInfoMax.setLineColor(COLOR_CAPABILITY_LINE);
             plotInfoMax.setFillColor("#FFFFFF");
             plotInfoMax.setLineWidth(2);
 
-            Plotinfo plotInfoOverload = createPlotinfo(getOverload(interval
-                    .getStart(), interval.getFinish()), interval);
+            Plotinfo plotInfoOverload = createPlotinfo(getOverload(start, finish), interval);
             plotInfoOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
             plotInfoOverload.setLineWidth(0);
 
@@ -742,8 +784,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario);
-
+            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
+                    currentScenario, LocalDate.fromDateFields(start), LocalDate
+                            .fromDateFields(finish));
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
 
@@ -752,7 +795,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
                 Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario);
+            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario, LocalDate.fromDateFields(start), LocalDate.fromDateFields(finish));
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
@@ -879,14 +922,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            List<TaskElement> list = taskElementDAO.list(TaskElement.class);
+            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
 
             SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
                 if (taskElement instanceof Task) {
                     addCost(estimatedCost, hoursCostCalculator
-                            .getEstimatedCost((Task) taskElement));
+                            .getEstimatedCost((Task) taskElement,
+                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
                 }
             }
 
@@ -909,7 +953,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
             List<WorkReportLine> workReportLines = workReportLineDAO
-                    .list(WorkReportLine.class);
+                    .findFilteredByDate(filterStartDate, filterFinishDate);
 
             if (workReportLines.isEmpty()) {
                 return result;
@@ -929,14 +973,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = taskElementDAO.list(TaskElement.class);
+            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
 
             SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
                 if (taskElement instanceof Task) {
                     addCost(advanceCost, hoursCostCalculator
-                            .getAdvanceCost((Task) taskElement));
+                            .getAdvanceCost((Task) taskElement,
+                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
                 }
             }
 

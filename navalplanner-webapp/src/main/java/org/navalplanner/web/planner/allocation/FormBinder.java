@@ -61,6 +61,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.impl.api.InputElement;
@@ -69,13 +70,18 @@ public class FormBinder {
 
     private Intbox allHoursInput;
 
+    private Label allOriginalHours;
+    private Label allTotalHours;
+    private Label allConsolidatedHours;
+
+    private Label allTotalResourcesPerDay;
+    private Label allConsolidatedResourcesPerDay;
+
     private final AllocationRowsHandler allocationRowsHandler;
 
     private AggregateOfResourceAllocations aggregate;
 
     private AllocationResult lastAllocation;
-
-    private Datebox taskStartDateBox;
 
     private Datebox endDate;
 
@@ -244,20 +250,32 @@ public class FormBinder {
         return result;
     }
 
+    private int sumAllOriginalHours() {
+        int result = 0;
+        for (AllocationRow each : rows) {
+            result += each.getOriginalHours();
+        }
+        return result;
+    }
+
+    private int sumAllTotalHours() {
+        int result = 0;
+        for (AllocationRow each : rows) {
+            result += each.getTotalHours();
+        }
+        return result;
+    }
+
+    private int sumAllConsolidatedHours() {
+        int result = 0;
+        for (AllocationRow each : rows) {
+            result += each.getConsolidatedHours();
+        }
+        return result;
+    }
+
     public CalculatedValue getCalculatedValue() {
         return allocationRowsHandler.getCalculatedValue();
-    }
-
-    public void setTaskStartDateBox(Datebox taskStartDateBox) {
-        this.taskStartDateBox = taskStartDateBox;
-        this.taskStartDateBox.setDisabled(true);
-        loadValueForTaskStartDateBox();
-        onChangeEnableApply(taskStartDateBox);
-    }
-
-    private void loadValueForTaskStartDateBox() {
-        this.taskStartDateBox.setValue(allocationRowsHandler.getTask()
-                .getStartDate());
     }
 
     private void onChangeEnableApply(InputElement inputElement) {
@@ -331,6 +349,7 @@ public class FormBinder {
         allHoursInputComponentDisabilityRule();
         bindAllResourcesPerDayToRows();
         allResourcesPerDayVisibilityRule();
+        loadAggregatedCalculations();
         return result;
     }
 
@@ -367,22 +386,34 @@ public class FormBinder {
 
     private void reloadValues() {
         loadHoursValues();
-        loadIsSatisfiedValues();
         loadValueForAssignedHoursComponent();
-        loadValueForTaskStartDateBox();
         loadValueForEndDate();
         loadDerivedAllocations();
+        loadSclassRowSatisfied();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadSclassRowSatisfied() {
+        try {
+            List<org.zkoss.zul.Row> rows = (List<org.zkoss.zul.Row>) allocationsGrid
+                    .getRows().getChildren();
+            for (org.zkoss.zul.Row row : rows) {
+                if (row.getValue() instanceof AllocationRow) {
+                    if (!((AllocationRow) row.getValue()).isSatisfied()) {
+                        row.setSclass("allocation-not-satisfied");
+                    } else {
+                        row.setSclass("allocation-satisfied");
+                    }
+                }
+            }
+        } catch (ClassCastException e) {
+            throw new RuntimeException();
+        }
     }
 
     private void loadHoursValues() {
         for (AllocationRow each : rows) {
             each.loadHours();
-        }
-    }
-
-    private void loadIsSatisfiedValues() {
-        for (AllocationRow each : rows) {
-            each.loadSatisfied();
         }
     }
 
@@ -459,13 +490,13 @@ public class FormBinder {
                         Level.ERROR,
                         _(
                                 "there are no resources for required criteria: {0}. So the generic allocation can't be added",
-                        ResourceLoadModel.getName(criterions)));
+                        Criterion.getNames(criterions)));
     }
 
     public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR, _(
                 "already exists an allocation for criteria {0}",
-                ResourceLoadModel.getName(criterions)));
+                Criterion.getNames(criterions)));
     }
 
     public void markEndDateMustBeAfterStartDate() {
@@ -606,9 +637,72 @@ public class FormBinder {
         return sum;
     }
 
-    public void setStartDate(Date date) {
-        taskStartDateBox.setValue(date);
-        doApply();
+    private BigDecimal sumAllTotalResourcesPerDay() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (AllocationRow each : rows) {
+            sum = sum.add(each.getTotalResourcesPerDay().getAmount());
+        }
+        return sum;
+    }
+
+    private BigDecimal sumAllConsolidatedResourcesPerDay() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (AllocationRow each : rows) {
+            sum = sum.add(each.getConsolidatedResourcesPerDay().getAmount());
+        }
+        return sum;
+    }
+
+    public void setAllOriginalHours(Label allOriginalHours) {
+        this.allOriginalHours = allOriginalHours;
+    }
+
+    public Label getAllOriginalHours() {
+        return allOriginalHours;
+    }
+
+    public void setAllTotalHours(Label allTotalHours) {
+        this.allTotalHours = allTotalHours;
+    }
+
+    public Label getAllTotalHours() {
+        return allTotalHours;
+    }
+
+    public void setAllConsolidatedHours(Label alCo1nsolidatedHours) {
+        this.allConsolidatedHours = alCo1nsolidatedHours;
+    }
+
+    public Label getAllConsolidatedHours() {
+        return allConsolidatedHours;
+    }
+
+    public void setAllTotalResourcesPerDay(Label allTotalResourcesPerDay) {
+        this.allTotalResourcesPerDay = allTotalResourcesPerDay;
+    }
+
+    public Label getAllTotalResourcesPerDay() {
+        return allTotalResourcesPerDay;
+    }
+
+    public void setAllConsolidatedResourcesPerDay(
+            Label allConsolidatedResourcesPerDay) {
+        this.allConsolidatedResourcesPerDay = allConsolidatedResourcesPerDay;
+    }
+
+    public Label getAllConsolidatedResourcesPerDay() {
+        return allConsolidatedResourcesPerDay;
+    }
+
+    public void loadAggregatedCalculations() {
+        allOriginalHours.setValue(Integer.toString(sumAllOriginalHours()));
+        allTotalHours.setValue(Integer.toString(sumAllTotalHours()));
+        allConsolidatedHours.setValue(Integer
+                .toString(sumAllConsolidatedHours()));
+        allTotalResourcesPerDay.setValue(sumAllTotalResourcesPerDay()
+                .toString());
+        allConsolidatedResourcesPerDay
+                .setValue(sumAllConsolidatedResourcesPerDay().toString());
     }
 
 }

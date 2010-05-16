@@ -60,14 +60,12 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -320,7 +318,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         private void registerKeyboardListener(final InputElement inputElement) {
-            inputElement.setCtrlKeys("#up#down#left#right");
+            inputElement.setCtrlKeys("#up#down");
             inputElement.addEventListener("onCtrlKey", new EventListener() {
                 private Treerow treerow = getCurrentTreeRow();
 

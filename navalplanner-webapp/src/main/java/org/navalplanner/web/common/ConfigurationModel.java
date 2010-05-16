@@ -373,4 +373,22 @@ public class ConfigurationModel implements IConfigurationModel {
         return configuration.isExpandOrderPlanningViewCharts();
     }
 
+
+    @Override
+    public void setExpandResourceLoadViewCharts(
+            Boolean expandResourceLoadViewCharts) {
+        if (configuration != null) {
+            configuration
+                    .setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
+        }
+    }
+
+    @Override
+    public Boolean isExpandResourceLoadViewCharts() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.isExpandResourceLoadViewCharts();
+    }
+
 }

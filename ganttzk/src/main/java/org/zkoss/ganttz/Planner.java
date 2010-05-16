@@ -38,6 +38,7 @@ import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
@@ -111,7 +112,7 @@ public class Planner extends HtmlMacroComponent  {
         return result;
     }
 
-    private GanttDiagramGraph diagramGraph;
+    private GanttZKDiagramGraph diagramGraph;
 
     private LeftPane leftPane;
 
@@ -257,11 +258,14 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
 
-        this.diagramGraph = new GanttDiagramGraph(configuration
-                .getStartConstraints(), configuration.getEndConstraints(),
-                configuration.isDependenciesConstraintsHavePriority());
+        this.diagramGraph = GanttDiagramGraph.create(configuration
+                .getStartConstraints(), configuration.getEndConstraints(), configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration, diagramGraph);
+        diagramGraph.addPreChangeListeners(configuration
+                .getPreChangeListeners());
+        diagramGraph.addPostChangeListeners(configuration
+                .getPostChangeListeners());
         this.contextualizedGlobalCommands = contextualize(newContext,
                 configuration.getGlobalCommands());
         this.commandsOnTasksContextualized = contextualize(newContext,

@@ -54,7 +54,7 @@ public class CutyPrint {
 
     private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
     // Estimated maximum execution time (ms)
-    private static final int CUTYCAPT_TIMEOUT = 20000;
+    private static final int CUTYCAPT_TIMEOUT = 60000;
 
     // Taskdetails left padding
     private static int TASKDETAILS_WIDTH = 310;

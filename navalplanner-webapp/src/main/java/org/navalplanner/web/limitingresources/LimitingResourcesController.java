@@ -22,14 +22,26 @@ package org.navalplanner.web.limitingresources;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.jfree.util.Log;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +57,9 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -70,6 +85,8 @@ public class LimitingResourcesController implements Composer {
     private LimitingResourcesPanel limitingResourcesPanel;
 
     private TimeTracker timeTracker;
+
+    private Grid gridUnassignedLimitingResourceQueueElements;
 
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
@@ -111,6 +128,8 @@ public class LimitingResourcesController implements Composer {
             this.parent.getChildren().clear();
             this.parent.appendChild(limitingResourcesPanel);
             limitingResourcesPanel.afterCompose();
+            gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
+                    .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -151,19 +170,124 @@ public class LimitingResourcesController implements Composer {
     }
 
     private LimitingResourcesPanel buildLimitingResourcesPanel() {
-        LimitingResourcesPanel result = new LimitingResourcesPanel(
-                limitingResourceQueueModel.getLimitingResourceQueues(),
-                timeTracker);
-        result.setVariable("limitingResourcesController", this, true);
+        return new LimitingResourcesPanel(this, timeTracker);
+    }
+
+    /**
+     * Returns unassigned {@link LimitingResourceQueueElement}
+     *
+     * It's necessary to convert elements to a DTO that encapsulates properties
+     * such as task name or order name, since the only way of sorting by these
+     * fields is by having properties getTaskName or getOrderName on the
+     * elements returned
+     *
+     * @return
+     */
+    public List<LimitingResourceQueueElementDTO> getUnassignedLimitingResourceQueueElements() {
+        List<LimitingResourceQueueElementDTO> result = new ArrayList<LimitingResourceQueueElementDTO>();
+        for (LimitingResourceQueueElement each : limitingResourceQueueModel
+                .getUnassignedLimitingResourceQueueElements()) {
+            result.add(toLimitingResourceQueueElementDTO(each));
+        }
         return result;
     }
 
-    public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
-        return limitingResourceQueueModel.getUnassignedLimitingResourceQueueElements();
+    private LimitingResourceQueueElementDTO toLimitingResourceQueueElementDTO(
+            LimitingResourceQueueElement element) {
+        final Task task = element.getResourceAllocation().getTask();
+        final Order order = limitingResourceQueueModel.getOrderByTask(task);
+        return new LimitingResourceQueueElementDTO(element, order
+                .getName(), task.getName(), element
+                .getEarlierStartDateBecauseOfGantt());
+    }
+
+    /**
+     * DTO for list of unassigned {@link LimitingResourceQueueElement}
+     *
+     * @author Diego Pino Garcia <dpino@igalia.com>
+     *
+     */
+    public class LimitingResourceQueueElementDTO {
+
+        private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+
+        private LimitingResourceQueueElement original;
+
+        private String orderName;
+
+        private String taskName;
+
+        private String date;
+
+        private Integer hoursToAllocate;
+
+        private String resourceOrCriteria;
+
+        public LimitingResourceQueueElementDTO(
+                LimitingResourceQueueElement element, String orderName,
+                String taskName, Date date) {
+            this.original = element;
+            this.orderName = orderName;
+            this.taskName = taskName;
+            this.date = DATE_FORMAT.format(date);
+            this.hoursToAllocate = element.getIntentedTotalHours();
+            this.resourceOrCriteria = getResourceOrCriteria(element.getResourceAllocation());
+        }
+
+        private String getResourceOrCriteria(ResourceAllocation<?> resourceAllocation) {
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                final Resource resource = ((SpecificResourceAllocation) resourceAllocation)
+                        .getResource();
+                return (resource != null) ? resource.getName() : "";
+            } else if (resourceAllocation instanceof GenericResourceAllocation) {
+                Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation).getCriterions();
+                return Criterion.getNames(criteria);
+            }
+            return StringUtils.EMPTY;
+        }
+
+        public LimitingResourceQueueElement getOriginal() {
+            return original;
+        }
+
+        public String getOrderName() {
+            return orderName;
+        }
+
+        public String getTaskName() {
+            return taskName;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public Integer getHoursToAllocate() {
+            return (hoursToAllocate != null) ? hoursToAllocate : 0;
+        }
+
+        public String getResourceOrCriteria() {
+            return resourceOrCriteria;
+        }
+
     }
 
     public void filterBy(Order order) {
         this.filterBy = order;
+    }
+
+    public void saveQueues() {
+        limitingResourceQueueModel.confirm();
+        notifyUserThatSavingIsDone();
+    }
+
+    private void notifyUserThatSavingIsDone() {
+        try {
+            Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK,
+                    Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public LimitingResourceQueueElementsRenderer getLimitingResourceQueueElementsRenderer() {
@@ -174,29 +298,86 @@ public class LimitingResourcesController implements Composer {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            LimitingResourceQueueElement element = (LimitingResourceQueueElement) data;
+            LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
-            row.appendChild(label(getTaskName(element)));
-            row.appendChild(label(getOrderName(element)));
-            row.appendChild(assignButton(element));
+            row.appendChild(label(element.getOrderName()));
+            row.appendChild(label(element.getTaskName()));
+            row.appendChild(label(element.getResourceOrCriteria()));
+            row.appendChild(label(element.getDate()));
+            row.appendChild(label(element.getHoursToAllocate().toString()));
+            row.appendChild(operations(element));
             row.appendChild(automaticQueueing(element));
         }
 
-        private Button assignButton(final LimitingResourceQueueElement element) {
+        private Hbox operations(LimitingResourceQueueElementDTO element) {
+            Hbox hbox = new Hbox();
+            hbox.appendChild(assignButton(element));
+            hbox.appendChild(removeButton(element));
+            return hbox;
+        }
+
+        private Button removeButton(final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
-            result.setLabel("Assign");
-            result.setTooltiptext(_("Assign to queue"));
+            result.setLabel(_("Remove"));
+            result.setTooltiptext(_("Remove limiting resource element"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    // FIXME: assign element to queue
+                    removeUnassignedLimitingResourceQueueElement(element);
                 }
             });
             return result;
         }
 
-        private Checkbox automaticQueueing(final LimitingResourceQueueElement element) {
+        private void removeUnassignedLimitingResourceQueueElement(
+                LimitingResourceQueueElementDTO dto) {
+
+            LimitingResourceQueueElement element = dto.getOriginal();
+            limitingResourceQueueModel
+                    .removeUnassignedLimitingResourceQueueElement(element);
+            Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+        }
+
+        private Button assignButton(
+                final LimitingResourceQueueElementDTO element) {
+            Button result = new Button();
+            result.setLabel(_("Assign"));
+            result.setTooltiptext(_("Assign to queue"));
+            result.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    assignLimitingResourceQueueElement(element);
+                }
+            });
+            return result;
+        }
+
+        private void assignLimitingResourceQueueElement(
+                LimitingResourceQueueElementDTO dto) {
+
+            LimitingResourceQueueElement element = dto.getOriginal();
+            if (limitingResourceQueueModel
+                    .assignLimitingResourceQueueElement(element)) {
+                Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+                limitingResourcesPanel.appendQueueElementToQueue(element);
+            } else {
+                showErrorMessage(_("Cannot allocate selected element. There is not any queue " +
+                        "that matches resource allocation criteria at any interval of time"));
+            }
+        }
+
+        private void showErrorMessage(String error) {
+            try {
+                Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
+            } catch (InterruptedException e) {
+
+            }
+        }
+
+        private Checkbox automaticQueueing(
+                final LimitingResourceQueueElementDTO element) {
             Checkbox result = new Checkbox();
             result.setTooltiptext(_("Select for automatic queuing"));
             return result;
@@ -206,22 +387,15 @@ public class LimitingResourcesController implements Composer {
             return new Label(value);
         }
 
-        private TaskElement getTask(LimitingResourceQueueElement element) {
-            return element.getResourceAllocation().getTask();
-        }
+    }
 
-        private String getTaskName(LimitingResourceQueueElement element) {
-            return getTask(element).getName();
-        }
+    public List<LimitingResourceQueue> getLimitingResourceQueues() {
+        return limitingResourceQueueModel.getLimitingResourceQueues();
+    }
 
-        private Order getOrder(LimitingResourceQueueElement element) {
-            return limitingResourceQueueModel.getOrderByTask(getTask(element));
-        }
-
-        private String getOrderName(LimitingResourceQueueElement element) {
-            return getOrder(element).getName();
-        }
-
+    public void unschedule(QueueTask task) {
+        limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
+        Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
     }
 
 }

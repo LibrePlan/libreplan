@@ -21,8 +21,10 @@
 package org.navalplanner.business.planner.daos;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
@@ -149,5 +151,18 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
             result.add(new CompletedEstimatedHoursPerTaskDTO(task, deadline));
         }
         return result;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<TaskElement> listFilteredByDate(Date start, Date end) {
+        Criteria criteria  = getSession().createCriteria(TaskElement.class);
+        if(start != null) {
+            criteria.add(Restrictions.ge("endDate", start));
+        }
+        if(end != null) {
+            criteria.add(Restrictions.le("startDate", end));
+        }
+        return criteria.list();
     }
 }

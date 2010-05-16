@@ -195,20 +195,14 @@ public class OrderPredicate implements IPredicate {
         if ((initDate == null) && (startDate == null)) {
             return true;
         }
-        return isInTheRangeFilterDates(initDate);
+        return isLowerToFinishDate(initDate, finishDate);
     }
 
     protected boolean acceptFinishDate(Date deadLine) {
         if ((deadLine == null) && (finishDate == null)) {
             return true;
         }
-        return isInTheRangeFilterDates(deadLine);
-    }
-
-    private boolean isInTheRangeFilterDates(Date date) {
-        // Check if date is into interval between the startdate and finish date
-        return (isGreaterToStartDate(date, startDate) && isLowerToFinishDate(
-                date, finishDate));
+        return isGreaterToStartDate(deadLine, startDate);
     }
 
     private boolean isGreaterToStartDate(Date date, Date startDate) {

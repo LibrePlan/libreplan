@@ -27,6 +27,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -45,8 +50,11 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.GanttDiagramGraph.DeferedNotifier;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
@@ -99,6 +107,71 @@ public class ReassignCommand implements IReassignCommand {
                 });
     }
 
+    private class NotBlockingDesktopUpdates implements
+            IDesktopUpdatesEmitter<IDesktopUpdate>, Runnable {
+        private BlockingQueue<IDesktopUpdate> queue = new LinkedBlockingQueue<IDesktopUpdate>();
+        private final IDesktopUpdatesEmitter<IDesktopUpdate> original;
+
+        private final IDesktopUpdate END_MARK = new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+            }
+        };
+
+        NotBlockingDesktopUpdates(
+                IDesktopUpdatesEmitter<IDesktopUpdate> original) {
+            this.original = original;
+        }
+
+        @Override
+        public void doUpdate(IDesktopUpdate value) {
+            queue.add(value);
+        }
+
+        void finish() {
+            queue.add(END_MARK);
+        }
+
+        @Override
+        public void run() {
+            List<IDesktopUpdate> batch = new ArrayList<IDesktopUpdate>();
+            while (true) {
+                batch.clear();
+                IDesktopUpdate current = null;
+                try {
+                    current = queue.take();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (current == END_MARK) {
+                    return;
+                }
+                batch.add(current);
+                while ((current = queue.poll()) != null) {
+                    if (current == END_MARK) {
+                        break;
+                    }
+                    batch.add(current);
+                }
+                if (!batch.isEmpty()) {
+                    original
+                            .doUpdate(asOneUpdate(batch));
+                }
+                if (current == END_MARK) {
+                    return;
+                }
+            }
+        }
+
+        private IDesktopUpdate asOneUpdate(List<IDesktopUpdate> batch) {
+            return and(batch.toArray(new IDesktopUpdate[0]));
+        }
+
+    }
+
+    private ExecutorService executorService = Executors.newCachedThreadPool();
+
     private IBackGroundOperation<IDesktopUpdate> reassignations(
             final IContext<TaskElement> context,
             final List<WithAssociatedEntity> reassignations) {
@@ -106,41 +179,65 @@ public class ReassignCommand implements IReassignCommand {
 
             @Override
             public void doOperation(
-                    IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
+                    final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
                 updater.doUpdate(showStart(reassignations.size()));
+                DeferedNotifier notifications = null;
+                NotBlockingDesktopUpdates notBlockingDesktopUpdates = new NotBlockingDesktopUpdates(
+                        updater);
+                Future<?> previousNotifications = executorService
+                        .submit(notBlockingDesktopUpdates);
                 try {
-                    doReassignations(reassignations, updater);
+                    GanttDiagramGraph ganttDiagramGraph = context.getGanttDiagramGraph();
+                    notifications = ganttDiagramGraph
+                            .manualNotificationOn(doReassignations(
+                                    ganttDiagramGraph, reassignations,
+                                            notBlockingDesktopUpdates));
                 } finally {
-                    updater.doUpdate(and(reloadCharts(context), showEnd()));
+                    notBlockingDesktopUpdates.finish();
+                    if (notifications != null) {
+                        // null if error
+                        waitUntilFinish(previousNotifications);
+                        updater.doUpdate(and(doNotifications(notifications),
+                                reloadCharts(context), showEnd()));
+                    } else {
+                        updater.doUpdate(showEnd());
+                    }
+                }
+            }
+
+            private void waitUntilFinish(Future<?> showingProgress){
+                try {
+                    showingProgress.get();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         };
     }
 
-    private void doReassignations(
+    private IAction doReassignations(final GanttDiagramGraph diagramGraph,
             final List<WithAssociatedEntity> reassignations,
-            IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
-        int i = 1;
-        final int total = reassignations.size();
-        for (final WithAssociatedEntity each : reassignations) {
-            IDesktopUpdate notifyChanges = changesNotificatorFor(each.ganntTask);
-            transactionService
-                    .runOnReadOnlyTransaction(reassignmentTransaction(each));
-            updater.doUpdate(notifyChanges);
-            updater.doUpdate(showCompleted(i, total));
-            updater.doUpdate(and(notifyChanges, showCompleted(i, total)));
-            i++;
-        }
-    }
+            final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
+        return new IAction() {
 
-    private IDesktopUpdate changesNotificatorFor(final Task ganttTask) {
-        final Date previousBeginDate = ganttTask.getBeginDate();
-        final long previousLength = ganttTask.getLengthMilliseconds();
-        return new IDesktopUpdate() {
             @Override
-            public void doUpdate() {
-                ganttTask.fireChangesForPreviousValues(previousBeginDate,
-                        previousLength);
+            public void doAction() {
+                int i = 1;
+                final int total = reassignations.size();
+                for (final WithAssociatedEntity each : reassignations) {
+                    Task ganttTask = each.ganntTask;
+                    final Date previousBeginDate = ganttTask.getBeginDate();
+                    final long previousLength = ganttTask
+                            .getLengthMilliseconds();
+
+                    transactionService
+                            .runOnReadOnlyTransaction(reassignmentTransaction(each));
+                    diagramGraph.enforceRestrictions(each.ganntTask);
+                    ganttTask.fireChangesForPreviousValues(previousBeginDate,
+                            previousLength);
+                    updater.doUpdate(showCompleted(i, total));
+                    i++;
+                }
             }
         };
     }
@@ -169,6 +266,15 @@ public class ReassignCommand implements IReassignCommand {
             @Override
             public void doUpdate() {
                 context.reloadCharts();
+            }
+        };
+    }
+
+    private IDesktopUpdate doNotifications(final DeferedNotifier notifier) {
+        return new IDesktopUpdate() {
+            @Override
+            public void doUpdate() {
+                notifier.doNotifications();
             }
         };
     }

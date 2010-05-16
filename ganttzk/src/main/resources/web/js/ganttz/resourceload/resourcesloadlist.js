@@ -47,7 +47,6 @@ function addResourcesLoadListMethods(object) {
 		return YAHOO.util.Selector.query('.rightpanellayout div')[0];
 	}
 
-
 	function timetrackergap() {
 		return YAHOO.util.Selector.query('.timetrackergap')[0];
 	}
@@ -56,6 +55,9 @@ function addResourcesLoadListMethods(object) {
 		return YAHOO.util.Selector.query('.leftpanelgap .z-tree-body')[0];
 	}
 
+	function rightpanel() {
+		return YAHOO.util.Selector.query('.rightpanellayout div')[0];
+	}
 
 	object.init = function(cmp) {
 		this.adjustTimeTrackerSize(cmp);
@@ -73,16 +75,16 @@ function addResourcesLoadListMethods(object) {
 		var scrolledpannel_ = scrolledpannel();
 		var resourcesloadgraph_ = resourcesloadgraph();
 		var leftpanel_ = leftpanel();
+		var rightpanel_ = rightpanel();
 
 		var onScroll = function() {
-			timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+			var timeplotcontainer_ = YAHOO.util.Selector.query('canvas.timeplot-canvas')[0];
+			timeplotcontainer_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
 			leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
 			resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
-
 		};
 
-		YAHOO.util.Selector.query('.rightpanellayout div')[0].onscroll = onScroll;
-
+		rightpanel_.onscroll = onScroll;
 	}
 
 	object.adjustTimeTrackerSize = function(cmp) {

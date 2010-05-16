@@ -45,6 +45,7 @@ import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -166,13 +167,13 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private final IAdapterToTaskFundamentalProperties<T> adapter;
     private final IStructureNavigator<T> navigator;
     private final OneToOneMapper<T> mapper = new OneToOneMapper<T>();
-    private final GanttDiagramGraph diagramGraph;
+    private final GanttZKDiagramGraph diagramGraph;
     private TimeTracker timeTracker;
     private final PlannerConfiguration<T> configuration;
 
     public FunctionalityExposedForExtensions(Planner planner,
             PlannerConfiguration<T> configuration,
-            GanttDiagramGraph diagramGraph) {
+            GanttZKDiagramGraph diagramGraph) {
         this.planner = planner;
         this.configuration = configuration;
         this.adapter = configuration.getAdapter();
@@ -313,7 +314,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         add(position, newDomainObject);
     }
 
-    public GanttDiagramGraph getDiagramGraph() {
+    public GanttZKDiagramGraph getDiagramGraph() {
         return diagramGraph;
     }
 
@@ -351,7 +352,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     public void removeDependency(Dependency dependency) {
         adapter.removeDependency(toDomainDependency(dependency));
-        diagramGraph.remove(dependency);
+        diagramGraph.removeDependency(dependency);
         getDependencyList().remove(dependency);
     }
 
@@ -476,6 +477,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 ((TaskContainer) task).setExpanded(expand);
             }
         }
+    }
+
+    @Override
+    public GanttDiagramGraph getGanttDiagramGraph() {
+        return diagramGraph;
     }
 
 }

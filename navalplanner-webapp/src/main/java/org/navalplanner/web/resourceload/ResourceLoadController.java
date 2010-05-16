@@ -22,17 +22,32 @@ package org.navalplanner.web.resourceload;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
+import org.navalplanner.web.planner.chart.Chart;
+import org.navalplanner.web.planner.chart.ChartFiller;
+import org.navalplanner.web.planner.company.CompanyPlanningModel;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.security.SecurityUtils;
@@ -40,21 +55,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkforge.timeplot.Plotinfo;
+import org.zkforge.timeplot.Timeplot;
+import org.zkforge.timeplot.geometry.TimeGeometry;
+import org.zkforge.timeplot.geometry.ValueGeometry;
+import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.resourceload.ISeeScheduledOfListener;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Tabpanels;
+import org.zkoss.zul.Tabs;
 
 /**
  * Controller for global resourceload view
@@ -88,6 +118,14 @@ public class ResourceLoadController implements Composer {
     private boolean currentFilterByResources = true;
     private boolean filterHasChanged = false;
 
+    private ZoomLevel zoomLevel;
+
+    private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
+
+    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
+
+    private Chart loadChart;
+
     public ResourceLoadController() {
     }
 
@@ -99,7 +137,6 @@ public class ResourceLoadController implements Composer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
-        reload();
     }
 
     public void reload() {
@@ -111,33 +148,29 @@ public class ResourceLoadController implements Composer {
     }
 
     private void reload(boolean filterByResources) {
-        try {
-            this.filterHasChanged = (filterByResources != currentFilterByResources);
-            this.currentFilterByResources = filterByResources;
+        this.filterHasChanged = (filterByResources != currentFilterByResources);
+        this.currentFilterByResources = filterByResources;
 
-            if (filterBy == null) {
-                resourceLoadModel.initGlobalView(filterByResources);
-            } else {
-                resourceLoadModel.initGlobalView(filterBy, filterByResources);
+        if (filterBy == null) {
+            if (resourcesLoadPanel == null) {
+                resetAdditionalFilters();
             }
-            timeTracker = buildTimeTracker();
-            buildResourcesLoadPanel();
-
-            this.parent.getChildren().clear();
-            this.parent.appendChild(resourcesLoadPanel);
-
-            resourcesLoadPanel.afterCompose();
-            addCommands(resourcesLoadPanel);
-        } catch (IllegalArgumentException e) {
-            try {
-                Messagebox
-                        .show(
-                                _("Some lines have not allocation periods.\nBelow it shows the load all company resources"),
-                                _("Error"), Messagebox.OK, Messagebox.ERROR);
-            } catch (InterruptedException o) {
-                throw new RuntimeException(e);
+            resourceLoadModel.initGlobalView(filterByResources);
+        } else {
+            if (resourcesLoadPanel == null) {
+                deleteAdditionalFilters();
             }
+            resourceLoadModel.initGlobalView(filterBy, filterByResources);
         }
+        timeTracker = buildTimeTracker();
+        buildResourcesLoadPanel();
+
+        this.parent.getChildren().clear();
+        this.parent.appendChild(resourcesLoadPanel);
+
+        resourcesLoadPanel.afterCompose();
+        addSchedulingScreenListeners();
+        addCommands(resourcesLoadPanel);
     }
 
     private void addListeners() {
@@ -150,7 +183,19 @@ public class ResourceLoadController implements Composer {
             }
         };
         resourcesLoadPanel.addFilterListener(filterChangedListener);
+        addNameFilterListener();
+    }
 
+    private void addNameFilterListener() {
+        resourcesLoadPanel.addNameFilterListener(new IFilterChangedListener() {
+            @Override
+            public void filterChanged(boolean filter) {
+                addSchedulingScreenListeners();
+            }
+        });
+    }
+
+    private void addSchedulingScreenListeners() {
         /* Listener to show the scheduling screen */
         seeScheduledOfListener = new ISeeScheduledOfListener() {
 
@@ -171,7 +216,7 @@ public class ResourceLoadController implements Composer {
     }
 
     private TimeTracker buildTimeTracker() {
-        ZoomLevel zoomLevel = (timeTracker == null) ? resourceLoadModel
+        zoomLevel = (timeTracker == null) ? resourceLoadModel
                 .calculateInitialZoomLevel() : timeTracker.getDetailLevel();
         return new TimeTracker(resourceLoadModel.getViewInterval(), zoomLevel,
                 SeveralModificators.create(), SeveralModificators
@@ -202,20 +247,26 @@ public class ResourceLoadController implements Composer {
             }
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
                     timeTracker);
+            if(filterHasChanged) {
+                addNameFilterListener();
+            }
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
-                    .getLoadTimeLines(), timeTracker, parent);
+                    .getLoadTimeLines(), timeTracker, parent, resourceLoadModel
+                    .isExpandResourceLoadViewCharts());
             if(filterBy == null) {
                 addWorkersBandbox();
+                addTimeFilter();
             }
             addListeners();
         }
+        resourcesLoadPanel.setLoadChart(buildChart());
     }
 
     private void addWorkersBandbox() {
         bandBox = new BandboxMultipleSearch();
         bandBox.setId("workerBandboxMultipleSearch");
-        bandBox.setWidthBandbox("285px");
+        bandBox.setWidthBandbox("185px");
         bandBox.setWidthListbox("300px");
         bandBox.setFinder("workerMultipleFiltersFinder");
         bandBox.afterCompose();
@@ -240,7 +291,58 @@ public class ResourceLoadController implements Composer {
         hbox.appendChild(button);
         hbox.setAlign("center");
 
-        resourcesLoadPanel.setVariable("additionalFilter", hbox, true);
+        resourcesLoadPanel.setVariable("additionalFilter2", hbox, true);
+    }
+
+    private void addTimeFilter() {
+        Label label1 = new Label(_("Time filter") + ":");
+        Label label2 = new Label("-");
+        final Datebox initDate = new Datebox();
+        initDate.setValue(resourceLoadModel.getInitDateFilter());
+        initDate.setWidth("75px");
+        initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                resourceLoadModel.setInitDateFilter(initDate.getValue());
+                reload(currentFilterByResources);
+            }
+        });
+        final Datebox endDate = new Datebox();
+        endDate.setValue(resourceLoadModel.getEndDateFilter());
+        endDate.setWidth("75px");
+        endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                resourceLoadModel.setEndDateFilter(endDate.getValue());
+                reload(currentFilterByResources);
+            }
+        });
+        Hbox hbox = new Hbox();
+        hbox.appendChild(label1);
+        hbox.appendChild(initDate);
+        hbox.appendChild(label2);
+        hbox.appendChild(endDate);
+        hbox.setAlign("center");
+
+        resourcesLoadPanel.setVariable("additionalFilter1", hbox, true);
+    }
+
+    private void resetAdditionalFilters() {
+        Date initDateValue = new Date();
+        initDateValue.setDate(initDateValue.getDate() -15);
+        resourceLoadModel.setInitDateFilter(initDateValue);
+        resourceLoadModel.setEndDateFilter(null);
+
+        resourceLoadModel.setCriteriaToShow(new ArrayList<Criterion>());
+        resourceLoadModel.setResourcesToShow(new ArrayList<Resource>());
+    }
+
+    private void deleteAdditionalFilters() {
+        resourceLoadModel.setInitDateFilter(null);
+        resourceLoadModel.setEndDateFilter(null);
+
+        resourceLoadModel.setCriteriaToShow(new ArrayList<Criterion>());
+        resourceLoadModel.setResourcesToShow(new ArrayList<Resource>());
     }
 
     @SuppressWarnings("unchecked")
@@ -308,5 +410,262 @@ public class ResourceLoadController implements Composer {
             }
         }
 }
+
+
+    private org.zkoss.zk.ui.Component buildChart() {
+        Tabbox chartComponent = new Tabbox();
+        chartComponent.setOrient("vertical");
+        chartComponent.setHeight("200px");
+
+        Tabs chartTabs = new Tabs();
+        chartTabs.appendChild(new Tab(_("Load")));
+        chartComponent.appendChild(chartTabs);
+        chartTabs.setWidth("124px");
+
+        Tabpanels chartTabpanels = new Tabpanels();
+        Tabpanel loadChartPannel = new Tabpanel();
+        CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
+                buildLoadChart());
+        chartTabpanels.appendChild(loadChartPannel);
+        chartComponent.appendChild(chartTabpanels);
+
+        return chartComponent;
+    }
+
+    private Timeplot buildLoadChart() {
+        Timeplot chartLoadTimeplot = createEmptyTimeplot();
+
+        loadChart = new Chart(chartLoadTimeplot,
+                new ResourceLoadChartFiller(), timeTracker);
+        loadChart.setZoomLevel(zoomLevel);
+        if (resourcesLoadPanel.isVisibleChart()) {
+            loadChart.fillChart();
+        }
+        timeTracker.addZoomListener(fillOnZoomChange(loadChart));
+        resourcesLoadPanel
+                .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
+
+        return chartLoadTimeplot;
+    }
+
+    private IZoomLevelChangedListener fillOnZoomChange(final Chart loadChart) {
+
+        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                loadChart.setZoomLevel(detailLevel);
+
+                if (resourcesLoadPanel.isVisibleChart()) {
+                    loadChart.fillChart();
+                }
+            }
+        };
+
+        keepAliveZoomListeners.add(zoomListener);
+
+        return zoomListener;
+    }
+
+    private IChartVisibilityChangedListener fillOnChartVisibilityChange(
+            final Chart loadChart) {
+        IChartVisibilityChangedListener chartVisibilityChangedListener = new IChartVisibilityChangedListener() {
+
+            @Override
+            public void chartVisibilityChanged(final boolean visible) {
+                if (visible) {
+                    loadChart.fillChart();
+                }
+            }
+        };
+
+        keepAliveChartVisibilityListeners.add(chartVisibilityChangedListener);
+        return chartVisibilityChangedListener;
+    }
+
+    private Timeplot createEmptyTimeplot() {
+        Timeplot timeplot = new Timeplot();
+        timeplot.appendChild(new Plotinfo());
+        return timeplot;
+    }
+
+    private class ResourceLoadChartFiller extends ChartFiller {
+
+        @Override
+        public void fillChart(Timeplot chart, Interval interval, Integer size) {
+            chart.getChildren().clear();
+            chart.invalidate();
+
+            String javascript = "zkTasklist.timeplotcontainer_rescroll();";
+            Clients.evalJavaScript(javascript);
+
+            resetMinimumAndMaximumValueForChart();
+
+            Plotinfo plotInfoLoad = createPlotinfo(getLoad(interval.getStart(),
+                    interval.getFinish()), interval);
+            plotInfoLoad
+                    .setFillColor(CompanyPlanningModel.COLOR_ASSIGNED_LOAD_GLOBAL);
+            plotInfoLoad.setLineWidth(0);
+
+            Plotinfo plotInfoMax = createPlotinfo(
+                    getCalendarMaximumAvailability(interval.getStart(),
+                            interval.getFinish()), interval);
+            plotInfoMax
+                    .setLineColor(CompanyPlanningModel.COLOR_CAPABILITY_LINE);
+            plotInfoMax.setFillColor("#FFFFFF");
+            plotInfoMax.setLineWidth(2);
+
+            Plotinfo plotInfoOverload = createPlotinfo(getOverload(interval
+                    .getStart(), interval.getFinish()), interval);
+            plotInfoOverload
+                    .setFillColor(CompanyPlanningModel.COLOR_OVERLOAD_GLOBAL);
+            plotInfoOverload.setLineWidth(0);
+
+            ValueGeometry valueGeometry = getValueGeometry();
+            TimeGeometry timeGeometry = getTimeGeometry(interval);
+
+            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoOverload, valueGeometry, timeGeometry);
+
+            chart.setWidth(size + "px");
+            chart.setHeight("150px");
+        }
+
+        private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
+            List<DayAssignment> dayAssignments = resourceLoadModel
+                    .getDayAssignments();
+
+            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
+            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
+
+            return mapDayAssignments;
+        }
+
+        private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
+                Date finish) {
+            List<DayAssignment> dayAssignments = resourceLoadModel
+                    .getDayAssignments();
+
+            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
+            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
+            SortedMap<LocalDate, BigDecimal> mapMaxAvailability = calculateHoursAdditionByDay(
+                    resourceLoadModel.getResources(), start, finish);
+
+            for (LocalDate day : mapDayAssignments.keySet()) {
+                if ((day.compareTo(new LocalDate(start)) >= 0)
+                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
+                    BigDecimal overloadHours = mapDayAssignments.get(day);
+                    BigDecimal maxHours = mapMaxAvailability.get(day);
+                    mapDayAssignments.put(day, overloadHours.add(maxHours));
+                }
+            }
+
+            return mapDayAssignments;
+        }
+
+        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(
+                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
+            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+            for (LocalDate day : dayAssignmentGrouped.keySet()) {
+                int result = 0;
+
+                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
+                    BaseCalendar calendar = resource.getCalendar();
+
+                    int workableHours = SameWorkHoursEveryDay
+                            .getDefaultWorkingDay().getCapacityAt(day);
+                    if (calendar != null) {
+                        workableHours = calendar.getCapacityAt(day);
+                    }
+
+                    int assignedHours = dayAssignmentGrouped.get(day).get(
+                            resource);
+
+                    if (assignedHours <= workableHours) {
+                        result += assignedHours;
+                    } else {
+                        result += workableHours;
+                    }
+                }
+
+                map.put(day, result);
+            }
+
+            return convertAsNeededByZoom(convertToBigDecimal(map));
+        }
+
+        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayJustOverload(
+                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
+            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+
+            for (LocalDate day : dayAssignmentGrouped.keySet()) {
+                int result = 0;
+
+                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
+                    BaseCalendar calendar = resource.getCalendar();
+
+                    int workableHours = SameWorkHoursEveryDay
+                            .getDefaultWorkingDay().getCapacityAt(day);
+                    if (calendar != null) {
+                        workableHours = calendar.getCapacityAt(day);
+                    }
+
+                    int assignedHours = dayAssignmentGrouped.get(day).get(
+                            resource);
+
+                    if (assignedHours > workableHours) {
+                        result += assignedHours - workableHours;
+                    }
+                }
+
+                map.put(day, result);
+            }
+
+            return convertAsNeededByZoom(convertToBigDecimal(map));
+        }
+
+        private SortedMap<LocalDate, BigDecimal> getCalendarMaximumAvailability(
+                Date start, Date finish) {
+            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDay(
+                    resourceLoadModel.getResources(), start, finish);
+
+            return mapDayAssignments;
+        }
+
+        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDay(
+                List<Resource> resources, Date start, Date finish) {
+            return new HoursByDayCalculator<Entry<LocalDate, List<Resource>>>() {
+
+                @Override
+                protected LocalDate getDayFor(
+                        Entry<LocalDate, List<Resource>> element) {
+                    return element.getKey();
+                }
+
+                @Override
+                protected int getHoursFor(
+                        Entry<LocalDate, List<Resource>> element) {
+                    LocalDate day = element.getKey();
+                    List<Resource> resources = element.getValue();
+                    return sumHoursForDay(resources, day);
+                }
+
+            }.calculate(getResourcesByDateBetween(resources, start, finish));
+        }
+
+        private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
+                List<Resource> resources, Date start, Date finish) {
+            LocalDate end = new LocalDate(finish);
+            Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
+            for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
+                    .plusDays(1)) {
+                result.put(date, resources);
+            }
+            return result.entrySet();
+        }
+
+    }
 
 }

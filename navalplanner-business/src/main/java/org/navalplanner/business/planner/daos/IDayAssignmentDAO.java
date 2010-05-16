@@ -23,9 +23,11 @@ package org.navalplanner.business.planner.daos;
 import java.util.Collection;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
@@ -34,12 +36,18 @@ import org.navalplanner.business.scenarios.entities.Scenario;
  * @author @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IDayAssignmentDAO extends
- IGenericDAO<DayAssignment, Long> {
+public interface IDayAssignmentDAO extends IGenericDAO<DayAssignment, Long> {
 
     public void removeDerived(
             Collection<? extends DerivedDayAssignment> derivedAllocations);
 
     public List<DayAssignment> getAllFor(Scenario scenario);
+
+    public List<DayAssignment> getAllFor(Scenario scenario,
+            LocalDate initInclusive, LocalDate endInclusive);
+
+    List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end);
+
+    public List<DayAssignment> findByResources(List<Resource> resources);
 
 }

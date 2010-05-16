@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +32,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
@@ -42,8 +40,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
-import org.zkoss.ganttz.data.limitingresource.QueueTask;
-import org.zkoss.ganttz.data.resourceload.LoadLevel;
 
 interface QueueTaskGeneratorFactory {
     QueueTaskGenerator create(ResourceAllocation<?> allocation);
@@ -201,23 +197,7 @@ abstract class QueueTaskGenerator {
                 && other.end.compareTo(end) <= 0;
     }
 
-    public QueueTask build() {
-        return new QueueTask(start, end, getTotalWorkHours(),
-                getHoursAssigned(), new LoadLevel(
-                calculateLoadPercentage()));
-    }
-
     protected abstract int getTotalWorkHours();
-
-    private int calculateLoadPercentage() {
-        final int totalResourceWorkHours = getTotalWorkHours();
-        int assigned = getHoursAssigned();
-        if (totalResourceWorkHours == 0) {
-            return assigned == 0 ? 0 : Integer.MAX_VALUE;
-        }
-        double proportion = assigned / (double) totalResourceWorkHours;
-        return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
-    }
 
     protected abstract int getHoursAssigned();
 
@@ -343,23 +323,5 @@ class QueueTaskGeneratorOnCriterion extends QueueTaskGenerator {
     }
 
     private Map<Resource, List<SpecificDayAssignment>> specificByResourceCached = new HashMap<Resource, List<SpecificDayAssignment>>();
-
-    private List<SpecificDayAssignment> getSpecificOrderedAssignmentsFor(
-            Resource resource) {
-        if (!specificByResourceCached.containsKey(resource)) {
-            specificByResourceCached.put(resource, DayAssignment
-                    .specific(DayAssignment.orderedByDay(resource
-                            .getAssignments())));
-        }
-        return specificByResourceCached.get(resource);
-    }
-
-    private int sum(List<SpecificDayAssignment> specific) {
-        int result = 0;
-        for (SpecificDayAssignment s : specific) {
-            result += s.getHours();
-        }
-        return result;
-    }
 
 }

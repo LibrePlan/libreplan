@@ -413,6 +413,19 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public boolean isLimiting() {
+        return false;
+    }
+
+    public boolean isLimitingAndHasDayAssignments() {
+        return false;
+    }
+
+    public boolean hasConsolidations() {
+        // Just Task could be consolidated
+        return false;
+    }
+
     public TaskElement getTopMost() {
         TaskElement result = this;
         while (result.getParent() != null) {
@@ -446,4 +459,5 @@ public abstract class TaskElement extends BaseEntity {
         return "assigned";
     }
 
+    public abstract boolean hasLimitedResourceAllocation();
 }

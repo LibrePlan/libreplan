@@ -320,7 +320,6 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public void cleanAdvance(DirectAdvanceAssignment advanceAssignment) {
         if (advanceAssignment != null) {
-            advanceAssignment.setReportGlobalAdvance(false);
             advanceAssignment.getAdvanceMeasurements().clear();
         }
     }

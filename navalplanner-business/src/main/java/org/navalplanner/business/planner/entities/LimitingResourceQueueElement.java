@@ -20,16 +20,24 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  *
- * @author Diego Pino Garcia <dpino@igalia.com>
+ * Entity which represents an element in the queue which represents
+ * the limiting resources.
  *
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class LimitingResourceQueueElement extends BaseEntity {
 
@@ -45,12 +53,22 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private long creationTimestamp;
 
+    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin =
+        new HashSet<LimitingResourceQueueDependency>();
+
+    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny =
+        new HashSet<LimitingResourceQueueDependency>();
+
     public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
     }
 
     protected LimitingResourceQueueElement() {
         creationTimestamp = (new Date()).getTime();
+        startQueuePosition = new QueuePosition();
+        startQueuePosition.setHour(0);
+        endQueuePosition = new QueuePosition();
+        endQueuePosition.setHour(0);
     }
 
     public ResourceAllocation<?> getResourceAllocation() {
@@ -118,4 +136,52 @@ public class LimitingResourceQueueElement extends BaseEntity {
         this.creationTimestamp = creationTimestamp;
     }
 
+    public Resource getResource() {
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
+            return specific.getResource();
+        }
+        return null;
+    }
+
+    public Integer getIntentedTotalHours() {
+        return (getResourceAllocation() != null) ? getResourceAllocation()
+                .getIntendedTotalHours() : null;
+    }
+
+    public DateAndHour getStartTime() {
+        return new DateAndHour(getStartDate(), getStartHour());
+    }
+
+    public DateAndHour getEndTime() {
+        return new DateAndHour(getEndDate(), getEndHour());
+    }
+
+    public void add(LimitingResourceQueueDependency d) {
+        Validate.notNull(d);
+        if (d.getHasAsOrigin().equals(this)) {
+            dependenciesAsOrigin.add(d);
+        } else if (d.getHasAsDestiny().equals(this)) {
+            dependenciesAsDestiny.add(d);
+        } else {
+            throw new IllegalArgumentException("It cannot be added a dependency" +
+                    " in which the current queue element is neither origin" +
+                    " not desinty");
+        }
+    }
+
+    public void remove(LimitingResourceQueueDependency d) {
+        if (dependenciesAsOrigin.contains(d))
+            dependenciesAsOrigin.remove(d);
+        if (dependenciesAsDestiny.contains(d))
+            dependenciesAsDestiny.remove(d);
+    }
+
+    public Set<LimitingResourceQueueDependency> getDependenciesAsOrigin() {
+        return Collections.unmodifiableSet(dependenciesAsOrigin);
+    }
+
+    public Set<LimitingResourceQueueDependency> getDependenciesAsDestiny() {
+        return Collections.unmodifiableSet(dependenciesAsDestiny);
+    }
 }

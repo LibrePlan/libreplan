@@ -20,18 +20,16 @@
 
 package org.navalplanner.web.limitingresources;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.zkoss.ganttz.DependencyList;
-import org.zkoss.ganttz.FunctionalityExposedForExtensions;
-import org.zkoss.ganttz.GanttPanel;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
@@ -41,12 +39,9 @@ import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
-import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -95,7 +90,6 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         void toggleDependencyExistence(boolean visible) {
             if (visible) {
                 appendChild(dependencyComponent);
-                addContextMenu(dependencyComponent);
             } else {
                 removeChild(dependencyComponent);
             }
@@ -114,43 +108,31 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     private transient IZoomLevelChangedListener listener;
 
-    private final FunctionalityExposedForExtensions<?> context;
+    private final LimitingResourcesPanel panel;
 
-    public LimitingDependencyList(FunctionalityExposedForExtensions<?> context) {
-        this.context = context;
+    public LimitingDependencyList(LimitingResourcesPanel panel) {
+        this.panel = panel;
     }
 
+    @SuppressWarnings("unchecked")
     private List<LimitingDependencyComponent> getLimitingDependencyComponents() {
-        List<Object> children = getChildren();
         return ComponentsFinder.findComponentsOfType(
-                LimitingDependencyComponent.class, children);
+                LimitingDependencyComponent.class, getChildren());
     }
 
-    void addDependencyComponent(
+    public void addDependencyComponent(
             final LimitingDependencyComponent dependencyComponent) {
-        Div source = dependencyComponent.getSource();
-        Div destination = dependencyComponent.getDestination();
-        // DependencyVisibilityToggler visibilityToggler = new
-        // DependencyVisibilityToggler(
-        // source.getTask(), destination.getTask(), dependencyComponent);
-        // source.getTask().addVisibilityPropertiesChangeListener(
-        // visibilityToggler);
-        // destination.getTask().addVisibilityPropertiesChangeListener(
-        // visibilityToggler);
-        // boolean dependencyMustBeVisible = visibilityToggler
-        // .dependencyMustBeVisible();
-        // visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
-        // if (dependencyMustBeVisible) {
-        // dependencyComponent.redrawDependency();
-        // }
+        dependencyComponent.redrawDependency();
+        dependencyComponent.setParent(this);
     }
 
-    private void addContextMenu(LimitingDependencyComponent dependencyComponent) {
-        dependencyComponent.setContext(getContextMenu());
-    }
-
-    private GanttPanel getGanttPanel() {
-        return (GanttPanel) getParent();
+    public void removeDependencyComponents(QueueTask queueTask) {
+        for (LimitingDependencyComponent dependency : getLimitingDependencyComponents()) {
+            if (dependency.getSource().equals(queueTask)
+                    || dependency.getDestination().equals(queueTask)) {
+                removeChild(dependency);
+            }
+        }
     }
 
     public void setDependencyComponents(
@@ -166,71 +148,30 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    if (!isInPage()) {
-                        return;
-                    }
                     for (LimitingDependencyComponent dependencyComponent : getLimitingDependencyComponents()) {
                         dependencyComponent.zoomChanged();
                     }
                 }
             };
-            // getTimeTracker().addZoomListener(listener);
+            getTimeTracker().addZoomListener(listener);
         }
-        // addContextMenu();
-    }
-
-    private boolean isInPage() {
-        return getParent() != null && getGanttPanel() != null
-                && getGanttPanel().getParent() != null;
+        redrawDependencies();
     }
 
     private TimeTracker getTimeTracker() {
         return getTimeTrackerComponent().getTimeTracker();
     }
 
-    private void addContextMenu() {
-        for (LimitingDependencyComponent dependencyComponent : getLimitingDependencyComponents()) {
-            addContextMenu(dependencyComponent);
-        }
-    }
-
-    private Menupopup contextMenu;
-
-    private Menupopup getContextMenu() {
-        if (contextMenu == null) {
-            MenuBuilder<LimitingDependencyComponent> contextMenuBuilder = MenuBuilder
-                    .on(getPage(), getLimitingDependencyComponents()).item(_("Erase"),
-                            "/common/img/ico_borrar.png",
-                            new ItemAction<LimitingDependencyComponent>() {
-                                @Override
-                                public void onEvent(
-                                        final LimitingDependencyComponent choosen,
-                                        Event event) {
-//                                    context
-//                                            .removeDependency(choosen.getDependency());
-                                }
-                            });
-            contextMenuBuilder.item(_("Set End-Start"), null,
-                    new ChangeTypeAction(
-                    DependencyType.END_START));
-
-            contextMenuBuilder.item(_("Set Start-Start"), null,
-                    new ChangeTypeAction(
-                    DependencyType.START_START));
-
-            contextMenuBuilder.item(_("Set End-End"), null,
-                    new ChangeTypeAction(
-                    DependencyType.END_END));
-
-            contextMenu = contextMenuBuilder.create();
-
-        }
-        return contextMenu;
-    }
-
     private TimeTrackerComponent getTimeTrackerComponent() {
-        return getGanttPanel().getTimeTrackerComponent();
+        return panel.getTimeTrackerComponent();
     }
+
+
+    // private boolean isInPage() {
+    // return getParent() != null && getGanttPanel() != null
+    // && getGanttPanel().getParent() != null;
+    // }
+
 
     public void redrawDependenciesConnectedTo(TaskComponent taskComponent) {
         redrawDependencyComponents(getDependencyComponentsConnectedTo(taskComponent));
@@ -261,7 +202,7 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         }
     }
 
-    public void taskRemoved(Task task) {
+    public void taskRemoved(QueueTask task) {
         for (LimitingDependencyComponent dependencyComponent : LimitingDependencyList.this
                 .getLimitingDependencyComponents()) {
             if (dependencyComponent.contains(task)) {
@@ -278,4 +219,5 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             }
         }
     }
+
 }

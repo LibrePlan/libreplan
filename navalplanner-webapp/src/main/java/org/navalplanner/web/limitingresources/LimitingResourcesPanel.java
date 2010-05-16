@@ -20,12 +20,14 @@
 
 package org.navalplanner.web.limitingresources;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.navalplanner.web.I18nHelper._;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Separator;
@@ -59,22 +60,17 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         public String getImage();
     }
 
+    private LimitingResourcesController limitingResourcesController;
+
     private TimeTrackerComponent timeTrackerComponent;
 
     private LimitingResourcesLeftPane leftPane;
 
-    private LimitingResourcesList limitingResourcesList;
-
-    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
+    private QueueListComponent queueListComponent;
 
     private MutableTreeModel<LimitingResourceQueue> treeModel;
 
     private TimeTracker timeTracker;
-
-    // private LimitingDependencyList dependencyList;
-
-    // private WeakReferencedListeners<IFilterChangedListener> zoomListeners =
-    // WeakReferencedListeners.create();
 
     private Listbox listZoomLevels;
 
@@ -85,22 +81,62 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private static final String filterCriterions = _("Filter by criterions");
     private boolean filterbyResources = true;
 
-    public LimitingResourcesPanel(List<LimitingResourceQueue> groups,
-            TimeTracker timeTracker) {
-        init(groups, timeTracker);
+    private LimitingDependencyList dependencyList = new LimitingDependencyList(this);
 
+    /**
+     * Returns the closest upper {@link LimitingResourcesPanel} instance going
+     * all the way up from comp
+     *
+     * @param comp
+     * @return
+     */
+    public static LimitingResourcesPanel getLimitingResourcesPanel(Component comp) {
+        if (comp == null) {
+            return null;
+        }
+        if (comp instanceof LimitingResourcesPanel) {
+            return (LimitingResourcesPanel) comp;
+        }
+        return getLimitingResourcesPanel(comp.getParent());
     }
 
-    public void init(List<LimitingResourceQueue> groups, TimeTracker timeTracker) {
-        this.limitingResourceQueues = groups;
+    public LimitingResourcesPanel(LimitingResourcesController limitingResourcesController,
+            TimeTracker timeTracker) {
+        init(limitingResourcesController, timeTracker);
+    }
+
+    public void init(LimitingResourcesController limitingResourcesController,
+            TimeTracker timeTracker) {
+        this.limitingResourcesController = limitingResourcesController;
         this.timeTracker = timeTracker;
+        this.setVariable("limitingResourcesController",
+                limitingResourcesController, true);
+
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-        limitingResourcesList = new LimitingResourcesList(timeTracker,
+        queueListComponent = new QueueListComponent(timeTracker,
                 treeModel);
+
         leftPane = new LimitingResourcesLeftPane(treeModel,
-                limitingResourcesList);
+                queueListComponent);
         registerNeededScripts();
+    }
+
+    public void appendQueueElementToQueue(LimitingResourceQueueElement element) {
+        queueListComponent.appendQueueElement(element);
+    }
+
+    private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
+        MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
+                .create(LimitingResourceQueue.class);
+        for (LimitingResourceQueue LimitingResourceQueue : getLimitingResourceQueues()) {
+            result.addToRoot(LimitingResourceQueue);
+        }
+        return result;
+    }
+
+    private List<LimitingResourceQueue> getLimitingResourceQueues() {
+        return limitingResourcesController.getLimitingResourceQueues();
     }
 
     public ListModel getFilters() {
@@ -175,7 +211,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private void registerNeededScripts() {
-        // getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
+        // getScriptsRegister().register(
+        // ScriptsRequiredByLimitingResourcesPanel.class);
     }
 
     private IScriptsRegister getScriptsRegister() {
@@ -183,22 +220,12 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .retrieve();
     }
 
-    private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
-        MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
-                .create(LimitingResourceQueue.class);
-        for (LimitingResourceQueue LimitingResourceQueue : this.limitingResourceQueues) {
-            result.addToRoot(LimitingResourceQueue);
-        }
-        return result;
-    }
-
-
     private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
             TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
             @Override
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-                response("", new AuInvoke(limitingResourcesList,
+                response("", new AuInvoke(queueListComponent,
                         "adjustScrollHorizontalPosition", pixelsDisplacement
                                 + ""));
             }
@@ -210,28 +237,19 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         super.afterCompose();
 
-        // Insert resourcesList left pane component
+        // Insert leftPane component with limitingresources list
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
 
-        // Insert timetracker watermarks and limitingResourcesQueues
         getFellow("insertionPointRightPanel").appendChild(timeTrackerComponent);
-        getFellow("insertionPointRightPanel")
-                .appendChild(limitingResourcesList);
-        limitingResourcesList.afterCompose();
+        getFellow("insertionPointRightPanel").appendChild(queueListComponent);
+        queueListComponent.afterCompose();
 
-        Div source = new Div();
-        Div destination = new Div();
-
-        LimitingDependencyComponent limitingDependencyComponent = new LimitingDependencyComponent(
-                source, destination);
-
-        LimitingDependencyList dependencyList = new LimitingDependencyList(null);
-        dependencyList.addDependencyComponent(limitingDependencyComponent);
-
-        getFellow("insertionPointRightPanel").appendChild(dependencyList);
-
-        dependencyList.afterCompose();
+        dependencyList = generateDependencyComponentsList();
+        if (dependencyList != null) {
+            dependencyList.afterCompose();
+            getFellow("insertionPointRightPanel").appendChild(dependencyList);
+        }
 
         // Insert timetracker headers
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
@@ -243,20 +261,77 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
     }
 
+    private LimitingDependencyList generateDependencyComponentsList() {
+        final Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
+                .getLimitingResourceElementToQueueTaskMap();
+
+        for (LimitingResourceQueueElement queueElement : queueElementsMap
+                .keySet()) {
+            for (LimitingResourceQueueDependency dependency : queueElement
+                    .getDependenciesAsOrigin()) {
+                addDependencyComponent(dependencyList, queueElementsMap, dependency);
+            }
+        }
+        return dependencyList;
+    }
+
+    public void addDependencyComponent(LimitingResourceQueueDependency dependency) {
+        final Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
+                .getLimitingResourceElementToQueueTaskMap();
+        addDependencyComponent(dependencyList, queueElementsMap, dependency);
+    }
+
+    private void addDependencyComponent(
+            LimitingDependencyList dependencyList,
+            Map<LimitingResourceQueueElement, QueueTask> queueElementsMap,
+            LimitingResourceQueueDependency dependency) {
+
+        LimitingDependencyComponent component = createDependencyComponent(queueElementsMap, dependency);
+        if (component != null) {
+            dependencyList.addDependencyComponent(component);
+        }
+    }
+
+    private LimitingDependencyComponent createDependencyComponent(
+            Map<LimitingResourceQueueElement, QueueTask> queueElementsMap,
+            LimitingResourceQueueDependency dependency) {
+
+        final QueueTask origin = queueElementsMap.get(dependency
+                .getHasAsOrigin());
+        final QueueTask destination = queueElementsMap.get(dependency
+                .getHasAsDestiny());
+        return (origin != null && destination != null) ? new LimitingDependencyComponent(
+                origin, destination)
+                : null;
+    }
+
     public void clearComponents() {
         getFellow("insertionPointLeftPanel").getChildren().clear();
         getFellow("insertionPointRightPanel").getChildren().clear();
         getFellow("insertionPointTimetracker").getChildren().clear();
     }
 
-    private TimeTrackerComponent createTimeTrackerHeader() {
-        return new TimeTrackerComponent(
-                timeTracker) {
+    public TimeTrackerComponent getTimeTrackerComponent() {
+        return timeTrackerComponent;
+    }
 
-         @Override
-         protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-         }
+    private TimeTrackerComponent createTimeTrackerHeader() {
+        return new TimeTrackerComponent(timeTracker) {
+
+            @Override
+            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+            }
         };
+    }
+
+    public void unschedule(QueueTask task) {
+        limitingResourcesController.unschedule(task);
+        removeQueueTask(task);
+    }
+
+    private void removeQueueTask(QueueTask task) {
+        task.detach();
+        dependencyList.removeDependencyComponents(task);
     }
 
 }

@@ -201,7 +201,16 @@ abstract class LoadPeriodGenerator {
                 && other.end.compareTo(end) <= 0;
     }
 
+    /**
+     * @return <code>null</code> if the data is invalid
+     */
     public LoadPeriod build() {
+        if(start.isAfter(end)){
+            LOG
+                    .warn("the start date is after end date. Inconsistent state for "
+                            + allocationsOnInterval + ". LoadPeriod ignored");
+            return null;
+        }
         return new LoadPeriod(start, end, getTotalWorkHours(),
                 getHoursAssigned(), new LoadLevel(
                 calculateLoadPercentage()));

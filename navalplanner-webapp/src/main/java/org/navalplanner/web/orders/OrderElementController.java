@@ -20,6 +20,9 @@
 
 package org.navalplanner.web.orders;
 
+import static org.navalplanner.web.I18nHelper._;
+
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -109,6 +112,15 @@ public class OrderElementController extends GenericForwardComposer {
         }
     }
 
+    public String getOrderElementName() {
+        String name = "";
+        if ((getOrderElement() != null)
+                && (!StringUtils.isBlank(getOrderElement().getName()))) {
+            name = ": " + getOrderElement().getName();
+        }
+        return _("Edit order element {0}", name);
+    }
+
     public void setupManageOrderElementAdvancesController()
             throws Exception {
         if (manageOrderElementAdvancesController == null) {
@@ -188,6 +200,7 @@ public class OrderElementController extends GenericForwardComposer {
         assignedTaskQualityFormsController = null;
 
         try {
+            ((Window) self).setTitle(getOrderElementName());
             ((Window) self).doModal();
         } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);

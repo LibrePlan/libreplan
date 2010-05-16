@@ -20,8 +20,12 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.List;
+
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -36,5 +40,16 @@ import org.springframework.stereotype.Repository;
 public class LimitingResourceQueueDAO extends
         GenericDAOHibernate<LimitingResourceQueue, Long> implements
         ILimitingResourceQueueDAO {
+
+    public LimitingResourceQueue findQueueByResource(Resource resource) {
+        return (LimitingResourceQueue) getSession().createCriteria(
+                LimitingResourceQueue.class).add(
+                Restrictions.eq("resource", resource)).uniqueResult();
+    }
+
+    @Override
+    public List<LimitingResourceQueue> getAll() {
+        return list(LimitingResourceQueue.class);
+    }
 
 }

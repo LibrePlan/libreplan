@@ -259,4 +259,29 @@ public class ResourceAllocationDAOTest {
                 .list(GenericResourceAllocation.class);
         assertEquals(previous + 2, list.size());
     }
+
+    @Test
+    public void testFindAllocationsRelatedToResourcesWithDateFilter() {
+        ResourceAllocation<?> resourceAllocation1 = createValidSpecificResourceAllocation();
+        resourceAllocationDAO.save(resourceAllocation1);
+
+        Date intervalInitDate = resourceAllocation1.getTask().getStartDate();
+        Date intervalEndDate = resourceAllocation1.getTask().getEndDate();
+        List<Resource> resources = resourceAllocation1.getAssociatedResources();
+
+        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+                intervalInitDate, intervalEndDate).contains(resourceAllocation1));
+
+        intervalEndDate.setDate(intervalInitDate.getDate());
+        intervalInitDate.setMonth(intervalInitDate.getMonth()-1);
+        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+                intervalInitDate, intervalEndDate).contains(resourceAllocation1));
+
+        intervalEndDate.setMonth(intervalEndDate.getMonth()-1);
+        assertFalse(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+                intervalInitDate, intervalEndDate).contains(resourceAllocation1));
+
+        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+                intervalInitDate, null).contains(resourceAllocation1));
+  }
 }

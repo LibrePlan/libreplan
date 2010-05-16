@@ -103,4 +103,9 @@ public class CalculatedConsolidation extends Consolidation {
         return true;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return consolidatedValues.isEmpty();
+    }
+
 }

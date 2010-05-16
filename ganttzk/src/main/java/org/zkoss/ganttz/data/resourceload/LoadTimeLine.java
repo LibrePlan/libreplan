@@ -71,7 +71,6 @@ public class LoadTimeLine {
         this.timeLineRole = principal.getRole();
         this.type = principal.getType();
         Validate.notNull(children);
-        allChildrenAreNotEmpty(children);
         this.children = Collections
                 .unmodifiableList(new ArrayList<LoadTimeLine>(children));
 
@@ -178,8 +177,8 @@ public class LoadTimeLine {
     public List<LoadTimeLine> getAllChildren() {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for (LoadTimeLine child : children) {
-            result.addAll(child.getAllChildren());
             result.add(child);
+            result.addAll(child.getAllChildren());
         }
         return result;
     }

@@ -58,8 +58,19 @@ public class DatesMapperOnInterval implements IDatesMapper {
     }
 
     @Override
+    public int toPixelsAbsolute(long milliseconds) {
+        Date date = new Date(milliseconds);
+        return this.toPixels(date);
+    }
+
+    @Override
     public long toMilliseconds(int pixels) {
         return millisecondsPerPixel * pixels;
+    }
+
+    @Override
+    public long getMilisecondsPerPixel() {
+        return millisecondsPerPixel;
     }
 
 }

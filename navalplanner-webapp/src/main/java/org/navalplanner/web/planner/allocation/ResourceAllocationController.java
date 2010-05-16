@@ -62,6 +62,7 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
@@ -71,6 +72,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Window;
 
 /**
  * Controller for {@link ResourceAllocation} view.
@@ -100,17 +102,24 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Intbox assignedHoursComponent;
 
-    private Datebox taskStartDateBox;
-
     private Grid calculationTypesGrid;
 
     private Radiogroup calculationTypeSelector;
 
     private Checkbox recommendedAllocationCheckbox;
 
+    private Checkbox extendedViewCheckbox;
+
     private Datebox taskEndDate;
 
     private Decimalbox allResourcesPerDay;
+
+    private Label allOriginalHours;
+    private Label allTotalHours;
+    private Label allConsolidatedHours;
+
+    private Label allTotalResourcesPerDay;
+    private Label allConsolidatedResourcesPerDay;
 
     private Button applyButton;
 
@@ -119,6 +128,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Tab tbResourceAllocation;
 
     private Tab workerSearchTab;
+
+    private Window editTaskWindow;
 
     public static void registerNeededScripts() {
         getScriptsRegister()
@@ -133,16 +144,29 @@ public class ResourceAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        taskEndDate = new Datebox();
         allResourcesPerDay = new Decimalbox();
+        allResourcesPerDay.setWidth("80px");
         newAllocationSelector.setLimitingResourceFilter(false);
+        initAllocationLabels();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
     }
 
+    private void initAllocationLabels() {
+        allOriginalHours = new Label();
+        allTotalHours = new Label();
+        allConsolidatedHours = new Label();
+
+        allTotalResourcesPerDay = new Label();
+        allConsolidatedResourcesPerDay = new Label();
+    }
+
     private void makeReadyInputsForCalculationTypes() {
-        final String width = "300px";
+        final String width = "90px";
         taskEndDate.setWidth(width);
         assignedHoursComponent = new Intbox();
+        assignedHoursComponent.setWidth("80px");
     }
 
     private void prepareCalculationTypesGrid() {
@@ -157,9 +181,25 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(Integer column, CalculationTypeRadio data) {
-                return data.createRadio();
+                return data.createComponent(getController(),
+                        getCalculationTypeRadio());
             }
         };
+    }
+
+    private Datebox getTaskEndDate() {
+        return taskEndDate;
+    }
+
+    private CalculationTypeRadio getCalculationTypeRadio() {
+        if (formBinder != null) {
+            return CalculationTypeRadio.from(formBinder.getCalculatedValue());
+        }
+        return null;
+    }
+
+    public ResourceAllocationController getController() {
+        return this;
     }
 
     /**
@@ -179,18 +219,27 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     context, planningState);
             formBinder = allocationRows.createFormBinder(planningState
                     .getCurrentScenario(), resourceAllocationModel);
+            formBinder.setAllOriginalHours(allOriginalHours);
+            formBinder.setAllTotalHours(allTotalHours);
+            formBinder.setAllConsolidatedHours(allConsolidatedHours);
             formBinder.setAssignedHoursComponent(assignedHoursComponent);
-            formBinder.setTaskStartDateBox(taskStartDateBox);
-            formBinder.setEndDate(taskEndDate);
+
+            formBinder.setAllTotalResourcesPerDay(allTotalResourcesPerDay);
+            formBinder
+                    .setAllConsolidatedResourcesPerDay(allConsolidatedResourcesPerDay);
             formBinder.setAllResourcesPerDay(allResourcesPerDay);
+
+            formBinder.setEndDate(taskEndDate);
             formBinder.setApplyButton(applyButton);
             formBinder.setAllocationsGrid(allocationsGrid);
             formBinder.setMessagesForUser(messagesForUser);
             formBinder.setWorkerSearchTab(workerSearchTab);
             formBinder.setCheckbox(recommendedAllocationCheckbox);
+
             CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                     .from(formBinder.getCalculatedValue());
             calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
+
             tbResourceAllocation.setSelected(true);
             orderElementHoursGrid.setModel(new ListModelList(
                     resourceAllocationModel.getHoursAggregatedByCriterions()));
@@ -200,6 +249,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
             LOG.error("there was a WrongValueException initializing window", e);
             throw e;
         }
+    }
+
+    public Date getTaskStart() {
+        return resourceAllocationModel.getTaskStart();
     }
 
     public enum HoursRendererColumn {
@@ -224,8 +277,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public Component cell(HoursRendererColumn column,
                     AggregatedHoursGroup data) {
-                Intbox result = new Intbox(data.getHours());
-                result.setDisabled(true);
+                Label result = new Label(Integer.toString(data.getHours()));
                 return result;
             }
         };
@@ -281,8 +333,37 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     /**
+     * Shows the extended view of the resources allocations
+     */
+    public void onCheckExtendedView() {
+        if (isExtendedView()) {
+            editTaskWindow.setWidth("970px");
+        } else {
+            editTaskWindow.setWidth("870px");
+        }
+        editTaskWindow.invalidate();
+        Util.reloadBindings(allocationsGrid);
+    }
+
+    public boolean isExtendedView() {
+        return extendedViewCheckbox.isChecked();
+    }
+
+    public int getColspanHours() {
+        if (isExtendedView()) {
+            return 4;
+        }
+        return 1;
+    }
+
+    public int getColspanResources() {
+        if (isExtendedView()) {
+            return 3;
+        }
+        return 1;
+    }
+    /**
      * Close search worker in worker search tab
-     *
      * @param e
      */
     public void onCloseSelectWorkers() {
@@ -346,21 +427,53 @@ public class ResourceAllocationController extends GenericForwardComposer {
         public abstract Component input(
                 ResourceAllocationController resourceAllocationController);
 
-        public Radio createRadio() {
+        public Component createComponent(
+                ResourceAllocationController resourceAllocationController,
+                CalculationTypeRadio calculationTypeRadio) {
+            if (this.equals(END_DATE)) {
+                return createHbox(resourceAllocationController.taskEndDate,
+                        calculationTypeRadio);
+            } else {
+                return createRadio(calculationTypeRadio);
+            }
+        }
+
+        public Radio createRadio(CalculationTypeRadio calculationTypeRadio) {
             Radio result = new Radio();
             result.setLabel(getName());
             result.setValue(toString());
+            result.setChecked(isSameCalculationTypeRadio(result,
+                    calculationTypeRadio));
             return result;
         }
 
-        public void doTheSelectionOn(Radiogroup radiogroup) {
-            for (int i = 0; i < radiogroup.getItemCount(); i++) {
-                Radio radio = radiogroup.getItemAtIndex(i);
-                if (name().equals(radio.getValue())) {
-                    radiogroup.setSelectedIndex(i);
-                    break;
-                }
+        public Hbox createHbox(Datebox datebox,
+                CalculationTypeRadio calculationTypeRadio) {
+            Hbox hbox = new Hbox();
+            hbox.setSpacing("65px");
+            Radio radio = createRadio(calculationTypeRadio);
+
+            hbox.appendChild(radio);
+            hbox.appendChild(datebox);
+            return hbox;
+        }
+
+        public boolean isSameCalculationTypeRadio(Radio radio,
+                CalculationTypeRadio calculationTypeRadio) {
+            if (calculationTypeRadio != null) {
+                return name().equals(calculationTypeRadio.name());
             }
+            return false;
+        }
+
+        public void doTheSelectionOn(final Radiogroup radiogroup) {
+                for (int i = 0; i < radiogroup.getItemCount(); i++) {
+                    Radio radio = radiogroup.getItemAtIndex(i);
+                    if (name().equals(radio.getValue())) {
+                        radiogroup.setSelectedIndex(i);
+                        break;
+                    }
+                }
         }
 
         private final CalculatedValue calculatedValue;
@@ -502,9 +615,16 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 throws Exception {
             row.setValue(data);
             append(row, data.createDetail());
-            append(row, data.getSatisfiedCheckbox());
             append(row, new Label(data.getName()));
+            append(row, new Label(Integer.toString(data.getOriginalHours())));
+            append(row, new Label(Integer.toString(data.getTotalHours())));
+            append(row,
+                    new Label(Integer.toString(data.getConsolidatedHours())));
             append(row, data.getHoursInput());
+            append(row, new Label(data.getTotalResourcesPerDay().getAmount()
+                    .toString()));
+            append(row, new Label(data.getConsolidatedResourcesPerDay()
+                    .getAmount().toString()));
             append(row, data.getResourcesPerDayInput());
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
@@ -516,16 +636,27 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     removeAllocation(data);
                 }
             });
+
+            if (!data.isSatisfied()) {
+                row.setSclass("allocation-not-satisfied");
+            } else {
+                row.setSclass("allocation-satisfied");
+            }
         }
 
         private void renderAggregatingRow(Row row) {
             ResourceAllocationController controller = ResourceAllocationController.this;
             append(row, new Label());
-            append(row, new Label());
             append(row, new Label(_("Sum of all rows")));
-            append(row, CalculationTypeRadio.NUMBER_OF_HOURS.input(controller));
+            append(row, allOriginalHours);
+            append(row, allTotalHours);
+            append(row, allConsolidatedHours);
+            append(row, CalculationTypeRadio.NUMBER_OF_HOURS
+                        .input(controller));
+            append(row, allTotalResourcesPerDay);
+            append(row, allConsolidatedResourcesPerDay);
             append(row, CalculationTypeRadio.RESOURCES_PER_DAY
-                    .input(controller));
+                        .input(controller));
             append(row, new Label());
         }
 
@@ -567,7 +698,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public void setStartDate(Date date) {
         resourceAllocationModel.setStartDate(date);
-        formBinder.setStartDate(date);
     }
 
 }

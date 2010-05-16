@@ -28,8 +28,13 @@
 <tabpanel id="${arg.id}">
     <tabbox mold="accordion">
         <tabs>
-            <tab id="tabLimitingResourceAllocation" label="${i18n:_('Limiting resource allocation')}" image="common/img/collapse.gif" />
-            <tab id="tabLimitingWorkerSearch" label="${i18n:_('Resources search')}" image="common/img/collapse.gif"/>
+            <tab id="tabLimitingResourceAllocation"
+                    label="${i18n:_('Limiting resource allocation')}"
+                    image="common/img/collapse.gif" />
+
+            <tab id="tabLimitingWorkerSearch"
+                    label="${i18n:_('Resources search')}"
+                    image="common/img/collapse.gif" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -38,22 +43,22 @@
                     <caption label="${i18n:_('Order Element Information')}:" />
                     <grid id="gridLimitingOrderElementHours">
                         <columns>
-                              <column label="${i18n:_('Criteria')}" width="200px" />
-                              <column label="${i18n:_('Type')}" width="200px" />
-                              <column label="${i18n:_('Hours')}" />
+                              <column label="${i18n:_('Criteria')}" width="200px" align="center"/>
+                              <column label="${i18n:_('Type')}" width="200px" align="center"/>
+                              <column label="${i18n:_('Hours')}" align="center"/>
                         </columns>
                     </grid>
                     <grid>
                           <columns>
-                              <column width="200px" />
-                              <column width="200px" />
-                              <column />
+                              <column width="200px" align="center"/>
+                              <column width="200px" align="center"/>
+                              <column align="center"/>
                           </columns>
                           <rows>
                             <row>
-                                <label  />
+                                <label />
                                 <label value="${i18n:_('Total Estimated hours')}:" />
-                                <intbox value="@{limitingAllocationController.orderHours}" disabled="${true}" />
+                                <label value="@{limitingAllocationController.orderHours}" />
                             </row>
                           </rows>
                     </grid>
@@ -77,8 +82,8 @@
 
             </tabpanel>
 
-            <tabpanel>
-                <newAllocationSelector id="limitingNewAllocationSelector"/>
+            <tabpanel >
+                <newAllocationSelector id="limitingNewAllocationSelector" />
                 <hbox>
                     <button label="${i18n:_('Select')}" onClick="limitingAllocationController.onSelectWorkers(event)" />
                     <button label="${i18n:_('Close')}" onClick="limitingAllocationController.onCloseSelectWorkers()" />

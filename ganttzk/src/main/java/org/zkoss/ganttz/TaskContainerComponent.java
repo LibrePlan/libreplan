@@ -112,8 +112,8 @@ public class TaskContainerComponent extends TaskComponent implements
     }
 
     @Override
-    protected String calculateClass() {
-        return super.calculateClass() + " "
+    protected String calculateCSSClass() {
+        return super.calculateCSSClass() + " "
                 + (getTaskContainer().isExpanded() ? "expanded" : "closed");
     }
 }

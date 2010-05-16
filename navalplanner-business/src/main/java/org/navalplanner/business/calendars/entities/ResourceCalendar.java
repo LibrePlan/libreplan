@@ -64,6 +64,15 @@ public class ResourceCalendar extends BaseCalendar {
         addNewCalendarAvailability(calendarAvailability);
     }
 
+    public Integer getCapacity(LocalDate from, LocalDate to) {
+        Integer result = getCapacityAt(to);
+        for (LocalDate date = from; date.isBefore(to);) {
+            result += getCapacityAt(date);
+            date = date.plusDays(1);
+        }
+        return result;
+    }
+
     @Override
     public Integer getCapacityAt(LocalDate date) {
         if (!isActive(date)) {

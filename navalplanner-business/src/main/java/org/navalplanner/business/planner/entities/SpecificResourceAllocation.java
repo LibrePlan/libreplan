@@ -58,10 +58,25 @@ public class SpecificResourceAllocation extends
                 task));
     }
 
-    public static SpecificResourceAllocation create(Resource resource, Task task) {
+    /**
+     * Creates a {@link SpecificResourceAllocation} for a
+     * {@link LimitingResourceQueueElement}
+     *
+     * The process of creating a specific resource allocation for a queue
+     * element is different as it's necessary to assign a resource and a number
+     * of resources per day without allocating day assignments
+     *
+     * @param resource
+     * @param task
+     * @return
+     */
+    public static SpecificResourceAllocation create(Resource resource,
+            Task task) {
+        assert resource.isLimitingResource();
         SpecificResourceAllocation result = create(new SpecificResourceAllocation(
                 task));
         result.setResource(resource);
+        result.setResourcesPerDay(ResourcesPerDay.amount(1));
         return result;
     }
 

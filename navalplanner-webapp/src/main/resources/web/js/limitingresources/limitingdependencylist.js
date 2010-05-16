@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-zkDependencylist = {};
+zkLimitingDependencylist = {};
 
-zkDependencylist.init = function (cmp) {
+zkLimitingDependencylist.init = function (cmp) {
 }

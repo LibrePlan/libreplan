@@ -81,7 +81,6 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
-import org.navalplanner.web.planner.ITaskElementAdapter.IOnMoveListener;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
@@ -115,6 +114,7 @@ import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
@@ -721,10 +721,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if(saveCommand != null) {
             saveCommand.addListener(fillChartOnSave(loadChart, planner));
         }
-        taskElementAdapter.addListener(readOnlyProxy(transactionService,
-                IOnMoveListener.class, new IOnMoveListener() {
+        configuration.addPostGraphChangeListener(readOnlyProxy(
+                transactionService, IGraphChangeListener.class, new IGraphChangeListener() {
                     @Override
-                    public void moved(TaskElement taskElement) {
+                    public void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return;
+                        }
                         if (planner.isVisibleChart()) {
                             loadChart.fillChart();
                         }
@@ -739,6 +742,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                         }
                     }
                 }));
+    }
+
+    private boolean isExecutingOutsideZKExecution() {
+        return Executions.getCurrent() == null;
     }
 
     private void addAdditional(List<ICommand<TaskElement>> additional,
@@ -932,7 +939,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private PlannerConfiguration<TaskElement> createConfiguration(
             Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
-        taskElementAdapter.initialize(orderReloaded, currentScenario);
+        taskElementAdapter.useScenario(currentScenario);
         planningState = createPlanningStateFor(orderReloaded);
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
@@ -1004,6 +1011,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         if (each.getCalendar() != null) {
             BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
         }
+        each.hasConsolidations();
     }
 
     private static void switchAllocationsToScenario(Scenario scenario,

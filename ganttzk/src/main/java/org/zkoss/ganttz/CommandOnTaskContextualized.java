@@ -83,7 +83,7 @@ public class CommandOnTaskContextualized<T> {
         return new ItemAction<TaskComponent>() {
             @Override
             public void onEvent(TaskComponent choosen, Event event) {
-                doAction(choosen.getTask());
+                doAction(choosen);
             }
         };
     }

@@ -38,4 +38,10 @@ public interface ICostCalculator {
 
     public SortedMap<LocalDate, BigDecimal> getWorkReportCost(Task task);
 
+    SortedMap<LocalDate, BigDecimal> getEstimatedCost(Task task,
+            LocalDate filterStartDate, LocalDate filterEndDate);
+
+    SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task,
+            LocalDate filterStartDate, LocalDate filterEndDate);
+
 }

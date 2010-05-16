@@ -59,6 +59,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean expandOrderPlanningViewCharts = true;
 
+    private Boolean expandResourceLoadViewCharts = true;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -163,6 +165,15 @@ public class Configuration extends BaseEntity {
 
     public Boolean isExpandOrderPlanningViewCharts() {
         return expandOrderPlanningViewCharts;
+    }
+
+    public void setExpandResourceLoadViewCharts(
+            Boolean expandResourceLoadViewCharts) {
+        this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
+    }
+
+    public Boolean isExpandResourceLoadViewCharts() {
+        return expandResourceLoadViewCharts;
     }
 
 }

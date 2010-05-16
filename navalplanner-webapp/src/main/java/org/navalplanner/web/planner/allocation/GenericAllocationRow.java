@@ -38,7 +38,6 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.resourceload.ResourceLoadModel;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -49,7 +48,7 @@ public class GenericAllocationRow extends AllocationRow {
     private static GenericAllocationRow createDefault() {
         GenericAllocationRow result = new GenericAllocationRow();
         result.setName(_("Generic"));
-        result.setResourcesPerDay(ResourcesPerDay.amount(0));
+        result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
         return result;
     }
 
@@ -60,18 +59,30 @@ public class GenericAllocationRow extends AllocationRow {
         GenericAllocationRow result = createDefault();
         result.criterions = criterions;
         result.resources = new ArrayList<Resource>(resources);
-        result.setName(ResourceLoadModel.getName(criterions));
+        result.setName(Criterion.getNames(criterions));
         return result;
     }
 
     public static GenericAllocationRow from(
             GenericResourceAllocation resourceAllocation, IResourceDAO resourceDAO) {
         GenericAllocationRow result = createDefault();
-        result.setResourcesPerDay(resourceAllocation.getResourcesPerDay());
         result.setOrigin(resourceAllocation);
+
+        result.setOriginalHours(resourceAllocation.getOriginalTotalAssigment());
+        result.setTotalHours(resourceAllocation.getAssignedHours());
+        result.setConsolidatedHours(resourceAllocation.getConsolidatedHours());
+        result.setNonConsolidatedHours(resourceAllocation
+                .getNonConsolidatedHours());
+
+        result.setNonConsolidatedResourcesPerDay(resourceAllocation
+                .getNonConsolidatedResourcePerDay());
+        result.setConsolidatedResourcesPerDay(resourceAllocation
+                .getConsolidatedResourcePerDay());
+        result.setTotalResourcesPerDay(resourceAllocation.getResourcesPerDay());
+
         result.criterions = resourceAllocation.getCriterions();
         result.resources = resourceDAO.findSatisfyingCriterionsAtSomePoint(result.criterions);
-        result.setName(ResourceLoadModel.getName(result.criterions));
+        result.setName(Criterion.getNames(result.criterions));
         return result;
     }
 
@@ -98,7 +109,7 @@ public class GenericAllocationRow extends AllocationRow {
     public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
         GenericResourceAllocation newGeneric = createGenericAllocation(task);
         return ResourcesPerDayModification
-                .create(newGeneric, getResourcesPerDay(), this.resources);
+                .create(newGeneric, getNonConsolidatedResourcesPerDay(), this.resources);
     }
 
     private GenericResourceAllocation createGenericAllocation(Task task) {

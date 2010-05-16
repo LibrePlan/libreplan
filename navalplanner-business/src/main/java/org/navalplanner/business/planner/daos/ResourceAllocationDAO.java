@@ -23,12 +23,14 @@ package org.navalplanner.business.planner.daos;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -57,28 +59,64 @@ public class ResourceAllocationDAO extends
     public List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
             List<Resource> resources) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        result.addAll(findSpecificAllocationsRelatedTo(resources));
-        result.addAll(findGenericAllocationsFor(resources));
+        result.addAll(findSpecificAllocationsRelatedTo(resources, null, null));
+        result.addAll(findGenericAllocationsFor(resources, null, null));
+        return result;
+    }
+
+    @Override
+    public List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
+            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        result.addAll(findSpecificAllocationsRelatedTo(resources, intervalFilterStartDate, intervalFilterEndDate));
+        result.addAll(findGenericAllocationsFor(resources, intervalFilterStartDate, intervalFilterEndDate));
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    private List<GenericResourceAllocation> findGenericAllocationsFor(
-            List<Resource> resources) {
-        return (List<GenericResourceAllocation>) getSession().createCriteria(
-                GenericResourceAllocation.class).setResultTransformer(
-                Criteria.DISTINCT_ROOT_ENTITY).createCriteria(
+    private List<GenericResourceAllocation> findGenericAllocationsFor(List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        if(resources.isEmpty()) {
+            return new ArrayList<GenericResourceAllocation>();
+        }
+        Criteria criteria  = getSession().createCriteria(GenericResourceAllocation.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+            .createCriteria(
                 "genericDayAssignmentsContainers").createCriteria(
                 "dayAssignments").add(
-                Restrictions.in("resource", resources)).list();
+                Restrictions.in("resource", resources));
+
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            Criteria dateCriteria = criteria.createCriteria("task");
+            if(intervalFilterEndDate != null) {
+                dateCriteria.add(Restrictions.le("startDate", intervalFilterEndDate));
+            }
+            if(intervalFilterStartDate != null) {
+                dateCriteria.add(Restrictions.ge("endDate", intervalFilterStartDate));
+            }
+        }
+        return (List<GenericResourceAllocation>) criteria.list();
     }
 
     @SuppressWarnings("unchecked")
     private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
-            List<Resource> resources) {
-        return (List<SpecificResourceAllocation>) getSession().createCriteria(
-                SpecificResourceAllocation.class).add(
-                Restrictions.in("resource", resources)).list();
+            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        if(resources.isEmpty()) {
+            return new ArrayList<SpecificResourceAllocation>();
+        }
+        Criteria criteria  = getSession().createCriteria(
+                SpecificResourceAllocation.class);
+        criteria.add(Restrictions.in("resource", resources));
+
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            Criteria dateCriteria = criteria.createCriteria("task");
+            if(intervalFilterEndDate != null) {
+                dateCriteria.add(Restrictions.le("startDate", intervalFilterEndDate));
+            }
+            if(intervalFilterStartDate != null) {
+                dateCriteria.add(Restrictions.ge("endDate", intervalFilterStartDate));
+            }
+        }
+        return (List<SpecificResourceAllocation>) criteria.list();
     }
 
     @Override
@@ -86,6 +124,13 @@ public class ResourceAllocationDAO extends
             Resource resource) {
         return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
                 .asList(resource)));
+    }
+
+    @Override
+    public List<ResourceAllocation<?>> findAllocationsRelatedTo(
+            Resource resource, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
+                .asList(resource), intervalFilterStartDate, intervalFilterEndDate));
     }
 
     private <R extends ResourceAllocation<?>> List<R> stripAllocationsWithoutAssignations(
@@ -126,6 +171,38 @@ public class ResourceAllocationDAO extends
 
     @SuppressWarnings("unchecked")
     @Override
+    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
+            Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        String query = "select generic, criterion "
+            + "from GenericResourceAllocation as generic "
+            + "join generic.criterions as criterion ";
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            query += "inner join generic.task as task ";
+            if(intervalFilterEndDate != null) {
+                query += "where task.startDate <= :intervalFilterEndDate ";
+            }
+            if(intervalFilterStartDate != null) {
+                if(intervalFilterEndDate != null) {
+                    query += "and ";
+                }
+                else {
+                    query += "where ";
+                }
+                query += "task.endDate >= :intervalFilterStartDate ";
+            }
+        }
+        Query q = getSession().createQuery(query);
+        if(intervalFilterStartDate != null) {
+            q.setParameter("intervalFilterStartDate", intervalFilterStartDate);
+        }
+        if(intervalFilterEndDate != null) {
+            q.setParameter("intervalFilterEndDate", intervalFilterEndDate);
+        }
+        return stripAllocationsWithoutAssignations(byCriterion(q.list()));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
             List<Task> tasks) {
         if (tasks.isEmpty()) {
@@ -154,6 +231,38 @@ public class ResourceAllocationDAO extends
                         + "where criterion in(:criterions)").setParameterList(
                 "criterions", criterions).list();
         return stripAllocationsWithoutAssignations(byCriterion(list));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
+            List<Criterion> criterions, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+        if (criterions.isEmpty()) {
+            return new HashMap<Criterion, List<GenericResourceAllocation>>();
+        }
+        String query = "select generic, criterion "
+            + "from GenericResourceAllocation as generic "
+            + "join generic.criterions as criterion ";
+        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            query += "inner join generic.task as task ";
+        }
+        query += "where criterion in(:criterions) ";
+        if(intervalFilterEndDate != null) {
+            query += "and task.startDate <= :intervalFilterEndDate ";
+        }
+        if(intervalFilterStartDate != null) {
+            query += "and task.endDate >= :intervalFilterStartDate ";
+        }
+
+        Query q = getSession().createQuery(query);
+        q.setParameterList("criterions", criterions);
+        if(intervalFilterStartDate != null) {
+            q.setParameter("intervalFilterStartDate", intervalFilterStartDate);
+        }
+        if(intervalFilterEndDate != null) {
+            q.setParameter("intervalFilterEndDate", intervalFilterEndDate);
+        }
+        return stripAllocationsWithoutAssignations(byCriterion(q.list()));
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> byCriterion(

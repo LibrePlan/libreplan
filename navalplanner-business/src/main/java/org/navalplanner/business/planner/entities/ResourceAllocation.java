@@ -576,6 +576,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getLimitingResourceQueueElement() != null;
     }
 
+    public boolean isLimitingAndHasDayAssignments() {
+        return isLimiting() && hasAssignments();
+    }
+
     public boolean isSatisfied() {
         return hasAssignments();
     }
@@ -594,6 +598,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         getDayAssignmentsState().addingAssignments(assignments);
     }
 
+    public void removeLimitingDayAssignments() {
+        allocateLimitingDayAssignments(Collections.<T>emptyList());
+    }
+
+    public void allocateLimitingDayAssignments(List<T> assignments) {
+        assert isLimiting();
+        resetAssignmentsTo(assignments);
+    }
+
     protected final void removingAssignments(
             List<? extends DayAssignment> assignments){
         getDayAssignmentsState().removingAssignments(assignments);
@@ -605,8 +618,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private ResourcesPerDay calculateResourcesPerDayFromAssignments() {
-        Map<LocalDate, List<T>> byDay = DayAssignment
-                .byDay(getAssignments());
+        return calculateResourcesPerDayFromAssignments(getAssignments());
+    }
+
+    private ResourcesPerDay calculateResourcesPerDayFromAssignments(
+            Collection<? extends T> assignments) {
+        Map<LocalDate, List<T>> byDay = DayAssignment.byDay(assignments);
         int sumTotalHours = 0;
         int sumWorkableHours = 0;
         final ResourcesPerDay one = ResourcesPerDay.amount(1);
@@ -837,11 +854,46 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected abstract DayAssignmentsState getDayAssignmentsState();
 
+    public int getConsolidatedHours() {
+        return DayAssignment.sum(getConsolidatedAssignments());
+    }
+
+    public int getNonConsolidatedHours() {
+        return DayAssignment.sum(getNonConsolidatedAssignments());
+    }
+
     /**
      * @return a list of {@link DayAssignment} ordered by date
      */
     public final List<T> getAssignments() {
         return getDayAssignmentsState().getOrderedDayAssignments();
+    }
+
+    public List<? extends T> getNonConsolidatedAssignments(){
+        return getDayAssignmentsByConsolidated(false);
+    }
+
+    public List<? extends T> getConsolidatedAssignments() {
+        return getDayAssignmentsByConsolidated(true);
+    }
+
+    private List<T> getDayAssignmentsByConsolidated(
+            boolean consolidated) {
+        List<T> result = new ArrayList<T>();
+        for (T day : getAssignments()) {
+            if (day.isConsolidated() == consolidated) {
+                result.add(day);
+            }
+        }
+        return result;
+    }
+
+    public ResourcesPerDay getNonConsolidatedResourcePerDay() {
+        return calculateResourcesPerDayFromAssignments(getNonConsolidatedAssignments());
+    }
+
+    public ResourcesPerDay getConsolidatedResourcePerDay() {
+        return calculateResourcesPerDayFromAssignments(getConsolidatedAssignments());
     }
 
     public ResourcesPerDay getResourcesPerDay() {
@@ -879,11 +931,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public LocalDate getStartDate() {
-        List<? extends DayAssignment> assignments = getAssignments();
-        if (assignments.isEmpty()) {
-            return null;
-        }
-        return assignments.get(0).getDay();
+        return LocalDate.fromDateFields(task.getStartDate());
     }
 
     public LocalDate getEndDate() {
@@ -1006,8 +1054,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public void setLimitingResourceQueueElement(LimitingResourceQueueElement element) {
         limitingResourceQueueElements.clear();
-        element.setResourceAllocation(this);
-        limitingResourceQueueElements.add(element);
+        if (element != null) {
+            element.setResourceAllocation(this);
+            limitingResourceQueueElements.add(element);
+        }
     }
 
     public Integer getIntendedTotalHours() {

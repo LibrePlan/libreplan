@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.planner;
 
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
@@ -31,14 +30,5 @@ import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
  */
 public interface ITaskElementAdapter extends IAdapterToTaskFundamentalProperties<TaskElement>{
 
-    public interface IOnMoveListener {
-        public void moved(TaskElement taskElement);
-    }
-
-    public void addListener(IOnMoveListener moveListener);
-
-    public void removeListener(IOnMoveListener moveListener);
-
-    void initialize(Order order, Scenario scenario);
-
+    void useScenario(Scenario scenario);
 }

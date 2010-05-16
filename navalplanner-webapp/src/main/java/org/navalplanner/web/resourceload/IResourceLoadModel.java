@@ -20,9 +20,11 @@
 
 package org.navalplanner.web.resourceload;
 
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -53,5 +55,19 @@ public interface IResourceLoadModel {
     void setCriteriaToShow(List<Criterion> criteriaList);
 
     void clearCriteriaToShow();
+
+    void setInitDateFilter(Date value);
+
+    void setEndDateFilter(Date value);
+
+    Date getInitDateFilter();
+
+    Date getEndDateFilter();
+
+    List<DayAssignment> getDayAssignments();
+
+    List<Resource> getResources();
+
+    boolean isExpandResourceLoadViewCharts();
 
 }

@@ -25,6 +25,7 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
@@ -43,6 +44,7 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zkex.zul.api.South;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ListModel;
@@ -88,14 +90,28 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private int filterByNamePosition = 0;
     private int numberOfGroupsByName = 10;
 
-    public ResourcesLoadPanel(List<LoadTimeLine> groups,
-            TimeTracker timeTracker, Component componentOnWhichGiveFeedback) {
-        this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
-        init(groups, timeTracker);
+    private WeakReferencedListeners<IFilterChangedListener> nameFilterListener =
+        WeakReferencedListeners.create();
 
+    private Component loadChart;
+
+    private boolean visibleChart = true;
+
+    private WeakReferencedListeners<IChartVisibilityChangedListener> chartVisibilityListeners = WeakReferencedListeners
+            .create();
+
+    private final boolean expandResourceLoadViewCharts;
+
+    public ResourcesLoadPanel(List<LoadTimeLine> groups,
+            TimeTracker timeTracker, Component componentOnWhichGiveFeedback,
+            boolean expandResourceLoadViewCharts) {
+        this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
+        this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
+        init(groups, timeTracker);
     }
 
     public void init(List<LoadTimeLine> groups, TimeTracker timeTracker) {
+        refreshNameFilter = true;
         this.groups = groups;
         this.timeTracker = timeTracker;
         treeModel = createModelForTree();
@@ -280,9 +296,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 
-        Component additionalFilter = (Component) getVariable("additionalFilter", true);
+        // Insert additional filters if any
+        Component additionalFilter = (Component) getVariable("additionalFilter1", true);
         if(additionalFilter != null) {
-            getFellow("additionalFilterInsertionPoint").appendChild(additionalFilter);
+            getFellow("additionalFilterInsertionPoint1").appendChild(additionalFilter);
+        }
+        additionalFilter = (Component) getVariable("additionalFilter2", true);
+        if(additionalFilter != null) {
+            getFellow("additionalFilterInsertionPoint2").appendChild(additionalFilter);
         }
 
         timeTrackerHeader.afterCompose();
@@ -293,12 +314,18 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         if(refreshNameFilter) {
             setupNameFilter();
         }
+
+        getFellow("insertionPointChart").appendChild(loadChart);
+
+        this.visibleChart = expandResourceLoadViewCharts;
+        ((South) getFellow("graphics")).setOpen(this.visibleChart);
     }
 
     public void clearComponents() {
         getFellow("insertionPointLeftPanel").getChildren().clear();
         getFellow("insertionPointRightPanel").getChildren().clear();
         getFellow("insertionPointTimetracker").getChildren().clear();
+        getFellow("insertionPointChart").getChildren().clear();
     }
 
     private TimeTrackerComponent createTimeTrackerHeader() {
@@ -375,7 +402,34 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     public void onSelectFilterByName(Integer filterByNamePosition) {
             this.filterByNamePosition = filterByNamePosition.intValue();
             this.feedBackMessage = _("filtering by name");
-            invalidatingChangeHappenedWithFeedback();
+            changeNameFilterWithFeedback();
+    }
+
+    private void changeNameFilterWithFeedback() {
+        LongOperationFeedback.execute(componentOnWhichGiveFeedback,
+                new ILongOperation() {
+
+            @Override
+            public void doAction() throws Exception {
+                treeModel = createModelForTree();
+                timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
+                resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
+                leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
+                registerNeededScripts();
+                nameFilterListener.fireEvent(new IListenerNotification<IFilterChangedListener>() {
+                    @Override
+                    public void doNotify(IFilterChangedListener listener) {
+                        listener.filterChanged(getFilter());
+                    }
+                });
+                afterCompose();
+            }
+
+            @Override
+            public String getName() {
+                return getFeedBackMessage();
+            }
+        });
     }
 
     public void setNameFilterDisabled(boolean disabled) {
@@ -385,6 +439,36 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 ((Integer)combo.getSelectedItemApi().getValue()).intValue();
             combo.setDisabled(disabled);
         }
+    }
+
+    public void addNameFilterListener(
+            IFilterChangedListener iFilterChangedListener) {
+        nameFilterListener.addListener(iFilterChangedListener);
+    }
+
+    public void changeChartVisibility(boolean visible) {
+        visibleChart = visible;
+        chartVisibilityListeners
+                .fireEvent(new IListenerNotification<IChartVisibilityChangedListener>() {
+                    @Override
+                    public void doNotify(
+                            IChartVisibilityChangedListener listener) {
+                        listener.chartVisibilityChanged(visibleChart);
+                    }
+                });
+    }
+
+    public boolean isVisibleChart() {
+        return visibleChart;
+    }
+
+    public void addChartVisibilityListener(
+            IChartVisibilityChangedListener chartVisibilityChangedListener) {
+        chartVisibilityListeners.addListener(chartVisibilityChangedListener);
+    }
+
+    public void setLoadChart(Component loadChart) {
+        this.loadChart = loadChart;
     }
 
 }

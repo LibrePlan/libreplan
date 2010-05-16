@@ -21,6 +21,7 @@ package org.navalplanner.business.resources.entities;
 
 import java.util.Comparator;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 
 /**
@@ -34,17 +35,24 @@ public class LimitingResourceQueueElementComparator implements
     @Override
     public int compare(LimitingResourceQueueElement arg0,
             LimitingResourceQueueElement arg1) {
-        final int deltaHour = arg0.getStartHour() - arg1.getStartHour();
-        if (deltaHour != 0) {
-            return deltaHour / Math.abs(deltaHour);
-        }
-        if (arg0.getStartDate() == null) {
+        int compareDates = compare(arg0.getStartDate(), arg1.getStartDate());
+        return (compareDates != 0) ? compareDates : compare(
+                arg0.getStartHour(), arg1.getStartHour());
+    }
+
+    private int compare(LocalDate arg0, LocalDate arg1) {
+        if (arg0  == null) {
             return -1;
         }
-        if (arg1.getStartDate() == null) {
+        if (arg1 == null) {
             return 1;
         }
-        return arg0.getStartDate().compareTo(arg1.getStartDate());
+        return arg0.compareTo(arg1);
+    }
+
+    private int compare(int arg0, int arg1) {
+        final int deltaHour = arg0 - arg1;
+        return (deltaHour != 0) ? deltaHour / Math.abs(deltaHour) : 0;
     }
 
 }

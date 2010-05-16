@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -113,6 +114,11 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
     @Override
     public List<Task> getTasksOrderedByStartDate() {
         return context.getTasksOrderedByStartDate();
+    }
+
+    @Override
+    public GanttDiagramGraph getGanttDiagramGraph() {
+        return context.getGanttDiagramGraph();
     }
 
 }

@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -35,7 +36,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
@@ -44,8 +44,8 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
@@ -86,8 +86,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
-    private Order order;
-
     @Autowired
     private IAdHocTransactionService transactionService;
 
@@ -106,13 +104,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
-    private List<IOnMoveListener> listeners = new ArrayList<IOnMoveListener>();
-
     private Scenario scenario;
 
+
     @Override
-    public void initialize(Order order, Scenario scenario) {
-        this.order = order;
+    public void useScenario(Scenario scenario) {
         this.scenario = scenario;
     }
 
@@ -169,7 +165,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         public Long execute() {
                             stepsBeforePossibleReallocation();
                             Long result = setBeginDateInsideTransaction(beginDate);
-                            fireTaskElementMoved(taskElement);
                             return result;
                         }
                     });
@@ -220,7 +215,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                             return null;
                         }
                     });
-            fireTaskElementMoved(taskElement);
         }
 
         private void updateEndDate(long lengthMilliseconds) {
@@ -481,12 +475,36 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             result.append(_("Hours invested") + ": ").append(
                     getHoursAdvancePercentage().multiply(new BigDecimal(100)))
                     .append("% <br/>");
+            result.append(_("State")  +": ").append(getOrderState());
             String labels = buildLabelsText();
             if (!labels.equals("")) {
                 result.append("<div class='tooltip-labels'>" + _("Labels")
                         + ": " + labels + "</div>");
             }
             return result.toString();
+        }
+
+        private String getOrderState() {
+            String cssClass;
+            OrderStatusEnum state = taskElement.getOrderElement().getOrder().getState();
+
+            if(Arrays.asList(OrderStatusEnum.ACCEPTED,
+                    OrderStatusEnum.OFFERED,OrderStatusEnum.STARTED,
+                    OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER)
+                    .contains(state)) {
+                if(taskElement.getAssignedStatus() == "assigned") {
+                    cssClass="order-open-assigned";
+                }
+                else {
+                    cssClass="order-open-unassigned";
+                }
+            }
+            else {
+                cssClass="order-closed";
+            }
+            return "<font class='" + cssClass + "'>"
+                + state.toString()
+                + "</font>";
         }
 
         @Override
@@ -538,6 +556,20 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public boolean isSubcontracted() {
             return taskElement.isSubcontracted();
+        }
+
+        @Override
+        public boolean isLimiting() {
+            return taskElement.isLimiting();
+        }
+
+        @Override
+        public boolean isLimitingAndHasDayAssignments() {
+            return taskElement.isLimitingAndHasDayAssignments();
+        }
+
+        public boolean hasConsolidations() {
+            return taskElement.hasConsolidations();
         }
 
         private void stepsBeforePossibleReallocation() {
@@ -635,23 +667,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         Type type = toDomainType(dependency.getType());
         source.removeDependencyWithDestination(dependency.getDestination(),
                 type);
-    }
-
-    private void fireTaskElementMoved(TaskElement taskElement) {
-        for (IOnMoveListener moveListener : listeners) {
-            moveListener.moved(taskElement);
-        }
-    }
-
-    @Override
-    public void addListener(IOnMoveListener moveListener) {
-        Validate.notNull(moveListener);
-        listeners.add(moveListener);
-    }
-
-    @Override
-    public void removeListener(IOnMoveListener moveListener) {
-        listeners.remove(moveListener);
     }
 
 }

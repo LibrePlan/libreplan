@@ -26,10 +26,6 @@ import org.apache.commons.lang.Validate;
  */
 public abstract class PreAndPostNotReentrantActionsWrapper {
 
-    public interface IAction {
-        public void doAction();
-    }
-
     private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {

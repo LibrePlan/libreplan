@@ -54,7 +54,7 @@ public class TaskLeaf extends Task {
 
     @Override
     public boolean canBeExplicitlyMoved() {
-        return !isSubcontracted();
+        return !(isSubcontracted() || isLimitingAndHasDayAssignments() || hasConsolidations());
     }
 
 }

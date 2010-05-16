@@ -4,7 +4,7 @@
 <c:set var="self" value="${requestScope.arg.self}"/>
 
 <div id="${self.uuid}" ${self.outerAttrs} class="limitingresourceslist"
-    z.type="ganttz.limitingresources.limitingresourceslist.LimitingResourcesList">
+    z.type="limitingresources.limitingresourceslist.LimitingResourcesList">
     <c:forEach var="child" items="${self.children}">
         ${z:redraw(child, null)}
     </c:forEach>

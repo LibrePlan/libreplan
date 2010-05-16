@@ -85,6 +85,10 @@ public interface IConfigurationModel {
 
     Boolean isExpandOrderPlanningViewCharts();
 
+    void setExpandResourceLoadViewCharts(Boolean expandResourceLoadViewCharts);
+
+    Boolean isExpandResourceLoadViewCharts();
+
     /*
      * Final conversation steps
      */

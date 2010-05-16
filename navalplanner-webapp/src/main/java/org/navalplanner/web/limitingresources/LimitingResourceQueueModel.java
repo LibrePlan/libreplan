@@ -20,33 +20,46 @@
 
 package org.navalplanner.web.limitingresources;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.daos.IDependencyDAO;
+import org.navalplanner.business.planner.daos.ILimitingResourceQueueDAO;
+import org.navalplanner.business.planner.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueElementDAO;
-import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.DateAndHour;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.LimitingResourceAllocator;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElementGap;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -61,7 +74,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.resourceload.TimeLineRole;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
@@ -70,16 +82,7 @@ import org.zkoss.ganttz.util.Interval;
 public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Autowired
-    private IResourceDAO resourcesDAO;
-
-    @Autowired
     private IOrderElementDAO orderElementDAO;
-
-    @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
-    private IResourceAllocationDAO resourceAllocationDAO;
 
     @Autowired
     private IUserDAO userDAO;
@@ -90,28 +93,220 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Autowired
     private ILimitingResourceQueueElementDAO limitingResourceQueueElementDAO;
 
-    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
+    @Autowired
+    private ILimitingResourceQueueDAO limitingResourceQueueDAO;
+
+    @Autowired
+    private ITaskElementDAO taskDAO;
+
+    @Autowired
+    private ILimitingResourceQueueDependencyDAO limitingResourceQueueDependencyDAO;
 
     private Interval viewInterval;
 
-    private Order filterBy;
+    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
 
-    private boolean filterByResources = true;
+    private List<LimitingResourceQueueElement> unassignedLimitingResourceQueueElements = new ArrayList<LimitingResourceQueueElement>();
+
+    private Set<LimitingResourceQueueElement> toBeRemoved = new HashSet<LimitingResourceQueueElement>();
+
+    private Set<LimitingResourceQueueElement> toBeSaved = new HashSet<LimitingResourceQueueElement>();
 
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
-        filterBy = null;
-        this.filterByResources = filterByResources;
         doGlobalView();
     }
 
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(Order filterBy, boolean filterByResources) {
-        this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
-        this.filterByResources = filterByResources;
         doGlobalView();
+    }
+
+    private void doGlobalView() {
+        loadUnassignedLimitingResourceQueueElements();
+        loadLimitingResourceQueues();
+        final Date startingDate = getEarliestDate();
+        viewInterval = new Interval(startingDate, plusFiveYears(startingDate));
+    }
+
+    private Date getEarliestDate() {
+        final LimitingResourceQueueElement element = getEarliestQueueElement();
+        return (element != null) ? element.getStartDate()
+                .toDateTimeAtCurrentTime().toDate() : new Date();
+    }
+
+    private LimitingResourceQueueElement getEarliestQueueElement() {
+        LimitingResourceQueueElement earliestQueueElement = null;
+
+        if (!limitingResourceQueues.isEmpty()) {
+            for (LimitingResourceQueue each : limitingResourceQueues) {
+                LimitingResourceQueueElement element = getFirstLimitingResourceQueueElement(each);
+                if (element == null) {
+                    continue;
+                }
+                if (earliestQueueElement == null
+                        || isEarlier(element, earliestQueueElement)) {
+                    earliestQueueElement = element;
+                }
+            }
+        }
+        return earliestQueueElement;
+    }
+
+    private boolean isEarlier(LimitingResourceQueueElement arg1,
+            LimitingResourceQueueElement arg2) {
+        return (arg1.getStartDate().isBefore(arg2.getStartDate()));
+    }
+
+    private LimitingResourceQueueElement getFirstLimitingResourceQueueElement(
+            LimitingResourceQueue queue) {
+        return getFirstChild(queue.getLimitingResourceQueueElements());
+    }
+
+    private LimitingResourceQueueElement getFirstChild(
+            SortedSet<LimitingResourceQueueElement> elements) {
+        return (elements.isEmpty()) ? null : elements.iterator().next();
+    }
+
+    private Date plusFiveYears(Date date) {
+        return (new LocalDate(date)).plusYears(5).toDateTimeAtCurrentTime()
+                .toDate();
+    }
+
+    /**
+     * Loads unassigned {@link LimitingResourceQueueElement} from DB
+     *
+     * @return
+     */
+    private void loadUnassignedLimitingResourceQueueElements() {
+        unassignedLimitingResourceQueueElements.clear();
+        unassignedLimitingResourceQueueElements
+                .addAll(initializeLimitingResourceQueueElements(limitingResourceQueueElementDAO
+                        .getUnassigned()));
+    }
+
+    private List<LimitingResourceQueueElement> initializeLimitingResourceQueueElements(
+            List<LimitingResourceQueueElement> elements) {
+        for (LimitingResourceQueueElement each : elements) {
+            initializeLimitingResourceQueueElement(each);
+        }
+        return elements;
+    }
+
+    private void initializeLimitingResourceQueueElement(
+            LimitingResourceQueueElement element) {
+        ResourceAllocation<?> resourceAllocation = element
+                .getResourceAllocation();
+        resourceAllocation = initializeResourceAllocationIfNecessary(resourceAllocation);
+        element.setResourceAllocation(resourceAllocation);
+        initializeTask(resourceAllocation.getTask());
+        initializeResourceIfAny(element.getResource());
+    }
+
+    private void initializeTask(Task task) {
+        Hibernate.initialize(task);
+        for (ResourceAllocation<?> each: task.getAllResourceAllocations()) {
+            Hibernate.initialize(each);
+        }
+        for (Dependency each: task.getDependenciesWithThisOrigin()) {
+            Hibernate.initialize(each);
+        }
+        for (Dependency each: task.getDependenciesWithThisDestination()) {
+            Hibernate.initialize(each);
+        }
+    }
+
+    private void initializeCalendarIfAny(BaseCalendar calendar) {
+        if (calendar != null) {
+            Hibernate.initialize(calendar);
+            initializeCalendarAvailabilities(calendar);
+            initializeCalendarExceptions(calendar);
+            initializeCalendarDataVersions(calendar);
+        }
+    }
+
+    private void initializeCalendarAvailabilities(BaseCalendar calendar) {
+        for (CalendarAvailability each : calendar.getCalendarAvailabilities()) {
+            Hibernate.initialize(each);
+        }
+    }
+
+    private void initializeCalendarExceptions(BaseCalendar calendar) {
+        for (CalendarException each : calendar.getExceptions()) {
+            Hibernate.initialize(each);
+            Hibernate.initialize(each.getType());
+        }
+    }
+
+    private void initializeCalendarDataVersions(BaseCalendar calendar) {
+        for (CalendarData each : calendar.getCalendarDataVersions()) {
+            Hibernate.initialize(each);
+            Hibernate.initialize(each.getHoursPerDay());
+            initializeCalendarIfAny(each.getParent());
+        }
+    }
+
+    private ResourceAllocation<?> initializeResourceAllocationIfNecessary(
+            ResourceAllocation<?> resourceAllocation) {
+        if (resourceAllocation instanceof HibernateProxy) {
+            resourceAllocation = (ResourceAllocation<?>) ((HibernateProxy) resourceAllocation)
+                    .getHibernateLazyInitializer().getImplementation();
+            if (resourceAllocation instanceof GenericResourceAllocation) {
+                GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
+                initializeCriteria(generic.getCriterions());
+            }
+            Hibernate.initialize(resourceAllocation.getAssignments());
+            Hibernate.initialize(resourceAllocation.getLimitingResourceQueueElement());
+        }
+        return resourceAllocation;
+    }
+
+    private void initializeCriteria(Set<Criterion> criteria) {
+        for (Criterion each: criteria) {
+            initializeCriterion(each);
+        }
+    }
+
+    private void initializeCriterion(Criterion criterion) {
+        Hibernate.initialize(criterion);
+        Hibernate.initialize(criterion.getType());
+    }
+
+    private void loadLimitingResourceQueues() {
+        limitingResourceQueues.clear();
+        limitingResourceQueues
+                .addAll(initializeLimitingResourceQueues(limitingResourceQueueDAO
+                        .getAll()));
+    }
+
+    private List<LimitingResourceQueue> initializeLimitingResourceQueues(
+            List<LimitingResourceQueue> queues) {
+        for (LimitingResourceQueue each : queues) {
+            initializeLimitingResourceQueue(each);
+        }
+        return queues;
+    }
+
+    private void initializeLimitingResourceQueue(LimitingResourceQueue queue) {
+        initializeResourceIfAny(queue.getResource());
+        for (LimitingResourceQueueElement each : queue
+                .getLimitingResourceQueueElements()) {
+            initializeLimitingResourceQueueElement(each);
+        }
+    }
+
+    private void initializeResourceIfAny(Resource resource) {
+        if (resource != null) {
+            Hibernate.initialize(resource);
+            for (CriterionSatisfaction each : resource
+                    .getCriterionSatisfactions()) {
+                Hibernate.initialize(each);
+                initializeCriterion(each.getCriterion());
+                initializeCalendarIfAny(resource.getCalendar());
+            }
+        }
     }
 
     @Override
@@ -119,6 +314,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     public Order getOrderByTask(TaskElement task) {
         return orderElementDAO
                 .loadOrderAvoidingProxyFor(task.getOrderElement());
+    }
+
+    @Override
+    public Interval getViewInterval() {
+        return viewInterval;
     }
 
     @Override
@@ -145,142 +345,14 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return false;
     }
 
-    private void doGlobalView() {
-        limitingResourceQueues = calculateLimitingResourceQueues();
-        if (!limitingResourceQueues.isEmpty()) {
-            // Build interval
-            // viewInterval =
-            // LimitingResourceQueue.getIntervalFrom(limitingResourceQueues);
-            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
-        } else {
-            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
-        }
-    }
-
-    private Date plusFiveYears(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR, 5);
-        return calendar.getTime();
-    }
-
-    private List<LimitingResourceQueue> calculateLimitingResourceQueues() {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        result.addAll(groupsFor(resourcesToShow()));
-        return result;
-    }
-
-    private List<Resource> resourcesToShow() {
-        if (filter()) {
-            return resourcesForActiveTasks();
-        } else {
-            return allLimitingResources();
-        }
-    }
-
-    private boolean filter() {
-        return filterBy != null;
-    }
-
-    private List<Resource> resourcesForActiveTasks() {
-        return Resource.sortByName(resourcesDAO
-                .findResourcesRelatedTo(justTasks(filterBy
-                        .getAllChildrenAssociatedTaskElements())));
-    }
-
-    private List<Task> justTasks(Collection<? extends TaskElement> tasks) {
-        List<Task> result = new ArrayList<Task>();
-        for (TaskElement taskElement : tasks) {
-            if (taskElement instanceof Task) {
-                result.add((Task) taskElement);
-            }
-        }
-        return result;
-    }
-
-    private List<Resource> allLimitingResources() {
-        List<Resource> result = Resource.sortByName(resourcesDAO
-                .getAllLimitingResources());
-        for (Resource each : result) {
-            each.getLimitingResourceQueue().getLimitingResourceQueueElements()
-                    .size();
-            limitingResourceQueues.add(each.getLimitingResourceQueue());
-        }
-        return result;
-    }
-
-    private TimeLineRole<BaseEntity> getCurrentTimeLineRole(BaseEntity entity) {
-        return new TimeLineRole<BaseEntity>(entity);
-    }
-
-    private List<LimitingResourceQueue> groupsFor(List<Resource> allResources) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        for (Resource resource : allResources) {
-            LimitingResourceQueue group = resource.getLimitingResourceQueue();
-            result.add(group);
-        }
-        return result;
-    }
-
-    private void initializeIfNeeded(
-            Map<Order, List<ResourceAllocation<?>>> result, Order order) {
-        if (!result.containsKey(order)) {
-            result.put(order, new ArrayList<ResourceAllocation<?>>());
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public Map<Order, List<ResourceAllocation<?>>> byOrder(
-            Collection<ResourceAllocation<?>> allocations) {
-        Map<Order, List<ResourceAllocation<?>>> result = new HashMap<Order, List<ResourceAllocation<?>>>();
-        for (ResourceAllocation<?> resourceAllocation : allocations) {
-            if ((resourceAllocation.isSatisfied())
-                    && (resourceAllocation.getTask() != null)) {
-                OrderElement orderElement = resourceAllocation.getTask()
-                        .getOrderElement();
-                Order order = orderElementDAO
-                        .loadOrderAvoidingProxyFor(orderElement);
-                initializeIfNeeded(result, order);
-                result.get(order).add(resourceAllocation);
-            }
-        }
-        return result;
-    }
-
-
-    private List<GenericResourceAllocation> onlyGeneric(
-            List<ResourceAllocation<?>> sortedByStartDate) {
-        return ResourceAllocation.getOfType(GenericResourceAllocation.class,
-                sortedByStartDate);
-    }
-
-    public static String getName(Collection<? extends Criterion> criterions,
-            Task task) {
-        String prefix = task.getName();
-        return (prefix + " :: " + getName(criterions));
-    }
-
-    public static String getName(Collection<? extends Criterion> criterions) {
-        if (criterions.isEmpty()) {
-            return _("[generic all workers]");
-        }
-        String[] names = new String[criterions.size()];
-        int i = 0;
-        for (Criterion criterion : criterions) {
-            names[i++] = criterion.getName();
-        }
-        return (Arrays.toString(names));
-    }
-
-
     @Override
     public List<LimitingResourceQueue> getLimitingResourceQueues() {
-        return limitingResourceQueues;
+        return Collections.unmodifiableList(limitingResourceQueues);
     }
 
-    @Override
-    public Interval getViewInterval() {
-        return viewInterval;
+    public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
+        return Collections
+                .unmodifiableList(unassignedLimitingResourceQueueElements);
     }
 
     public ZoomLevel calculateInitialZoomLevel() {
@@ -290,15 +362,307 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    @Transactional(readOnly=true)
-    public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
-        List<LimitingResourceQueueElement> result = limitingResourceQueueElementDAO
-                .getUnassigned();
-        for (LimitingResourceQueueElement each : result) {
-            limitingResourceQueueElementDAO.reattach(each);
-            each.getResourceAllocation().getTask().getName();
+    public boolean assignLimitingResourceQueueElement(
+            LimitingResourceQueueElement element) {
+
+        LimitingResourceQueue queue = null;
+        DateAndHour startTime = null;
+
+        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+
+        final ResourceAllocation<?> resourceAllocation = queueElement
+                .getResourceAllocation();
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            // Retrieve queue
+            queue = retrieveQueueByResourceFromModel(queueElement.getResource());
+            // Set start time
+            final LimitingResourceQueueElementGap firstGap = LimitingResourceAllocator
+                    .getFirstValidGap(queue, queueElement);
+            startTime = firstGap.getStartTime();
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            // Get the first gap for all the queues that can allocate the
+            // element during a certain interval of time
+            Map<LimitingResourceQueueElementGap, LimitingResourceQueue> firstGapsForQueues = findFirstGapsInAllQueues(
+                    limitingResourceQueues, element);
+            // Among those queues, get the earliest gap
+            LimitingResourceQueueElementGap earliestGap = findEarliestGap(firstGapsForQueues
+                    .keySet());
+            if (earliestGap == null) {
+                return false;
+            }
+            // Select queue and start time
+            queue = firstGapsForQueues.get(earliestGap);
+            startTime = earliestGap.getStartTime();
+        }
+
+        // Generate day assignments and adjust start and end times for element
+        List<DayAssignment> dayAssignments = LimitingResourceAllocator
+                .generateDayAssignments(queueElement.getResourceAllocation(),
+                        queue.getResource(), startTime);
+        DateAndHour[] startAndEndTime = LimitingResourceAllocator
+                .calculateStartAndEndTime(dayAssignments);
+        updateStartAndEndTimes(queueElement, startAndEndTime);
+
+        // Add element to queue
+        addLimitingResourceQueueElement(queue, queueElement);
+        markAsModified(queueElement);
+        return true;
+    }
+
+    private LimitingResourceQueueElementGap findEarliestGap(Set<LimitingResourceQueueElementGap> gaps) {
+        LimitingResourceQueueElementGap earliestGap = null;
+        for (LimitingResourceQueueElementGap each: gaps) {
+            if (earliestGap == null || each.isBefore(earliestGap)) {
+                earliestGap = each;
+            }
+        }
+        return earliestGap;
+    }
+
+    private Map<LimitingResourceQueueElementGap, LimitingResourceQueue> findFirstGapsInAllQueues(
+            List<LimitingResourceQueue> queues,
+            LimitingResourceQueueElement element) {
+
+        Map<LimitingResourceQueueElementGap, LimitingResourceQueue> result = new HashMap<LimitingResourceQueueElementGap, LimitingResourceQueue>();
+
+        for (LimitingResourceQueue each : queues) {
+            LimitingResourceQueueElementGap gap = LimitingResourceAllocator
+                    .getFirstValidGap(each, element);
+            if (gap != null) {
+                result.put(gap, each);
+            }
         }
         return result;
+    }
+
+    private void markAsModified(LimitingResourceQueueElement element) {
+        if (!toBeSaved.contains(element)) {
+            toBeSaved.add(element);
+        }
+    }
+
+    public LimitingResourceQueueElementGap createGap(Resource resource, DateAndHour startTime,
+            DateAndHour endTime) {
+        return LimitingResourceQueueElementGap.create(resource, startTime, endTime);
+    }
+
+    private void updateStartAndEndTimes(LimitingResourceQueueElement element,
+            DateAndHour[] startAndEndTime) {
+
+        final DateAndHour startTime = startAndEndTime[0];
+        final DateAndHour endTime = startAndEndTime[1];
+
+        element.setStartDate(startTime.getDate());
+        element.setStartHour(startTime.getHour());
+        element.setEndDate(endTime.getDate());
+        element.setEndHour(endTime.getHour());
+
+        // Update starting and ending dates for associated Task
+        Task task = element.getResourceAllocation().getTask();
+        updateStartingAndEndingDate(task, startTime.getDate(), endTime
+                .getDate());
+    }
+
+    private void updateStartingAndEndingDate(Task task, LocalDate startDate,
+            LocalDate endDate) {
+        task.setStartDate(toDate(startDate));
+        task.setEndDate(endDate.toDateTimeAtStartOfDay().toDate());
+        task.explicityMoved(toDate(startDate));
+    }
+
+    private Date toDate(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDate();
+    }
+
+    private void addLimitingResourceQueueElement(LimitingResourceQueue queue,
+            LimitingResourceQueueElement element) {
+        queue.addLimitingResourceQueueElement(element);
+        unassignedLimitingResourceQueueElements.remove(element);
+    }
+
+    private LimitingResourceQueue retrieveQueueByResourceFromModel(Resource resource) {
+        return findQueueByResource(limitingResourceQueues, resource);
+    }
+
+    private LimitingResourceQueue findQueueByResource(
+            List<LimitingResourceQueue> queues, Resource resource) {
+        for (LimitingResourceQueue each : queues) {
+            if (each.getResource().getId().equals(resource.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
+    private LimitingResourceQueue retrieveQueueFromModel(LimitingResourceQueue queue) {
+        return findQueue(limitingResourceQueues, queue);
+    }
+
+    private LimitingResourceQueue findQueue(List<LimitingResourceQueue> queues,
+            LimitingResourceQueue queue) {
+        for (LimitingResourceQueue each : limitingResourceQueues) {
+            if (each.getId().equals(queue.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
+    private LimitingResourceQueueElement retrieveQueueElementFromModel(
+            LimitingResourceQueueElement element) {
+        final LimitingResourceQueue queue = element.getLimitingResourceQueue();
+        if (queue != null) {
+            return findQueueElement(queue.getLimitingResourceQueueElements(),
+                    element);
+        } else {
+            return findQueueElement(unassignedLimitingResourceQueueElements,
+                    element);
+        }
+    }
+
+    private LimitingResourceQueueElement findQueueElement(
+            Collection<LimitingResourceQueueElement> elements,
+            LimitingResourceQueueElement element) {
+        for (LimitingResourceQueueElement each : elements) {
+            if (each.getId().equals(element.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
+
+
+    @Override
+    @Transactional
+    public void confirm() {
+        applyChanges();
+    }
+
+    private void applyChanges() {
+        removeQueueElements();
+        saveQueueElements();
+    }
+
+    private void saveQueueElements() {
+        for (LimitingResourceQueueElement each: toBeSaved) {
+            if (each != null) {
+                saveQueueElement(each);
+            }
+        }
+        toBeSaved.clear();
+    }
+
+    private void saveQueueElement(LimitingResourceQueueElement element) {
+        limitingResourceQueueElementDAO.save(element);
+        taskDAO.save(getAssociatedTask(element));
+    }
+
+    private Task getAssociatedTask(LimitingResourceQueueElement element) {
+        return element.getResourceAllocation().getTask();
+    }
+
+    private void removeQueueElements() {
+        for (LimitingResourceQueueElement each: toBeRemoved) {
+            removeQueueElement(each);
+        }
+        toBeRemoved.clear();
+    }
+
+    private void removeQueueElement(LimitingResourceQueueElement element) {
+        Task task = getAssociatedTask(element);
+        removeQueueDependenciesIfAny(task);
+        removeQueueElementById(element.getId());
+    }
+
+    private void removeQueueElementById(Long id) {
+        try {
+            limitingResourceQueueElementDAO.remove(id);
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Trying to remove non-existing entity");
+        }
+    }
+
+    private void removeQueueDependenciesIfAny(Task task) {
+        for (Dependency each: task.getDependenciesWithThisOrigin()) {
+            removeQueueDependencyIfAny(each);
+        }
+        for (Dependency each: task.getDependenciesWithThisDestination()) {
+            removeQueueDependencyIfAny(each);
+        }
+    }
+
+    private void removeQueueDependencyIfAny(Dependency dependency) {
+        LimitingResourceQueueDependency queueDependency = dependency.getQueueDependency();
+        if (queueDependency != null) {
+            queueDependency.getHasAsOrigin().remove(queueDependency);
+            queueDependency.getHasAsDestiny().remove(queueDependency);
+            dependency.setQueueDependency(null);
+            dependencyDAO.save(dependency);
+            removeQueueDependencyById(queueDependency.getId());
+        }
+    }
+
+    @Autowired
+    private IDependencyDAO dependencyDAO;
+
+    private void removeQueueDependencyById(Long id) {
+        try {
+            limitingResourceQueueDependencyDAO.remove(id);
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Trying to remove non-existing entity");
+        }
+    }
+
+    /**
+     * Unschedules an element from the list of queue elements. The element is
+     * later added to the list of unassigned elements
+     */
+    @Override
+    public void unschedule(LimitingResourceQueueElement element) {
+        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+        LimitingResourceQueue queue = retrieveQueueFromModel(element.getLimitingResourceQueue());
+
+        queue.removeLimitingResourceQueueElement(queueElement);
+
+        // Set as unassigned element
+        queueElement.setLimitingResourceQueue(null);
+        queueElement.setStartDate(null);
+        queueElement.setStartHour(0);
+        queueElement.setEndDate(null);
+        queueElement.setEndHour(0);
+
+        queueElement.getResourceAllocation().removeLimitingDayAssignments();
+        unassignedLimitingResourceQueueElements.add(queueElement);
+        markAsModified(queueElement);
+    }
+
+    /**
+     * Removes an {@link LimitingResourceQueueElement} from the list of
+     * unassigned elements
+     *
+     */
+    @Override
+    public void removeUnassignedLimitingResourceQueueElement(
+            LimitingResourceQueueElement element) {
+        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+
+        queueElement.getResourceAllocation().setLimitingResourceQueueElement(null);
+        queueElement.getResourceAllocation().getTask()
+                .removeAllResourceAllocations();
+        unassignedLimitingResourceQueueElements.remove(queueElement);
+        markAsRemoved(queueElement);
+    }
+
+    private void markAsRemoved(LimitingResourceQueueElement element) {
+        if (toBeSaved.contains(element)) {
+            toBeSaved.remove(element);
+        }
+        if (!toBeRemoved.contains(element)) {
+            toBeRemoved.add(element);
+        }
     }
 
 }

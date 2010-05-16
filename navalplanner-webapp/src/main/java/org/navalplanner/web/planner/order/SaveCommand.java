@@ -35,15 +35,19 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
+import org.navalplanner.business.planner.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignmentsContainer;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -69,7 +73,13 @@ import org.zkoss.zul.Messagebox;
 /**
  * A command that saves the changes in the taskElements.
  * It can be considered the final step in the conversation <br />
+ *
+ * In the save operation it is also kept the consistency of the
+ * LimitingResourceQueueDependencies with the Dependecies between
+ * the task of the planning gantt.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @OnConcurrentModification(goToPage = "/planner/index.zul;company_scheduling")
 public class SaveCommand implements ISaveCommand {
@@ -87,6 +97,9 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
+
+    @Autowired
+    private ILimitingResourceQueueDependencyDAO limitingResourceQueueDependencyDAO;
 
     private PlanningState state;
 
@@ -169,6 +182,8 @@ public class SaveCommand implements ISaveCommand {
                     && taskElement.getTaskSource().isNewObject()) {
                 saveTaskSources(taskElement);
             }
+            // Recursive iteration to put all the tasks of the
+            // gantt as transiet
             dontPoseAsTransient(taskElement);
         }
         if (!state.getTasksToSave().isEmpty()) {
@@ -234,6 +249,8 @@ public class SaveCommand implements ISaveCommand {
         if (taskElement.isNewObject()) {
             taskElement.dontPoseAsTransientObjectAnymore();
         }
+        dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
+        dontPoseAsTransient(taskElement.getDependenciesWithThisDestination());
         Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
         dontPoseAsTransient(resourceAllocations);
         if (!taskElement.isLeaf()) {
@@ -242,8 +259,83 @@ public class SaveCommand implements ISaveCommand {
             }
         }
         if (taskElement instanceof Task) {
+            updateLimitingQueueDependencies((Task) taskElement);
             dontPoseAsTransient(((Task) taskElement).getConsolidation());
         }
+    }
+
+    private void dontPoseAsTransient(
+            Collection<? extends Dependency> dependencies) {
+        for (Dependency each : dependencies) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
+    private void updateLimitingQueueDependencies(Task t) {
+
+        for (Dependency each: t.getDependenciesWithThisOrigin()) {
+            addLimitingDependencyIfNeeded(each);
+            removeLimitingDependencyIfNeeded(each);
+        }
+    }
+
+    private void addLimitingDependencyIfNeeded(Dependency d) {
+        if (d.isDependencyBetweenLimitedAllocatedTasks() &&
+                !d.hasLimitedQueueDependencyAssociated()) {
+            LimitingResourceQueueElement origin =
+                calculateQueueElementFromDependency((Task) d.getOrigin());
+            LimitingResourceQueueElement destiny =
+                calculateQueueElementFromDependency((Task) d.getDestination());
+
+            LimitingResourceQueueDependency queueDependency =
+                LimitingResourceQueueDependency.create(origin,
+                    destiny,
+                    d,
+                    LimitingResourceQueueDependency.
+                        convertFromTypeToQueueDepedencyType(d.getType()));
+            d.setQueueDependency(queueDependency);
+            limitingResourceQueueDependencyDAO.save(queueDependency);
+            queueDependency.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
+    private LimitingResourceQueueElement
+        calculateQueueElementFromDependency(Task t) {
+
+        LimitingResourceQueueElement result = null;
+        // TODO: Improve this method: One Task can only have one
+        // limiting resource allocation
+        Set<ResourceAllocation<?>> allocations = t.getLimitingResourceAllocations();
+
+        if (allocations.isEmpty() || allocations.size() != 1) {
+            throw new ValidationException("Incorrect limiting resource " +
+                "allocation configuration");
+        }
+
+        for (ResourceAllocation<?> r: allocations) {
+            result = r.getLimitingResourceQueueElement();
+        }
+
+        return result;
+    }
+
+    private void removeLimitingDependencyIfNeeded(Dependency d) {
+        if (!d.isDependencyBetweenLimitedAllocatedTasks() &&
+            (d.hasLimitedQueueDependencyAssociated())) {
+               LimitingResourceQueueDependency queueDependency =
+                    d.getQueueDependency();
+                queueDependency.getHasAsOrigin().remove(queueDependency);
+                queueDependency.getHasAsDestiny().remove(queueDependency);
+                d.setQueueDependency(null);
+                try {
+                    limitingResourceQueueDependencyDAO.
+                    remove(queueDependency.getId());
+                } catch (InstanceNotFoundException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Trying to delete instance " +
+                            " does not exist");
+                }
+            }
     }
 
     private void dontPoseAsTransient(Consolidation consolidation) {
@@ -292,6 +384,12 @@ public class SaveCommand implements ISaveCommand {
 
     private void dontPoseAsTransient(LimitingResourceQueueElement element) {
         if (element != null) {
+            for (LimitingResourceQueueDependency d: element.getDependenciesAsOrigin()) {
+                d.dontPoseAsTransientObjectAnymore();
+            }
+            for (LimitingResourceQueueDependency d: element.getDependenciesAsDestiny()) {
+                d.dontPoseAsTransientObjectAnymore();
+            }
             element.dontPoseAsTransientObjectAnymore();
         }
     }

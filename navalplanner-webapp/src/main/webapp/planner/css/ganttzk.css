@@ -138,7 +138,6 @@
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
-    cursor: hand;
 }
 
 /* Task lane properties */
@@ -165,7 +164,7 @@
 }
 
 /* -------------- Dependencies -------------- */
-#listdependencies {
+#listdependencies, #listlimitingdependencies {
     position: relative;
     width: 400px;
     float: left;
@@ -183,12 +182,47 @@
     z-index:0;
 }
 
-.end,.start {
+#ganttpanel .end,
+#ganttpanel .start {
+     height: 1px;
+}
+
+#ganttpanel .mid {
+    width: 1px;
+}
+
+
+/* Hidden by default */
+#listlimitingdependencies .dependency {
+    display: none;
+}
+
+#listlimitingdependencies .end,#listlimitingdependencies .start,
+#listlimitingdependencies .mid, #listlimitingdependencies .arrow {
+    cursor: default;
+}
+
+#listlimitingdependencies .end,
+#listlimitingdependencies .start {
+     width: 1px;
+}
+#listlimitingdependencies .mid {
     height: 1px;
 }
 
-.mid {
-    width: 1px;
+div.box.limiting-assigned {
+    background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
+    -moz-border-radius: 15px;
+}
+
+div.box.limiting-unassigned {
+    background-color: #c1d9d1; /* LIMITING_RESOURCES_GREEN */
+    -moz-border-radius: 15px;
+}
+
+.toggled {
+    display: inline !important;
+    opacity: 0.2;
 }
 
 .completion {
@@ -454,6 +488,7 @@ tr.z-vbox-sep {
     height: 10px;
     position: absolute;
     border-left: solid 1px white;
+    cursor: pointer;
 }
 
 .FULL_LOAD {
@@ -580,10 +615,12 @@ tr.z-vbox-sep {
 
 .resourceload-resource div {
     border: solid 1px;
+    cursor: default;
 }
 
 .resourceload-global-generic div {
     border: solid 1px;
+    cursor: default;
 }
 
 .row_resourceload.resourceload-global-generic,
@@ -658,7 +695,8 @@ div.limitingresourcesleftpane  {
 }
 
 .queue-element {
-    background-color: #007BBE;
+    background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
+    -moz-border-radius: 12px;
     border: solid 1px;
     float:left;
     height:10px;
@@ -810,18 +848,25 @@ div.z-tree {
 
 .advancedallocationlayout .taskspanelgap tr.z-grid-odd td.z-row-inner, tr.z-grid-odd,
 .advancedallocationlayout .taskspanelgap tr.z-row {
-    background: #E8E8E8;
+    background: #f2f2f2;
 }
+
+.advancedallocationlayout .calculated-hours.z-label {
+    font-weight: bold;
+    color: #555555;
+}
+.advancedallocationlayout .z-row .z-intbox-disd {
+    color: 0 !important;
+}
+
 
 .advancedallocationlayout .taskspanelgap input {
     widht: 100%;
 }
 
-
 .taskspanelgap input {
     border: 0;
     height: 19px;
-
 }
 
 .advancedassignmentdetails tr.z-row,
@@ -841,7 +886,6 @@ div.z-tree {
 .advancedassignmentdetails .level0 {
   font-weight:bold;
 }
-
 
 .advancedallocationlayout .leftpanelgap .z-grid-header {
     /* padding-bottom: 3px; */
@@ -1032,7 +1076,6 @@ body .perspectives-column {
 .row .partially-assigned {
     background-color: #FF5A11; /* PARTIALLY_ALLOCATED_TASK_ORANGE */
 }
-
 
 /* ------------ Limiting resources  ------------ */
 .limiting-resources-buffer .z-south-body {
