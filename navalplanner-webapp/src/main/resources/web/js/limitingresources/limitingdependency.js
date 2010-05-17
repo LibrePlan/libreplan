@@ -46,7 +46,10 @@ zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 	var xend = dest[0];
 	var yend = dest[1] - zkLimitingDependencies.CORNER;
 
-	if (yend < yorig) {
+	if (yend == yorig) {
+		yend = yend + zkLimitingDependencies.HEIGHT;
+		yorig = yorig + zkLimitingDependencies.HEIGHT;
+	} else if (yend < yorig) {
 		yend = yend + zkLimitingDependencies.HEIGHT;
 	} else {
 		yorig = yorig + zkLimitingDependencies.HEIGHT;
