@@ -22,10 +22,13 @@ package org.navalplanner.business.scenarios.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -222,6 +225,24 @@ public class Scenario extends BaseEntity {
         } else if (!getId().equals(other.getId()))
             return false;
         return true;
+    }
+
+    public List<Entry<Order, OrderVersion>> getOrderVersionsNeedingReassignation() {
+        List<Entry<Order, OrderVersion>> result = new ArrayList<Entry<Order, OrderVersion>>();
+        for (Entry<Order, OrderVersion> each : orders.entrySet()) {
+            OrderVersion orderVersion = each.getValue();
+            if (needsReassignation(orderVersion)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    private boolean needsReassignation(OrderVersion orderVersion) {
+        boolean isOwnerScenario = this.equals(orderVersion.getOwnerScenario());
+        return !isOwnerScenario
+                && orderVersion
+                        .hasBeenModifiedAfter(lastNotOwnedReassignationsTimeStamp);
     }
 
 }

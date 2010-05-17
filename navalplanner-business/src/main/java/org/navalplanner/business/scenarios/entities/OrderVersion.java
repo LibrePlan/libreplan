@@ -64,4 +64,11 @@ public class OrderVersion extends BaseEntity {
         modificationByOwnerTimestamp = new DateTime();
     }
 
+    public boolean hasBeenModifiedAfter(DateTime time) {
+        if (time == null || modificationByOwnerTimestamp == null) {
+            return true;
+        }
+        return modificationByOwnerTimestamp.isAfter(time);
+    }
+
 }
