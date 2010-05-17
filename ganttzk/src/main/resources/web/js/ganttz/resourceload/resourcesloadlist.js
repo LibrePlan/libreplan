@@ -80,6 +80,7 @@ function addResourcesLoadListMethods(object) {
 		var onScroll = function() {
 			var timeplotcontainer_ = YAHOO.util.Selector.query('canvas.timeplot-canvas')[0];
 			timeplotcontainer_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
+			timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
 			leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
 			resourcesloadgraph_.scrollLeft = scrolledpannel_.scrollLeft;
 		};
