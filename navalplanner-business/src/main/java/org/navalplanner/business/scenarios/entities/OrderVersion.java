@@ -22,6 +22,7 @@ package org.navalplanner.business.scenarios.entities;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.joda.time.DateTime;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.Order;
 
@@ -33,6 +34,8 @@ import org.navalplanner.business.orders.entities.Order;
 public class OrderVersion extends BaseEntity {
 
     private Scenario ownerScenario;
+
+    private DateTime modificationByOwnerTimestamp;
 
     public static OrderVersion createInitialVersion(Scenario ownerScenario) {
         return create(new OrderVersion(ownerScenario));

@@ -14,6 +14,9 @@
 
         <property name="name" />
         <property name="description" />
+        <property name="lastNotOwnedReassignationsTimeStamp"
+            type="org.joda.time.contrib.hibernate.PersistentDateTime" />
+
         <map name="orders" table="SCENARIO_ORDERS" lazy="false" cascade="save-update">
             <key column="SCENARIO_ID" />
             <map-key-many-to-many column="ORDER_ID"
@@ -33,7 +36,8 @@
             </generator>
         </id>
         <version name="version" access="property" type="long" />
-
+        <property name="modificationByOwnerTimestamp"
+            type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
         <many-to-one name="ownerScenario" class="Scenario" />
     </class>
 

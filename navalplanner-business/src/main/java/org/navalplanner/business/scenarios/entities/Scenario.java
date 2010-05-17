@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.joda.time.DateTime;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -56,6 +57,8 @@ public class Scenario extends BaseEntity {
     private Map<Order, OrderVersion> orders = new HashMap<Order, OrderVersion>();
 
     private Scenario predecessor = null;
+
+    private DateTime lastNotOwnedReassignationsTimeStamp;
 
     public static Scenario create(String name) {
         return create(new Scenario(name));
