@@ -69,17 +69,23 @@ public class TemplateModel implements ITemplateModel {
     @Override
     @Transactional
     public void setScenario(String loginName, Scenario scenario) {
-        try {
-            User user = userDAO.findByLoginName(loginName);
-            user.setLastConnectedScenario(scenario);
-            userDAO.save(user);
+        associateToUser(scenario, findUserByLoginName(loginName));
+    }
 
-            CustomUser customUser = (CustomUser) SecurityContextHolder
-                    .getContext().getAuthentication().getPrincipal();
-            customUser.setScenario(scenario);
+    private User findUserByLoginName(String loginName) {
+        try {
+            return userDAO.findByLoginName(loginName);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void associateToUser(Scenario scenario, User user) {
+        user.setLastConnectedScenario(scenario);
+        userDAO.save(user);
+
+        CustomUser customUser = (CustomUser) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        customUser.setScenario(scenario);
+    }
 }
