@@ -20,6 +20,24 @@
 
 zkResourcesLoadList = addResourcesLoadListMethods( {});
 
+zkResourcesLoadList.WATERMARK_MIN_HEIGHT = 450;
+zkResourcesLoadList.WATERMARK_MARGIN_BOTTOM = 40;
+
+function resourceloadlist() {
+	return YAHOO.util.Selector.query('.resourceloadlist')[0];
+}
+
+function firstWatermarkColumn() {
+	return YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0];
+}
+
+zkResourcesLoadList.recalculateTimetrackerHeight = function (cmp) {
+	var height = Math.max(
+			resourceloadlist().clientHeight + zkResourcesLoadList.WATERMARK_MARGIN_BOTTOM,
+			zkResourcesLoadList.WATERMARK_MIN_HEIGHT);
+	firstWatermarkColumn().style.height = height + "px";
+}
+
 function addResourcesLoadListMethods(object) {
 	var scrollSync;
 
@@ -65,12 +83,10 @@ function addResourcesLoadListMethods(object) {
 				zkResourcesLoadList.adjustTimeTrackerSize, cmp);
 		scrollSync = new ScrollSync(cmp);
 		scrollSync.synchXChangeTo(timetracker);
-
 		listenToScroll();
 	};
 
 	function listenToScroll() {
-
 		var timetrackergap_ = timetrackergap();
 		var scrolledpannel_ = scrolledpannel();
 		var resourcesloadgraph_ = resourcesloadgraph();
@@ -88,17 +104,14 @@ function addResourcesLoadListMethods(object) {
 		rightpanel_.onscroll = onScroll;
 	}
 
+
 	object.adjustTimeTrackerSize = function(cmp) {
+		zkResourcesLoadList.recalculateTimetrackerHeight();
 		watermark().style["height"] = cmp.clientHeight + "px";
 		timetracker().style["width"] = cmp.clientWidth + "px";
 		/* Set watermark width */
 		YAHOO.util.Selector.query('.resourceloadlist')[0].style["width"] = YAHOO.util.Selector
-				.query('.second_level_')[0].clientWidth
-				+ "px";
-		YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0].style["height"] =
-		/* Calculate min : taskspanelgap().clientHeight + 120 + 'px'; )  */
-		YAHOO.util.Selector.query('.resourceloadlist')[0].clientHeight + 120
-				+ "px";
+				.query('.second_level_')[0].clientWidth + "px";
 	};
 
 	object.adjustResourceLoadRows = function(cmp) {

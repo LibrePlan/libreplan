@@ -36,6 +36,7 @@ import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Component to include a list of ResourceLoads inside the ResourcesLoadPanel.
@@ -98,6 +99,8 @@ public class ResourceLoadList extends HtmlMacroComponent implements
         for (LoadTimeLine l : line.getAllChildren()) {
             getComponentFor(l).detach();
         }
+        Clients
+                .evalJavaScript("zkResourcesLoadList.recalculateTimetrackerHeight();");
     }
 
     private ResourceLoadComponent getComponentFor(LoadTimeLine l) {
@@ -118,7 +121,8 @@ public class ResourceLoadList extends HtmlMacroComponent implements
             insertBefore(child, nextSibling);
             nextSibling = child;
         }
-
+        Clients
+                .evalJavaScript("zkResourcesLoadList.recalculateTimetrackerHeight();");
     }
 
     private List<LoadTimeLine> getChildrenReverseOrderFor(LoadTimeLine line) {
