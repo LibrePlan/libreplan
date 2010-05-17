@@ -167,8 +167,8 @@ public class OrderModelTest {
         order.setCode("code-" + UUID.randomUUID());
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
-        OrderVersion orderVersion = setupVersionUsing(scenarioManager, order);
-        order.useSchedulingDataFor(orderVersion);
+        setupVersionUsing(scenarioManager, order);
+        order.useSchedulingDataFor(scenarioManager.getCurrent());
         return order;
     }
 

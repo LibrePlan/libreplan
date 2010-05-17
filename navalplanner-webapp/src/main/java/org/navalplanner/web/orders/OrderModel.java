@@ -383,12 +383,12 @@ public class OrderModel implements IOrderModel {
         this.order = Order.create();
         initializeOrder();
         initializeCalendar();
-        OrderVersion version = addOrderToCurrentScenario(this.order);
-        this.order.useSchedulingDataFor(version);
+        currentScenario = scenarioManager.getCurrent();
+        addOrderToCurrentScenario(this.order);
+        this.order.useSchedulingDataFor(currentScenario);
     }
 
     private OrderVersion addOrderToCurrentScenario(Order order) {
-        currentScenario = scenarioManager.getCurrent();
         OrderVersion orderVersion = currentScenario.addOrder(order);
         order.setVersionForScenario(currentScenario, orderVersion);
         derivedScenarios = scenarioDAO.getDerivedScenarios(currentScenario);
@@ -494,6 +494,9 @@ public class OrderModel implements IOrderModel {
                     newVersion);
             synchronizeWithSchedule(order, false);
         } else {
+            OrderVersion orderVersion = order.getCurrentVersionInfo()
+                    .getOrderVersion();
+            orderVersion.savingThroughOwner();
             synchronizeWithSchedule(order, true);
             order.writeSchedulingDataChanges();
         }

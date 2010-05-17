@@ -103,7 +103,7 @@ public class Order extends OrderLineGroup {
 
     private CurrentVersionInfo currentVersionInfo;
 
-    private static class CurrentVersionInfo {
+    public static class CurrentVersionInfo {
 
         private final Scenario scenario;
 
@@ -126,6 +126,10 @@ public class Order extends OrderLineGroup {
 
         public boolean isUsingTheOwnerScenario() {
             return modifyingTheOwnerScenario;
+        }
+
+        public OrderVersion getOrderVersion() {
+            return orderVersion;
         }
     }
 
