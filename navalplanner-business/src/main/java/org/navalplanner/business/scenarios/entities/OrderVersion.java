@@ -48,6 +48,7 @@ public class OrderVersion extends BaseEntity {
     private OrderVersion(Scenario ownerScenario) {
         Validate.notNull(ownerScenario);
         this.ownerScenario = ownerScenario;
+        this.modificationByOwnerTimestamp = new DateTime();
     }
 
     @NotNull(message = "owner scenario not specified")
@@ -57,6 +58,10 @@ public class OrderVersion extends BaseEntity {
 
     public boolean isOwnedBy(Scenario scenario) {
         return scenario.getId().equals(ownerScenario.getId());
+    }
+
+    public void savingThroughOwner() {
+        modificationByOwnerTimestamp = new DateTime();
     }
 
 }

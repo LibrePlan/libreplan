@@ -40,14 +40,18 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 public abstract class PlanningState {
 
-    public static IScenarioInfo ownerScenarioInfo(Scenario scenario) {
-        return new UsingOwnerScenario(scenario);
+    public static IScenarioInfo ownerScenarioInfo(
+            IOrderVersionDAO orderVersionDAO, Scenario scenario,
+            OrderVersion currentVersionForScenario) {
+        return new UsingOwnerScenario(orderVersionDAO, scenario,
+                currentVersionForScenario);
     }
 
     public static IScenarioInfo forNotOwnerScenario(Order order,
@@ -74,13 +78,51 @@ public abstract class PlanningState {
         public void afterCommit();
     }
 
-    private static class UsingOwnerScenario implements IScenarioInfo {
+    private static class EmptySchedulingScenarioInfo implements IScenarioInfo {
 
         private final Scenario currentScenario;
 
-        public UsingOwnerScenario(Scenario currentScenario) {
-            Validate.notNull(currentScenario);
+        public EmptySchedulingScenarioInfo(Scenario currentScenario) {
             this.currentScenario = currentScenario;
+        }
+
+        @Override
+        public void afterCommit() {
+        }
+
+        @Override
+        public Scenario getCurrentScenario() {
+            return currentScenario;
+        }
+
+        @Override
+        public boolean isUsingTheOwnerScenario() {
+            return true;
+        }
+
+        @Override
+        public void saveVersioningInfo(IOrderDAO orderDAO,
+                IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO)
+                throws IllegalStateException {
+        }
+
+    }
+
+    private static class UsingOwnerScenario implements IScenarioInfo {
+
+        private final Scenario currentScenario;
+        private final OrderVersion currentVersionForScenario;
+        private final IOrderVersionDAO orderVersionDAO;
+
+        public UsingOwnerScenario(IOrderVersionDAO orderVersionDAO,
+                Scenario currentScenario,
+                OrderVersion currentVersionForScenario) {
+            Validate.notNull(orderVersionDAO);
+            Validate.notNull(currentScenario);
+            Validate.notNull(currentVersionForScenario);
+            this.orderVersionDAO = orderVersionDAO;
+            this.currentScenario = currentScenario;
+            this.currentVersionForScenario = currentVersionForScenario;
         }
 
         @Override
@@ -91,7 +133,8 @@ public abstract class PlanningState {
         @Override
         public void saveVersioningInfo(IOrderDAO orderDAO,
                 IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO) throws IllegalStateException {
-            throw new IllegalStateException("is using the owner scenario");
+            currentVersionForScenario.savingThroughOwner();
+            orderVersionDAO.save(currentVersionForScenario);
         }
 
         @Override
@@ -381,7 +424,7 @@ public abstract class PlanningState {
 
         @Override
         public IScenarioInfo getScenarioInfo() {
-            return new UsingOwnerScenario(currentScenario);
+            return new EmptySchedulingScenarioInfo(currentScenario);
         }
 
     }

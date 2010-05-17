@@ -152,10 +152,8 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void doTheSaving() {
-        if (!state.getScenarioInfo().isUsingTheOwnerScenario()) {
-            state.getScenarioInfo().saveVersioningInfo(orderDAO, scenarioDAO,
-                    taskSourceDAO);
-        }
+        state.getScenarioInfo().saveVersioningInfo(orderDAO, scenarioDAO,
+                taskSourceDAO);
         saveTasksToSave();
         removeTasksToRemove();
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();

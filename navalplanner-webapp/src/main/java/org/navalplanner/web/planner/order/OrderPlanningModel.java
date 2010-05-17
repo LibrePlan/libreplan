@@ -70,6 +70,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -253,6 +254,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator = new Resource.AllResourceAssignments();
 
     private Scenario currentScenario;
+
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
 
     private final class ReturningNewAssignments implements
             IAssignmentsOnResourceCalculator {
@@ -979,7 +983,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
         if (orderReloaded.isUsingTheOwnerScenario()) {
-            return PlanningState.ownerScenarioInfo(currentScenario);
+            return PlanningState.ownerScenarioInfo(orderVersionDAO,
+                    currentScenario,
+                    currentScenario.getOrderVersion(orderReloaded));
         }
         final List<DayAssignment> previousAssignments = orderReloaded
                 .getDayAssignments();
