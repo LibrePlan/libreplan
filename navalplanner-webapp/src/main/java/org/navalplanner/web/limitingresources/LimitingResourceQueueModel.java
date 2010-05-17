@@ -300,11 +300,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void initializeResourceIfAny(Resource resource) {
         if (resource != null) {
             Hibernate.initialize(resource);
+            initializeCalendarIfAny(resource.getCalendar());
             for (CriterionSatisfaction each : resource
                     .getCriterionSatisfactions()) {
                 Hibernate.initialize(each);
                 initializeCriterion(each.getCriterion());
-                initializeCalendarIfAny(resource.getCalendar());
             }
         }
     }
