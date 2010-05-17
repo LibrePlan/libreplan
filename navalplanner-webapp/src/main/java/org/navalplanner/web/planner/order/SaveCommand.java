@@ -36,7 +36,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
@@ -59,7 +58,6 @@ import org.navalplanner.business.planner.entities.consolidations.ConsolidatedVal
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
-import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -108,12 +106,6 @@ public class SaveCommand implements ISaveCommand {
 
     private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
-    @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
-    private IScenarioDAO scenarioDAO;
-
     @Override
     public void setState(PlanningState state) {
         this.state = state;
@@ -152,8 +144,7 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void doTheSaving() {
-        state.getScenarioInfo().saveVersioningInfo(orderDAO, scenarioDAO,
-                taskSourceDAO);
+        state.getScenarioInfo().saveVersioningInfo();
         saveTasksToSave();
         removeTasksToRemove();
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();

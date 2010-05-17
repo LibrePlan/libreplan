@@ -54,6 +54,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -71,6 +72,7 @@ import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalcul
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -257,6 +259,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
 
     private final class ReturningNewAssignments implements
             IAssignmentsOnResourceCalculator {
@@ -983,9 +991,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
         if (orderReloaded.isUsingTheOwnerScenario()) {
-            return PlanningState.ownerScenarioInfo(orderVersionDAO,
-                    currentScenario,
-                    currentScenario.getOrderVersion(orderReloaded));
+            return createOwnerScenarioInfoFor(orderReloaded);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
                 .getDayAssignments();
@@ -996,7 +1002,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         orderReloaded.writeSchedulingDataChangesTo(currentScenario, newVersion);
         assigmentsOnResourceCalculator = new ReturningNewAssignments(
                 previousAssignments, orderReloaded.getDayAssignments());
-        return PlanningState.forNotOwnerScenario(orderReloaded,
+        return createScenarioInfoForNotOwnerScenario(orderReloaded, previousVersion,
+                newVersion);
+    }
+
+    private IScenarioInfo createOwnerScenarioInfoFor(Order orderReloaded) {
+        return PlanningState.ownerScenarioInfo(orderVersionDAO,
+                currentScenario,
+                currentScenario.getOrderVersion(orderReloaded));
+    }
+
+    private IScenarioInfo createScenarioInfoForNotOwnerScenario(
+            Order orderReloaded, OrderVersion previousVersion,
+            OrderVersion newVersion) {
+        return PlanningState.forNotOwnerScenario(orderDAO, scenarioDAO,
+                taskSourceDAO, orderReloaded,
                 previousVersion, currentScenario, newVersion);
     }
 

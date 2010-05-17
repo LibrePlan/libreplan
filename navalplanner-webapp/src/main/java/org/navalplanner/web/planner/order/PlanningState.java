@@ -54,10 +54,12 @@ public abstract class PlanningState {
                 currentVersionForScenario);
     }
 
-    public static IScenarioInfo forNotOwnerScenario(Order order,
-            OrderVersion previousVersion, Scenario currentScenario,
-            OrderVersion newVersion) {
-        return new UsingNotOwnerScenario(order, previousVersion,
+    public static IScenarioInfo forNotOwnerScenario(IOrderDAO orderDAO,
+            IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO,
+            Order order, OrderVersion previousVersion,
+            Scenario currentScenario, OrderVersion newVersion) {
+        return new UsingNotOwnerScenario(orderDAO, scenarioDAO, taskSourceDAO,
+                order, previousVersion,
                 currentScenario, newVersion);
     }
 
@@ -68,12 +70,10 @@ public abstract class PlanningState {
         public boolean isUsingTheOwnerScenario();
 
         /**
-         * @param taskSourceDAO TODO
          * @throws IllegalStateException
          *             if it's using the owner scenario
          */
-        public void saveVersioningInfo(IOrderDAO orderDAO,
-                IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO) throws IllegalStateException;
+        public void saveVersioningInfo() throws IllegalStateException;
 
         public void afterCommit();
     }
@@ -101,8 +101,7 @@ public abstract class PlanningState {
         }
 
         @Override
-        public void saveVersioningInfo(IOrderDAO orderDAO,
-                IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO)
+        public void saveVersioningInfo()
                 throws IllegalStateException {
         }
 
@@ -131,8 +130,7 @@ public abstract class PlanningState {
         }
 
         @Override
-        public void saveVersioningInfo(IOrderDAO orderDAO,
-                IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO) throws IllegalStateException {
+        public void saveVersioningInfo() throws IllegalStateException {
             currentVersionForScenario.savingThroughOwner();
             orderVersionDAO.save(currentVersionForScenario);
         }
@@ -150,19 +148,31 @@ public abstract class PlanningState {
 
     private static class UsingNotOwnerScenario implements IScenarioInfo {
 
+        private final IOrderDAO orderDAO;
+        private final IScenarioDAO scenarioDAO;
+        private final ITaskSourceDAO taskSourceDAO;
+
         private final OrderVersion previousVersion;
         private final Scenario currentScenario;
         private final OrderVersion newVersion;
         private final Order order;
         private boolean versionSaved = false;
 
-        public UsingNotOwnerScenario(Order order, OrderVersion previousVersion,
+        public UsingNotOwnerScenario(IOrderDAO orderDAO,
+                IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO,
+                Order order, OrderVersion previousVersion,
                 Scenario currentScenario,
                 OrderVersion newVersion) {
             Validate.notNull(order);
             Validate.notNull(previousVersion);
             Validate.notNull(currentScenario);
             Validate.notNull(newVersion);
+            Validate.notNull(orderDAO);
+            Validate.notNull(scenarioDAO);
+            Validate.notNull(taskSourceDAO);
+            this.orderDAO = orderDAO;
+            this.scenarioDAO = scenarioDAO;
+            this.taskSourceDAO = taskSourceDAO;
             this.previousVersion = previousVersion;
             this.currentScenario = currentScenario;
             this.newVersion = newVersion;
@@ -175,8 +185,7 @@ public abstract class PlanningState {
         }
 
         @Override
-        public void saveVersioningInfo(IOrderDAO orderDAO,
-                IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO) throws IllegalStateException {
+        public void saveVersioningInfo() throws IllegalStateException {
             if (versionSaved) {
                 return;
             }
