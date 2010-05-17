@@ -327,7 +327,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
 
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(criterion,
-                "Others ordes", "global-generic", allocations,
+                "Other orders", "global-generic", allocations,
                 getCurrentTimeLineRole(null)),
                 buildTimeLinesGroupForOrder(
                 criterion, byOrder));
@@ -408,7 +408,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private String getCriterionSatisfactionDescription(
             Set<CriterionSatisfaction> satisfactions) {
         if (satisfactions.isEmpty()) {
-            return _("");
+            return "";
         }
         List<Criterion> criterions = new ArrayList<Criterion>();
         for (CriterionSatisfaction satisfaction : satisfactions) {
@@ -490,7 +490,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(null);
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(resource,
-                _("Others ordes"), resourceAllocations, "resource", role),
+                _("Other orders"), resourceAllocations, "resource", role),
                 buildTimeLinesGroupForOrder(resource, byOrder));
         return group;
     }

@@ -49,7 +49,7 @@
             position="center">
             <vbox align = "center">
                 <hbox align = "center">
-                    <i18n value="Do you want to delete &quot;{0}&quot;?"
+                    <i18n value="Do you want to delete '{0}'?"
                         arg0="@{calendarController.baseCalendar.name}"/>
                 </hbox>
                 <hbox align = "center">

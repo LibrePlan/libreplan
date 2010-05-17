@@ -40,7 +40,7 @@ resourcesLoadPanel = self;
         <separator/>
         <hbox id="additionalFilterInsertionPoint1" />
         <separator/>
-        Filter:
+        ${i18n:_('Filter')}:
         <listbox id="listFilters" mold="select" rows="1" width="100px"
             model="${resourcesLoadPanel.filters}"
             onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
@@ -64,7 +64,7 @@ resourcesLoadPanel = self;
                             <vbox pack="top" align="center">
                             <tree fixedLayout="true">
                                 <treecols>
-                                    <treecol label="Name" height="29px"/>
+                                    <treecol label="${i18n:_('Name')}" height="29px"/>
                                 </treecols>
                             </tree>
 
@@ -87,7 +87,7 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="200px" collapsible="true" title="Graphics"
+        <south height="200px" collapsible="true" title="${i18n:_('Graphics')}"
             sclass="scheduling-graphics" id="graphics"
             onOpen="resourcesLoadPanel.changeChartVisibility(event.open);">
             <div id="insertionPointChart" />

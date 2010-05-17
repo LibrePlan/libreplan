@@ -78,7 +78,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     IResourceDAO resourcesDAO;
 
     private static final String filterResources = _("Filter by resources");
-    private static final String filterCriterions = _("Filter by criterions");
+    private static final String filterCriterions = _("Filter by criteria");
     private boolean filterbyResources = true;
 
     private LimitingDependencyList dependencyList = new LimitingDependencyList(this);
