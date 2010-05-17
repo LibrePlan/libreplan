@@ -73,7 +73,6 @@ import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
@@ -495,9 +494,6 @@ public class ResourceLoadController implements Composer {
         public void fillChart(Timeplot chart, Interval interval, Integer size) {
             chart.getChildren().clear();
             chart.invalidate();
-
-            String javascript = "zkTasklist.timeplotcontainer_rescroll();";
-            Clients.evalJavaScript(javascript);
 
             resetMinimumAndMaximumValueForChart();
 
