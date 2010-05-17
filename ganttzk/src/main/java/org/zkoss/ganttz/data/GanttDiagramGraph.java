@@ -57,6 +57,21 @@ public class GanttDiagramGraph<V, D> {
 
     private static final Log LOG = LogFactory.getLog(GanttDiagramGraph.class);
 
+    public static IDependenciesEnforcerHook doNothingHook() {
+        return new IDependenciesEnforcerHook() {
+
+            @Override
+            public void setLengthMilliseconds(long previousLengthMilliseconds,
+                    long lengthMilliseconds) {
+            }
+
+            @Override
+            public void setStartDate(Date previousStart, long previousLength,
+                    Date newStart) {
+            }
+        };
+    }
+
     public interface IAdapter<V, D> {
         List<V> getChildren(V task);
 
