@@ -86,6 +86,35 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
+    public static List<Constraint<Date>> getStartConstraintsFor(
+            TaskElement taskElement) {
+        if (taskElement instanceof Task) {
+            Task task = (Task) taskElement;
+            TaskStartConstraint startConstraint = task.getStartConstraint();
+            final StartConstraintType constraintType = startConstraint
+                    .getStartConstraintType();
+            switch (constraintType) {
+            case AS_SOON_AS_POSSIBLE:
+                return Collections.emptyList();
+            case START_IN_FIXED_DATE:
+                return Collections.singletonList(DateConstraint
+                        .equalTo(startConstraint.getConstraintDate()));
+            case START_NOT_EARLIER_THAN:
+                return Collections
+                        .singletonList(DateConstraint
+                                .biggerOrEqualThan(startConstraint
+                                        .getConstraintDate()));
+            default:
+                throw new RuntimeException("can't handle " + constraintType);
+            }
+        } else if (taskElement.isMilestone()) {
+            return Collections.singletonList(DateConstraint
+                    .biggerOrEqualThan(taskElement.getStartDate()));
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     @Autowired
     private IAdHocTransactionService transactionService;
 
@@ -508,30 +537,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public List<Constraint<Date>> getStartConstraints() {
-            if (taskElement instanceof Task) {
-                Task task = (Task) taskElement;
-                TaskStartConstraint startConstraint = task.getStartConstraint();
-                final StartConstraintType constraintType = startConstraint
-                        .getStartConstraintType();
-                switch (constraintType) {
-                case AS_SOON_AS_POSSIBLE:
-                    return Collections.emptyList();
-                case START_IN_FIXED_DATE:
-                    return Collections.singletonList(DateConstraint
-                            .equalTo(startConstraint.getConstraintDate()));
-                case START_NOT_EARLIER_THAN:
-                    return Collections.singletonList(DateConstraint
-                            .biggerOrEqualThan(startConstraint
-                                    .getConstraintDate()));
-                default:
-                    throw new RuntimeException("can't handle " + constraintType);
-                }
-            } else if (taskElement.isMilestone()) {
-                return Collections.singletonList(DateConstraint
-                        .biggerOrEqualThan(taskElement.getStartDate()));
-            } else {
-                return Collections.emptyList();
-            }
+            return getStartConstraintsFor(this.taskElement);
         }
 
         @Override
