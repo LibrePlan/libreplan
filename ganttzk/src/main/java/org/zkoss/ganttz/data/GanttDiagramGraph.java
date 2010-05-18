@@ -392,6 +392,8 @@ public class GanttDiagramGraph<V, D> {
     public interface IDependenciesEnforcerHookFactory<T> {
         public IDependenciesEnforcerHook create(T task,
                 INotificationAfterDependenciesEnforcement notification);
+
+        public IDependenciesEnforcerHook create(T task);
     }
 
     public interface INotificationAfterDependenciesEnforcement {
@@ -400,6 +402,18 @@ public class GanttDiagramGraph<V, D> {
 
         public void onLengthChange(long previousLength, long newLength);
     }
+
+    private static final INotificationAfterDependenciesEnforcement EMPTY_NOTIFICATOR  = new INotificationAfterDependenciesEnforcement() {
+
+        @Override
+        public void onStartDateChange(Date previousStart, long previousLength,
+                Date newStart) {
+        }
+
+        @Override
+        public void onLengthChange(long previousLength, long newLength) {
+        }
+    };
 
     public class DeferedNotifier {
 
@@ -524,6 +538,11 @@ public class GanttDiagramGraph<V, D> {
                 INotificationAfterDependenciesEnforcement notificator) {
             return onlyEnforceDependenciesOnEntrance(onEntrance(task),
                     onNotification(task, notificator));
+        }
+
+        @Override
+        public IDependenciesEnforcerHook create(V task) {
+            return create(task, EMPTY_NOTIFICATOR);
         }
 
         private IDependenciesEnforcerHook onEntrance(final V task) {
