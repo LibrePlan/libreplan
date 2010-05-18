@@ -73,12 +73,12 @@ public class LimitingResourceAllocator {
         final int size = elements.size();
 
         // Iterate through queue elements
-        for (int pos = 0; pos <= size; pos++) {
-
+        int pos = 0;
+        do {
             LimitingResourceQueueElementGap gap = getGapInQueueAtPosition(
-                    resource, elements, element, pos);
+                    resource, elements, element, pos++);
 
-            // The queue cannot hold this element (perhaps queue.resource
+            // The queue cannot hold this element (queue.resource
             // doesn't meet element.criteria)
             if (gap == null) {
                 return null;
@@ -87,7 +87,8 @@ public class LimitingResourceAllocator {
             if (canFitIntoGap(element, gap, resource)) {
                 return gap;
             }
-        }
+        } while (pos <= size);
+
         return null;
     }
 
@@ -153,39 +154,39 @@ public class LimitingResourceAllocator {
         final int size = elements.size();
         final DateAndHour startTimeBecauseOfGantt = getStartTimeBecauseOfGantt(element);
 
-        if (size > 0) {
-
-            if (pos == size) {
-                return createLastGap(element, elements.get(size - 1), resource);
-            }
-
-            LimitingResourceQueueElement current = elements.get(pos);
-            // First element
-            if (pos == 0
-                    && startTimeBecauseOfGantt.getDate().isBefore(
-                            current.getStartDate())) {
-                return LimitingResourceQueueElementGap.create(resource,
-                        startTimeBecauseOfGantt, current.getStartTime());
-            }
-
-            // Rest of elements
-            if (pos + 1 < size) {
-                LimitingResourceQueueElement next = elements.get(pos + 1);
-                if (startTimeBecauseOfGantt.isBefore(current.getEndTime())) {
-                    return LimitingResourceQueueElementGap.create(resource,
-                            current.getEndTime(), next.getStartTime());
-                } else {
-                    return LimitingResourceQueueElementGap.create(resource,
-                            DateAndHour.Max(current.getEndTime(),
-                                    startTimeBecauseOfGantt), next
-                                    .getStartTime());
-                }
-            } else {
-                // Current was the last element
-                return createLastGap(element, current, resource);
-            }
+        if (size == 0) {
+            return createLastGap(element, null, resource);
         }
-        return null;
+
+        if (pos == size) {
+            return createLastGap(element, elements.get(size - 1), resource);
+        }
+
+        LimitingResourceQueueElement current = elements.get(pos);
+        // First element
+        if (pos == 0
+                && startTimeBecauseOfGantt.getDate().isBefore(
+                        current.getStartDate())) {
+            return LimitingResourceQueueElementGap.create(resource,
+                    startTimeBecauseOfGantt, current.getStartTime());
+        }
+
+        // Rest of elements
+        if (pos + 1 < size) {
+            LimitingResourceQueueElement next = elements.get(pos + 1);
+            if (startTimeBecauseOfGantt.isBefore(current.getEndTime())) {
+                return LimitingResourceQueueElementGap.create(resource, current
+                        .getEndTime(), next.getStartTime());
+            } else {
+                return LimitingResourceQueueElementGap.create(resource,
+                        DateAndHour.Max(current.getEndTime(),
+                                startTimeBecauseOfGantt), next.getStartTime());
+            }
+        } else {
+            // Current was the last element
+            return createLastGap(element, current, resource);
+        }
+
     }
 
     private static DateAndHour getStartTimeBecauseOfGantt(LimitingResourceQueueElement element) {
@@ -194,10 +195,12 @@ public class LimitingResourceAllocator {
 
     private static LimitingResourceQueueElementGap createLastGap(
             LimitingResourceQueueElement candidate,
-            LimitingResourceQueueElement element, Resource resource) {
+            LimitingResourceQueueElement lastElement, Resource resource) {
 
+        final DateAndHour queueEndTime = (lastElement != null) ? lastElement
+                .getEndTime() : null;
         DateAndHour startTime = DateAndHour.Max(
-                getStartTimeBecauseOfGantt(candidate), element.getEndTime());
+                getStartTimeBecauseOfGantt(candidate), queueEndTime);
         return LimitingResourceQueueElementGap
                 .create(resource, startTime, null);
     }
