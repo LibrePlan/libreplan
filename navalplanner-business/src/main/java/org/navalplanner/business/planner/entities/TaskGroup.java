@@ -182,4 +182,16 @@ public class TaskGroup extends TaskElement {
     public boolean hasLimitedResourceAllocation() {
         return false;
     }
+
+    public Date getSmallestStartDateFromChildren() {
+        return Collections.min(getChildrenStartDates());
+    }
+
+    private List<Date> getChildrenStartDates() {
+        List<Date> dates = new ArrayList<Date>();
+        for (TaskElement taskElement : getChildren()) {
+            dates.add(taskElement.getStartDate());
+        }
+        return dates;
+    }
 }
