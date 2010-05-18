@@ -395,13 +395,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             startTime = earliestGap.getStartTime();
         }
 
-        // Generate day assignments and adjust start and end times for element
+        // Allocate day assignments and adjust start and end times for element
         List<DayAssignment> dayAssignments = LimitingResourceAllocator
                 .generateDayAssignments(queueElement.getResourceAllocation(),
                         queue.getResource(), startTime);
         DateAndHour[] startAndEndTime = LimitingResourceAllocator
                 .calculateStartAndEndTime(dayAssignments);
         updateStartAndEndTimes(queueElement, startAndEndTime);
+        queueElement.getResourceAllocation().allocateLimitingDayAssignments(
+                dayAssignments);
 
         // Add element to queue
         addLimitingResourceQueueElement(queue, queueElement);

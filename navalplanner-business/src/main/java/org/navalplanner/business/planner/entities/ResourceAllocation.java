@@ -574,9 +574,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         allocateLimitingDayAssignments(Collections.<T>emptyList());
     }
 
-    public void allocateLimitingDayAssignments(List<T> assignments) {
+    @SuppressWarnings("unchecked")
+    public void allocateLimitingDayAssignments(List<? extends DayAssignment> assignments) {
         assert isLimiting();
-        resetAssignmentsTo(assignments);
+        resetAssignmentsTo((List<T>) assignments);
     }
 
     protected abstract void addingAssignments(
