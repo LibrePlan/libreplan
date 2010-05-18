@@ -121,6 +121,7 @@ public class OrderPlanningController implements Composer {
         this.order = order;
         this.additional = Arrays.asList(additionalCommands);
         if (planner != null) {
+            ensureIsInPlanningOrderView();
             updateConfiguration();
         }
     }
@@ -131,6 +132,10 @@ public class OrderPlanningController implements Composer {
 
     public CalendarAllocationController getCalendarAllocationController() {
         return calendarAllocationController;
+    }
+
+    private void ensureIsInPlanningOrderView() {
+        viewSwitcher.goToPlanningOrderView();
     }
 
     public ViewSwitcher getViewSwitcher() {
