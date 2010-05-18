@@ -246,6 +246,7 @@ public class ResourceLoadController implements Composer {
             }
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
                     timeTracker);
+            resourcesLoadPanel.setLoadChart(buildChart());
             if(filterHasChanged) {
                 addNameFilterListener();
             }
@@ -257,9 +258,9 @@ public class ResourceLoadController implements Composer {
                 addWorkersBandbox();
                 addTimeFilter();
             }
+            resourcesLoadPanel.setLoadChart(buildChart());
             addListeners();
         }
-        resourcesLoadPanel.setLoadChart(buildChart());
     }
 
     private void addWorkersBandbox() {
