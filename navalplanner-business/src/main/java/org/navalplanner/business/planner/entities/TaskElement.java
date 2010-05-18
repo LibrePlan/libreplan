@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -45,6 +46,27 @@ import org.navalplanner.business.util.deepcopy.Strategy;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class TaskElement extends BaseEntity {
+
+    public interface IDatesInterceptor {
+        public void setStartDate(Date previousStart, long previousLength,
+                Date newStart);
+
+        public void setLengthMilliseconds(long previousLengthMilliseconds,
+                long newLengthMilliseconds);
+    }
+
+    private static final IDatesInterceptor EMPTY_INTERCEPTOR = new IDatesInterceptor() {
+
+        @Override
+        public void setStartDate(Date previousStart, long previousLength,
+                Date newStart) {
+        }
+
+        @Override
+        public void setLengthMilliseconds(long previousLengthMilliseconds,
+                long newLengthMilliseconds) {
+        }
+    };
 
     public static Comparator<TaskElement> getByStartDateComparator() {
         Comparator<TaskElement> result = new Comparator<TaskElement>() {
@@ -84,6 +106,9 @@ public abstract class TaskElement extends BaseEntity {
         return create(taskElement);
     }
 
+    @OnCopy(Strategy.SHARE)
+    private IDatesInterceptor datesInterceptor = EMPTY_INTERCEPTOR;
+
     private Date startDate;
 
     private Date endDate;
@@ -116,6 +141,11 @@ public abstract class TaskElement extends BaseEntity {
     public void updateDeadlineFromOrderElement() {
         Date newDeadline = this.taskSource.getOrderElement().getDeadline();
         setDeadline(newDeadline == null ? null : new LocalDate(newDeadline));
+    }
+
+    public void setDatesInterceptor(IDatesInterceptor datesIntercerptor) {
+        Validate.notNull(datesIntercerptor);
+        this.datesInterceptor = datesIntercerptor;
     }
 
     public Integer getWorkHours() {
@@ -195,9 +225,12 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setStartDate(Date startDate) {
+        Date previousDate = this.startDate;
+        long previousLenghtMilliseconds = getLengthMilliseconds();
         this.startDate = startDate != null ? new Date(startDate.getTime())
                 : null;
-
+        datesInterceptor.setStartDate(previousDate, previousLenghtMilliseconds,
+                this.startDate);
     }
 
     /**
@@ -210,7 +243,7 @@ public abstract class TaskElement extends BaseEntity {
         }
         final boolean sameDay = areSameDay(newStartDate, startDate);
         long durationMilliseconds = getLengthMilliseconds();
-        this.startDate = newStartDate;
+        setStartDate(newStartDate);
         this.endDate = new Date(this.startDate.getTime() + durationMilliseconds);
         if (!sameDay) {
             moveAllocations(scenario);
@@ -229,7 +262,10 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setEndDate(Date endDate) {
+        long previousLength = getLengthMilliseconds();
         this.endDate = endDate != null ? new Date(endDate.getTime()) : null;
+        datesInterceptor.setLengthMilliseconds(previousLength,
+                getLengthMilliseconds());
     }
 
     public void resizeTo(Scenario scenario, Date endDate) {
