@@ -1048,14 +1048,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderElementFilter.setVisible(false);
     }
 
-    private void showOrderElementFilter() {
+    public void showOrderElementFilter() {
         if (orderFilter != null)
             orderFilter.setVisible(false);
         if (orderElementFilter != null)
             orderElementFilter.setVisible(true);
     }
 
-    private void showCreateButtons(boolean showCreate) {
+    public void showCreateButtons(boolean showCreate) {
         createOrderButton.setVisible(showCreate);
         createOrderFromTemplateButton.setVisible(showCreate);
         saveOrderAndContinueButton.setVisible(!showCreate);
