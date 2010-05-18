@@ -336,6 +336,14 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
+    public static <V, D> GanttDiagramGraph<V, D> create(IAdapter<V, D> adapter,
+            List<Constraint<Date>> globalStartConstraints,
+            List<Constraint<Date>> globalEndConstraints,
+            boolean dependenciesConstraintsHavePriority) {
+        return new GanttDiagramGraph<V, D>(adapter, globalStartConstraints,
+                globalEndConstraints, dependenciesConstraintsHavePriority);
+    }
+
     protected GanttDiagramGraph(IAdapter<V, D> adapter,
             List<Constraint<Date>> globalStartConstraints,
             List<Constraint<Date>> globalEndConstraints,
