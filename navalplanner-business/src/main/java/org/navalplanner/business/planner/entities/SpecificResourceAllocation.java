@@ -101,6 +101,19 @@ public class SpecificResourceAllocation extends
         state = buildFromDBState();
     }
 
+    private SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
+            Scenario scenario) {
+        Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
+        SpecificDayAssignmentsContainer retrieved = containers.get(scenario);
+        if (retrieved != null) {
+            return retrieved;
+        }
+        SpecificDayAssignmentsContainer result = SpecificDayAssignmentsContainer
+                .create(this, scenario);
+        specificDayAssignmentsContainers.add(result);
+        return result;
+    }
+
     private SpecificResourceAllocation(ResourcesPerDay resourcesPerDay,
             Task task) {
         super(resourcesPerDay, task);
@@ -249,20 +262,6 @@ public class SpecificResourceAllocation extends
             this.container = retrieveOrCreateContainerFor(scenario);
         }
 
-        private SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
-                Scenario scenario) {
-            Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
-            SpecificDayAssignmentsContainer retrieved = containers
-                    .get(scenario);
-            if (retrieved != null) {
-                return retrieved;
-            }
-            SpecificDayAssignmentsContainer result = SpecificDayAssignmentsContainer
-                    .create(outerSpecificAllocation, scenario);
-            specificDayAssignmentsContainers.add(result);
-            return result;
-        }
-
         @Override
         protected void addAssignments(
                 Collection<? extends SpecificDayAssignment> assignments) {
@@ -398,6 +397,13 @@ public class SpecificResourceAllocation extends
         for (SpecificDayAssignmentsContainer each : specificDayAssignmentsContainers) {
             each.dontPoseAsTransientObjectAnymore();
         }
+    }
+
+    @Override
+    public void copyAssignments(Scenario from, Scenario to) {
+        SpecificDayAssignmentsContainer fromContainer = retrieveOrCreateContainerFor(from);
+        SpecificDayAssignmentsContainer toContainer = retrieveOrCreateContainerFor(to);
+        toContainer.resetTo(fromContainer.getDayAssignments());
     }
 
 }

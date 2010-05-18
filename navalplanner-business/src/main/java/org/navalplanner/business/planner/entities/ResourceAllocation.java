@@ -588,6 +588,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return !isSatisfied();
     }
 
+    public void copyAssignmentsFromOneScenarioToAnother(Scenario from, Scenario to){
+        copyAssignments(from, to);
+        for (DerivedAllocation each : derivedAllocations) {
+            each.copyAssignments(from, to);
+        }
+    }
+
+    protected abstract void copyAssignments(Scenario from, Scenario to);
+
     private void resetAssignmentsTo(List<T> assignments) {
         removingAssignments(getAssignments());
         addingAssignments(assignments);

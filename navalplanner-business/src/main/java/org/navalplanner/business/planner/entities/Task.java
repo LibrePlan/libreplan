@@ -433,6 +433,12 @@ public class Task extends TaskElement {
         }
     }
 
+    public void copyAssignmentsFromOneScenarioToAnother(Scenario from, Scenario to) {
+        for (ResourceAllocation<?> each : getAllResourceAllocations()) {
+            each.copyAssignmentsFromOneScenarioToAnother(from, to);
+        }
+    }
+
     @Override
     protected void moveAllocations(Scenario scenario) {
         reassign(scenario, new WithTheSameHoursAndResourcesPerDay());

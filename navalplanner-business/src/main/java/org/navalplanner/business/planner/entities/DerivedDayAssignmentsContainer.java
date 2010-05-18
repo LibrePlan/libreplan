@@ -78,7 +78,8 @@ public class DerivedDayAssignmentsContainer extends BaseEntity {
         return scenario;
     }
 
-    public void resetAssignmentsTo(List<DerivedDayAssignment> newAssignments) {
+    public void resetAssignmentsTo(
+            Collection<? extends DerivedDayAssignment> newAssignments) {
         dayAssignments.clear();
         dayAssignments.addAll(copyToThisAllocation(newAssignments));
     }

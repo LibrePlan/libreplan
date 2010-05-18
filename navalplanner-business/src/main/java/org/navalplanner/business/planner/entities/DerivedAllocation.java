@@ -356,4 +356,10 @@ public class DerivedAllocation extends BaseEntity {
                 derivedDayAssignmentsContainers);
     }
 
+    public void copyAssignments(Scenario from, Scenario to) {
+        DerivedDayAssignmentsContainer fromContainer = retrieveOrCreate(from);
+        DerivedDayAssignmentsContainer toContainer = retrieveOrCreate(to);
+        toContainer.resetAssignmentsTo(fromContainer.getDayAssignments());
+    }
+
 }

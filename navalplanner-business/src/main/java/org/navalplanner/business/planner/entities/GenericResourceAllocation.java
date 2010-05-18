@@ -137,6 +137,19 @@ public class GenericResourceAllocation extends
         this.assignmentsState = buildInitialTransientState();
     }
 
+    private GenericDayAssignmentsContainer retrieveOrCreateContainerFor(
+            Scenario scenario) {
+        Map<Scenario, GenericDayAssignmentsContainer> containers = containersByScenario();
+        GenericDayAssignmentsContainer retrieved = containers.get(scenario);
+        if (retrieved != null) {
+            return retrieved;
+        }
+        GenericDayAssignmentsContainer result = GenericDayAssignmentsContainer
+                .create(this, scenario);
+        genericDayAssignmentsContainers.add(result);
+        return result;
+    }
+
     private DayAssignmentsState buildFromDBState() {
         return new GenericDayAssignmentsNoExplicitlySpecifiedScenario();
     }
@@ -254,20 +267,6 @@ public class GenericResourceAllocation extends
 
         ExplicitlySpecifiedScenarioState(Scenario scenario) {
             this.container = retrieveOrCreateContainerFor(scenario);
-        }
-
-        private GenericDayAssignmentsContainer retrieveOrCreateContainerFor(
-                Scenario scenario) {
-            Map<Scenario, GenericDayAssignmentsContainer> containers = containersByScenario();
-            GenericDayAssignmentsContainer retrieved = containers
-                    .get(scenario);
-            if (retrieved != null) {
-                return retrieved;
-            }
-            GenericDayAssignmentsContainer result = GenericDayAssignmentsContainer
-                    .create(outerGenericAllocation, scenario);
-            genericDayAssignmentsContainers.add(result);
-            return result;
         }
 
         @Override
@@ -505,6 +504,13 @@ public class GenericResourceAllocation extends
         for (GenericDayAssignmentsContainer each : genericDayAssignmentsContainers) {
             each.dontPoseAsTransientObjectAnymore();
         }
+    }
+
+    @Override
+    public void copyAssignments(Scenario from, Scenario to) {
+        GenericDayAssignmentsContainer fromContainer = retrieveOrCreateContainerFor(from);
+        GenericDayAssignmentsContainer toContainer = retrieveOrCreateContainerFor(to);
+        toContainer.resetTo(fromContainer.getDayAssignments());
     }
 
 }

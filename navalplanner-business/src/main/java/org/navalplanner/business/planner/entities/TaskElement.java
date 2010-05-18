@@ -502,4 +502,5 @@ public abstract class TaskElement extends BaseEntity {
         }
         return getEndDate().getTime() - getStartDate().getTime();
     }
+
 }
