@@ -497,8 +497,19 @@ public class ResourceLoadController implements Composer {
 
             resetMinimumAndMaximumValueForChart();
 
-            Plotinfo plotInfoLoad = createPlotinfo(getLoad(interval.getStart(),
-                    interval.getFinish()), interval);
+            Date start = interval.getStart();
+            Date finish = interval.getFinish();
+            if ((resourceLoadModel.getInitDateFilter() != null)
+                    && (resourceLoadModel.getInitDateFilter().compareTo(start) > 0)) {
+                start = resourceLoadModel.getInitDateFilter();
+            }
+            if ((resourceLoadModel.getEndDateFilter() != null)
+                    && (resourceLoadModel.getEndDateFilter().compareTo(finish) < 0)) {
+                finish = resourceLoadModel.getEndDateFilter();
+            }
+
+            Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish),
+                    interval);
             plotInfoLoad
                     .setFillColor(CompanyPlanningModel.COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
@@ -511,8 +522,7 @@ public class ResourceLoadController implements Composer {
             plotInfoMax.setFillColor("#FFFFFF");
             plotInfoMax.setLineWidth(2);
 
-            Plotinfo plotInfoOverload = createPlotinfo(getOverload(interval
-                    .getStart(), interval.getFinish()), interval);
+            Plotinfo plotInfoOverload = createPlotinfo(getOverload(start, finish), interval);
             plotInfoOverload
                     .setFillColor(CompanyPlanningModel.COLOR_OVERLOAD_GLOBAL);
             plotInfoOverload.setLineWidth(0);
@@ -535,7 +545,15 @@ public class ResourceLoadController implements Composer {
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
 
-            return mapDayAssignments;
+            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+            for (LocalDate day : mapDayAssignments.keySet()) {
+                if ((day.compareTo(new LocalDate(start)) >= 0)
+                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
+                    result.put(day, mapDayAssignments.get(day));
+                }
+            }
+
+            return result;
         }
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
@@ -557,7 +575,15 @@ public class ResourceLoadController implements Composer {
                 }
             }
 
-            return mapDayAssignments;
+            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+            for (LocalDate day : mapDayAssignments.keySet()) {
+                if ((day.compareTo(new LocalDate(start)) >= 0)
+                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
+                    result.put(day, mapDayAssignments.get(day));
+                }
+            }
+
+            return result;
         }
 
         private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(
