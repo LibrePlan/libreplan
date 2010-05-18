@@ -41,6 +41,7 @@ import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IDependencyDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueDependencyDAO;
@@ -216,6 +217,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         for (Dependency each: task.getDependenciesWithThisDestination()) {
             Hibernate.initialize(each);
         }
+        initializeRootOrder(task);
+    }
+
+    // FIXME: Needed to fetch order.name in QueueComponent.composeTooltiptext.
+    // Try to replace it with a HQL query instead of iterating all the way up
+    // through order
+    private void initializeRootOrder(Task task) {
+        Hibernate.initialize(task.getOrderElement());
+        OrderElement order = task.getOrderElement();
+        do {
+            Hibernate.initialize(order.getParent());
+            order = order.getParent();
+        } while (order.getParent() != null);
     }
 
     private void initializeCalendarIfAny(BaseCalendar calendar) {

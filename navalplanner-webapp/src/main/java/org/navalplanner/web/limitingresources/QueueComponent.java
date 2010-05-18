@@ -28,7 +28,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
@@ -37,7 +43,6 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
@@ -118,14 +123,40 @@ public class QueueComponent extends XulElement implements
         return createDivForElement(datesMapper, element);
     }
 
+    private static OrderElement getRootOrder(Task task) {
+        OrderElement order = task.getOrderElement();
+        while (order.getParent() != null) {
+            order = order.getParent();
+        }
+        return order;
+    }
+
+    private static String createTooltiptext(LimitingResourceQueueElement element) {
+        final Task task = element.getResourceAllocation().getTask();
+        final OrderElement order = getRootOrder(task);
+
+        StringBuilder result = new StringBuilder();
+        result.append(_("Order: {0}", order.getName()) + " ");
+        result.append(_("Task: {0}", task.getName()) + " ");
+
+        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
+            result.append(_("Resource: {0}", specific.getResource().getName()) + " ");
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
+            result.append(_("Criteria: {0}", Criterion.getNames(generic.getCriterions())) + " ");
+        }
+        return result.toString();
+    }
+
     private static QueueTask createDivForElement(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
 
         QueueTask result = new QueueTask(queueElement);
         result.setClass("queue-element");
 
-        result.setTooltiptext(queueElement.getLimitingResourceQueue()
-                .getResource().getName());
+        result.setTooltiptext(createTooltiptext(queueElement));
 
         result.setLeft(forCSS(getStartPixels(datesMapper, queueElement)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, queueElement)));
