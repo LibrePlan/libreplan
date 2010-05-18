@@ -58,7 +58,7 @@
                             <row>
                                 <label />
                                 <label value="${i18n:_('Total Estimated hours')}:" />
-                                <label value="@{limitingAllocationController.orderHours}" />
+                                <label id="totalEstimatedHours" value="@{limitingAllocationController.orderHours}" />
                             </row>
                           </rows>
                     </grid>

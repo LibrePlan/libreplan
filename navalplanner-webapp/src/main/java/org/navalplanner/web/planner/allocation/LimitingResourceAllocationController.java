@@ -74,6 +74,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
     private Grid gridLimitingAllocations;
 
+    private Label totalEstimatedHours;
+
     private NewAllocationSelector limitingNewAllocationSelector;
 
     private GridLimitingAllocationRenderer gridLimitingAllocationRenderer = new GridLimitingAllocationRenderer();
@@ -101,6 +103,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
                     resourceAllocationModel.getHoursAggregatedByCriteria()));
             gridLimitingOrderElementHours.setRowRenderer(createOrderElementHoursRenderer());
             Util.reloadBindings(gridLimitingAllocations);
+            Util.reloadBindings(totalEstimatedHours);
         } catch (Exception e) {
             LOG.error(e.getStackTrace());
         }
