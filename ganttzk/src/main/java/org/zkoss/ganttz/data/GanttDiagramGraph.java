@@ -1132,10 +1132,20 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public void add(D dependency) {
+        add(dependency, true);
+    }
+
+    public void addWithoutEnforcingConstraints(D dependency) {
+        add(dependency, false);
+    }
+
+    private void add(D dependency, boolean enforceRestrictions) {
         V source = adapter.getSource(dependency);
         V destination = adapter.getDestination(dependency);
         graph.addEdge(source, destination, dependency);
-        enforceRestrictions(destination);
+        if (enforceRestrictions) {
+            enforceRestrictions(destination);
+        }
     }
 
     public void enforceRestrictions(final V task) {
