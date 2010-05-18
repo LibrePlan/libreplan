@@ -72,6 +72,12 @@ public class GanttDiagramGraph<V, D> {
         };
     }
 
+    private static final GanttZKAdapter GANTTZK_ADAPTER = new GanttZKAdapter();
+
+    public static IAdapter<Task, Dependency> taskAdapter() {
+        return GANTTZK_ADAPTER;
+    }
+
     public interface IAdapter<V, D> {
         List<V> getChildren(V task);
 
@@ -234,7 +240,7 @@ public class GanttDiagramGraph<V, D> {
                 List<Constraint<Date>> globalStartConstraints,
                 List<Constraint<Date>> globalEndConstraints,
                 boolean dependenciesConstraintsHavePriority) {
-            super(new GanttZKAdapter(), globalStartConstraints,
+            super(GANTTZK_ADAPTER, globalStartConstraints,
                     globalEndConstraints,
                     dependenciesConstraintsHavePriority);
         }
@@ -1278,7 +1284,7 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
-    static class TaskPoint<T, D> {
+    public static class TaskPoint<T, D> {
 
         public static <T, D> TaskPoint<T, D> both(IAdapter<T, D> adapter, T task) {
             return new TaskPoint<T, D>(adapter, task, PointType.BOTH);
@@ -1367,6 +1373,7 @@ public class GanttDiagramGraph<V, D> {
         }
         return result;
     }
+
 }
 
 interface IReentranceCases {
