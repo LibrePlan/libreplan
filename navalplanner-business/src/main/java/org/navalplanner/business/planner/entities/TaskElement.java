@@ -209,8 +209,7 @@ public abstract class TaskElement extends BaseEntity {
             return;
         }
         final boolean sameDay = areSameDay(newStartDate, startDate);
-        long durationMilliseconds = this.endDate.getTime()
-                - this.startDate.getTime();
+        long durationMilliseconds = getLengthMilliseconds();
         this.startDate = newStartDate;
         this.endDate = new Date(this.startDate.getTime() + durationMilliseconds);
         if (!sameDay) {
@@ -460,4 +459,11 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public abstract boolean hasLimitedResourceAllocation();
+
+    public long getLengthMilliseconds() {
+        if (getEndDate() == null || getStartDate() == null) {
+            return 0;
+        }
+        return getEndDate().getTime() - getStartDate().getTime();
+    }
 }

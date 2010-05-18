@@ -153,8 +153,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public long getLengthMilliseconds() {
-            return taskElement.getEndDate().getTime()
-                    - taskElement.getStartDate().getTime();
+            return taskElement.getLengthMilliseconds();
         }
 
         @Override
