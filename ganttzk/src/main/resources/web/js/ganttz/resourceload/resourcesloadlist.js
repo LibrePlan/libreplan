@@ -23,19 +23,23 @@ zkResourcesLoadList = addResourcesLoadListMethods( {});
 zkResourcesLoadList.WATERMARK_MIN_HEIGHT = 450;
 zkResourcesLoadList.WATERMARK_MARGIN_BOTTOM = 40;
 
-function resourceloadlist() {
-	return YAHOO.util.Selector.query('.resourceloadlist')[0];
-}
-
-function firstWatermarkColumn() {
-	return YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0];
-}
 
 zkResourcesLoadList.recalculateTimetrackerHeight = function (cmp) {
-	var height = Math.max(
-			resourceloadlist().clientHeight + zkResourcesLoadList.WATERMARK_MARGIN_BOTTOM,
-			zkResourcesLoadList.WATERMARK_MIN_HEIGHT);
-	firstWatermarkColumn().style.height = height + "px";
+
+	zkResourcesLoadList.resourceloadlist = function(elem) {
+		return YAHOO.util.Selector.query('.resourceloadlist')[0];
+	}
+
+	zkResourcesLoadList.firstWatermarkColumn = function(elem) {
+		return YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0];
+	}
+
+	if (zkResourcesLoadList.resourceloadlist() != undefined && zkResourcesLoadList.firstWatermarkColumn() != undefined) {
+		var height = Math.max(
+				zkResourcesLoadList.resourceloadlist().clientHeight + zkResourcesLoadList.WATERMARK_MARGIN_BOTTOM,
+				zkResourcesLoadList.WATERMARK_MIN_HEIGHT);
+		zkResourcesLoadList.firstWatermarkColumn().style.height = height + "px";
+	}
 }
 
 function addResourcesLoadListMethods(object) {
