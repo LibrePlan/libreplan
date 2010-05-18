@@ -100,7 +100,7 @@ public class GanttDiagramGraph<V, D> {
 
         Constraint<Date> getEndDateBiggerThanStartDateConstraintFor(V task);
 
-        List<Constraint<Date>> getConstraintsGivenIncoming(Set<D> incoming);
+        List<Constraint<Date>> getEndConstraintsGivenIncoming(Set<D> incoming);
 
         List<Constraint<Date>> getStartCosntraintsGiven(Set<D> withDependencies);
 
@@ -194,7 +194,7 @@ public class GanttDiagramGraph<V, D> {
         }
 
         @Override
-        public List<Constraint<Date>> getConstraintsGivenIncoming(
+        public List<Constraint<Date>> getEndConstraintsGivenIncoming(
                 Set<Dependency> incoming) {
             return Dependency.getEndConstraints(incoming);
         }
@@ -1030,7 +1030,7 @@ public class GanttDiagramGraph<V, D> {
                     .getEndDateBiggerThanStartDateConstraintFor(task);
             Date newEnd = Constraint.<Date> initialValue(null)
                     .withConstraints(currentLength)
-                    .withConstraints(adapter.getConstraintsGivenIncoming(incoming))
+                    .withConstraints(adapter.getEndConstraintsGivenIncoming(incoming))
                     .withConstraints(respectStartDate)
                     .apply();
             if (!adapter.getEndDateFor(task).equals(newEnd)) {
