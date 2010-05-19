@@ -189,5 +189,5 @@ public enum DependencyType {
     public abstract <V> List<Constraint<Date>> getEndConstraints(V source,
             IAdapter<V, ?> adapter);
 
-    abstract PointType getPointModified();
+    public abstract PointType getPointModified();
 }

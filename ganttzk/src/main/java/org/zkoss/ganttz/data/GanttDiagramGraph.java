@@ -1285,7 +1285,7 @@ public class GanttDiagramGraph<V, D> {
      * property or none of the properties
      * @author Óscar González Fernández <ogonzalez@igalia.com>
      */
-    enum PointType {
+    public enum PointType {
         BOTH, END, NONE;
 
         public boolean sendsModificationsThrough(DependencyType type) {
@@ -1319,7 +1319,7 @@ public class GanttDiagramGraph<V, D> {
 
         private final IAdapter<T, D> adapter;
 
-        TaskPoint(IAdapter<T, D> adapter, T task, PointType pointType) {
+        public TaskPoint(IAdapter<T, D> adapter, T task, PointType pointType) {
             this.adapter = adapter;
             this.task = task;
             this.pointType = pointType;
