@@ -5710,6 +5710,9 @@ msgstr "Permitida edición de todos los pedidos"
 msgid "Order creation allowed"
 msgstr "Permitida creación de pedidos"
 
+msgid "Show all elements"
+msgstr "Mostrar todos los elementos"
+
 #~ msgid "type code has to be unique. It is already used"
 #~ msgstr "el código del tipo debe ser único. Ya está en uso"
 
