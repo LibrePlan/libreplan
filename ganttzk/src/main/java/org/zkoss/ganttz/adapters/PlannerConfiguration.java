@@ -260,6 +260,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     }
 
     public List<Constraint<Date>> getStartConstraints() {
+        return getStartConstraintsGiven(this.notBeforeThan);
+    }
+
+    public static List<Constraint<Date>> getStartConstraintsGiven(
+            Date notBeforeThan) {
         if (notBeforeThan != null) {
             return Collections.singletonList(DateConstraint
                     .biggerOrEqualThan(notBeforeThan));
