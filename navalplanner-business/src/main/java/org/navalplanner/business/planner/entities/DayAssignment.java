@@ -151,7 +151,7 @@ public abstract class DayAssignment extends BaseEntity {
     @NotNull
     private Resource resource;
 
-    private Boolean consolidated;
+    private Boolean consolidated = false;
 
     protected DayAssignment() {
 
