@@ -341,22 +341,44 @@ public class ResourceLoadController implements Composer {
         Combobox filterByNameCombo = resourcesLoadPanel.getPaginationFilterCombobox();
         filterByNameCombo.getChildren().clear();
         List<Resource> resources = resourceLoadModel.getAllResourcesList();
-        int size = resources.size();
+        List<Criterion> criteria = resourceLoadModel.getAllCriteriaList();
+        int size;
+        if(currentFilterByResources) {
+            size = resources.size();
+        }
+        else {
+            size = criteria.size();
+        }
         int pageSize = resourceLoadModel.getPageSize();
 
         if(size > pageSize) {
             int position = 0;
             while(position < size) {
-                String firstName = resources.get(position).getName();
+                String firstName;
                 String lastName;
                 int newPosition = position + pageSize;
-                if(newPosition - 1 < size) {
-                    lastName = resources.get(newPosition - 1)
-                    .getName();
+                if(currentFilterByResources) {
+                    firstName = resources.get(position).getName();
+                    if(newPosition - 1 < size) {
+                        lastName = resources.get(newPosition - 1)
+                        .getName();
+                    }
+                    else {
+                        lastName = resources.get(size - 1)
+                        .getName();
+                    }
                 }
                 else {
-                    lastName = resources.get(size - 1)
-                    .getName();
+                    Criterion criterion = criteria.get(position);
+                    firstName = criterion.getType().getName() + ": " + criterion.getName();
+                    if(newPosition - 1 < size) {
+                        criterion = criteria.get(newPosition - 1);
+                        lastName = criterion.getType().getName() + ": " + criterion.getName();
+                    }
+                    else {
+                        criterion = criteria.get(size - 1);
+                        lastName = criterion.getType().getName() + ": " + criterion.getName();
+                    }
                 }
 
                 Comboitem item = new Comboitem();

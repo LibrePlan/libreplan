@@ -72,6 +72,8 @@ public interface IResourceLoadModel {
 
     List<Resource> getAllResourcesList();
 
+    List<Criterion> getAllCriteriaList();
+
     int getPageSize();
 
 }
