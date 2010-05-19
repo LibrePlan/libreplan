@@ -86,6 +86,7 @@ import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
@@ -272,6 +273,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public void setConfigurationToPlanner(Planner planner, Order order,
             ViewSwitcher switcher,
             EditTaskController editTaskController,
+            AdvanceConsolidationController advanceConsolidationController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
         orderReloaded = reload(order);
@@ -301,7 +303,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
         configuration
-                .addCommandOnTask(buildAdvanceConsolidationCommand(editTaskController));
+                .addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
         configuration
                 .addCommandOnTask(buildSubcontractCommand(editTaskController));
 
@@ -767,9 +769,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private IAdvanceConsolidationCommand buildAdvanceConsolidationCommand(
-            EditTaskController editTaskController) {
+            AdvanceConsolidationController advanceConsolidationController) {
         IAdvanceConsolidationCommand advanceConsolidationCommand = getAdvanceConsolidationCommand();
-        advanceConsolidationCommand.initialize(editTaskController,
+        advanceConsolidationCommand.initialize(advanceConsolidationController,
                 planningState);
         return advanceConsolidationCommand;
     }

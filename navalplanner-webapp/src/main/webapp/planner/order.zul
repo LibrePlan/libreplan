@@ -33,10 +33,6 @@
     macroURI="/planner/_tabPanelLimitingResourceAllocation.zul"
     inline="true" ?>
 
-<?component name="tabPanelAdvanceConsolidation"
-    macroURI="/planner/_tabPanelAdvanceConsolidations.zul"
-    inline="true" ?>
-
 <?component name="tabPanelSubcontract"
     macroURI="/planner/_tabPanelSubcontract.zul"
     inline="true" ?>
@@ -51,8 +47,8 @@
         allocationController = editController.resourceAllocationController;
         limitingAllocationController = editController.limitingResourceAllocationController;
         allocationController.switcher = switcher;
-        advanceController = editController.advanceConsolidationController;
         subController = editController.subcontractController;
+        advanceController = planningController.advanceConsolidationController;
     ]]>
     </zscript>
     <div>
@@ -71,14 +67,12 @@
                 <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}" />
                 <tab id="resourceAllocationTab" label="${i18n:_('Non limiting resource allocation')}" />
                 <tab id="limitingResourceAllocationTab" label="${i18n:_('Limiting resource allocation')}" />
-                <tab id="advanceConsolidationTab" label="${i18n:_('Advance consolidation')}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}" />
             </tabs>
             <tabpanels>
                 <tabPanelTaskProperties id="taskPropertiesTabpanel" />
                 <tabPanelNonLimitingResourceAllocation id="resourceAllocationTabpanel" />
                 <tabPanelLimitingResourceAllocation id="limitingResourceAllocationTabpanel" />
-                <tabPanelAdvanceConsolidation id="advanceConsolidationTabpanel"/>
                 <tabPanelSubcontract id="subcontractTabpanel" />
             </tabpanels>
         </tabbox>
@@ -88,6 +82,60 @@
             <button id="cancel" label="${i18n:_('Cancel')}"
                 onClick="editController.cancel();" />
         </hbox>
+    </window>
+
+    <window id="advanceWindow"
+        apply="${advanceController}"
+        title="${i18n:_('Advance consolidation')}" width="600px"
+        closable="true" visible="false">
+
+        <vbox>
+
+            <panel title="${i18n:_('Advance Consolidation')}" border="normal"
+                    style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
+                <panelchildren>
+                    <label value="@{advanceController.infoMessages}" />
+                </panelchildren>
+            </panel>
+
+            <panel title="${i18n:_('Advance Consolidation')}" border="normal"
+                    style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
+                <panelchildren>
+                    <vbox>
+                    <label value="@{advanceController.infoAdvance}"/>
+                    <grid id="advancesGrid"
+                            model="@{advanceController.advances}"
+                            mold="paging"
+                            pageSize="10"
+                            fixedLayout="true" >
+                        <columns>
+                            <column label="${i18n:_('Value')}" width="150px" align="center"/>
+                            <column label="${i18n:_('Date')}" width="150px" align="center"/>
+                            <column label="${i18n:_('Consolidated')}" width="150px" align="center"/>
+                        </columns>
+                        <rows>
+                            <row self="@{each='advanceConsolidationDTO'}" value="@{advanceConsolidationDTO}">
+                                <label value="@{advanceConsolidationDTO.value}" />
+                                <label value="@{advanceConsolidationDTO.date,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                                <checkbox checked="@{advanceConsolidationDTO.consolidated}"
+                                    onCheck="advanceController.reloadAdvanceGrid();"
+                                    disabled="@{advanceConsolidationDTO.canNotBeConsolidated}"/>
+                             </row>
+                        </rows>
+                    </grid>
+                    </vbox>
+                </panelchildren>
+            </panel>
+
+            <hbox>
+                <button label="${i18n:_('Accept')}"
+                    onClick="advanceController.accept();" />
+                <button label="${i18n:_('Cancel')}"
+                    onClick="advanceController.cancel();" />
+            </hbox>
+
+        </vbox>
+
     </window>
 
     <window id="calendarAllocationWindow"
