@@ -90,7 +90,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private int filterByNamePosition = 0;
     private int numberOfGroupsByName = 10;
 
-    private WeakReferencedListeners<IFilterChangedListener> nameFilterListener =
+    private WeakReferencedListeners<IPaginationFilterChangedListener> nameFilterListener =
         WeakReferencedListeners.create();
 
     private Component loadChart;
@@ -416,10 +416,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
                 leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
                 registerNeededScripts();
-                nameFilterListener.fireEvent(new IListenerNotification<IFilterChangedListener>() {
+                nameFilterListener.fireEvent(new IListenerNotification<IPaginationFilterChangedListener>() {
                     @Override
-                    public void doNotify(IFilterChangedListener listener) {
-                        listener.filterChanged(getFilter());
+                    public void doNotify(IPaginationFilterChangedListener listener) {
+                        listener.filterChanged(filterByNamePosition);
                     }
                 });
                 afterCompose();
@@ -442,7 +442,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public void addNameFilterListener(
-            IFilterChangedListener iFilterChangedListener) {
+            IPaginationFilterChangedListener iFilterChangedListener) {
         nameFilterListener.addListener(iFilterChangedListener);
     }
 
@@ -469,6 +469,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public void setLoadChart(Component loadChart) {
         this.loadChart = loadChart;
+    }
+
+    public int getPaginationFilterPageSize() {
+        return numberOfGroupsByName;
     }
 
 }

@@ -62,6 +62,7 @@ import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
+import org.zkoss.ganttz.resourceload.IPaginationFilterChangedListener;
 import org.zkoss.ganttz.resourceload.ISeeScheduledOfListener;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
@@ -186,9 +187,9 @@ public class ResourceLoadController implements Composer {
     }
 
     private void addNameFilterListener() {
-        resourcesLoadPanel.addNameFilterListener(new IFilterChangedListener() {
+        resourcesLoadPanel.addNameFilterListener(new IPaginationFilterChangedListener() {
             @Override
-            public void filterChanged(boolean filter) {
+            public void filterChanged(int initialPosition) {
                 addSchedulingScreenListeners();
             }
         });
