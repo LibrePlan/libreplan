@@ -133,6 +133,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    private int pageFilterPosition = 0;
     private int pageSize = 10;
 
     /**
@@ -257,7 +258,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
         } else {
             allResourcesList = allResources();
         }
-        return allResourcesList;
+        if(pageFilterPosition == -1) {
+            return allResourcesList;
+        }
+        int endPosition =
+            (pageFilterPosition + pageSize < allResourcesList.size())?
+                pageFilterPosition + pageSize :
+                allResourcesList.size();
+        return allResourcesList.subList(pageFilterPosition, endPosition);
     }
 
     @Override
@@ -268,6 +276,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     public List<Criterion> getAllCriteriaList() {
         return allCriteriaList;
+    }
+
+    @Override
+    public int getPageFilterPosition() {
+        return pageFilterPosition;
+    }
+
+    @Override
+    public void setPageFilterPosition(int pageFilterPosition) {
+        this.pageFilterPosition = pageFilterPosition;
     }
 
     @Override

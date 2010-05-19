@@ -198,6 +198,8 @@ public class ResourceLoadController implements Composer {
         resourcesLoadPanel.addNameFilterListener(new IPaginationFilterChangedListener() {
             @Override
             public void filterChanged(int initialPosition) {
+                resourceLoadModel.setPageFilterPosition(initialPosition);
+                reload(currentFilterByResources);
                 addSchedulingScreenListeners();
             }
         });
@@ -216,6 +218,7 @@ public class ResourceLoadController implements Composer {
     }
 
     public void onApplyFilter(boolean filterByResources) {
+        resourceLoadModel.setPageFilterPosition(0);
         reload(filterByResources);
     }
 

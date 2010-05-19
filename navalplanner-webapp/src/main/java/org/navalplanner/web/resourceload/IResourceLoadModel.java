@@ -76,4 +76,8 @@ public interface IResourceLoadModel {
 
     int getPageSize();
 
+    int getPageFilterPosition();
+
+    void setPageFilterPosition(int pageFilterPosition);
+
 }
