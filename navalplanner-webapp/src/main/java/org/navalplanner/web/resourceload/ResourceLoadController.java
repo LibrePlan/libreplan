@@ -66,6 +66,7 @@ import org.zkoss.ganttz.resourceload.IPaginationFilterChangedListener;
 import org.zkoss.ganttz.resourceload.ISeeScheduledOfListener;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
+import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.PaginationType;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
@@ -242,7 +243,7 @@ public class ResourceLoadController implements Composer {
                 }
 
                 //if the bandbox filter is active, we disable the name filter
-                resourcesLoadPanel.setNameFilterDisabled(
+                resourcesLoadPanel.setInternalPaginationDisabled(
                         !bandBox.getSelectedElements().isEmpty());
             }
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
@@ -254,7 +255,8 @@ public class ResourceLoadController implements Composer {
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker, parent, resourceLoadModel
-                    .isExpandResourceLoadViewCharts());
+                    .isExpandResourceLoadViewCharts(), PaginationType.INTERNAL_PAGINATION);
+
             if(filterBy == null) {
                 addWorkersBandbox();
                 addTimeFilter();

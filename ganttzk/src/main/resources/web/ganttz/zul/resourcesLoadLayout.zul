@@ -46,7 +46,7 @@ resourcesLoadPanel = self;
             onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
         </listbox>
         <separator/>
-        ${i18n:_('Name filter')}:
+        <label id="filterByNameLabel">${i18n:_('Name filter')}:</label>
         <combobox id="filterByNameCombo" width="50px"
             onChange="resourcesLoadPanel.onSelectFilterByName(self.selectedItemApi.value)" />
         <separator/>

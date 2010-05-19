@@ -89,6 +89,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private boolean refreshNameFilter = true;
     private int filterByNamePosition = 0;
     private int numberOfGroupsByName = 10;
+    private PaginationType paginationType;
 
     private WeakReferencedListeners<IPaginationFilterChangedListener> nameFilterListener =
         WeakReferencedListeners.create();
@@ -104,9 +105,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
             TimeTracker timeTracker, Component componentOnWhichGiveFeedback,
-            boolean expandResourceLoadViewCharts) {
+            boolean expandResourceLoadViewCharts, PaginationType paginationType) {
         this.componentOnWhichGiveFeedback = componentOnWhichGiveFeedback;
         this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
+        this.paginationType = paginationType;
         init(groups, timeTracker);
     }
 
@@ -311,8 +313,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
 
-        if(refreshNameFilter) {
+        if(paginationType == PaginationType.INTERNAL_PAGINATION && refreshNameFilter) {
             setupNameFilter();
+        }
+        else if(paginationType == PaginationType.NONE) {
+            getFellow("filterByNameCombo").setVisible(false);
+            getFellow("filterByNameLabel").setVisible(false);
         }
 
         getFellow("insertionPointChart").appendChild(loadChart);
@@ -389,7 +395,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
      * @return
      */
     private List<LoadTimeLine> getGroupsToShow() {
-        if(filterByNamePosition == -1) {
+        if(paginationType != PaginationType.INTERNAL_PAGINATION ||
+                filterByNamePosition == -1) {
             return groups;
         }
         int endPosition =
@@ -400,9 +407,11 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public void onSelectFilterByName(Integer filterByNamePosition) {
+        if(paginationType != PaginationType.NONE) {
             this.filterByNamePosition = filterByNamePosition.intValue();
             this.feedBackMessage = _("filtering by name");
             changeNameFilterWithFeedback();
+        }
     }
 
     private void changeNameFilterWithFeedback() {
@@ -411,11 +420,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
             @Override
             public void doAction() throws Exception {
-                treeModel = createModelForTree();
-                timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-                resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
-                leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
-                registerNeededScripts();
+                if(paginationType == PaginationType.INTERNAL_PAGINATION) {
+                    //if the pagination is internal, we are in charge of repainting the graph
+                    treeModel = createModelForTree();
+                    timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
+                    resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
+                    leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
+                    registerNeededScripts();
+                }
                 nameFilterListener.fireEvent(new IListenerNotification<IPaginationFilterChangedListener>() {
                     @Override
                     public void doNotify(IPaginationFilterChangedListener listener) {
@@ -432,7 +444,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         });
     }
 
-    public void setNameFilterDisabled(boolean disabled) {
+    public void setInternalPaginationDisabled(boolean disabled) {
         Combobox combo = ((Combobox) getFellow("filterByNameCombo"));
         if(combo.isDisabled() != disabled) {
             filterByNamePosition = disabled? -1 :
@@ -473,6 +485,30 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public int getPaginationFilterPageSize() {
         return numberOfGroupsByName;
+    }
+
+    public Combobox getPaginationFilterCombobox() {
+        if(paginationType == PaginationType.EXTERNAL_PAGINATION) {
+            return (Combobox) getFellow("filterByNameCombo");
+        }
+        return null;
+    }
+
+    public enum PaginationType {
+        /**
+         * Sets the widget to take care of the pagination of all the LoadTimeLine objects received.
+         */
+        INTERNAL_PAGINATION,
+        /**
+         * The widget will only show the combo box but its content has to be configured externally.
+         * The pagination has to be managed externally too: the widget will show all the LoadTimeLine
+         * objects received.
+         */
+        EXTERNAL_PAGINATION,
+        /**
+         * Disables pagination. Shows all the LoadTimeLine objects received.
+         */
+        NONE;
     }
 
 }
