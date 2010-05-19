@@ -27,11 +27,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -101,76 +96,14 @@ public class ReassignCommand implements IReassignCommand {
                     public void result(final ReassignConfiguration configuration) {
                         final List<WithAssociatedEntity> reassignations = getReassignations(
                                 context, configuration);
+                        IBackGroundOperation<IDesktopUpdate> reassignationsOperation = LongOperationFeedback
+                                .withAsyncUpates(reassignations(context,
+                                        reassignations));
                         LongOperationFeedback.progressive(getDesktop(context),
-                                reassignations(context, reassignations));
+                                reassignationsOperation);
                     }
                 });
     }
-
-    private class NotBlockingDesktopUpdates implements
-            IDesktopUpdatesEmitter<IDesktopUpdate>, Runnable {
-        private BlockingQueue<IDesktopUpdate> queue = new LinkedBlockingQueue<IDesktopUpdate>();
-        private final IDesktopUpdatesEmitter<IDesktopUpdate> original;
-
-        private final IDesktopUpdate END_MARK = new IDesktopUpdate() {
-
-            @Override
-            public void doUpdate() {
-            }
-        };
-
-        NotBlockingDesktopUpdates(
-                IDesktopUpdatesEmitter<IDesktopUpdate> original) {
-            this.original = original;
-        }
-
-        @Override
-        public void doUpdate(IDesktopUpdate value) {
-            queue.add(value);
-        }
-
-        void finish() {
-            queue.add(END_MARK);
-        }
-
-        @Override
-        public void run() {
-            List<IDesktopUpdate> batch = new ArrayList<IDesktopUpdate>();
-            while (true) {
-                batch.clear();
-                IDesktopUpdate current = null;
-                try {
-                    current = queue.take();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                if (current == END_MARK) {
-                    return;
-                }
-                batch.add(current);
-                while ((current = queue.poll()) != null) {
-                    if (current == END_MARK) {
-                        break;
-                    }
-                    batch.add(current);
-                }
-                if (!batch.isEmpty()) {
-                    original
-                            .doUpdate(asOneUpdate(batch));
-                }
-                if (current == END_MARK) {
-                    return;
-                }
-            }
-        }
-
-        private IDesktopUpdate asOneUpdate(List<IDesktopUpdate> batch) {
-            return and(batch.toArray(new IDesktopUpdate[0]));
-        }
-
-    }
-
-    private ExecutorService executorService = Executors.newCachedThreadPool();
 
     private IBackGroundOperation<IDesktopUpdate> reassignations(
             final IContext<TaskElement> context,
@@ -182,21 +115,14 @@ public class ReassignCommand implements IReassignCommand {
                     final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
                 updater.doUpdate(showStart(reassignations.size()));
                 DeferedNotifier notifications = null;
-                NotBlockingDesktopUpdates notBlockingDesktopUpdates = new NotBlockingDesktopUpdates(
-                        updater);
-                Future<?> previousNotifications = executorService
-                        .submit(notBlockingDesktopUpdates);
                 try {
                     GanttDiagramGraph ganttDiagramGraph = context.getGanttDiagramGraph();
                     notifications = ganttDiagramGraph
                             .manualNotificationOn(doReassignations(
-                                    ganttDiagramGraph, reassignations,
-                                            notBlockingDesktopUpdates));
+                                    ganttDiagramGraph, reassignations, updater));
                 } finally {
-                    notBlockingDesktopUpdates.finish();
                     if (notifications != null) {
                         // null if error
-                        waitUntilFinish(previousNotifications);
                         updater.doUpdate(and(doNotifications(notifications),
                                 reloadCharts(context), showEnd()));
                     } else {
@@ -205,13 +131,6 @@ public class ReassignCommand implements IReassignCommand {
                 }
             }
 
-            private void waitUntilFinish(Future<?> showingProgress){
-                try {
-                    showingProgress.get();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
         };
     }
 

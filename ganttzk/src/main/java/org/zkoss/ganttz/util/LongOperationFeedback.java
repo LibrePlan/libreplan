@@ -19,8 +19,13 @@
  */
 package org.zkoss.ganttz.util;
 
-import java.util.concurrent.Executor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -100,7 +105,135 @@ public class LongOperationFeedback {
         public void doOperation(IDesktopUpdatesEmitter<T> desktopUpdateEmitter);
     }
 
-    private static final Executor executor = Executors.newCachedThreadPool();
+    private static final ExecutorService executor = Executors
+            .newCachedThreadPool();
+
+    public static <T> IBackGroundOperation<T> withAsyncUpates(
+            final IBackGroundOperation<T> backgroundOperation) {
+        return new IBackGroundOperation<T>() {
+
+            @Override
+            public void doOperation(
+                    IDesktopUpdatesEmitter<T> desktopUpdateEmitter) {
+                NotBlockingDesktopUpdates<T> notBlockingDesktopUpdates = new NotBlockingDesktopUpdates<T>(
+                        desktopUpdateEmitter);
+                Future<?> future = executor.submit(notBlockingDesktopUpdates);
+                try {
+                    backgroundOperation.doOperation(notBlockingDesktopUpdates);
+                } finally {
+                    notBlockingDesktopUpdates.finish();
+                }
+                waitUntilShowingAllUpdates(future);
+            }
+
+            private void waitUntilShowingAllUpdates(Future<?> future) {
+                try {
+                    future.get();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+
+    private static class NotBlockingDesktopUpdates<T> implements
+            IDesktopUpdatesEmitter<T>, Runnable {
+
+        private BlockingQueue<EndOrValue<T>> queue = new LinkedBlockingQueue<EndOrValue<T>>();
+        private final IDesktopUpdatesEmitter<T> original;
+
+        NotBlockingDesktopUpdates(IDesktopUpdatesEmitter<T> original) {
+            this.original = original;
+        }
+
+        @Override
+        public void doUpdate(T value) {
+            queue.add(EndOrValue.value(value));
+        }
+
+        void finish() {
+            queue.add(EndOrValue.<T> end());
+        }
+
+        @Override
+        public void run() {
+            List<T> batch = new ArrayList<T>();
+            while (true) {
+                batch.clear();
+                EndOrValue<T> current = null;
+                try {
+                    current = queue.take();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (current.isEnd()) {
+                    return;
+                }
+                batch.add(current.getValue());
+                while ((current = queue.poll()) != null) {
+                    if (current.isEnd()) {
+                        break;
+                    }
+                    batch.add(current.getValue());
+                }
+                if (!batch.isEmpty()) {
+                    for (T each : batch) {
+                        original.doUpdate(each);
+                    }
+                }
+                if (current != null && current.isEnd()) {
+                    return;
+                }
+            }
+        }
+
+    }
+
+    private static abstract class EndOrValue<T> {
+        public static <T> EndOrValue<T> end() {
+            return new End<T>();
+        }
+
+        public static <T> EndOrValue<T> value(T value) {
+            return new Value<T>(value);
+        }
+
+        public abstract boolean isEnd();
+        public abstract T getValue() throws UnsupportedOperationException;
+    }
+
+    private static class Value<T> extends EndOrValue<T> {
+
+        private final T value;
+
+        Value(T value) {
+            Validate.notNull(value);
+            this.value = value;
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        @Override
+        public boolean isEnd() {
+            return false;
+        }
+    }
+
+    private static class End<T> extends EndOrValue<T> {
+
+        @Override
+        public T getValue() throws UnsupportedOperationException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isEnd() {
+            return true;
+        }
+
+    }
 
     /**
      * Executes a long operation. The background operation can send
