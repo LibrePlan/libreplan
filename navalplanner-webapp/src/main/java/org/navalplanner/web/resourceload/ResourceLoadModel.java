@@ -224,6 +224,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             return resourceAllocationDAO
                     .findGenericAllocationsBySomeCriterion(criteriaToShowList, initDateFilter, endDateFilter);
         }
+        Map<Criterion, List<GenericResourceAllocation>> toReturn;
         if (filter()) {
             allCriteriaList = new ArrayList<Criterion>();
             List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
@@ -238,14 +239,26 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 }
             }
             allCriteriaList = Criterion.sortByTypeAndName(allCriteriaList);
-            return resourceAllocationDAO
+            toReturn = resourceAllocationDAO
                     .findGenericAllocationsBySomeCriterion(allCriteriaList, initDateFilter, endDateFilter);
         } else {
-            Map<Criterion, List<GenericResourceAllocation>> toReturn =
+            toReturn =
                 resourceAllocationDAO.findGenericAllocationsByCriterion(initDateFilter, endDateFilter);
             allCriteriaList = Criterion.sortByTypeAndName(toReturn.keySet());
+        }
+        if(pageFilterPosition == -1) {
             return toReturn;
         }
+        //return only the elements in the page filter
+        Map<Criterion, List<GenericResourceAllocation>> toReturnFiltered =
+            new HashMap<Criterion, List<GenericResourceAllocation>>();
+        for(int i = pageFilterPosition; i < getEndPositionForCriterionPageFilter(); i++) {
+            Criterion criterion = allCriteriaList.get(i);
+            if(toReturn.get(criterion) != null) {
+                toReturnFiltered.put(criterion, toReturn.get(criterion));
+            }
+        }
+        return toReturnFiltered;
     }
 
     private List<Resource> resourcesToShow() {
@@ -293,6 +306,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return pageSize;
     }
 
+    private int getEndPositionForCriterionPageFilter() {
+        return
+            (pageFilterPosition + pageSize < allCriteriaList.size())?
+                pageFilterPosition + pageSize :
+                allCriteriaList.size();
+    }
+
     private boolean filter() {
         return filterBy != null;
     }
@@ -328,7 +348,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimeLine> groupsFor(
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        for (Criterion criterion : allCriteriaList) {
+        List<Criterion> criteriaList;
+        if(pageFilterPosition == -1) {
+            criteriaList = allCriteriaList;
+        }
+        else {
+            criteriaList = allCriteriaList.subList(
+                    pageFilterPosition, getEndPositionForCriterionPageFilter());
+        }
+        for(Criterion criterion : criteriaList) {
             List<GenericResourceAllocation> allocations = ResourceAllocation
                     .sortedByStartDate(genericAllocationsByCriterion
                             .get(criterion));
