@@ -70,4 +70,8 @@ public interface IResourceLoadModel {
 
     boolean isExpandResourceLoadViewCharts();
 
+    List<Resource> getAllResourcesList();
+
+    int getPageSize();
+
 }

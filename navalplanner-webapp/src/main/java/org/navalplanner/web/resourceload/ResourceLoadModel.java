@@ -109,6 +109,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private boolean filterByResources = true;
 
+    /**
+     * Contains the resources to be shown when specified manually using
+     * the Bandbox
+     */
     private List<Resource> resourcesToShowList = new ArrayList<Resource>();
 
     private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
@@ -124,6 +128,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    private int pageSize = 10;
+
+    /**
+     * Contains all the resources which have to be filtered page by page
+     */
+    private List<Resource> allResourcesList;
 
     @Override
     @Transactional(readOnly = true)
@@ -229,10 +240,21 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         // if we haven't manually specified some resources to show, we load them
         if (filter()) {
-            return resourcesForActiveTasks();
+            allResourcesList = resourcesForActiveTasks();
         } else {
-            return allResources();
+            allResourcesList = allResources();
         }
+        return allResourcesList;
+    }
+
+    @Override
+    public List<Resource> getAllResourcesList() {
+        return allResourcesList;
+    }
+
+    @Override
+    public int getPageSize() {
+        return pageSize;
     }
 
     private boolean filter() {

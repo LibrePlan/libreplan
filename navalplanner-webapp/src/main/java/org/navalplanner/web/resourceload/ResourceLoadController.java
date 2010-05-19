@@ -77,6 +77,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -86,6 +87,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
+import org.zkoss.zul.api.Combobox;
 
 /**
  * Controller for global resourceload view
@@ -118,6 +120,7 @@ public class ResourceLoadController implements Composer {
 
     private boolean currentFilterByResources = true;
     private boolean filterHasChanged = false;
+    private boolean firstLoad = true;
 
     private ZoomLevel zoomLevel;
 
@@ -172,6 +175,10 @@ public class ResourceLoadController implements Composer {
         resourcesLoadPanel.afterCompose();
         addSchedulingScreenListeners();
         addCommands(resourcesLoadPanel);
+        if(firstLoad || filterHasChanged) {
+            setupNameFilter();
+        }
+        firstLoad = false;
     }
 
     private void addListeners() {
@@ -255,7 +262,7 @@ public class ResourceLoadController implements Composer {
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker, parent, resourceLoadModel
-                    .isExpandResourceLoadViewCharts(), PaginationType.INTERNAL_PAGINATION);
+                    .isExpandResourceLoadViewCharts(), PaginationType.EXTERNAL_PAGINATION);
 
             if(filterBy == null) {
                 addWorkersBandbox();
@@ -328,6 +335,46 @@ public class ResourceLoadController implements Composer {
         hbox.setAlign("center");
 
         resourcesLoadPanel.setVariable("additionalFilter1", hbox, true);
+    }
+
+    private void setupNameFilter() {
+        Combobox filterByNameCombo = resourcesLoadPanel.getPaginationFilterCombobox();
+        filterByNameCombo.getChildren().clear();
+        List<Resource> resources = resourceLoadModel.getAllResourcesList();
+        int size = resources.size();
+        int pageSize = resourceLoadModel.getPageSize();
+
+        if(size > pageSize) {
+            int position = 0;
+            while(position < size) {
+                String firstName = resources.get(position).getName();
+                String lastName;
+                int newPosition = position + pageSize;
+                if(newPosition - 1 < size) {
+                    lastName = resources.get(newPosition - 1)
+                    .getName();
+                }
+                else {
+                    lastName = resources.get(size - 1)
+                    .getName();
+                }
+
+                Comboitem item = new Comboitem();
+                item.setLabel(firstName.substring(0, 1) + " - " + lastName.substring(0, 1));
+                item.setDescription(firstName + " - " + lastName);
+                item.setValue(new Integer(position));
+                filterByNameCombo.appendChild(item);
+                position = newPosition;
+            }
+        }
+
+        Comboitem lastItem = new Comboitem();
+        lastItem.setLabel(_("All"));
+        lastItem.setDescription(_("Show all elements"));
+        lastItem.setValue(new Integer(-1));
+        filterByNameCombo.appendChild(lastItem);
+
+        filterByNameCombo.setSelectedIndex(0);
     }
 
     private void resetAdditionalFilters() {
