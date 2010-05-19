@@ -144,11 +144,10 @@ public class ResourceLoadController implements Composer {
     }
 
     public void reload() {
-        // by default show the task by resources
-        boolean filterByResources = true;
         timeTracker = null;
         resourcesLoadPanel = null;
-        reload(filterByResources);
+        firstLoad = true;
+        reload(currentFilterByResources);
     }
 
     private void reload(boolean filterByResources) {
@@ -389,6 +388,9 @@ public class ResourceLoadController implements Composer {
                 item.setDescription(firstName + " - " + lastName);
                 item.setValue(new Integer(position));
                 filterByNameCombo.appendChild(item);
+                if(resourceLoadModel.getPageFilterPosition() == position) {
+                    filterByNameCombo.setSelectedItemApi(item);
+                }
                 position = newPosition;
             }
         }
@@ -398,8 +400,13 @@ public class ResourceLoadController implements Composer {
         lastItem.setDescription(_("Show all elements"));
         lastItem.setValue(new Integer(-1));
         filterByNameCombo.appendChild(lastItem);
+        if(resourceLoadModel.getPageFilterPosition() == -1) {
+            filterByNameCombo.setSelectedItemApi(lastItem);
+        }
 
-        filterByNameCombo.setSelectedIndex(0);
+        if(filterByNameCombo.getSelectedIndex() == -1) {
+            filterByNameCombo.setSelectedIndex(0);
+        }
     }
 
     private void resetAdditionalFilters() {
