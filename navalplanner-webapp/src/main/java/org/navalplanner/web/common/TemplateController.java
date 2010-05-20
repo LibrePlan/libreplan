@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.web.common.ITemplateModel.IOnFinished;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,10 +83,13 @@ public class TemplateController extends GenericForwardComposer {
                 .getSelectedElement();
 
         templateModel.setScenario(SecurityUtils.getSessionUserLoginName(),
-                scenario);
-
-        window.setVisible(false);
-        Executions.sendRedirect("/");
+                scenario, new IOnFinished() {
+                    @Override
+                    public void onWithoutErrorFinish() {
+                        window.setVisible(false);
+                        Executions.sendRedirect("/");
+                    }
+                });
     }
 
     public void cancel() {

@@ -108,6 +108,14 @@ public class LongOperationFeedback {
     private static final ExecutorService executor = Executors
             .newCachedThreadPool();
 
+    public static <T> IDesktopUpdatesEmitter<T> doNothingEmitter() {
+        return new IDesktopUpdatesEmitter<T>() {
+            @Override
+            public void doUpdate(T value) {
+            }
+        };
+    }
+
     public static <T> IBackGroundOperation<T> withAsyncUpates(
             final IBackGroundOperation<T> backgroundOperation) {
         return new IBackGroundOperation<T>() {

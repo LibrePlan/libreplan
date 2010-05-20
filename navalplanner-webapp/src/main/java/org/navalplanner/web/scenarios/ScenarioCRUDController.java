@@ -37,6 +37,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.ITemplateModel.IOnFinished;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -149,7 +150,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
     public class ScenariosTreeitemRenderer implements TreeitemRenderer {
 
         @Override
-        public void render(Treeitem item, Object data) throws Exception {
+        public void render(final Treeitem item, Object data) throws Exception {
             SimpleTreeNode simpleTreeNode = (SimpleTreeNode) data;
             final Scenario scenario = (Scenario) simpleTreeNode.getData();
             item.setValue(data);
@@ -225,11 +226,16 @@ public class ScenarioCRUDController extends GenericForwardComposer {
 
                         private void connectTo(Scenario scenario) {
                             templateModel.setScenario(SecurityUtils
-                                    .getSessionUserLoginName(), scenario);
-
-                            Executions.sendRedirect("/scenarios/scenarios.zul");
+                                    .getSessionUserLoginName(),
+                                    scenario,
+                                    new IOnFinished() {
+                                        @Override
+                                        public void onWithoutErrorFinish() {
+                                            Executions
+                                                    .sendRedirect("/scenarios/scenarios.zul");
+                                        }
+                                    });
                         }
-
                     });
             if (isCurrentScenario) {
                 connectButton.setDisabled(true);

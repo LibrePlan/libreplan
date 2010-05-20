@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.common;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,6 +31,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -64,6 +68,14 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Model to manage UI operations from main template.
@@ -333,6 +345,9 @@ public class TemplateModel implements ITemplateModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     @Override
     @Transactional(readOnly = true)
     public List<Scenario> getScenarios() {
@@ -351,11 +366,16 @@ public class TemplateModel implements ITemplateModel {
 
     @Override
     @Transactional
-    public void setScenario(String loginName, Scenario scenario) {
-        Scenario scenarioReloaded = scenarioDAO.findExistingEntity(scenario
-                .getId());
+    public void setScenario(String loginName, Scenario scenario,
+            IOnFinished onFinish) {
+        Scenario scenarioReloaded = reloadScenario(scenario);
         associateToUser(scenarioReloaded, findUserByLoginName(loginName));
-        doReassignations(scenarioReloaded);
+        doReassignations(scenarioReloaded, onFinish);
+    }
+
+    private Scenario reloadScenario(Scenario scenario) {
+        return scenarioDAO.findExistingEntity(scenario
+                .getId());
     }
 
     private User findUserByLoginName(String loginName) {
@@ -374,9 +394,75 @@ public class TemplateModel implements ITemplateModel {
         customUser.setScenario(scenario);
     }
 
-    private void doReassignations(Scenario scenario) {
+    private void doReassignations(final Scenario scenario,
+            IOnFinished onFinish) {
+        if (isOnZKExecution()) {
+            doReassignationsWithFeedback(getDesktop(), scenario, onFinish);
+        } else {
+            doReassignations(scenario, LongOperationFeedback
+                    .<IDesktopUpdate> doNothingEmitter());
+            onFinish.onWithoutErrorFinish();
+        }
+    }
+
+    private boolean isOnZKExecution() {
+        Execution current = Executions.getCurrent();
+        return current != null && current.getDesktop() != null;
+    }
+
+    private Desktop getDesktop() {
+        Execution current = Executions.getCurrent();
+        return current.getDesktop();
+    }
+
+    private void doReassignationsWithFeedback(Desktop desktop,
+            final Scenario scenario,
+            final IOnFinished onFinish) {
+        IBackGroundOperation<IDesktopUpdate> reassignations = new IBackGroundOperation<IDesktopUpdate>() {
+            @Override
+            public void doOperation(
+                    final IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
+                try {
+                    transactionService
+                            .runOnTransaction(new IOnTransaction<Void>() {
+                                @Override
+                                public Void execute() {
+                                    doReassignations(reloadScenario(scenario),
+                                            desktopUpdateEmitter);
+                                    return null;
+                                }
+                            });
+                } finally {
+                    desktopUpdateEmitter.doUpdate(showEnd());
+                }
+                desktopUpdateEmitter.doUpdate(executeFinish(onFinish));
+            }
+        };
+        LongOperationFeedback.progressive(desktop, LongOperationFeedback
+                .withAsyncUpates(reassignations));
+    }
+
+    private IDesktopUpdate executeFinish(
+            final IOnFinished onFinish) {
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                onFinish.onWithoutErrorFinish();
+            }
+        };
+    }
+
+
+    private void doReassignations(Scenario scenario,
+            IDesktopUpdatesEmitter<IDesktopUpdate> emitter) {
         List<Entry<Order, OrderVersion>> needingReassignation = scenario
                 .getOrderVersionsNeedingReassignation();
+        final int total = needingReassignation.size();
+        if (!needingReassignation.isEmpty()) {
+            emitter.doUpdate(showStart(total));
+        }
+        int i = 1;
         for (Entry<Order, OrderVersion> each : needingReassignation) {
             OrderVersion orderVersion = each.getValue();
             Order order = each.getKey();
@@ -387,8 +473,36 @@ public class TemplateModel implements ITemplateModel {
                 orderVersion.savingThroughOwner();
                 orderVersionDAO.save(orderVersion);
             }
+            emitter.doUpdate(showProgress(total - i));
         }
 
+    }
+
+    private IDesktopUpdate showStart(final int ordersNumber) {
+        return sendMessage(_("Reassigning {0} orders", ordersNumber));
+    }
+
+    private IDesktopUpdate showProgress(int remaining) {
+        return sendMessage(_("{0} orders reassignation remaining", remaining));
+    }
+
+    private IDesktopUpdate sendMessage(final String message) {
+        return new IDesktopUpdate() {
+            @Override
+            public void doUpdate() {
+                Clients.showBusy(message, true);
+            }
+        };
+    }
+
+    private IDesktopUpdate showEnd() {
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                Clients.showBusy(null, false);
+            }
+        };
     }
 
     private void doReassignationsOn(Order order, Scenario from, Scenario to) {

@@ -35,6 +35,11 @@ public interface ITemplateModel {
 
     Scenario getScenarioByName(String name);
 
-    void setScenario(String loginName, Scenario scenario);
+    public interface IOnFinished {
+        public void onWithoutErrorFinish();
+    }
+
+    void setScenario(String loginName, Scenario scenario,
+            IOnFinished onFinish);
 
 }
