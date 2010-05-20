@@ -34,6 +34,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -272,6 +273,36 @@ public class SpecificResourceAllocation extends
     @Override
     public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
         return Collections.singletonList(resource);
+    }
+
+    public void allocateKeepingProportions(LocalDate start,
+            LocalDate endExclusive, int newHoursForInterval) {
+        List<DayAssignment> assignments = getAssignments(start, endExclusive);
+        ProportionalDistributor distributor = ProportionalDistributor
+                .create(asHours(assignments));
+        int[] newHoursPerDay = distributor.distribute(newHoursForInterval);
+        resetAssigmentsForInterval(start, endExclusive, assignmentsForNewHours(
+                assignments, newHoursPerDay));
+    }
+
+    private List<SpecificDayAssignment> assignmentsForNewHours(
+            List<DayAssignment> assignments, int[] newHoursPerDay) {
+        List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
+        int i = 0;
+        for (DayAssignment each : assignments) {
+            result.add(SpecificDayAssignment.create(each.getDay(),
+                    newHoursPerDay[i++], resource));
+        }
+        return result;
+    }
+
+    private int[] asHours(List<DayAssignment> assignments) {
+        int[] result = new int[assignments.size()];
+        int i = 0;
+        for (DayAssignment each : assignments) {
+            result[i++] = each.getHours();
+        }
+        return result;
     }
 
 }

@@ -299,6 +299,30 @@ public class SpecificResourceAllocationTest {
         assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 8));
     }
 
+    @SuppressWarnings("serial")
+    @Test
+    public void youCanAllocateHoursPreservingTheCurrentShape() {
+        final LocalDate start = new LocalDate(2000, 2, 4);
+        givenResourceCalendar(8, new HashMap<LocalDate, Integer>() {
+            {
+                put(start, 2);
+                put(start.plusDays(1), 4);
+                put(start.plusDays(3), 6);
+            }
+        });
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(4))
+                .allocateHours(20);
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 4,
+                8, 6));
+
+        specificResourceAllocation.allocateKeepingProportions(start, start
+                .plusDays(2), 9);
+
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(3, 6,
+                8, 6));
+    }
+
     @Test
     public void theEndDateOfTheAllocationIsExclusive() {
         LocalDate start = new LocalDate(2000, 2, 4);
