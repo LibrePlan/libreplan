@@ -231,29 +231,34 @@ public class ManageOrderElementAdvancesController extends
         reloadAdvances();
     }
 
-    public void goToRemoveLineAdvanceAssignment(){
-        Listitem listItem = editAdvances.getItemAtIndex(indexSelectedItem);
-        if (listItem != null) {
-            AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
-                    .getValue();
+    public void goToRemoveLineAdvanceAssignment(Listitem listItem) {
+        AdvanceAssignment advance = (AdvanceAssignment) listItem.getValue();
+        if ((editAdvances.getItemCount() > 1)
+                && (advance.getReportGlobalAdvance())) {
+            showMessageDeleteSpread();
+        } else if (manageOrderElementAdvancesModel
+                .hasConsolidatedAdvances(advance)) {
+            showMessagesConsolidation(1);
+        } else {
             manageOrderElementAdvancesModel
-                    .removeLineAdvanceAssignment(advanceAssignment);
+                    .removeLineAdvanceAssignment(advance);
+            if (indexSelectedItem == editAdvances.getIndexOfItem(listItem)) {
+                indexSelectedItem = -1;
+            }
             reloadAdvances();
         }
     }
 
     private Listbox editAdvancesMeasurement;
 
-    public void goToRemoveLineAdvanceMeasurement(){
-        Listitem selectedItem = editAdvancesMeasurement.getSelectedItem();
-        if(selectedItem != null){
-            AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) selectedItem
-                    .getValue();
-            if (advanceMeasurement != null) {
-                manageOrderElementAdvancesModel
-                        .removeLineAdvanceMeasurement(advanceMeasurement);
-                reloadAdvances();
-            }
+    public void goToRemoveLineAdvanceMeasurement(Listitem listItem) {
+        AdvanceMeasurement advance = (AdvanceMeasurement) listItem.getValue();
+        if (manageOrderElementAdvancesModel.hasConsolidatedAdvances(advance)) {
+            showMessagesConsolidation(2);
+        } else {
+            manageOrderElementAdvancesModel
+                    .removeLineAdvanceMeasurement(advance);
+            reloadAdvances();
         }
     }
 
@@ -590,18 +595,7 @@ public class ManageOrderElementAdvancesController extends
         removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (manageOrderElementAdvancesModel
-                        .hasConsolidatedAdvances(advance)) {
-                    showMessagesConsolidation(1);
-                } else {
-                    manageOrderElementAdvancesModel
-                        .removeLineAdvanceAssignment(advance);
-                    if (indexSelectedItem == editAdvances
-                            .getIndexOfItem(listItem)) {
-                        indexSelectedItem = -1;
-                    }
-                    reloadAdvances();
-                }
+                goToRemoveLineAdvanceAssignment(listItem);
             }
         });
 
@@ -1107,14 +1101,7 @@ public class ManageOrderElementAdvancesController extends
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    if (manageOrderElementAdvancesModel
-                            .hasConsolidatedAdvances(advance)) {
-                        showMessagesConsolidation(2);
-                    } else {
-                        manageOrderElementAdvancesModel
-                            .removeLineAdvanceMeasurement(advance);
-                        reloadAdvances();
-                    }
+                    goToRemoveLineAdvanceMeasurement(listItem);
                 }
             });
 
@@ -1143,14 +1130,20 @@ public class ManageOrderElementAdvancesController extends
         manageOrderElementAdvancesModel.refreshChangesFromOrderElement();
     }
 
+    private void showMessageDeleteSpread() {
+        String message = _("This advance can not be removed, because is spread. it is necessary to select another advance as spread..");
+        increaseScreenHeight();
+        messagesForUser.showMessage(Level.ERROR, message);
+    }
+
     private void showMessagesConsolidation(int opcion) {
         String message = "";
         switch (opcion) {
         case 1:
-            message = _("This advance can not be changed or removed, because it has got consolidated advances. It is needed removing the consolidation on all its advances.");
+            message = _("This advance can not be changed or removed, because it has got consolidated advances. It is needed to remove the consolidation on all its advances.");
             break;
         case 2:
-            message = _("This advance measurement can not be changed or removed, because it is consolidated. It is needed removing its consolidation.");
+            message = _("This advance measurement can not be changed or removed, because it is consolidated. It is needed to remove its consolidation.");
             break;
         }
         if (!StringUtils.isBlank(message)) {
