@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -224,10 +225,27 @@ public class ManageOrderElementAdvancesModel implements
         DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
         newAdvance.setOrderElement(this.orderElement);
 
+        /*
+         * set the first advance type of the list as the default
+         */
+        List<AdvanceType> listAdvanceType = getPossibleAdvanceTypes(newAdvance);
+        if (!listAdvanceType.isEmpty()) {
+            newAdvance.setAdvanceType(listAdvanceType.get(0));
+            newAdvance.setMaxValue(getMaxValue(listAdvanceType.get(0)));
+        }
+
         if (listAdvanceAssignments.isEmpty()) {
             newAdvance.setReportGlobalAdvance(true);
         }
         listAdvanceAssignments.add(newAdvance);
+    }
+
+    @Override
+    public BigDecimal getMaxValue(AdvanceType advanceType) {
+        if (advanceType != null) {
+            return advanceType.getDefaultMaxValue();
+        }
+        return BigDecimal.ZERO;
     }
 
     @Override
@@ -279,6 +297,27 @@ public class ManageOrderElementAdvancesModel implements
             }
             advanceTypes.add(advanceType);
         }
+        return getSpecificOrder(advanceTypes);
+    }
+
+    private List<AdvanceType> getSpecificOrder(List<AdvanceType> advanceTypes ){
+        Collections.sort(advanceTypes, new Comparator<AdvanceType>(){
+
+            @Override
+            public int compare(AdvanceType arg0, AdvanceType arg1) {
+                if((arg0 == null) || (arg0.getUnitName() == null)){
+                    return -1;
+                }
+                if((arg1 == null) || (arg1.getUnitName() == null) || (arg1.getUnitName().equals(PredefinedAdvancedTypes.PERCENTAGE.getTypeName()))){
+                    return 1;
+                }
+                if (arg0.getUnitName().equals(
+                        PredefinedAdvancedTypes.PERCENTAGE.getTypeName())) {
+                    return -1;
+                }
+                return (arg0.getUnitName().compareTo(arg1.getUnitName()));
+            }
+        });
         return advanceTypes;
     }
 
