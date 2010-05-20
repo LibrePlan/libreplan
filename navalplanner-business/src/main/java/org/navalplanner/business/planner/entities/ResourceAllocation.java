@@ -464,10 +464,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 int hours) {
             List<T> assignmentsCreated = createAssignments(startInclusive,
                     endExclusive, hours);
-            removingAssignments(getAssignments(startInclusive, endExclusive));
-            addingAssignments(assignmentsCreated);
-            setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
-            setOriginalTotalAssigment(getAssignedHours());
+            resetAssigmentsForInterval(startInclusive, endExclusive,
+                    assignmentsCreated);
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
@@ -567,6 +565,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private void resetAssignmentsTo(List<T> assignments) {
         removingAssignments(getAssignments());
         addingAssignments(assignments);
+        setOriginalTotalAssigment(getAssignedHours());
+    }
+
+    protected void resetAssigmentsForInterval(LocalDate startInclusive,
+            LocalDate endExclusive, List<T> assignmentsCreated) {
+        removingAssignments(getAssignments(startInclusive, endExclusive));
+        addingAssignments(assignmentsCreated);
+        setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
         setOriginalTotalAssigment(getAssignedHours());
     }
 
