@@ -193,15 +193,23 @@ public class ResourceLoadController implements Composer {
         addNameFilterListener();
     }
 
-    private void addNameFilterListener() {
-        resourcesLoadPanel.addNameFilterListener(new IPaginationFilterChangedListener() {
+    /*
+     * This object is stored in an attribute to keep one reference to it, so the
+     * garbage collector doesn't get rid of it. It's necessary because it is stored
+     * by ResourcesLoadPanel using weak references.
+     */
+    private IPaginationFilterChangedListener keepAlivePaginationListener =
+        new IPaginationFilterChangedListener() {
             @Override
             public void filterChanged(int initialPosition) {
                 resourceLoadModel.setPageFilterPosition(initialPosition);
                 reload(currentFilterByResources);
                 addSchedulingScreenListeners();
             }
-        });
+        };
+
+    private void addNameFilterListener() {
+        resourcesLoadPanel.addNameFilterListener(keepAlivePaginationListener);
     }
 
     private void addSchedulingScreenListeners() {
