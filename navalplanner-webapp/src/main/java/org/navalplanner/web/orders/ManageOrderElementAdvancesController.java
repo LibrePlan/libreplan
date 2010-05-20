@@ -298,7 +298,7 @@ public class ManageOrderElementAdvancesController extends
                     && ((DirectAdvanceAssignment) advance)
                             .getAdvanceMeasurements().isEmpty()
                     && !isQualityForm) {
-                appendComboboxAdvancType(listItem);
+                appendComboboxAdvanceType(listItem);
             } else {
                 appendLabelAdvanceType(listItem);
             }
@@ -313,7 +313,7 @@ public class ManageOrderElementAdvancesController extends
         }
     }
 
-    private void appendComboboxAdvancType(final Listitem listItem){
+    private void appendComboboxAdvanceType(final Listitem listItem) {
         final DirectAdvanceAssignment advance = (DirectAdvanceAssignment) listItem
                 .getValue();
         final Combobox comboAdvanceTypes = new Combobox();
@@ -906,7 +906,6 @@ public class ManageOrderElementAdvancesController extends
             final AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) listitem
                     .getValue();
             final Decimalbox value = new Decimalbox();
-
             Listcell listcell = new Listcell();
             listcell.appendChild(value);
             listitem.appendChild(listcell);

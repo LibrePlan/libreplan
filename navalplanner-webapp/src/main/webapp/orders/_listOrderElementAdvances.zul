@@ -37,15 +37,15 @@
                      onSelect="manageOrderElementAdvancesController.prepareEditAdvanceMeasurements(self.selectedItem);"
                      pageSize="4">
                     <listhead sizable="true">
-                         <listheader label="${i18n:_('Type')}" tooltiptext="Advance unit type" />
-                         <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value"/>
-                         <listheader label="${i18n:_('Current value')}"/>
-                         <listheader label="${i18n:_('Percentage')}"/>
-                         <listheader label="${i18n:_('Date')}"/>
-                         <listheader label="${i18n:_('Spread')}"/>
-                         <listheader label="${i18n:_('Calculated')}"/>
-                         <listheader label="${i18n:_('Show')}"/>
-                         <listheader label="${i18n:_('Operations')}"/>
+                         <listheader label="${i18n:_('Type')}" width="150px" tooltiptext="Advance unit type" />
+                         <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Current value')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Date')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Spread')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Calculated')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Show')}" width="70px" align="center"/>
+                         <listheader label="${i18n:_('Operations')}" width="90px" align="center"/>
                      </listhead>
             </listbox>
             </vbox>
@@ -59,15 +59,15 @@
                         onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceMeasurement();"
                         disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
                     </button>
-                    <listbox id="editAdvancesMeasurement" height="200px"
+                    <listbox id="editAdvancesMeasurement" width="380px" height="200px"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
                              mold="paging" pageSize="5" sclass="advance-measurement">
                             <listhead>
-                                <listheader label="${i18n:_('Value')}" />
-                                <listheader label="${i18n:_('Percentage')}" />
-                                <listheader label="${i18n:_('Date')}" />
-                                <listheader label="${i18n:_('Operations')}" />
+                                <listheader label="${i18n:_('Value')}" width="100px" align="center"/>
+                                <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
+                                <listheader label="${i18n:_('Date')}" width="100px" align="center"/>
+                                <listheader label="${i18n:_('Operations')}" width="90px" align="center"/>
                             </listhead>
                     </listbox>
                 </vbox>
