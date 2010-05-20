@@ -31,6 +31,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.AllocationResult;
@@ -50,6 +51,7 @@ import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Tab;
 import org.zkoss.zul.api.Tabbox;
 import org.zkoss.zul.api.Tabpanel;
@@ -395,6 +397,16 @@ public class EditTaskController extends GenericForwardComposer {
     public void setStartConstraintDate(Date date) {
         if ((taskElement != null) && (isTask())) {
             resourceAllocationController.setStartDate(date);
+        }
+    }
+
+    public void showNonPermitChangeResourceAllocationType() {
+        String message = _("The task has got advance consolidations.It must delete all consolidations to change the resource allocation type ");
+        try {
+            Messagebox.show(message, _("Information"), Messagebox.OK,
+                    Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.INFO, message);
         }
     }
 
