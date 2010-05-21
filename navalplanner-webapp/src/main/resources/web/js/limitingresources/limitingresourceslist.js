@@ -86,16 +86,18 @@ function addLimitingResourcesListMethods(object) {
 	}
 
 	object.adjustTimeTrackerSize = function(cmp) {
-		watermark().style["height"] = cmp.clientHeight + "px";
-		timetracker().style["width"] = cmp.clientWidth + "px";
-		/* Set watermark width */
+		if (watermark() != null) {
+			watermark().style["height"] = cmp.clientHeight + "px";
+		}
+
+		if (timetracker() != null) {
+			timetracker().style["width"] = cmp.clientWidth + "px";
+
 		YAHOO.util.Selector.query('.limitingresourceslist')[0].style["width"] = YAHOO.util.Selector
-				.query('.second_level_')[0].clientWidth
-				+ "px";
+				.query('.second_level_')[0].clientWidth + "px";
 		YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0].style["height"] =
-		/* Calculate min : taskspanelgap().clientHeight + 120 + 'px'; )  */
-		YAHOO.util.Selector.query('.limitingresourceslist')[0].clientHeight + 120
-				+ "px";
+			YAHOO.util.Selector.query('.limitingresourceslist')[0].clientHeight + 120 + "px";
+		}
 	};
 
 	object.adjustResourceLoadRows = function(cmp) {

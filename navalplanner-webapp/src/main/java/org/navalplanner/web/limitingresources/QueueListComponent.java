@@ -113,6 +113,9 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
+
+                invalidate();
+                afterCompose();
                 response(null, new AuInvoke(QueueListComponent.this,
                         "adjustTimeTrackerSize"));
                 response(null, new AuInvoke(QueueListComponent.this,

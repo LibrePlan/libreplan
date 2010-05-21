@@ -33,6 +33,7 @@ import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MutableTreeModel;
@@ -114,8 +115,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-        queueListComponent = new QueueListComponent(timeTracker,
-                treeModel);
+
+        queueListComponent = new QueueListComponent(timeTracker, treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel,
                 queueListComponent);
@@ -251,6 +252,18 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             getFellow("insertionPointRightPanel").appendChild(dependencyList);
         }
 
+        IZoomLevelChangedListener zoomChangedListener = new IZoomLevelChangedListener() {
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                dependencyList.detach();
+                getFellow("insertionPointRightPanel").appendChild(
+                        dependencyList);
+                dependencyList = generateDependencyComponentsList();
+                dependencyList.afterCompose();
+            }
+        };
+        this.timeTracker.addZoomListener(zoomChangedListener);
+
         // Insert timetracker headers
         TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
@@ -262,7 +275,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {
-        final Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
+        Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
                 .getLimitingResourceElementToQueueTaskMap();
 
         for (LimitingResourceQueueElement queueElement : queueElementsMap
