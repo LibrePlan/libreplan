@@ -57,7 +57,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                afterCompose();
+                recreate();
             }
         };
         this.timeTracker.addZoomListener(zoomListener);
