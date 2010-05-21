@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities.consolidations;
 
 import java.util.SortedSet;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.Task;
 
@@ -52,6 +53,11 @@ public abstract class Consolidation extends BaseEntity {
 
     public Task getTask() {
         return task;
+    }
+
+    public LocalDate getConsolidatedUntil() {
+        ConsolidatedValue last = getConsolidatedValues().last();
+        return (last == null) ? null : last.getDate();
     }
 
 }

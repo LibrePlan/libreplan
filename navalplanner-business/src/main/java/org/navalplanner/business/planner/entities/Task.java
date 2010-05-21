@@ -612,4 +612,15 @@ public class Task extends TaskElement {
     public boolean hasConsolidations() {
         return ((consolidation != null) && (!consolidation.isEmpty()));
     }
+
+    public LocalDate getFirstDayNotConsolidated() {
+        if (consolidation != null) {
+            LocalDate until = consolidation.getConsolidatedUntil();
+            if (until != null) {
+                return until.plusDays(1);
+            }
+        }
+        return LocalDate.fromDateFields(getStartDate());
+    }
+
 }
