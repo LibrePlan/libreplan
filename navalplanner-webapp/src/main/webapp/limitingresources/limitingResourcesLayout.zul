@@ -47,27 +47,6 @@ limitingResourcesPanel = self;
                     onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
                 </listbox>
 
-                <separator/>
-
-                <!-- Pagination -->
-                <label>${i18n:_('Pagination')}:</label>
-                <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
-                    onClick="advancedAllocationController.paginationDown();" disabled="true" />
-                <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
-                    onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
-                <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
-                    onClick="advancedAllocationController.paginationUp();" />
-
-                <separator/>
-
-                <!-- Filter -->
-                <label>${i18n:_('Filter')}:</label>
-                <listbox id="listFilters" mold="select" rows="1" width="200px"
-                    model="${resourcesLoadPanel.filters}"
-                    onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);" />
-                <button image="/common/img/ico_filter.png" style="margin-top: -4px"
-                    tooltiptext="${i18n:_('Apply filtering to resource load satisfying required criteria')}"
-                    onClick="resourcesLoadPanel.onApplyFilter()"/>
             </hbox>
         </north>
 
