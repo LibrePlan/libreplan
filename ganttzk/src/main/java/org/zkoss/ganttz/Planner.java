@@ -206,7 +206,10 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public ListModel getZoomLevels() {
-        return new SimpleListModel(ZoomLevel.values());
+        ZoomLevel[] selectableZoomlevels = { ZoomLevel.DETAIL_ONE,
+                ZoomLevel.DETAIL_TWO, ZoomLevel.DETAIL_THREE,
+                ZoomLevel.DETAIL_FOUR, ZoomLevel.DETAIL_FIVE };
+        return new SimpleListModel(selectableZoomlevels);
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {

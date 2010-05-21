@@ -56,7 +56,6 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.planner.allocation.streches.StrechesFunctionConfiguration;
-import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.PairOfLists;
@@ -725,7 +724,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public ListModel getZoomLevels() {
-        return new SimpleListModel(ZoomLevel.values());
+        ZoomLevel[] selectableZoomlevels = { ZoomLevel.DETAIL_ONE,
+                ZoomLevel.DETAIL_TWO, ZoomLevel.DETAIL_THREE,
+                ZoomLevel.DETAIL_FOUR, ZoomLevel.DETAIL_FIVE };
+        return new SimpleListModel(selectableZoomlevels);
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
