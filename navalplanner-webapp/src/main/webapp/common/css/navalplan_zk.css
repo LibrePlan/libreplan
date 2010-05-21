@@ -1342,3 +1342,6 @@ tr.z-tree-row-seld .z-row-cnt {
     background-color: #CCCCCC;
 }
 
+.readonly .z-grid-body .z-row-inner {
+    background-color: #CCCCCC;
+}

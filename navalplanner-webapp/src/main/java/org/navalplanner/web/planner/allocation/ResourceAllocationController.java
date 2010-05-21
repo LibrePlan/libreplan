@@ -330,6 +330,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             tbResourceAllocation.setSelected(true);
             newAllocationSelector.clearAll();
             Util.reloadBindings(allocationsGrid);
+            reloadAdvanceConsolidationTab();
         }
     }
 
@@ -664,6 +665,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private void removeAllocation(AllocationRow row) {
             allocationRows.remove(row);
             Util.reloadBindings(allocationsGrid);
+            reloadAdvanceConsolidationTab();
         }
 
         private Button appendDeleteButton(Row row) {
@@ -701,4 +703,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourceAllocationModel.setStartDate(date);
     }
 
+    public boolean hasResourceAllocations() {
+        return ((getResourceAllocations().size() > 1));
+    }
+
+    private void reloadAdvanceConsolidationTab() {
+        Util.reloadBindings(editTaskWindow
+                .getFellowIfAny("advanceConsolidationTab"));
+    }
 }

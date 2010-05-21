@@ -107,7 +107,8 @@
                             model="@{advanceController.advances}"
                             mold="paging"
                             pageSize="10"
-                            fixedLayout="true" >
+                            fixedLayout="true"
+                            sclass="@{advanceController.readOnlySclass}">
                         <columns>
                             <column label="${i18n:_('Value')}" width="150px" align="center"/>
                             <column label="${i18n:_('Date')}" width="150px" align="center"/>

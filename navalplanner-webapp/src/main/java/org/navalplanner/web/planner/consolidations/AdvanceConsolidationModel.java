@@ -257,6 +257,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             createAdvanceConsolidationDTOs();
             initConsolidatedDates();
             addNonConsolidatedAdvances();
+            setReadOnlyConsolidations();
         }
     }
 
@@ -330,7 +331,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     @Override
     public boolean isVisibleMessages() {
-        return (getAdvances().size() == 0);
+        return ((getAdvances().size() == 0) || (isSubcontrated()) || (!hasResourceAllocation()));
     }
 
     private boolean advanceIsCalculated(){
@@ -338,6 +339,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     public String infoMessages() {
+        if (getAdvances().size() > 0) {
+            return _("It is not allowed to consolidate advances.");
+        }
         return _("There are not any assigned advance to current task");
     }
 
@@ -351,6 +355,24 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             return consolidationDTOs;
         }
         return new ArrayList<AdvanceConsolidationDTO>();
+    }
+
+    private boolean hasResourceAllocation() {
+        return ((task != null) && (task.hasResourceAllocations()));
+    }
+
+    private boolean isSubcontrated() {
+        return ((task != null) && (task.isSubcontracted()));
+    }
+
+    public boolean hasLimitingResourceAllocation() {
+        return ((task != null) && (task.hasLimitedResourceAllocation()));
+    }
+
+    @Override
+    public void setReadOnlyConsolidations() {
+        // set all advance consolidations as read only
+        AdvanceConsolidationDTO.setAllReadOnly(hasLimitingResourceAllocation());
     }
 
 }

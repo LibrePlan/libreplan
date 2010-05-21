@@ -40,6 +40,8 @@ public class AdvanceConsolidationDTO {
 
     public static Date lastConsolidatedAndSavedDate;
 
+    private static boolean allReadOnly = false;
+
     private AdvanceMeasurement advanceMeasurement;
 
     private ConsolidatedValue consolidatedValue;
@@ -138,8 +140,9 @@ public class AdvanceConsolidationDTO {
     }
 
     public Boolean canNotBeConsolidated() {
-        if ((isConsolidated()) && (consolidatedValue != null)
-                && (!consolidatedValue.isNewObject())) {
+        if (isAllReadOnly()
+                || ((isConsolidated()) && (consolidatedValue != null) && (!consolidatedValue
+                        .isNewObject()))) {
             return true;
         }
         if (lastConsolidatedDate != null) {
@@ -170,6 +173,14 @@ public class AdvanceConsolidationDTO {
 
     public BigDecimal getValue() {
         return value;
+    }
+
+    public static void setAllReadOnly(boolean allReadOnly) {
+        AdvanceConsolidationDTO.allReadOnly = allReadOnly;
+    }
+
+    public static boolean isAllReadOnly() {
+        return allReadOnly;
     }
 
 }

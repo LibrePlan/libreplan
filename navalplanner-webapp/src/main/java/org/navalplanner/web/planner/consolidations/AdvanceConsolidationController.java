@@ -106,6 +106,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     public void reloadAdvanceGrid() {
         advanceConsolidationModel.initLastConsolidatedDate();
+        advanceConsolidationModel.setReadOnlyConsolidations();
         Util.reloadBindings(advancesGrid);
     }
 
@@ -121,4 +122,10 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
         return advanceConsolidationModel.infoMessages();
     }
 
+    public String getReadOnlySclass() {
+        if (advanceConsolidationModel.hasLimitingResourceAllocation()) {
+            return "readonly";
+        }
+        return "";
+    }
 }
