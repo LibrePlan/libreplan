@@ -249,6 +249,16 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
+    public AdvanceAssignment getSpreadAdvance() {
+        for(AdvanceAssignment advance : getAdvanceAssignments()){
+            if(advance.getReportGlobalAdvance()){
+                return advance;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void addNewLineAdvaceMeasurement() {
         if (this.advanceAssignment != null) {
             AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();

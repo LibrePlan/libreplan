@@ -110,4 +110,6 @@ public interface IManageOrderElementAdvancesModel {
     public void resetAdvanceAssignment();
 
     BigDecimal getMaxValue(AdvanceType advanceType);
+
+    AdvanceAssignment getSpreadAdvance();
 }
