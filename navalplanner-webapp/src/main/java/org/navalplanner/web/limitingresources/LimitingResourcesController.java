@@ -50,6 +50,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -113,13 +114,19 @@ public class LimitingResourcesController implements Composer {
 
     private void reload(boolean filterByResources) {
         try {
+
             if (filterBy == null) {
                 limitingResourceQueueModel.initGlobalView(filterByResources);
             } else {
                 limitingResourceQueueModel.initGlobalView(filterBy,
                         filterByResources);
             }
+
+            // Initialize interval
             timeTracker = buildTimeTracker();
+            limitingResourceQueueModel.setTimeTrackerState(timeTracker
+                    .getDetailLevel());
+
             limitingResourcesPanel = buildLimitingResourcesPanel();
             addListeners();
 
@@ -162,8 +169,8 @@ public class LimitingResourcesController implements Composer {
 
     private TimeTracker buildTimeTracker() {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
-                .getViewInterval(), limitingResourceQueueModel
-                .calculateInitialZoomLevel(), SeveralModificators.create(),
+                .getViewInterval(), ZoomLevel.DETAIL_THREE, SeveralModificators
+                .create(),
                 SeveralModificators.create(new BankHolidaysMarker()), parent);
     }
 

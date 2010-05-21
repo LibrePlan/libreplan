@@ -119,4 +119,6 @@ public interface ILimitingResourceQueueModel {
     void removeUnassignedLimitingResourceQueueElement(
             LimitingResourceQueueElement element);
 
+    void setTimeTrackerState(ZoomLevel zoomLevel);
+
 }

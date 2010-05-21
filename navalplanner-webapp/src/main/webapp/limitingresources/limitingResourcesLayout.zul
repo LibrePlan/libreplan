@@ -22,7 +22,7 @@
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 <zscript><![CDATA[
-resourcesLoadPanel = self;
+limitingResourcesPanel = self;
 ]]>
 </zscript>
 
@@ -43,8 +43,8 @@ resourcesLoadPanel = self;
                 <!-- Zoom -->
                 <label>${i18n:_('Zoom')}:</label>
                 <listbox id="listZoomLevels" mold="select" rows="1"
-                    model="${resourcesLoadPanel.zoomLevels}"
-                    onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
+                    model="${limitingResourcesPanel.zoomLevels}"
+                    onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
                 </listbox>
 
                 <separator/>

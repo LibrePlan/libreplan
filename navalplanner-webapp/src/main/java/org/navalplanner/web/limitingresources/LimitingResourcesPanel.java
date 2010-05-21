@@ -31,6 +31,7 @@ import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -38,6 +39,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
@@ -74,6 +76,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private TimeTracker timeTracker;
 
     private Listbox listZoomLevels;
+
+    private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners
+            .create();
 
     @Autowired
     IResourceDAO resourcesDAO;
@@ -115,7 +120,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-
         queueListComponent = new QueueListComponent(timeTracker, treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel,
@@ -157,8 +161,15 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         return filterbyResources;
     }
 
+    public void addFilterListener(IFilterChangedListener listener) {
+        zoomListeners.addListener(listener);
+    }
+
     public ListModel getZoomLevels() {
-        return new SimpleListModel(ZoomLevel.values());
+        ZoomLevel[] selectableZoomlevels = { ZoomLevel.DETAIL_THREE,
+                ZoomLevel.DETAIL_FOUR, ZoomLevel.DETAIL_FIVE,
+                ZoomLevel.DETAIL_SIX };
+        return new SimpleListModel(selectableZoomlevels);
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
@@ -255,7 +266,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         IZoomLevelChangedListener zoomChangedListener = new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                dependencyList.detach();
+                dependencyList.getChildren().clear();
                 getFellow("insertionPointRightPanel").appendChild(
                         dependencyList);
                 dependencyList = generateDependencyComponentsList();
@@ -271,7 +282,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         timeTrackerHeader.afterCompose();
         timeTrackerComponent.afterCompose();
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
-        listZoomLevels.setSelectedIndex(timeTracker.getDetailLevel().ordinal());
+        // First two levels are excluded
+        listZoomLevels
+                .setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {

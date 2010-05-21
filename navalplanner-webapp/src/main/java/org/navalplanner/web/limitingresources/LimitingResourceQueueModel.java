@@ -34,6 +34,7 @@ import java.util.SortedSet;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
@@ -113,6 +114,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private Set<LimitingResourceQueueElement> toBeSaved = new HashSet<LimitingResourceQueueElement>();
 
+    private ZoomLevel zoomLevel = ZoomLevel.DETAIL_THREE;
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
@@ -129,7 +132,28 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         loadUnassignedLimitingResourceQueueElements();
         loadLimitingResourceQueues();
         final Date startingDate = getEarliestDate();
-        viewInterval = new Interval(startingDate, plusFiveYears(startingDate));
+        Date endDate = (new LocalDate(startingDate)).plus(intervalIncrease())
+                .toDateTimeAtCurrentTime().toDate();
+        viewInterval = new Interval(startingDate, endDate);
+    }
+
+    private Period intervalIncrease() {
+
+        switch (zoomLevel) {
+        case DETAIL_ONE:
+            return Period.years(5);
+        case DETAIL_TWO:
+            return Period.years(5);
+        case DETAIL_THREE:
+            return Period.years(2);
+        case DETAIL_FOUR:
+            return Period.months(6);
+        case DETAIL_FIVE:
+            return Period.weeks(6);
+        case DETAIL_SIX:
+            return Period.weeks(6);
+        }
+        return Period.years(1);
     }
 
     private Date getEarliestDate() {
@@ -169,11 +193,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private LimitingResourceQueueElement getFirstChild(
             SortedSet<LimitingResourceQueueElement> elements) {
         return (elements.isEmpty()) ? null : elements.iterator().next();
-    }
-
-    private Date plusFiveYears(Date date) {
-        return (new LocalDate(date)).plusYears(5).toDateTimeAtCurrentTime()
-                .toDate();
     }
 
     /**
@@ -679,6 +698,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         if (!toBeRemoved.contains(element)) {
             toBeRemoved.add(element);
         }
+    }
+
+    @Override
+    public void setTimeTrackerState(ZoomLevel timeTrackerState) {
+        this.zoomLevel = timeTrackerState;
     }
 
 }
