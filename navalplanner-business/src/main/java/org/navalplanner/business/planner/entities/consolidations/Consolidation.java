@@ -56,8 +56,9 @@ public abstract class Consolidation extends BaseEntity {
     }
 
     public LocalDate getConsolidatedUntil() {
-        ConsolidatedValue last = getConsolidatedValues().last();
-        return (last == null) ? null : last.getDate();
+        SortedSet<? extends ConsolidatedValue> consolidatedValues = getConsolidatedValues();
+        return (consolidatedValues.isEmpty()) ? null : consolidatedValues
+                .last().getDate();
     }
 
 }
