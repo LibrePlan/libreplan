@@ -472,6 +472,7 @@ public class OrderModel implements IOrderModel {
                     return null;
                 }
             });
+            order.dontPoseAsTransientObjectAnymore();
         }
     }
 
@@ -500,7 +501,6 @@ public class OrderModel implements IOrderModel {
             synchronizeWithSchedule(order, true);
             order.writeSchedulingDataChanges();
         }
-        order.dontPoseAsTransientObjectAnymore();
         saveDerivedScenarios();
     }
 
