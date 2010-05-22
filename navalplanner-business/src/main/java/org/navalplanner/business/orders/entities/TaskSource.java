@@ -144,7 +144,7 @@ public class TaskSource extends BaseEntity {
         @Override
         public TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 boolean preexistent) {
-            if (!preexistent) {
+            if (preexistent) {
                 for (TaskSource each : toBeRemovedFromBottomToTop) {
                     remove(taskSourceDAO, each);
                 }
