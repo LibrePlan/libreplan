@@ -46,14 +46,11 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
                 scenario));
     }
 
-    @NotNull
     private GenericResourceAllocation resourceAllocation;
 
     @OnCopy(Strategy.SHARE)
-    @NotNull
     private Scenario scenario;
 
-    @Valid
     private Set<GenericDayAssignment> dayAssignments = new HashSet<GenericDayAssignment>();
 
     private GenericDayAssignmentsContainer(GenericResourceAllocation resourceAllocation,
@@ -70,14 +67,17 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
     public GenericDayAssignmentsContainer() {
     }
 
+    @NotNull
     public GenericResourceAllocation getResourceAllocation() {
         return resourceAllocation;
     }
 
+    @NotNull
     public Scenario getScenario() {
         return scenario;
     }
 
+    @Valid
     public Set<GenericDayAssignment> getDayAssignments() {
         return new HashSet<GenericDayAssignment>(dayAssignments);
     }
