@@ -227,7 +227,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
         if (isSchedulingPoint()) {
             result
-                    .add(synchronizationForSchedulingPoint(schedulingDataForVersion));
+                    .addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
             removeUnscheduled(result);
             if (wasASchedulingPoint()) {
@@ -274,24 +274,33 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
-    private TaskSourceSynchronization synchronizationForSchedulingPoint(
+    private List<TaskSourceSynchronization> synchronizationForSchedulingPoint(
             SchedulingDataForVersion schedulingState) {
         if (thereIsNoTaskSource()) {
             getCurrentSchedulingData().requestedCreationOf(
                     TaskSource.create(schedulingState, getHoursGroups()));
-            return TaskSource.mustAdd(getTaskSource());
+            return Collections.singletonList(TaskSource
+                    .mustAdd(getTaskSource()));
+        } else if (getTaskSource().getTask().isLeaf()) {
+            return Collections.singletonList(getTaskSource()
+                    .withCurrentHoursGroup(getHoursGroups()));
         } else {
-            if (getTaskSource().getTask().isLeaf()) {
-                return getTaskSource().withCurrentHoursGroup(getHoursGroups());
-            } else {
-                List<TaskSource> toBeRemoved = getTaskSourcesFromBottomToTop();
-                TaskSource newTaskSource = TaskSource.create(schedulingState,
-                        getHoursGroups());
-                getCurrentSchedulingData().replaceCurrentTaskSourceWith(
-                        newTaskSource);
-                return TaskSource.mustReplace(toBeRemoved, getTaskSource());
-            }
+            return synchronizationsForFromPartiallyScheduledToSchedulingPoint(schedulingState);
         }
+    }
+
+    private List<TaskSourceSynchronization> synchronizationsForFromPartiallyScheduledToSchedulingPoint(
+            SchedulingDataForVersion schedulingState) {
+        List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
+        for (TaskSource each : getTaskSourcesFromBottomToTop()) {
+            OrderElement orderElement = each.getOrderElement();
+            result.add(orderElement.taskSourceRemoval());
+        }
+        TaskSource newTaskSource = TaskSource.create(schedulingState,
+                getHoursGroups());
+        getCurrentSchedulingData().requestedCreationOf(newTaskSource);
+        result.add(TaskSource.mustAdd(newTaskSource));
+        return result;
     }
 
     private boolean thereIsNoTaskSource() {

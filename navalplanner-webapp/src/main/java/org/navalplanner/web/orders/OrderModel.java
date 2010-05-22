@@ -494,6 +494,7 @@ public class OrderModel implements IOrderModel {
             createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
                     newVersion);
             synchronizeWithSchedule(order, false);
+            order.writeSchedulingDataChanges();
         } else {
             OrderVersion orderVersion = order.getCurrentVersionInfo()
                     .getOrderVersion();
