@@ -14,9 +14,13 @@
     <property name="code" access="property" not-null="true" unique="true"/>
 	<properties name="nameAndType" unique="true">
 		<property name="name" />
-		<many-to-one name="type" class="LabelType" column="LABEL_TYPE_ID" />
+		<!-- Indexed -->
+        <many-to-one name="type" class="LabelType"
+        column="LABEL_TYPE_ID"
+        index="idx_label_on_labeltype"/>
 	</properties>
 
+    <!-- Assess this mapping -->
     <set name="orderElements" table="ORDER_ELEMENT_LABEL" cascade="all" inverse="true">
         <key column="LABEL_ID" not-null="false"/>
         <many-to-many column="ORDER_ELEMENT_ID" class="org.navalplanner.business.orders.entities.OrderElement"/>
@@ -36,6 +40,7 @@
     <property name="name" unique="true"/>
     <property name="generateCode" not-null="true" />
 
+    <!-- Indexed the other side -->
     <set name="labels" inverse="false" cascade="all">
         <key column="LABEL_TYPE_ID"/>
         <one-to-many class="Label"/>

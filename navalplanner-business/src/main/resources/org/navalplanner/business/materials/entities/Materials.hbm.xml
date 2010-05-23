@@ -17,11 +17,16 @@
 
     <property name="defaultUnitPrice" column="default_unit_price" />
 
+    <!-- Not indexed -->
     <many-to-one name="unitType" class="UnitType" column="unit_type" />
 
     <property name="disabled"/>
 
-    <many-to-one name="category" class="MaterialCategory" column="CATEGORY_ID" />
+    <!-- Indexed -->
+    <many-to-one name="category"
+        class="MaterialCategory"
+        column="CATEGORY_ID"
+        index="idx_material_on_category"/>
 
 </class>
 
@@ -56,13 +61,19 @@
 
     <property name="generateCode" not-null="true" />
 
+    <!-- Indexed the other side -->
     <set name="subcategories" inverse="true" cascade="all-delete-orphan">
         <key column="PARENT_ID"/>
         <one-to-many class="MaterialCategory"/>
     </set>
 
-    <many-to-one name="parent" class="MaterialCategory" column="PARENT_ID" />
+    <!-- Indexed -->
+    <many-to-one name="parent"
+        class="MaterialCategory"
+        column="PARENT_ID"
+        index="idx_materialcategory_on_parent"/>
 
+    <!-- Indexed the other side -->
     <set name="materials" inverse="true" cascade="all">
         <key column="CATEGORY_ID"/>
         <one-to-many class="Material"/>
@@ -93,7 +104,11 @@
         </type>
     </property>
 
-    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" />
+    <!-- Indexed. -->
+    <many-to-one name="orderElement"
+        class="org.navalplanner.business.orders.entities.OrderElement"
+        column="ORDER_ELEMENT_ID"
+        index="idx_material_assigment_on_orderelement"/>
 
 </class>
 
@@ -111,7 +126,11 @@
         <many-to-one name="material" class="Material" column="MATERIAL_ID" />
     </component>
 
-    <many-to-one name="orderElementTemplate" class="org.navalplanner.business.templates.entities.OrderElementTemplate" column="ORDER_ELEMENT_TEMPLATE_ID" />
+    <!-- Indexed -->
+    <many-to-one name="orderElementTemplate"
+        class="org.navalplanner.business.templates.entities.OrderElementTemplate"
+        column="ORDER_ELEMENT_TEMPLATE_ID"
+        index="idx_materialassigmenttemplate_on_orderelement"/>
 
 </class>
 

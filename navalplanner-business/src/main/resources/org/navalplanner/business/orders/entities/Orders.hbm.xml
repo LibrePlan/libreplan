@@ -21,47 +21,66 @@
             </type>
         </property>
 
+        <!-- Indexed the other side -->
         <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="DIRECT_ORDER_ELEMENT_ID" />
             <one-to-many class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
         </set>
 
+        <!-- Assess many-to-many bidireccional -->
         <set name="labels" table="ORDER_ELEMENT_LABEL" access="field" cascade="all">
             <key column="ORDER_ELEMENT_ID" not-null="true"/>
-            <many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label" />
+            <many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label"/>
         </set>
 
+        <!-- Indexed the other side -->
         <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_ID" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>
 
+        <!-- Indexed the other side -->
         <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_ID" not-null="true" />
             <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignment" />
         </set>
 
+        <!--  Indexed the other side -->
         <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_ID" not-null="true" />
             <one-to-many class="org.navalplanner.business.qualityforms.entities.TaskQualityForm" />
         </set>
 
         <!-- Inverse navigation from OrderElement to OrderLineGroup -->
-        <many-to-one name="parent" access="field" cascade="all" class="org.navalplanner.business.orders.entities.OrderLineGroup"/>
+        <!-- Indexed -->
+        <many-to-one name="parent"
+            access="field"
+            cascade="all"
+            class="org.navalplanner.business.orders.entities.OrderLineGroup"
+            index="idx_orderelement_on_parent"/>
 
         <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="orderElement"/>
 
-        <many-to-one name="template" access="field" cascade="none" class="org.navalplanner.business.templates.entities.OrderElementTemplate"/>
+        <!-- Indexed -->
+        <many-to-one name="template"
+            access="field"
+            cascade="none"
+            class="org.navalplanner.business.templates.entities.OrderElementTemplate"
+            index="idx_orderelement_on_template"/>
 
         <property name="externalCode" access="field" />
 
         <joined-subclass name="OrderLineGroup">
             <key column="ORDERELEMENTID"></key>
+
+            <!-- Indexed the other side -->
             <list name="children" access="field" cascade="all">
                 <key column="parent" not-null="false"></key>
                 <index column="positionInContainer"></index>
                 <one-to-many class="OrderElement" />
             </list>
+
+            <!-- Indexed the other side -->
             <set name="indirectAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
                 <key column="INDIRECT_ORDER_ELEMENT_ID" />
                 <one-to-many class="org.navalplanner.business.advance.entities.IndirectAdvanceAssignment" />
@@ -87,8 +106,10 @@
                     </type>
                 </property>
 
+                <!-- Not indexed -->
                 <many-to-one name="customer" access="field" class="org.navalplanner.business.externalcompanies.entities.ExternalCompany"/>
 
+                <!-- Not indexed -->
                 <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
                     class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
 
@@ -104,6 +125,7 @@
         <joined-subclass name="OrderLine">
             <key column="ORDERELEMENTID"></key>
 
+            <!-- Indexed the other side -->
             <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true">
                 <key column="PARENT_ORDER_LINE" not-null="false"></key>
                 <one-to-many class="HoursGroup" />
@@ -134,16 +156,21 @@
         <property name="percentage" access="field" />
         <property name="fixedPercentage" access="field" />
 
+        <!-- Indexed the other side -->
         <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true">
             <key column="HOURS_GROUP_ID" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>
 
+        <!-- Indexed -->
         <many-to-one name="parentOrderLine" column="PARENT_ORDER_LINE"
-            class="org.navalplanner.business.orders.entities.OrderLine" />
+            class="org.navalplanner.business.orders.entities.OrderLine"
+            index="idx_hoursgroup_on_parentorderline"/>
 
+        <!-- Indexed -->
         <many-to-one name="orderLineTemplate" column="ORDER_LINE_TEMPLATE"
-            class="org.navalplanner.business.templates.entities.OrderLineTemplate" />
+            class="org.navalplanner.business.templates.entities.OrderLineTemplate"
+            index="idx_hoursgroup_on_orderlinetemplate"/>
 
     </class>
 
@@ -160,6 +187,7 @@
 
         <one-to-one name="task" class="org.navalplanner.business.planner.entities.TaskElement"
             constrained="true" cascade="all" access="field" lazy="false"/>
+
         <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field">
             <key column="TASK_SOURCE_ID"></key>
             <many-to-many class="HoursGroup" column="HOURS_GROUP_ID"/>

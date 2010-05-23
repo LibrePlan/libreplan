@@ -18,8 +18,12 @@
 
         <property name="originalTotalAssignment" access="field"/>
 
-        <many-to-one class="Task" name="task" column="TASK" />
+        <!-- Indexed -->
+        <many-to-one class="Task" name="task" column="TASK" index="idx_resourceallocation_on_task"/>
 
+        <!-- It is not included index, navigation from assigment function to
+            ResourceAllocation not useful
+         -->
         <many-to-one class="AssignmentFunction" name="assignmentFunction"
             column="ASSIGNMENT_FUNCTION" not-null="false"
             cascade="all" lazy="false" />
@@ -29,6 +33,7 @@
             <one-to-many class="DerivedAllocation"/>
         </set>
 
+        <!-- Wrong mapping. A ResourceAllocation only has one limiting resource queue element associated -->
         <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true">
             <key column="RESOURCE_ALLOCATION_ID" />
             <one-to-many class="LimitingResourceQueueElement"/>
@@ -40,6 +45,7 @@
             <many-to-one name="resource"
                 class="org.navalplanner.business.resources.entities.Resource" />
 
+            <!-- Indexed the other side -->
             <set name="specificDaysAssignment" cascade="all">
                 <key column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
                 <one-to-many class="SpecificDayAssignment"/>
@@ -54,6 +60,7 @@
                 <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
+            <!-- Indexed the other side -->
             <set name="genericDayAssignments" cascade="all">
                 <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
                 <one-to-many class="GenericDayAssignment"/>
@@ -73,7 +80,8 @@
 
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" cascade="all" not-null="false" unique="true" />
 
-        <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" />
+        <!-- Indexed -->
+        <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" index="idx_resourcequeueelement_on_resourcequeue"/>
 
         <property name="earlierStartDateBecauseOfGantt" column="EARLIER_START_DATE_BECAUSE_OF_GANTT" />
 
@@ -89,11 +97,15 @@
             <property name="hour" column="END_HOUR" />
         </component>
 
+        <!--  Indexed the other side. Useful to browse the output dependencies of
+        a LimitingResourceQueueElement -->
         <set name="dependenciesAsOrigin" cascade="none" lazy="false">
             <key column="origin_queue_element_id"/>
             <one-to-many class="LimitingResourceQueueDependency"/>
         </set>
 
+        <!-- Indexed the other side. Useful to browse the input dependencies of
+        a LimitingResourceQueueElement -->
         <set name="dependenciesAsDestiny" cascade="none" lazy="false">
             <key column="destiny_queue_element_id"/>
             <one-to-many class="LimitingResourceQueueDependency"/>
@@ -115,16 +127,21 @@
             </type>
         </property>
 
+        <!--  Indexed -->
         <many-to-one name="hasAsOrigin" cascade="none"
             class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
             column="origin_queue_element_id"
-            not-null="false">
+            not-null="false"
+            index="idx_queuedependency_on_originqueue">
         </many-to-one>
 
+        <!-- Indexed -->
         <many-to-one name="hasAsDestiny" cascade="none"
             class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
             column="destiny_queue_element_id"
-            not-null="false">
+            not-null="false"
+            index="idx_queuedependency_on_destinyqueue"
+            >
         </many-to-one>
 
         <one-to-one name="ganttDependency"
@@ -150,20 +167,30 @@
 
         <property name="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate" not-null="true"/>
 
+        <!-- Not indexed. It is not indexed because it is regarded that to navigate
+        from a resource to all his DayAssigments is not useful -->
         <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
           column="RESOURCE_ID" not-null="true">
         </many-to-one>
 
         <!-- SpecificDayAssignment -->
         <subclass name="SpecificDayAssignment" discriminator-value="SPECIFIC_DAY">
+            <!-- Indexed. -->
             <many-to-one name="specificResourceAllocation"
-                class="SpecificResourceAllocation" column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
+                class="SpecificResourceAllocation"
+                column="SPECIFIC_RESOURCE_ALLOCATION_ID"
+                index="idx_specificdayassigment_on_resourceallocation"
+                />
         </subclass>
 
         <!-- GenericDayAssignment -->
         <subclass name="GenericDayAssignment" discriminator-value="GENERIC_DAY">
+            <!--  Indexed -->
             <many-to-one name="genericResourceAllocation"
-                class="GenericResourceAllocation" column="GENERIC_RESOURCE_ALLOCATION_ID" />
+                class="GenericResourceAllocation"
+                column="GENERIC_RESOURCE_ALLOCATION_ID"
+                index="idx_genericdayassigment_on_resourceallocation"
+                />
         </subclass>
         <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
             <many-to-one name="allocation" column="DERIVED_ALLOCATION_ID"/>
@@ -217,4 +244,5 @@
             <one-to-many class="DerivedDayAssignment"/>
         </set>
     </class>
+
 </hibernate-mapping>
