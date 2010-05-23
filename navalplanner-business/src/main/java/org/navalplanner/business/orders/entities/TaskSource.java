@@ -20,6 +20,7 @@
 package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -223,6 +225,7 @@ public class TaskSource extends BaseEntity {
         public TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 boolean preexistent) {
             if (!preexistent) {
+                removeDependenciesFor(taskSource.getTask());
                 return null;
             }
             try {
@@ -238,6 +241,30 @@ public class TaskSource extends BaseEntity {
                 throw new RuntimeException(e);
             }
             return null;
+        }
+
+        private void removeDependenciesFor(TaskElement task) {
+            for (Dependency each : copy(task
+                    .getDependenciesWithThisDestination())) {
+                removeDependency(each);
+            }
+            for (Dependency each : copy(task.getDependenciesWithThisOrigin())) {
+                removeDependency(each);
+            }
+        }
+
+        private void removeDependency(Dependency each) {
+            each.getOrigin().removeDependencyWithDestination(
+                    each.getDestination(),
+                    each.getType());
+        }
+
+        /**
+         * Copy the dependencies to a list in order to avoid
+         * {@link ConcurrentModificationException}
+         */
+        private List<Dependency> copy(Set<Dependency> dependencies) {
+            return new ArrayList<Dependency>(dependencies);
         }
 
     }
