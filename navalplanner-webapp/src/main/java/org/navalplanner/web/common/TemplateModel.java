@@ -89,10 +89,14 @@ public class TemplateModel implements ITemplateModel {
     private static class DependencyWithVisibility {
 
         public static DependencyWithVisibility createInvisible(
-                Dependency dependency) {
-            DependencyWithVisibility result = new DependencyWithVisibility(
-                    dependency, false);
-            return result;
+                TaskElement source, TaskElement destination, DependencyType type) {
+            return new DependencyWithVisibility(source, destination, type,
+                    false);
+        }
+
+        public static DependencyWithVisibility existent(Dependency each) {
+            return new DependencyWithVisibility(each.getOrigin(), each
+                    .getDestination(), toGraphicalType(each.getType()), true);
         }
 
         public static List<Constraint<Date>> getStartConstraintsGiven(
@@ -119,13 +123,22 @@ public class TemplateModel implements ITemplateModel {
             return result;
         }
 
-        private final Dependency dependency;
+        private final TaskElement source;
+
+        private final TaskElement destination;
+
+        private final DependencyType type;
 
         private final boolean visible;
 
-        public DependencyWithVisibility(Dependency dependency, boolean visible) {
-            Validate.notNull(dependency);
-            this.dependency = dependency;
+        private DependencyWithVisibility(TaskElement source,
+                TaskElement destination, DependencyType type, boolean visible) {
+            Validate.notNull(source);
+            Validate.notNull(destination);
+            Validate.notNull(type);
+            this.source = source;
+            this.destination = destination;
+            this.type = type;
             this.visible = visible;
         }
 
@@ -134,15 +147,18 @@ public class TemplateModel implements ITemplateModel {
         }
 
         public TaskElement getSource() {
-            return dependency.getOrigin();
+            return source;
         }
 
         public TaskElement getDestination() {
-            return dependency.getDestination();
+            return destination;
         }
 
         public DependencyType getGraphicalType() {
-            Type domainDependencyType = dependency.getType();
+            return type;
+        }
+
+        private static DependencyType toGraphicalType(Type domainDependencyType) {
             switch (domainDependencyType) {
             case END_START:
                 return DependencyType.END_START;
@@ -163,19 +179,6 @@ public class TemplateModel implements ITemplateModel {
             return getGraphicalType().getPointModified();
         }
 
-    }
-
-    private Dependency.Type convert(DependencyType type) {
-        switch (type) {
-        case END_START:
-            return Dependency.Type.END_START;
-        case END_END:
-            return Dependency.Type.END_END;
-        case START_START:
-            return Dependency.Type.START_START;
-        default:
-            throw new RuntimeException("can't handle " + type);
-        }
     }
 
     private static IDatesInterceptor asIntercerptor(
@@ -210,10 +213,8 @@ public class TemplateModel implements ITemplateModel {
         @Override
         public DependencyWithVisibility createInvisibleDependency(
                 TaskElement origin, TaskElement destination, DependencyType type) {
-            Dependency transientDependency = Dependency.create(origin,
-                            destination, convert(type));
-            return DependencyWithVisibility
-                    .createInvisible(transientDependency);
+            return DependencyWithVisibility.createInvisible(origin,
+                    destination, type);
         }
 
         @Override
@@ -523,8 +524,8 @@ public class TemplateModel implements ITemplateModel {
         TaskSource taskSource = order.getTaskSource();
         graph.addTopLevel(taskSource.getTask());
         for (Dependency each : getAllDependencies(order)) {
-            graph.addWithoutEnforcingConstraints(new DependencyWithVisibility(
-                    each, true));
+            graph.addWithoutEnforcingConstraints(DependencyWithVisibility
+                    .existent(each));
         }
     }
 
