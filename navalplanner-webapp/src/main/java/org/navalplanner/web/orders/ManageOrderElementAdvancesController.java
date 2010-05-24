@@ -62,6 +62,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -201,8 +202,17 @@ public class ManageOrderElementAdvancesController extends
     private Listbox editAdvances;
 
     public void selectAdvanceLine(Listitem selectedItem) {
+        /*
+         * validate the previous advance line before changing the selected
+         * advance.
+         */
         setSelectedAdvanceLine();
         validateListAdvanceMeasurement();
+
+        /*
+         * preparation to select the advance line. Set the current selected
+         * index that will show when the grid reloads.
+         */
         AdvanceAssignment advance = (AdvanceAssignment) selectedItem.getValue();
         indexSelectedItem = editAdvances.getIndexOfItem(selectedItem);
         prepareEditAdvanceMeasurements(advance);
@@ -333,7 +343,7 @@ public class ManageOrderElementAdvancesController extends
             appendRadioSpread(listItem);
             appendCalculatedCheckbox(listItem);
             appendChartCheckbox(listItem);
-            appendRemoveButton(listItem);
+            appendOperations(listItem);
         }
     }
 
@@ -606,7 +616,43 @@ public class ManageOrderElementAdvancesController extends
         listItem.appendChild(listCell);
     }
 
-    private void appendRemoveButton(final Listitem listItem) {
+    private void appendOperations(final Listitem listItem) {
+        Hbox hbox = new Hbox();
+        appendAddMeasurement(hbox, listItem);
+        appendRemoveButton(hbox, listItem);
+
+        Listcell listCell = new Listcell();
+        listCell.appendChild(hbox);
+        listItem.appendChild(listCell);
+    }
+
+    private void appendAddMeasurement(final Hbox hbox, final Listitem listItem) {
+        final AdvanceAssignment advance = (AdvanceAssignment) listItem
+                .getValue();
+        final Button addMeasurementButton = createAddMeasurementButton();
+
+        addMeasurementButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        if (!listItem.equals(editAdvances.getSelectedItem())) {
+                            selectAdvanceLine(listItem);
+                        }
+                        goToCreateLineAdvanceMeasurement();
+                    }
+                });
+
+        if (advance instanceof IndirectAdvanceAssignment) {
+            addMeasurementButton.setDisabled(true);
+            addMeasurementButton
+                    .setTooltiptext(_("Calculated advances can not be modified"));
+        }
+
+        hbox.appendChild(addMeasurementButton);
+
+    }
+
+    private void appendRemoveButton(final Hbox hbox, final Listitem listItem) {
         final AdvanceAssignment advance = (AdvanceAssignment) listItem
                 .getValue();
         final Button removeButton = createRemoveButton();
@@ -624,9 +670,7 @@ public class ManageOrderElementAdvancesController extends
                     .setTooltiptext(_("Calculated advances can not be removed"));
         }
 
-        Listcell listCell = new Listcell();
-        listCell.appendChild(removeButton);
-        listItem.appendChild(listCell);
+        hbox.appendChild(removeButton);
     }
 
     private void setMaxValue(final Listitem item,Combobox comboAdvanceTypes) {
@@ -1143,6 +1187,13 @@ public class ManageOrderElementAdvancesController extends
         removeButton.setTooltiptext(_("Delete"));
 
         return removeButton;
+    }
+
+    private Button createAddMeasurementButton() {
+        Button addButton = new Button();
+        addButton.setLabel("Add measure");
+        addButton.setTooltiptext(_("Add new advnace measurement"));
+        return addButton;
     }
 
     public void refreshChangesFromOrderElement() {

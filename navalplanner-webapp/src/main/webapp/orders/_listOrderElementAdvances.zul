@@ -38,14 +38,14 @@
                      pageSize="4">
                     <listhead sizable="true">
                          <listheader label="${i18n:_('Type')}" width="150px" tooltiptext="Advance unit type" />
-                         <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value" width="90px" align="center"/>
-                         <listheader label="${i18n:_('Current value')}" width="90px" align="center"/>
-                         <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value" width="80px" align="center"/>
+                         <listheader label="${i18n:_('Current value')}" width="80px" align="center"/>
+                         <listheader label="${i18n:_('Percentage')}" width="80px" align="center"/>
                          <listheader label="${i18n:_('Date')}" width="90px" align="center"/>
-                         <listheader label="${i18n:_('Spread')}" width="90px" align="center"/>
-                         <listheader label="${i18n:_('Calculated')}" width="90px" align="center"/>
-                         <listheader label="${i18n:_('Show')}" width="70px" align="center"/>
-                         <listheader label="${i18n:_('Operations')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Spread')}" width="70px" align="center"/>
+                         <listheader label="${i18n:_('Calculated')}" width="70px" align="center"/>
+                         <listheader label="${i18n:_('Show')}" width="60px" align="center"/>
+                         <listheader label="${i18n:_('Operations')}" width="130px" align="center"/>
                      </listhead>
             </listbox>
             </vbox>
@@ -55,10 +55,6 @@
         <panelchildren>
             <hbox>
                 <vbox>
-                    <button label="${i18n:_('Add new advance measurement')}"
-                        onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceMeasurement();"
-                        disabled = "@{manageOrderElementAdvancesController.isReadOnlyAdvanceMeasurements}">
-                    </button>
                     <listbox id="editAdvancesMeasurement" width="380px" height="200px"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
