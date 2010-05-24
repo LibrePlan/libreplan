@@ -61,9 +61,8 @@
 
             <button tooltiptext="Vertical Page up" image="/common/img/ico_up.png" id="verticalPaginationUpButton"
             onClick="advancedAllocationController.verticalPageup();" disabled="true" />
-            <listbox mold="select" rows="1" visible="false" id="advancedAllocationVerticalPagination">
-                <listitem><listcell label="${i18n:_('Vertical interval')}" /><listcell label="21-40" /><listcell label="40-" /></listitem>
-            </listbox>
+            <listbox mold="select" rows="1" visible="true" id="advancedAllocationVerticalPagination"
+            onSelect="advancedAllocationController.goToSelectedVerticalPage();" />
             <button tooltiptext="Vertical Page down" image="/common/img/ico_down.png" id="verticalPaginationDownButton"
             onClick="advancedAllocationController.verticalPagedown();" disabled="true" />
 

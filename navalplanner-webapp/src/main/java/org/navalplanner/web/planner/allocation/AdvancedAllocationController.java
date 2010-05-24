@@ -86,6 +86,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
@@ -400,6 +401,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Component associatedComponent;
 
     private Listbox advancedAllocationHorizontalPagination;
+    private Listbox advancedAllocationVerticalPagination;
 
     public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs) {
@@ -612,6 +614,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         leftPane.setFixedLayout(true);
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
         populateHorizontalListbox();
+        populateVerticalListbox();
     }
 
     public void paginationDown() {
@@ -654,6 +657,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);
                 populateHorizontalListbox();
+                populateVerticalListbox();
                 Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
             }
         });
@@ -779,6 +783,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         verticalPaginationDownButton
                 .setDisabled((verticalIndex + VERTICAL_MAX_ELEMENTS) >= rows
                         .size());
+        if(advancedAllocationVerticalPagination.getChildren().size() >= 2) {
+            advancedAllocationVerticalPagination.setDisabled(false);
+            advancedAllocationVerticalPagination.setSelectedIndex(
+                    verticalIndex / VERTICAL_MAX_ELEMENTS);
+        }
+        else {
+            advancedAllocationVerticalPagination.setDisabled(true);
+        }
         return rows.subList(verticalIndex, Math.min(rows.size(),
                 verticalIndex + VERTICAL_MAX_ELEMENTS));
     }
@@ -797,6 +809,23 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         timeTrackedTableWithLeftPane.reload();
     }
 
+    public void goToSelectedVerticalPage() {
+        verticalIndex = advancedAllocationVerticalPagination.getSelectedIndex() * VERTICAL_MAX_ELEMENTS;
+        timeTrackedTableWithLeftPane.reload();
+    }
+
+    public void populateVerticalListbox() {
+        if (rowsCached != null) {
+            for(int i=0; i<rowsCached.size(); i+=VERTICAL_MAX_ELEMENTS) {
+                int endPosition = Math.min(i+VERTICAL_MAX_ELEMENTS, rowsCached.size());
+                String label = (i+1) + " " + rowsCached.get(i).getName() + " - " +
+                    (endPosition) + " " + rowsCached.get(endPosition-1).getName();
+                Listitem item = new Listitem();
+                item.appendChild(new Listcell(label));
+                advancedAllocationVerticalPagination.appendChild(item);
+            }
+        }
+    }
 
     private List<Row> specificRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
@@ -1402,6 +1431,14 @@ class Row {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
