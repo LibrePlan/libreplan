@@ -221,7 +221,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void addNewLineAdvaceAssignment() {
+    public boolean addNewLineAdvaceAssignment() {
         DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
         newAdvance.setOrderElement(this.orderElement);
 
@@ -232,12 +232,15 @@ public class ManageOrderElementAdvancesModel implements
         if (!listAdvanceType.isEmpty()) {
             newAdvance.setAdvanceType(listAdvanceType.get(0));
             newAdvance.setMaxValue(getMaxValue(listAdvanceType.get(0)));
+        } else {
+            return false;
         }
 
         if (listAdvanceAssignments.isEmpty()) {
             newAdvance.setReportGlobalAdvance(true);
         }
         listAdvanceAssignments.add(newAdvance);
+        return true;
     }
 
     @Override

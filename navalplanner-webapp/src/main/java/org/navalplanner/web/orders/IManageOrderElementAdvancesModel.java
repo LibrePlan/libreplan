@@ -49,7 +49,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public void initEdit(OrderElement orderElement);
 
-    public void addNewLineAdvaceAssignment();
+    public boolean addNewLineAdvaceAssignment();
 
     public void addNewLineAdvaceMeasurement();
 

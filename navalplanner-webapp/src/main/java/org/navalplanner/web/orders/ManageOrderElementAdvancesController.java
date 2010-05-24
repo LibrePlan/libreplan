@@ -247,7 +247,13 @@ public class ManageOrderElementAdvancesController extends
     public void goToCreateLineAdvanceAssignment() {
         validateListAdvanceMeasurement();
         manageOrderElementAdvancesModel.addNewLineAdvaceAssignment();
-        selectAdvanceLine(getAdvanceAssignments().size() - 1);
+        boolean fineResult = manageOrderElementAdvancesModel
+                .addNewLineAdvaceAssignment();
+        if (fineResult) {
+            selectAdvanceLine(getAdvanceAssignments().size() - 1);
+        } else {
+            showMessageNotAddMoreAdvances();
+        }
     }
 
     public void goToCreateLineAdvanceMeasurement() {
@@ -1198,6 +1204,12 @@ public class ManageOrderElementAdvancesController extends
 
     public void refreshChangesFromOrderElement() {
         manageOrderElementAdvancesModel.refreshChangesFromOrderElement();
+    }
+
+    private void showMessageNotAddMoreAdvances() {
+        String message = _("All advance types have already been assigned.");
+        increaseScreenHeight();
+        messagesForUser.showMessage(Level.ERROR, message);
     }
 
     private void showMessageDeleteSpread() {
