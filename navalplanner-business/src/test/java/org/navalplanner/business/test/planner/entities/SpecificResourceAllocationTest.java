@@ -20,8 +20,11 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.verify;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,6 +37,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.easymock.IAnswer;
@@ -44,8 +48,10 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.ResourceAllocation.IOnDayAssignmentRemoval;
 import org.navalplanner.business.resources.entities.Worker;
 
 public class SpecificResourceAllocationTest {
@@ -242,6 +248,28 @@ public class SpecificResourceAllocationTest {
         specificResourceAllocation.onInterval(start, start.plusDays(2))
                 .allocateHours(10);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(5, 5));
+    }
+
+    @Test
+    public void canBeNotifiedWhenADayAssignmentIsRemoved() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        List<SpecificDayAssignment> currentAssignments = specificResourceAllocation
+                .getAssignments();
+        IOnDayAssignmentRemoval dayAssignmentRemovalMock = createMock(IOnDayAssignmentRemoval.class);
+        for (SpecificDayAssignment each : currentAssignments) {
+            dayAssignmentRemovalMock
+                    .onRemoval(specificResourceAllocation, each);
+            expectLastCall().once();
+        }
+        specificResourceAllocation
+                .setOnDayAssignmentRemoval(dayAssignmentRemovalMock);
+        replay(dayAssignmentRemovalMock);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        verify(dayAssignmentRemovalMock);
     }
 
     @Test

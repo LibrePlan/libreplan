@@ -304,6 +304,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     @Min(0)
     private int originalTotalAssignment = 0;
 
+    private IOnDayAssignmentRemoval dayAssignmenteRemoval = new DoNothing();
+
+    public interface IOnDayAssignmentRemoval {
+
+        public void onRemoval(ResourceAllocation<?> allocation,
+                DayAssignment assignment);
+    }
+
+    public static class DoNothing implements IOnDayAssignmentRemoval {
+
+        @Override
+        public void onRemoval(
+                ResourceAllocation<?> allocation, DayAssignment assignment) {
+        }
+    }
+
+    public void setOnDayAssignmentRemoval(
+            IOnDayAssignmentRemoval dayAssignmentRemoval) {
+        Validate.notNull(dayAssignmentRemoval);
+        this.dayAssignmenteRemoval = dayAssignmentRemoval;
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -589,7 +611,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void addingAssignments(
             Collection<? extends T> assignments);
 
-    protected abstract void removingAssignments(
+    private void removingAssignments(
+            List<? extends DayAssignment> assignments) {
+        removeAssignments(assignments);
+        for (DayAssignment each : assignments) {
+            dayAssignmenteRemoval.onRemoval(this, each);
+        }
+    }
+
+    /**
+     * Do not call this method directly. It's just for overriding purposes. Call
+     * {@link removingAssignments} instead
+     */
+    protected abstract void removeAssignments(
             List<? extends DayAssignment> assignments);
 
     final int calculateTotalToDistribute(LocalDate day,

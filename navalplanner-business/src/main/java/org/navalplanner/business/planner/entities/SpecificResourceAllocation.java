@@ -148,7 +148,7 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    protected void removingAssignments(List<? extends DayAssignment> assignments) {
+    protected void removeAssignments(List<? extends DayAssignment> assignments) {
         this.specificDaysAssignment.removeAll(assignments);
         clearFieldsCalculatedFromAssignments();
     }

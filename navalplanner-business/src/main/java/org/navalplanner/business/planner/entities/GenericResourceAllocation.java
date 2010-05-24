@@ -243,7 +243,7 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    protected void removingAssignments(List<? extends DayAssignment> assignments) {
+    protected void removeAssignments(List<? extends DayAssignment> assignments) {
         this.genericDayAssignments.removeAll(assignments);
         clearFieldsCalculatedFromAssignments();
     }
