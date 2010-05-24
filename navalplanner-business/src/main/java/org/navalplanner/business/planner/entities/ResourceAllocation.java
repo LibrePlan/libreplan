@@ -320,6 +320,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
+    public static class DetachDayAssignmentOnRemoval implements
+            IOnDayAssignmentRemoval {
+
+        @Override
+        public void onRemoval(ResourceAllocation<?> allocation,
+                DayAssignment assignment) {
+            assignment.detach();
+        }
+    }
+
     public void setOnDayAssignmentRemoval(
             IOnDayAssignmentRemoval dayAssignmentRemoval) {
         Validate.notNull(dayAssignmentRemoval);

@@ -28,6 +28,8 @@ import static org.easymock.EasyMock.verify;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.consecutiveDays;
@@ -51,6 +53,7 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.ResourceAllocation.IOnDayAssignmentRemoval;
 import org.navalplanner.business.resources.entities.Worker;
 
@@ -270,6 +273,28 @@ public class SpecificResourceAllocationTest {
         specificResourceAllocation.onInterval(start, start.plusDays(2))
                 .allocateHours(10);
         verify(dayAssignmentRemovalMock);
+    }
+
+    @Test
+    public void canAutomaticallyDetachDayAssignmentsWhenRemoved() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        List<SpecificDayAssignment> assignments = specificResourceAllocation
+                .getAssignments();
+        for (SpecificDayAssignment each : assignments) {
+            assertThat(each.getSpecificResourceAllocation(), notNullValue());
+        }
+
+        specificResourceAllocation
+                .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+
+        for (SpecificDayAssignment each : assignments) {
+            assertThat(each.getSpecificResourceAllocation(), nullValue());
+        }
     }
 
     @Test
