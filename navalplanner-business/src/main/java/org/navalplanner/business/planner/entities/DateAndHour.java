@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 
 /**
@@ -34,6 +35,7 @@ public class DateAndHour implements Comparable<DateAndHour> {
     private Integer hour;
 
     public DateAndHour(LocalDate date, Integer hour) {
+        Validate.notNull(date);
         this.date = date;
         this.hour = hour;
     }
@@ -47,9 +49,10 @@ public class DateAndHour implements Comparable<DateAndHour> {
     }
 
     @Override
-    public int compareTo(DateAndHour dateAndTime) {
-        int compareDate = date.compareTo(getDate(dateAndTime));
-        return (compareDate != 0) ? compareDate : compareHour(dateAndTime
+    public int compareTo(DateAndHour time) {
+        Validate.notNull(time);
+        int compareDate = date.compareTo(getDate(time));
+        return (compareDate != 0) ? compareDate : compareHour(time
                 .getHour());
     }
 

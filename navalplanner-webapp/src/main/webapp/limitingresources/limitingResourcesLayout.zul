@@ -21,10 +21,11 @@
     signature="java.lang.String _(java.lang.String name)" ?>
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-<zscript><![CDATA[
-limitingResourcesPanel = self;
-]]>
-</zscript>
+
+    <zscript><![CDATA[
+        limitingResourcesPanel = self;
+    ]]>
+    </zscript>
 
     <borderlayout sclass="resourcesloadlayout" width="auto">
 
@@ -97,11 +98,72 @@ limitingResourcesPanel = self;
                     <column label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
                     <column label="${i18n:_('Date')}" sort="auto(date)"/>
                     <column label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
-                    <column label="${i18n:_('Operations')}" width="150px"/>
+                    <column label="${i18n:_('Operations')}" width="200px"/>
                     <column label="${i18n:_('Auto queueing')}" width="100px" />
                 </columns>
             </grid>
         </south>
 
     </borderlayout>
+
+
+    <!-- Manual allocation -->
+    <window id="manualAllocationWindow"
+        title="${i18n:_('Manual allocation')}"
+        width="500px" left="50px" top="50px"
+        visible="false"
+        closable="true"
+        onClose="limitingResourcesController.closeManualAllocationWindow(event)">
+
+        <!-- Select assignable queues -->
+        <vbox>
+            <panel title="${i18n:_('Select queue')}" border="normal">
+                <panelchildren>
+                    <listbox id="listAssignableQueues"
+                        itemRenderer="@{limitingResourcesController.queueRenderer}"
+                        mold="select" />
+                </panelchildren>
+            </panel>
+        </vbox>
+
+        <!-- Select gap -->
+        <vbox>
+            <panel title="${i18n:_('Select gap')}" border="normal">
+                <panelchildren>
+                    <listbox id="listCandidateGaps"
+                            itemRenderer="@{limitingResourcesController.candidateGapRenderer}"
+                            multiple="false">
+                         <listhead>
+                             <listheader label="${i18n:_('Start')}" />
+                             <listheader label="${i18n:_('End')}" />
+                         </listhead>
+                    </listbox>
+                </panelchildren>
+            </panel>
+        </vbox>
+
+        <!-- Select date -->
+        <vbox>
+            <panel title="${i18n:_('Select date')}" border="normal">
+                <panelchildren>
+                    <radiogroup id="radioAllocationDate" orient="vertical">
+                        <radio label="${i18n:_('Earliest date')}" selected="true" />
+                        <radio label="${i18n:_('Latest date')}" />
+                    </radiogroup>
+                </panelchildren>
+            </panel>
+        </vbox>
+
+        <separator bar="false" spacing="30px" orient="horizontal"/>
+
+        <!-- Controls -->
+        <hbox>
+            <button id="ok" label="${i18n:_('Accept')}"
+                onClick="limitingResourcesController.accept(event)" />
+            <button id="cancel" label="${i18n:_('Cancel')}"
+                onClick="limitingResourcesController.cancel()" />
+        </hbox>
+
+    </window>
+
 </zk>

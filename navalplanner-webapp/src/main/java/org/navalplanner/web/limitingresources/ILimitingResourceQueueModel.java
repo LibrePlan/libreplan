@@ -23,6 +23,7 @@ package org.navalplanner.web.limitingresources;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.DateAndHour;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -77,6 +78,9 @@ public interface ILimitingResourceQueueModel {
      */
     boolean assignLimitingResourceQueueElement(LimitingResourceQueueElement element);
 
+    boolean assignEditingLimitingResourceQueueElementToQueueAt(
+            LimitingResourceQueue queue, DateAndHour time);
+
     ZoomLevel calculateInitialZoomLevel();
 
     /**
@@ -120,5 +124,12 @@ public interface ILimitingResourceQueueModel {
             LimitingResourceQueueElement element);
 
     void setTimeTrackerState(ZoomLevel zoomLevel);
+
+    List<LimitingResourceQueue> getAssignableQueues(
+            LimitingResourceQueueElement element);
+
+    void init(LimitingResourceQueueElement element);
+
+    LimitingResourceQueueElement getLimitingResourceQueueElement();
 
 }

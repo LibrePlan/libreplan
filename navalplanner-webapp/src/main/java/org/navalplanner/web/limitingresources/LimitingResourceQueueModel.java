@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.LocalDate;
@@ -61,7 +62,9 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -109,6 +112,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
 
     private List<LimitingResourceQueueElement> unassignedLimitingResourceQueueElements = new ArrayList<LimitingResourceQueueElement>();
+
+    private LimitingResourceQueueElement beingEdited;
 
     private Set<LimitingResourceQueueElement> toBeRemoved = new HashSet<LimitingResourceQueueElement>();
 
@@ -427,20 +432,26 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             queue = firstGapsForQueues.get(earliestGap);
             startTime = earliestGap.getStartTime();
         }
+        return assignLimitingResourceQueueElementToQueueAt(queueElement, queue, startTime);
+    }
+
+    private boolean assignLimitingResourceQueueElementToQueueAt(
+            LimitingResourceQueueElement element, LimitingResourceQueue queue,
+            DateAndHour startTime) {
 
         // Allocate day assignments and adjust start and end times for element
         List<DayAssignment> dayAssignments = LimitingResourceAllocator
-                .generateDayAssignments(queueElement.getResourceAllocation(),
+                .generateDayAssignments(element.getResourceAllocation(),
                         queue.getResource(), startTime);
         DateAndHour[] startAndEndTime = LimitingResourceAllocator
                 .calculateStartAndEndTime(dayAssignments);
-        updateStartAndEndTimes(queueElement, startAndEndTime);
-        queueElement.getResourceAllocation().allocateLimitingDayAssignments(
+        updateStartAndEndTimes(element, startAndEndTime);
+        element.getResourceAllocation().allocateLimitingDayAssignments(
                 dayAssignments);
 
         // Add element to queue
-        addLimitingResourceQueueElement(queue, queueElement);
-        markAsModified(queueElement);
+        addLimitingResourceQueueElement(queue, element);
+        markAsModified(element);
         return true;
     }
 
@@ -565,8 +576,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
         return null;
     }
-
-
 
     @Override
     @Transactional
@@ -703,6 +712,54 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     public void setTimeTrackerState(ZoomLevel timeTrackerState) {
         this.zoomLevel = timeTrackerState;
+    }
+
+    @Override
+    public List<LimitingResourceQueue> getAssignableQueues(
+            LimitingResourceQueueElement element) {
+
+        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            LimitingResourceQueue queue = retrieveQueueByResourceFromModel(element.getResource());
+            Validate.notNull(queue);
+            return Collections.singletonList(queue);
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            final GenericResourceAllocation generic = (GenericResourceAllocation) element.getResourceAllocation();
+            return findQueuesMatchingCriteria(limitingResourceQueues, generic.getCriterions());
+        }
+        return null;
+    }
+
+    private List<LimitingResourceQueue> findQueuesMatchingCriteria(List<LimitingResourceQueue> queues, Set<Criterion> criteria) {
+        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
+
+        final ICriterion compositedCriterion = CriterionCompounder.buildAnd(criteria).getResult();
+        for (LimitingResourceQueue each: queues) {
+            if (compositedCriterion.isSatisfiedBy(each.getResource())) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean assignEditingLimitingResourceQueueElementToQueueAt(
+            LimitingResourceQueue queue, DateAndHour startTime) {
+        Validate.notNull(beingEdited);
+        Validate.notNull(queue);
+        Validate.notNull(startTime);
+
+        return assignLimitingResourceQueueElementToQueueAt(beingEdited, queue, startTime);
+    }
+
+    @Override
+    public void init(LimitingResourceQueueElement element) {
+        beingEdited = retrieveQueueElementFromModel(element);
+    }
+
+    @Override
+    public LimitingResourceQueueElement getLimitingResourceQueueElement() {
+        return beingEdited;
     }
 
 }

@@ -31,9 +31,14 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.DateAndHour;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueElementGap;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -51,18 +56,28 @@ import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.Window;
 
 /**
  * Controller for limiting resources view
@@ -87,10 +102,18 @@ public class LimitingResourcesController implements Composer {
 
     private Grid gridUnassignedLimitingResourceQueueElements;
 
+    private Window manualAllocationWindow;
+
+    private Radiogroup radioAllocationDate;
+
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
 
-    private transient IFilterChangedListener filterChangedListener;
+    private final QueueRenderer queueRenderer = new QueueRenderer();
+
+    private final CandidateGapRenderer candidateGapRenderer = new CandidateGapRenderer();
+
+        private transient IFilterChangedListener filterChangedListener;
 
     public LimitingResourcesController() {
     }
@@ -111,6 +134,10 @@ public class LimitingResourcesController implements Composer {
         boolean filterByResources = true;
         reload(filterByResources);
     }
+
+    private Listbox listAssignableQueues;
+
+    private Listbox listCandidateGaps;
 
     private void reload(boolean filterByResources) {
         try {
@@ -135,6 +162,10 @@ public class LimitingResourcesController implements Composer {
             limitingResourcesPanel.afterCompose();
             gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
                     .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
+            manualAllocationWindow = (Window) limitingResourcesPanel.getFellowIfAny("manualAllocationWindow");
+            listAssignableQueues = (Listbox) manualAllocationWindow.getFellowIfAny("listAssignableQueues");
+            listCandidateGaps = (Listbox) manualAllocationWindow.getFellowIfAny("listCandidateGaps");
+            radioAllocationDate = (Radiogroup) manualAllocationWindow.getFellowIfAny("radioAllocationDate");
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -318,7 +349,22 @@ public class LimitingResourcesController implements Composer {
             Hbox hbox = new Hbox();
             hbox.appendChild(assignButton(element));
             hbox.appendChild(removeButton(element));
+            hbox.appendChild(manualButton(element));
             return hbox;
+        }
+
+        private Button manualButton(final LimitingResourceQueueElementDTO element) {
+            Button result = new Button();
+            result.setLabel(_("Manual"));
+            result.setTooltiptext(_("Manual allocation"));
+            result.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    manualAllocateLimitingResourceQueueElement(element);
+                }
+            });
+            return result;
         }
 
         private Button removeButton(final LimitingResourceQueueElementDTO element) {
@@ -373,6 +419,21 @@ public class LimitingResourcesController implements Composer {
             }
         }
 
+        private void manualAllocateLimitingResourceQueueElement(LimitingResourceQueueElementDTO dto) {
+            LimitingResourceQueueElement element = dto.getOriginal();
+            try {
+                setAssignableQueues(element);
+                limitingResourceQueueModel.init(element);
+                manualAllocationWindow.doModal();
+            } catch (SuspendNotAllowedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
         private void showErrorMessage(String error) {
             try {
                 Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
@@ -401,6 +462,168 @@ public class LimitingResourcesController implements Composer {
     public void unschedule(QueueTask task) {
         limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
         Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+    }
+
+    private void feedValidGaps(LimitingResourceQueueElement element, LimitingResourceQueue queue) {
+        feedValidGapsSince(element, queue, getStartDayBecauseOfGantt(element));
+    }
+
+    private DateAndHour getStartDayBecauseOfGantt(LimitingResourceQueueElement element) {
+        return new DateAndHour(new LocalDate(element.getEarlierStartDateBecauseOfGantt()), 0);
+    }
+
+    private void feedValidGapsSince(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour since) {
+        List<LimitingResourceQueueElementGap> gaps = LimitingResourceAllocator.getValidGapsForElementSince(element, queue, since);
+        listCandidateGaps.setModel(new SimpleListModel(gaps));
+        if (!gaps.isEmpty()) {
+            listCandidateGaps.setSelectedIndex(0);
+            disable(radioAllocationDate, false);
+        } else {
+            disable(radioAllocationDate, true);
+        }
+    }
+
+    private void disable(Radiogroup radiogroup, boolean disabled) {
+        for (Object obj: radiogroup.getChildren()) {
+            final Radio each = (Radio) obj;
+            each.setDisabled(disabled);
+        }
+    }
+
+    public CandidateGapRenderer getCandidateGapRenderer() {
+        return candidateGapRenderer;
+    }
+
+    private class CandidateGapRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            LimitingResourceQueueElementGap gap = (LimitingResourceQueueElementGap) data;
+
+            item.setValue(gap);
+            item.appendChild(cell(gap.getStartTime()));
+            item.appendChild(cell(gap.getEndTime()));
+        }
+
+        public Listcell cell(DateAndHour time) {
+            return new Listcell(formatTime(time));
+        }
+
+        private String formatTime(DateAndHour time) {
+            return time == null ? _("END") : time.getDate().toString("dd/MM/yyyy") + " - " + time.getHour();
+        }
+
+    }
+
+    private void setAssignableQueues(final LimitingResourceQueueElement element) {
+        List<LimitingResourceQueue> queues = limitingResourceQueueModel.getAssignableQueues(element);
+        listAssignableQueues.setModel(new SimpleListModel(queues));
+        listAssignableQueues.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                SelectEvent se = (SelectEvent) event;
+
+                LimitingResourceQueue queue = getSelectedQueue(se);
+                if (queue != null) {
+                    feedValidGaps(element, queue);
+                }
+            }
+
+            public LimitingResourceQueue getSelectedQueue(SelectEvent se) {
+                final Listitem item = (Listitem) se.getSelectedItems().iterator().next();
+                return (LimitingResourceQueue) item.getValue();
+            }
+
+        });
+        listAssignableQueues.setSelectedIndex(0);
+        feedValidGaps(element, queues.get(0));
+    }
+
+    private LimitingResourceQueue getSelectedQueue() {
+        LimitingResourceQueue result = null;
+
+        final Listitem item = listAssignableQueues.getSelectedItem();
+        if (item != null) {
+            result = (LimitingResourceQueue) item.getValue();
+        }
+        return result;
+    }
+
+    public ListitemRenderer getQueueRenderer() {
+        return queueRenderer;
+    }
+
+    private class QueueRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            final LimitingResourceQueue queue = (LimitingResourceQueue) data;
+            item.setValue(queue);
+            item.appendChild(cell(queue));
+        }
+
+        private Listcell cell(LimitingResourceQueue queue) {
+           Listcell result = new Listcell();
+           result.setLabel(queue.getResource().getName());
+           return result;
+        }
+
+    }
+
+    public void accept(Event e) {
+        LimitingResourceQueueElement element = limitingResourceQueueModel
+                .getLimitingResourceQueueElement();
+        LimitingResourceQueue queue = getSelectedQueue();
+        DateAndHour time = getSelectedAllocationTime();
+        limitingResourceQueueModel
+                .assignEditingLimitingResourceQueueElementToQueueAt(queue, time);
+        Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+        limitingResourcesPanel.appendQueueElementToQueue(element);
+        closeManualAllocationWindow(e);
+    }
+
+    private DateAndHour getSelectedAllocationTime() {
+        final LimitingResourceQueueElementGap selectedGap = getSelectedGap();
+        int index = radioAllocationDate.getSelectedIndex();
+        if (index == 0) {
+            return getEarliestTime(selectedGap);
+        } else if (index == 1) {
+            return getLatestTime(selectedGap);
+        } else if (index == 2) {
+
+        }
+        return null;
+    }
+
+    private DateAndHour getEarliestTime(LimitingResourceQueueElementGap gap) {
+        Validate.notNull(gap);
+        return gap.getStartTime();
+    }
+
+    private DateAndHour getLatestTime(LimitingResourceQueueElementGap gap) {
+        Validate.notNull(gap);
+        LimitingResourceQueueElement element = limitingResourceQueueModel.getLimitingResourceQueueElement();
+        LimitingResourceQueue queue = getSelectedQueue();
+        return LimitingResourceAllocator.startTimeToAllocateStartingFromEnd(
+                element.getResourceAllocation(), queue.getResource(), gap);
+    }
+
+    private LimitingResourceQueueElementGap getSelectedGap() {
+        Listitem item = listCandidateGaps.getSelectedItem();
+        if (item != null) {
+            return (LimitingResourceQueueElementGap) item.getValue();
+        }
+        return null;
+    }
+
+    public void cancel() {
+
+    }
+
+    public void closeManualAllocationWindow(Event e) {
+        manualAllocationWindow.setVisible(false);
+        e.stopPropagation();
     }
 
 }
