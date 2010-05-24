@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -84,36 +85,107 @@ public class LimitingResourceAllocator {
                 return null;
             }
 
-            if (canFitIntoGap(element, gap, resource)) {
+            if (isSpecific(element) && gap.canFit(element)) {
                 return gap;
+            } else if (isGeneric(element)){
+                final List<LimitingResourceQueueElementGap> gaps = splitIntoGapsSatisfyingCriteria(
+                        resource, getCriteria(element), gap);
+                for (LimitingResourceQueueElementGap subGap: gaps) {
+                    if (subGap.canFit(element)) {
+                        return subGap;
+                    }
+                }
             }
         } while (pos <= size);
 
         return null;
     }
 
-    private static boolean canFitIntoGap(LimitingResourceQueueElement element,
-            LimitingResourceQueueElementGap gap, final Resource resource) {
-
-        final boolean canfit = gap.canFit(element);
-        final ResourceAllocation<?> resourceAllocation = element
-                .getResourceAllocation();
-
-        if (resourceAllocation instanceof SpecificResourceAllocation) {
-            return canfit;
-        } else if (resourceAllocation instanceof GenericResourceAllocation) {
-            // Resource must satisfy element.criteria during for the
-            // period of time the element will be allocated in the
-            // queue
-            final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            List<DayAssignment> dayAssignments = generateDayAssignments(
-                    resourceAllocation, resource, gap.getStartTime());
-            DateAndHour[] startAndEndTime = calculateStartAndEndTime(dayAssignments);
-            return canfit
-                    && (satisfiesCriteriaDuringInterval(resource, generic
-                            .getCriterions(), startAndEndTime));
+    private void print(List<Criterion> criteria) {
+        System.out.println("### print");
+        for (Criterion each: criteria) {
+            System.out.println("### each: " + each);
         }
-        return false;
+        System.out.println("### ");
+    }
+
+    private static boolean isGeneric(LimitingResourceQueueElement element) {
+        return element.getResourceAllocation() instanceof GenericResourceAllocation;
+    }
+
+    private static boolean isSpecific(LimitingResourceQueueElement element) {
+        return element.getResourceAllocation() instanceof SpecificResourceAllocation;
+    }
+
+    private static Set<Criterion> getCriteria(LimitingResourceQueueElement element) {
+        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
+        if (resourceAllocation instanceof GenericResourceAllocation) {
+            return ((GenericResourceAllocation) resourceAllocation).getCriterions();
+        }
+        return null;
+    }
+
+    private static Date toDate(LocalDate date) {
+        return date != null ? date.toDateTimeAtStartOfDay().toDate() : null;
+    }
+
+    private static List<LimitingResourceQueueElementGap> splitIntoGapsSatisfyingCriteria(
+            Resource resource, Set<Criterion> criteria, LimitingResourceQueueElementGap gap) {
+        return splitIntoGapsSatisfyingCriteria(resource, criteria, gap.getStartTime(), gap.getEndTime());
+    }
+
+    /**
+     * Returns a set of {@link LimitingResourceQueueElementGap} composed by those gaps
+     * which satisfy <em>criteria</em> within the period: <em>gapStartTime</em> till <em>gapEndTime</em>
+     *
+     * @param resource
+     * @param criteria
+     *            criteria to be satisfied by resource
+     * @param gapStartTime
+     *            start time of gap
+     * @param gapEndTime
+     *            end time of gap
+     * @return
+     */
+    private static List<LimitingResourceQueueElementGap> splitIntoGapsSatisfyingCriteria(
+            Resource resource, Set<Criterion> criteria, DateAndHour gapStartTime,
+            DateAndHour gapEndTime) {
+
+        final ICriterion compositedCriterion = CriterionCompounder.buildAnd(criteria)
+                .getResult();
+        final ResourceCalendar calendar = resource.getCalendar();
+
+        // FIXME: If endTime is null (lastGap), set endTime as 100 years ahead startTime
+        final LocalDate gapEndDate = gapEndTime != null ? gapEndTime.getDate().plusDays(1)
+                : gapStartTime.getDate().plusYears(10);
+        final LocalDate gapStartDate = gapStartTime.getDate();
+
+        List<LimitingResourceQueueElementGap> result = new ArrayList<LimitingResourceQueueElementGap>();
+
+        LocalDate date = gapStartDate;
+        boolean open = compositedCriterion.isSatisfiedBy(resource, toDate(date));
+        DateAndHour startTime = gapStartTime, endTime;
+        while (date.isBefore(gapEndDate)) {
+            if (calendar.getCapacityAt(date) == 0) {
+                date = date.plusDays(1);
+                continue;
+            }
+
+            if (open == false && compositedCriterion.isSatisfiedBy(resource, toDate(date))) {
+                startTime = new DateAndHour(date, 0);
+                open = true;
+            }
+            if (open == true && !compositedCriterion.isSatisfiedBy(resource, toDate(date))) {
+                endTime = new DateAndHour(date, 0);
+                result.add(LimitingResourceQueueElementGap.create(resource,
+                        startTime, endTime));
+                open = false;
+            }
+            date = date.plusDays(1);
+        }
+        result.add(LimitingResourceQueueElementGap.create(resource, startTime, gapEndTime));
+
+        return result;
     }
 
     /**
@@ -133,18 +205,6 @@ public class LimitingResourceAllocator {
         result[1] = new DateAndHour(end.getDay(), end.getHours());
 
         return result;
-    }
-
-    private static boolean satisfiesCriteriaDuringInterval(Resource resource, Set<Criterion> criteria, DateAndHour[] interval) {
-        final Date startDate = interval[0].getDate().toDateTimeAtStartOfDay().toDate();
-        final Date endDate = interval[1].getDate().toDateTimeAtStartOfDay().toDate();
-        return satisfiesCriteriaDuringInterval(resource, criteria, startDate, endDate);
-    }
-
-    private static boolean satisfiesCriteriaDuringInterval(Resource resource, Set<Criterion> criteria, Date startDate, Date endDate) {
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(criteria)
-                .getResult();
-        return compositedCriterion.isSatisfiedBy(resource, startDate, endDate);
     }
 
     private static LimitingResourceQueueElementGap getGapInQueueAtPosition(
