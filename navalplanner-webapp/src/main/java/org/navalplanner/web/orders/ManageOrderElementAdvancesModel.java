@@ -158,10 +158,10 @@ public class ManageOrderElementAdvancesModel implements
                     .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) assignment);
             this.isIndirectAdvanceAssignment = true;
         } else {
-	    if (assignment instanceof DirectAdvanceAssignment) {
-	    this.advanceAssignment = (DirectAdvanceAssignment) assignment;
-            this.isIndirectAdvanceAssignment = false;
-	    }
+            if (assignment instanceof DirectAdvanceAssignment) {
+                this.advanceAssignment = (DirectAdvanceAssignment) assignment;
+                this.isIndirectAdvanceAssignment = false;
+            }
         }
     }
 
@@ -512,15 +512,17 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void sortListAdvanceMeasurement() {
-        ArrayList<AdvanceMeasurement> advanceMeasurements = new ArrayList<AdvanceMeasurement>(
-                this.advanceAssignment.getAdvanceMeasurements());
-        Collections.sort(advanceMeasurements,
+        if (advanceAssignment != null) {
+            ArrayList<AdvanceMeasurement> advanceMeasurements = new ArrayList<AdvanceMeasurement>(
+                advanceAssignment.getAdvanceMeasurements());
+            Collections.sort(advanceMeasurements,
                 new AdvanceMeasurementComparator());
-        TreeSet<AdvanceMeasurement> measurements = new TreeSet<AdvanceMeasurement>(
+            TreeSet<AdvanceMeasurement> measurements = new TreeSet<AdvanceMeasurement>(
                 new AdvanceMeasurementComparator());
-        measurements.addAll(advanceMeasurements);
-        this.advanceAssignment
+            measurements.addAll(advanceMeasurements);
+            this.advanceAssignment
                 .setAdvanceMeasurements(measurements);
+        }
     }
 
     @Override

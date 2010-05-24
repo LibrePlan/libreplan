@@ -201,15 +201,17 @@ public class ManageOrderElementAdvancesController extends
     private Listbox editAdvances;
 
     public void selectAdvanceLine(Listitem selectedItem) {
+        setSelectedAdvanceLine();
+        validateListAdvanceMeasurement();
         AdvanceAssignment advance = (AdvanceAssignment) selectedItem.getValue();
-        indexSelectedItem = editAdvances.getIndexOfItem(editAdvances
-                .getSelectedItem());
+        indexSelectedItem = editAdvances.getIndexOfItem(selectedItem);
         prepareEditAdvanceMeasurements(advance);
     }
 
-    public void selectLastAdvanceLine() {
-        indexSelectedItem = getAdvanceAssignments().size() - 1;
-        if (indexSelectedItem >= 0) {
+    public void selectAdvanceLine(int index) {
+        indexSelectedItem = index;
+        if ((indexSelectedItem >= 0)
+                && (indexSelectedItem < getAdvanceAssignments().size())) {
             prepareEditAdvanceMeasurements(getAdvanceAssignments().get(
                 indexSelectedItem));
         }
@@ -226,7 +228,6 @@ public class ManageOrderElementAdvancesController extends
 
     public void prepareEditAdvanceMeasurements(AdvanceAssignment advance) {
         if (advance != null && advance.getAdvanceType() != null) {
-            validateListAdvanceMeasurement();
             manageOrderElementAdvancesModel
                     .prepareEditAdvanceMeasurements(advance);
             reloadAdvances();
@@ -234,8 +235,9 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public void goToCreateLineAdvanceAssignment() {
+        validateListAdvanceMeasurement();
         manageOrderElementAdvancesModel.addNewLineAdvaceAssignment();
-        selectLastAdvanceLine();
+        selectAdvanceLine(getAdvanceAssignments().size() - 1);
     }
 
     public void goToCreateLineAdvanceMeasurement() {
@@ -255,9 +257,14 @@ public class ManageOrderElementAdvancesController extends
             manageOrderElementAdvancesModel
                     .removeLineAdvanceAssignment(advance);
             if (indexSelectedItem == editAdvances.getIndexOfItem(listItem)) {
-                indexSelectedItem = -1;
+                selectSpreadAdvanceLine();
+            } else {
+                if (indexSelectedItem > editAdvances.getIndexOfItem(listItem)) {
+                    selectAdvanceLine(indexSelectedItem - 1);
+                } else {
+                    reloadAdvances();
+                }
             }
-            reloadAdvances();
         }
     }
 
