@@ -1167,9 +1167,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     Integer hoursOrder = orderDayAssignmentsGrouped.get(day).get(
                             resource);
 
-                    Integer hoursOther = resourceDayAssignmentsGrouped.get(day)
-                            .get(resource)
-                            - hoursOrder;
+                    // FIXME review why is null sometimes
+                    Integer hoursOther = (resourceDayAssignmentsGrouped
+                            .get(day) != null) ? resourceDayAssignmentsGrouped
+                            .get(day).get(resource)
+                            - hoursOrder : 0;
 
                     if (hoursOrder <= workableHours) {
                         orderLoad += hoursOrder;

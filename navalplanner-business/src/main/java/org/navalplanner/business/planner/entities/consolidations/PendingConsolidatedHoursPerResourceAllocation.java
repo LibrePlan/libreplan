@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities.consolidations;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 
 import org.hibernate.validator.NotNull;
@@ -41,11 +43,10 @@ public class PendingConsolidatedHoursPerResourceAllocation extends BaseEntity {
     private ResourceAllocation<?> resourceAllocation;
 
     public static PendingConsolidatedHoursPerResourceAllocation create(
-            LocalDate consolidatedDate,
- ResourceAllocation<?> resourceAllocation) {
+            LocalDate consolidatedDate, BigDecimal consolidatedValue,
+            ResourceAllocation<?> resourceAllocation) {
         return create(new PendingConsolidatedHoursPerResourceAllocation(
-                consolidatedDate,
-                resourceAllocation));
+                consolidatedDate, consolidatedValue, resourceAllocation));
     }
 
     public static PendingConsolidatedHoursPerResourceAllocation create(
@@ -56,36 +57,41 @@ public class PendingConsolidatedHoursPerResourceAllocation extends BaseEntity {
     }
 
     protected PendingConsolidatedHoursPerResourceAllocation(
-            LocalDate consolidatedDate,
- ResourceAllocation<?> resourceAllocation) {
-        this.setPendingConsolidatedHours(calculatePendingConsolidatedHours(
-                consolidatedDate, resourceAllocation
-                        .getAssignments()));
+            LocalDate consolidatedDate, BigDecimal consolidatedValue,
+            ResourceAllocation<?> resourceAllocation) {
         this.setResourceAllocation(resourceAllocation);
+        this.setPendingConsolidatedHours(calculatePendingConsolidatedHours(
+                consolidatedDate, consolidatedValue, resourceAllocation
+                        .getAssignments()));
     }
 
     protected PendingConsolidatedHoursPerResourceAllocation(
             Integer pendingConsolidatedHours,
             ResourceAllocation<?> resourceAllocation) {
-        this.setPendingConsolidatedHours(pendingConsolidatedHours);
         this.setResourceAllocation(resourceAllocation);
+        this.setPendingConsolidatedHours(pendingConsolidatedHours);
     }
 
     protected PendingConsolidatedHoursPerResourceAllocation() {
 
     }
 
-    private Integer calculatePendingConsolidatedHours(LocalDate consolidatedDate,
+    private Integer calculatePendingConsolidatedHours(
+            LocalDate consolidatedDate, BigDecimal consolidatedValue,
             Collection<? extends DayAssignment> assignments) {
-        int result = 0;
         for (DayAssignment dayAssignment : assignments) {
-            if ((dayAssignment.getDay().toDateTimeAtStartOfDay()
-                    .compareTo(consolidatedDate.toDateTimeAtStartOfDay())) > 0) {
+            if ((dayAssignment.getDay().compareTo(consolidatedDate)) <= 0) {
                 dayAssignment.setConsolidated(true);
-                result += dayAssignment.getHours();
             }
         }
-        return new Integer(result);
+
+        int originalTotalAssigment = resourceAllocation
+                .getOriginalTotalAssigment();
+        return BigDecimal.ONE
+                .subtract(
+                        consolidatedValue.divide(new BigDecimal(100),
+                                RoundingMode.DOWN)).multiply(
+                        new BigDecimal(originalTotalAssigment)).intValue();
     }
 
     public void setPendingConsolidatedHours(Integer pendingConsolidatedHours) {

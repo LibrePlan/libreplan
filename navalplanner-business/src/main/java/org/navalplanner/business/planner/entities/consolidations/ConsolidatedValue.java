@@ -79,13 +79,13 @@ public abstract class ConsolidatedValue extends BaseEntity {
     }
 
     public static Set<PendingConsolidatedHoursPerResourceAllocation> createPendingConsolidatedHours(
-            LocalDate consolidatedDate,
+            LocalDate consolidatedDate, BigDecimal consolidatedValue,
             Collection<? extends ResourceAllocation> allocations) {
         Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours = new HashSet<PendingConsolidatedHoursPerResourceAllocation>();
         for (ResourceAllocation allocation : allocations) {
             pendingConsolidatedHours
                     .add(PendingConsolidatedHoursPerResourceAllocation.create(
-                            consolidatedDate, allocation));
+                            consolidatedDate, consolidatedValue, allocation));
         }
         return pendingConsolidatedHours;
     }
