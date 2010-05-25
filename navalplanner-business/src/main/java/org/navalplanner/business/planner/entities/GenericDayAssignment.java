@@ -49,6 +49,7 @@ public class GenericDayAssignment extends DayAssignment {
         for (GenericDayAssignment a : assignemnts) {
             GenericDayAssignment created = create(a.getDay(), a.getHours(), a
                     .getResource());
+            created.setConsolidated(a.isConsolidated());
             created.setGenericResourceAllocation(newAllocation);
             created.associateToResource();
             result.add(created);

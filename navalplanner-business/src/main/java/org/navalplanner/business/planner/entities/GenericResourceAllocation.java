@@ -380,4 +380,12 @@ public class GenericResourceAllocation extends
         return result;
     }
 
+    public void overrideConsolidatedDayAssignments(
+            GenericResourceAllocation origin) {
+        if (origin != null) {
+            this.genericDayAssignments = GenericDayAssignment.copy(this, origin
+                    .getConsolidatedAssignments());
+        }
+    }
+
 }

@@ -37,7 +37,6 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.resourceload.ResourceLoadModel;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -118,6 +117,7 @@ public class GenericAllocationRow extends AllocationRow {
         GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
         if (origin != null) {
             result.overrideAssignedHoursForResource(origin);
+            result.overrideConsolidatedDayAssignments(origin);
         }
         return result;
     }
@@ -136,4 +136,5 @@ public class GenericAllocationRow extends AllocationRow {
     public List<Resource> getAssociatedResources() {
         return resources;
     }
+
 }

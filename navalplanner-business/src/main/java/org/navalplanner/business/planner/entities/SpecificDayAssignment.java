@@ -42,6 +42,7 @@ public class SpecificDayAssignment extends DayAssignment {
         for (SpecificDayAssignment s : specificDaysAssignment) {
             SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
                     .getResource());
+            created.setConsolidated(s.isConsolidated());
             created.setSpecificResourceAllocation(allocation);
             created.associateToResource();
             result.add(created);

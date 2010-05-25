@@ -22,11 +22,13 @@ package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -423,14 +425,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 @Override
                 public void allocate(ResourcesPerDay resourcesPerDay) {
                     Task currentTask = getTask();
-                    LocalDate startInclusive = new LocalDate(currentTask
-                            .getStartDate());
+                    LocalDate startInclusive = currentTask
+                            .getFirstDayNotConsolidated();
                     List<T> assignmentsCreated = createAssignments(
-                            resourcesPerDay, startInclusive,
-                            endExclusive);
+                            resourcesPerDay, startInclusive, endExclusive);
                     resetAssignmentsTo(assignmentsCreated);
                     setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
                 }
+
             };
         }
 
@@ -485,7 +487,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private void allocate(LocalDate end, int hours) {
-            LocalDate startInclusive = new LocalDate(getTask().getStartDate());
+            LocalDate startInclusive = getTask().getFirstDayNotConsolidated();
             List<T> assignmentsCreated = createAssignments(startInclusive, end,
                     hours);
             resetAssignmentsTo(assignmentsCreated);
@@ -494,10 +496,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private void allocate(LocalDate startInclusive, LocalDate endExclusive,
                 int hours) {
-            List<T> assignmentsCreated = createAssignments(startInclusive,
-                    endExclusive, hours);
-            resetAssigmentsForInterval(startInclusive, endExclusive,
-                    assignmentsCreated);
+            LocalDate start = Collections.max(Arrays.asList(startInclusive,
+                    getTask().getFirstDayNotConsolidated()));
+            List<T> assignmentsCreated = createAssignments(start, endExclusive, hours);
+            resetAssigmentsForInterval(start, endExclusive, assignmentsCreated);
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
@@ -595,17 +597,30 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private void resetAssignmentsTo(List<T> assignments) {
-        removingAssignments(getAssignments());
+        removingAssignments((List<? extends DayAssignment>) removeConsolidated(getAssignments()));
         addingAssignments(assignments);
         setOriginalTotalAssigment(getAssignedHours());
     }
 
     protected void resetAssigmentsForInterval(LocalDate startInclusive,
             LocalDate endExclusive, List<T> assignmentsCreated) {
-        removingAssignments(getAssignments(startInclusive, endExclusive));
+        removingAssignments(removeConsolidated(getAssignments(startInclusive,
+                endExclusive)));
         addingAssignments(assignmentsCreated);
         setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
         setOriginalTotalAssigment(getAssignedHours());
+    }
+
+    private List<? extends DayAssignment> removeConsolidated(
+            List<? extends DayAssignment> assignments) {
+        for (Iterator<? extends DayAssignment> iterator = assignments
+                .iterator(); iterator.hasNext();) {
+            DayAssignment dayAssignment = (DayAssignment) iterator.next();
+            if (dayAssignment.isConsolidated()) {
+                iterator.remove();
+            }
+        }
+        return assignments;
     }
 
     public void removeLimitingDayAssignments() {

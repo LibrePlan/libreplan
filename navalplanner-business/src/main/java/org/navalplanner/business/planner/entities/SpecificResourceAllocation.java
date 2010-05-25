@@ -305,4 +305,12 @@ public class SpecificResourceAllocation extends
         return result;
     }
 
+    public void overrideConsolidatedDayAssignments(
+            SpecificResourceAllocation origin) {
+        if (origin != null) {
+            this.specificDaysAssignment = SpecificDayAssignment.copy(this,
+                    origin.getConsolidatedAssignments());
+        }
+    }
+
 }
