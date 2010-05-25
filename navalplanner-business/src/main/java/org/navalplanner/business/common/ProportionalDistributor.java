@@ -88,6 +88,9 @@ public class ProportionalDistributor {
     }
 
     public int[] distribute(final int total) {
+        if (proportions.length == 0) {
+            return new int[0];
+        }
         int[] result = new int[proportions.length];
         int remaining = total - assignIntegerParts(total, result);
         if (remaining == 0) {

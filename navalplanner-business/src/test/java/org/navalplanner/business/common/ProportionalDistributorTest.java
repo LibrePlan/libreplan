@@ -19,6 +19,7 @@
  */
 package org.navalplanner.business.common;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -64,12 +65,20 @@ public class ProportionalDistributorTest {
     }
 
     @Test
-    public void ifNoSharesProvidedItDistributesEqually() {
+    public void ifEmptySharesProvidedItDistributesEqually() {
         ProportionalDistributor distributor = ProportionalDistributor.create(0,
                 0, 0, 0);
         assertThat(distributor.distribute(4), equalToDistribution(1, 1, 1, 1));
         assertThat(distributor.distribute(5), equalToDistribution(2, 1, 1, 1));
         assertThat(distributor.distribute(6), equalToDistribution(2, 2, 1, 1));
+    }
+
+    @Test
+    public void noSharesProvidedImpliesItReturnsEmptyDistribution() {
+        ProportionalDistributor distributor = ProportionalDistributor.create();
+        assertThat(distributor.distribute(0).length, equalTo(0));
+        assertThat(distributor.distribute(1).length, equalTo(0));
+
     }
 
     @Test
