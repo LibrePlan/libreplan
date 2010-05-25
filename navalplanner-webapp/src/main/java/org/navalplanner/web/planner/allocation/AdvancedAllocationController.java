@@ -614,7 +614,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         leftPane.setFixedLayout(true);
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
         populateHorizontalListbox();
-        populateVerticalListbox();
     }
 
     public void paginationDown() {
@@ -657,7 +656,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);
                 populateHorizontalListbox();
-                populateVerticalListbox();
                 Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
             }
         });
@@ -753,18 +751,23 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Component normalLayout;
     private Component noDataLayout;
     private TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane;
+
     private int verticalIndex = 0;
+    private List<Integer> verticalPaginationIndexes;
+    private int verticalPage;
 
     private List<Row> getRows() {
         if (rowsCached != null) {
             return filterRows(rowsCached);
         }
         rowsCached = new ArrayList<Row>();
+        int position = 1;
         for (AllocationInput allocationInput : allocationInputs) {
             if (allocationInput.getAggregate()
                     .getAllocationsSortedByStartDate().isEmpty()) {
             } else {
                 Row groupingRow = buildGroupingRow(allocationInput);
+                groupingRow.setDescription(position + " " + allocationInput.getTaskName());
                 groupingRows.put(allocationInput, groupingRow);
                 rowsCached.add(groupingRow);
                 List<Row> genericRows = genericRows(allocationInput);
@@ -773,8 +776,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 List<Row> specificRows = specificRows(allocationInput);
                 groupingRow.listenTo(specificRows);
                 rowsCached.addAll(specificRows);
+                position++;
             }
         }
+        populateVerticalListbox();
         return filterRows(rowsCached);
     }
 
@@ -786,17 +791,20 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         if(advancedAllocationVerticalPagination.getChildren().size() >= 2) {
             advancedAllocationVerticalPagination.setDisabled(false);
             advancedAllocationVerticalPagination.setSelectedIndex(
-                    verticalIndex / VERTICAL_MAX_ELEMENTS);
+                    verticalPage);
         }
         else {
             advancedAllocationVerticalPagination.setDisabled(true);
         }
-        return rows.subList(verticalIndex, Math.min(rows.size(),
-                verticalIndex + VERTICAL_MAX_ELEMENTS));
+        return rows.subList(verticalIndex,
+                verticalPage + 1 < verticalPaginationIndexes.size() ?
+                       verticalPaginationIndexes.get(verticalPage + 1).intValue() :
+                       rows.size());
     }
 
     public void verticalPagedown() {
-        verticalIndex = verticalIndex + VERTICAL_MAX_ELEMENTS;
+        verticalPage++;
+        verticalIndex = verticalPaginationIndexes.get(verticalPage);
         timeTrackedTableWithLeftPane.reload();
     }
 
@@ -805,26 +813,56 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public void verticalPageup() {
-        verticalIndex = Math.max(verticalIndex - VERTICAL_MAX_ELEMENTS, 0);
+        verticalPage--;
+        verticalIndex = verticalPaginationIndexes.get(verticalPage);
         timeTrackedTableWithLeftPane.reload();
     }
 
     public void goToSelectedVerticalPage() {
-        verticalIndex = advancedAllocationVerticalPagination.getSelectedIndex() * VERTICAL_MAX_ELEMENTS;
+        verticalPage = advancedAllocationVerticalPagination.
+            getSelectedIndex();
+        verticalIndex = verticalPaginationIndexes.get(verticalPage);
         timeTrackedTableWithLeftPane.reload();
     }
 
     public void populateVerticalListbox() {
         if (rowsCached != null) {
-            for(int i=0; i<rowsCached.size(); i+=VERTICAL_MAX_ELEMENTS) {
-                int endPosition = Math.min(i+VERTICAL_MAX_ELEMENTS, rowsCached.size());
-                String label = (i+1) + " " + rowsCached.get(i).getName() + " - " +
-                    (endPosition) + " " + rowsCached.get(endPosition-1).getName();
+            verticalPage = 0;
+            verticalPaginationIndexes = new ArrayList<Integer>();
+            for(int i=0; i<rowsCached.size(); i=
+                    correctVerticalPageDownPosition(i+VERTICAL_MAX_ELEMENTS)) {
+                int endPosition = correctVerticalPageUpPosition(Math.min(
+                        rowsCached.size(), i+VERTICAL_MAX_ELEMENTS) - 1);
+                String label = rowsCached.get(i).getDescription() + " - " +
+                    rowsCached.get(endPosition).getDescription();
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(label));
                 advancedAllocationVerticalPagination.appendChild(item);
+                verticalPaginationIndexes.add(new Integer(i));
             }
         }
+    }
+
+    private int correctVerticalPageUpPosition(int position) {
+        int correctedPosition = position;
+        //moves the pointer up until it finds the previous grouping row
+        //or the beginning of the list
+        while(correctedPosition > 0 &&
+                !rowsCached.get(correctedPosition).isGroupingRow()) {
+            correctedPosition--;
+        }
+        return correctedPosition;
+    }
+
+    private int correctVerticalPageDownPosition(int position) {
+        int correctedPosition = position;
+        //moves the pointer down until it finds the next grouping row
+        //or the end of the list
+        while(correctedPosition < rowsCached.size() &&
+                !rowsCached.get(correctedPosition).isGroupingRow()) {
+            correctedPosition++;
+        }
+        return correctedPosition;
     }
 
     private List<Row> specificRows(AllocationInput allocationInput) {
@@ -1421,7 +1459,7 @@ class Row {
         return aggregate.getAllocationsSortedByStartDate().get(0);
     }
 
-    private boolean isGroupingRow() {
+    public boolean isGroupingRow() {
         return level == 0;
     }
 
