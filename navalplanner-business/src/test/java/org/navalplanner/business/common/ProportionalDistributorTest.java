@@ -64,6 +64,15 @@ public class ProportionalDistributorTest {
     }
 
     @Test
+    public void ifNoSharesProvidedItDistributesEqually() {
+        ProportionalDistributor distributor = ProportionalDistributor.create(0,
+                0, 0, 0);
+        assertThat(distributor.distribute(4), equalToDistribution(1, 1, 1, 1));
+        assertThat(distributor.distribute(5), equalToDistribution(2, 1, 1, 1));
+        assertThat(distributor.distribute(6), equalToDistribution(2, 2, 1, 1));
+    }
+
+    @Test
     public void disputedPartGoesToFirstIfEqualWeight() {
         ProportionalDistributor distributor = ProportionalDistributor.create(
                 10, 10, 10);

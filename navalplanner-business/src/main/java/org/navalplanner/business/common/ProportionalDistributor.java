@@ -117,7 +117,8 @@ public class ProportionalDistributor {
                 .transform(difference(currentProportions));
         Collections.sort(transform, Collections.reverseOrder());
         for (int i = 0; i < remaining; i++) {
-            ProportionWithPosition proportionWithPosition = transform.get(i);
+            ProportionWithPosition proportionWithPosition = transform.get(i
+                    % currentProportions.length);
             result[proportionWithPosition.position] = result[proportionWithPosition.position] + 1;
         }
     }
