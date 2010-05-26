@@ -586,6 +586,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void applyChanges() {
         removeQueueElements();
         saveQueueElements();
+        taskDAO.removeOrphanedDayAssignments();
     }
 
     private void saveQueueElements() {
