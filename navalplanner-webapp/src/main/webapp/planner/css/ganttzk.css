@@ -859,6 +859,12 @@ div.z-tree {
     font-weight: bold;
     color: #555555;
 }
+.advancedallocationlayout .unmodifiable-hours.z-label {
+    color: #555555;
+}
+.advancedallocationlayout .consolidated-hours.z-label {
+    color: #FF0000;
+}
 .advancedallocationlayout .z-row .z-intbox-disd {
     color: 0 !important;
 }
