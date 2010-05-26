@@ -870,20 +870,20 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (SpecificResourceAllocation specificResourceAllocation : allocationInput.getAggregate()
                 .getSpecificAllocations()) {
             result.add(createSpecificRow(specificResourceAllocation,
-                    allocationInput.getResultReceiver().createRestriction()));
+                    allocationInput.getResultReceiver().createRestriction(), allocationInput.task));
         }
         return result;
     }
 
     private Row createSpecificRow(
             SpecificResourceAllocation specificResourceAllocation,
-            Restriction restriction) {
+            Restriction restriction, TaskElement task) {
         return Row.createRow(messages, restriction,
                 specificResourceAllocation.getResource()
                         .getName(), 1, Arrays
                 .asList(specificResourceAllocation), specificResourceAllocation
                 .getResource().getShortDescription(),
-                specificResourceAllocation.getResource().isLimitingResource());
+                specificResourceAllocation.getResource().isLimitingResource(), task);
     }
 
     private List<Row> genericRows(AllocationInput allocationInput) {
@@ -891,18 +891,18 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (GenericResourceAllocation genericResourceAllocation : allocationInput.getAggregate()
                 .getGenericAllocations()) {
             result.add(buildGenericRow(genericResourceAllocation,
-                    allocationInput.getResultReceiver().createRestriction()));
+                    allocationInput.getResultReceiver().createRestriction(), allocationInput.task));
         }
         return result;
     }
 
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation,
-            Restriction restriction) {
+            Restriction restriction, TaskElement task) {
         return Row.createRow(messages, restriction, Criterion
                 .getNames(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation), genericResourceAllocation
-                .isLimiting());
+                .isLimiting(), task);
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
@@ -910,7 +910,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 .createRestriction();
         String taskName = _("{0}", allocationInput.getTaskName());
         Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
-                allocationInput.getAllocationsSortedByStartDate(), false);
+                allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
         return groupingRow;
     }
 
@@ -1026,9 +1026,9 @@ class Row {
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
  List<? extends ResourceAllocation<?>> allocations,
-            String description, boolean limiting) {
+            String description, boolean limiting, TaskElement task) {
         Row newRow = new Row(messages, restriction, name, level, allocations,
-                limiting);
+                limiting, task);
         newRow.setDescription(description);
         return newRow;
     }
@@ -1036,9 +1036,9 @@ class Row {
     static Row createRow(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction, String name,
             int level, List<? extends ResourceAllocation<?>> allocations,
-            boolean limiting) {
+            boolean limiting, TaskElement task) {
         return new Row(messages, restriction, name, level, allocations,
-                limiting);
+                limiting, task);
     }
 
     public void markErrorOnTotal(String message) {
@@ -1064,6 +1064,8 @@ class Row {
     private final AdvancedAllocationController.Restriction restriction;
 
     private final IMessagesForUser messages;
+
+    private TaskElement task;
 
     void listenTo(Collection<Row> rows) {
         for (Row row : rows) {
@@ -1376,12 +1378,13 @@ class Row {
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
  List<? extends ResourceAllocation<?>> allocations,
-            boolean limiting) {
+            boolean limiting, TaskElement task) {
         this.messages = messages;
         this.restriction = restriction;
         this.name = name;
         this.level = level;
         this.isLimiting = limiting;
+        this.task = task;
         this.aggregate = new AggregateOfResourceAllocations(
                 new ArrayList<ResourceAllocation<?>>(allocations));
     }
@@ -1394,8 +1397,9 @@ class Row {
     }
 
     Component hoursOnInterval(DetailItem item) {
-        Component result = isGroupingRow() ? new Label() : disableIfNeeded(
-                item, noNegativeIntbox());
+        Component result =
+            isGroupingRow() || isBeforeTaskStartDate(item) ? new Label() :
+                disableIfNeeded(item, noNegativeIntbox());
         reloadHoursOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
@@ -1415,7 +1419,7 @@ class Row {
 
     private void addListenerIfNeeded(final DetailItem item,
             final Component component) {
-        if (isGroupingRow()) {
+        if (isGroupingRow() || isBeforeTaskStartDate(item)) {
             return;
         }
         final Intbox intbox = (Intbox) component;
@@ -1443,6 +1447,11 @@ class Row {
             Label label = (Label) component;
             label.setValue(getHoursForDetailItem(item) + "");
             label.setClass("calculated-hours");
+        }
+        else if (isBeforeTaskStartDate(item)) {
+            Label label = (Label) component;
+            label.setValue(getHoursForDetailItem(item) + "");
+            label.setClass("unmodifiable-hours");
         } else {
             Intbox intbox = (Intbox) component;
             intbox.setValue(getHoursForDetailItem(item));
@@ -1450,6 +1459,12 @@ class Row {
                 intbox.setDisabled(true);
             }
         }
+    }
+
+    private boolean isBeforeTaskStartDate(DetailItem item) {
+        DateTime taskStartDate =
+            new DateTime(task.getStartDate().getTime());
+        return item.getEndDate().compareTo(taskStartDate) < 0;
     }
 
     private ResourceAllocation<?> getAllocation() {
