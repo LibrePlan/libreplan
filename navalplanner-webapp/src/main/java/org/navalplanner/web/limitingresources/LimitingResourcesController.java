@@ -26,7 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +36,6 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DateAndHour;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
@@ -57,13 +58,16 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -105,6 +109,10 @@ public class LimitingResourcesController implements Composer {
     private Window manualAllocationWindow;
 
     private Radiogroup radioAllocationDate;
+
+    private Datebox startAllocationDate;
+
+    private Map<LimitingResourceQueueElementGap, DateAndHour> endAllocationDates = new HashMap<LimitingResourceQueueElementGap, DateAndHour>();
 
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
@@ -160,12 +168,15 @@ public class LimitingResourcesController implements Composer {
             this.parent.getChildren().clear();
             this.parent.appendChild(limitingResourcesPanel);
             limitingResourcesPanel.afterCompose();
+
             gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
                     .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
             manualAllocationWindow = (Window) limitingResourcesPanel.getFellowIfAny("manualAllocationWindow");
             listAssignableQueues = (Listbox) manualAllocationWindow.getFellowIfAny("listAssignableQueues");
             listCandidateGaps = (Listbox) manualAllocationWindow.getFellowIfAny("listCandidateGaps");
             radioAllocationDate = (Radiogroup) manualAllocationWindow.getFellowIfAny("radioAllocationDate");
+            startAllocationDate = (Datebox) manualAllocationWindow.getFellowIfAny("startAllocationDate");
+
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -474,13 +485,48 @@ public class LimitingResourcesController implements Composer {
 
     private void feedValidGapsSince(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour since) {
         List<LimitingResourceQueueElementGap> gaps = LimitingResourceAllocator.getValidGapsForElementSince(element, queue, since);
+        endAllocationDates = calculateEndAllocationDates(element.getResourceAllocation(), queue.getResource(), gaps);
         listCandidateGaps.setModel(new SimpleListModel(gaps));
         if (!gaps.isEmpty()) {
             listCandidateGaps.setSelectedIndex(0);
+            setStartAllocationDate(gaps.get(0).getStartTime());
+            startAllocationDate.setDisabled(true);
             disable(radioAllocationDate, false);
         } else {
             disable(radioAllocationDate, true);
         }
+        radioAllocationDate.setSelectedIndex(0);
+    }
+
+    private void setStartAllocationDate(DateAndHour time) {
+        final Date date = (time != null) ? toDate(time.getDate()) : null;
+        startAllocationDate.setValue(date);
+    }
+
+    private Map<LimitingResourceQueueElementGap, DateAndHour> calculateEndAllocationDates(
+            ResourceAllocation<?> resourceAllocation, Resource resource,
+            List<LimitingResourceQueueElementGap> gaps) {
+
+        Map<LimitingResourceQueueElementGap, DateAndHour> result = new HashMap<LimitingResourceQueueElementGap, DateAndHour>();
+        for (LimitingResourceQueueElementGap each: gaps) {
+            result.put(each, calculateEndAllocationDate(resourceAllocation, resource, each));
+        }
+        return result;
+    }
+
+    private DateAndHour calculateEndAllocationDate(
+            ResourceAllocation<?> resourceAllocation, Resource resource,
+            LimitingResourceQueueElementGap gap) {
+
+        if (gap.getEndTime() != null) {
+            return LimitingResourceAllocator.startTimeToAllocateStartingFromEnd(resourceAllocation, resource, gap);
+        }
+        return null;
+    }
+
+    public void selectRadioAllocationDate(Event event) {
+        Radiogroup radiogroup = (Radiogroup) event.getTarget().getParent();
+        startAllocationDate.setDisabled(radiogroup.getSelectedIndex() != 2);
     }
 
     private void disable(Radiogroup radiogroup, boolean disabled) {
@@ -572,13 +618,15 @@ public class LimitingResourcesController implements Composer {
     }
 
     public void accept(Event e) {
-        LimitingResourceQueueElement element = limitingResourceQueueModel
-                .getLimitingResourceQueueElement();
-        LimitingResourceQueue queue = getSelectedQueue();
-        DateAndHour time = getSelectedAllocationTime();
+        final LimitingResourceQueue queue = getSelectedQueue();
+        final DateAndHour time = getSelectedAllocationTime();
+        Validate.notNull(time);
         limitingResourceQueueModel
                 .assignEditingLimitingResourceQueueElementToQueueAt(queue, time);
         Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+
+        LimitingResourceQueueElement element = limitingResourceQueueModel
+                .getLimitingResourceQueueElement();
         limitingResourcesPanel.appendQueueElementToQueue(element);
         closeManualAllocationWindow(e);
     }
@@ -586,12 +634,21 @@ public class LimitingResourcesController implements Composer {
     private DateAndHour getSelectedAllocationTime() {
         final LimitingResourceQueueElementGap selectedGap = getSelectedGap();
         int index = radioAllocationDate.getSelectedIndex();
+
+        // Earliest date
         if (index == 0) {
             return getEarliestTime(selectedGap);
+        // Latest date
         } else if (index == 1) {
             return getLatestTime(selectedGap);
+        // Select start date
         } else if (index == 2) {
-
+            LocalDate selectedDay = new LocalDate(startAllocationDate.getValue());
+            DateAndHour allocationTime = getValidDayInGap(selectedDay, getSelectedGap());
+            if (allocationTime == null) {
+                throw new WrongValueException(startAllocationDate, _("Day is not valid within selected gap"));
+            }
+            return allocationTime;
         }
         return null;
     }
@@ -617,13 +674,96 @@ public class LimitingResourcesController implements Composer {
         return null;
     }
 
-    public void cancel() {
+    /**
+     * Checks if date is a valid day within gap. A day is valid within a gap if
+     * it is included between gap.startTime and the last day from which is
+     * possible to start doing an allocation (endAllocationDate)
+     *
+     * If date is valid, returns DateAndHour in gap associated with that date
+     *
+     * @param date
+     * @param gap
+     * @return
+     */
+    private DateAndHour getValidDayInGap(LocalDate date, LimitingResourceQueueElementGap gap) {
+        final DateAndHour endAllocationDate = endAllocationDates.get(gap);
+        final LocalDate start = gap.getStartTime().getDate();
+        final LocalDate end = endAllocationDate != null ? endAllocationDate.getDate() : null;
 
+        if (start.equals(date)) {
+            return gap.getStartTime();
+        }
+        if (end != null && end.equals(date)) {
+            return endAllocationDate;
+        }
+        if ((start.compareTo(date) <= 0
+                && (end == null || end.compareTo(date) >= 0))) {
+            return new DateAndHour(date, 0);
+        }
+
+        return null;
+    }
+
+    public void cancel() {
+        manualAllocationWindow.setVisible(false);
     }
 
     public void closeManualAllocationWindow(Event e) {
         manualAllocationWindow.setVisible(false);
         e.stopPropagation();
+    }
+
+    public void setStartAllocationDate(Event event) {
+        setStartAllocationDate(getSelectedGap().getStartTime());
+    }
+
+    public void highlightCalendar(Event event) {
+        Datebox datebox = (Datebox) event.getTarget();
+        if (datebox.getValue() == null) {
+            final LocalDate startDate = getSelectedGap().getStartTime().getDate();
+            datebox.setValue(toDate(startDate));
+        }
+        highlightDaysInGap(datebox.getUuid(), getSelectedGap());
+    }
+
+    private Date toDate(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDate();
+    }
+
+    public void highlightDaysInGap(String uuid, LimitingResourceQueueElementGap gap) {
+        final LocalDate start = gap.getStartTime().getDate();
+        final LocalDate end = getEndAllocationDate(gap);
+
+        final String jsCall = "highlightDaysInInterval('"
+                + uuid + "', '"
+                + jsonInterval(formatDate(start), formatDate(end)) + "', '"
+                + jsonHighlightColor() + "');";
+        Clients.evalJavaScript(jsCall);
+    }
+
+    private LocalDate getEndAllocationDate(LimitingResourceQueueElementGap gap) {
+        final DateAndHour endTime = endAllocationDates.get(gap);
+        return endTime != null ? endTime.getDate() : null;
+    }
+
+    public String formatDate(LocalDate date) {
+        return (date != null) ? date.toString() : null;
+    }
+
+    private String jsonInterval(String start, String end) {
+        StringBuilder result = new StringBuilder();
+
+        result.append("{\"start\": \"" + start + "\", ");
+        if (end != null) {
+            result.append("\"end\": \"" + end + "\"");
+        }
+        result.append("}");
+
+        return result.toString();
+    }
+
+    private String jsonHighlightColor() {
+        return "{\"color\": \"blue\", \"bgcolor\": \"white\"}";
     }
 
 }

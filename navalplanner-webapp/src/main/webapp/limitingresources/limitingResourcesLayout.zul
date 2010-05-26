@@ -22,6 +22,8 @@
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
+    <n:script type="text/javascript" src="/navalplanner-webapp/js/highlightDaysInInterval.js" />
+
     <zscript><![CDATA[
         limitingResourcesPanel = self;
     ]]>
@@ -132,7 +134,8 @@
                 <panelchildren>
                     <listbox id="listCandidateGaps"
                             itemRenderer="@{limitingResourcesController.candidateGapRenderer}"
-                            multiple="false">
+                            multiple="false"
+                            onSelect="limitingResourcesController.setStartAllocationDate(event)">
                          <listhead>
                              <listheader label="${i18n:_('Start')}" />
                              <listheader label="${i18n:_('End')}" />
@@ -146,10 +149,14 @@
         <vbox>
             <panel title="${i18n:_('Select date')}" border="normal">
                 <panelchildren>
-                    <radiogroup id="radioAllocationDate" orient="vertical">
+                    <radiogroup id="radioAllocationDate" orient="vertical"
+                            onCheck="limitingResourcesController.selectRadioAllocationDate(event)" >
                         <radio label="${i18n:_('Earliest date')}" selected="true" />
                         <radio label="${i18n:_('Latest date')}" />
+                        <radio label="${i18n:_('Select start date')}" />
                     </radiogroup>
+                    <datebox id="startAllocationDate"
+                        onFocus="limitingResourcesController.highlightCalendar(event)" />
                 </panelchildren>
             </panel>
         </vbox>

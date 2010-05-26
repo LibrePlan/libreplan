@@ -157,10 +157,19 @@ public class LimitingResourceAllocator {
     }
 
     private static Integer moveUntil(List<LimitingResourceQueueElement> elements, DateAndHour until) {
-        for (int pos = 0; pos < elements.size(); pos++) {
-            final LimitingResourceQueueElement each = elements.get(pos);
-            if (!until.isBefore(each.getStartTime())) {
-                return pos;
+        if (elements.size() > 0) {
+            // Space between until and first element start time
+            LimitingResourceQueueElement first = elements.get(0);
+            if (until.isBefore(first.getStartTime())) {
+                return 0;
+            }
+
+            for (int pos = 0; pos < elements.size(); pos++) {
+                final LimitingResourceQueueElement each = elements.get(pos);
+                final DateAndHour startTime = each.getStartTime();
+                if (until.isAfter(startTime) || until.isEquals(startTime)) {
+                    return pos;
+                }
             }
         }
         return null;

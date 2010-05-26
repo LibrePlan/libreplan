@@ -83,4 +83,11 @@ public class DateAndHour implements Comparable<DateAndHour> {
         return (this.compareTo(dateAndHour) < 0);
     }
 
+    public boolean isAfter(DateAndHour dateAndHour) {
+        return (this.compareTo(dateAndHour) > 0);
+    }
+
+    public boolean isEquals(DateAndHour dateAndHour) {
+        return (this.compareTo(dateAndHour) == 0);
+    }
 }
