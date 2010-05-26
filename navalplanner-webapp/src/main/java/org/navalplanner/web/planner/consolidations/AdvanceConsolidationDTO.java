@@ -143,6 +143,9 @@ public class AdvanceConsolidationDTO {
         if (isAllReadOnly()
                 || ((isConsolidated()) && (consolidatedValue != null) && (!consolidatedValue
                         .isNewObject()))) {
+            if (lastConsolidatedDate.equals(date)) {
+                return false;
+            }
             return true;
         }
         if (lastConsolidatedDate != null) {
