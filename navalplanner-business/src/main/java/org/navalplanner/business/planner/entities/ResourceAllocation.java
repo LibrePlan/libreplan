@@ -22,7 +22,6 @@ package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -496,8 +495,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private void allocate(LocalDate startInclusive, LocalDate endExclusive,
                 int hours) {
-            LocalDate start = Collections.max(Arrays.asList(startInclusive,
-                    getTask().getFirstDayNotConsolidated()));
+            LocalDate firstDayNotConsolidated = getTask()
+                            .getFirstDayNotConsolidated();
+            LocalDate start = startInclusive.compareTo(firstDayNotConsolidated) >= 0 ? startInclusive
+                    : firstDayNotConsolidated;
             List<T> assignmentsCreated = createAssignments(start, endExclusive, hours);
             resetAssigmentsForInterval(start, endExclusive, assignmentsCreated);
         }
