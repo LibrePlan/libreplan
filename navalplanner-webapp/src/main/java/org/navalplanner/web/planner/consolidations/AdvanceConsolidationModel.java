@@ -205,8 +205,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 Integer pendingHours = pendingConsolidatedHour
                         .getPendingConsolidatedHours();
                 LocalDate startInclusive = value.getDate().plusDays(1);
-                LocalDate endExclusive = LocalDate.fromDateFields(
-                        task.getEndDate()).plusDays(1);
+                LocalDate endExclusive = LocalDate.fromDateFields(task
+                        .getEndDate());
 
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
@@ -288,8 +288,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     }
                 }
 
-                LocalDate endExclusive = LocalDate.fromDateFields(
-                        task.getEndDate()).plusDays(1);
+                LocalDate endExclusive = LocalDate.fromDateFields(task
+                        .getEndDate());
 
                 if (consolidation == null) {
                     Set<ResourceAllocation<?>> allResourceAllocations = task
