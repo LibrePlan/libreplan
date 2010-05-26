@@ -48,6 +48,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -1398,8 +1399,10 @@ class Row {
 
     Component hoursOnInterval(DetailItem item) {
         Component result =
-            isGroupingRow() || isBeforeTaskStartDate(item) ? new Label() :
-                disableIfNeeded(item, noNegativeIntbox());
+            isGroupingRow() || isBeforeTaskStartDate(item) ||
+                isBeforeLatestConsolidation(item) ?
+                    new Label() :
+                    disableIfNeeded(item, noNegativeIntbox());
         reloadHoursOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
@@ -1419,7 +1422,8 @@ class Row {
 
     private void addListenerIfNeeded(final DetailItem item,
             final Component component) {
-        if (isGroupingRow() || isBeforeTaskStartDate(item)) {
+        if (isGroupingRow() || isBeforeTaskStartDate(item) ||
+                isBeforeLatestConsolidation(item)) {
             return;
         }
         final Intbox intbox = (Intbox) component;
@@ -1452,6 +1456,10 @@ class Row {
             Label label = (Label) component;
             label.setValue(getHoursForDetailItem(item) + "");
             label.setClass("unmodifiable-hours");
+        } else if (isBeforeLatestConsolidation(item)) {
+            Label label = (Label) component;
+            label.setValue(getHoursForDetailItem(item) + "");
+            label.setClass("consolidated-hours");
         } else {
             Intbox intbox = (Intbox) component;
             intbox.setValue(getHoursForDetailItem(item));
@@ -1465,6 +1473,17 @@ class Row {
         DateTime taskStartDate =
             new DateTime(task.getStartDate().getTime());
         return item.getEndDate().compareTo(taskStartDate) < 0;
+    }
+
+    private boolean isBeforeLatestConsolidation(DetailItem item) {
+        if(!((Task)task).hasConsolidations()) {
+            return false;
+        }
+        LocalDate d = ((Task)task).getFirstDayNotConsolidated();
+        DateTime firstDayNotConsolidated =
+            new DateTime(d.getYear(), d.getMonthOfYear(),
+                    d.getDayOfMonth(), 0, 0, 0, 0);
+        return item.getStartDate().compareTo(firstDayNotConsolidated) < 0;
     }
 
     private ResourceAllocation<?> getAllocation() {
