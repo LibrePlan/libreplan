@@ -112,4 +112,8 @@ public interface IManageOrderElementAdvancesModel {
     BigDecimal getMaxValue(AdvanceType advanceType);
 
     AdvanceAssignment getSpreadAdvance();
+
+    void createPercentageAdvances(OrderElement orderElement)
+            throws DuplicateAdvanceAssignmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException;
 }

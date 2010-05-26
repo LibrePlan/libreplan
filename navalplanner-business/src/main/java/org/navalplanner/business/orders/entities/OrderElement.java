@@ -363,9 +363,12 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public DirectAdvanceAssignment getDirectAdvanceAssignmentByType(
             AdvanceType advanceType) {
-        for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
-            if (directAdvanceAssignment.getAdvanceType().equals(advanceType)) {
+        if (advanceType != null) {
+            for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
+                if (directAdvanceAssignment.getAdvanceType().getId().equals(
+                    advanceType.getId())) {
                 return directAdvanceAssignment;
+                }
             }
         }
         return null;

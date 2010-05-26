@@ -216,6 +216,7 @@ public class ManageOrderElementAdvancesController extends
         AdvanceAssignment advance = (AdvanceAssignment) selectedItem.getValue();
         indexSelectedItem = editAdvances.getIndexOfItem(selectedItem);
         prepareEditAdvanceMeasurements(advance);
+        reloadAdvances();
     }
 
     public void selectAdvanceLine(int index) {
@@ -225,6 +226,7 @@ public class ManageOrderElementAdvancesController extends
             prepareEditAdvanceMeasurements(getAdvanceAssignments().get(
                 indexSelectedItem));
         }
+        reloadAdvances();
     }
 
     public void selectSpreadAdvanceLine() {
@@ -234,19 +236,18 @@ public class ManageOrderElementAdvancesController extends
             indexSelectedItem = getAdvanceAssignments().indexOf(advance);
             prepareEditAdvanceMeasurements(advance);
         }
+        reloadAdvances();
     }
 
     public void prepareEditAdvanceMeasurements(AdvanceAssignment advance) {
         if (advance != null && advance.getAdvanceType() != null) {
             manageOrderElementAdvancesModel
                     .prepareEditAdvanceMeasurements(advance);
-            reloadAdvances();
         }
     }
 
     public void goToCreateLineAdvanceAssignment() {
         validateListAdvanceMeasurement();
-        manageOrderElementAdvancesModel.addNewLineAdvaceAssignment();
         boolean fineResult = manageOrderElementAdvancesModel
                 .addNewLineAdvaceAssignment();
         if (fineResult) {
@@ -1232,6 +1233,15 @@ public class ManageOrderElementAdvancesController extends
             increaseScreenHeight();
             messagesForUser.showMessage(Level.ERROR, message);
         }
+    }
+
+    public void createPercentageAdvances(IOrderElementModel orderElementModel)
+            throws DuplicateAdvanceAssignmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException {
+        setOrderElementModel(orderElementModel);
+        manageOrderElementAdvancesModel.initEdit(getOrderElement());
+        manageOrderElementAdvancesModel
+                .createPercentageAdvances(getOrderElement());
     }
 
 }

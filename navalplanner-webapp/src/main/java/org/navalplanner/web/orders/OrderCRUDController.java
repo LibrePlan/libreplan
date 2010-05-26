@@ -33,6 +33,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -508,6 +510,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         }
 
+        createPercentageAdvances();
+
         // come back to the current tab after validate other tabs.
         selectTab(getCurrentTab().getId());
 
@@ -529,6 +533,36 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     Tab tabGeneralData;
+
+    private void createPercentageAdvances() {
+
+        try {
+            if (manageOrderElementAdvancesController == null) {
+                Component orderElementAdvances = editWindow
+                        .getFellowIfAny("orderElementAdvances");
+                manageOrderElementAdvancesController = (ManageOrderElementAdvancesController) orderElementAdvances
+                        .getVariable("manageOrderElementAdvancesController",
+                                true);
+            }
+            manageOrderElementAdvancesController
+                    .createPercentageAdvances(getOrderElementModel());
+        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("cannot include an Advance of the same Advance type twice"));
+        } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("spread values are not valid, at least one value should be true"));
+        } catch (Exception e) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("incorrect initialization of the advance assignment controller."));
+        }
+    }
 
     private void selectDefaultTab() {
         selectTab("tabGeneralData");
