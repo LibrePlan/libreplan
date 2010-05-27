@@ -13,6 +13,7 @@
 
         <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="value" scale="2" access="field" />
+        <property name="taskEndDate" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
 
         <subclass name="NonCalculatedConsolidatedValue" discriminator-value="NonCalculated">
             <many-to-one name="consolidation" class="NonCalculatedConsolidation" column="CONSOLIDATION_ID" access="field" />

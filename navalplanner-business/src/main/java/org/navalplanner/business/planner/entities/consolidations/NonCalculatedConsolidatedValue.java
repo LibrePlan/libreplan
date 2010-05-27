@@ -40,24 +40,27 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value) {
-        return create(new NonCalculatedConsolidatedValue(date, value));
+            BigDecimal value, LocalDate taskEndDate) {
+        return create(new NonCalculatedConsolidatedValue(date, value,
+                taskEndDate));
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value, AdvanceMeasurement advanceMeasurement) {
+            BigDecimal value, AdvanceMeasurement advanceMeasurement,
+            LocalDate taskEndDate) {
         return create(new NonCalculatedConsolidatedValue(date, value,
-                advanceMeasurement));
+                advanceMeasurement, taskEndDate));
     }
 
     protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
-            AdvanceMeasurement advanceMeasurement) {
-        this(date, value);
+            AdvanceMeasurement advanceMeasurement, LocalDate taskEndDate) {
+        this(date, value, taskEndDate);
         this.advanceMeasurement = advanceMeasurement;
     }
 
-    protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value) {
-        super(date, value);
+    protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
+            LocalDate taskEndDate) {
+        super(date, value, taskEndDate);
     }
 
     protected NonCalculatedConsolidatedValue() {

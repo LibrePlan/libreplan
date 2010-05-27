@@ -37,12 +37,13 @@ public class CalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static CalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value) {
-        return create(new CalculatedConsolidatedValue(date, value));
+            BigDecimal value, LocalDate taskEndDate) {
+        return create(new CalculatedConsolidatedValue(date, value, taskEndDate));
     }
 
-    protected CalculatedConsolidatedValue(LocalDate date, BigDecimal value) {
-        super(date, value);
+    protected CalculatedConsolidatedValue(LocalDate date, BigDecimal value,
+            LocalDate taskEndDate) {
+        super(date, value, taskEndDate);
     }
 
     protected CalculatedConsolidatedValue() {

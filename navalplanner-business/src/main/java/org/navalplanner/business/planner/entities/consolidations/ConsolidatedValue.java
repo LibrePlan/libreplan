@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities.consolidations;
 
 import java.math.BigDecimal;
 
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -33,6 +34,7 @@ public abstract class ConsolidatedValue extends BaseEntity {
 
     private LocalDate date;
     private BigDecimal value;
+    private LocalDate taskEndDate;
 
     public abstract boolean isCalculated();
 
@@ -40,11 +42,11 @@ public abstract class ConsolidatedValue extends BaseEntity {
 
     }
 
-    protected ConsolidatedValue(
-            LocalDate date,
- BigDecimal value) {
+    protected ConsolidatedValue(LocalDate date, BigDecimal value,
+            LocalDate taskEndDate) {
         this.date = date;
         this.value = value;
+        this.taskEndDate = taskEndDate;
     }
 
     public void setValue(BigDecimal value) {
@@ -61,6 +63,11 @@ public abstract class ConsolidatedValue extends BaseEntity {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    @NotNull(message = "task end date not specified")
+    public LocalDate getTaskEndDate() {
+        return taskEndDate;
     }
 
 }
