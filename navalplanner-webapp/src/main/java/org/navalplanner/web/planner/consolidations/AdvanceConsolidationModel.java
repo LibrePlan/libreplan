@@ -22,6 +22,8 @@ package org.navalplanner.web.planner.consolidations;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -198,15 +200,25 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         .addConsolidatedValue((CalculatedConsolidatedValue) value);
             }
 
-            for (PendingConsolidatedHoursPerResourceAllocation pendingConsolidatedHour : value
-                    .getPendingConsolidatedHours()) {
-                ResourceAllocation<?> resourceAllocation = pendingConsolidatedHour
-                        .getResourceAllocation();
-                Integer pendingHours = pendingConsolidatedHour
-                        .getPendingConsolidatedHours();
+            Set<ResourceAllocation<?>> allResourceAllocations = task
+                    .getAllResourceAllocations();
+            for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
                 LocalDate startInclusive = value.getDate().plusDays(1);
                 LocalDate endExclusive = LocalDate.fromDateFields(task
                         .getEndDate());
+
+                for (DayAssignment dayAssignment : resourceAllocation
+                        .getAssignments()) {
+                    if (dayAssignment.getDay().compareTo(startInclusive) < 0) {
+                        dayAssignment.setConsolidated(true);
+                    }
+                }
+
+                Integer pendingHours = BigDecimal.ONE.subtract(
+                        value.getValue().divide(new BigDecimal(100),
+                                RoundingMode.DOWN)).multiply(
+                        new BigDecimal(resourceAllocation
+                                .getOriginalTotalAssigment())).intValue();
 
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
@@ -215,8 +227,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         LocalDate.fromDateFields(task.getEndDate())) > 0) {
                     LocalDate date = ResourceAllocation.allocating(
                             Arrays.asList(resourceAllocation
-                                    .asResourcesPerDayModification())).untilAllocating(
-                            pendingHours);
+                                    .asResourcesPerDayModification()))
+                            .untilAllocating(pendingHours);
                     task.setEndDate(date.toDateTimeAtStartOfDay().toDate());
                 } else {
                     reassign(resourceAllocation, startInclusive, endExclusive,
@@ -291,27 +303,23 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 LocalDate endExclusive = LocalDate.fromDateFields(task
                         .getEndDate());
 
-                if (consolidation == null) {
-                    Set<ResourceAllocation<?>> allResourceAllocations = task
-                            .getAllResourceAllocations();
-                    for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-                        resourceAllocation
-                                .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-                        reassign(resourceAllocation, firstDayNotConsolidated,
-                                endExclusive, resourceAllocation
-                                        .getOriginalTotalAssigment());
+                Set<ResourceAllocation<?>> allResourceAllocations = task
+                        .getAllResourceAllocations();
+                for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+                    resourceAllocation
+                            .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+                    Integer pendingHours = resourceAllocation
+                            .getOriginalTotalAssigment();
+                    if (consolidation != null) {
+                        BigDecimal lastConslidation = task.getConsolidation()
+                                .getConsolidatedValues().last().getValue();
+                        pendingHours = BigDecimal.ONE.subtract(
+                                lastConslidation.divide(new BigDecimal(100),
+                                        RoundingMode.DOWN)).multiply(
+                                new BigDecimal(pendingHours)).intValue();
                     }
-                } else {
-                    Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours = consolidation
-                            .getConsolidatedValues().last()
-                            .getPendingConsolidatedHours();
-                    for (PendingConsolidatedHoursPerResourceAllocation pendingConsolidatedHour : pendingConsolidatedHours) {
-                        ResourceAllocation<?> resourceAllocation = pendingConsolidatedHour
-                                .getResourceAllocation();
-                        reassign(resourceAllocation, firstDayNotConsolidated,
-                                endExclusive, pendingConsolidatedHour
-                                        .getPendingConsolidatedHours());
-                    }
+                    reassign(resourceAllocation, firstDayNotConsolidated,
+                            endExclusive, pendingHours);
                 }
             }
         }

@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -376,8 +377,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return task;
     }
 
-    public void setOriginalTotalAssigment(int originalTotalAssigment) {
-        this.originalTotalAssignment = originalTotalAssigment;
+    private void updateOriginalTotalAssigment() {
+        if ((task.getConsolidation() == null)
+                || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
+            originalTotalAssignment = getNonConsolidatedHours();
+        } else {
+            BigDecimal lastConslidation = task.getConsolidation()
+                    .getConsolidatedValues().last().getValue();
+            originalTotalAssignment = new BigDecimal(getNonConsolidatedHours())
+                    .divide(
+                            BigDecimal.ONE.subtract(lastConslidation.divide(
+                                    new BigDecimal(100), RoundingMode.DOWN)),
+                            RoundingMode.DOWN).intValue();
+        }
     }
 
     public int getOriginalTotalAssigment() {
@@ -600,7 +612,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private void resetAssignmentsTo(List<T> assignments) {
         removingAssignments((List<? extends DayAssignment>) removeConsolidated(getAssignments()));
         addingAssignments(assignments);
-        setOriginalTotalAssigment(getAssignedHours());
+        updateOriginalTotalAssigment();
     }
 
     protected void resetAssigmentsForInterval(LocalDate startInclusive,
@@ -609,7 +621,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 endExclusive)));
         addingAssignments(assignmentsCreated);
         setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
-        setOriginalTotalAssigment(getAssignedHours());
+        updateOriginalTotalAssigment();
     }
 
     private List<? extends DayAssignment> removeConsolidated(
@@ -895,7 +907,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
-        setOriginalTotalAssigment(modifications.getOriginalTotalAssigment());
+        updateOriginalTotalAssigment();
         setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(modifications.getDerivedAllocations());
     }
