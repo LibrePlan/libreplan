@@ -37,7 +37,7 @@
     <tabbox id="tabboxOrder">
         <tabs>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" selected="true"
-                onSelect = "controller.reloadDefaultTab();"/>
+                onSelect = "controller.setupOrderDetails();"/>
             <tab id="tabOrderElements" label="${i18n:_('Order elements')}"
                 onSelect = "controller.setupOrderElementTreeController();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
