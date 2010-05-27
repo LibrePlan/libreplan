@@ -145,7 +145,8 @@ public class ManageOrderElementAdvancesModel implements
                 listAdvanceAssignments);
         fillVariables();
         for (AdvanceAssignment advance : listAdvanceAssignmentsCopy) {
-            if (!listAdvanceAssignments.contains(advance)) {
+            if ((!listAdvanceAssignments.contains(advance))
+                    && (advance instanceof DirectAdvanceAssignment)) {
                 listAdvanceAssignments.add(advance);
             }
         }
