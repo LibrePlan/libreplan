@@ -443,16 +443,24 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<DayAssignment> dayAssignments = LimitingResourceAllocator
                 .generateDayAssignments(element.getResourceAllocation(),
                         queue.getResource(), startTime);
-        DateAndHour[] startAndEndTime = LimitingResourceAllocator
-                .calculateStartAndEndTime(dayAssignments);
-        updateStartAndEndTimes(element, startAndEndTime);
         element.getResourceAllocation().allocateLimitingDayAssignments(
                 dayAssignments);
+
+        DateAndHour endTime = LimitingResourceAllocator
+                .getLastElementTime(dayAssignments);
+        if (sameDay(startTime, endTime)) {
+            endTime = new DateAndHour(endTime.getDate(), startTime.getHour() + endTime.getHour());
+        }
+        updateStartAndEndTimes(element, startTime, endTime);
 
         // Add element to queue
         addLimitingResourceQueueElement(queue, element);
         markAsModified(element);
         return true;
+    }
+
+    private boolean sameDay(DateAndHour startTime, DateAndHour endTime) {
+        return startTime.getDate().equals(endTime.getDate());
     }
 
     private LimitingResourceQueueElementGap findEarliestGap(Set<LimitingResourceQueueElementGap> gaps) {
@@ -493,10 +501,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private void updateStartAndEndTimes(LimitingResourceQueueElement element,
-            DateAndHour[] startAndEndTime) {
-
-        final DateAndHour startTime = startAndEndTime[0];
-        final DateAndHour endTime = startAndEndTime[1];
+            DateAndHour startTime, DateAndHour endTime) {
 
         element.setStartDate(startTime.getDate());
         element.setStartHour(startTime.getHour());
