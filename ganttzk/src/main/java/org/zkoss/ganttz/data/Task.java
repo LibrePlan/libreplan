@@ -388,4 +388,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getAssignedStatus();
     }
 
+    public boolean isFixed() {
+        return fundamentalProperties.isFixed();
+    }
+
 }

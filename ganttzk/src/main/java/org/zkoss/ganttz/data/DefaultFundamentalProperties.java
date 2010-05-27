@@ -189,4 +189,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return "unassigned";
     }
 
+    @Override
+    public boolean isFixed() {
+        return false;
+    }
+
 }

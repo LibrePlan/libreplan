@@ -577,6 +577,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return taskElement.getAssignedStatus();
         }
 
+        @Override
+        public boolean isFixed() {
+            return taskElement.isLimitingAndHasDayAssignments();
+        }
+
     }
 
     @Override

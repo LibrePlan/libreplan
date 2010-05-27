@@ -88,4 +88,6 @@ public interface ITaskFundamentalProperties {
 
     public String getAssignedStatus();
 
+    public boolean isFixed();
+
 }
