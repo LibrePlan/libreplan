@@ -265,10 +265,7 @@ public class Planner extends HtmlMacroComponent  {
                 .getStartConstraints(), configuration.getEndConstraints(), configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration, diagramGraph);
-        diagramGraph.addPreChangeListeners(configuration
-                .getPreChangeListeners());
-        diagramGraph.addPostChangeListeners(configuration
-                .getPostChangeListeners());
+        addGraphChangeListenersFromConfiguration(configuration);
         this.contextualizedGlobalCommands = contextualize(newContext,
                 configuration.getGlobalCommands());
         this.commandsOnTasksContextualized = contextualize(newContext,
@@ -628,6 +625,14 @@ public class Planner extends HtmlMacroComponent  {
     public void addChartVisibilityListener(
             IChartVisibilityChangedListener chartVisibilityChangedListener) {
         chartVisibilityListeners.addListener(chartVisibilityChangedListener);
+    }
+
+    public void addGraphChangeListenersFromConfiguration(
+            PlannerConfiguration<?> configuration) {
+        diagramGraph.addPreChangeListeners(configuration
+                .getPreChangeListeners());
+        diagramGraph.addPostChangeListeners(configuration
+                .getPostChangeListeners());
     }
 
 }

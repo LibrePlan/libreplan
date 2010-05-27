@@ -327,9 +327,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         appendTabpanels(chartComponent, chartLoadTimeplot,
                 chartEarnedValueTimeplot, earnedValueChartFiller);
 
-        Chart loadChart = setupChart(orderReloaded,
-                new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
-                planner);
+        Chart loadChart = setupChart(orderReloaded, new OrderLoadChartFiller(
+                orderReloaded), chartLoadTimeplot, planner);
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 loadChart);
         Chart earnedValueChart = setupChart(orderReloaded,
@@ -338,6 +337,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+        planner.addGraphChangeListenersFromConfiguration(configuration);
     }
 
     private Timeplot createEmptyTimeplot() {
