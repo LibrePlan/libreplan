@@ -724,11 +724,7 @@ public class GanttDiagramGraph<V, D> {
 
         private void doRecalculations(List<Recalculation> recalculationsNeeded) {
             Set<V> allModified = new HashSet<V>();
-            List<Recalculation> calculated = new ArrayList<Recalculation>();
             for (Recalculation each : recalculationsNeeded) {
-                if (each.haveToDoCalculation()) {
-                    calculated.add(each);
-                }
                 boolean modified = each.doRecalculation();
                 if (modified) {
                     allModified.add(each.taskPoint.task);
