@@ -327,6 +327,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         } else {
             manageOrderElementAdvancesController.refreshChangesFromOrderElement();
             manageOrderElementAdvancesController.createAndLoadBindings();
+            manageOrderElementAdvancesController.refreshSelectedAdvance();
         }
     }
 

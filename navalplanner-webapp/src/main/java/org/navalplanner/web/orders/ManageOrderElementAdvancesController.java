@@ -235,6 +235,8 @@ public class ManageOrderElementAdvancesController extends
         if (advance != null) {
             indexSelectedItem = getAdvanceAssignments().indexOf(advance);
             prepareEditAdvanceMeasurements(advance);
+        } else {
+            selectAdvanceLine(getAdvanceAssignments().size() - 1);
         }
         reloadAdvances();
     }
@@ -1211,6 +1213,14 @@ public class ManageOrderElementAdvancesController extends
         String message = _("All advance types have already been assigned.");
         increaseScreenHeight();
         messagesForUser.showMessage(Level.ERROR, message);
+    }
+
+    public void refreshSelectedAdvance() {
+        if ((indexSelectedItem < 0)
+                || (indexSelectedItem >= getAdvanceAssignments().size())) {
+            selectSpreadAdvanceLine();
+        }
+        selectAdvanceLine(indexSelectedItem);
     }
 
     private void showMessageDeleteSpread() {
