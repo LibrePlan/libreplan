@@ -755,15 +755,22 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         Validate.notNull(queue);
         Validate.notNull(startTime);
 
-        removeDaysAssignmentsIfAny(beingEdited);
+        LimitingResourceQueue currentQueue = beingEdited.getLimitingResourceQueue();
+        if (currentQueue != null) {
+            removeDayAssignments(beingEdited);
+            removeFromQueue(currentQueue, beingEdited);
+        }
         return assignLimitingResourceQueueElementToQueueAt(beingEdited, queue, startTime);
     }
 
-    public void removeDaysAssignmentsIfAny(LimitingResourceQueueElement element) {
+    private void removeDayAssignments(LimitingResourceQueueElement element) {
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
-        if (!resourceAllocation.getAssignments().isEmpty()) {
-            resourceAllocation.removeLimitingDayAssignments();
-        }
+        resourceAllocation.removeLimitingDayAssignments();
+    }
+
+    private void removeFromQueue(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
+        queue.removeLimitingResourceQueueElement(element);
+        element.setLimitingResourceQueue(null);
     }
 
     @Override
