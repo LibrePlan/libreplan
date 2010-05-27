@@ -14,14 +14,6 @@
         <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="value" scale="2" access="field" />
 
-        <set name="pendingConsolidatedHours" table="PENDING_CONSOLIDATED_HOURS">
-            <key column="PENDING_HOURS_ID"/>
-            <composite-element class="org.navalplanner.business.planner.entities.consolidations.PendingConsolidatedHoursPerResourceAllocation">
-                <property name="pendingConsolidatedHours"/>
-                <many-to-one name="resourceAllocation" class="org.navalplanner.business.planner.entities.ResourceAllocation" column="RESOURCE_ALLOCATION_ID" access="field" />
-            </composite-element>
-        </set>
-
         <subclass name="NonCalculatedConsolidatedValue" discriminator-value="NonCalculated">
             <many-to-one name="consolidation" class="NonCalculatedConsolidation" column="CONSOLIDATION_ID" access="field" />
             <many-to-one name="advanceMeasurement" class="org.navalplanner.business.advance.entities.AdvanceMeasurement" column="ADVANCE_MEASUREMENT_ID" access="field" />

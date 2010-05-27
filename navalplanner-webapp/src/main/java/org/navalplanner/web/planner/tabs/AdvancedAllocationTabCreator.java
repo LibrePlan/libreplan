@@ -43,7 +43,6 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -93,10 +92,7 @@ public class AdvancedAllocationTabCreator {
         private void loadConsolidationRelatedData(Task task) {
             Consolidation consolidation = task.getConsolidation();
             if (consolidation != null) {
-                for (ConsolidatedValue consolidatedValue : consolidation
-                        .getConsolidatedValues()) {
-                    consolidatedValue.getPendingConsolidatedHours().size();
-                }
+                consolidation.getConsolidatedValues().size();
             }
         }
 

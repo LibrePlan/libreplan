@@ -48,7 +48,6 @@ import org.navalplanner.business.planner.entities.consolidations.ConsolidatedVal
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
-import org.navalplanner.business.planner.entities.consolidations.PendingConsolidatedHoursPerResourceAllocation;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -255,19 +254,13 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             AdvanceConsolidationDTO dto) {
         if (consolidation != null && task != null) {
 
-            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours = ConsolidatedValue
-                    .createPendingConsolidatedHours(LocalDate
-                            .fromDateFields(dto.getDate()), dto.getValue(),
-                            task.getAllResourceAllocations());
-
             if (consolidation.isCalculated()) {
                 return CalculatedConsolidatedValue.create(LocalDate
-                        .fromDateFields(dto.getDate()), dto.getValue(),
-                        pendingConsolidatedHours);
+                        .fromDateFields(dto.getDate()), dto.getValue());
             } else {
                 return NonCalculatedConsolidatedValue.create(LocalDate
                     .fromDateFields(dto.getDate()), dto.getValue(), dto
-                        .getAdvanceMeasurement(), pendingConsolidatedHours);
+                        .getAdvanceMeasurement());
             }
         }
         return null;
@@ -346,10 +339,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         spreadAdvance = orderElement.getReportGlobalAdvanceAssignment();
         consolidation = task.getConsolidation();
         if (consolidation != null) {
-            for (ConsolidatedValue consolidatedValue : consolidation
-                    .getConsolidatedValues()) {
-                consolidatedValue.getPendingConsolidatedHours().size();
-            }
+            consolidation.getConsolidatedValues().size();
         }
 
         if (spreadAdvance != null) {
