@@ -360,4 +360,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         dependencyList.removeDependencyComponents(task);
     }
 
+    public void moveQueueTask(QueueTask queueTask) {
+        limitingResourcesController.moveTask(queueTask.getLimitingResourceQueueElement());
+        queueTask.detach();
+    }
+
 }

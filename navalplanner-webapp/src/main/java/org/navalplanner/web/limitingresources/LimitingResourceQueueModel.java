@@ -750,7 +750,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         Validate.notNull(queue);
         Validate.notNull(startTime);
 
+        removeDaysAssignmentsIfAny(beingEdited);
         return assignLimitingResourceQueueElementToQueueAt(beingEdited, queue, startTime);
+    }
+
+    public void removeDaysAssignmentsIfAny(LimitingResourceQueueElement element) {
+        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
+        if (!resourceAllocation.getAssignments().isEmpty()) {
+            resourceAllocation.removeLimitingDayAssignments();
+        }
     }
 
     @Override

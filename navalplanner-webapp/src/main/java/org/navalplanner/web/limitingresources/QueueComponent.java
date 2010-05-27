@@ -258,8 +258,20 @@ public class QueueComponent extends XulElement implements
                             unnasign(choosen);
                         }
                     });
+            menuBuilder.item(_("Move"), "",
+                    new ItemAction<QueueTask>() {
+                        @Override
+                        public void onEvent(QueueTask choosen, Event event) {
+                            moveQueueTask(choosen);
+                        }
+                    });
             divElement.setContext(menuBuilder.createWithoutSettingContext());
         }
+    }
+
+    private void moveQueueTask(QueueTask queueTask) {
+        LimitingResourcesPanel panel = LimitingResourcesPanel.getLimitingResourcesPanel(this);
+        panel.moveQueueTask(queueTask);
     }
 
     private void unnasign(QueueTask choosen) {

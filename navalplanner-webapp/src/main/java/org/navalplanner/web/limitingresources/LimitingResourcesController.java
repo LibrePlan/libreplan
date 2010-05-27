@@ -372,7 +372,7 @@ public class LimitingResourcesController implements Composer {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    manualAllocateLimitingResourceQueueElement(element);
+                    showManualAllocationWindow(element.getOriginal());
                 }
             });
             return result;
@@ -430,21 +430,6 @@ public class LimitingResourcesController implements Composer {
             }
         }
 
-        private void manualAllocateLimitingResourceQueueElement(LimitingResourceQueueElementDTO dto) {
-            LimitingResourceQueueElement element = dto.getOriginal();
-            try {
-                setAssignableQueues(element);
-                limitingResourceQueueModel.init(element);
-                manualAllocationWindow.doModal();
-            } catch (SuspendNotAllowedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
         private void showErrorMessage(String error) {
             try {
                 Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
@@ -464,6 +449,20 @@ public class LimitingResourcesController implements Composer {
             return new Label(value);
         }
 
+    }
+
+    private void showManualAllocationWindow(LimitingResourceQueueElement element) {
+        try {
+            setAssignableQueues(element);
+            limitingResourceQueueModel.init(element);
+            manualAllocationWindow.doModal();
+        } catch (SuspendNotAllowedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public List<LimitingResourceQueue> getLimitingResourceQueues() {
@@ -764,6 +763,10 @@ public class LimitingResourcesController implements Composer {
 
     private String jsonHighlightColor() {
         return "{\"color\": \"blue\", \"bgcolor\": \"white\"}";
+    }
+
+    public void moveTask(LimitingResourceQueueElement element) {
+        showManualAllocationWindow(element);
     }
 
 }
