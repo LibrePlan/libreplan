@@ -139,10 +139,22 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return new Interval(task.getStartDate(), task
                         .getEndDate());
             } else {
-                LocalDate start = all.get(0).getStartDate();
-                LocalDate end = getEnd(all);
+                LocalDate start = min(all.get(0)
+                        .getStartConsideringAssignments(), all.get(0)
+                        .getStartDate());
+                LocalDate taskEndDate = LocalDate.fromDateFields(task
+                        .getEndDate());
+                LocalDate end = max(getEnd(all), taskEndDate);
                 return new Interval(asDate(start), asDate(end));
             }
+        }
+
+        private LocalDate min(LocalDate... dates) {
+            return Collections.min(Arrays.asList(dates), null);
+        }
+
+        private LocalDate max(LocalDate... dates) {
+            return Collections.max(Arrays.asList(dates), null);
         }
 
         private static LocalDate getEnd(List<ResourceAllocation<?>> all) {

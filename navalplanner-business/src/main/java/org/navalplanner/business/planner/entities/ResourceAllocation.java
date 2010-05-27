@@ -836,6 +836,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return Collections.unmodifiableSet(derivedAllocations);
     }
 
+    public LocalDate getStartConsideringAssignments() {
+        List<? extends DayAssignment> assignments = getAssignments();
+        if (assignments.isEmpty()) {
+            return getStartDate();
+        }
+        return assignments.get(0).getDay();
+    }
+
     public LocalDate getStartDate() {
         return LocalDate.fromDateFields(task.getStartDate());
     }
