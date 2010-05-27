@@ -21,6 +21,7 @@
 package org.navalplanner.business.workreports.daos;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -86,6 +88,16 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
             criteria.add(Restrictions.le("date", end));
         }
         return criteria.list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<WorkReportLine> findByResources(List<Resource> resourcesList) {
+        if (resourcesList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getSession().createCriteria(WorkReportLine.class).add(
+                Restrictions.in("resource", resourcesList)).list();
     }
 
 }

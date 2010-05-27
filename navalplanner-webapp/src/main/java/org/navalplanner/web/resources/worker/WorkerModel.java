@@ -41,6 +41,8 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
+import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -53,6 +55,7 @@ import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.resources.search.ResourcePredicate;
@@ -99,6 +102,15 @@ public class WorkerModel implements IWorkerModel {
     private IConfigurationDAO configurationDAO;
 
     private List<Worker> currentWorkerList = new ArrayList<Worker>();
+
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
+
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IResourceAllocationDAO resourceAllocationDAO;
 
     @Autowired
     public WorkerModel(IResourceDAO resourceDAO,
@@ -566,5 +578,21 @@ public class WorkerModel implements IWorkerModel {
 
     public List<Worker> getAllCurrentWorkers() {
         return currentWorkerList;
+    }
+
+    @Override
+    @Transactional(readOnly=true)
+    public boolean canRemove(Worker worker) {
+        List<Resource> resourcesList = new ArrayList<Resource>();
+        resourcesList.add(worker);
+        return dayAssignmentDAO.findByResources(resourcesList).isEmpty() &&
+            workReportLineDAO.findByResources(resourcesList).isEmpty() &&
+            resourceAllocationDAO.findAllocationsRelatedToAnyOf(resourcesList).isEmpty();
+    }
+
+    @Override
+    @Transactional
+    public void confirmRemove(Worker worker) throws InstanceNotFoundException {
+        resourceDAO.remove(worker.getId());
     }
 }
