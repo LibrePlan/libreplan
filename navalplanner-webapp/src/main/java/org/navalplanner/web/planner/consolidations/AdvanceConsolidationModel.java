@@ -279,11 +279,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                                     dto.getConsolidatedValue());
                 }
 
-                if (consolidation.getConsolidatedValues().isEmpty()) {
-                    consolidation = null;
-                    task.setConsolidation(consolidation);
-                }
-
                 LocalDate firstDayNotConsolidated = task
                         .getFirstDayNotConsolidated();
                 for (DayAssignment dayAssignment : task.getDayAssignments()) {
@@ -303,7 +298,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                             .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
                     Integer pendingHours = resourceAllocation
                             .getOriginalTotalAssigment();
-                    if (consolidation != null) {
+                    if (!consolidation.getConsolidatedValues().isEmpty()) {
                         BigDecimal lastConslidation = task.getConsolidation()
                                 .getConsolidatedValues().last().getValue();
                         pendingHours = BigDecimal.ONE.subtract(
