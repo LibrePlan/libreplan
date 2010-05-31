@@ -50,6 +50,8 @@ public interface ITaskFundamentalProperties {
      */
     public Date getDeadline();
 
+    public Date getConsolidatedline();
+
     public void setLengthMilliseconds(long lengthMilliseconds);
 
     public long getLengthMilliseconds();

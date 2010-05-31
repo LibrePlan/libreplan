@@ -544,6 +544,20 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
+        public Date getConsolidatedline() {
+            if (!taskElement.isLeaf() || !taskElement.hasConsolidations()) {
+                return null;
+            }
+            LocalDate consolidatedline = ((Task) taskElement)
+                    .getFirstDayNotConsolidated();
+            System.out.println("Consolidated " + consolidatedline);
+            if (consolidatedline == null) {
+                return null;
+            }
+            return consolidatedline.toDateTimeAtStartOfDay().toDate();
+        }
+
+        @Override
         public boolean isSubcontracted() {
             return taskElement.isSubcontracted();
         }

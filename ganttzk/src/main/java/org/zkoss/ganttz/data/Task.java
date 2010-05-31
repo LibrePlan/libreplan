@@ -331,6 +331,11 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getDeadline();
     }
 
+    @Override
+    public Date getConsolidatedline() {
+        return fundamentalProperties.getConsolidatedline();
+    }
+
     public void addConstraintViolationListener(
             IConstraintViolationListener<Date> listener) {
         violationNotificator.addConstraintViolationListener(listener);

@@ -1034,8 +1034,20 @@ div.z-tree {
     left:-100px; /* Hide when it has't been set */
     width:10px;
     height:22px;
-    background-image: url("../../zkau/web/ganttz/img/deadline2.png");
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
 }
+
+.consolidatedline {
+    position:absolute;
+    /* border-right: solid 2px red; */
+    margin-top: -5px;
+    float:left;
+    left:-100px; /* Hide when it has't been set */
+    width:10px;
+    height:22px;
+    background-image: url("../../zkau/web/ganttz/img/deadline_green.png");
+}
+
 
 body .perspectives-column {
     display:inline;
