@@ -194,4 +194,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return false;
     }
 
+    @Override
+    public Date getConsolidatedline() {
+        return null;
+    }
+
 }
