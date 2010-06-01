@@ -550,7 +550,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
             LocalDate consolidatedline = ((Task) taskElement)
                     .getFirstDayNotConsolidated();
-            System.out.println("Consolidated " + consolidatedline);
             if (consolidatedline == null) {
                 return null;
             }
