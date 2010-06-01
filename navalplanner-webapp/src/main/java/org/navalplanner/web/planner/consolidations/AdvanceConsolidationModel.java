@@ -199,13 +199,18 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         .addConsolidatedValue((CalculatedConsolidatedValue) value);
             }
 
+            LocalDate startInclusive = value.getDate().plusDays(1);
+            LocalDate taskStartDate = LocalDate.fromDateFields(task
+                    .getStartDate());
+            if (startInclusive.compareTo(taskStartDate) < 0) {
+                startInclusive = taskStartDate;
+            }
+            LocalDate endExclusive = LocalDate
+                    .fromDateFields(task.getEndDate());
+
             Set<ResourceAllocation<?>> allResourceAllocations = task
                     .getAllResourceAllocations();
             for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-                LocalDate startInclusive = value.getDate().plusDays(1);
-                LocalDate endExclusive = LocalDate.fromDateFields(task
-                        .getEndDate());
-
                 for (DayAssignment dayAssignment : resourceAllocation
                         .getAssignments()) {
                     if (dayAssignment.getDay().compareTo(startInclusive) < 0) {
