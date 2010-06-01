@@ -553,7 +553,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             if (consolidatedline == null) {
                 return null;
             }
-            return consolidatedline.toDateTimeAtStartOfDay().toDate();
+            return consolidatedline.minusDays(1).toDateTimeAtStartOfDay()
+                    .toDate();
         }
 
         @Override
