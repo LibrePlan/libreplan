@@ -306,7 +306,11 @@ public class TimeTracker {
 
     private Date startMinusTwoWeeks(Task task) {
         // the deadline could be before the start
-        return new LocalDate(min(task.getBeginDate(), task.getDeadline()))
-                .minusWeeks(2).toDateMidnight().toDate();
+        Date start = min(task.getBeginDate(), task.getDeadline());
+        // the last consolidated value could be before the start
+        if (task.getConsolidatedline() != null) {
+            start = min(start, task.getConsolidatedline());
+        }
+        return new LocalDate(start).minusWeeks(2).toDateMidnight().toDate();
     }
 }
