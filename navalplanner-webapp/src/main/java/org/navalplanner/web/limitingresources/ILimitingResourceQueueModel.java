@@ -55,6 +55,9 @@ import org.zkoss.ganttz.util.Interval;
  */
 public interface ILimitingResourceQueueModel {
 
+    boolean assignEditingLimitingResourceQueueElementToQueueAt(
+            LimitingResourceQueue queue, DateAndHour time);
+
     /**
      * Assigns a {@link LimitingResourceQueueElement} to its corresponding
      * {@link LimitingResourceQueue}
@@ -78,15 +81,17 @@ public interface ILimitingResourceQueueModel {
      */
     boolean assignLimitingResourceQueueElement(LimitingResourceQueueElement element);
 
-    boolean assignEditingLimitingResourceQueueElementToQueueAt(
-            LimitingResourceQueue queue, DateAndHour time);
-
     ZoomLevel calculateInitialZoomLevel();
 
     /**
      * Saves all {@link LimitingResourceQueue}
      */
     void confirm();
+
+    List<LimitingResourceQueue> getAssignableQueues(
+            LimitingResourceQueueElement element);
+
+    LimitingResourceQueueElement getLimitingResourceQueueElement();
 
     /**
      * Return all {@link LimitingResourceQueue}
@@ -107,6 +112,8 @@ public interface ILimitingResourceQueueModel {
 
     Interval getViewInterval();
 
+    void init(LimitingResourceQueueElement element);
+
     /**
      * Loads {@link LimitingResourceQueue} and unassigned {@link LimitingResourceQueueElement} from DB
      *
@@ -116,20 +123,28 @@ public interface ILimitingResourceQueueModel {
 
     void initGlobalView(Order filterBy, boolean filterByResources);
 
-    boolean userCanRead(Order order, String loginName);
-
-    void unschedule(LimitingResourceQueueElement element);
+    /**
+     * Inserts element into queue at a specific time
+     *
+     * If it's not possible to insert element at that time because there's no
+     * room, for instance, then the task that is at that moment occupying that
+     * space is moved it to the end of the queue. This process is done
+     * recursively until there's room enough for holding the element to insert
+     *
+     * @param element
+     * @param queue
+     * @param allocationTime
+     */
+    void insertQueueElementIntoQueueAt(LimitingResourceQueueElement element, LimitingResourceQueue queue,
+            DateAndHour allocationTime);
 
     void removeUnassignedLimitingResourceQueueElement(
             LimitingResourceQueueElement element);
 
     void setTimeTrackerState(ZoomLevel zoomLevel);
 
-    List<LimitingResourceQueue> getAssignableQueues(
-            LimitingResourceQueueElement element);
+    void unschedule(LimitingResourceQueueElement element);
 
-    void init(LimitingResourceQueueElement element);
-
-    LimitingResourceQueueElement getLimitingResourceQueueElement();
+    boolean userCanRead(Order order, String loginName);
 
 }

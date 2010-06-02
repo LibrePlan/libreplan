@@ -1,0 +1,41 @@
+<!-- Direct insert -->
+
+<window id="directInsertAllocationWindow"
+    apply="org.navalplanner.web.limitingresources.DirectInsertAllocationController"
+    title="${i18n:_('Direct insert allocation')}"
+    width="500px" left="50px" top="50px"
+    visible="false"
+    closable="true"
+    onClose="directInsertAllocationController.close(event)">
+
+    <!-- Select assignable queues -->
+    <vbox>
+        <panel title="${i18n:_('Select queue')}" border="normal">
+            <panelchildren>
+                <listbox id="listAssignableQueues"
+                    itemRenderer="@{directInsertAllocationController.queueRenderer}"
+                    mold="select" />
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <!-- Select date -->
+    <vbox>
+        <panel title="${i18n:_('Select date')}" border="normal">
+            <panelchildren>
+                <datebox id="startAllocationDate"
+                    onFocus="directInsertAllocationController.highlightCalendar(event)" />
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <separator bar="false" spacing="30px" orient="horizontal"/>
+
+    <!-- Controls -->
+    <hbox>
+        <button id="ok" label="${i18n:_('Accept')}"
+            onClick="directInsertAllocationController.accept(event)" />
+        <button id="cancel" label="${i18n:_('Cancel')}"
+            onClick="directInsertAllocationController.cancel()" />
+    </hbox>
+</window>

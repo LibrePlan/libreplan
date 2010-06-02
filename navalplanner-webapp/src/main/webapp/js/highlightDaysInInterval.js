@@ -64,9 +64,14 @@ function numberOfMonth(month) {
     return months[month];
 }
 
-function dateAtBeginningOfMonth(monthAndYear) {
+function dateAtBeginningOfMonthSplitByComma(monthAndYear) {
     var arr = monthAndYear.split(",");
     return new Date(arr[1].trim(), numberOfMonth(arr[0].trim()), 1);
+}
+
+function dateAtBeginningOfMonthSplitByHyphen(monthAndYear) {
+    var arr = monthAndYear.split("-");
+    return new Date(arr[2].trim(), numberOfMonth(arr[1].trim()), arr[0].trim());
 }
 
 /**
@@ -190,14 +195,25 @@ function highlightDaysInInterval(calendarUuid, intervalJSON, colorStyleJSON) {
     if (calendar == null) {
         return;
     }
-    var nodes = calendar.getElementsByTagName("td");
+
+    var currentDate;
+
     var title = document.getElementById(calendarUuid + "!title"); // month and year: Jan, 1
+    if (title != null) {
+        currentDate = dateAtBeginningOfMonthSplitByComma(title.innerHTML);
+    } else {
+        var dateinput = document.getElementById(calendarUuid + "!real");
+        currentDate = dateAtBeginningOfMonthSplitByHyphen(dateinput.value);
+    }
 
     var interval = eval("(" + intervalJSON + ")");
-    var colorStyle = (colorStyleJSON != undefined) ? eval("(" + colorStyleJSON + ")") : DEFAULT_COLOR_STYLE;
 
-    var currentDate = dateAtBeginningOfMonth(title.innerHTML);
-    var days = daysToHighlightInInterval(interval, currentDate);
+    if (currentDate != null) {
+        var nodes = calendar.getElementsByTagName("td");
+        var days = daysToHighlightInInterval(interval, currentDate);
+        var colorStyle = (colorStyleJSON != undefined) ? eval("(" + colorStyleJSON + ")") : DEFAULT_COLOR_STYLE;
 
-    setStyleForDays(nodes, days, colorStyle);
+        setStyleForDays(nodes, days, colorStyle);
+    }
+
 }

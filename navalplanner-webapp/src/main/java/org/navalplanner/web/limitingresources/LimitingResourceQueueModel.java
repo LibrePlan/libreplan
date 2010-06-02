@@ -783,4 +783,69 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return beingEdited;
     }
 
+    @Override
+    public void insertQueueElementIntoQueueAt(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
+            DateAndHour allocationTime) {
+
+        LimitingResourceQueue queue = retrieveQueueFromModel(_queue);
+        LimitingResourceQueueElement element = retrieveQueueElementFromModel(_element);
+
+        List<LimitingResourceQueueElement> unscheduledElements = new ArrayList<LimitingResourceQueueElement>();
+
+        LimitingResourceQueueElementGap gap;
+        do {
+            gap = LimitingResourceAllocator.getFirstValidGapSince(element, queue, allocationTime);
+
+            if (gap != null) {
+                final LocalDate startDate = gap.getStartTime().getDate();
+                if (startDate.equals(allocationTime.getDate())) {
+                    assignLimitingResourceQueueElementToQueueAt(element, queue, allocationTime);
+                    break;
+                } else {
+                    LimitingResourceQueueElement elementAtTime = getFirstElementFrom(
+                            queue, allocationTime);
+                    if (elementAtTime != null) {
+                        unschedule(elementAtTime);
+                        unscheduledElements.add(elementAtTime);
+                    }
+                }
+            }
+        } while (gap != null);
+
+        for (LimitingResourceQueueElement each: unscheduledElements) {
+            gap = LimitingResourceAllocator.getFirstValidGap(queue, each);
+            assignLimitingResourceQueueElementToQueueAt(each, queue, gap.getStartTime());
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public LimitingResourceQueueElement getFirstElementFrom(LimitingResourceQueue queue, DateAndHour allocationTime) {
+        final List<LimitingResourceQueueElement> elements = new ArrayList(queue.getLimitingResourceQueueElements());
+
+        // First element
+        final LimitingResourceQueueElement first = elements.get(0);
+        if (isAfter(first, allocationTime)) {
+            return first;
+        }
+
+        // Rest of elements
+        for (int i = 0; i < elements.size(); i++) {
+            final LimitingResourceQueueElement each = elements.get(i);
+            if (isInTheMiddle(each, allocationTime)) {
+                return each;
+            }
+        }
+        return null;
+    }
+
+    private boolean isAfter(LimitingResourceQueueElement element, DateAndHour time) {
+        return element.getStartTime().isAfter(time);
+    }
+
+    private boolean isInTheMiddle(LimitingResourceQueueElement element, DateAndHour time) {
+        return (element.getStartTime().isBefore(time) || element.getStartTime().isEquals(time))
+                    && (element.getEndTime().isAfter(time) || element.getEndTime().isEquals(time));
+    }
+
 }

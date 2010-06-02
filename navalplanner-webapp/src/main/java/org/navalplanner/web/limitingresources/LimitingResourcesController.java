@@ -90,6 +90,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private Window manualAllocationWindow;
 
+    private Window directInsertAllocationWindow;
+
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
 
@@ -141,6 +143,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
                     .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
 
             initManualAllocationWindow();
+            initDirectInsertAllocationWindow();
 
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
@@ -156,10 +159,26 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private void initManualAllocationWindow() {
         manualAllocationWindow = (Window) limitingResourcesPanel.getFellowIfAny("manualAllocationWindow");
-        ManualAllocationController manualAllocationController = (ManualAllocationController) manualAllocationWindow
-                .getVariable("manualAllocationController", true);
+        ManualAllocationController manualAllocationController = getManualAllocationController();
         manualAllocationController.setLimitingResourcesController(this);
         manualAllocationController.setLimitingResourcesPanel(limitingResourcesPanel);
+    }
+
+    private ManualAllocationController getManualAllocationController() {
+        return (ManualAllocationController) manualAllocationWindow.getVariable(
+                "manualAllocationController", true);
+    }
+
+    private void initDirectInsertAllocationWindow() {
+        directInsertAllocationWindow = (Window) limitingResourcesPanel.getFellowIfAny("directInsertAllocationWindow");
+        DirectInsertAllocationController directInsertAllocationController = getDirectInsertAllocationController();
+        directInsertAllocationController.setLimitingResourcesController(this);
+        directInsertAllocationController.setLimitingResourcesPanel(limitingResourcesPanel);
+    }
+
+    private DirectInsertAllocationController getDirectInsertAllocationController() {
+        return (DirectInsertAllocationController) directInsertAllocationWindow.getVariable(
+                "directInsertAllocationController", true);
     }
 
     public ILimitingResourceQueueModel getLimitingResourceQueueModel() {
@@ -338,7 +357,22 @@ public class LimitingResourcesController extends GenericForwardComposer {
             hbox.appendChild(assignButton(element));
             hbox.appendChild(removeButton(element));
             hbox.appendChild(manualButton(element));
+            hbox.appendChild(directInsertButton(element));
             return hbox;
+        }
+
+        private Button directInsertButton(final LimitingResourceQueueElementDTO element) {
+            Button result = new Button();
+            result.setLabel(_("Insertion"));
+            result.setTooltiptext(_("Direct insert allocation"));
+            result.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    showDirectInsertAllocationWindow(element.getOriginal());
+                }
+            });
+            return result;
         }
 
         private Button manualButton(final LimitingResourceQueueElementDTO element) {
@@ -442,18 +476,22 @@ public class LimitingResourcesController extends GenericForwardComposer {
         return getManualAllocationWindowStatus() == Messagebox.OK;
     }
 
+    private void showManualAllocationWindow(LimitingResourceQueueElement element) {
+        getManualAllocationController().show(element);
+    }
+
     public int getManualAllocationWindowStatus() {
         Integer status = getManualAllocationController().getStatus();
         return (status != null) ? status.intValue() : -1;
     }
 
-    private void showManualAllocationWindow(LimitingResourceQueueElement element) {
-        getManualAllocationController().show(element);
+    private void showDirectInsertAllocationWindow(LimitingResourceQueueElement element) {
+        getDirectInsertAllocationController().show(element);
     }
 
-    private ManualAllocationController getManualAllocationController() {
-        return (ManualAllocationController) manualAllocationWindow.getVariable(
-                "manualAllocationController", true);
+    public int getDirectInsertAllocationWindowStatus() {
+        Integer status = getDirectInsertAllocationController().getStatus();
+        return (status != null) ? status.intValue() : -1;
     }
 
     public void reloadUnassignedLimitingResourceQueueElements() {

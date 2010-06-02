@@ -366,4 +366,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
     }
 
+    public void refreshQueue(LimitingResourceQueue queue) {
+        queueListComponent.refreshQueue(queue);
+    }
+
 }

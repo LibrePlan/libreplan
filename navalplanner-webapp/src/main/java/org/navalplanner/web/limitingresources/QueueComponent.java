@@ -24,8 +24,10 @@ package org.navalplanner.web.limitingresources;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -43,6 +45,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
@@ -61,13 +64,20 @@ public class QueueComponent extends XulElement implements
                 limitingResourceQueue);
     }
 
-    private final LimitingResourceQueue limitingResourceQueue;
+    private LimitingResourceQueue limitingResourceQueue;
+
     private final TimeTracker timeTracker;
+
     private transient IZoomLevelChangedListener zoomChangedListener;
+
     private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
 
     public List<QueueTask> getQueueTasks() {
         return queueTasks;
+    }
+
+    public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
+        this.limitingResourceQueue = limitingResourceQueue;
     }
 
     private QueueComponent(final TimeTracker timeTracker,
@@ -91,9 +101,19 @@ public class QueueComponent extends XulElement implements
             IDatesMapper mapper) {
         List<QueueTask> queueTasks = createQueueTasks(mapper,
                 limitingResourceQueue.getLimitingResourceQueueElements());
-        if (queueTasks != null) {
-            appendQueueTasks(queueTasks);
+        appendQueueTasks(queueTasks);
+    }
+
+    public void invalidate() {
+        removeChildren();
+        appendQueueElements(limitingResourceQueue.getLimitingResourceQueueElements());
+    }
+
+    private void removeChildren() {
+        for (QueueTask each: queueTasks) {
+            removeChild(each);
         }
+        queueTasks.clear();
     }
 
     private void appendQueueTasks(List<QueueTask> queueTasks) {
@@ -218,10 +238,15 @@ public class QueueComponent extends XulElement implements
 
     private static int getStartPixels(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
-        return datesMapper
-                .toPixelsAbsolute((queueElement.getStartDate().toDateMidnight()
-.getMillis() + queueElement.getStartHour()
+        return datesMapper.toPixelsAbsolute((queueElement.getStartDate()
+                .toDateMidnight().getMillis() + queueElement.getStartHour()
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR));
+    }
+
+    public void appendQueueElements(SortedSet<LimitingResourceQueueElement> elements) {
+        for (LimitingResourceQueueElement each : elements) {
+            appendQueueElement(each);
+        }
     }
 
     public void appendQueueElement(LimitingResourceQueueElement element) {

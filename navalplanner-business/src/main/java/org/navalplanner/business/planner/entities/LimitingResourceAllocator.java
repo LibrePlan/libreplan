@@ -114,6 +114,13 @@ public class LimitingResourceAllocator {
         return result;
     }
 
+    public static LimitingResourceQueueElementGap getFirstValidGapSince(
+            LimitingResourceQueueElement element, LimitingResourceQueue queue,
+            DateAndHour since) {
+        List<LimitingResourceQueueElementGap> gaps = getValidGapsForElementSince(element, queue, since);
+        return (!gaps.isEmpty()) ? gaps.get(0) : null;
+    }
+
     public static List<LimitingResourceQueueElementGap> getValidGapsForElementSince(
             LimitingResourceQueueElement element, LimitingResourceQueue queue,
             DateAndHour since) {

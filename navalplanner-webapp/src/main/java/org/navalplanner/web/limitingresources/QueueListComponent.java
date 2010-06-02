@@ -83,7 +83,7 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     public void invalidate() {
         fromQueueToComponent.clear();
-        this.getChildren().clear();
+        getChildren().clear();
         insertAsComponents(model.asList());
         super.invalidate();
     }
@@ -93,6 +93,12 @@ public class QueueListComponent extends HtmlMacroComponent implements
                 .getLimitingResourceQueue());
         queueComponent.appendQueueElement(element);
         addDependenciesInPanel(element);
+    }
+
+    public void refreshQueue(LimitingResourceQueue queue) {
+        QueueComponent queueComponent = fromQueueToComponent.get(queue);
+        queueComponent.setLimitingResourceQueue(queue);
+        queueComponent.invalidate();
     }
 
     private void addDependenciesInPanel(LimitingResourceQueueElement element) {

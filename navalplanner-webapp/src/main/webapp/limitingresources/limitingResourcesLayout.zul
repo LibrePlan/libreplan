@@ -24,6 +24,10 @@
     macroURI="/limitingresources/manualAllocation.zul"
     inline="true" ?>
 
+<?component name="directInsertAllocationWindow"
+    macroURI="/limitingresources/directInsertAllocationWindow.zul"
+    inline="true" ?>
+
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
     <n:script type="text/javascript" src="/navalplanner-webapp/js/highlightDaysInInterval.js" />
@@ -104,7 +108,7 @@
                     <column label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
                     <column label="${i18n:_('Date')}" sort="auto(date)"/>
                     <column label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
-                    <column label="${i18n:_('Operations')}" width="200px"/>
+                    <column label="${i18n:_('Operations')}" width="250px"/>
                     <column label="${i18n:_('Auto queueing')}" width="100px" />
                 </columns>
             </grid>
@@ -113,5 +117,7 @@
     </borderlayout>
 
     <manualAllocationWindow id="manualAllocationWindow" />
+
+    <directInsertAllocationWindow id="directInsertAllocationWindow" />
 
 </zk>
