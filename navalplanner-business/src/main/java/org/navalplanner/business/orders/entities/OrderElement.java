@@ -396,6 +396,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (this.getParent() != null) {
                 this.getParent().removeIndirectAdvanceAssignment(
                         advanceAssignment.getAdvanceType());
+                removeChildrenAdvanceInParents(this.getParent());
             }
         }
     }
@@ -448,9 +449,39 @@ public abstract class OrderElement extends IntegrationEntity implements
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
         if (this.getParent() != null) {
+            addChildrenAdvanceInParents(this.getParent());
             this.getParent().addIndirectAdvanceAssignment(
                     newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
         }
+    }
+
+    public void addChildrenAdvanceInParents(OrderLineGroup parent) {
+        if ((parent != null) && (!parent.existChildrenAdvance())) {
+            parent.addChildrenAdvanceOrderLineGroup();
+            addChildrenAdvanceInParents(parent.getParent());
+        }
+
+    }
+
+    public void removeChildrenAdvanceInParents(OrderLineGroup parent) {
+        if ((parent != null) && (parent.existChildrenAdvance())
+                && (!itsChildsHasAdvances(parent))) {
+            parent.removeChildrenAdvanceOrderLineGroup();
+            removeChildrenAdvanceInParents(parent.getParent());
+        }
+    }
+
+    private boolean itsChildsHasAdvances(OrderElement orderElement) {
+        for (OrderElement child : orderElement.getChildren()) {
+            if ((!child.getIndirectAdvanceAssignments().isEmpty())
+                    || (!child.getDirectAdvanceAssignments().isEmpty())) {
+                return true;
+            }
+            if (itsChildsHasAdvances(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void checkNoOtherGlobalAdvanceAssignment(
