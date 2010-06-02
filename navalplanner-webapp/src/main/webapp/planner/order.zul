@@ -86,7 +86,7 @@
 
     <window id="advanceWindow"
         apply="${advanceController}"
-        title="${i18n:_('Advance consolidation')}" width="600px"
+        title="${i18n:_('Advance consolidation')}" width="700px"
         closable="true" visible="false">
 
         <vbox>
@@ -110,13 +110,16 @@
                             fixedLayout="true"
                             sclass="@{advanceController.readOnlySclass}">
                         <columns>
-                            <column label="${i18n:_('Value')}" width="150px" align="center"/>
+                            <column label="${i18n:_('Value')}" width="150px" align="center" visible="@{advanceController.unitType}"/>
+                            <column label="${i18n:_('Percentage')}" width="150px" align="center"/>
                             <column label="${i18n:_('Date')}" width="150px" align="center"/>
                             <column label="${i18n:_('Consolidated')}" width="150px" align="center"/>
                         </columns>
                         <rows>
                             <row self="@{each='advanceConsolidationDTO'}" value="@{advanceConsolidationDTO}">
-                                <label value="@{advanceConsolidationDTO.value}" />
+                                <label value="@{advanceConsolidationDTO.labelUnits}"
+                                    visible="@{advanceController.unitType}"/>
+                                <label value="@{advanceConsolidationDTO.labelPercentage}" />
                                 <label value="@{advanceConsolidationDTO.date,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                                 <checkbox checked="@{advanceConsolidationDTO.consolidated}"
                                     onCheck="advanceController.reloadAdvanceGrid();"

@@ -49,6 +49,8 @@ public interface IAdvanceConsolidationModel {
 
     boolean isVisibleMessages();
 
+    boolean isUnitType();
+
     List<AdvanceConsolidationDTO> getConsolidationDTOs();
 
     String infoMessages();

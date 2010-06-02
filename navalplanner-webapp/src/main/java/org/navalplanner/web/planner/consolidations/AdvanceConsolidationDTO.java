@@ -21,12 +21,15 @@
 package org.navalplanner.web.planner.consolidations;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
 
 /**
@@ -48,7 +51,9 @@ public class AdvanceConsolidationDTO {
 
     private Date date;
 
-    private BigDecimal value;
+    private BigDecimal units;
+
+    private BigDecimal percentage;
 
     private boolean consolidated;
 
@@ -82,7 +87,8 @@ public class AdvanceConsolidationDTO {
         this.setConsolidatedValue(consolidatedValue);
         initConsolidated();
         initDate();
-        initValue();
+        initPercentage();
+        initUnits();
     }
 
     private void initConsolidated() {
@@ -99,11 +105,19 @@ public class AdvanceConsolidationDTO {
         }
     }
 
-    private void initValue() {
+    private void initPercentage() {
         if (consolidatedValue != null) {
-            this.value = this.consolidatedValue.getValue();
+            this.percentage = this.consolidatedValue.getValue();
         } else if (advanceMeasurement != null) {
-            this.value = this.advanceMeasurement.getValue();
+            this.percentage = calculatePercentageAdvanceMeasurement(advanceMeasurement);
+        }
+    }
+
+    private void initUnits(){
+        if (advanceMeasurement != null) {
+            this.units = advanceMeasurement.getValue();
+        } else {
+            this.units = BigDecimal.ZERO;
         }
     }
 
@@ -174,8 +188,8 @@ public class AdvanceConsolidationDTO {
         return date;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public BigDecimal getPercentage() {
+        return percentage;
     }
 
     public static void setAllReadOnly(boolean allReadOnly) {
@@ -186,4 +200,47 @@ public class AdvanceConsolidationDTO {
         return allReadOnly;
     }
 
+    private BigDecimal calculatePercentageAdvanceMeasurement(
+            AdvanceMeasurement advanceMeasurement) {
+        AdvanceAssignment assignment = advanceMeasurement
+                .getAdvanceAssignment();
+        if (assignment == null) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal maxValue = ((DirectAdvanceAssignment) assignment)
+                .getMaxValue();
+
+        if (maxValue.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal value = advanceMeasurement.getValue();
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+
+        return value.setScale(2).divide(maxValue, RoundingMode.DOWN).multiply(
+                new BigDecimal(100));
+    }
+
+    public String getLabelPercentage() {
+        if (getPercentage() != null) {
+            return getPercentage().toString() + " %";
+        } else {
+            return (BigDecimal.ZERO).toString() + " %";
+        }
+    }
+
+    public BigDecimal getUnits() {
+        return units;
+    }
+
+    public String getLabelUnits() {
+        if (getUnits() != null) {
+            return getUnits().toString();
+        } else {
+            return (BigDecimal.ZERO).toString();
+        }
+    }
 }

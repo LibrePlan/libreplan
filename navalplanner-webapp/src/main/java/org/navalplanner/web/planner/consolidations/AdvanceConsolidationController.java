@@ -128,4 +128,9 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
         }
         return "";
     }
+
+    public boolean isUnitType() {
+        return advanceConsolidationModel.isUnitType();
+    }
+
 }

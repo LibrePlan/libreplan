@@ -34,6 +34,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -67,6 +68,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
     private Task task;
 
     private PlanningState planningState;
@@ -76,6 +80,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     private Consolidation consolidation;
 
     private DirectAdvanceAssignment spreadAdvance;
+
+    private boolean isUnitType = false;
 
     private OrderElement orderElement;
 
@@ -261,11 +267,12 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
             if (consolidation.isCalculated()) {
                 return CalculatedConsolidatedValue.create(LocalDate
-                        .fromDateFields(dto.getDate()), dto.getValue(),
+                        .fromDateFields(dto.getDate()), dto.getPercentage(),
                         LocalDate.fromDateFields(task.getEndDate()));
             } else {
                 return NonCalculatedConsolidatedValue.create(LocalDate
-                        .fromDateFields(dto.getDate()), dto.getValue(), dto
+                        .fromDateFields(dto.getDate()), dto.getPercentage(),
+                        dto
                         .getAdvanceMeasurement(), LocalDate.fromDateFields(task
                         .getEndDate()));
             }
@@ -354,13 +361,17 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private void initAdvanceConsolidationsDTOs(Task task) {
         orderElement = task.getOrderElement();
+        orderElementDAO.reattachUnmodifiedEntity(orderElement);
+
         spreadAdvance = orderElement.getReportGlobalAdvanceAssignment();
+
         consolidation = task.getConsolidation();
         if (consolidation != null) {
             consolidation.getConsolidatedValues().size();
         }
 
         if (spreadAdvance != null) {
+            isUnitType = (!spreadAdvance.getAdvanceType().getPercentage());
             createAdvanceConsolidationDTOs();
             initConsolidatedDates();
             addNonConsolidatedAdvances();
@@ -480,6 +491,10 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     public void setReadOnlyConsolidations() {
         // set all advance consolidations as read only
         AdvanceConsolidationDTO.setAllReadOnly(hasLimitingResourceAllocation());
+    }
+
+    public boolean isUnitType() {
+        return this.isUnitType;
     }
 
 }
