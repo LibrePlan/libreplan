@@ -131,7 +131,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void accept() {
         if (context != null && orderElement != null && isVisibleAdvances()) {
             org.zkoss.ganttz.data.Task ganttTask = context.getTask();
@@ -205,8 +205,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             if (startInclusive.compareTo(taskStartDate) < 0) {
                 startInclusive = taskStartDate;
             }
-            LocalDate endExclusive = LocalDate
-                    .fromDateFields(task.getEndDate());
 
             Set<ResourceAllocation<?>> allResourceAllocations = task
                     .getAllResourceAllocations();
@@ -218,6 +216,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     }
                 }
 
+                LocalDate endExclusive = LocalDate.fromDateFields(task
+                        .getEndDate());
+
                 Integer pendingHours = BigDecimal.ONE.subtract(
                         value.getValue().divide(new BigDecimal(100),
                                 RoundingMode.DOWN)).multiply(
@@ -227,8 +228,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
 
-                if (value.getDate().compareTo(
-                        LocalDate.fromDateFields(task.getEndDate())) > 0) {
+                if (value.getDate().compareTo(endExclusive) > 0) {
                     LocalDate date = ResourceAllocation.allocating(
                             Arrays.asList(resourceAllocation
                                     .asResourcesPerDayModification()))
