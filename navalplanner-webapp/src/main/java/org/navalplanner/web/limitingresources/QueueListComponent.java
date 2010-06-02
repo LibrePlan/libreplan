@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -92,26 +91,12 @@ public class QueueListComponent extends HtmlMacroComponent implements
         QueueComponent queueComponent = fromQueueToComponent.get(element
                 .getLimitingResourceQueue());
         queueComponent.appendQueueElement(element);
-        addDependenciesInPanel(element);
     }
 
     public void refreshQueue(LimitingResourceQueue queue) {
         QueueComponent queueComponent = fromQueueToComponent.get(queue);
         queueComponent.setLimitingResourceQueue(queue);
         queueComponent.invalidate();
-    }
-
-    private void addDependenciesInPanel(LimitingResourceQueueElement element) {
-        LimitingResourcesPanel panel = LimitingResourcesPanel
-                .getLimitingResourcesPanel(this);
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsDestiny()) {
-            panel.addDependencyComponent(each);
-        }
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsOrigin()) {
-            panel.addDependencyComponent(each);
-        }
     }
 
     private IZoomLevelChangedListener adjustTimeTrackerSizeListener() {

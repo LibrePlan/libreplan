@@ -32,6 +32,7 @@ import java.util.SortedSet;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -253,11 +254,25 @@ public class QueueComponent extends XulElement implements
         QueueTask queueTask = createQueueTask(element);
         appendQueueTask(queueTask);
         appendMenu(queueTask);
+        addDependenciesInPanel(element);
     }
 
     private QueueTask createQueueTask(LimitingResourceQueueElement element) {
         validateQueueElement(element);
         return createDivForElement(timeTracker.getMapper(), element);
+    }
+
+    private void addDependenciesInPanel(LimitingResourceQueueElement element) {
+        LimitingResourcesPanel panel = LimitingResourcesPanel
+                .getLimitingResourcesPanel(this);
+        for (LimitingResourceQueueDependency each : element
+                .getDependenciesAsDestiny()) {
+            panel.addDependencyComponent(each);
+        }
+        for (LimitingResourceQueueDependency each : element
+                .getDependenciesAsOrigin()) {
+            panel.addDependencyComponent(each);
+        }
     }
 
     public String getResourceName() {
