@@ -52,6 +52,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleListModel;
@@ -217,6 +218,7 @@ public class ManualAllocationController extends GenericForwardComposer {
         LimitingResourceQueueElement element = getLimitingResourceQueueModel()
                 .getLimitingResourceQueueElement();
         limitingResourcesPanel.appendQueueElementToQueue(element);
+        setStatus(Messagebox.OK);
         closeManualAllocationWindow(e);
     }
 
@@ -295,6 +297,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     public void cancel() {
         self.setVisible(false);
+        setStatus(Messagebox.CANCEL);
     }
 
     public void closeManualAllocationWindow(Event e) {
@@ -382,6 +385,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     public void show(LimitingResourceQueueElement element) {
         try {
+            setStatus(Messagebox.CANCEL);
             setAssignableQueues(element);
             getLimitingResourceQueueModel().init(element);
             ((Window) self).doModal();
@@ -396,6 +400,14 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     public ListitemRenderer getQueueRenderer() {
         return queueRenderer;
+    }
+
+    public Integer getStatus() {
+        return (Integer) self.getVariable("status", true);
+    }
+
+    public void setStatus(int status) {
+        self.setVariable("status", new Integer(status), true);
     }
 
     private class QueueRenderer implements ListitemRenderer {

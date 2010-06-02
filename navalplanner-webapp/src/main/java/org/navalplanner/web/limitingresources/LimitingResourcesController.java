@@ -437,14 +437,23 @@ public class LimitingResourcesController extends GenericForwardComposer {
         Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
     }
 
-    public void moveTask(LimitingResourceQueueElement element) {
+    public boolean moveTask(LimitingResourceQueueElement element) {
         showManualAllocationWindow(element);
+        return getManualAllocationWindowStatus() == Messagebox.OK;
+    }
+
+    public int getManualAllocationWindowStatus() {
+        Integer status = getManualAllocationController().getStatus();
+        return (status != null) ? status.intValue() : -1;
     }
 
     private void showManualAllocationWindow(LimitingResourceQueueElement element) {
-        ManualAllocationController manualAllocationController = (ManualAllocationController) manualAllocationWindow
-                .getVariable("manualAllocationController", true);
-        manualAllocationController.show(element);
+        getManualAllocationController().show(element);
+    }
+
+    private ManualAllocationController getManualAllocationController() {
+        return (ManualAllocationController) manualAllocationWindow.getVariable(
+                "manualAllocationController", true);
     }
 
     public void reloadUnassignedLimitingResourceQueueElements() {
