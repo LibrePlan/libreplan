@@ -798,6 +798,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
             if (gap != null) {
                 final LocalDate startDate = gap.getStartTime().getDate();
+
                 if (startDate.equals(allocationTime.getDate())) {
                     assignLimitingResourceQueueElementToQueueAt(element, queue, allocationTime);
                     break;
@@ -832,7 +833,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         // Rest of elements
         for (int i = 0; i < elements.size(); i++) {
             final LimitingResourceQueueElement each = elements.get(i);
-            if (isInTheMiddle(each, allocationTime)) {
+            if (isInTheMiddle(each, allocationTime) ||
+                    isAfter(each, allocationTime)) {
                 return each;
             }
         }
