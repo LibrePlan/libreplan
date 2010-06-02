@@ -1,0 +1,63 @@
+<!-- Manual allocation -->
+<window id="manualAllocationWindow"
+    apply="org.navalplanner.web.limitingresources.ManualAllocationController"
+    title="${i18n:_('Manual allocation')}"
+    width="500px" left="50px" top="50px"
+    visible="false"
+    closable="true"
+    onClose="manualAllocationController.closeManualAllocationWindow(event)">
+
+    <!-- Select assignable queues -->
+    <vbox>
+        <panel title="${i18n:_('Select queue')}" border="normal">
+            <panelchildren>
+                <listbox id="listAssignableQueues"
+                    itemRenderer="@{manualAllocationController.queueRenderer}"
+                    mold="select" />
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <!-- Select gap -->
+    <vbox>
+        <panel title="${i18n:_('Select gap')}" border="normal">
+            <panelchildren>
+                <listbox id="listCandidateGaps"
+                        itemRenderer="@{manualAllocationController.candidateGapRenderer}"
+                        multiple="false"
+                        onSelect="manualAllocationController.setStartAllocationDate(event)">
+                     <listhead>
+                         <listheader label="${i18n:_('Start')}" />
+                         <listheader label="${i18n:_('End')}" />
+                     </listhead>
+                </listbox>
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <!-- Select date -->
+    <vbox>
+        <panel title="${i18n:_('Select date')}" border="normal">
+            <panelchildren>
+                <radiogroup id="radioAllocationDate" orient="vertical"
+                        onCheck="manualAllocationController.selectRadioAllocationDate(event)" >
+                    <radio label="${i18n:_('Earliest date')}" selected="true" />
+                    <radio label="${i18n:_('Latest date')}" />
+                    <radio label="${i18n:_('Select start date')}" />
+                </radiogroup>
+                <datebox id="startAllocationDate"
+                    onFocus="manualAllocationController.highlightCalendar(event)" />
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <separator bar="false" spacing="30px" orient="horizontal"/>
+
+    <!-- Controls -->
+    <hbox>
+        <button id="ok" label="${i18n:_('Accept')}"
+            onClick="manualAllocationController.accept(event)" />
+        <button id="cancel" label="${i18n:_('Cancel')}"
+            onClick="manualAllocationController.cancel()" />
+    </hbox>
+</window>

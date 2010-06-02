@@ -20,6 +20,10 @@
 <?xel-method prefix="i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
     signature="java.lang.String _(java.lang.String name)" ?>
 
+<?component name="manualAllocationWindow"
+    macroURI="/limitingresources/manualAllocation.zul"
+    inline="true" ?>
+
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
     <n:script type="text/javascript" src="/navalplanner-webapp/js/highlightDaysInInterval.js" />
@@ -108,69 +112,6 @@
 
     </borderlayout>
 
-
-    <!-- Manual allocation -->
-    <window id="manualAllocationWindow"
-        title="${i18n:_('Manual allocation')}"
-        width="500px" left="50px" top="50px"
-        visible="false"
-        closable="true"
-        onClose="limitingResourcesController.closeManualAllocationWindow(event)">
-
-        <!-- Select assignable queues -->
-        <vbox>
-            <panel title="${i18n:_('Select queue')}" border="normal">
-                <panelchildren>
-                    <listbox id="listAssignableQueues"
-                        itemRenderer="@{limitingResourcesController.queueRenderer}"
-                        mold="select" />
-                </panelchildren>
-            </panel>
-        </vbox>
-
-        <!-- Select gap -->
-        <vbox>
-            <panel title="${i18n:_('Select gap')}" border="normal">
-                <panelchildren>
-                    <listbox id="listCandidateGaps"
-                            itemRenderer="@{limitingResourcesController.candidateGapRenderer}"
-                            multiple="false"
-                            onSelect="limitingResourcesController.setStartAllocationDate(event)">
-                         <listhead>
-                             <listheader label="${i18n:_('Start')}" />
-                             <listheader label="${i18n:_('End')}" />
-                         </listhead>
-                    </listbox>
-                </panelchildren>
-            </panel>
-        </vbox>
-
-        <!-- Select date -->
-        <vbox>
-            <panel title="${i18n:_('Select date')}" border="normal">
-                <panelchildren>
-                    <radiogroup id="radioAllocationDate" orient="vertical"
-                            onCheck="limitingResourcesController.selectRadioAllocationDate(event)" >
-                        <radio label="${i18n:_('Earliest date')}" selected="true" />
-                        <radio label="${i18n:_('Latest date')}" />
-                        <radio label="${i18n:_('Select start date')}" />
-                    </radiogroup>
-                    <datebox id="startAllocationDate"
-                        onFocus="limitingResourcesController.highlightCalendar(event)" />
-                </panelchildren>
-            </panel>
-        </vbox>
-
-        <separator bar="false" spacing="30px" orient="horizontal"/>
-
-        <!-- Controls -->
-        <hbox>
-            <button id="ok" label="${i18n:_('Accept')}"
-                onClick="limitingResourcesController.accept(event)" />
-            <button id="cancel" label="${i18n:_('Cancel')}"
-                onClick="limitingResourcesController.cancel()" />
-        </hbox>
-
-    </window>
+    <manualAllocationWindow id="manualAllocationWindow" />
 
 </zk>
