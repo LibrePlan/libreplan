@@ -23,12 +23,10 @@ package org.navalplanner.web.limitingresources;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.data.Dependency;

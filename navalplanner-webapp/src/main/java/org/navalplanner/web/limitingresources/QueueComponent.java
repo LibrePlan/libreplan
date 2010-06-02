@@ -24,7 +24,6 @@ package org.navalplanner.web.limitingresources;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -46,7 +45,6 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
@@ -59,17 +57,22 @@ import org.zkoss.zul.impl.XulElement;
 public class QueueComponent extends XulElement implements
         AfterCompose {
 
-    public static QueueComponent create(TimeTracker timeTracker,
+    public static QueueComponent create(
+            QueueListComponent queueListComponent,
+            TimeTracker timeTracker,
             LimitingResourceQueue limitingResourceQueue) {
-        return new QueueComponent(timeTracker,
+
+        return new QueueComponent(queueListComponent, timeTracker,
                 limitingResourceQueue);
     }
 
-    private LimitingResourceQueue limitingResourceQueue;
+    private final QueueListComponent queueListComponent;
 
     private final TimeTracker timeTracker;
 
     private transient IZoomLevelChangedListener zoomChangedListener;
+
+    private LimitingResourceQueue limitingResourceQueue;
 
     private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
 
@@ -81,10 +84,15 @@ public class QueueComponent extends XulElement implements
         this.limitingResourceQueue = limitingResourceQueue;
     }
 
-    private QueueComponent(final TimeTracker timeTracker,
+    private QueueComponent(
+            final QueueListComponent queueListComponent,
+            final TimeTracker timeTracker,
             final LimitingResourceQueue limitingResourceQueue) {
+
+        this.queueListComponent = queueListComponent;
         this.limitingResourceQueue = limitingResourceQueue;
         this.timeTracker = timeTracker;
+
         createChildren(limitingResourceQueue, timeTracker.getMapper());
         zoomChangedListener = new IZoomLevelChangedListener() {
 
@@ -103,6 +111,14 @@ public class QueueComponent extends XulElement implements
         List<QueueTask> queueTasks = createQueueTasks(mapper,
                 limitingResourceQueue.getLimitingResourceQueueElements());
         appendQueueTasks(queueTasks);
+    }
+
+    public QueueListComponent getQueueListComponent() {
+        return queueListComponent;
+    }
+
+    public LimitingResourcesPanel getLimitingResourcesPanel() {
+        return queueListComponent.getLimitingResourcePanel();
     }
 
     public void invalidate() {
@@ -263,8 +279,7 @@ public class QueueComponent extends XulElement implements
     }
 
     private void addDependenciesInPanel(LimitingResourceQueueElement element) {
-        LimitingResourcesPanel panel = LimitingResourcesPanel
-                .getLimitingResourcesPanel(this);
+        final LimitingResourcesPanel panel = getLimitingResourcesPanel();
         for (LimitingResourceQueueDependency each : element
                 .getDependenciesAsDestiny()) {
             panel.addDependencyComponent(each);
@@ -310,14 +325,11 @@ public class QueueComponent extends XulElement implements
     }
 
     private void moveQueueTask(QueueTask queueTask) {
-        LimitingResourcesPanel panel = LimitingResourcesPanel.getLimitingResourcesPanel(this);
-        panel.moveQueueTask(queueTask);
+        getLimitingResourcesPanel().moveQueueTask(queueTask);
     }
 
     private void unnasign(QueueTask choosen) {
-        final LimitingResourcesPanel panel = LimitingResourcesPanel
-                .getLimitingResourcesPanel(choosen.getParent());
-        panel.unschedule(choosen);
+        getLimitingResourcesPanel().unschedule(choosen);
     }
 
     private void appendContextMenus() {

@@ -120,7 +120,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         treeModel = createModelForTree();
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-        queueListComponent = new QueueListComponent(timeTracker, treeModel);
+        queueListComponent = new QueueListComponent(this, timeTracker, treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel,
                 queueListComponent);

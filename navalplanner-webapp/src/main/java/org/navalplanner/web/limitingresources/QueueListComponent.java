@@ -44,6 +44,8 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 public class QueueListComponent extends HtmlMacroComponent implements
         AfterCompose {
 
+    private final LimitingResourcesPanel limitingResourcesPanel;
+
     private final IZoomLevelChangedListener zoomListener;
 
     private MutableTreeModel<LimitingResourceQueue> model;
@@ -52,9 +54,11 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private Map<LimitingResourceQueue, QueueComponent> fromQueueToComponent = new HashMap<LimitingResourceQueue, QueueComponent>();
 
-    public QueueListComponent(TimeTracker timeTracker,
+    public QueueListComponent(LimitingResourcesPanel limitingResourcesPanel,
+            TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
 
+        this.limitingResourcesPanel = limitingResourcesPanel;
         this.model = timelinesTree;
 
         zoomListener = adjustTimeTrackerSizeListener();
@@ -71,7 +75,7 @@ public class QueueListComponent extends HtmlMacroComponent implements
     }
 
     private void insertAsComponent(LimitingResourceQueue queue) {
-        QueueComponent component = QueueComponent.create(timeTracker, queue);
+        QueueComponent component = QueueComponent.create(this, timeTracker, queue);
         this.appendChild(component);
         fromQueueToComponent.put(queue, component);
     }
@@ -137,6 +141,10 @@ public class QueueListComponent extends HtmlMacroComponent implements
             result.put(each.getLimitingResourceQueueElement(), each);
         }
         return result;
+    }
+
+    public LimitingResourcesPanel getLimitingResourcePanel() {
+        return limitingResourcesPanel;
     }
 
 }
