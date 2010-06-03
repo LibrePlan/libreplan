@@ -353,23 +353,26 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     @Test(expected = DuplicateAdvanceAssignmentForOrderElementException.class)
     public void addingAnotherAdvanceAssignmentWithAnEquivalentTypeButDifferentInstance()
             throws Exception {
+
         final Order order = createValidOrder();
-        OrderLine line = createValidLeaf("GranSon", "75757");
+        final OrderLine line = createValidLeaf("GranSon", "75757");
         order.add(line);
         orderDao.save(order);
 
         AdvanceType type = createAndSaveType("tipoA");
         getSession().flush();
-        getSession().evict(type);
 
-        AdvanceType typeReloaded = reloadType(type);
-
-        DirectAdvanceAssignment assignment = createValidAdvanceAssignment(false);
+        final DirectAdvanceAssignment assignment = createValidAdvanceAssignment(false);
         assignment.setAdvanceType(type);
-        DirectAdvanceAssignment assignmentWithSameType = createValidAdvanceAssignment(false);
-        assignmentWithSameType.setAdvanceType(typeReloaded);
 
         line.addAdvanceAssignment(assignment);
+
+        getSession().evict(type);
+        AdvanceType typeReloaded = reloadType(type);
+
+        final DirectAdvanceAssignment assignmentWithSameType = createValidAdvanceAssignment(false);
+        assignmentWithSameType.setAdvanceType(typeReloaded);
+
         line.addAdvanceAssignment(assignmentWithSameType);
     }
 
@@ -393,10 +396,14 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
         AdvanceType advanceType = createAndSaveType("test");
 
-        DirectAdvanceAssignment advanceAssignment = createValidAdvanceAssignment(true);
-        advanceAssignment.setAdvanceType(advanceType);
+        DirectAdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
+        advanceAssignmentA.setAdvanceType(advanceType);
 
-        orderLineGroup.addAdvanceAssignment(advanceAssignment);
+        DirectAdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(true);
+        advanceAssignmentB.setAdvanceType(advanceType);
+
+        orderLineGroup.addAdvanceAssignment(advanceAssignmentA);
+        orderLineGroup.addAdvanceAssignment(advanceAssignmentB);
     }
 
 }
