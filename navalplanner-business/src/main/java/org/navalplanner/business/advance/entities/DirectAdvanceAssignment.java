@@ -143,6 +143,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     public void addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
         this.advanceMeasurements.add(advanceMeasurement);
         advanceMeasurement.setAdvanceAssignment(this);
+        getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
     public AdvanceMeasurement getAdvanceMeasurementAtExactDate(LocalDate date) {

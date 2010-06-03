@@ -21,6 +21,9 @@
             </type>
         </property>
 
+        <property name="lastAdvanceMeausurementForSpreading" access="field" />
+        <property name="dirtyLastAdvanceMeasurementForSpreading" access="field" />
+
         <!-- Indexed the other side -->
         <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
             <key column="DIRECT_ORDER_ELEMENT_ID" />

@@ -41,6 +41,7 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
@@ -567,6 +568,12 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         createPercentageAdvances();
+
+        OrderLineGroup order = orderModel.getOrder();
+        order.getAdvancePercentage();
+        for (OrderElement orderElement : order.getAllChildren()) {
+            orderElement.getAdvancePercentage();
+        }
 
         // come back to the default tab.
         if (getCurrentTab() != null) {

@@ -101,6 +101,10 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private OrderElementTemplate template;
 
+    private BigDecimal lastAdvanceMeausurementForSpreading = BigDecimal.ZERO;
+
+    private Boolean dirtyLastAdvanceMeasurementForSpreading = true;
+
     public OrderElementTemplate getTemplate() {
         return template;
     }
@@ -555,7 +559,12 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public BigDecimal getAdvancePercentage() {
-        return getAdvancePercentage(null);
+        if ((dirtyLastAdvanceMeasurementForSpreading == null)
+                || dirtyLastAdvanceMeasurementForSpreading) {
+            lastAdvanceMeausurementForSpreading = getAdvancePercentage(null);
+            dirtyLastAdvanceMeasurementForSpreading = false;
+        }
+        return lastAdvanceMeausurementForSpreading;
     }
 
     public abstract BigDecimal getAdvancePercentage(LocalDate date);
@@ -1062,4 +1071,12 @@ public abstract class OrderElement extends IntegrationEntity implements
     protected IIntegrationEntityDAO<OrderElement> getIntegrationEntityDAO() {
         return Registry.getOrderElementDAO();
     }
+
+    public void markAsDirtyLastAdvanceMeasurementForSpreading() {
+        if (parent != null) {
+            parent.markAsDirtyLastAdvanceMeasurementForSpreading();
+        }
+        dirtyLastAdvanceMeasurementForSpreading = true;
+    }
+
 }
