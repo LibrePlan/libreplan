@@ -24,10 +24,6 @@
     macroURI="/limitingresources/manualAllocation.zul"
     inline="true" ?>
 
-<?component name="directInsertAllocationWindow"
-    macroURI="/limitingresources/directInsertAllocationWindow.zul"
-    inline="true" ?>
-
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
     <n:script type="text/javascript" src="/navalplanner-webapp/js/highlightDaysInInterval.js" />
@@ -131,7 +127,5 @@
     </borderlayout>
 
     <manualAllocationWindow id="manualAllocationWindow" />
-
-    <directInsertAllocationWindow id="directInsertAllocationWindow" />
 
 </zk>

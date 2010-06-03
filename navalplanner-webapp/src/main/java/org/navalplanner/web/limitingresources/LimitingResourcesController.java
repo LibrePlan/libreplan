@@ -93,8 +93,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private Window manualAllocationWindow;
 
-    private Window directInsertAllocationWindow;
-
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
 
@@ -147,7 +145,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
             cbSelectAll = (Checkbox) limitingResourcesPanel.getFellowIfAny("cbSelectAll");
 
             initManualAllocationWindow();
-            initDirectInsertAllocationWindow();
 
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
@@ -171,18 +168,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
     private ManualAllocationController getManualAllocationController() {
         return (ManualAllocationController) manualAllocationWindow.getVariable(
                 "manualAllocationController", true);
-    }
-
-    private void initDirectInsertAllocationWindow() {
-        directInsertAllocationWindow = (Window) limitingResourcesPanel.getFellowIfAny("directInsertAllocationWindow");
-        DirectInsertAllocationController directInsertAllocationController = getDirectInsertAllocationController();
-        directInsertAllocationController.setLimitingResourcesController(this);
-        directInsertAllocationController.setLimitingResourcesPanel(limitingResourcesPanel);
-    }
-
-    private DirectInsertAllocationController getDirectInsertAllocationController() {
-        return (DirectInsertAllocationController) directInsertAllocationWindow.getVariable(
-                "directInsertAllocationController", true);
     }
 
     public ILimitingResourceQueueModel getLimitingResourceQueueModel() {
@@ -360,23 +345,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
             Hbox hbox = new Hbox();
             hbox.appendChild(automaticButton(element));
             hbox.appendChild(manualButton(element));
-//            hbox.appendChild(directInsertButton(element));
             hbox.appendChild(removeButton(element));
             return hbox;
-        }
-
-        private Button directInsertButton(final LimitingResourceQueueElementDTO element) {
-            Button result = new Button();
-            result.setLabel(_("Insertion"));
-            result.setTooltiptext(_("Direct insert allocation"));
-            result.addEventListener(Events.ON_CLICK, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    showDirectInsertAllocationWindow(element.getOriginal());
-                }
-            });
-            return result;
         }
 
         private Button manualButton(final LimitingResourceQueueElementDTO element) {
@@ -487,15 +457,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public int getManualAllocationWindowStatus() {
         Integer status = getManualAllocationController().getStatus();
-        return (status != null) ? status.intValue() : -1;
-    }
-
-    private void showDirectInsertAllocationWindow(LimitingResourceQueueElement element) {
-        getDirectInsertAllocationController().show(element);
-    }
-
-    public int getDirectInsertAllocationWindowStatus() {
-        Integer status = getDirectInsertAllocationController().getStatus();
         return (status != null) ? status.intValue() : -1;
     }
 
