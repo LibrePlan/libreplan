@@ -64,6 +64,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.api.Rows;
 
 /**
  * Controller for limiting resources view
@@ -87,6 +88,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
     private TimeTracker timeTracker;
 
     private Grid gridUnassignedLimitingResourceQueueElements;
+
+    private Checkbox cbSelectAll;
 
     private Window manualAllocationWindow;
 
@@ -141,6 +144,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
             gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
                     .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
+            cbSelectAll = (Checkbox) limitingResourcesPanel.getFellowIfAny("cbSelectAll");
 
             initManualAllocationWindow();
             initDirectInsertAllocationWindow();
@@ -343,13 +347,13 @@ public class LimitingResourcesController extends GenericForwardComposer {
         public void render(Row row, Object data) throws Exception {
             LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
+            row.appendChild(automaticQueueing(element));
             row.appendChild(label(element.getOrderName()));
             row.appendChild(label(element.getTaskName()));
             row.appendChild(label(element.getResourceOrCriteria()));
             row.appendChild(label(element.getDate()));
             row.appendChild(label(element.getHoursToAllocate().toString()));
             row.appendChild(operations(element));
-            row.appendChild(automaticQueueing(element));
         }
 
         private Hbox operations(LimitingResourceQueueElementDTO element) {
@@ -496,6 +500,27 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public void reloadUnassignedLimitingResourceQueueElements() {
         Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+    }
+
+    public void selectedAllUnassignedQueueElements() {
+        final boolean value = cbSelectAll.isChecked();
+
+        final Rows rows = gridUnassignedLimitingResourceQueueElements.getRows();
+        for (Object each: rows.getChildren()) {
+            final Row row = (Row) each;
+            Checkbox cbAutoQueueing = getAutoQueueing(row);
+            cbAutoQueueing.setChecked(value);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Checkbox getAutoQueueing(Row row) {
+        List<Component> children = row.getChildren();
+        return (Checkbox) children.get(0);
+    }
+
+    public void assignAllSelectedElements() {
+
     }
 
 }

@@ -95,23 +95,42 @@
             </borderlayout>
         </center>
 
-        <!-- List of unassigned queue elements -->
-        <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
-            <grid id="gridUnassignedLimitingResourceQueueElements"
-                    model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
-                    rowRenderer="@{limitingResourcesController.limitingResourceQueueElementsRenderer}"
-                    fixedLayout="true"
-                    style="margin: 10px" >
-                <columns sizable="true">
-                    <column label="${i18n:_('Order')}" sort="auto(orderName)"/>
-                    <column label="${i18n:_('Task')}" sort="auto(taskName)"/>
-                    <column label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
-                    <column label="${i18n:_('Date')}" sort="auto(date)"/>
-                    <column label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
-                    <column label="${i18n:_('Operations')}" width="250px"/>
-                    <column label="${i18n:_('Auto queueing')}" width="100px" />
-                </columns>
-            </grid>
+        <south height="208px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
+            <borderlayout>
+                <south>
+                    <div>
+
+                        <!-- Assign selected elements -->
+                        <hbox style="padding-left: 10px">
+                            <button id="btnAssignSelectedItems"
+                                    label="${i18n:_('Assign selected items')}"
+                                    onClick="limitingResourcesController.assignAllSelectedElements()"/>
+                        </hbox>
+
+                        <!-- List of unassigned queue elements -->
+                        <grid id="gridUnassignedLimitingResourceQueueElements"
+                                model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
+                                rowRenderer="@{limitingResourcesController.limitingResourceQueueElementsRenderer}"
+                                fixedLayout="true"
+                                style="margin: 10px" >
+                            <columns sizable="true">
+                                <column label="Select all" width="100px" >
+                                    <hbox style="padding-left: 2px; margin-top: -17px">
+                                        <checkbox id="cbSelectAll"
+                                            onCheck="limitingResourcesController.selectedAllUnassignedQueueElements()"/>
+                                    </hbox>
+                                </column>
+                                <column label="${i18n:_('Order')}" sort="auto(orderName)"/>
+                                <column label="${i18n:_('Task')}" sort="auto(taskName)"/>
+                                <column label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
+                                <column label="${i18n:_('Date')}" sort="auto(date)"/>
+                                <column label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
+                                <column label="${i18n:_('Operations')}" width="250px"/>
+                            </columns>
+                        </grid>
+                    </div>
+                </south>
+            </borderlayout>
         </south>
 
     </borderlayout>
