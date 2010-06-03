@@ -10,7 +10,51 @@
     <packaging>war</packaging>
     <name>NavalPlan Web Client Module</name>
 
-	<build>
+    <profiles>
+        <profile>
+            <id>reports</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- =========================================================== -->
+                    <!-- Jasper reports configuration -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jasperreports-maven-plugin</artifactId>
+                        <version>1.0-beta-2</version>
+                        <configuration>
+                            <sourceDirectory>${project.build.sourceDirectory}/../jasper</sourceDirectory>
+                            <outputDirectory>${project.build.sourceDirectory}/../../../target/classes</outputDirectory>
+                            <xmlValidation>true</xmlValidation>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile-reports</goal>
+                                </goals>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <!--
+                                note this must be repeated here to pick up correct xml
+                                validation
+                            -->
+                            <dependency>
+                                <groupId>jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>3.7.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
         <finalName>navalplanner-webapp</finalName>
 
         <!--
@@ -36,35 +80,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- =========================================================== -->
-            <!-- Jasper reports configuration -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jasperreports-maven-plugin</artifactId>
-                <version>1.0-beta-2</version>
-                <configuration>
-                    <sourceDirectory>${project.build.sourceDirectory}/../jasper</sourceDirectory>
-                    <outputDirectory>${project.build.sourceDirectory}/../../../target/classes</outputDirectory>
-                    <xmlValidation>true</xmlValidation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile-reports</goal>
-                        </goals>
-                        <phase>compile</phase>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <!--note this must be repeated here to pick up correct xml validation -->
-                    <dependency>
-                      <groupId>jasperreports</groupId>
-                      <artifactId>jasperreports</artifactId>
-                      <version>3.7.0</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
