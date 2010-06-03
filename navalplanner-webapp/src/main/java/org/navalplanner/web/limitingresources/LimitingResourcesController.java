@@ -358,10 +358,10 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
         private Hbox operations(LimitingResourceQueueElementDTO element) {
             Hbox hbox = new Hbox();
-            hbox.appendChild(assignButton(element));
-            hbox.appendChild(removeButton(element));
+            hbox.appendChild(automaticButton(element));
             hbox.appendChild(manualButton(element));
-            hbox.appendChild(directInsertButton(element));
+//            hbox.appendChild(directInsertButton(element));
+            hbox.appendChild(removeButton(element));
             return hbox;
         }
 
@@ -382,7 +382,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
         private Button manualButton(final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
             result.setLabel(_("Manual"));
-            result.setTooltiptext(_("Manual allocation"));
+            result.setTooltiptext(_("Assign elemento to queue manually"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
@@ -394,8 +394,9 @@ public class LimitingResourcesController extends GenericForwardComposer {
         }
 
         private Button removeButton(final LimitingResourceQueueElementDTO element) {
-            Button result = new Button();
-            result.setLabel(_("Remove"));
+            Button result = new Button("", "/common/img/ico_borrar1.png");
+            result.setHoverImage("/common/img/ico_borrar.png");
+            result.setSclass("icono");
             result.setTooltiptext(_("Remove limiting resource element"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
@@ -416,11 +417,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
             Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
         }
 
-        private Button assignButton(
+        private Button automaticButton(
                 final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
-            result.setLabel(_("Assign"));
-            result.setTooltiptext(_("Assign to queue"));
+            result.setLabel(_("Automatic"));
+            result.setTooltiptext(_("Assign element to queue automatically"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override

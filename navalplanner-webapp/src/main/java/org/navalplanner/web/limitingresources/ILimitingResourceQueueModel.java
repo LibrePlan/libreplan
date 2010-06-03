@@ -55,8 +55,8 @@ import org.zkoss.ganttz.util.Interval;
  */
 public interface ILimitingResourceQueueModel {
 
-    boolean assignEditingLimitingResourceQueueElementToQueueAt(
-            LimitingResourceQueue queue, DateAndHour time);
+    boolean nonAppropriativeAllocation(
+            LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time);
 
     /**
      * Assigns a {@link LimitingResourceQueueElement} to its corresponding
@@ -135,7 +135,7 @@ public interface ILimitingResourceQueueModel {
      * @param queue
      * @param allocationTime
      */
-    void insertQueueElementIntoQueueAt(LimitingResourceQueueElement element, LimitingResourceQueue queue,
+    void appropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue,
             DateAndHour allocationTime);
 
     void removeUnassignedLimitingResourceQueueElement(

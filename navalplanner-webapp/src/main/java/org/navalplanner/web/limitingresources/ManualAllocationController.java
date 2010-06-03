@@ -47,6 +47,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -73,11 +74,15 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     private Radiogroup radioAllocationDate;
 
+    private Radio earliestDate, latestDate, selectStartDate;
+
     private Datebox startAllocationDate;
 
     private Listbox listAssignableQueues;
 
     private Listbox listCandidateGaps;
+
+    private Checkbox cbAllocationType;
 
     private Map<LimitingResourceQueueElementGap, DateAndHour> endAllocationDates = new HashMap<LimitingResourceQueueElementGap, DateAndHour>();
 
@@ -95,8 +100,14 @@ public class ManualAllocationController extends GenericForwardComposer {
         self.setVariable("manualAllocationController", this, true);
         listAssignableQueues = (Listbox) self.getFellowIfAny("listAssignableQueues");
         listCandidateGaps = (Listbox) self.getFellowIfAny("listCandidateGaps");
+
         radioAllocationDate = (Radiogroup) self.getFellowIfAny("radioAllocationDate");
+        earliestDate = (Radio) self.getFellowIfAny("earliestDate");
+        latestDate = (Radio) self.getFellowIfAny("latestDate");
+        selectStartDate = (Radio) self.getFellowIfAny("selectStartDate");
+
         startAllocationDate = (Datebox) self.getFellowIfAny("startAllocationDate");
+        cbAllocationType = (Checkbox) self.getFellowIfAny("cbAllocationType");
     }
 
     public void setLimitingResourcesPanel(LimitingResourcesPanel limitingResourcesPanel) {
@@ -123,15 +134,46 @@ public class ManualAllocationController extends GenericForwardComposer {
         List<LimitingResourceQueueElementGap> gaps = LimitingResourceAllocator.getValidGapsForElementSince(element, queue, since);
         endAllocationDates = calculateEndAllocationDates(element.getResourceAllocation(), queue.getResource(), gaps);
         listCandidateGaps.setModel(new SimpleListModel(gaps));
-        if (!gaps.isEmpty()) {
-            listCandidateGaps.setSelectedIndex(0);
-            setStartAllocationDate(gaps.get(0).getStartTime());
-            startAllocationDate.setDisabled(true);
-            disable(radioAllocationDate, false);
-        } else {
-            disable(radioAllocationDate, true);
+
+        if (!isAppropriative()) {
+            if (gaps.isEmpty()) {
+                disable(radioAllocationDate, true);
+            } else {
+                listCandidateGaps.setSelectedIndex(0);
+                setStartAllocationDate(gaps.get(0).getStartTime());
+            }
+            radioAllocationDate.setSelectedIndex(0);
         }
-        radioAllocationDate.setSelectedIndex(0);
+        enableRadiobuttons(isAppropriative());
+        listCandidateGaps.setSelectedIndex(0);
+    }
+
+    private boolean isAppropriative() {
+        return cbAllocationType.isChecked();
+    }
+
+    private void enableRadiobuttons(boolean isAppropriative) {
+        final LimitingResourceQueueElement beingEdited = getBeingEditedElement();
+        if (isAppropriative) {
+            listCandidateGaps.setDisabled(true);
+
+            earliestDate.setDisabled(true);
+            latestDate.setDisabled(true);
+            selectStartDate.setDisabled(false);
+            selectStartDate.setSelected(true);
+
+            startAllocationDate.setDisabled(false);
+            startAllocationDate.setValue(beingEdited.getEarlierStartDateBecauseOfGantt());
+        } else {
+            listCandidateGaps.setDisabled(false);
+
+            earliestDate.setDisabled(false);
+            earliestDate.setSelected(true);
+            latestDate.setDisabled(false);
+            selectStartDate.setDisabled(false);
+
+            startAllocationDate.setDisabled(true);
+        }
     }
 
     private void setStartAllocationDate(DateAndHour time) {
@@ -208,18 +250,32 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     public void accept(Event e) {
-        final LimitingResourceQueue queue = getSelectedQueue();
-        final DateAndHour time = getSelectedAllocationTime();
+        LimitingResourceQueueElement element = getBeingEditedElement();
+        LimitingResourceQueue queue = getSelectedQueue();
+        DateAndHour time = getSelectedAllocationTime();
+
+        if (isAppropriative()) {
+            appropriativeAllocation(element, queue, time);
+        } else {
+            nonAppropriativeAllocation(element, queue, time);
+        }
+
+        limitingResourcesController.reloadUnassignedLimitingResourceQueueElements();
+        setStatus(Messagebox.OK);
+        close(e);
+    }
+
+    private void nonAppropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time) {
         Validate.notNull(time);
         getLimitingResourceQueueModel()
-                .assignEditingLimitingResourceQueueElementToQueueAt(queue, time);
-        limitingResourcesController.reloadUnassignedLimitingResourceQueueElements();
-
-        LimitingResourceQueueElement element = getLimitingResourceQueueModel()
-                .getLimitingResourceQueueElement();
+                .nonAppropriativeAllocation(element, queue, time);
         limitingResourcesPanel.appendQueueElementToQueue(element);
-        setStatus(Messagebox.OK);
-        closeManualAllocationWindow(e);
+    }
+
+    private void appropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time) {
+        Validate.notNull(time);
+        getLimitingResourceQueueModel().appropriativeAllocation(element, queue, time);
+        limitingResourcesPanel.refreshQueue(queue);
     }
 
     private DateAndHour getSelectedAllocationTime() {
@@ -234,12 +290,20 @@ public class ManualAllocationController extends GenericForwardComposer {
             return getLatestTime(selectedGap);
         // Select start date
         } else if (index == 2) {
-            LocalDate selectedDay = new LocalDate(startAllocationDate.getValue());
-            DateAndHour allocationTime = getValidDayInGap(selectedDay, getSelectedGap());
-            if (allocationTime == null) {
-                throw new WrongValueException(startAllocationDate, _("Day is not valid within selected gap"));
+            final LocalDate selectedDay = new LocalDate(startAllocationDate.getValue());
+            if (isAppropriative()) {
+                LimitingResourceQueueElement beingEdited = getBeingEditedElement();
+                if (selectedDay.compareTo(new LocalDate(beingEdited.getEarlierStartDateBecauseOfGantt())) < 0) {
+                    throw new WrongValueException(startAllocationDate, _("Day is not valid"));
+                }
+                return new DateAndHour(selectedDay, 0);
+            } else {
+                DateAndHour allocationTime = getValidDayInGap(selectedDay, getSelectedGap());
+                if (allocationTime == null) {
+                    throw new WrongValueException(startAllocationDate, _("Day is not valid"));
+                }
+                return allocationTime;
             }
-            return allocationTime;
         }
         return null;
     }
@@ -300,7 +364,7 @@ public class ManualAllocationController extends GenericForwardComposer {
         setStatus(Messagebox.CANCEL);
     }
 
-    public void closeManualAllocationWindow(Event e) {
+    public void close(Event e) {
         self.setVisible(false);
         e.stopPropagation();
     }
@@ -315,13 +379,29 @@ public class ManualAllocationController extends GenericForwardComposer {
             final LocalDate startDate = getSelectedGap().getStartTime().getDate();
             datebox.setValue(toDate(startDate));
         }
-        highlightDaysInGap(datebox.getUuid(), getSelectedGap());
+
+        if (isAppropriative()) {
+            final LimitingResourceQueueElement beingEdited = getBeingEditedElement();
+            highlightDaysFromDate(datebox.getUuid(), new LocalDate(beingEdited.getEarlierStartDateBecauseOfGantt()));
+        } else {
+            highlightDaysInGap(datebox.getUuid(), getSelectedGap());
+        }
+    }
+
+    private LimitingResourceQueueElement getBeingEditedElement() {
+        return getLimitingResourceQueueModel().getLimitingResourceQueueElement();
     }
 
     private Date toDate(LocalDate date) {
         return date.toDateTimeAtStartOfDay().toDate();
     }
 
+    /**
+     * Highlight calendar days within gap
+     *
+     * @param uuid
+     * @param gap
+     */
     public void highlightDaysInGap(String uuid, LimitingResourceQueueElementGap gap) {
         final LocalDate start = gap.getStartTime().getDate();
         final LocalDate end = getEndAllocationDate(gap);
@@ -329,6 +409,20 @@ public class ManualAllocationController extends GenericForwardComposer {
         final String jsCall = "highlightDaysInInterval('"
                 + uuid + "', '"
                 + jsonInterval(formatDate(start), formatDate(end)) + "', '"
+                + jsonHighlightColor() + "');";
+        Clients.evalJavaScript(jsCall);
+    }
+
+    /**
+     * Highlight calendar days starting from start
+     *
+     * @param uuid
+     * @param start
+     */
+    public void highlightDaysFromDate(String uuid, LocalDate start) {
+        final String jsCall = "highlightDaysInInterval('"
+                + uuid + "', '"
+                + jsonInterval(formatDate(start), null) + "', '"
                 + jsonHighlightColor() + "');";
         Clients.evalJavaScript(jsCall);
     }
@@ -385,7 +479,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     public void show(LimitingResourceQueueElement element) {
         try {
-            setStatus(Messagebox.CANCEL);
+            clear();
             setAssignableQueues(element);
             getLimitingResourceQueueModel().init(element);
             ((Window) self).doModal();
@@ -396,6 +490,11 @@ public class ManualAllocationController extends GenericForwardComposer {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private void clear() {
+        setStatus(Messagebox.CANCEL);
+        cbAllocationType.setChecked(false);
     }
 
     public ListitemRenderer getQueueRenderer() {
@@ -425,6 +524,11 @@ public class ManualAllocationController extends GenericForwardComposer {
            return result;
         }
 
+    }
+
+    public void onCheckAllocationType(Event e) {
+        Checkbox checkbox = (Checkbox) e.getTarget();
+        enableRadiobuttons(checkbox.isChecked());
     }
 
 }

@@ -98,7 +98,7 @@ public class DirectInsertAllocationController extends GenericForwardComposer {
         final LimitingResourceQueueElement element = getLimitingResourceQueueModel().getLimitingResourceQueueElement();
         final LimitingResourceQueue queue = getSelectedQueue();
         final DateAndHour allocationTime = getSelectedAllocationTime();
-        getLimitingResourceQueueModel().insertQueueElementIntoQueueAt(element, queue, allocationTime);
+        getLimitingResourceQueueModel().appropriativeAllocation(element, queue, allocationTime);
         limitingResourcesController.reloadUnassignedLimitingResourceQueueElements();
         limitingResourcesPanel.refreshQueue(queue);
         close(e);

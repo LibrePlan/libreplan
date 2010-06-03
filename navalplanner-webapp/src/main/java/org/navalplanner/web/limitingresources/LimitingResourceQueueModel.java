@@ -749,18 +749,21 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    public boolean assignEditingLimitingResourceQueueElementToQueueAt(
-            LimitingResourceQueue queue, DateAndHour startTime) {
-        Validate.notNull(beingEdited);
+    public boolean nonAppropriativeAllocation(
+            LimitingResourceQueueElement element,
+            LimitingResourceQueue queue,
+            DateAndHour startTime) {
+
+        Validate.notNull(element);
         Validate.notNull(queue);
         Validate.notNull(startTime);
 
-        LimitingResourceQueue currentQueue = beingEdited.getLimitingResourceQueue();
+        LimitingResourceQueue currentQueue = element.getLimitingResourceQueue();
         if (currentQueue != null) {
-            removeDayAssignments(beingEdited);
-            removeFromQueue(currentQueue, beingEdited);
+            removeDayAssignments(element);
+            removeFromQueue(currentQueue, element);
         }
-        return assignLimitingResourceQueueElementToQueueAt(beingEdited, queue, startTime);
+        return assignLimitingResourceQueueElementToQueueAt(element, queue, startTime);
     }
 
     private void removeDayAssignments(LimitingResourceQueueElement element) {
@@ -784,11 +787,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    public void insertQueueElementIntoQueueAt(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
+    public void appropriativeAllocation(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
             DateAndHour allocationTime) {
 
         LimitingResourceQueue queue = retrieveQueueFromModel(_queue);
         LimitingResourceQueueElement element = retrieveQueueElementFromModel(_element);
+
+        if (element.getLimitingResourceQueue() != null) {
+            unschedule(element);
+        }
 
         List<LimitingResourceQueueElement> unscheduledElements = new ArrayList<LimitingResourceQueueElement>();
 

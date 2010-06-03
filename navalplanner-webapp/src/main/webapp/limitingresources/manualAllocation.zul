@@ -5,7 +5,7 @@
     width="500px" left="50px" top="50px"
     visible="false"
     closable="true"
-    onClose="manualAllocationController.closeManualAllocationWindow(event)">
+    onClose="manualAllocationController.close(event)">
 
     <!-- Select assignable queues -->
     <vbox>
@@ -41,12 +41,23 @@
             <panelchildren>
                 <radiogroup id="radioAllocationDate" orient="vertical"
                         onCheck="manualAllocationController.selectRadioAllocationDate(event)" >
-                    <radio label="${i18n:_('Earliest date')}" selected="true" />
-                    <radio label="${i18n:_('Latest date')}" />
-                    <radio label="${i18n:_('Select start date')}" />
+                    <radio id="earliestDate" label="${i18n:_('Earliest date')}" selected="true" />
+                    <radio id="latestDate" label="${i18n:_('Latest date')}" />
+                    <radio id="selectStartDate" label="${i18n:_('Select start date')}" />
                 </radiogroup>
                 <datebox id="startAllocationDate"
                     onFocus="manualAllocationController.highlightCalendar(event)" />
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <!-- Allocation type -->
+    <vbox>
+        <panel title="${i18n:_('Allocation type')}" border="normal">
+            <panelchildren>
+                <checkbox id="cbAllocationType"
+                        label="${i18n:_('Appropriative')}"
+                        onCheck="manualAllocationController.onCheckAllocationType(event)"/>
             </panelchildren>
         </panel>
     </vbox>
