@@ -253,8 +253,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             BigDecimal advancePercentage;
             Integer hours;
             if (orderElement != null) {
-                advancePercentage = orderElement
-                        .getAdvancePercentage();
+                advancePercentage = taskElement.getAdvancePercentage();
                 hours = taskElement.getTotalHoursAssigned();
             } else {
                 advancePercentage = new BigDecimal(0);
@@ -281,8 +280,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public BigDecimal getAdvancePercentage() {
-            if (taskElement.getOrderElement() != null) {
-                return taskElement.getOrderElement().getAdvancePercentage();
+            if (taskElement != null) {
+                return taskElement.getAdvancePercentage();
             }
             return new BigDecimal(0);
         }

@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -100,6 +101,8 @@ public abstract class TaskElement extends BaseEntity {
     private BaseCalendar calendar;
 
     private TaskSource taskSource;
+
+    private BigDecimal advancePercentage = BigDecimal.ZERO;
 
     public void initializeEndDateIfDoesntExist() {
         if (getEndDate() == null) {
@@ -456,4 +459,14 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public abstract boolean hasLimitedResourceAllocation();
+
+    public BigDecimal getAdvancePercentage() {
+        return (advancePercentage == null) ? BigDecimal.ZERO
+                : advancePercentage;
+    }
+
+    public void setAdvancePercentage(BigDecimal advancePercentage) {
+        this.advancePercentage = advancePercentage;
+    }
+
 }
