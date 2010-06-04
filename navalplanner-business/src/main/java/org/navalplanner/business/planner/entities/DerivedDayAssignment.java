@@ -74,4 +74,10 @@ public class DerivedDayAssignment extends DayAssignment {
         return allocation != null && this.allocation.equals(allocation);
     }
 
+    @Override
+    public DayAssignment withHours(int newHours) {
+        return create(this.getDay(), newHours, this.getResource(),
+                allocation);
+    }
+
 }

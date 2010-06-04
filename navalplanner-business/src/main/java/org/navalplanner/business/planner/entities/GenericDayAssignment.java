@@ -96,4 +96,11 @@ public class GenericDayAssignment extends DayAssignment {
         return super.toString() + " hours: " + getHours();
     }
 
+    @Override
+    public DayAssignment withHours(int newHours) {
+        GenericDayAssignment result = create(getDay(), newHours, getResource());
+        result.genericResourceAllocation = genericResourceAllocation;
+        return result;
+    }
+
 }

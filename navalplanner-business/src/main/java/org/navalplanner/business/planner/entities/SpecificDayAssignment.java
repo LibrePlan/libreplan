@@ -92,4 +92,11 @@ public class SpecificDayAssignment extends DayAssignment {
         return resourceAllocation != null
                 && specificResourceAllocation.equals(resourceAllocation);
     }
+
+    @Override
+    public DayAssignment withHours(int newHours) {
+        SpecificDayAssignment result = create(getDay(), newHours, getResource());
+        result.specificResourceAllocation = specificResourceAllocation;
+        return result;
+    }
 }

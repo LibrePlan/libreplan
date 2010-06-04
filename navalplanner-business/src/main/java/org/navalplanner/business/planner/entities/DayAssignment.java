@@ -226,4 +226,6 @@ public abstract class DayAssignment extends BaseEntity {
 
     public abstract boolean belongsTo(Object allocation);
 
+    public abstract DayAssignment withHours(int newHours);
+
 }
