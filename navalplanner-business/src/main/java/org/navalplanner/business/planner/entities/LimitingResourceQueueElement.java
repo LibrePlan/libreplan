@@ -48,6 +48,8 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private Date earlierStartDateBecauseOfGantt;
 
+    private Date earliestEndDateBecauseOfGantt;
+
     private QueuePosition startQueuePosition;
 
     private QueuePosition endQueuePosition;
@@ -185,6 +187,8 @@ public class LimitingResourceQueueElement extends BaseEntity {
             Collection<? extends Dependency> incomingDependencies) {
         this.earlierStartDateBecauseOfGantt = calculateStartDate(orderInitDate,
                 incomingDependencies);
+        this.earliestEndDateBecauseOfGantt = calculateEndDate(orderInitDate,
+                incomingDependencies);
     }
 
     private Date calculateStartDate(Date orderInitDate,
@@ -197,6 +201,18 @@ public class LimitingResourceQueueElement extends BaseEntity {
             }
         }
         return result;
+    }
+
+    private Date calculateEndDate(Date orderInitDate,
+            Collection<? extends Dependency> incomingDependencies) {
+        Date result = null;
+        for (Dependency each : incomingDependencies) {
+            if (!each.isDependencyBetweenLimitedAllocatedTasks()
+                    && each.getType().modifiesDestinationEnd()) {
+                result = bigger(result, each.getDateFromOrigin());
+            }
+        }
+        return null;
     }
 
     private Date bigger(Date one, Date another) {

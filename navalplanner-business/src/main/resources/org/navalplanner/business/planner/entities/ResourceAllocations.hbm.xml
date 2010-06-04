@@ -85,6 +85,8 @@
 
         <property name="earlierStartDateBecauseOfGantt" column="EARLIER_START_DATE_BECAUSE_OF_GANTT" />
 
+        <property name="earliestEndDateBecauseOfGantt" column="EARLIEST_END_DATE_BECAUSE_OF_GANTT" />
+
         <property name="creationTimestamp" column="CREATION_TIMESTAMP" />
 
         <component name="startQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">

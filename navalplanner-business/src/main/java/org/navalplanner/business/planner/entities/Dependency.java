@@ -40,11 +40,21 @@ public class Dependency extends BaseEntity {
             public boolean modifiesDestinationStart() {
                 return true;
             }
+
+            @Override
+            public boolean modifiesDestinationEnd() {
+                return false;
+            }
         },
         START_START {
             @Override
             public boolean modifiesDestinationStart() {
                 return true;
+            }
+
+            @Override
+            public boolean modifiesDestinationEnd() {
+                return false;
             }
         },
         END_END {
@@ -52,15 +62,27 @@ public class Dependency extends BaseEntity {
             public boolean modifiesDestinationStart() {
                 return false;
             }
+
+            @Override
+            public boolean modifiesDestinationEnd() {
+                return true;
+            }
         },
         START_END {
             @Override
             public boolean modifiesDestinationStart() {
                 return false;
             }
+
+            @Override
+            public boolean modifiesDestinationEnd() {
+                return true;
+            }
         };
 
         public abstract boolean modifiesDestinationStart();
+
+        public abstract boolean modifiesDestinationEnd();
     }
 
     public static Dependency create(TaskElement origin,
