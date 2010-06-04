@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
@@ -330,27 +331,46 @@ public class LimitingResourceAllocator {
     public static List<DayAssignment> generateDayAssignments(
             ResourceAllocation<?> resourceAllocation,
             Resource resource,
-            DateAndHour startTime) {
+            DateAndHour startTime, DateAndHour endsAfter) {
 
-        List<DayAssignment> assignments = new ArrayList<DayAssignment>();
+        List<DayAssignment> assignments = new LinkedList<DayAssignment>();
 
         LocalDate date = startTime.getDate();
-        int totalHours = resourceAllocation.getIntendedTotalHours();
-
+        final int totalHours = resourceAllocation.getIntendedTotalHours();
+        int hoursAssigned = 0;
         // Generate first day assignment
         int hoursCanAllocate = hoursCanWorkOnDay(resource, date, startTime.getHour());
-        if (hoursCanAllocate > 0) {
-            int hoursToAllocate = Math.min(totalHours, hoursCanAllocate);
-            DayAssignment dayAssignment = createDayAssignment(resourceAllocation, resource, date, hoursToAllocate);
-            totalHours -= addDayAssignment(assignments, dayAssignment);
-        }
+        int hoursToAllocate = Math.min(totalHours, hoursCanAllocate);
+        DayAssignment dayAssignment = createDayAssignment(resourceAllocation,
+                resource, date, hoursToAllocate);
+        hoursAssigned += addDayAssignment(assignments, dayAssignment);
 
         // Generate rest of day assignments
-        for (date = date.plusDays(1); totalHours > 0; date = date.plusDays(1)) {
-            totalHours -= addDayAssignment(assignments, generateDayAssignment(
-                    resourceAllocation, resource, date, totalHours));
+        for (date = date.plusDays(1); hoursAssigned < totalHours
+                || endsAfter.isAfter(date); date = date.plusDays(1)) {
+            hoursAssigned += addDayAssignment(assignments,
+                    generateDayAssignment(resourceAllocation, resource, date,
+                            totalHours));
         }
-        return assignments;
+        if (hoursAssigned > totalHours) {
+            stripStartAssignments(assignments, hoursAssigned - totalHours);
+        }
+        return new ArrayList<DayAssignment>(assignments);
+    }
+
+    private static void stripStartAssignments(List<DayAssignment> assignments,
+            int hoursSurplus) {
+        ListIterator<DayAssignment> listIterator = assignments.listIterator();
+        while (listIterator.hasNext() && hoursSurplus > 0) {
+            DayAssignment current = listIterator.next();
+            int hoursTaken = Math.min(hoursSurplus, current.getHours());
+            hoursSurplus -= hoursTaken;
+            if (hoursTaken == current.getHours()) {
+                listIterator.remove();
+            } else {
+                listIterator.set(current.withHours(hoursTaken));
+            }
+        }
     }
 
     private static List<DayAssignment> generateDayAssignmentsStartingFromEnd(ResourceAllocation<?> resourceAllocation,

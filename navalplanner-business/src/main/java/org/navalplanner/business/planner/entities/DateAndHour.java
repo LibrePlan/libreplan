@@ -30,6 +30,10 @@ import org.joda.time.LocalDate;
  */
 public class DateAndHour implements Comparable<DateAndHour> {
 
+    public static DateAndHour from(LocalDate date) {
+        return new DateAndHour(date, 0);
+    }
+
     private LocalDate date;
 
     private Integer hour;
@@ -90,4 +94,9 @@ public class DateAndHour implements Comparable<DateAndHour> {
     public boolean isEquals(DateAndHour dateAndHour) {
         return (this.compareTo(dateAndHour) == 0);
     }
+
+    public boolean isAfter(LocalDate date) {
+        return isAfter(DateAndHour.from(date));
+    }
+
 }
