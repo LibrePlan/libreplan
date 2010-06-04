@@ -126,6 +126,14 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return earlierStartDateBecauseOfGantt;
     }
 
+    public Date getEarliestEndDateBecauseOfGantt() {
+        if (earliestEndDateBecauseOfGantt == null) {
+            // can be null because it's a new column
+            return earlierStartDateBecauseOfGantt;
+        }
+        return earliestEndDateBecauseOfGantt;
+    }
+
     public long getCreationTimestamp() {
         return creationTimestamp;
     }
@@ -205,14 +213,14 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private Date calculateEndDate(Date orderInitDate,
             Collection<? extends Dependency> incomingDependencies) {
-        Date result = null;
+        Date result = orderInitDate;
         for (Dependency each : incomingDependencies) {
             if (!each.isDependencyBetweenLimitedAllocatedTasks()
                     && each.getType().modifiesDestinationEnd()) {
                 result = bigger(result, each.getDateFromOrigin());
             }
         }
-        return null;
+        return result;
     }
 
     private Date bigger(Date one, Date another) {

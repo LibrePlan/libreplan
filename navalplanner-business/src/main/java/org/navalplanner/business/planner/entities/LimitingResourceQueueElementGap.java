@@ -90,14 +90,22 @@ public class LimitingResourceQueueElementGap implements Comparable<LimitingResou
      * @return
      */
     public boolean canFit(LimitingResourceQueueElement candidate) {
-        final LocalDate earlierStartDateBecauseOfGantt = new LocalDate(
-                candidate.getEarlierStartDateBecauseOfGantt());
-        final LocalDate startDate = startTime.getDate();
-        if (earlierStartDateBecauseOfGantt.isBefore(startDate)
-                || earlierStartDateBecauseOfGantt.isEqual(startDate)) {
-            return hoursInGap - candidate.getIntentedTotalHours() >= 0;
-        }
-        return false;
+        LocalDate startAfter = LocalDate.fromDateFields(candidate
+                .getEarlierStartDateBecauseOfGantt());
+        LocalDate endsAfter = LocalDate.fromDateFields(candidate
+                .getEarliestEndDateBecauseOfGantt());
+
+        return canSatisfyStartConstraint(startAfter)
+                && canSatisfyEndConstraint(endsAfter)
+                && hoursInGap >= candidate.getIntentedTotalHours();
+    }
+
+    private boolean canSatisfyStartConstraint(final LocalDate startsAfter) {
+        return startsAfter.compareTo(startTime.getDate()) <= 0;
+    }
+
+    private boolean canSatisfyEndConstraint(LocalDate endsAfter) {
+        return endTime == null || endsAfter.compareTo(endTime.getDate()) <= 0;
     }
 
     public String toString() {
