@@ -437,8 +437,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 @Override
                 public void allocate(ResourcesPerDay resourcesPerDay) {
                     Task currentTask = getTask();
-                    LocalDate startInclusive = currentTask
-                            .getFirstDayNotConsolidated();
+                    LocalDate taskStart = LocalDate.fromDateFields(currentTask
+                            .getStartDate());
+                    LocalDate startInclusive = (currentTask
+                            .getFirstDayNotConsolidated().compareTo(taskStart) >= 0) ? currentTask
+                            .getFirstDayNotConsolidated()
+                            : taskStart;
                     List<T> assignmentsCreated = createAssignments(
                             resourcesPerDay, startInclusive, endExclusive);
                     resetAssignmentsTo(assignmentsCreated);
@@ -499,7 +503,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private void allocate(LocalDate end, int hours) {
-            LocalDate startInclusive = getTask().getFirstDayNotConsolidated();
+            LocalDate taskStart = LocalDate.fromDateFields(task.getStartDate());
+            LocalDate startInclusive = (task.getFirstDayNotConsolidated()
+                    .compareTo(taskStart) >= 0) ? task
+                    .getFirstDayNotConsolidated() : taskStart;
             List<T> assignmentsCreated = createAssignments(startInclusive, end,
                     hours);
             resetAssignmentsTo(assignmentsCreated);
