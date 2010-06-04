@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.Date;
+
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
 
@@ -33,7 +35,32 @@ import org.navalplanner.business.common.BaseEntity;
 public class Dependency extends BaseEntity {
 
     public enum Type {
-        END_START, START_START, END_END, START_END;
+        END_START {
+            @Override
+            public boolean modifiesDestinationStart() {
+                return true;
+            }
+        },
+        START_START {
+            @Override
+            public boolean modifiesDestinationStart() {
+                return true;
+            }
+        },
+        END_END {
+            @Override
+            public boolean modifiesDestinationStart() {
+                return false;
+            }
+        },
+        START_END {
+            @Override
+            public boolean modifiesDestinationStart() {
+                return false;
+            }
+        };
+
+        public abstract boolean modifiesDestinationStart();
     }
 
     public static Dependency create(TaskElement origin,
@@ -97,5 +124,18 @@ public class Dependency extends BaseEntity {
 
     public boolean hasLimitedQueueDependencyAssociated() {
         return queueDependency != null;
+    }
+
+    public Date getDateFromOrigin() {
+        switch (type) {
+        case END_START:
+        case END_END:
+            return origin.getEndDate();
+        case START_END:
+        case START_START:
+            return origin.getStartDate();
+        default:
+            throw new RuntimeException("unexpected type");
+        }
     }
 }

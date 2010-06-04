@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -123,11 +124,6 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return earlierStartDateBecauseOfGantt;
     }
 
-    public void setEarlierStartDateBecauseOfGantt(
-            Date earlierStartDateBecauseOfGantt) {
-        this.earlierStartDateBecauseOfGantt = earlierStartDateBecauseOfGantt;
-    }
-
     public long getCreationTimestamp() {
         return creationTimestamp;
     }
@@ -183,5 +179,33 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public Set<LimitingResourceQueueDependency> getDependenciesAsDestiny() {
         return Collections.unmodifiableSet(dependenciesAsDestiny);
+    }
+
+    public void updateDates(Date orderInitDate,
+            Collection<? extends Dependency> incomingDependencies) {
+        this.earlierStartDateBecauseOfGantt = calculateStartDate(orderInitDate,
+                incomingDependencies);
+    }
+
+    private Date calculateStartDate(Date orderInitDate,
+            Collection<? extends Dependency> dependenciesWithThisDestination) {
+        Date result = orderInitDate;
+        for (Dependency each : dependenciesWithThisDestination) {
+            if (!each.isDependencyBetweenLimitedAllocatedTasks()
+                    && each.getType().modifiesDestinationStart()) {
+                result = bigger(result, each.getDateFromOrigin());
+            }
+        }
+        return result;
+    }
+
+    private Date bigger(Date one, Date another) {
+        if (one == null) {
+            return another;
+        }
+        if (another == null) {
+            return one;
+        }
+        return one.compareTo(another) >= 0 ? one : another;
     }
 }

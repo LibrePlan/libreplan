@@ -186,6 +186,14 @@ public class Task extends TaskElement {
         return (resourceAllocations.size() > 0) ? resourceAllocations.iterator().next() : null;
     }
 
+    public LimitingResourceQueueElement getAssociatedLimitingResourceQueueElementIfAny() {
+        if (!isLimiting()) {
+            throw new IllegalStateException("this is not a limiting task");
+        }
+        return getAssociatedLimitingResourceAllocation()
+                .getLimitingResourceQueueElement();
+    }
+
     public boolean isLimitingAndHasDayAssignments() {
         ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
         return (resourceAllocation != null) ? resourceAllocation.isLimitingAndHasDayAssignments() : false;
@@ -437,17 +445,9 @@ public class Task extends TaskElement {
     }
 
     private void reassign(AllocationModificationStrategy strategy) {
-        Set<ResourceAllocation<?>> resourceAllocations = this
-                .getSatisfiedResourceAllocations();
-
         if (isLimiting()) {
-            ResourceAllocation<?> resourceAlloation = (ResourceAllocation<?>) resourceAllocations
-                    .iterator().next();
-            resourceAlloation.getLimitingResourceQueueElement()
-                    .setEarlierStartDateBecauseOfGantt(getStartDate());
             return;
         }
-
         List<ModifiedAllocation> copied = ModifiedAllocation
                 .copy(getSatisfiedResourceAllocations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation

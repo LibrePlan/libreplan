@@ -38,7 +38,6 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
-import org.navalplanner.business.planner.daos.IDependencyDAO;
 import org.navalplanner.business.planner.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
@@ -163,6 +162,10 @@ public class SaveCommand implements ISaveCommand {
         for (TaskElement taskElement : state.getTasksToSave()) {
             removeDetachedDerivedDayAssignments(taskElement);
             removeEmptyConsolidation(taskElement);
+            if (taskElement.isLimiting()) {
+                Task task = (Task) taskElement;
+                updateLimitingResourceQueueElementDates(task);
+            }
             taskElementDAO.save(taskElement);
         }
 
@@ -175,6 +178,15 @@ public class SaveCommand implements ISaveCommand {
         if (!state.getTasksToSave().isEmpty()) {
             updateRootTaskPosition();
         }
+    }
+
+    private void updateLimitingResourceQueueElementDates(Task task) {
+        LimitingResourceQueueElement limiting = task
+                .getAssociatedLimitingResourceQueueElementIfAny();
+        Date initDate = state
+                .getRootTask().getOrderElement().getInitDate();
+        limiting.updateDates(initDate, task
+                .getDependenciesWithThisDestination());
     }
 
     private void removeDetachedDerivedDayAssignments(TaskElement taskElement) {

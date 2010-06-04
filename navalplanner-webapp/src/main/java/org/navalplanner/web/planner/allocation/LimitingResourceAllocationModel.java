@@ -272,7 +272,6 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
     private void addAssociatedLimitingResourceQueueElement(Task task, ResourceAllocation<?> resourceAllocation) {
         LimitingResourceQueueElement element = LimitingResourceQueueElement.create();
-        element.setEarlierStartDateBecauseOfGantt(task.getStartDate());
         resourceAllocation.setLimitingResourceQueueElement(element);
         task.addResourceAllocation(resourceAllocation, false);
     }
