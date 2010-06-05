@@ -42,6 +42,8 @@ public class QueuesState {
 
     private final Map<Long, LimitingResourceQueue> queuesById;
 
+    private final Map<Long, LimitingResourceQueueElement> elementsById;
+
     private static <T extends BaseEntity> Map<Long, T> byId(
             Collection<? extends T> entities) {
         Map<Long, T> result = new HashMap<Long, T>();
@@ -59,6 +61,19 @@ public class QueuesState {
         this.unassignedElements = new ArrayList<LimitingResourceQueueElement>(
                 unassignedLimitingResourceQueueElements);
         this.queuesById = byId(queues);
+        this.elementsById = byId(allElements(limitingResourceQueues,
+                unassignedLimitingResourceQueueElements));
+    }
+
+    private List<LimitingResourceQueueElement> allElements(
+            List<LimitingResourceQueue> queues,
+            List<LimitingResourceQueueElement> unassigned) {
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        for (LimitingResourceQueue each : queues) {
+            result.addAll(each.getLimitingResourceQueueElements());
+        }
+        result.addAll(unassigned);
+        return result;
     }
 
     public List<LimitingResourceQueue> getQueues() {
@@ -80,6 +95,11 @@ public class QueuesState {
         return queuesById.get(queue.getId());
     }
 
+    public LimitingResourceQueueElement getEquivalent(
+            LimitingResourceQueueElement element) {
+        return elementsById.get(element.getId());
+    }
+
     public void addUnassigned(LimitingResourceQueueElement queueElement) {
         unassignedElements.add(queueElement);
     }
@@ -87,5 +107,6 @@ public class QueuesState {
     public void removeUnassigned(LimitingResourceQueueElement queueElement) {
         unassignedElements.remove(queueElement);
     }
+
 
 }

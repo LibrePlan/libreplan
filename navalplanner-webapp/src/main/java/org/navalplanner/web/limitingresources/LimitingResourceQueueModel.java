@@ -21,7 +21,6 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -399,7 +398,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         LimitingResourceQueue queue = null;
         DateAndHour startTime = null;
 
-        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+        LimitingResourceQueueElement queueElement = queuesState.getEquivalent(element);
 
         final ResourceAllocation<?> resourceAllocation = queueElement
                 .getResourceAllocation();
@@ -551,29 +550,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return null;
     }
 
-    private LimitingResourceQueueElement retrieveQueueElementFromModel(
-            LimitingResourceQueueElement element) {
-        final LimitingResourceQueue queue = element.getLimitingResourceQueue();
-        if (queue != null) {
-            return findQueueElement(queue.getLimitingResourceQueueElements(),
-                    element);
-        } else {
-            return findQueueElement(queuesState.getUnassigned(),
-                    element);
-        }
-    }
-
-    private LimitingResourceQueueElement findQueueElement(
-            Collection<LimitingResourceQueueElement> elements,
-            LimitingResourceQueueElement element) {
-        for (LimitingResourceQueueElement each : elements) {
-            if (each.getId().equals(element.getId())) {
-                return each;
-            }
-        }
-        return null;
-    }
-
     @Override
     @Transactional
     public void confirm() {
@@ -664,7 +640,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      */
     @Override
     public void unschedule(LimitingResourceQueueElement element) {
-        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+        LimitingResourceQueueElement queueElement = queuesState.getEquivalent(element);
         LimitingResourceQueue queue = queuesState.getEquivalent(element
                 .getLimitingResourceQueue());
 
@@ -690,7 +666,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     public void removeUnassignedLimitingResourceQueueElement(
             LimitingResourceQueueElement element) {
-        LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
+        LimitingResourceQueueElement queueElement = queuesState.getEquivalent(element);
 
         queueElement.getResourceAllocation().setLimitingResourceQueueElement(null);
         queueElement.getResourceAllocation().getTask()
@@ -773,7 +749,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Override
     public void init(LimitingResourceQueueElement element) {
-        beingEdited = retrieveQueueElementFromModel(element);
+        beingEdited = queuesState.getEquivalent(element);
     }
 
     @Override
@@ -786,7 +762,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             DateAndHour allocationTime) {
 
         LimitingResourceQueue queue = queuesState.getEquivalent(_queue);
-        LimitingResourceQueueElement element = retrieveQueueElementFromModel(_element);
+        LimitingResourceQueueElement element = queuesState.getEquivalent(_element);
 
         if (element.getLimitingResourceQueue() != null) {
             unschedule(element);
