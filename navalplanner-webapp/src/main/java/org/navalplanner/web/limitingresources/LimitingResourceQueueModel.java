@@ -21,7 +21,6 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,9 +60,7 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElementGap;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -664,30 +661,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     public List<LimitingResourceQueue> getAssignableQueues(
             LimitingResourceQueueElement element) {
-
-        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
-        if (resourceAllocation instanceof SpecificResourceAllocation) {
-            LimitingResourceQueue queue = queuesState.getQueueFor(element.getResource());
-            Validate.notNull(queue);
-            return Collections.singletonList(queue);
-        } else if (resourceAllocation instanceof GenericResourceAllocation) {
-            final GenericResourceAllocation generic = (GenericResourceAllocation) element.getResourceAllocation();
-            return findQueuesMatchingCriteria(queuesState.getQueues(), generic
-                    .getCriterions());
-        }
-        return null;
-    }
-
-    private List<LimitingResourceQueue> findQueuesMatchingCriteria(List<LimitingResourceQueue> queues, Set<Criterion> criteria) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-
-        final ICriterion compositedCriterion = CriterionCompounder.buildAnd(criteria).getResult();
-        for (LimitingResourceQueue each: queues) {
-            if (compositedCriterion.isSatisfiedBy(each.getResource())) {
-                result.add(each);
-            }
-        }
-        return result;
+        return queuesState.getAssignableQueues(element);
     }
 
     @Override
