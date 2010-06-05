@@ -62,6 +62,7 @@ public class LimitingResourceQueue extends BaseEntity {
 
     public void removeLimitingResourceQueueElement(LimitingResourceQueueElement element) {
         limitingResourceQueueElements.remove(element);
+        element.detach();
     }
 
     public SortedSet<LimitingResourceQueueElement> getLimitingResourceQueueElements() {

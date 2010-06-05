@@ -235,4 +235,13 @@ public class LimitingResourceQueueElement extends BaseEntity {
         }
         return one.compareTo(another) >= 0 ? one : another;
     }
+
+    public void detach() {
+        setLimitingResourceQueue(null);
+        setStartDate(null);
+        setStartHour(0);
+        setEndDate(null);
+        setEndHour(0);
+        getResourceAllocation().removeLimitingDayAssignments();
+    }
 }

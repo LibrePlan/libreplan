@@ -629,17 +629,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         LimitingResourceQueueElement queueElement = queuesState.getEquivalent(element);
         LimitingResourceQueue queue = queuesState.getEquivalent(element
                 .getLimitingResourceQueue());
-
         queue.removeLimitingResourceQueueElement(queueElement);
-
-        // Set as unassigned element
-        queueElement.setLimitingResourceQueue(null);
-        queueElement.setStartDate(null);
-        queueElement.setStartHour(0);
-        queueElement.setEndDate(null);
-        queueElement.setEndHour(0);
-
-        queueElement.getResourceAllocation().removeLimitingDayAssignments();
         queuesState.addUnassigned(queueElement);
         markAsModified(queueElement);
     }
