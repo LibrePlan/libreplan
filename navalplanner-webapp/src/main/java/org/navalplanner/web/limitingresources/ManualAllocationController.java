@@ -33,7 +33,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElementGap;
+import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -84,7 +84,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     private Checkbox cbAllocationType;
 
-    private Map<LimitingResourceQueueElementGap, DateAndHour> endAllocationDates = new HashMap<LimitingResourceQueueElementGap, DateAndHour>();
+    private Map<Gap, DateAndHour> endAllocationDates = new HashMap<Gap, DateAndHour>();
 
     private final QueueRenderer queueRenderer = new QueueRenderer();
 
@@ -131,7 +131,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     private void feedValidGapsSince(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour since) {
-        List<LimitingResourceQueueElementGap> gaps = LimitingResourceAllocator.getValidGapsForElementSince(element, queue, since);
+        List<Gap> gaps = LimitingResourceAllocator.getValidGapsForElementSince(element, queue, since);
         endAllocationDates = calculateEndAllocationDates(element.getResourceAllocation(), queue.getResource(), gaps);
         listCandidateGaps.setModel(new SimpleListModel(gaps));
 
@@ -181,12 +181,12 @@ public class ManualAllocationController extends GenericForwardComposer {
         startAllocationDate.setValue(date);
     }
 
-    private Map<LimitingResourceQueueElementGap, DateAndHour> calculateEndAllocationDates(
+    private Map<Gap, DateAndHour> calculateEndAllocationDates(
             ResourceAllocation<?> resourceAllocation, Resource resource,
-            List<LimitingResourceQueueElementGap> gaps) {
+            List<Gap> gaps) {
 
-        Map<LimitingResourceQueueElementGap, DateAndHour> result = new HashMap<LimitingResourceQueueElementGap, DateAndHour>();
-        for (LimitingResourceQueueElementGap each: gaps) {
+        Map<Gap, DateAndHour> result = new HashMap<Gap, DateAndHour>();
+        for (Gap each: gaps) {
             result.put(each, calculateEndAllocationDate(resourceAllocation, resource, each));
         }
         return result;
@@ -194,7 +194,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     private DateAndHour calculateEndAllocationDate(
             ResourceAllocation<?> resourceAllocation, Resource resource,
-            LimitingResourceQueueElementGap gap) {
+            Gap gap) {
 
         if (gap.getEndTime() != null) {
             return LimitingResourceAllocator.startTimeToAllocateStartingFromEnd(resourceAllocation, resource, gap);
@@ -279,7 +279,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     private DateAndHour getSelectedAllocationTime() {
-        final LimitingResourceQueueElementGap selectedGap = getSelectedGap();
+        final Gap selectedGap = getSelectedGap();
         int index = radioAllocationDate.getSelectedIndex();
 
         // Earliest date
@@ -308,12 +308,12 @@ public class ManualAllocationController extends GenericForwardComposer {
         return null;
     }
 
-    private DateAndHour getEarliestTime(LimitingResourceQueueElementGap gap) {
+    private DateAndHour getEarliestTime(Gap gap) {
         Validate.notNull(gap);
         return gap.getStartTime();
     }
 
-    private DateAndHour getLatestTime(LimitingResourceQueueElementGap gap) {
+    private DateAndHour getLatestTime(Gap gap) {
         Validate.notNull(gap);
         LimitingResourceQueueElement element = getLimitingResourceQueueModel().getLimitingResourceQueueElement();
         LimitingResourceQueue queue = getSelectedQueue();
@@ -321,10 +321,10 @@ public class ManualAllocationController extends GenericForwardComposer {
                 element.getResourceAllocation(), queue.getResource(), gap);
     }
 
-    private LimitingResourceQueueElementGap getSelectedGap() {
+    private Gap getSelectedGap() {
         Listitem item = listCandidateGaps.getSelectedItem();
         if (item != null) {
-            return (LimitingResourceQueueElementGap) item.getValue();
+            return (Gap) item.getValue();
         }
         return null;
     }
@@ -340,7 +340,7 @@ public class ManualAllocationController extends GenericForwardComposer {
      * @param gap
      * @return
      */
-    private DateAndHour getValidDayInGap(LocalDate date, LimitingResourceQueueElementGap gap) {
+    private DateAndHour getValidDayInGap(LocalDate date, Gap gap) {
         final DateAndHour endAllocationDate = endAllocationDates.get(gap);
         final LocalDate start = gap.getStartTime().getDate();
         final LocalDate end = endAllocationDate != null ? endAllocationDate.getDate() : null;
@@ -402,7 +402,7 @@ public class ManualAllocationController extends GenericForwardComposer {
      * @param uuid
      * @param gap
      */
-    public void highlightDaysInGap(String uuid, LimitingResourceQueueElementGap gap) {
+    public void highlightDaysInGap(String uuid, Gap gap) {
         final LocalDate start = gap.getStartTime().getDate();
         final LocalDate end = getEndAllocationDate(gap);
 
@@ -427,7 +427,7 @@ public class ManualAllocationController extends GenericForwardComposer {
         Clients.evalJavaScript(jsCall);
     }
 
-    private LocalDate getEndAllocationDate(LimitingResourceQueueElementGap gap) {
+    private LocalDate getEndAllocationDate(Gap gap) {
         final DateAndHour endTime = endAllocationDates.get(gap);
         return endTime != null ? endTime.getDate() : null;
     }
@@ -460,7 +460,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
-            LimitingResourceQueueElementGap gap = (LimitingResourceQueueElementGap) data;
+            Gap gap = (Gap) data;
 
             item.setValue(gap);
             item.appendChild(cell(gap.getStartTime()));

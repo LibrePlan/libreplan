@@ -72,7 +72,7 @@ public class LimitingResourceAllocator {
      * @param element element to fit into queue
      * @return
      */
-    public static LimitingResourceQueueElementGap getFirstValidGap(
+    public static Gap getFirstValidGap(
             LimitingResourceQueue queue, LimitingResourceQueueElement element) {
 
         final Resource resource = queue.getResource();
@@ -85,11 +85,11 @@ public class LimitingResourceAllocator {
 
         // Iterate through queue elements
         while (pos <= size) {
-            LimitingResourceQueueElementGap gap = getGapInQueueAtPosition(
+            Gap gap = getGapInQueueAtPosition(
                     resource, elements, startTime, pos++);
 
             if (gap != null) {
-                List<LimitingResourceQueueElementGap> subgaps = getFittingSubgaps(
+                List<Gap> subgaps = getFittingSubgaps(
                         element, gap, resource);
                 if (!subgaps.isEmpty()) {
                     return subgaps.get(0);
@@ -102,18 +102,18 @@ public class LimitingResourceAllocator {
         return null;
     }
 
-    private static List<LimitingResourceQueueElementGap> getFittingSubgaps(
+    private static List<Gap> getFittingSubgaps(
             LimitingResourceQueueElement element,
-            final LimitingResourceQueueElementGap gap, final Resource resource) {
+            final Gap gap, final Resource resource) {
 
-        List<LimitingResourceQueueElementGap> result = new ArrayList<LimitingResourceQueueElementGap>();
+        List<Gap> result = new ArrayList<Gap>();
 
         if (isSpecific(element) && gap.canFit(element)) {
             result.add(gap);
         } else if (isGeneric(element)) {
-            final List<LimitingResourceQueueElementGap> gaps = splitIntoGapsSatisfyingCriteria(
+            final List<Gap> gaps = splitIntoGapsSatisfyingCriteria(
                     resource, getCriteria(element), gap);
-            for (LimitingResourceQueueElementGap subgap : gaps) {
+            for (Gap subgap : gaps) {
                 if (subgap.canFit(element)) {
                     result.add(subgap);
                 }
@@ -122,18 +122,18 @@ public class LimitingResourceAllocator {
         return result;
     }
 
-    public static LimitingResourceQueueElementGap getFirstValidGapSince(
+    public static Gap getFirstValidGapSince(
             LimitingResourceQueueElement element, LimitingResourceQueue queue,
             DateAndHour since) {
-        List<LimitingResourceQueueElementGap> gaps = getValidGapsForElementSince(element, queue, since);
+        List<Gap> gaps = getValidGapsForElementSince(element, queue, since);
         return (!gaps.isEmpty()) ? gaps.get(0) : null;
     }
 
-    public static List<LimitingResourceQueueElementGap> getValidGapsForElementSince(
+    public static List<Gap> getValidGapsForElementSince(
             LimitingResourceQueueElement element, LimitingResourceQueue queue,
             DateAndHour since) {
 
-        List<LimitingResourceQueueElementGap> result = new ArrayList<LimitingResourceQueueElementGap>();
+        List<Gap> result = new ArrayList<Gap>();
 
         final Resource resource = queue.getResource();
         final List<LimitingResourceQueueElement> elements = new LinkedList<LimitingResourceQueueElement>(
@@ -144,13 +144,13 @@ public class LimitingResourceAllocator {
 
         // Iterate through queue elements
         while (pos <= size) {
-            LimitingResourceQueueElementGap gap = getGapInQueueAtPosition(
+            Gap gap = getGapInQueueAtPosition(
                     resource, elements, since, pos++);
 
             // The queue cannot hold this element (queue.resource
             // doesn't meet element.criteria)
             if (gap != null) {
-                List<LimitingResourceQueueElementGap> subgaps = getFittingSubgaps(
+                List<Gap> subgaps = getFittingSubgaps(
                         element, gap, resource);
                 result.addAll(subgaps);
             }
@@ -200,13 +200,13 @@ public class LimitingResourceAllocator {
         return date != null ? date.toDateTimeAtStartOfDay().toDate() : null;
     }
 
-    private static List<LimitingResourceQueueElementGap> splitIntoGapsSatisfyingCriteria(
-            Resource resource, Set<Criterion> criteria, LimitingResourceQueueElementGap gap) {
+    private static List<Gap> splitIntoGapsSatisfyingCriteria(
+            Resource resource, Set<Criterion> criteria, Gap gap) {
         return splitIntoGapsSatisfyingCriteria(resource, criteria, gap.getStartTime(), gap.getEndTime());
     }
 
     /**
-     * Returns a set of {@link LimitingResourceQueueElementGap} composed by those gaps
+     * Returns a set of {@link Gap} composed by those gaps
      * which satisfy <em>criteria</em> within the period: <em>gapStartTime</em> till <em>gapEndTime</em>
      *
      * @param resource
@@ -218,7 +218,7 @@ public class LimitingResourceAllocator {
      *            end time of gap
      * @return
      */
-    private static List<LimitingResourceQueueElementGap> splitIntoGapsSatisfyingCriteria(
+    private static List<Gap> splitIntoGapsSatisfyingCriteria(
             Resource resource, Set<Criterion> criteria, DateAndHour gapStartTime,
             DateAndHour gapEndTime) {
 
@@ -231,7 +231,7 @@ public class LimitingResourceAllocator {
                 : gapStartTime.getDate().plusYears(10);
         final LocalDate gapStartDate = gapStartTime.getDate();
 
-        List<LimitingResourceQueueElementGap> result = new ArrayList<LimitingResourceQueueElementGap>();
+        List<Gap> result = new ArrayList<Gap>();
 
         LocalDate date = gapStartDate;
         boolean open = compositedCriterion.isSatisfiedBy(resource, toDate(date));
@@ -248,13 +248,13 @@ public class LimitingResourceAllocator {
             }
             if (open == true && !compositedCriterion.isSatisfiedBy(resource, toDate(date))) {
                 endTime = new DateAndHour(date, 0);
-                result.add(LimitingResourceQueueElementGap.create(resource,
+                result.add(Gap.create(resource,
                         startTime, endTime));
                 open = false;
             }
             date = date.plusDays(1);
         }
-        result.add(LimitingResourceQueueElementGap.create(resource, startTime, gapEndTime));
+        result.add(Gap.create(resource, startTime, gapEndTime));
 
         return result;
     }
@@ -269,7 +269,7 @@ public class LimitingResourceAllocator {
         return new DateAndHour(end.getDay(), end.getHours());
     }
 
-    private static LimitingResourceQueueElementGap getGapInQueueAtPosition(
+    private static Gap getGapInQueueAtPosition(
             Resource resource, List<LimitingResourceQueueElement> elements,
             DateAndHour startTimeBecauseOfGantt, int pos) {
 
@@ -291,14 +291,14 @@ public class LimitingResourceAllocator {
         if (pos == 0
                 && startTimeBecauseOfGantt.getDate().isBefore(
                         next.getStartDate())) {
-            return LimitingResourceQueueElementGap.create(resource,
+            return Gap.create(resource,
                     startTimeBecauseOfGantt, next.getStartTime());
         }
 
         // In the middle of two elements
         if (pos > 0) {
             LimitingResourceQueueElement previous = elements.get(pos - 1);
-            return LimitingResourceQueueElementGap.create(resource, DateAndHour
+            return Gap.create(resource, DateAndHour
                     .Max(previous.getEndTime(), startTimeBecauseOfGantt), next
                     .getStartTime());
         }
@@ -310,14 +310,14 @@ public class LimitingResourceAllocator {
         return new DateAndHour(new LocalDate(element.getEarlierStartDateBecauseOfGantt()), 0);
     }
 
-    private static LimitingResourceQueueElementGap createLastGap(
+    private static Gap createLastGap(
             DateAndHour _startTime, LimitingResourceQueueElement lastElement,
             Resource resource) {
 
         final DateAndHour queueEndTime = (lastElement != null) ? lastElement
                 .getEndTime() : null;
         DateAndHour startTime = DateAndHour.Max(_startTime, queueEndTime);
-        return LimitingResourceQueueElementGap
+        return Gap
                 .create(resource, startTime, null);
     }
 
@@ -447,7 +447,7 @@ public class LimitingResourceAllocator {
 
     public static DateAndHour startTimeToAllocateStartingFromEnd(
             ResourceAllocation<?> resourceAllocation, Resource resource,
-            LimitingResourceQueueElementGap gap) {
+            Gap gap) {
 
         // Last element, time is end of last element (gap.starttime)
         if (gap.getEndTime() == null) {

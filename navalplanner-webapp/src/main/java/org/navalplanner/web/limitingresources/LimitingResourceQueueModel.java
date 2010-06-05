@@ -58,7 +58,7 @@ import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElementGap;
+import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -403,16 +403,16 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             // Retrieve queue
             queue = queuesState.getQueueFor(queueElement.getResource());
             // Set start time
-            final LimitingResourceQueueElementGap firstGap = LimitingResourceAllocator
+            final Gap firstGap = LimitingResourceAllocator
                     .getFirstValidGap(queue, queueElement);
             startTime = firstGap.getStartTime();
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             // Get the first gap for all the queues that can allocate the
             // element during a certain interval of time
-            Map<LimitingResourceQueueElementGap, LimitingResourceQueue> firstGapsForQueues = findFirstGapsInAllQueues(
+            Map<Gap, LimitingResourceQueue> firstGapsForQueues = findFirstGapsInAllQueues(
                     queuesState.getQueues(), element);
             // Among those queues, get the earliest gap
-            LimitingResourceQueueElementGap earliestGap = findEarliestGap(firstGapsForQueues
+            Gap earliestGap = findEarliestGap(firstGapsForQueues
                     .keySet());
             if (earliestGap == null) {
                 return false;
@@ -466,9 +466,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return startTime.getDate().equals(endTime.getDate());
     }
 
-    private LimitingResourceQueueElementGap findEarliestGap(Set<LimitingResourceQueueElementGap> gaps) {
-        LimitingResourceQueueElementGap earliestGap = null;
-        for (LimitingResourceQueueElementGap each: gaps) {
+    private Gap findEarliestGap(Set<Gap> gaps) {
+        Gap earliestGap = null;
+        for (Gap each: gaps) {
             if (earliestGap == null || each.isBefore(earliestGap)) {
                 earliestGap = each;
             }
@@ -476,14 +476,14 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return earliestGap;
     }
 
-    private Map<LimitingResourceQueueElementGap, LimitingResourceQueue> findFirstGapsInAllQueues(
+    private Map<Gap, LimitingResourceQueue> findFirstGapsInAllQueues(
             List<LimitingResourceQueue> queues,
             LimitingResourceQueueElement element) {
 
-        Map<LimitingResourceQueueElementGap, LimitingResourceQueue> result = new HashMap<LimitingResourceQueueElementGap, LimitingResourceQueue>();
+        Map<Gap, LimitingResourceQueue> result = new HashMap<Gap, LimitingResourceQueue>();
 
         for (LimitingResourceQueue each : queues) {
-            LimitingResourceQueueElementGap gap = LimitingResourceAllocator
+            Gap gap = LimitingResourceAllocator
                     .getFirstValidGap(each, element);
             if (gap != null) {
                 result.put(gap, each);
@@ -498,9 +498,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
     }
 
-    public LimitingResourceQueueElementGap createGap(Resource resource, DateAndHour startTime,
+    public Gap createGap(Resource resource, DateAndHour startTime,
             DateAndHour endTime) {
-        return LimitingResourceQueueElementGap.create(resource, startTime, endTime);
+        return Gap.create(resource, startTime, endTime);
     }
 
     private void updateStartAndEndTimes(LimitingResourceQueueElement element,
@@ -716,7 +716,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         List<LimitingResourceQueueElement> unscheduledElements = new ArrayList<LimitingResourceQueueElement>();
 
-        LimitingResourceQueueElementGap gap;
+        Gap gap;
         do {
             gap = LimitingResourceAllocator.getFirstValidGapSince(element, queue, allocationTime);
 

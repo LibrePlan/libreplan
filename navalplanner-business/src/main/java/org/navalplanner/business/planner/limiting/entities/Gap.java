@@ -29,7 +29,7 @@ import org.navalplanner.business.resources.entities.Resource;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-public class LimitingResourceQueueElementGap implements Comparable<LimitingResourceQueueElementGap> {
+public class Gap implements Comparable<Gap> {
 
     private DateAndHour startTime;
 
@@ -37,7 +37,7 @@ public class LimitingResourceQueueElementGap implements Comparable<LimitingResou
 
     private Integer hoursInGap;
 
-    public LimitingResourceQueueElementGap(Resource resource, DateAndHour startTime,
+    public Gap(Resource resource, DateAndHour startTime,
             DateAndHour endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -69,9 +69,9 @@ public class LimitingResourceQueueElementGap implements Comparable<LimitingResou
         }
     }
 
-    public static LimitingResourceQueueElementGap create(Resource resource, DateAndHour startTime,
+    public static Gap create(Resource resource, DateAndHour startTime,
             DateAndHour endTime) {
-        return new LimitingResourceQueueElementGap(resource, startTime, endTime);
+        return new Gap(resource, startTime, endTime);
     }
 
     public DateAndHour getStartTime() {
@@ -117,14 +117,14 @@ public class LimitingResourceQueueElementGap implements Comparable<LimitingResou
     }
 
     @Override
-    public int compareTo(LimitingResourceQueueElementGap o) {
+    public int compareTo(Gap o) {
         if (o == null) {
             return 1;
         }
         return this.getStartTime().compareTo(o.getStartTime());
     }
 
-    public boolean isBefore(LimitingResourceQueueElementGap gap) {
+    public boolean isBefore(Gap gap) {
         return (compareTo(gap) < 0);
     }
 
