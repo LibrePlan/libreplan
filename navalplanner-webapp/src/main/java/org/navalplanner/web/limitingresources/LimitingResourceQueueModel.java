@@ -625,12 +625,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      * later added to the list of unassigned elements
      */
     @Override
-    public void unschedule(LimitingResourceQueueElement element) {
-        LimitingResourceQueueElement queueElement = queuesState.getEquivalent(element);
-        LimitingResourceQueue queue = queuesState.getEquivalent(element
-                .getLimitingResourceQueue());
-        queue.removeLimitingResourceQueueElement(queueElement);
-        queuesState.addUnassigned(queueElement);
+    public void unschedule(LimitingResourceQueueElement queueElement) {
+        queuesState.unassingFromQueue(queueElement);
         markAsModified(queueElement);
     }
 

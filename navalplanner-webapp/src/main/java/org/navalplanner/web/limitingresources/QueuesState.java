@@ -113,8 +113,13 @@ public class QueuesState {
         return elementsById.get(element.getId());
     }
 
-    public void addUnassigned(LimitingResourceQueueElement queueElement) {
-        unassignedElements.add(queueElement);
+    public void unassingFromQueue(LimitingResourceQueueElement externalElement) {
+        LimitingResourceQueueElement queueElement = getEquivalent(externalElement);
+        LimitingResourceQueue queue = queueElement.getLimitingResourceQueue();
+        if (queue != null) {
+            queue.removeLimitingResourceQueueElement(queueElement);
+            unassignedElements.add(queueElement);
+        }
     }
 
     public void removeUnassigned(LimitingResourceQueueElement queueElement) {
