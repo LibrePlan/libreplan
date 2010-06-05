@@ -404,7 +404,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 .getResourceAllocation();
         if (resourceAllocation instanceof SpecificResourceAllocation) {
             // Retrieve queue
-            queue = retrieveQueueByResourceFromModel(queueElement.getResource());
+            queue = queuesState.getQueueFor(queueElement.getResource());
             // Set start time
             final LimitingResourceQueueElementGap firstGap = LimitingResourceAllocator
                     .getFirstValidGap(queue, queueElement);
@@ -534,20 +534,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void addLimitingResourceQueueElement(LimitingResourceQueue queue,
             LimitingResourceQueueElement element) {
         queuesState.assignedToQueue(element, queue);
-    }
-
-    private LimitingResourceQueue retrieveQueueByResourceFromModel(Resource resource) {
-        return findQueueByResource(queuesState.getQueues(), resource);
-    }
-
-    private LimitingResourceQueue findQueueByResource(
-            List<LimitingResourceQueue> queues, Resource resource) {
-        for (LimitingResourceQueue each : queues) {
-            if (each.getResource().getId().equals(resource.getId())) {
-                return each;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -695,7 +681,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
         if (resourceAllocation instanceof SpecificResourceAllocation) {
-            LimitingResourceQueue queue = retrieveQueueByResourceFromModel(element.getResource());
+            LimitingResourceQueue queue = queuesState.getQueueFor(element.getResource());
             Validate.notNull(queue);
             return Collections.singletonList(queue);
         } else if (resourceAllocation instanceof GenericResourceAllocation) {

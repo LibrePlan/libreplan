@@ -30,6 +30,7 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -44,11 +45,22 @@ public class QueuesState {
 
     private final Map<Long, LimitingResourceQueueElement> elementsById;
 
+    private final Map<Long, LimitingResourceQueue> queuesByResourceId;
+
     private static <T extends BaseEntity> Map<Long, T> byId(
             Collection<? extends T> entities) {
         Map<Long, T> result = new HashMap<Long, T>();
         for (T each : entities) {
             result.put(each.getId(), each);
+        }
+        return result;
+    }
+
+    private static Map<Long, LimitingResourceQueue> byResourceId(
+            Collection<? extends LimitingResourceQueue> limitingResourceQueues) {
+        Map<Long, LimitingResourceQueue> result = new HashMap<Long, LimitingResourceQueue>();
+        for (LimitingResourceQueue each : limitingResourceQueues) {
+            result.put(each.getResource().getId(), each);
         }
         return result;
     }
@@ -63,6 +75,7 @@ public class QueuesState {
         this.queuesById = byId(queues);
         this.elementsById = byId(allElements(limitingResourceQueues,
                 unassignedLimitingResourceQueueElements));
+        this.queuesByResourceId = byResourceId(limitingResourceQueues);
     }
 
     private List<LimitingResourceQueueElement> allElements(
@@ -108,5 +121,8 @@ public class QueuesState {
         unassignedElements.remove(queueElement);
     }
 
+    public LimitingResourceQueue getQueueFor(Resource resource) {
+        return queuesByResourceId.get(resource.getId());
+    }
 
 }
