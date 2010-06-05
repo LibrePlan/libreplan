@@ -20,10 +20,14 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 
@@ -36,6 +40,17 @@ public class QueuesState {
 
     private final List<LimitingResourceQueueElement> unassignedElements;
 
+    private final Map<Long, LimitingResourceQueue> queuesById;
+
+    private static <T extends BaseEntity> Map<Long, T> byId(
+            Collection<? extends T> entities) {
+        Map<Long, T> result = new HashMap<Long, T>();
+        for (T each : entities) {
+            result.put(each.getId(), each);
+        }
+        return result;
+    }
+
     public QueuesState(
             List<LimitingResourceQueue> limitingResourceQueues,
             List<LimitingResourceQueueElement> unassignedLimitingResourceQueueElements) {
@@ -43,6 +58,7 @@ public class QueuesState {
                 limitingResourceQueues);
         this.unassignedElements = new ArrayList<LimitingResourceQueueElement>(
                 unassignedLimitingResourceQueueElements);
+        this.queuesById = byId(queues);
     }
 
     public List<LimitingResourceQueue> getQueues() {
@@ -58,6 +74,10 @@ public class QueuesState {
         Validate.isTrue(unassignedElements.contains(element));
         queue.addLimitingResourceQueueElement(element);
         unassignedElements.remove(element);
+    }
+
+    public LimitingResourceQueue getEquivalent(LimitingResourceQueue queue) {
+        return queuesById.get(queue.getId());
     }
 
     public void addUnassigned(LimitingResourceQueueElement queueElement) {

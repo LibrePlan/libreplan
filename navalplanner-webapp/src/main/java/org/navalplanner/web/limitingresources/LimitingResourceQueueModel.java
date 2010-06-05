@@ -551,20 +551,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return null;
     }
 
-    private LimitingResourceQueue retrieveQueueFromModel(LimitingResourceQueue queue) {
-        return findQueue(queuesState.getQueues(), queue);
-    }
-
-    private LimitingResourceQueue findQueue(List<LimitingResourceQueue> queues,
-            LimitingResourceQueue queue) {
-        for (LimitingResourceQueue each : queuesState.getQueues()) {
-            if (each.getId().equals(queue.getId())) {
-                return each;
-            }
-        }
-        return null;
-    }
-
     private LimitingResourceQueueElement retrieveQueueElementFromModel(
             LimitingResourceQueueElement element) {
         final LimitingResourceQueue queue = element.getLimitingResourceQueue();
@@ -679,7 +665,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     public void unschedule(LimitingResourceQueueElement element) {
         LimitingResourceQueueElement queueElement = retrieveQueueElementFromModel(element);
-        LimitingResourceQueue queue = retrieveQueueFromModel(element.getLimitingResourceQueue());
+        LimitingResourceQueue queue = queuesState.getEquivalent(element
+                .getLimitingResourceQueue());
 
         queue.removeLimitingResourceQueueElement(queueElement);
 
@@ -798,7 +785,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     public void appropriativeAllocation(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
             DateAndHour allocationTime) {
 
-        LimitingResourceQueue queue = retrieveQueueFromModel(_queue);
+        LimitingResourceQueue queue = queuesState.getEquivalent(_queue);
         LimitingResourceQueueElement element = retrieveQueueElementFromModel(_element);
 
         if (element.getLimitingResourceQueue() != null) {
