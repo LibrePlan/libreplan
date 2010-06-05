@@ -107,11 +107,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Autowired
     private ILimitingResourceQueueDependencyDAO limitingResourceQueueDependencyDAO;
 
+    private QueuesState queuesState;
+
     private Interval viewInterval;
-
-    private List<LimitingResourceQueue> limitingResourceQueues = new ArrayList<LimitingResourceQueue>();
-
-    private List<LimitingResourceQueueElement> unassignedLimitingResourceQueueElements = new ArrayList<LimitingResourceQueueElement>();
 
     private LimitingResourceQueueElement beingEdited;
 
@@ -134,8 +132,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private void doGlobalView() {
-        loadUnassignedLimitingResourceQueueElements();
-        loadLimitingResourceQueues();
+        List<LimitingResourceQueueElement> unassigned = findUnassignedLimitingResourceQueueElements();
+        List<LimitingResourceQueue> queues = loadLimitingResourceQueues();
+        queuesState = new QueuesState(queues, unassigned);
         final Date startingDate = getEarliestDate();
         Date endDate = (new LocalDate(startingDate)).plus(intervalIncrease())
                 .toDateTimeAtCurrentTime().toDate();
@@ -170,16 +169,14 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private LimitingResourceQueueElement getEarliestQueueElement() {
         LimitingResourceQueueElement earliestQueueElement = null;
 
-        if (!limitingResourceQueues.isEmpty()) {
-            for (LimitingResourceQueue each : limitingResourceQueues) {
-                LimitingResourceQueueElement element = getFirstLimitingResourceQueueElement(each);
-                if (element == null) {
-                    continue;
-                }
-                if (earliestQueueElement == null
-                        || isEarlier(element, earliestQueueElement)) {
-                    earliestQueueElement = element;
-                }
+        for (LimitingResourceQueue each : queuesState.getQueues()) {
+            LimitingResourceQueueElement element = getFirstLimitingResourceQueueElement(each);
+            if (element == null) {
+                continue;
+            }
+            if (earliestQueueElement == null
+                    || isEarlier(element, earliestQueueElement)) {
+                earliestQueueElement = element;
             }
         }
         return earliestQueueElement;
@@ -205,11 +202,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      *
      * @return
      */
-    private void loadUnassignedLimitingResourceQueueElements() {
-        unassignedLimitingResourceQueueElements.clear();
-        unassignedLimitingResourceQueueElements
-                .addAll(initializeLimitingResourceQueueElements(limitingResourceQueueElementDAO
-                        .getUnassigned()));
+    private List<LimitingResourceQueueElement> findUnassignedLimitingResourceQueueElements() {
+        return initializeLimitingResourceQueueElements(limitingResourceQueueElementDAO
+                .getUnassigned());
     }
 
     private List<LimitingResourceQueueElement> initializeLimitingResourceQueueElements(
@@ -312,11 +307,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         Hibernate.initialize(criterion.getType());
     }
 
-    private void loadLimitingResourceQueues() {
-        limitingResourceQueues.clear();
-        limitingResourceQueues
-                .addAll(initializeLimitingResourceQueues(limitingResourceQueueDAO
-                        .getAll()));
+    private List<LimitingResourceQueue> loadLimitingResourceQueues() {
+        return initializeLimitingResourceQueues(limitingResourceQueueDAO
+                .getAll());
     }
 
     private List<LimitingResourceQueue> initializeLimitingResourceQueues(
@@ -385,12 +378,12 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Override
     public List<LimitingResourceQueue> getLimitingResourceQueues() {
-        return Collections.unmodifiableList(limitingResourceQueues);
+        return queuesState.getQueues();
     }
 
+    @Override
     public List<LimitingResourceQueueElement> getUnassignedLimitingResourceQueueElements() {
-        return Collections
-                .unmodifiableList(unassignedLimitingResourceQueueElements);
+        return queuesState.getUnassigned();
     }
 
     public ZoomLevel calculateInitialZoomLevel() {
@@ -421,7 +414,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             // Get the first gap for all the queues that can allocate the
             // element during a certain interval of time
             Map<LimitingResourceQueueElementGap, LimitingResourceQueue> firstGapsForQueues = findFirstGapsInAllQueues(
-                    limitingResourceQueues, element);
+                    queuesState.getQueues(), element);
             // Among those queues, get the earliest gap
             LimitingResourceQueueElementGap earliestGap = findEarliestGap(firstGapsForQueues
                     .keySet());
@@ -541,12 +534,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private void addLimitingResourceQueueElement(LimitingResourceQueue queue,
             LimitingResourceQueueElement element) {
-        queue.addLimitingResourceQueueElement(element);
-        unassignedLimitingResourceQueueElements.remove(element);
+        queuesState.assignedToQueue(element, queue);
     }
 
     private LimitingResourceQueue retrieveQueueByResourceFromModel(Resource resource) {
-        return findQueueByResource(limitingResourceQueues, resource);
+        return findQueueByResource(queuesState.getQueues(), resource);
     }
 
     private LimitingResourceQueue findQueueByResource(
@@ -560,12 +552,12 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private LimitingResourceQueue retrieveQueueFromModel(LimitingResourceQueue queue) {
-        return findQueue(limitingResourceQueues, queue);
+        return findQueue(queuesState.getQueues(), queue);
     }
 
     private LimitingResourceQueue findQueue(List<LimitingResourceQueue> queues,
             LimitingResourceQueue queue) {
-        for (LimitingResourceQueue each : limitingResourceQueues) {
+        for (LimitingResourceQueue each : queuesState.getQueues()) {
             if (each.getId().equals(queue.getId())) {
                 return each;
             }
@@ -580,7 +572,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             return findQueueElement(queue.getLimitingResourceQueueElements(),
                     element);
         } else {
-            return findQueueElement(unassignedLimitingResourceQueueElements,
+            return findQueueElement(queuesState.getUnassigned(),
                     element);
         }
     }
@@ -699,7 +691,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         queueElement.setEndHour(0);
 
         queueElement.getResourceAllocation().removeLimitingDayAssignments();
-        unassignedLimitingResourceQueueElements.add(queueElement);
+        queuesState.addUnassigned(queueElement);
         markAsModified(queueElement);
     }
 
@@ -716,7 +708,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         queueElement.getResourceAllocation().setLimitingResourceQueueElement(null);
         queueElement.getResourceAllocation().getTask()
                 .removeAllResourceAllocations();
-        unassignedLimitingResourceQueueElements.remove(queueElement);
+        queuesState.removeUnassigned(queueElement);
         markAsRemoved(queueElement);
     }
 
@@ -745,7 +737,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             return Collections.singletonList(queue);
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) element.getResourceAllocation();
-            return findQueuesMatchingCriteria(limitingResourceQueues, generic.getCriterions());
+            return findQueuesMatchingCriteria(queuesState.getQueues(), generic
+                    .getCriterions());
         }
         return null;
     }
