@@ -18,38 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.web.planner.limiting.allocation;
 
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 
 /**
- * DAO interface for {@link ILimitingResourceQueueElementDAO}
+ * Contract for {@link Task}.
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
-public interface ILimitingResourceQueueElementDAO extends
-        IGenericDAO<LimitingResourceQueueElement, Long> {
+public interface ILimitingResourceAllocationModel extends INewAllocationsAdder {
 
-    List<LimitingResourceQueueElement> getAll();
+    void confirmSave();
 
-    /**
-     * Returns all {@link LimitingResourceQueueElement} that are assigned to a
-     * {@link LimitingResourceQueue}
-     *
-     * @return
-     */
-    List<LimitingResourceQueueElement> getAssigned();
+    List<AggregatedHoursGroup> getHoursAggregatedByCriteria();
 
-    /**
-     * Returns all {@link LimitingResourceQueueElement} that have not been assigned to
-     * {@link LimitingResourceQueue} yet
-     *
-     * @return
-     */
-    List<LimitingResourceQueueElement> getUnassigned();
+    Integer getOrderHours();
+
+    List<LimitingAllocationRow> getResourceAllocationRows();
+
+    void init(Task task);
 
 }

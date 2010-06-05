@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities;
+package org.navalplanner.business.planner.limiting.entities;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;

@@ -1,9 +1,9 @@
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.business.planner.limiting.daos;
 
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 
 /**
  * Interface for repositories to implement queies related to

@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;

@@ -36,7 +36,7 @@
         <!-- Wrong mapping. A ResourceAllocation only has one limiting resource queue element associated -->
         <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true">
             <key column="RESOURCE_ALLOCATION_ID" />
-            <one-to-many class="LimitingResourceQueueElement"/>
+            <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"/>
         </set>
 
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
@@ -70,7 +70,7 @@
     </class>
 
     <!-- LimitingResourceQueueElement -->
-    <class name="LimitingResourceQueueElement" table="limiting_resource_queue_element">
+    <class name="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement" table="limiting_resource_queue_element">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -89,12 +89,12 @@
 
         <property name="creationTimestamp" column="CREATION_TIMESTAMP" />
 
-        <component name="startQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
+        <component name="startQueuePosition" class="org.navalplanner.business.planner.limiting.entities.QueuePosition">
             <property name="date" column="START_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="hour" column="START_HOUR" />
         </component>
 
-        <component name="endQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
+        <component name="endQueuePosition" class="org.navalplanner.business.planner.limiting.entities.QueuePosition">
             <property name="date" column="END_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="hour" column="END_HOUR" />
         </component>
@@ -103,20 +103,21 @@
         a LimitingResourceQueueElement -->
         <set name="dependenciesAsOrigin" cascade="none" lazy="false">
             <key column="origin_queue_element_id"/>
-            <one-to-many class="LimitingResourceQueueDependency"/>
+            <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"/>
         </set>
 
         <!-- Indexed the other side. Useful to browse the input dependencies of
         a LimitingResourceQueueElement -->
         <set name="dependenciesAsDestiny" cascade="none" lazy="false">
             <key column="destiny_queue_element_id"/>
-            <one-to-many class="LimitingResourceQueueDependency"/>
+            <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"/>
         </set>
 
     </class>
 
     <!-- LimitingResourceQueueDependency -->
-    <class name="LimitingResourceQueueDependency" table="limiting_resource_queue_dependency">
+    <class name="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"
+     table="limiting_resource_queue_dependency">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -125,13 +126,13 @@
 
         <property name="type">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.navalplanner.business.planner.entities.LimitingResourceQueueDependency$QueueDependencyType</param>
+                <param name="enumClass">org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency$QueueDependencyType</param>
             </type>
         </property>
 
         <!--  Indexed -->
         <many-to-one name="hasAsOrigin" cascade="none"
-            class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
+            class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"
             column="origin_queue_element_id"
             not-null="false"
             index="idx_queuedependency_on_originqueue">
@@ -139,7 +140,7 @@
 
         <!-- Indexed -->
         <many-to-one name="hasAsDestiny" cascade="none"
-            class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
+            class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"
             column="destiny_queue_element_id"
             not-null="false"
             index="idx_queuedependency_on_destinyqueue"

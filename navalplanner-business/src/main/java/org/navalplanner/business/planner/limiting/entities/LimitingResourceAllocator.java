@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities;
+package org.navalplanner.business.planner.limiting.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,6 +30,13 @@ import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.GenericDayAssignment;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;

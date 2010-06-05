@@ -18,51 +18,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.business.planner.limiting.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 /**
- * DAO for {@LimitingResourceQueueElementDAO}
+ * DAO for {@LimitingResourceQueueDAO}
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class LimitingResourceQueueElementDAO extends
-        GenericDAOHibernate<LimitingResourceQueueElement, Long> implements
-        ILimitingResourceQueueElementDAO {
+public class LimitingResourceQueueDAO extends
+        GenericDAOHibernate<LimitingResourceQueue, Long> implements
+        ILimitingResourceQueueDAO {
 
-    @Override
-    public List<LimitingResourceQueueElement> getAll() {
-        return list(LimitingResourceQueueElement.class);
+    public LimitingResourceQueue findQueueByResource(Resource resource) {
+        return (LimitingResourceQueue) getSession().createCriteria(
+                LimitingResourceQueue.class).add(
+                Restrictions.eq("resource", resource)).uniqueResult();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public List<LimitingResourceQueueElement> getAssigned() {
-        Criteria criteria = getSession().createCriteria(LimitingResourceQueueElement.class);
-        criteria.add(Restrictions.isNotNull("limitingResourceQueue"));
-        criteria.addOrder(Order.asc("creationTimestamp"));
-        return criteria.list();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<LimitingResourceQueueElement> getUnassigned() {
-        Criteria criteria = getSession().createCriteria(LimitingResourceQueueElement.class);
-        criteria.add(Restrictions.isNull("limitingResourceQueue"));
-        criteria.addOrder(Order.asc("creationTimestamp"));
-        return criteria.list();
+    public List<LimitingResourceQueue> getAll() {
+        return list(LimitingResourceQueue.class);
     }
 
 }

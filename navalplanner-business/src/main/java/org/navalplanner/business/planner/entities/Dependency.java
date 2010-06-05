@@ -24,6 +24,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 
 /**
  * Entity which represents an associated with properties

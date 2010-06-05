@@ -25,7 +25,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 
 /**
  *

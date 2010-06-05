@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities;
+package org.navalplanner.business.planner.limiting.entities;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +29,9 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 

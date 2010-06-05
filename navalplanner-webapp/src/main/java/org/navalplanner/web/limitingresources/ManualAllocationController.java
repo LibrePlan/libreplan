@@ -29,11 +29,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.DateAndHour;
-import org.navalplanner.business.planner.entities.LimitingResourceAllocator;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElementGap;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.limiting.entities.DateAndHour;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElementGap;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;

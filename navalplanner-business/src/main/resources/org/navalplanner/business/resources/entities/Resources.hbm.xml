@@ -87,7 +87,7 @@
     <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true"
             sort="org.navalplanner.business.resources.entities.LimitingResourceQueueElementComparator">
         <key column="LIMITING_RESOURCE_QUEUE_ID" not-null="true" />
-        <one-to-many class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement" />
+        <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement" />
     </set>
 
   </class>

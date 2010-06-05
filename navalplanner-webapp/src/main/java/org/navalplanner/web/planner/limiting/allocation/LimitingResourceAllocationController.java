@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner.allocation;
+package org.navalplanner.web.planner.limiting.allocation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +30,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector;
+import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.HoursRendererColumn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;

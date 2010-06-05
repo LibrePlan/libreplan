@@ -18,24 +18,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.business.planner.limiting.daos;
 
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
-import org.navalplanner.business.resources.entities.Resource;
 
 /**
- * DAO interface for {@link ILimitingResourceQueueDAO}
+ * DAO interface for {@link ILimitingResourceQueueElementDAO}
  *
  * @author Diego Pino García <dpino@igalia.com>
  */
-public interface ILimitingResourceQueueDAO extends
-        IGenericDAO<LimitingResourceQueue, Long> {
+public interface ILimitingResourceQueueElementDAO extends
+        IGenericDAO<LimitingResourceQueueElement, Long> {
 
-    LimitingResourceQueue findQueueByResource(Resource resource);
+    List<LimitingResourceQueueElement> getAll();
 
-    List<LimitingResourceQueue> getAll();
+    /**
+     * Returns all {@link LimitingResourceQueueElement} that are assigned to a
+     * {@link LimitingResourceQueue}
+     *
+     * @return
+     */
+    List<LimitingResourceQueueElement> getAssigned();
+
+    /**
+     * Returns all {@link LimitingResourceQueueElement} that have not been assigned to
+     * {@link LimitingResourceQueue} yet
+     *
+     * @return
+     */
+    List<LimitingResourceQueueElement> getUnassigned();
 
 }

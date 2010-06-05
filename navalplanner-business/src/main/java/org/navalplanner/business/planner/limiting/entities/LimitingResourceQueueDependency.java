@@ -1,4 +1,4 @@
-package org.navalplanner.business.planner.entities;
+package org.navalplanner.business.planner.limiting.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
@@ -6,6 +6,8 @@ import java.util.EnumMap;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 
 
 /**

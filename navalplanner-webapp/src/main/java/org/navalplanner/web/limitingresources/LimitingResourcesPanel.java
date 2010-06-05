@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;

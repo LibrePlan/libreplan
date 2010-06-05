@@ -18,28 +18,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner.allocation;
+package org.navalplanner.business.planner.limiting.entities;
 
-import java.util.List;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
-import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
-import org.navalplanner.business.planner.entities.Task;
+import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 
 /**
- * Contract for {@link Task}.
  *
- * @author Diego Pino García <dpino@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ *
  */
-public interface ILimitingResourceAllocationModel extends INewAllocationsAdder {
+public class QueuePosition {
 
-    void confirmSave();
+    private LocalDate date;
 
-    List<AggregatedHoursGroup> getHoursAggregatedByCriteria();
+    private int hour = 0;
 
-    Integer getOrderHours();
+    public LocalDate getDate() {
+        return date;
+    }
 
-    List<LimitingAllocationRow> getResourceAllocationRows();
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
-    void init(Task task);
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        Validate.isTrue(hour >= 0 && hour <= 23, _("Hour should be a value between 0 and 23"));
+        this.hour = hour;
+    }
 
 }
