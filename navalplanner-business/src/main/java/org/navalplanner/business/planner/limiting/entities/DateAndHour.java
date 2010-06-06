@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.limiting.entities;
 
+import java.util.Iterator;
+
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 
@@ -97,6 +99,41 @@ public class DateAndHour implements Comparable<DateAndHour> {
 
     public boolean isAfter(LocalDate date) {
         return isAfter(DateAndHour.from(date));
+    }
+
+    /**
+     * Creates an {@link Iterable} that returns a lazy iterator. If
+     * <code>end</code> is <code>null</code> it will not stop and will keep on
+     * producing days forever
+     */
+    public Iterable<LocalDate> daysUntil(final DateAndHour end) {
+        Validate.isTrue(end == null || end.isAfter(this));
+        return new Iterable<LocalDate>() {
+            @Override
+            public Iterator<LocalDate> iterator() {
+                return new Iterator<LocalDate>() {
+
+                    private LocalDate current = getDate();
+
+                    @Override
+                    public boolean hasNext() {
+                        return end == null || end.isAfter(current);
+                    }
+
+                    @Override
+                    public LocalDate next() {
+                        LocalDate result = current;
+                        current = current.plusDays(1);
+                        return result;
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
 
 }
