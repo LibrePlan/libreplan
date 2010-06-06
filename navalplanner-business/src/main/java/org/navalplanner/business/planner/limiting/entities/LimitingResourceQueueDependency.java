@@ -29,17 +29,26 @@ public class LimitingResourceQueueDependency extends BaseEntity {
 
         private static EnumMap<Type, QueueDependencyType> toQueueDependencyType;
 
+        private static EnumMap<QueueDependencyType, Type> toDependencyType;
+
         static {
             toQueueDependencyType = new EnumMap<Type, QueueDependencyType>(
                     Type.class);
+            toDependencyType = new EnumMap<QueueDependencyType, Type>(
+                    QueueDependencyType.class);
             for (QueueDependencyType each : QueueDependencyType.values()) {
                 toQueueDependencyType.put(each.associatedType, each);
+                toDependencyType.put(each, each.associatedType);
             }
         }
 
         public static LimitingResourceQueueDependency.QueueDependencyType toQueueDependencyType(
                 Type type) {
             return toQueueDependencyType.get(type);
+        }
+
+        public static Type toDependencyType(QueueDependencyType type) {
+            return toDependencyType.get(type);
         }
 
         private final Type associatedType;
