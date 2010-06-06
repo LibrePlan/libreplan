@@ -87,7 +87,7 @@ public class LimitingResourceQueue extends BaseEntity {
         DateAndHour previousEnd = null;
         for (LimitingResourceQueueElement each : limitingResourceQueueElements) {
             DateAndHour startTime = each.getStartTime();
-            if (startTime.isAfter(startTime)) {
+            if (previousEnd == null || startTime.isAfter(previousEnd)) {
                 result.add(Gap.create(resource, previousEnd, startTime));
             }
             previousEnd = each.getEndTime();
