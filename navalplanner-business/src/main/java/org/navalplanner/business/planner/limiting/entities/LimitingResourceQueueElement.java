@@ -38,10 +38,8 @@ import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
- *
- * Entity which represents an element in the queue which represents
- * the limiting resources.
- *
+ * Entity which represents an element in the queue which represents the limiting
+ * resources.
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
@@ -61,11 +59,9 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private long creationTimestamp;
 
-    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin =
-        new HashSet<LimitingResourceQueueDependency>();
+    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin = new HashSet<LimitingResourceQueueDependency>();
 
-    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny =
-        new HashSet<LimitingResourceQueueDependency>();
+    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny = new HashSet<LimitingResourceQueueDependency>();
 
     public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
@@ -91,7 +87,8 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return limitingResourceQueue;
     }
 
-    public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
+    public void setLimitingResourceQueue(
+            LimitingResourceQueue limitingResourceQueue) {
         this.limitingResourceQueue = limitingResourceQueue;
     }
 
@@ -175,9 +172,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
         } else if (d.getHasAsDestiny().equals(this)) {
             dependenciesAsDestiny.add(d);
         } else {
-            throw new IllegalArgumentException("It cannot be added a dependency" +
-                    " in which the current queue element is neither origin" +
-                    " not desinty");
+            throw new IllegalArgumentException(
+                    "It cannot be added a dependency"
+                            + " in which the current queue element is neither origin"
+                            + " not desinty");
         }
     }
 

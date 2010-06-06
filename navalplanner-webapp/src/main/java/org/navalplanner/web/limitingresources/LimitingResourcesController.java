@@ -406,10 +406,16 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 LimitingResourceQueueElementDTO dto) {
 
             LimitingResourceQueueElement element = dto.getOriginal();
-            if (limitingResourceQueueModel
-                    .assignLimitingResourceQueueElement(element)) {
+            List<LimitingResourceQueueElement> inserted = limitingResourceQueueModel
+                    .assignLimitingResourceQueueElement(element);
+            if (!inserted.isEmpty()) {
                 Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
-                limitingResourcesPanel.appendQueueElementToQueue(element);
+                for (LimitingResourceQueueElement each : inserted) {
+                    // FIXME visually wrong if an element jumps from a queue to
+                    // another
+                    limitingResourcesPanel.refreshQueue(each
+                            .getLimitingResourceQueue());
+                }
             } else {
                 showErrorMessage(_("Cannot allocate selected element. There is not any queue " +
                         "that matches resource allocation criteria at any interval of time"));

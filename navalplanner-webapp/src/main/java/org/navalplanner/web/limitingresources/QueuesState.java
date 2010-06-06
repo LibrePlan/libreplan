@@ -23,13 +23,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.jgrapht.DirectedGraph;
+import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.SimpleDirectedGraph;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -119,6 +122,8 @@ public class QueuesState {
             LimitingResourceQueueDependency dependency) {
         LimitingResourceQueueElement origin = dependency.getHasAsOrigin();
         LimitingResourceQueueElement destination = dependency.getHasAsDestiny();
+        result.addVertex(origin);
+        result.addVertex(destination);
         result.addEdge(origin, destination, dependency);
     }
 
@@ -240,6 +245,89 @@ public class QueuesState {
             }
         }
         return result;
+    }
+
+    /**
+     * @param externalQueueElement
+     *            the queue element to insert
+     * @return the list of elements that must be reinserted due to the insertion
+     *         of <code>externalQueueElement</code>
+     */
+    public List<LimitingResourceQueueElement> getInsertionsToBeDoneFor(
+            LimitingResourceQueueElement externalQueueElement) {
+        LimitingResourceQueueElement queueElement = getEquivalent(externalQueueElement);
+        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph = buildOutgoingGraphFor(queueElement);
+        CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency> cycleDetector = cycleDetector(subGraph);
+        if (cycleDetector.detectCycles()) {
+            throw new IllegalStateException("subgraph has cycles");
+        }
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        result.add(queueElement);
+        result.addAll(getElementsOrderedTopologically(subGraph));
+        unassignFromQueues(result);
+        return result;
+    }
+
+    private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildOutgoingGraphFor(
+            LimitingResourceQueueElement queueElement) {
+        SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result = instantiateDirectedGraph();
+        buildOutgoingGraphFor(result, queueElement);
+        return result;
+    }
+
+    private void buildOutgoingGraphFor(
+            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result,
+            LimitingResourceQueueElement element) {
+        Set<LimitingResourceQueueDependency> outgoingEdgesOf = graph
+                .outgoingEdgesOf(element);
+        for (LimitingResourceQueueDependency each : outgoingEdgesOf) {
+            addDependency(result, each);
+            buildOutgoingGraphFor(result, each.getHasAsDestiny());
+        }
+    }
+
+    private CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency> cycleDetector(
+            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
+        return new CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency>(
+                subGraph);
+    }
+
+    private List<LimitingResourceQueueElement> getElementsOrderedTopologically(
+            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
+        return onlyAssigned(toList(topologicalIterator(subGraph)));
+    }
+
+    private TopologicalOrderIterator<LimitingResourceQueueElement, LimitingResourceQueueDependency> topologicalIterator(
+            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
+        return new TopologicalOrderIterator<LimitingResourceQueueElement, LimitingResourceQueueDependency>(
+                subGraph);
+    }
+
+    private static <T> List<T> toList(final Iterator<T> iterator) {
+        List<T> result = new ArrayList<T>();
+        while (iterator.hasNext()) {
+            result.add(iterator.next());
+        }
+        return result;
+    }
+
+    private List<LimitingResourceQueueElement> onlyAssigned(
+            List<LimitingResourceQueueElement> list) {
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        for (LimitingResourceQueueElement each : list) {
+            if (!each.isDetached()) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    private void unassignFromQueues(List<LimitingResourceQueueElement> result) {
+        for (LimitingResourceQueueElement each : result) {
+            if (!each.isDetached()) {
+                unassingFromQueue(each);
+            }
+        }
     }
 
 }

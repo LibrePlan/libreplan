@@ -60,26 +60,22 @@ public interface ILimitingResourceQueueModel {
 
     /**
      * Assigns a {@link LimitingResourceQueueElement} to its corresponding
-     * {@link LimitingResourceQueue}
-     *
-     * There is one and only one queue for every limiting resource. An element
-     * is assigned to its queue searching by element.resource.
-     *
-     * Allocation within the queue is done by finding the first gap in the queue
-     * that fits the initial intented hours assigned to
-     * element.resourceallocation.
-     *
-     * The method also generates {@link DayAssignment} once the allocation is
-     * done
-     *
-     * Returns true if the process was successful. The only case were an
-     * allocation cannot be done is if there's not any queue that can hold the
-     * element (only for a generic allocation, there's not any queue that
-     * matches the criteria of the element)
-     *
+     * {@link LimitingResourceQueue} There is one and only one queue for every
+     * limiting resource. An element is assigned to its queue searching by
+     * element.resource. Allocation within the queue is done by finding the
+     * first gap in the queue that fits the initial intented hours assigned to
+     * element.resourceallocation. The method also generates
+     * {@link DayAssignment} once the allocation is done Returns the inserted
+     * queue elements. More than one can be inserted because inserting
+     * <code>element</code> can imply to move its sucessors.<br />
+     * The only case were an allocation cannot be done is if there's not any
+     * queue that can hold the element (only for a generic allocation, there's
+     * not any queue that matches the criteria of the element). In this case an
+     * empty list is returned
      * @param element
      */
-    boolean assignLimitingResourceQueueElement(LimitingResourceQueueElement element);
+    List<LimitingResourceQueueElement> assignLimitingResourceQueueElement(
+            LimitingResourceQueueElement element);
 
     ZoomLevel calculateInitialZoomLevel();
 

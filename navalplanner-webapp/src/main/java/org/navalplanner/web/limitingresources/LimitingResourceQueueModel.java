@@ -390,9 +390,22 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    public boolean assignLimitingResourceQueueElement(
+    public List<LimitingResourceQueueElement> assignLimitingResourceQueueElement(
             LimitingResourceQueueElement externalQueueElement) {
-        GapRequirements requirements = queuesState.getRequirementsFor(externalQueueElement);
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        for (LimitingResourceQueueElement each : queuesState
+                .getInsertionsToBeDoneFor(externalQueueElement)) {
+            GapRequirements requirements = queuesState.getRequirementsFor(each);
+            boolean inserted = insert(requirements);
+            if (!inserted) {
+                break;
+            }
+            result.add(requirements.getElement());
+        }
+        return result;
+    }
+
+    private boolean insert(GapRequirements requirements) {
         List<GapOnQueue> potentiallyValidGapsFor = queuesState
                 .getPotentiallyValidGapsFor(requirements);
         boolean generic = requirements.getElement().isGeneric();
