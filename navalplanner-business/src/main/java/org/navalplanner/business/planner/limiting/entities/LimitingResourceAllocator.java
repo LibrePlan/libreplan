@@ -22,7 +22,6 @@ package org.navalplanner.business.planner.limiting.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -38,8 +37,6 @@ import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionCompounder;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -111,8 +108,8 @@ public class LimitingResourceAllocator {
         if (isSpecific(element) && gap.canFit(element)) {
             result.add(gap);
         } else if (isGeneric(element)) {
-            final List<Gap> gaps = splitIntoGapsSatisfyingCriteria(
-                    resource, getCriteria(element), gap);
+            final List<Gap> gaps = gap.splitIntoGapsSatisfyingCriteria(
+                    resource, getCriteria(element));
             for (Gap subgap : gaps) {
                 if (subgap.canFit(element)) {
                     result.add(subgap);
@@ -194,69 +191,6 @@ public class LimitingResourceAllocator {
             return ((GenericResourceAllocation) resourceAllocation).getCriterions();
         }
         return null;
-    }
-
-    private static Date toDate(LocalDate date) {
-        return date != null ? date.toDateTimeAtStartOfDay().toDate() : null;
-    }
-
-    private static List<Gap> splitIntoGapsSatisfyingCriteria(
-            Resource resource, Set<Criterion> criteria, Gap gap) {
-        return splitIntoGapsSatisfyingCriteria(resource, criteria, gap.getStartTime(), gap.getEndTime());
-    }
-
-    /**
-     * Returns a set of {@link Gap} composed by those gaps
-     * which satisfy <em>criteria</em> within the period: <em>gapStartTime</em> till <em>gapEndTime</em>
-     *
-     * @param resource
-     * @param criteria
-     *            criteria to be satisfied by resource
-     * @param gapStartTime
-     *            start time of gap
-     * @param gapEndTime
-     *            end time of gap
-     * @return
-     */
-    private static List<Gap> splitIntoGapsSatisfyingCriteria(
-            Resource resource, Set<Criterion> criteria, DateAndHour gapStartTime,
-            DateAndHour gapEndTime) {
-
-        final ICriterion compositedCriterion = CriterionCompounder.buildAnd(criteria)
-                .getResult();
-        final ResourceCalendar calendar = resource.getCalendar();
-
-        // FIXME: If endTime is null (lastGap), set endTime as 100 years ahead startTime
-        final LocalDate gapEndDate = gapEndTime != null ? gapEndTime.getDate().plusDays(1)
-                : gapStartTime.getDate().plusYears(10);
-        final LocalDate gapStartDate = gapStartTime.getDate();
-
-        List<Gap> result = new ArrayList<Gap>();
-
-        LocalDate date = gapStartDate;
-        boolean open = compositedCriterion.isSatisfiedBy(resource, toDate(date));
-        DateAndHour startTime = gapStartTime, endTime;
-        while (date.isBefore(gapEndDate)) {
-            if (calendar.getCapacityAt(date) == 0) {
-                date = date.plusDays(1);
-                continue;
-            }
-
-            if (open == false && compositedCriterion.isSatisfiedBy(resource, toDate(date))) {
-                startTime = new DateAndHour(date, 0);
-                open = true;
-            }
-            if (open == true && !compositedCriterion.isSatisfiedBy(resource, toDate(date))) {
-                endTime = new DateAndHour(date, 0);
-                result.add(Gap.create(resource,
-                        startTime, endTime));
-                open = false;
-            }
-            date = date.plusDays(1);
-        }
-        result.add(Gap.create(resource, startTime, gapEndTime));
-
-        return result;
     }
 
     public static DateAndHour getFirstElementTime(List<DayAssignment> dayAssignments) {
