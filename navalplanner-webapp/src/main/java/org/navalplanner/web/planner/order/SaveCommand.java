@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.order;
 
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.toQueueDependencyType;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
@@ -293,12 +294,9 @@ public class SaveCommand implements ISaveCommand {
             LimitingResourceQueueElement destiny =
                 calculateQueueElementFromDependency((Task) d.getDestination());
 
-            LimitingResourceQueueDependency queueDependency =
-                LimitingResourceQueueDependency.create(origin,
-                    destiny,
-                    d,
-                    LimitingResourceQueueDependency.
-                        convertFromTypeToQueueDepedencyType(d.getType()));
+            LimitingResourceQueueDependency queueDependency = LimitingResourceQueueDependency
+                    .create(origin, destiny, d,
+                            toQueueDependencyType(d.getType()));
             d.setQueueDependency(queueDependency);
             limitingResourceQueueDependencyDAO.save(queueDependency);
             queueDependency.dontPoseAsTransientObjectAnymore();

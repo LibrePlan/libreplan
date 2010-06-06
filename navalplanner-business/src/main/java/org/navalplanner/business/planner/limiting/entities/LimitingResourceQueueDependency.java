@@ -22,25 +22,37 @@ import org.navalplanner.business.planner.entities.Dependency.Type;
 public class LimitingResourceQueueDependency extends BaseEntity {
 
     public static enum QueueDependencyType {
-        START_START, END_START, END_END, START_END
+        START_START(Type.START_START),
+        END_START(Type.END_START),
+        END_END(Type.END_END),
+        START_END(Type.START_END);
+
+        private static EnumMap<Type, QueueDependencyType> toQueueDependencyType;
+
+        static {
+            toQueueDependencyType = new EnumMap<Type, QueueDependencyType>(
+                    Type.class);
+            for (QueueDependencyType each : QueueDependencyType.values()) {
+                toQueueDependencyType.put(each.associatedType, each);
+            }
+        }
+
+        public static LimitingResourceQueueDependency.QueueDependencyType toQueueDependencyType(
+                Type type) {
+            return toQueueDependencyType.get(type);
+        }
+
+        private final Type associatedType;
+
+        private QueueDependencyType(Type associatedType) {
+            this.associatedType = associatedType;
+        }
+
     };
 
-    private static
-        EnumMap<Dependency.Type,
-        LimitingResourceQueueDependency.QueueDependencyType> translationMap;
-
-    static {
-        translationMap = new EnumMap<Dependency.Type,
-        LimitingResourceQueueDependency.
-            QueueDependencyType>(Dependency.Type.class);
-        translationMap.put(Dependency.Type.START_START,
-                QueueDependencyType.START_START);
-        translationMap.put(Dependency.Type.START_END,
-                QueueDependencyType.START_END);
-        translationMap.put(Dependency.Type.END_START,
-                QueueDependencyType.END_START);
-        translationMap.put(Dependency.Type.END_END,
-                QueueDependencyType.END_END);
+    public static LimitingResourceQueueDependency.QueueDependencyType toQueueDependencyType(
+            Dependency.Type type) {
+        return QueueDependencyType.toQueueDependencyType(type);
     }
 
     private LimitingResourceQueueElement hasAsOrigin;
@@ -60,11 +72,6 @@ public class LimitingResourceQueueDependency extends BaseEntity {
         destiny.add(dependency);
         ganttDependency.setQueueDependency(dependency);
         return dependency;
-    }
-
-    public static LimitingResourceQueueDependency.QueueDependencyType
-        convertFromTypeToQueueDepedencyType(Dependency.Type type) {
-        return translationMap.get(type);
     }
 
     /**
