@@ -32,7 +32,9 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.limiting.entities.GapRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -152,6 +154,33 @@ public class QueuesState {
             return findQueuesMatchingCriteria(generic.getCriterions());
         }
         throw new RuntimeException("unexpected type of: " + resourceAllocation);
+    }
+
+    public GapRequirements getRequirementsFor(
+            LimitingResourceQueueElement element) {
+        return GapRequirements.forElement(getEquivalent(element));
+    }
+
+    /**
+     * @return all the gaps that could potentially fit <code>element</code>
+     *         ordered by start date
+     */
+    public List<GapOnQueue> getPotentiallyValidGapsFor(
+            GapRequirements requirements) {
+        List<LimitingResourceQueue> assignableQueues = getAssignableQueues(requirements
+                .getElement());
+        List<List<GapOnQueue>> allGaps = gapsFor(assignableQueues, requirements);
+        return GapsMergeSort.sort(allGaps);
+    }
+
+    private List<List<GapOnQueue>> gapsFor(
+            List<LimitingResourceQueue> assignableQueues,
+            GapRequirements requirements) {
+        List<List<GapOnQueue>> result = new ArrayList<List<GapOnQueue>>();
+        for (LimitingResourceQueue each : assignableQueues) {
+            result.add(each.getGapsPotentiallyValidFor(requirements));
+        }
+        return result;
     }
 
     private List<LimitingResourceQueue> findQueuesMatchingCriteria(

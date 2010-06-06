@@ -60,11 +60,15 @@ public class GapRequirements {
         this.earliestPossibleEnd = earliestPossibleEnd;
     }
 
-    public AllocationOnGap guessValidity(Gap gap) {
+    public boolean isPotentiallyValid(Gap gap) {
         DateAndHour gapEnd = gap.getEndTime();
-        if (gapEnd != null
-                && (earliestPossibleStart.compareTo(gapEnd) >= 0 || earliestPossibleEnd
-                        .isAfter(gapEnd))) {
+        return gapEnd == null
+                || (earliestPossibleStart.isBefore(gapEnd) && !earliestPossibleEnd
+                        .isAfter(gapEnd));
+    }
+
+    public AllocationOnGap guessValidity(Gap gap) {
+        if (!isPotentiallyValid(gap)) {
             return AllocationOnGap.invalidOn(gap);
         }
         DateAndHour realStart = DateAndHour.Max(earliestPossibleStart, gap
@@ -169,6 +173,10 @@ public class GapRequirements {
             result += each;
         }
         return result;
+    }
+
+    public LimitingResourceQueueElement getElement() {
+        return element;
     }
 
 }
