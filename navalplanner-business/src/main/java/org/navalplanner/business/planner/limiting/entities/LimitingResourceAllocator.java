@@ -109,7 +109,7 @@ public class LimitingResourceAllocator {
             result.add(gap);
         } else if (isGeneric(element)) {
             final List<Gap> gaps = gap.splitIntoGapsSatisfyingCriteria(
-                    resource, getCriteria(element));
+                    resource, element.getCriteria());
             for (Gap subgap : gaps) {
                 if (subgap.canFit(element)) {
                     result.add(subgap);
@@ -183,14 +183,6 @@ public class LimitingResourceAllocator {
 
     private static boolean isSpecific(LimitingResourceQueueElement element) {
         return element.getResourceAllocation() instanceof SpecificResourceAllocation;
-    }
-
-    private static Set<Criterion> getCriteria(LimitingResourceQueueElement element) {
-        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
-        if (resourceAllocation instanceof GenericResourceAllocation) {
-            return ((GenericResourceAllocation) resourceAllocation).getCriterions();
-        }
-        return null;
     }
 
     public static DateAndHour getFirstElementTime(List<DayAssignment> dayAssignments) {

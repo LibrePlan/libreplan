@@ -30,8 +30,10 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -243,5 +245,21 @@ public class LimitingResourceQueueElement extends BaseEntity {
         setEndDate(null);
         setEndHour(0);
         getResourceAllocation().removeLimitingDayAssignments();
+    }
+
+    public boolean isSpecific() {
+        return resourceAllocation instanceof SpecificResourceAllocation;
+    }
+
+    public boolean isGeneric() {
+        return resourceAllocation instanceof GenericResourceAllocation;
+    }
+
+    public Set<Criterion> getCriteria() {
+        if (!isGeneric()) {
+            throw new IllegalStateException("this is not a generic element");
+        }
+        final ResourceAllocation<?> resourceAllocation = getResourceAllocation();
+        return ((GenericResourceAllocation) resourceAllocation).getCriterions();
     }
 }
