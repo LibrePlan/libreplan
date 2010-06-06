@@ -28,11 +28,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.SimpleDirectedGraph;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.limiting.entities.GapRequirements;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -49,6 +52,8 @@ public class QueuesState {
     private final List<LimitingResourceQueue> queues;
 
     private final List<LimitingResourceQueueElement> unassignedElements;
+
+    private final DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph;
 
     private final Map<Long, LimitingResourceQueue> queuesById;
 
@@ -85,6 +90,47 @@ public class QueuesState {
         this.elementsById = byId(allElements(limitingResourceQueues,
                 unassignedLimitingResourceQueueElements));
         this.queuesByResourceId = byResourceId(limitingResourceQueues);
+        this.graph = buildGraph(getAllElements(unassignedElements, queues));
+    }
+
+    private static DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildGraph(
+            List<LimitingResourceQueueElement> allElements) {
+        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result = instantiateDirectedGraph();
+        for (LimitingResourceQueueElement each : allElements) {
+            result.addVertex(each);
+        }
+        for (LimitingResourceQueueElement each : allElements) {
+            Set<LimitingResourceQueueDependency> dependenciesAsOrigin = each
+                    .getDependenciesAsOrigin();
+            for (LimitingResourceQueueDependency eachDependency : dependenciesAsOrigin) {
+                addDependency(result, eachDependency);
+            }
+        }
+        return result;
+    }
+
+    private static SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> instantiateDirectedGraph() {
+        return new SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency>(
+                LimitingResourceQueueDependency.class);
+    }
+
+    private static void addDependency(
+            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result,
+            LimitingResourceQueueDependency dependency) {
+        LimitingResourceQueueElement origin = dependency.getHasAsOrigin();
+        LimitingResourceQueueElement destination = dependency.getHasAsDestiny();
+        result.addEdge(origin, destination, dependency);
+    }
+
+    private static List<LimitingResourceQueueElement> getAllElements(
+            List<LimitingResourceQueueElement> unassigned,
+            List<LimitingResourceQueue> queues) {
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        result.addAll(unassigned);
+        for (LimitingResourceQueue each : queues) {
+            result.addAll(each.getLimitingResourceQueueElements());
+        }
+        return result;
     }
 
     private List<LimitingResourceQueueElement> allElements(
