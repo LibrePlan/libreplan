@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.limiting.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -41,6 +43,43 @@ import org.navalplanner.business.resources.entities.Resource;
  *
  */
 public class Gap implements Comparable<Gap> {
+
+    public static class GapOnQueue {
+
+        public static List<GapOnQueue> onQueue(LimitingResourceQueue queue,
+                Collection<? extends Gap> gaps) {
+            List<GapOnQueue> result = new ArrayList<GapOnQueue>();
+            for (Gap each : gaps) {
+                result.add(each.onQueue(queue));
+            }
+            return result;
+        }
+
+        private final LimitingResourceQueue originQueue;
+
+        private final Gap gap;
+
+        GapOnQueue(LimitingResourceQueue originQueue, Gap gap) {
+            this.originQueue = originQueue;
+            this.gap = gap;
+        }
+
+        public LimitingResourceQueue getOriginQueue() {
+            return originQueue;
+        }
+
+        public Gap getGap() {
+            return gap;
+        }
+
+        public List<GapOnQueue> splitIntoGapsSatisfyingCriteria(
+                Set<Criterion> criteria) {
+            return GapOnQueue.onQueue(originQueue, gap
+                    .splitIntoGapsSatisfyingCriteria(originQueue.getResource(),
+                            criteria));
+        }
+
+    }
 
     private DateAndHour startTime;
 
@@ -53,6 +92,10 @@ public class Gap implements Comparable<Gap> {
         this.startTime = startTime;
         this.endTime = endTime;
         hoursInGap = calculateHoursInGap(resource, startTime, endTime);
+    }
+
+    public GapOnQueue onQueue(LimitingResourceQueue queue) {
+        return new GapOnQueue(queue, this);
     }
 
     private Integer calculateHoursInGap(Resource resource, DateAndHour startTime, DateAndHour endTime) {

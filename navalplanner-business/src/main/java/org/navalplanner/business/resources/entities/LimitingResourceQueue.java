@@ -20,12 +20,18 @@
 
 package org.navalplanner.business.resources.entities;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.limiting.entities.DateAndHour;
+import org.navalplanner.business.planner.limiting.entities.Gap;
+import org.navalplanner.business.planner.limiting.entities.GapRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 
 /**
  *
@@ -38,6 +44,8 @@ public class LimitingResourceQueue extends BaseEntity {
 
     private SortedSet<LimitingResourceQueueElement> limitingResourceQueueElements =
         new TreeSet<LimitingResourceQueueElement>(new LimitingResourceQueueElementComparator());
+
+    private List<GapOnQueue> cachedGaps;
 
     public static LimitingResourceQueue create() {
         return create(new LimitingResourceQueue());
@@ -58,15 +66,53 @@ public class LimitingResourceQueue extends BaseEntity {
     public void addLimitingResourceQueueElement(LimitingResourceQueueElement element) {
         element.setLimitingResourceQueue(this);
         limitingResourceQueueElements.add(element);
+        cachedGaps = null;
     }
 
     public void removeLimitingResourceQueueElement(LimitingResourceQueueElement element) {
         limitingResourceQueueElements.remove(element);
         element.detach();
+        cachedGaps = null;
+    }
+
+    public List<GapOnQueue> getGaps() {
+        if (cachedGaps == null) {
+            cachedGaps = calculateGaps();
+        }
+        return cachedGaps;
+    }
+
+    private List<GapOnQueue> calculateGaps() {
+        List<Gap> result = new ArrayList<Gap>();
+        DateAndHour previousEnd = null;
+        for (LimitingResourceQueueElement each : limitingResourceQueueElements) {
+            DateAndHour startTime = each.getStartTime();
+            if (startTime.isAfter(startTime)) {
+                result.add(Gap.create(resource, previousEnd, startTime));
+            }
+            previousEnd = each.getEndTime();
+        }
+        result.add(Gap.create(resource, previousEnd, null));
+        return GapOnQueue.onQueue(this, result);
     }
 
     public SortedSet<LimitingResourceQueueElement> getLimitingResourceQueueElements() {
         return Collections.unmodifiableSortedSet(limitingResourceQueueElements);
+    }
+
+    /**
+     * @return the gaps that could potentially be valid for
+     *         <code>requirements</code> ordered by start date
+     */
+    public List<GapOnQueue> getGapsPotentiallyValidFor(
+            GapRequirements requirements) {
+        List<GapOnQueue> result = new ArrayList<GapOnQueue>();
+        for (GapOnQueue each : getGaps()) {
+            if (requirements.isPotentiallyValid(each.getGap())) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
 }
