@@ -21,11 +21,10 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -48,17 +47,19 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDAO;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueElementDAO;
+import org.navalplanner.business.planner.limiting.entities.AllocationOnGap;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
+import org.navalplanner.business.planner.limiting.entities.Gap;
+import org.navalplanner.business.planner.limiting.entities.GapRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.limiting.entities.Gap;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -390,39 +391,48 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Override
     public boolean assignLimitingResourceQueueElement(
-            LimitingResourceQueueElement element) {
-
-        LimitingResourceQueue queue = null;
-        DateAndHour startTime = null;
-
-        LimitingResourceQueueElement queueElement = queuesState.getEquivalent(element);
-
-        final ResourceAllocation<?> resourceAllocation = queueElement
-                .getResourceAllocation();
-        if (resourceAllocation instanceof SpecificResourceAllocation) {
-            // Retrieve queue
-            queue = queuesState.getQueueFor(queueElement.getResource());
-            // Set start time
-            final Gap firstGap = LimitingResourceAllocator
-                    .getFirstValidGap(queue, queueElement);
-            startTime = firstGap.getStartTime();
-        } else if (resourceAllocation instanceof GenericResourceAllocation) {
-            // Get the first gap for all the queues that can allocate the
-            // element during a certain interval of time
-            Map<Gap, LimitingResourceQueue> firstGapsForQueues = findFirstGapsInAllQueues(
-                    queuesState.getQueues(), element);
-            // Among those queues, get the earliest gap
-            Gap earliestGap = findEarliestGap(firstGapsForQueues
-                    .keySet());
-            if (earliestGap == null) {
-                return false;
+            LimitingResourceQueueElement externalQueueElement) {
+        GapRequirements requirements = queuesState.getRequirementsFor(externalQueueElement);
+        List<GapOnQueue> potentiallyValidGapsFor = queuesState
+                .getPotentiallyValidGapsFor(requirements);
+        boolean generic = requirements.getElement().isGeneric();
+        for (GapOnQueue each : potentiallyValidGapsFor) {
+            for (GapOnQueue eachSubGap : getSubGaps(each, requirements
+                    .getElement(), generic)) {
+                AllocationOnGap allocation = requirements
+                        .guessValidity(eachSubGap.getGap());
+                if (allocation.isValid()) {
+                    doAllocation(requirements, allocation, eachSubGap.getOriginQueue());
+                    return true;
+                }
             }
-            // Select queue and start time
-            queue = firstGapsForQueues.get(earliestGap);
-            startTime = earliestGap.getStartTime();
         }
-        return assignLimitingResourceQueueElementToQueueAt(queueElement, queue,
-                startTime, getEndsAfterBecauseOfGantt(queueElement));
+        return false;
+    }
+
+    private List<GapOnQueue> getSubGaps(GapOnQueue each,
+            LimitingResourceQueueElement element, boolean generic) {
+        if (generic) {
+            return each.splitIntoGapsSatisfyingCriteria(element.getCriteria());
+        }
+        return Collections.singletonList(each);
+    }
+
+    private void doAllocation(GapRequirements requirements,
+            AllocationOnGap allocation, LimitingResourceQueue queue) {
+        Resource resource = queue.getResource();
+        ResourceAllocation<?> resourceAllocation = requirements
+                .getElement().getResourceAllocation();
+        List<DayAssignment> assignments = allocation
+                .getAssignmentsFor(resourceAllocation, resource);
+        resourceAllocation
+                .allocateLimitingDayAssignments(assignments);
+        updateStartAndEndTimes(requirements.getElement(),
+                allocation.getStartInclusive(), allocation
+                        .getEndExclusive());
+        addLimitingResourceQueueElement(queue, requirements
+                        .getElement());
+        markAsModified(requirements.getElement());
     }
 
     private DateAndHour getEndsAfterBecauseOfGantt(
@@ -464,32 +474,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private boolean sameDay(DateAndHour startTime, DateAndHour endTime) {
         return startTime.getDate().equals(endTime.getDate());
-    }
-
-    private Gap findEarliestGap(Set<Gap> gaps) {
-        Gap earliestGap = null;
-        for (Gap each: gaps) {
-            if (earliestGap == null || each.isBefore(earliestGap)) {
-                earliestGap = each;
-            }
-        }
-        return earliestGap;
-    }
-
-    private Map<Gap, LimitingResourceQueue> findFirstGapsInAllQueues(
-            List<LimitingResourceQueue> queues,
-            LimitingResourceQueueElement element) {
-
-        Map<Gap, LimitingResourceQueue> result = new HashMap<Gap, LimitingResourceQueue>();
-
-        for (LimitingResourceQueue each : queues) {
-            Gap gap = LimitingResourceAllocator
-                    .getFirstValidGap(each, element);
-            if (gap != null) {
-                result.put(gap, each);
-            }
-        }
-        return result;
     }
 
     private void markAsModified(LimitingResourceQueueElement element) {
