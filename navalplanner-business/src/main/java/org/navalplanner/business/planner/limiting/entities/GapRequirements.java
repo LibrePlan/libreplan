@@ -41,9 +41,22 @@ public class GapRequirements {
 
     public static GapRequirements forElement(
             LimitingResourceQueueElement element) {
-        return new GapRequirements(element, asDateAndHour(element
-                .getEarlierStartDateBecauseOfGantt()), asDateAndHour(element
-                .getEarliestEndDateBecauseOfGantt()));
+        DateAndHour end = element.getEarliestEndDateBecauseOfDependencies();
+        return new GapRequirements(element, calculateEarliestPossibleStart(element),
+                calculateEarliestPossibleEnd(element, end));
+    }
+
+    private static DateAndHour calculateEarliestPossibleEnd(
+            LimitingResourceQueueElement element, DateAndHour end) {
+        return DateAndHour.Max(asDateAndHour(element
+                .getEarliestEndDateBecauseOfGantt()), end);
+    }
+
+    private static DateAndHour calculateEarliestPossibleStart(
+            LimitingResourceQueueElement element) {
+        return DateAndHour.Max(asDateAndHour(element
+                .getEarlierStartDateBecauseOfGantt()),
+                element.getEarliestStartDateBecauseOfDependencies());
     }
 
     private static DateAndHour asDateAndHour(Date date) {

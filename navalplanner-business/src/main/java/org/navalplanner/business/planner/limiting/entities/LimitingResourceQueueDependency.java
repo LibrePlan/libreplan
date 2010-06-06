@@ -118,4 +118,36 @@ public class LimitingResourceQueueDependency extends BaseEntity {
     public Dependency getGanttDependency() {
         return ganttDependency;
     }
+
+    public boolean isOriginNotDetached() {
+        return !hasAsOrigin.isDetached();
+    }
+
+    private Dependency.Type getDependencyType() {
+        return QueueDependencyType.toDependencyType(type);
+    }
+
+    public boolean modifiesDestinationStart() {
+        return getDependencyType().modifiesDestinationStart();
+    }
+
+    public boolean modifiesDestinationEnd() {
+        return getDependencyType().modifiesDestinationEnd();
+    }
+
+    public DateAndHour getDateFromOrigin() {
+        if (hasAsOrigin.isDetached()) {
+            throw new IllegalStateException("origin detached");
+        }
+        switch (type) {
+        case START_END:
+        case START_START:
+            return hasAsOrigin.getStartTime();
+        case END_END:
+        case END_START:
+            return hasAsOrigin.getEndTime();
+        default:
+            throw new RuntimeException("unknown type: " + type);
+        }
+    }
 }

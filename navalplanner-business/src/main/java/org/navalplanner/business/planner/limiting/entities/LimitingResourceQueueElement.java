@@ -247,6 +247,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
         getResourceAllocation().removeLimitingDayAssignments();
     }
 
+    public boolean isDetached() {
+        return getStartDate() == null;
+    }
+
     public boolean isSpecific() {
         return resourceAllocation instanceof SpecificResourceAllocation;
     }
@@ -261,5 +265,25 @@ public class LimitingResourceQueueElement extends BaseEntity {
         }
         final ResourceAllocation<?> resourceAllocation = getResourceAllocation();
         return ((GenericResourceAllocation) resourceAllocation).getCriterions();
+    }
+
+    public DateAndHour getEarliestStartDateBecauseOfDependencies() {
+        DateAndHour result = null;
+        for (LimitingResourceQueueDependency each : dependenciesAsDestiny) {
+            if (each.isOriginNotDetached() && each.modifiesDestinationStart()) {
+                result = DateAndHour.Max(each.getDateFromOrigin(), result);
+            }
+        }
+        return result;
+    }
+
+    public DateAndHour getEarliestEndDateBecauseOfDependencies() {
+        DateAndHour result = null;
+        for (LimitingResourceQueueDependency each : dependenciesAsDestiny) {
+            if (each.isOriginNotDetached() && each.modifiesDestinationEnd()) {
+                result = DateAndHour.Max(each.getDateFromOrigin(), result);
+            }
+        }
+        return result;
     }
 }
