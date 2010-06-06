@@ -99,11 +99,14 @@ public class Gap implements Comparable<Gap> {
     }
 
     private Integer calculateHoursInGap(Resource resource, DateAndHour startTime, DateAndHour endTime) {
-        // this method will be removed; when hours in gap is really used
-        // startTime is never null
-        return (endTime == null || startTime == null) ? Integer.MAX_VALUE
-                : calculateHoursInGap(resource, startTime.getDate(), startTime
-                        .getHour(), endTime.getDate(), endTime.getHour());
+        // TODO remove this method. Use GapRequirements instead
+        if (endTime == null || startTime == null) {
+            // startTime is never null when hours in gap is really use
+            return Integer.MAX_VALUE;
+        } else {
+            return calculateHoursInGap(resource, startTime.getDate(), startTime
+                    .getHour(), endTime.getDate(), endTime.getHour());
+        }
     }
 
     public int getHoursInGap() {
