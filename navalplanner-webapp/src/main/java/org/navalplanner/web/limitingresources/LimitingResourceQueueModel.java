@@ -413,7 +413,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             for (GapOnQueue eachSubGap : getSubGaps(each, requirements
                     .getElement(), generic)) {
                 AllocationOnGap allocation = requirements
-                        .guessValidity(eachSubGap.getGap());
+                        .guessValidity(eachSubGap);
                 if (allocation.isValid()) {
                     doAllocation(requirements, allocation, eachSubGap.getOriginQueue());
                     return true;

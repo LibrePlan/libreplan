@@ -26,6 +26,9 @@ import java.util.ListIterator;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.resources.entities.Resource;
 
 
 /**
@@ -80,14 +83,16 @@ public class GapRequirements {
                         .isAfter(gapEnd));
     }
 
-    public AllocationOnGap guessValidity(Gap gap) {
+    public AllocationOnGap guessValidity(GapOnQueue gapOnQueue) {
+        Gap gap = gapOnQueue.getGap();
         if (!isPotentiallyValid(gap)) {
             return AllocationOnGap.invalidOn(gap);
         }
         DateAndHour realStart = DateAndHour.Max(earliestPossibleStart, gap
                 .getStartTime());
+        Resource resource = gapOnQueue.getOriginQueue().getResource();
         List<Integer> hours = gap.getHoursInGapUntilAllocatingAndGoingToTheEnd(
-                element.getResource().getCalendar(), realStart,
+                resource.getCalendar(), realStart,
                 earliestPossibleEnd, element.getIntentedTotalHours());
         int total = sum(hours);
         if (total < element.getIntentedTotalHours()) {
