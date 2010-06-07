@@ -234,7 +234,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
 
-                if (value.getDate().compareTo(endExclusive) > 0) {
+                if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
                     LocalDate date = ResourceAllocation.allocating(
                             Arrays.asList(resourceAllocation
                                     .asResourcesPerDayModification()))
