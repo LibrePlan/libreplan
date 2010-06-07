@@ -226,11 +226,18 @@ public class Gap implements Comparable<Gap> {
     }
 
     @Override
-    public int compareTo(Gap o) {
-        if (o == null) {
+    public int compareTo(Gap other) {
+        if (other == null) {
             return 1;
         }
-        return this.getStartTime().compareTo(o.getStartTime());
+        if (this.getStartTime() == null && other.getStartTime() == null) {
+            return 0;
+        } else if (this.getStartTime() == null) {
+            return -1;
+        } else if (other.getStartTime() == null) {
+            return 1;
+        }
+        return this.getStartTime().compareTo(other.getStartTime());
     }
 
     public boolean isBefore(Gap gap) {
