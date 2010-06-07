@@ -63,7 +63,7 @@ public class AvailabilityCalculator {
         return result.and(getCriterionsAvailabilityFor(criterions, each));
     }
 
-    private static AvailabilityTimeLine getCriterionsAvailabilityFor(
+    public static AvailabilityTimeLine getCriterionsAvailabilityFor(
             Collection<? extends Criterion> criterions, Resource resource) {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         for (Criterion each : criterions) {

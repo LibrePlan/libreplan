@@ -22,18 +22,22 @@ package org.navalplanner.business.planner.limiting.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.DatePoint;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTime;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
+import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionCompounder;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -266,51 +270,40 @@ public class Gap implements Comparable<Gap> {
     private static List<Gap> splitIntoGapsSatisfyingCriteria(Resource resource,
             Set<Criterion> criteria, DateAndHour gapStartTime,
             DateAndHour gapEndTime) {
-
-        final ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                criteria).getResult();
-        final ResourceCalendar calendar = resource.getCalendar();
-
-        // FIXME: If endTime is null (lastGap), set endTime as 100 years ahead
-        // startTime
-        final LocalDate gapEndDate = gapEndTime != null ? gapEndTime.getDate()
-                .plusDays(1) : gapStartTime.getDate().plusYears(10);
-        final LocalDate gapStartDate = gapStartTime.getDate();
-
-        List<Gap> result = new ArrayList<Gap>();
-
-        LocalDate date = gapStartDate;
-        boolean open = compositedCriterion
-                .isSatisfiedBy(resource, toDate(date));
-        DateAndHour startTime = gapStartTime, endTime;
-        while (date.isBefore(gapEndDate)) {
-            if (calendar.getCapacityAt(date) == 0) {
-                date = date.plusDays(1);
-                continue;
-            }
-
-            if (open == false
-                    && compositedCriterion
-                            .isSatisfiedBy(resource, toDate(date))) {
-                startTime = new DateAndHour(date, 0);
-                open = true;
-            }
-            if (open == true
-                    && !compositedCriterion.isSatisfiedBy(resource,
-                            toDate(date))) {
-                endTime = new DateAndHour(date, 0);
-                result.add(Gap.create(resource, startTime, endTime));
-                open = false;
-            }
-            date = date.plusDays(1);
+        AvailabilityTimeLine criterionsAvailability = AvailabilityCalculator
+                .getCriterionsAvailabilityFor(criteria, resource);
+        if (gapStartTime != null) {
+            criterionsAvailability.invalidUntil(gapStartTime.getDate());
         }
-        result.add(Gap.create(resource, startTime, gapEndTime));
-
+        if (gapEndTime != null) {
+            criterionsAvailability.invalidFrom(gapEndTime.getDate());
+        }
+        List<Interval> validPeriods = criterionsAvailability.getValidPeriods();
+        List<Gap> result = new ArrayList<Gap>();
+        for (Interval each : validPeriods) {
+            result.add(createGap(resource, each, gapStartTime, gapEndTime));
+        }
         return result;
     }
 
-    private static Date toDate(LocalDate date) {
-        return date != null ? date.toDateTimeAtStartOfDay().toDate() : null;
+    private static Gap createGap(Resource resource, Interval interval,
+            DateAndHour originalGapStartTime, DateAndHour originalGapEndTime) {
+        DateAndHour start = convert(originalGapStartTime, interval.getStart());
+        DateAndHour end = convert(originalGapEndTime, interval.getEnd());
+        return Gap.create(resource, start, end);
+    }
+
+    private static DateAndHour convert(DateAndHour possibleMatch,
+            DatePoint datePoint) {
+        if (datePoint instanceof StartOfTime || datePoint instanceof EndOfTime) {
+            return null;
+        }
+        FixedPoint p = (FixedPoint) datePoint;
+        if (possibleMatch != null
+                && possibleMatch.getDate().equals(p.getDate())) {
+            return possibleMatch;
+        }
+        return DateAndHour.from(p.getDate());
     }
 
 }
