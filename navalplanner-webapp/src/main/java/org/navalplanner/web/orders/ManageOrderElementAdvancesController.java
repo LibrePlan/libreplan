@@ -868,23 +868,26 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) editAdvances.getChildren().get(i);
                 AdvanceAssignment advance = (AdvanceAssignment) listItem
                         .getValue();
-                if (advance.getAdvanceType() == null) {
-                    throw new WrongValueException(getComboboxTypeBy(listItem),
+                if (advance != null) {
+                    if (advance.getAdvanceType() == null) {
+                        throw new WrongValueException(
+                                getComboboxTypeBy(listItem),
                             _("Value is not valid, the type must be not empty"));
-                }
+                    }
 
-                DirectAdvanceAssignment directAdvanceAssignment;
-                if (advance instanceof IndirectAdvanceAssignment) {
-                    directAdvanceAssignment = manageOrderElementAdvancesModel
+                    DirectAdvanceAssignment directAdvanceAssignment;
+                    if (advance instanceof IndirectAdvanceAssignment) {
+                        directAdvanceAssignment = manageOrderElementAdvancesModel
                             .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) advance);
-                } else {
-                    directAdvanceAssignment = (DirectAdvanceAssignment) advance;
-                }
-                if (directAdvanceAssignment != null
+                    } else {
+                        directAdvanceAssignment = (DirectAdvanceAssignment) advance;
+                    }
+                    if (directAdvanceAssignment != null
                         && directAdvanceAssignment.getMaxValue() == null) {
-                    throw new WrongValueException(
-                            getDecimalboxMaxValueBy(listItem),
-                            _("Value is not valid, the current value must be not empty"));
+                        throw new WrongValueException(
+                                getDecimalboxMaxValueBy(listItem),
+                                _("Value is not valid, the current value must be not empty"));
+                    }
                 }
             }
         }
@@ -942,7 +945,8 @@ public class ManageOrderElementAdvancesController extends
                 AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                         .getValue();
                 existItems = true;
-                if (advanceAssignment.getReportGlobalAdvance()) {
+                if ((advanceAssignment != null)
+                        && (advanceAssignment.getReportGlobalAdvance())) {
                     return true;
                 }
             }
