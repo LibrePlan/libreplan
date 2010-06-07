@@ -671,23 +671,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         Validate.notNull(queue);
         Validate.notNull(startTime);
 
-        LimitingResourceQueue currentQueue = element.getLimitingResourceQueue();
-        if (currentQueue != null) {
-            removeDayAssignments(element);
-            removeFromQueue(currentQueue, element);
+        if (element.getLimitingResourceQueue() != null) {
+            unschedule(element);
         }
         return assignLimitingResourceQueueElementToQueueAt(element, queue,
                 startTime, getEndsAfterBecauseOfGantt(element));
-    }
-
-    private void removeDayAssignments(LimitingResourceQueueElement element) {
-        final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
-        resourceAllocation.removeLimitingDayAssignments();
-    }
-
-    private void removeFromQueue(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
-        queue.removeLimitingResourceQueueElement(element);
-        element.setLimitingResourceQueue(null);
     }
 
     @Override

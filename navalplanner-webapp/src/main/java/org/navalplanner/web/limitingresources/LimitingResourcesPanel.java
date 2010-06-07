@@ -362,7 +362,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     public void moveQueueTask(QueueTask queueTask) {
         if (limitingResourcesController.moveTask(queueTask.getLimitingResourceQueueElement())) {
-            queueTask.detach();
+            removeQueueTask(queueTask);
         }
     }
 
