@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
+import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
@@ -159,6 +160,31 @@ public class Planner extends HtmlMacroComponent  {
 
     public int getTaskNumber() {
         return getTaskList().getTasksNumber();
+    }
+
+    private static int PIXELS_PER_TASK_LEVEL = 21;
+    private static int PIXELS_PER_CHARACTER = 5;
+
+    public int calculateMinimumWidthForTaskNameColumn(boolean expand) {
+        return calculateMinimumWidthForTaskNameColumn(expand, getTaskList().getAllTasks());
+    }
+
+    private int calculateMinimumWidthForTaskNameColumn(boolean expand, List<Task> tasks) {
+        IDomainAndBeansMapper<?> mapper = getContext().getMapper();
+        int widest = 0;
+        for(Task task : tasks) {
+            int numberOfAncestors =
+                mapper.findPositionFor(task).getAncestors().size();
+            int numberOfCharacters = task.getName().length();
+            widest = Math.max(widest,
+                    numberOfCharacters * PIXELS_PER_CHARACTER +
+                    numberOfAncestors * PIXELS_PER_TASK_LEVEL);
+            if(expand && !task.isLeaf()) {
+                widest = Math.max(widest,
+                        calculateMinimumWidthForTaskNameColumn(expand, task.getTasks()));
+            }
+        }
+        return widest;
     }
 
     public int getAllTasksNumber() {

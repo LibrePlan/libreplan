@@ -93,6 +93,10 @@ public class TaskList extends XulElement implements AfterCompose {
         this.predicate = predicate;
     }
 
+    public List<Task> getAllTasks() {
+        return new ArrayList<Task>(currentTotalTasks);
+    }
+
     public static TaskList createFor(
             FunctionalityExposedForExtensions<?> context,
             CommandOnTaskContextualized<?> doubleClickCommand,
