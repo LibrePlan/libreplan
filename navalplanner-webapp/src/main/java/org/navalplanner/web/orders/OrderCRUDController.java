@@ -22,7 +22,6 @@ package org.navalplanner.web.orders;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
@@ -42,7 +41,6 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
@@ -570,12 +568,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         createPercentageAdvances();
 
-        OrderLineGroup order = orderModel.getOrder();
-        calculateAdvancePercentage(order);
-        for (OrderElement orderElement : order.getAllChildren()) {
-            calculateAdvancePercentage(orderElement);
-        }
-
         // come back to the default tab.
         if (getCurrentTab() != null) {
             selectTab(getCurrentTab().getId());
@@ -597,16 +589,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         setCurrentTab();
         return false;
-    }
-
-    private void calculateAdvancePercentage(OrderElement orderElement) {
-        BigDecimal advancePercentage = orderElement.getAdvancePercentage();
-        if (orderElement.getTaskSource() != null) {
-            if (orderElement.getTaskSource().getTask() != null) {
-                orderElement.getTaskSource().getTask().setAdvancePercentage(
-                        advancePercentage);
-            }
-        }
     }
 
     Tab tabGeneralData;
