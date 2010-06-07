@@ -220,8 +220,9 @@ public class AdvanceConsolidationDTO {
             return BigDecimal.ZERO;
         }
 
-        return value.setScale(2).divide(maxValue, RoundingMode.DOWN).multiply(
-                new BigDecimal(100));
+        BigDecimal division = value.divide(maxValue, 2, RoundingMode.DOWN);
+        return (division.multiply(new BigDecimal(100))).setScale(0,
+                RoundingMode.DOWN);
     }
 
     public String getLabelPercentage() {
