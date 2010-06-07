@@ -24,11 +24,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -284,4 +286,13 @@ public class LimitingResourceQueueElement extends BaseEntity {
         }
         return result;
     }
+
+    public boolean hasDayAssignments() {
+        return !getResourceAllocation().getAssignments().isEmpty();
+    }
+
+    public List<? extends DayAssignment> getDayAssignments() {
+        return resourceAllocation.getAssignments();
+    }
+
 }

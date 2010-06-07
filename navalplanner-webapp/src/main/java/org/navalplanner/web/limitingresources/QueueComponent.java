@@ -23,6 +23,7 @@ package org.navalplanner.web.limitingresources;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,10 +31,12 @@ import java.util.SortedSet;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -173,18 +176,47 @@ public class QueueComponent extends XulElement implements
         final OrderElement order = getRootOrder(task);
 
         StringBuilder result = new StringBuilder();
-        result.append(_("Order: {0}", order.getName()) + " ");
-        result.append(_("Task: {0}", task.getName()) + " ");
+        result.append(_("Order: {0} ", order.getName()));
+        result.append(_("Task: {0} ", task.getName()));
+        result.append(_("Completed: {0} ", getAdvancementEndDate(element)));
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
         if (resourceAllocation instanceof SpecificResourceAllocation) {
             final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-            result.append(_("Resource: {0}", specific.getResource().getName()) + " ");
+            result.append(_("Resource: {0} ", specific.getResource().getName()));
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            result.append(_("Criteria: {0}", Criterion.getNames(generic.getCriterions())) + " ");
+            result.append(_("Criteria: {0} ", Criterion.getNames(generic.getCriterions())));
         }
         return result.toString();
+    }
+
+    private static DateAndHour getAdvancementEndDate(LimitingResourceQueueElement element) {
+        final Task task = element.getResourceAllocation().getTask();
+
+        int hoursWorked = 0;
+        final List<? extends DayAssignment> dayAssignments = element.getDayAssignments();
+        if (element.hasDayAssignments()) {
+            final int estimatedWorkedHours = estimatedWorkedHours(element.getIntentedTotalHours(), task.getAdvancePercentage());
+
+            for (DayAssignment each: dayAssignments) {
+                hoursWorked += each.getHours();
+                if (hoursWorked >= estimatedWorkedHours) {
+                    int hourSlot = each.getHours() - (hoursWorked - estimatedWorkedHours);
+                    return new DateAndHour(each.getDay(), hourSlot);
+                }
+            }
+        }
+        if (hoursWorked != 0) {
+            DayAssignment lastDayAssignment = dayAssignments.get(dayAssignments.size() - 1);
+            return new DateAndHour(lastDayAssignment.getDay(), lastDayAssignment.getHours());
+        }
+        return null;
+    }
+
+    private static int estimatedWorkedHours(Integer totalHours, BigDecimal percentageWorked) {
+        return (totalHours != null && percentageWorked != null) ? percentageWorked.multiply(
+                new BigDecimal(totalHours)).intValue() : 0;
     }
 
     private static QueueTask createDivForElement(IDatesMapper datesMapper,

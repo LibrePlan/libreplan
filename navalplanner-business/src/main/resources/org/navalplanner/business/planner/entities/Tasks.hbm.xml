@@ -14,7 +14,7 @@
         <property name="startDate" type="timestamp" not-null="true"/>
         <property name="endDate" type="timestamp" not-null="true"/>
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-        <property name="advancePercentage" access="field" />
+        <property name="advancePercentage" column="ADVANCE_PERCENTAGE" />
 
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"/>
 
