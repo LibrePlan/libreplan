@@ -70,7 +70,10 @@ public class CalculatedConsolidation extends Consolidation {
 
     @Override
     public SortedSet<ConsolidatedValue> getConsolidatedValues() {
-        return new TreeSet<ConsolidatedValue>(consolidatedValues);
+        SortedSet<ConsolidatedValue> result = new TreeSet<ConsolidatedValue>(
+                new ConsolidatedValueComparator());
+        result.addAll(consolidatedValues);
+        return result;
     }
 
     public SortedSet<CalculatedConsolidatedValue> getCalculatedConsolidatedValues() {
