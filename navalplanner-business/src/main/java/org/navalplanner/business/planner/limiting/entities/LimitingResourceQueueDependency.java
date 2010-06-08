@@ -57,6 +57,32 @@ public class LimitingResourceQueueDependency extends BaseEntity {
             this.associatedType = associatedType;
         }
 
+        boolean propagatesThrough(QueueDependencyType nextType) {
+            switch (this) {
+            case END_START:
+            case START_START:
+                return true;
+            case START_END:
+            case END_END:
+                return nextType.comesFromEnd();
+            default:
+                throw new RuntimeException("unknown type: " + this);
+            }
+        }
+
+        private boolean comesFromEnd() {
+            switch (this) {
+            case START_END:
+            case START_START:
+                return false;
+            case END_START:
+            case END_END:
+                return true;
+            default:
+                throw new RuntimeException("unknown type: " + this);
+            }
+        }
+
     };
 
     public static LimitingResourceQueueDependency.QueueDependencyType toQueueDependencyType(
@@ -149,5 +175,10 @@ public class LimitingResourceQueueDependency extends BaseEntity {
         default:
             throw new RuntimeException("unknown type: " + type);
         }
+    }
+
+    public boolean propagatesThrough(LimitingResourceQueueDependency transitive) {
+        return getHasAsDestiny().equals(transitive.getHasAsOrigin())
+                && type.propagatesThrough(transitive.getType());
     }
 }

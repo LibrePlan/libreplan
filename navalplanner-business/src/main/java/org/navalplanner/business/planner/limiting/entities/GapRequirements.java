@@ -26,7 +26,6 @@ import java.util.ListIterator;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -43,23 +42,38 @@ public class GapRequirements {
     private final DateAndHour earliestPossibleEnd;
 
     public static GapRequirements forElement(
-            LimitingResourceQueueElement element) {
-        DateAndHour end = element.getEarliestEndDateBecauseOfDependencies();
-        return new GapRequirements(element, calculateEarliestPossibleStart(element),
-                calculateEarliestPossibleEnd(element, end));
+            LimitingResourceQueueElement element,
+            List<LimitingResourceQueueDependency> dependenciesAffectingStart,
+            List<LimitingResourceQueueDependency> dependenciesAffectingEnd) {
+        return new GapRequirements(element, calculateEarliestPossibleStart(
+                element, dependenciesAffectingStart),
+                calculateEarliestPossibleEnd(element, dependenciesAffectingEnd));
     }
 
     private static DateAndHour calculateEarliestPossibleEnd(
-            LimitingResourceQueueElement element, DateAndHour end) {
+            LimitingResourceQueueElement element,
+            List<LimitingResourceQueueDependency> dependenciesAffectingEnd) {
         return DateAndHour.Max(asDateAndHour(element
-                .getEarliestEndDateBecauseOfGantt()), end);
+                .getEarliestEndDateBecauseOfGantt()),
+                max(dependenciesAffectingEnd));
     }
 
     private static DateAndHour calculateEarliestPossibleStart(
-            LimitingResourceQueueElement element) {
+            LimitingResourceQueueElement element,
+            List<LimitingResourceQueueDependency> dependenciesAffectingStart) {
         return DateAndHour.Max(asDateAndHour(element
                 .getEarlierStartDateBecauseOfGantt()),
-                element.getEarliestStartDateBecauseOfDependencies());
+                max(dependenciesAffectingStart));
+    }
+
+    private static DateAndHour max(
+            List<LimitingResourceQueueDependency> dependencies) {
+        DateAndHour result = null;
+        for (LimitingResourceQueueDependency each : dependencies) {
+            assert !each.getHasAsOrigin().isDetached();
+            result = DateAndHour.Max(result, each.getDateFromOrigin());
+        }
+        return result;
     }
 
     private static DateAndHour asDateAndHour(Date date) {

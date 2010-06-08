@@ -209,7 +209,43 @@ public class QueuesState {
 
     public GapRequirements getRequirementsFor(
             LimitingResourceQueueElement element) {
-        return GapRequirements.forElement(getEquivalent(element));
+        List<LimitingResourceQueueDependency> dependenciesStart = new ArrayList<LimitingResourceQueueDependency>();
+        List<LimitingResourceQueueDependency> dependenciesEnd = new ArrayList<LimitingResourceQueueDependency>();
+        fillIncoming(element, dependenciesStart, dependenciesEnd);
+        return GapRequirements.forElement(getEquivalent(element),
+                dependenciesStart, dependenciesEnd);
+    }
+
+    private void fillIncoming(LimitingResourceQueueElement element,
+            List<LimitingResourceQueueDependency> dependenciesStart,
+            List<LimitingResourceQueueDependency> dependenciesEnd) {
+        Set<LimitingResourceQueueDependency> incoming = graph
+                .incomingEdgesOf(element);
+        for (LimitingResourceQueueDependency each : incoming) {
+            List<LimitingResourceQueueDependency> addingTo = each
+                    .modifiesDestinationStart() ? dependenciesStart
+                    : dependenciesEnd;
+            if (each.isOriginNotDetached()) {
+                addingTo.add(each);
+            } else {
+                fillIncoming(each, addingTo);
+            }
+        }
+    }
+
+    private void fillIncoming(LimitingResourceQueueDependency next,
+            List<LimitingResourceQueueDependency> result) {
+        Set<LimitingResourceQueueDependency> incoming = graph
+                .incomingEdgesOf(next.getHasAsOrigin());
+        for (LimitingResourceQueueDependency each : incoming) {
+            if (each.propagatesThrough(next)) {
+                if (each.isOriginNotDetached()) {
+                    result.add(each);
+                } else {
+                    fillIncoming(each, result);
+                }
+            }
+        }
     }
 
     /**

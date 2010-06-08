@@ -267,26 +267,6 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return ((GenericResourceAllocation) resourceAllocation).getCriterions();
     }
 
-    public DateAndHour getEarliestStartDateBecauseOfDependencies() {
-        DateAndHour result = null;
-        for (LimitingResourceQueueDependency each : dependenciesAsDestiny) {
-            if (each.isOriginNotDetached() && each.modifiesDestinationStart()) {
-                result = DateAndHour.Max(each.getDateFromOrigin(), result);
-            }
-        }
-        return result;
-    }
-
-    public DateAndHour getEarliestEndDateBecauseOfDependencies() {
-        DateAndHour result = null;
-        for (LimitingResourceQueueDependency each : dependenciesAsDestiny) {
-            if (each.isOriginNotDetached() && each.modifiesDestinationEnd()) {
-                result = DateAndHour.Max(each.getDateFromOrigin(), result);
-            }
-        }
-        return result;
-    }
-
     public boolean hasDayAssignments() {
         return !getResourceAllocation().getAssignments().isEmpty();
     }
