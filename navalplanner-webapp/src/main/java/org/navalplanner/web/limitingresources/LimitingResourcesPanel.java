@@ -302,9 +302,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 reloadComponent();
                 rebuildDependencies();
 
-                // Position in first page
                 if (newDetailLevel == ZoomLevel.DETAIL_THREE) {
-                    invalidate();
+                    timeTracker.resetMapper();
+                    queueListComponent.invalidate();
                 }
 
             }
