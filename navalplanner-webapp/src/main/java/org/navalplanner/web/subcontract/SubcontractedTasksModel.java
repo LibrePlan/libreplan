@@ -84,7 +84,8 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
     @Override
     @Transactional(readOnly = true)
     public List<SubcontractedTaskData> getSubcontractedTasks() {
-        List<SubcontractedTaskData> result = subcontractedTaskDataDAO.getAll();
+        List<SubcontractedTaskData> result = subcontractedTaskDataDAO
+                .getAllForMasterScenario();
         for (SubcontractedTaskData subcontractedTaskData : result) {
             forceLoadExternalCompany(subcontractedTaskData);
         }

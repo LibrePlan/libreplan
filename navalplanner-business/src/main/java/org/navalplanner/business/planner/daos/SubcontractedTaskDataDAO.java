@@ -20,12 +20,18 @@
 
 package org.navalplanner.business.planner.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -70,6 +76,26 @@ public class SubcontractedTaskDataDAO extends
                 getSession().delete(subcontractedTaskData);
             }
         }
+    }
+
+    @Override
+    public List<SubcontractedTaskData> getAllForMasterScenario() {
+        Scenario masterScenario = PredefinedScenarios.MASTER.getScenario();
+
+        List<SubcontractedTaskData> result = new ArrayList<SubcontractedTaskData>();
+        for (Order order : masterScenario.getOrders().keySet()) {
+            order.useSchedulingDataFor(masterScenario);
+            for (OrderElement orderElement : order.getAllOrderElements()) {
+                for (TaskElement taskElement : orderElement.getTaskElements()) {
+                    if (taskElement.isSubcontracted()) {
+                        result.add(((Task) taskElement)
+                                .getSubcontractedTaskData());
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
 }
