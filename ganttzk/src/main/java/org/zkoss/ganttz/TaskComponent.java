@@ -62,6 +62,8 @@ public class TaskComponent extends Div implements AfterCompose {
     private static final Log LOG = LogFactory.getLog(TaskComponent.class);
 
     private static final int HEIGHT_PER_TASK = 10;
+    private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
+
 
     private static Pattern pixelsSpecificationPattern = Pattern
             .compile("\\s*(\\d+)px\\s*;?\\s*");
@@ -438,7 +440,7 @@ public class TaskComponent extends Div implements AfterCompose {
             response(null, new AuInvoke(this, "moveDeadline", position));
         }
         if (task.getConsolidatedline() != null) {
-            String position = getMapper().toPixels(task.getConsolidatedline())
+            String position = (getMapper().toPixels(task.getConsolidatedline()) - CONSOLIDATED_MARK_HALF_WIDTH)
                     + "px";
             response(null, new AuInvoke(this, "moveConsolidatedline", position));
         }
