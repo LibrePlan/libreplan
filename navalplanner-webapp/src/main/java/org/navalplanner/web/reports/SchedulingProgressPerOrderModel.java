@@ -79,6 +79,7 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
                 .getCurrent());
 
         for (Order each: orders) {
+            each.useSchedulingDataFor(scenarioManager.getCurrent());
             initializeTasks(each.getTaskElements());
             initializeOrderElements(each.getAllOrderElements());
             initializaReportGlobalAdvanceAssignment(each
