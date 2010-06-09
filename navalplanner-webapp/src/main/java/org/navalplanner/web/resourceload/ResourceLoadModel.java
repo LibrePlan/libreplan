@@ -23,7 +23,6 @@ package org.navalplanner.web.resourceload;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -760,7 +759,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Transactional(readOnly = true)
     public List<DayAssignment> getDayAssignments() {
-        return dayAssignmentDAO.findByResources(getResources());
+        return dayAssignmentDAO.findByResources(scenarioManager.getCurrent(),
+                getResources());
     }
 
     @Override

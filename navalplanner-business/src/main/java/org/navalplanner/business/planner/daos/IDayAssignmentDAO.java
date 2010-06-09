@@ -48,6 +48,6 @@ public interface IDayAssignmentDAO extends IGenericDAO<DayAssignment, Long> {
 
     List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end);
 
-    public List<DayAssignment> findByResources(List<Resource> resources);
+    public List<DayAssignment> findByResources(Scenario scenario, List<Resource> resources);
 
 }
