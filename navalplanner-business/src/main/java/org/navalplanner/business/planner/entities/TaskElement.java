@@ -503,4 +503,16 @@ public abstract class TaskElement extends BaseEntity {
         return getEndDate().getTime() - getStartDate().getTime();
     }
 
+    public void removePredecessorsDayAssignmentsFor(Scenario scenario) {
+        for (ResourceAllocation<?> each : getAllResourceAllocations()) {
+            each.removePredecessorsDayAssignmentsFor(scenario);
+        }
+    }
+
+    public void removeDayAssignmentsFor(Scenario scenario) {
+        for (ResourceAllocation<?> each : getAllResourceAllocations()) {
+            each.removeDayAssigmentsFor(scenario);
+        }
+    }
+
 }

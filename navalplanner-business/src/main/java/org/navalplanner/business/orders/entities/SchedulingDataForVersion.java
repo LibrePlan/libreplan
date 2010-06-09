@@ -25,7 +25,9 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.DeepCopy;
 
 /**
@@ -177,6 +179,14 @@ public class SchedulingDataForVersion extends BaseEntity {
 
     public Data makeAvailableFor(OrderVersion orderVersion) {
         return Data.from(this, orderVersion);
+    }
+
+    void removeSpuriousDayAssignments(Scenario scenario) {
+        TaskSource taskSource = getTaskSource();
+        if (taskSource != null) {
+            TaskElement task = taskSource.getTask();
+            task.removeDayAssignmentsFor(scenario);
+        }
     }
 
 }

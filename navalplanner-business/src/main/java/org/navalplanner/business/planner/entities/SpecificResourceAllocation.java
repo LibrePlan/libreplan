@@ -405,4 +405,24 @@ public class SpecificResourceAllocation extends
         toContainer.resetTo(fromContainer.getDayAssignments());
     }
 
+    @Override
+    protected void removePredecessorContainersFor(Scenario scenario) {
+        Map<Scenario, SpecificDayAssignmentsContainer> byScenario = containersByScenario();
+        for (Scenario each : scenario.getPredecessors()) {
+            SpecificDayAssignmentsContainer container = byScenario.get(each);
+            if (container != null) {
+                specificDayAssignmentsContainers.remove(container);
+            }
+        }
+    }
+
+    @Override
+    protected void removeContainersFor(Scenario scenario) {
+        SpecificDayAssignmentsContainer container = containersByScenario().get(
+                scenario);
+        if (container != null) {
+            specificDayAssignmentsContainers.remove(container);
+        }
+    }
+
 }

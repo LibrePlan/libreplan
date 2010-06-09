@@ -171,8 +171,8 @@ public class Order extends OrderLineGroup {
                 deepCopyWithNeededReplaces(newOrderVersion),
                 newOrderVersion);
         useSchedulingDataFor(currentScenario);
+        removeSpuriousDayAssignments(currentScenario);
     }
-
 
     private DeepCopy deepCopyWithNeededReplaces(
             OrderVersion newOrderVersion) {
@@ -511,5 +511,4 @@ public class Order extends OrderLineGroup {
     public void setOrderVersion(Scenario scenario, OrderVersion newOrderVersion) {
         scenarios.put(scenario, newOrderVersion);
     }
-
 }

@@ -490,6 +490,7 @@ public class OrderModel implements IOrderModel {
         if (newOrderVersionNeeded) {
             OrderVersion newVersion = OrderVersion
                     .createInitialVersion(currentScenario);
+            reattachAllTaskSources();
             order.writeSchedulingDataChangesTo(currentScenario, newVersion);
             createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
                     newVersion);
@@ -552,6 +553,15 @@ public class OrderModel implements IOrderModel {
 
     private void reattachCurrentTaskSources() {
         for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
+            taskSourceDAO.reattach(each);
+        }
+    }
+
+    private void reattachAllTaskSources() {
+        // avoid LazyInitializationException for when doing
+        // removePredecessorsDayAssignmentsFor
+        for (TaskSource each : order
+                .getAllScenariosTaskSourcesFromBottomToTop()) {
             taskSourceDAO.reattach(each);
         }
     }

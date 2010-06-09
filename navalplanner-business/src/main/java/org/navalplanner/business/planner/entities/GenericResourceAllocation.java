@@ -512,4 +512,24 @@ public class GenericResourceAllocation extends
         toContainer.resetTo(fromContainer.getDayAssignments());
     }
 
+    @Override
+    protected void removePredecessorContainersFor(Scenario scenario) {
+        Map<Scenario, GenericDayAssignmentsContainer> byScenario = containersByScenario();
+        for (Scenario each : scenario.getPredecessors()) {
+            GenericDayAssignmentsContainer container = byScenario.get(each);
+            if (container != null) {
+                genericDayAssignmentsContainers.remove(container);
+            }
+        }
+    }
+
+    @Override
+    protected void removeContainersFor(Scenario scenario) {
+        GenericDayAssignmentsContainer container = containersByScenario().get(
+                scenario);
+        if (container != null) {
+            genericDayAssignmentsContainers.remove(container);
+        }
+    }
+
 }

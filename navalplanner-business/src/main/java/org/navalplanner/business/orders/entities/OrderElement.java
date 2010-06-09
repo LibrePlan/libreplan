@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -63,6 +64,7 @@ import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.business.util.deepcopy.DeepCopy;
@@ -214,6 +216,32 @@ public abstract class OrderElement extends IntegrationEntity implements
             OrderVersion newOrderVersion) {
         schedulingDataNowPointsTo(deepCopy, newOrderVersion);
         writeSchedulingDataChanges();
+    }
+
+    protected void removeSpuriousDayAssignments(Scenario scenario) {
+        removeAtNotCurrent(scenario);
+        removeAtCurrent(scenario);
+        for (OrderElement each : getChildren()) {
+            each.removeSpuriousDayAssignments(scenario);
+        }
+    }
+
+    private void removeAtNotCurrent(Scenario scenario) {
+        SchedulingDataForVersion currentDataForVersion = getCurrentSchedulingDataForVersion();
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion
+                .entrySet()) {
+            SchedulingDataForVersion dataForVersion = each.getValue();
+            if (!currentDataForVersion.equals(dataForVersion)) {
+                dataForVersion.removeSpuriousDayAssignments(scenario);
+            }
+        }
+    }
+
+    private void removeAtCurrent(Scenario scenario) {
+        TaskElement associatedTaskElement = getAssociatedTaskElement();
+        if (associatedTaskElement != null) {
+            associatedTaskElement.removePredecessorsDayAssignmentsFor(scenario);
+        }
     }
 
     public List<TaskSourceSynchronization> calculateSynchronizationsNeeded() {
@@ -771,6 +799,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         return result;
     }
 
+    public List<TaskSource> getAllScenariosTaskSourcesFromBottomToTop() {
+        List<TaskSource> result = new ArrayList<TaskSource>();
+        allScenariosTaskSourcesFromBottomToTop(result);
+        return result;
+    }
+
     public List<SchedulingDataForVersion> getSchedulingDatasForVersionFromBottomToTop() {
         List<SchedulingDataForVersion> result = new ArrayList<SchedulingDataForVersion>();
         schedulingDataForVersionFromBottomToTop(result);
@@ -791,6 +825,19 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
         if (getTaskSource() != null) {
             result.add(getTaskSource());
+        }
+    }
+
+    private void allScenariosTaskSourcesFromBottomToTop(List<TaskSource> result) {
+        for (OrderElement each : getChildren()) {
+            each.allScenariosTaskSourcesFromBottomToTop(result);
+        }
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion
+                .entrySet()) {
+            TaskSource taskSource = each.getValue().getTaskSource();
+            if (taskSource != null) {
+                result.add(taskSource);
+            }
         }
     }
 

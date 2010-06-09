@@ -1088,4 +1088,22 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public abstract void makeAssignmentsContainersDontPoseAsTransientAnyMore();
 
+    public void removePredecessorsDayAssignmentsFor(Scenario scenario) {
+        for (DerivedAllocation each : getDerivedAllocations()) {
+            each.removePredecessorContainersFor(scenario);
+        }
+        removePredecessorContainersFor(scenario);
+    }
+
+    protected abstract void removePredecessorContainersFor(Scenario scenario);
+
+    public void removeDayAssigmentsFor(Scenario scenario) {
+        for (DerivedAllocation each : getDerivedAllocations()) {
+            each.removeContainersFor(scenario);
+        }
+        removeContainersFor(scenario);
+    }
+
+    protected abstract void removeContainersFor(Scenario scenario);
+
 }

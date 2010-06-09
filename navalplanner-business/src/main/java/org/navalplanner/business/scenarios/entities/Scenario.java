@@ -120,6 +120,16 @@ public class Scenario extends BaseEntity {
         return predecessor;
     }
 
+    public List<Scenario> getPredecessors() {
+        List<Scenario> result = new ArrayList<Scenario>();
+        Scenario current = getPredecessor();
+        while (current != null) {
+            result.add(current);
+            current = current.getPredecessor();
+        }
+        return result;
+    }
+
     @AssertTrue(message = "name is already used")
     public boolean checkConstraintUniqueName() {
         if (StringUtils.isBlank(name)) {

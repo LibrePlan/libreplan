@@ -362,4 +362,21 @@ public class DerivedAllocation extends BaseEntity {
         toContainer.resetAssignmentsTo(fromContainer.getDayAssignments());
     }
 
+    public void removePredecessorContainersFor(Scenario scenario) {
+        Map<Scenario, DerivedDayAssignmentsContainer> byScenario = byScenario();
+        for (Scenario each : scenario.getPredecessors()) {
+            DerivedDayAssignmentsContainer container = byScenario.get(each);
+            if (container != null) {
+                derivedDayAssignmentsContainers.remove(container);
+            }
+        }
+    }
+
+    public void removeContainersFor(Scenario scenario) {
+        DerivedDayAssignmentsContainer container = byScenario().get(scenario);
+        if (container != null) {
+            derivedDayAssignmentsContainers.remove(container);
+        }
+    }
+
 }
