@@ -249,9 +249,18 @@ public class QueueComponent extends XulElement implements
         if (startPixels < 0) {
             cssClass += " truncated-start";
         }
-        result.setWidth(forCSS(getWidthPixels(datesMapper, queueElement)));
 
-        result.appendChild(generateNonWorkableShade(datesMapper, queueElement));
+        int taskWidth = getWidthPixels(datesMapper, queueElement);
+        if ((startPixels + taskWidth) > datesMapper.getHorizontalSize()) {
+            taskWidth = datesMapper.getHorizontalSize() - startPixels;
+            cssClass += " truncated-end";
+        } else {
+            result.appendChild(generateNonWorkableShade(datesMapper,
+                    queueElement));
+        }
+
+        result.setWidth(forCSS(taskWidth));
+
         result.setClass(cssClass);
 
         return result;

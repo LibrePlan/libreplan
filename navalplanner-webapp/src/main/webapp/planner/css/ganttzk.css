@@ -707,6 +707,9 @@ div.limitingresourcesleftpane  {
     position:absolute;
 }
 
+.queue-element.truncated-end {
+    -moz-border-radius: 12px 0 0 12px;
+}
 
 /* ---------- End Limiting resources ----------------- */
 
