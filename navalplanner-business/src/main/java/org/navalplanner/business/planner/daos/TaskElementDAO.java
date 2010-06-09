@@ -124,7 +124,8 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
             "SELECT task "
             + "FROM TaskSource taskSource "
             + "LEFT OUTER JOIN taskSource.task task "
-            + "LEFT OUTER JOIN taskSource.orderElement orderElement "
+            + "LEFT OUTER JOIN taskSource.schedulingData schedulingData "
+            + "LEFT OUTER JOIN schedulingData.orderElement orderElement "
             + "WHERE task IN (SELECT task FROM Task task) ";
 
         if (orders != null && !orders.isEmpty()) {
