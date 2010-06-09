@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.limitingresources;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +110,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private LimitingDependencyList dependencyList = new LimitingDependencyList(this);
 
     private PaginatorFilter paginatorFilter;
+
+    private TimeTrackerComponent timeTrackerHeader;
 
     /**
      * Returns the closest upper {@link LimitingResourcesPanel} instance going
@@ -249,6 +252,19 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         super.afterCompose();
 
+        paginatorFilter = new PaginatorFilter();
+
+        listZoomLevels = (Listbox) getFellow("listZoomLevels");
+        horizontalPagination = (Listbox) getFellow("horizontalPagination");
+        // First two levels are excluded
+        listZoomLevels
+                .setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
+
+        // Pagination stuff
+        paginationUpButton = (Button) getFellow("paginationUpButton");
+        paginationUpButton.setDisabled(isLastPage());
+        doPaginationStuff(timeTracker.getDetailLevel());
+
         // Insert leftPane component with limitingresources list
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
         leftPane.afterCompose();
@@ -271,36 +287,38 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                         dependencyList);
                 dependencyList = generateDependencyComponentsList();
                 dependencyList.afterCompose();
+                doPaginationStuff(detailLevel);
             }
+
         };
         this.timeTracker.addZoomListener(zoomChangedListener);
 
         // Insert timetracker headers
-        TimeTrackerComponent timeTrackerHeader = createTimeTrackerHeader();
+        timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 
         timeTrackerHeader.afterCompose();
         timeTrackerComponent.afterCompose();
-        listZoomLevels = (Listbox) getFellow("listZoomLevels");
-        // First two levels are excluded
-        listZoomLevels
-                .setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
 
+    }
 
+    private void doPaginationStuff(ZoomLevel detailLevel) {
+        paginatorFilter.setZoomLevel(detailLevel != null ? detailLevel
+                : ZoomLevel.DETAIL_THREE);
 
-        // Paginationn stuff
-        paginationUpButton = (Button) getFellow("paginationUpButton");
-        System.out.println(paginationUpButton.getTooltiptext());
-            paginationUpButton.setDisabled(isLastPage());
-
-        paginatorFilter = new PaginatorFilter();
-        paginatorFilter.setZoomLevel(timeTracker.getDetailLevel());
         paginatorFilter.setInterval(timeTracker.getRealInterval());
+        timeTracker.setFilter(paginatorFilter);
+        timeTrackerComponent.invalidate();
         paginatorFilter.populateHorizontalListbox();
+
+        if (timeTrackerHeader != null) {
+            timeTrackerHeader.afterCompose();
+            timeTrackerComponent.afterCompose();
+        }
     }
 
     private boolean isLastPage() {
-        return false;
+        return true;
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {
@@ -401,15 +419,17 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             case DETAIL_ONE:
                 return Period.years(5);
             case DETAIL_TWO:
-                return Period.years(5);
-            case DETAIL_THREE:
                 return Period.years(2);
+            case DETAIL_THREE:
+                return Period.years(1);
             case DETAIL_FOUR:
                 return Period.months(6);
             case DETAIL_FIVE:
                 return Period.weeks(6);
+            case DETAIL_SIX:
+                return Period.weeks(6);
             }
-            return Period.years(5);
+            return Period.years(1);
         }
 
         public void setInterval(Interval realInterval) {
@@ -420,44 +440,55 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
                 paginatorEnd = intervalEnd;
             }
-            // updatePaginationButtons();
         }
 
         public void setZoomLevel(ZoomLevel detailLevel) {
             zoomLevel = detailLevel;
         }
 
-        @Override
-        public Collection<DetailItem> selectsFirstLevel(
-                Collection<DetailItem> firstLevelDetails) {
-            // TODO Auto-generated method stub
-            return firstLevelDetails;
-        }
-
-        @Override
-        public Collection<DetailItem> selectsSecondLevel(
-                Collection<DetailItem> secondLevelDetails) {
-            // TODO Auto-generated method stub
-            return secondLevelDetails;
-        }
-
         public void paginationDown() {
-            // paginatorFilter.previous();
-            // reloadComponent();
             horizontalPagination.setSelectedIndex(horizontalPagination
                     .getSelectedIndex() - 1);
 
         }
 
         public void paginationUp() {
-            // paginatorFilter.next();
-            // reloadComponent();
             horizontalPagination.setSelectedIndex(Math.max(0,
                     horizontalPagination.getSelectedIndex()) + 1);
         }
 
+        @Override
+        public Collection<DetailItem> selectsFirstLevel(
+                Collection<DetailItem> firstLevelDetails) {
+            ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+            for (DetailItem each : firstLevelDetails) {
+                if ((each.getStartDate() == null)
+                        || !(each.getStartDate().isBefore(paginatorStart))
+                        && (each.getStartDate().isBefore(paginatorEnd))) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public Collection<DetailItem> selectsSecondLevel(
+                Collection<DetailItem> secondLevelDetails) {
+            ArrayList<DetailItem> result = new ArrayList<DetailItem>();
+            for (DetailItem each : secondLevelDetails) {
+                if ((each.getStartDate() == null)
+                        || !(each.getStartDate().isBefore(paginatorStart))
+                        && (each.getStartDate().isBefore(paginatorEnd))) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
         public void populateHorizontalListbox() {
-            horizontalPagination.getItems().clear();
+            if (horizontalPagination != null) {
+                horizontalPagination.getItems().clear();
+            }
             DateTimeFormatter df = DateTimeFormat.forPattern("dd/MMM/yyyy");
             DateTime intervalStart = new DateTime(timeTracker.getRealInterval()
                     .getStart());

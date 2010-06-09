@@ -153,7 +153,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         case DETAIL_SIX:
             return Period.weeks(6);
         }
-        return Period.years(1);
+        return Period.years(5);
     }
 
     private Date getEarliestDate() {
