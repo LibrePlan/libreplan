@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.joda.time.DateTime;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -103,7 +104,7 @@ public class QueueComponent extends XulElement implements
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 getChildren().clear();
                 createChildren(limitingResourceQueue, timeTracker.getMapper());
-                invalidate();
+                // invalidate();
             }
         };
         this.timeTracker.addZoomListener(zoomChangedListener);
@@ -147,13 +148,27 @@ public class QueueComponent extends XulElement implements
         appendChild(queueTask);
     }
 
-    private static List<QueueTask> createQueueTasks(
-            IDatesMapper datesMapper,
+    private List<QueueTask> createQueueTasks(IDatesMapper datesMapper,
             Set<LimitingResourceQueueElement> list) {
 
         List<QueueTask> result = new ArrayList<QueueTask>();
+
+        org.zkoss.ganttz.util.Interval interval = null;
+        if (timeTracker.getFilter() != null) {
+            timeTracker.getFilter().resetInterval();
+            interval = timeTracker.getFilter().getCurrentPaginationInterval();
+        }
         for (LimitingResourceQueueElement each : list) {
-            result.add(createQueueTask(datesMapper, each));
+            if (interval != null) {
+                if (each.getEndDate().toDateMidnight().isAfter(
+                        (new DateTime(interval.getStart())).toDateMidnight())
+                        && each.getStartDate().toDateMidnight().isBefore(
+                                new DateTime(interval.getFinish()))) {
+                    result.add(createQueueTask(datesMapper, each));
+                }
+            } else {
+                result.add(createQueueTask(datesMapper, each));
+            }
         }
         return result;
     }
@@ -188,6 +203,8 @@ public class QueueComponent extends XulElement implements
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
             result.append(_("Criteria: {0} ", Criterion.getNames(generic.getCriterions())));
         }
+        result.append("[" + element.getStartDate().toString() + ","
+                + element.getEndDate().toString() + "]");
         return result.toString();
     }
 
@@ -223,14 +240,19 @@ public class QueueComponent extends XulElement implements
             LimitingResourceQueueElement queueElement) {
 
         QueueTask result = new QueueTask(queueElement);
-        result.setClass("queue-element");
+        String cssClass = "queue-element";
 
         result.setTooltiptext(createTooltiptext(queueElement));
 
-        result.setLeft(forCSS(getStartPixels(datesMapper, queueElement)));
+        int startPixels = getStartPixels(datesMapper, queueElement);
+        result.setLeft(forCSS(startPixels));
+        if (startPixels < 0) {
+            cssClass += " truncated-start";
+        }
         result.setWidth(forCSS(getWidthPixels(datesMapper, queueElement)));
 
         result.appendChild(generateNonWorkableShade(datesMapper, queueElement));
+        result.setClass(cssClass);
 
         return result;
     }

@@ -469,6 +469,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
 
+        @Override
+        public Interval getCurrentPaginationInterval() {
+            return new Interval(intervalStart.toDate(), intervalEnd.toDate());
+        }
+
         private Period intervalIncrease() {
             switch (zoomLevel) {
             case DETAIL_ONE:
@@ -594,6 +599,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorEnd = intervalEnd;
             }
             updatePaginationButtons();
+        }
+
+        @Override
+        public void resetInterval() {
+            setInterval(timeTracker.getRealInterval());
         }
     }
 

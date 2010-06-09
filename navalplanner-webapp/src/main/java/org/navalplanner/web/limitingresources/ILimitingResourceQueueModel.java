@@ -112,12 +112,8 @@ public interface ILimitingResourceQueueModel {
 
     /**
      * Loads {@link LimitingResourceQueue} and unassigned {@link LimitingResourceQueueElement} from DB
-     *
-     * @param filterByResources
      */
-    void initGlobalView(boolean filterByResources);
-
-    void initGlobalView(Order filterBy, boolean filterByResources);
+    void initGlobalView();
 
     /**
      * Inserts element into queue at a specific time
@@ -134,12 +130,17 @@ public interface ILimitingResourceQueueModel {
     void appropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue,
             DateAndHour allocationTime);
 
+    void unschedule(LimitingResourceQueueElement element);
+
+
     void removeUnassignedLimitingResourceQueueElement(
             LimitingResourceQueueElement element);
 
-    void setTimeTrackerState(ZoomLevel zoomLevel);
 
-    void unschedule(LimitingResourceQueueElement element);
+    List<LimitingResourceQueue> getAssignableQueues(
+            LimitingResourceQueueElement element);
+
+    void init(LimitingResourceQueueElement element);
 
     boolean userCanRead(Order order, String loginName);
 

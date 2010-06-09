@@ -32,7 +32,6 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
@@ -114,46 +113,23 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private Set<LimitingResourceQueueElement> toBeSaved = new HashSet<LimitingResourceQueueElement>();
 
-    private ZoomLevel zoomLevel = ZoomLevel.DETAIL_THREE;
-
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView(boolean filterByResources) {
+    public void initGlobalView() {
         doGlobalView();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public void initGlobalView(Order filterBy, boolean filterByResources) {
-        doGlobalView();
-    }
 
     private void doGlobalView() {
         List<LimitingResourceQueueElement> unassigned = findUnassignedLimitingResourceQueueElements();
         List<LimitingResourceQueue> queues = loadLimitingResourceQueues();
         queuesState = new QueuesState(queues, unassigned);
         final Date startingDate = getEarliestDate();
-        Date endDate = (new LocalDate(startingDate)).plus(intervalIncrease())
+        // TODO Replace by get latestDate and fill with minimum size
+        System.out.println("DOGLOBAL!");
+        Date endDate = (new LocalDate(startingDate)).plusYears(2)
                 .toDateTimeAtCurrentTime().toDate();
         viewInterval = new Interval(startingDate, endDate);
-    }
-
-    private Period intervalIncrease() {
-        switch (zoomLevel) {
-        case DETAIL_ONE:
-            return Period.years(5);
-        case DETAIL_TWO:
-            return Period.years(5);
-        case DETAIL_THREE:
-            return Period.years(2);
-        case DETAIL_FOUR:
-            return Period.months(6);
-        case DETAIL_FIVE:
-            return Period.weeks(6);
-        case DETAIL_SIX:
-            return Period.weeks(6);
-        }
-        return Period.years(5);
     }
 
     private Date getEarliestDate() {
@@ -650,11 +626,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    public void setTimeTrackerState(ZoomLevel timeTrackerState) {
-        this.zoomLevel = timeTrackerState;
-    }
-
-    @Override
     public List<LimitingResourceQueue> getAssignableQueues(
             LimitingResourceQueueElement element) {
         return queuesState.getAssignableQueues(element);
@@ -686,6 +657,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     public LimitingResourceQueueElement getLimitingResourceQueueElement() {
         return beingEdited;
     }
+
 
     @Override
     public void appropriativeAllocation(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
@@ -759,5 +731,4 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return (element.getStartTime().isBefore(time) || element.getStartTime().isEquals(time))
                     && (element.getEndTime().isAfter(time) || element.getEndTime().isEquals(time));
     }
-
 }

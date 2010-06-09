@@ -112,26 +112,17 @@ public class LimitingResourcesController extends GenericForwardComposer {
         reload();
     }
 
-    public void reload() {
-        // by default show the task by resources
-        boolean filterByResources = true;
-        reload(filterByResources);
-    }
+    private Listbox listAssignableQueues;
 
-    private void reload(boolean filterByResources) {
+    private Listbox listCandidateGaps;
+
+    public void reload() {
         try {
 
-            if (filterBy == null) {
-                limitingResourceQueueModel.initGlobalView(filterByResources);
-            } else {
-                limitingResourceQueueModel.initGlobalView(filterBy,
-                        filterByResources);
-            }
+            limitingResourceQueueModel.initGlobalView();
 
             // Initialize interval
             timeTracker = buildTimeTracker();
-            limitingResourceQueueModel.setTimeTrackerState(timeTracker
-                    .getDetailLevel());
 
             limitingResourcesPanel = buildLimitingResourcesPanel();
             addListeners();
@@ -187,7 +178,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public void onApplyFilter(boolean filterByResources) {
         limitingResourcesPanel.clearComponents();
-        reload(filterByResources);
+        reload();
     }
 
     private void addCommands(LimitingResourcesPanel limitingResourcesPanel) {
@@ -196,8 +187,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private TimeTracker buildTimeTracker() {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
-                .getViewInterval(), ZoomLevel.DETAIL_THREE, SeveralModificators
-                .create(),
+                .getViewInterval(), ZoomLevel.DETAIL_THREE,
+                SeveralModificators.create(),
                 SeveralModificators.create(new BankHolidaysMarker()), parent);
     }
 

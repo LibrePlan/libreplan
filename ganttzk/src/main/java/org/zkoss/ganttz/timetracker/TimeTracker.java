@@ -55,6 +55,10 @@ public class TimeTracker {
         public Collection<DetailItem> selectsSecondLevel(
                 Collection<DetailItem> secondLevelDetails);
 
+        public Interval getCurrentPaginationInterval();
+
+        public void resetInterval();
+
     }
 
     private ZoomLevel detailLevel = ZoomLevel.DETAIL_ONE;
@@ -79,6 +83,10 @@ public class TimeTracker {
     private boolean registeredFirstTask = false;
 
     private IDetailItemFilter filter = null;
+
+    public IDetailItemFilter getFilter() {
+        return filter;
+    }
 
     public TimeTracker(Interval interval, ZoomLevel zoomLevel, Component parent) {
         this(interval, zoomLevel, SeveralModificators.empty(),
@@ -115,6 +123,7 @@ public class TimeTracker {
 
     public void setFilter(IDetailItemFilter filter) {
         this.filter = filter;
+        datesMapper = null;
     }
 
     public ZoomLevel getDetailLevel() {
@@ -194,10 +203,20 @@ public class TimeTracker {
         realIntervalCached = null;
     }
 
+    public void resetMapper() {
+        datesMapper = null;
+        realIntervalCached = null;
+    }
+
     public IDatesMapper getMapper() {
         if (datesMapper == null) {
-            datesMapper = new DatesMapperOnInterval(getHorizontalSize(),
-                    getRealInterval());
+            if (filter == null) {
+                datesMapper = new DatesMapperOnInterval(getHorizontalSize(),
+                        getRealInterval());
+            } else {
+                datesMapper = new DatesMapperOnInterval(getHorizontalSize(),
+                        filter.getCurrentPaginationInterval());
+            }
         }
         return datesMapper;
     }
@@ -313,4 +332,5 @@ public class TimeTracker {
         }
         return new LocalDate(start).minusWeeks(2).toDateMidnight().toDate();
     }
+
 }
