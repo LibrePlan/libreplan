@@ -1054,13 +1054,14 @@ div.z-tree {
 
 
 .queue-element .deadline {
-    position: auto;
+    position: relative;
     margin-top: -5px;
-    float:left;
-    left:-100px; /* Hide when it has't been set */
-    width:10px;
-    height:22px;
+    float: left;
+    left: -100px; /* Hide when it has't been set */
+    width: 10px;
+    height: 22px;
     background-image: url("../../zkau/web/ganttz/img/deadline.png");
+    display: none;
 }
 
 body .perspectives-column {

@@ -50,11 +50,10 @@ public class QueueTask extends Div {
         this.start = element.getStartDate();
         this.end = element.getEndDate();
         this.element = element;
-        setAction("onmouseover: zkLimitingDependencies.showDependenciesForQueueElement('"
+        setAction("onmouseover: zkLimitingResourcesList.showRelatedElementsForQueueElement('"
                 + getUuid()
-                + "');onmouseout: zkLimitingDependencies.hideDependenciesForQueueElement('"
+                + "');onmouseout: zkLimitingResourcesList.hideRelatedElementsForQueueElement('"
                 + getUuid() + "')");
-
         final String taskUid = this.getUuid();
         this.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override

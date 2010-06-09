@@ -20,6 +20,26 @@
 
 zkLimitingResourcesList = addLimitingResourcesListMethods( {});
 
+zkLimitingResourcesList.showRelatedElementsForQueueElement = function (task) {
+	zkLimitingDependencies.showDependenciesForQueueElement(task);
+	zkLimitingResourcesList.SetVisibleDeadlineForQueueElement(task, "inline");
+}
+
+zkLimitingResourcesList.hideRelatedElementsForQueueElement = function (task) {
+	zkLimitingDependencies.hideDependenciesForQueueElement(task);
+	zkLimitingResourcesList.SetVisibleDeadlineForQueueElement(task, "none");
+}
+
+zkLimitingResourcesList.SetVisibleDeadlineForQueueElement = function(task, visible) {
+	var deadlines = YAHOO.util.Selector.query('.deadline');
+	for ( var i = 0; i < deadlines.length; i++) {
+		if ((deadlines[i].parentNode.id == task)) {
+			deadlines[i].style.display = visible;
+		}
+	}
+}
+
+
 function addLimitingResourcesListMethods(object) {
 	var scrollSync;
 

@@ -55,12 +55,15 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
+
 /**
  * This class wraps ResourceLoad data inside an specific HTML Div component.
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class QueueComponent extends XulElement implements
         AfterCompose {
+
+    private static final int DEADLINE_MARK_HALF_WIDTH = 5;
 
     public static QueueComponent create(
             QueueListComponent queueListComponent,
@@ -259,24 +262,23 @@ public class QueueComponent extends XulElement implements
             result.appendChild(generateNonWorkableShade(datesMapper,
                     queueElement));
         }
-
         result.setWidth(forCSS(taskWidth));
-
         result.setClass(cssClass);
 
         Task task = queueElement.getResourceAllocation().getTask();
         if (task.getDeadline() != null) {
-            Div deadline = new Div();
-            deadline.setId("deadline" + result.getUuid());
-            deadline.setSclass("deadline");
-            deadline
-                    .setStyle("left:"
-                            + getDeadlinePixels(datesMapper, task.getDeadline())
-                            + "px");
-
-            result.appendChild(deadline);
-            result.appendChild(generateNonWorkableShade(datesMapper,
-                    queueElement));
+            int deadlinePosition = getDeadlinePixels(datesMapper, task
+                    .getDeadline());
+            if (deadlinePosition < datesMapper.getHorizontalSize()) {
+                Div deadline = new Div();
+                deadline.setSclass("deadline");
+                deadline
+                        .setLeft((deadlinePosition - startPixels - DEADLINE_MARK_HALF_WIDTH)
+                                + "px");
+                result.appendChild(deadline);
+                result.appendChild(generateNonWorkableShade(datesMapper,
+                        queueElement));
+            }
         }
 
         result.appendChild(generateCompletionShade(datesMapper, queueElement));
@@ -352,8 +354,9 @@ public class QueueComponent extends XulElement implements
 
     private static int getDeadlinePixels(IDatesMapper datesMapper,
             LocalDate deadlineDate) {
-        return datesMapper.toPixelsAbsolute((deadlineDate.toDateMidnight()
-                .getMillis()));
+        // Deadline date is considered inclusively
+        return datesMapper.toPixelsAbsolute(deadlineDate.plusDays(1)
+                .toDateMidnight().getMillis());
     }
 
 
