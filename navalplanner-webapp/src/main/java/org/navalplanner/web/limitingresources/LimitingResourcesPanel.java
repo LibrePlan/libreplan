@@ -290,23 +290,19 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             public void zoomLevelChanged(ZoomLevel newDetailLevel) {
                 rebuildDependencies();
                 timeTracker.resetMapper();
-
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);
-
                 reloadPanelComponents();
-
                 paginatorFilter.populateHorizontalListbox();
-
                 paginatorFilter.goToHorizontalPage(0);
                 reloadComponent();
                 rebuildDependencies();
 
+                // Reset mapper for first detail
                 if (newDetailLevel == ZoomLevel.DETAIL_THREE) {
                     timeTracker.resetMapper();
                     queueListComponent.invalidate();
                 }
-
             }
 
         };
@@ -450,15 +446,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private void reloadComponent() {
         timeTrackerHeader.recreate();
         timeTrackerComponent.recreate();
-        // Reattach listener for zoomLevel changes. May be optimized
-        timeTracker.addZoomListener(new IZoomLevelChangedListener() {
-            @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
-                timeTracker.getDetailsFirstLevel().iterator().next();
-                paginatorFilter.setInterval(timeTracker.getRealInterval());
-                timeTracker.setFilter(paginatorFilter);
-            }
-        });
         queueListComponent.invalidate();
         queueListComponent.afterCompose();
     }
