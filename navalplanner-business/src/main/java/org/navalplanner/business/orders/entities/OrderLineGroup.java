@@ -340,6 +340,7 @@ public class OrderLineGroup extends OrderElement implements
         return BigDecimal.ZERO;
     }
 
+    @Override
     public BigDecimal getAdvancePercentageChildren() {
         return getAdvancePercentageChildren(null);
     }
@@ -368,6 +369,7 @@ public class OrderLineGroup extends OrderElement implements
         return result;
     }
 
+    @Override
     public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
         if (indirectAdvanceAssignment.getAdvanceType().getUnitName().equals(

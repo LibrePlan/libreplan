@@ -515,7 +515,9 @@ public abstract class OrderElement extends IntegrationEntity implements
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
+                .getDirectAdvanceAssignments()) {
+
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
@@ -541,7 +543,8 @@ public abstract class OrderElement extends IntegrationEntity implements
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
+                .getDirectAdvanceAssignments()) {
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
@@ -570,6 +573,11 @@ public abstract class OrderElement extends IntegrationEntity implements
     public abstract BigDecimal getAdvancePercentage(LocalDate date);
 
     public abstract Set<IndirectAdvanceAssignment> getIndirectAdvanceAssignments();
+
+    public abstract DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
+            IndirectAdvanceAssignment indirectAdvanceAssignment);
+
+    public abstract BigDecimal getAdvancePercentageChildren();
 
     public List<OrderElement> getAllChildren() {
         List<OrderElement> children = getChildren();

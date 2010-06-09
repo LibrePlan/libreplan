@@ -101,6 +101,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     public AdvanceMeasurement getLastAdvanceMeasurement() {
+
         if (advanceMeasurements.isEmpty()) {
             return null;
         }

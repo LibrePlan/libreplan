@@ -78,6 +78,8 @@ import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
+import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
+import org.navalplanner.web.planner.advances.IAdvanceAssignmentPlanningCommand;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
@@ -273,6 +275,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public void setConfigurationToPlanner(Planner planner, Order order,
             ViewSwitcher switcher,
             EditTaskController editTaskController,
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
             AdvanceConsolidationController advanceConsolidationController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
@@ -302,6 +305,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
+        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+        configuration.addCommandOnTask(advanceAssignmentPlanningCommand);
         configuration
                 .addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
         configuration
@@ -768,6 +773,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return taskPropertiesCommand;
     }
 
+    private IAdvanceAssignmentPlanningCommand buildAdvanceAssignmentPlanningCommand(
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
+        IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = getAdvanceAssignmentPlanningCommand();
+        advanceAssignmentPlanningCommand.initialize(
+                advanceAssignmentPlanningController, planningState);
+        return advanceAssignmentPlanningCommand;
+    }
+
     private IAdvanceConsolidationCommand buildAdvanceConsolidationCommand(
             AdvanceConsolidationController advanceConsolidationController) {
         IAdvanceConsolidationCommand advanceConsolidationCommand = getAdvanceConsolidationCommand();
@@ -1037,6 +1050,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ITaskPropertiesCommand getTaskPropertiesCommand();
 
     protected abstract IAdvanceConsolidationCommand getAdvanceConsolidationCommand();
+
+    protected abstract IAdvanceAssignmentPlanningCommand getAdvanceAssignmentPlanningCommand();
 
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 

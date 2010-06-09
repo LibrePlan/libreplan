@@ -37,6 +37,10 @@
     macroURI="/planner/_tabPanelSubcontract.zul"
     inline="true" ?>
 
+<?component name="listOrderElementAdvances"
+    macroURI="/orders/_listOrderElementAdvances.zul"
+    inline="true" ?>
+
 <zk>
     <zscript><![CDATA[
         planningController = arg.get("orderPlanningController");
@@ -49,6 +53,7 @@
         allocationController.switcher = switcher;
         subController = editController.subcontractController;
         advanceController = planningController.advanceConsolidationController;
+        advanceAssignmentController = planningController.advanceAssignmentPlanningController;
     ]]>
     </zscript>
     <div>
@@ -81,6 +86,20 @@
                 onClick="editController.accept();" />
             <button id="cancel" label="${i18n:_('Cancel')}"
                 onClick="editController.cancel();" />
+        </hbox>
+    </window>
+
+    <window id="advanceAssignmentPlanningWindow"
+        apply="${advanceAssignmentController}"
+        title="${advanceAssignmentController.title}" width="950px"
+        visible="false">
+         <vbox id="messagesAdvanceAssignmentContainer" />
+         <listOrderElementAdvances id="orderElementAdvances"/>
+        <hbox>
+            <button label="${i18n:_('Accept')}"
+                onClick="advanceAssignmentController.accept();" />
+            <button label="${i18n:_('Cancel')}"
+                onClick="advanceAssignmentController.cancel();" />
         </hbox>
     </window>
 

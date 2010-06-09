@@ -92,4 +92,6 @@ public interface ITaskFundamentalProperties {
 
     public boolean isFixed();
 
+    public String updateTooltipText();
+
 }

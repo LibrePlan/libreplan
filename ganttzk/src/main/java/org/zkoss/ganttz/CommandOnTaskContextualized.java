@@ -97,4 +97,7 @@ public class CommandOnTaskContextualized<T> {
         return commandOnTask.isApplicableTo(domainObject);
     }
 
+    public IDomainAndBeansMapper<T> getMapper() {
+        return this.mapper;
+    }
 }

@@ -452,7 +452,7 @@ public class TaskComponent extends Div implements AfterCompose {
         }
     }
 
-    private void updateCompletionIfPossible() {
+    public void updateCompletionIfPossible() {
         try {
             updateCompletion();
         } catch (Exception e) {
@@ -486,6 +486,10 @@ public class TaskComponent extends Div implements AfterCompose {
                 + "px";
         response(null, new AuInvoke(this, "resizeCompletion2Advance",
                 widthAdvancePercentage));
+    }
+
+    public void updateTooltipText() {
+        smartUpdate("taskTooltipText", task.updateTooltipText());
     }
 
     private DependencyList getDependencyList() {

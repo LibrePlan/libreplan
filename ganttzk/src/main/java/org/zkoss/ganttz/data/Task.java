@@ -311,6 +311,10 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getTooltipText();
     }
 
+    public String updateTooltipText() {
+        return fundamentalProperties.updateTooltipText();
+    }
+
     public String getLabelsText() {
         return fundamentalProperties.getLabelsText();
     }

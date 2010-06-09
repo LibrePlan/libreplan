@@ -33,10 +33,15 @@ import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
@@ -91,6 +96,9 @@ public class SaveCommand implements ISaveCommand {
     private ITaskElementDAO taskElementDAO;
 
     @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
 
     @Autowired
@@ -142,6 +150,7 @@ public class SaveCommand implements ISaveCommand {
     private void doTheSaving() {
         saveTasksToSave();
         removeTasksToRemove();
+        saveAndDontPoseAsTransientOrderElements();
         taskElementDAO.removeOrphanedDayAssignments();
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
     }
@@ -342,6 +351,37 @@ public class SaveCommand implements ISaveCommand {
             }
     }
 
+    private void dontPoseAsTransient(OrderElement orderElement) {
+        OrderElement order = (OrderElement) orderElementDAO
+                .loadOrderAvoidingProxyFor(orderElement);
+        order.dontPoseAsTransientObjectAnymore();
+        dontPoseAsTransientAdvances(order.getDirectAdvanceAssignments());
+        dontPoseAsTransientAdvances(order.getIndirectAdvanceAssignments());
+
+        for (OrderElement child : order.getAllChildren()) {
+            child.dontPoseAsTransientObjectAnymore();
+            dontPoseAsTransientAdvances(child.getDirectAdvanceAssignments());
+            dontPoseAsTransientAdvances(child.getIndirectAdvanceAssignments());
+        }
+    }
+
+    private void dontPoseAsTransientAdvances(
+            Set<? extends AdvanceAssignment> advances) {
+        for (AdvanceAssignment advance : advances) {
+            advance.dontPoseAsTransientObjectAnymore();
+            if (advance instanceof DirectAdvanceAssignment) {
+                dontPoseAsTransientMeasure(((DirectAdvanceAssignment) advance)
+                        .getAdvanceMeasurements());
+            }
+        }
+    }
+
+    private void dontPoseAsTransientMeasure(SortedSet<AdvanceMeasurement> list) {
+        for (AdvanceMeasurement measure : list) {
+            measure.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
     private void dontPoseAsTransient(Consolidation consolidation) {
         if (consolidation != null) {
             consolidation.dontPoseAsTransientObjectAnymore();
@@ -351,6 +391,15 @@ public class SaveCommand implements ISaveCommand {
             } else {
                 dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
                         .getNonCalculatedConsolidatedValues());
+            }
+        }
+    }
+
+    private void saveAndDontPoseAsTransientOrderElements() {
+        for (TaskElement taskElement : state.getTasksToSave()) {
+            if (taskElement.getOrderElement() != null) {
+                orderElementDAO.save(taskElement.getOrderElement());
+                dontPoseAsTransient(taskElement.getOrderElement());
             }
         }
     }

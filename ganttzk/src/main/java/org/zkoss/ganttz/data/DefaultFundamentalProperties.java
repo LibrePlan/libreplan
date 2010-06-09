@@ -199,4 +199,8 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return null;
     }
 
+    public String updateTooltipText() {
+        return null;
+    }
+
 }

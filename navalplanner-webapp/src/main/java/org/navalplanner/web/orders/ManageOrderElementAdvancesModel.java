@@ -53,7 +53,6 @@ import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlob
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,7 +154,7 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public void prepareEditAdvanceMeasurements(AdvanceAssignment assignment) {
         if (assignment instanceof IndirectAdvanceAssignment) {
-            this.advanceAssignment = ((OrderLineGroup) this.orderElement)
+            this.advanceAssignment = orderElement
                     .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) assignment);
             this.isIndirectAdvanceAssignment = true;
         } else {
@@ -227,14 +226,17 @@ public class ManageOrderElementAdvancesModel implements
                 .getDirectAdvanceAssignments()) {
             forceLoadAdvanceConsolidatedValues(each);
             each.getNonCalculatedConsolidation().size();
+            each.getAdvanceType().getUnitName();
         }
-        if (orderElement instanceof OrderLineGroup) {
-            ((OrderLineGroup) orderElement).getIndirectAdvanceAssignments().size();
-            for (IndirectAdvanceAssignment each : ((OrderLineGroup) orderElement)
+
+        for (IndirectAdvanceAssignment each : orderElement
                     .getIndirectAdvanceAssignments()) {
-                each.getCalculatedConsolidation().size();
-            }
+            each.getCalculatedConsolidation().size();
+            each.getAdvanceType().getUnitName();
+            forceLoadAdvanceConsolidatedValues(orderElement
+                    .calculateFakeDirectAdvanceAssignment(each));
         }
+
     }
 
     private void forceLoadAdvanceConsolidatedValues(
@@ -256,12 +258,10 @@ public class ManageOrderElementAdvancesModel implements
             this.listAdvanceAssignments.add(each);
         }
 
-        if (this.orderElement instanceof OrderLineGroup) {
-            for (IndirectAdvanceAssignment each : ((OrderLineGroup) this.orderElement)
-                    .getIndirectAdvanceAssignments()) {
+        for (IndirectAdvanceAssignment each : orderElement
+                .getIndirectAdvanceAssignments()) {
                 this.listAdvanceAssignments.add(each);
             }
-        }
     }
 
     @Override
@@ -583,10 +583,8 @@ public class ManageOrderElementAdvancesModel implements
 
         BigDecimal maxValue;
         if (assignment instanceof IndirectAdvanceAssignment) {
-            maxValue = ((OrderLineGroup) this.orderElement)
-                    .calculateFakeDirectAdvanceAssignment(
-                            (IndirectAdvanceAssignment) assignment)
-                    .getMaxValue();
+            maxValue = orderElement.calculateFakeDirectAdvanceAssignment(
+                    (IndirectAdvanceAssignment) assignment).getMaxValue();
         } else {
             maxValue = ((DirectAdvanceAssignment) assignment)
                     .getMaxValue();
@@ -610,34 +608,26 @@ public class ManageOrderElementAdvancesModel implements
     @Transactional(readOnly = true)
     public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
-        if (orderElement == null) {
-            return null;
-        }
-
-        if (!(orderElement instanceof OrderLineGroup)) {
+        if ((orderElement == null) || (orderElement.isLeaf())) {
             return null;
         }
 
         reattachmentOrderElement();
 
-        return ((OrderLineGroup) orderElement)
+        return orderElement
                 .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getAdvancePercentageChildren() {
-        if (orderElement == null) {
-            return null;
-        }
-
-        if (!(orderElement instanceof OrderLineGroup)) {
+        if ((orderElement == null) || orderElement.isLeaf()) {
             return null;
         }
 
         reattachmentOrderElement();
 
-        return ((OrderLineGroup) orderElement).getAdvancePercentageChildren();
+        return orderElement.getAdvancePercentageChildren();
     }
 
     @Override
@@ -698,7 +688,7 @@ public class ManageOrderElementAdvancesModel implements
         Iterator<AdvanceMeasurement> iterator = advance
                 .getAdvanceMeasurements().iterator();
         while (iterator.hasNext()) {
-            if (hasConsolidatedAdvances(iterator.next())) {
+            if (hasConsolidatedAdvances(iterator.next(), advance.isFake())) {
                 return true;
             }
         }
@@ -706,16 +696,23 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Transactional(readOnly = true)
-    public boolean hasConsolidatedAdvances(
-            AdvanceMeasurement advanceMeasurement) {
+    public boolean hasConsolidatedAdvances(AdvanceMeasurement advanceMeasurement) {
+        return hasConsolidatedAdvances(advanceMeasurement,
+                isIndirectAdvanceAssignment);
+    }
 
-        if (advanceMeasurement.isNewObject() || isIndirectAdvanceAssignment) {
+    private boolean hasConsolidatedAdvances(
+            AdvanceMeasurement advanceMeasurement,
+            boolean isIndirectAdvanceAssignment) {
+
+        if (isIndirectAdvanceAssignment) {
             return false;
         }
 
         if (!advanceMeasurement.getNonCalculatedConsolidatedValues().isEmpty()) {
             return true;
         }
+
         return findIndirectConsolidation(advanceMeasurement);
     }
 
@@ -742,6 +739,7 @@ public class ManageOrderElementAdvancesModel implements
                 types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
             }
 
+            orderElementDAO.reattach(orderElement);
             Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
                     orderElement, types);
 
@@ -758,7 +756,6 @@ public class ManageOrderElementAdvancesModel implements
     private Set<IndirectAdvanceAssignment> getSpreadIndirectAdvanceAssignmentWithSameType(
             OrderElement orderElement, List<String> types) {
 
-        orderElementDAO.reattach(orderElement);
         Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
 
         for (IndirectAdvanceAssignment indirect : orderElement

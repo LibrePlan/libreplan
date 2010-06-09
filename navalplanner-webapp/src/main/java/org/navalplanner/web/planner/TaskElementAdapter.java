@@ -328,9 +328,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
                         @Override
                         public String execute() {
-                            orderElementDAO
-                                    .reattachUnmodifiedEntity(taskElement
-                                    .getOrderElement());
+                            orderElementDAO.reattach(taskElement
+                                            .getOrderElement());
                             return buildTooltipText();
                         }
                     });
@@ -343,8 +342,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
                         @Override
                         public String execute() {
-                            orderElementDAO
-                                    .reattachUnmodifiedEntity(taskElement
+                            orderElementDAO.reattach(taskElement
                                     .getOrderElement());
                             return buildLabelsText();
                         }
@@ -362,9 +360,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
                             @Override
                             public String execute() {
-                                orderElementDAO
-                                        .reattachUnmodifiedEntity(taskElement
-                                                .getOrderElement());
+                                orderElementDAO.reattach(taskElement
+                                        .getOrderElement());
                                 return buildResourcesText();
                             }
                         });
@@ -391,7 +388,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
             return new HashSet<Label>();
         }
-
 
         private String buildLabelsText() {
             StringBuilder result = new StringBuilder();
@@ -452,6 +448,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return "["
                     + StringUtils.join(forCriterionRepresentations,
                             ", ") + "]";
+        }
+
+        @Override
+        public String updateTooltipText() {
+            return buildTooltipText();
         }
 
         private String buildTooltipText() {

@@ -38,6 +38,7 @@ import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearc
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.orders.OrderElementPredicate;
+import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
@@ -92,6 +93,9 @@ public class OrderPlanningController implements Composer {
 
     @Autowired
     private AdvanceConsolidationController advanceConsolidationController;
+
+    @Autowired
+    private AdvanceAssignmentPlanningController advanceAssignmentPlanningController;
 
     @Autowired
     private OrderCRUDController orderCRUDController;
@@ -182,7 +186,8 @@ public class OrderPlanningController implements Composer {
     private void updateConfiguration() {
         if (order != null) {
             model.setConfigurationToPlanner(planner, order, viewSwitcher,
-                    editTaskController, advanceConsolidationController,
+                    editTaskController, advanceAssignmentPlanningController,
+                    advanceConsolidationController,
                     calendarAllocationController, additional);
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
@@ -329,6 +334,10 @@ public class OrderPlanningController implements Composer {
 
     public AdvanceConsolidationController getAdvanceConsolidationController() {
         return advanceConsolidationController;
+    }
+
+    public AdvanceAssignmentPlanningController getAdvanceAssignmentPlanningController() {
+        return advanceAssignmentPlanningController;
     }
 
 }

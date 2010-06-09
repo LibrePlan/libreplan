@@ -157,6 +157,13 @@ public class ManageOrderElementAdvancesController extends
         selectSpreadAdvanceLine();
     }
 
+    public void openWindow(OrderElement orderElement) {
+        manageOrderElementAdvancesModel.initEdit(orderElement);
+        selectedAdvances.clear();
+        createAndLoadBindings();
+        selectSpreadAdvanceLine();
+    }
+
     public void createAndLoadBindings() {
         Util.createBindingsFor(self);
         Util.reloadBindings(self);

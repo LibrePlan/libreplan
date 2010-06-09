@@ -322,6 +322,17 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
+    public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
+            IndirectAdvanceAssignment indirectAdvanceAssignment) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getAdvancePercentageChildren() {
+        return BigDecimal.ZERO;
+    }
+
+    @Override
     public Set<IndirectAdvanceAssignment> getIndirectAdvanceAssignments() {
         return Collections.emptySet();
     }
