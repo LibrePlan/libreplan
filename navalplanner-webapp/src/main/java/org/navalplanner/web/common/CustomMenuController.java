@@ -197,8 +197,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Company view"), "/planner/index.zul;company_scheduling","01-introducion.html"),
             subItem(_("General resource allocation"),"/planner/index.zul;company_load","01-introducion.html#id1"),
             subItem(_("Orders list"), "/planner/index.zul;orders_list","01-introducion.html#id2"),
-                // FIX: Temporary hidden in main menu
-                // subItem(_("Limiting resources"),"/planner/index.zul;limiting_resources","01-introducion.html"),
+            subItem(_("Limiting resources"),"/planner/index.zul;limiting_resources","01-introducion.html"),
             subItem(_("Templates list"), "/templates/templates.zul", ""),
             subItem(_("Subcontracted tasks list"), "/subcontract/subcontractedTasks.zul", ""),
             subItem(_("Report advances"), "/subcontract/reportAdvances.zul", ""));
