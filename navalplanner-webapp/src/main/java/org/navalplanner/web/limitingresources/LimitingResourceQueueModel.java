@@ -139,14 +139,13 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private Period intervalIncrease() {
-
         switch (zoomLevel) {
         case DETAIL_ONE:
             return Period.years(5);
         case DETAIL_TWO:
-            return Period.years(5);
-        case DETAIL_THREE:
             return Period.years(2);
+        case DETAIL_THREE:
+            return Period.years(1);
         case DETAIL_FOUR:
             return Period.months(6);
         case DETAIL_FIVE:

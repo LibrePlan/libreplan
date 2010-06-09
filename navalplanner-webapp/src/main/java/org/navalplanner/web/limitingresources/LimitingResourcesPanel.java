@@ -20,12 +20,16 @@
 
 package org.navalplanner.web.limitingresources;
 
-import static org.navalplanner.web.I18nHelper._;
-
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.base.AbstractInstant;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -34,9 +38,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
+import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
@@ -50,8 +57,10 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
+
 
 public class LimitingResourcesPanel extends HtmlMacroComponent {
 
@@ -77,17 +86,29 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private Listbox listZoomLevels;
 
+    private Button paginationDownButton;
+    @Autowired
+    private Button paginationUpButton;
+
+    public void paginationDown() {
+    }
+
+    public void paginationUp() {
+    }
+
+    private Listbox horizontalPagination;
+
+    private AbstractInstant intervalEnd;
+
     private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners
             .create();
 
     @Autowired
     IResourceDAO resourcesDAO;
 
-    private static final String filterResources = _("Filter by resources");
-    private static final String filterCriterions = _("Filter by criteria");
-    private boolean filterbyResources = true;
-
     private LimitingDependencyList dependencyList = new LimitingDependencyList(this);
+
+    private PaginatorFilter paginatorFilter;
 
     /**
      * Returns the closest upper {@link LimitingResourcesPanel} instance going
@@ -119,8 +140,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 limitingResourcesController, true);
 
         treeModel = createModelForTree();
-        timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
-        queueListComponent = new QueueListComponent(this, timeTracker, treeModel);
+        timeTrackerComponent = timeTrackerForLimitingResourcesPanel(timeTracker);
+        queueListComponent = new QueueListComponent(timeTracker, treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel,
                 queueListComponent);
@@ -142,27 +163,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private List<LimitingResourceQueue> getLimitingResourceQueues() {
         return limitingResourcesController.getLimitingResourceQueues();
-    }
-
-    public ListModel getFilters() {
-        String[] filters = new String[] { filterResources, filterCriterions };
-        return new SimpleListModel(filters);
-    }
-
-    public void setFilter(String filterby) {
-        if (filterby.equals(filterResources)) {
-            this.filterbyResources = true;
-        } else {
-            this.filterbyResources = false;
-        }
-    }
-
-    public boolean getFilter() {
-        return filterbyResources;
-    }
-
-    public void addFilterListener(IFilterChangedListener listener) {
-        zoomListeners.addListener(listener);
     }
 
     public ListModel getZoomLevels() {
@@ -232,7 +232,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .retrieve();
     }
 
-    private TimeTrackerComponent timeTrackerForResourcesLoadPanel(
+    private TimeTrackerComponent timeTrackerForLimitingResourcesPanel(
             TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
             @Override
@@ -285,6 +285,22 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         // First two levels are excluded
         listZoomLevels
                 .setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
+
+
+
+        // Paginationn stuff
+        paginationUpButton = (Button) getFellow("paginationUpButton");
+        System.out.println(paginationUpButton.getTooltiptext());
+            paginationUpButton.setDisabled(isLastPage());
+
+        paginatorFilter = new PaginatorFilter();
+        paginatorFilter.setZoomLevel(timeTracker.getDetailLevel());
+        paginatorFilter.setInterval(timeTracker.getRealInterval());
+        paginatorFilter.populateHorizontalListbox();
+    }
+
+    private boolean isLastPage() {
+        return false;
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {
@@ -370,4 +386,100 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         queueListComponent.refreshQueue(queue);
     }
 
+    private class PaginatorFilter implements IDetailItemFilter {
+
+        private DateTime intervalStart;
+        private DateTime intervalEnd;
+
+        private DateTime paginatorStart;
+        private DateTime paginatorEnd;
+
+        private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
+
+        private Period intervalIncrease() {
+            switch (zoomLevel) {
+            case DETAIL_ONE:
+                return Period.years(5);
+            case DETAIL_TWO:
+                return Period.years(5);
+            case DETAIL_THREE:
+                return Period.years(2);
+            case DETAIL_FOUR:
+                return Period.months(6);
+            case DETAIL_FIVE:
+                return Period.weeks(6);
+            }
+            return Period.years(5);
+        }
+
+        public void setInterval(Interval realInterval) {
+            intervalStart = new DateTime(realInterval.getStart());
+            intervalEnd = new DateTime(realInterval.getFinish());
+            paginatorStart = intervalStart;
+            paginatorEnd = intervalStart.plus(intervalIncrease());
+            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+                paginatorEnd = intervalEnd;
+            }
+            // updatePaginationButtons();
+        }
+
+        public void setZoomLevel(ZoomLevel detailLevel) {
+            zoomLevel = detailLevel;
+        }
+
+        @Override
+        public Collection<DetailItem> selectsFirstLevel(
+                Collection<DetailItem> firstLevelDetails) {
+            // TODO Auto-generated method stub
+            return firstLevelDetails;
+        }
+
+        @Override
+        public Collection<DetailItem> selectsSecondLevel(
+                Collection<DetailItem> secondLevelDetails) {
+            // TODO Auto-generated method stub
+            return secondLevelDetails;
+        }
+
+        public void paginationDown() {
+            // paginatorFilter.previous();
+            // reloadComponent();
+            horizontalPagination.setSelectedIndex(horizontalPagination
+                    .getSelectedIndex() - 1);
+
+        }
+
+        public void paginationUp() {
+            // paginatorFilter.next();
+            // reloadComponent();
+            horizontalPagination.setSelectedIndex(Math.max(0,
+                    horizontalPagination.getSelectedIndex()) + 1);
+        }
+
+        public void populateHorizontalListbox() {
+            horizontalPagination.getItems().clear();
+            DateTimeFormatter df = DateTimeFormat.forPattern("dd/MMM/yyyy");
+            DateTime intervalStart = new DateTime(timeTracker.getRealInterval()
+                    .getStart());
+            if (intervalStart != null) {
+                DateTime itemStart = intervalStart;
+                DateTime itemEnd = intervalStart.plus(intervalIncrease());
+                while (intervalEnd.isAfter(itemStart)) {
+                    if (intervalEnd.isBefore(itemEnd)
+                            || !intervalEnd.isAfter(itemEnd
+                                    .plus(intervalIncrease()))) {
+                        itemEnd = intervalEnd;
+                    }
+                    Listitem item = new Listitem(df.print(itemStart) + " - "
+                            + df.print(itemEnd.minusDays(1)));
+                    horizontalPagination.appendChild(item);
+                    itemStart = itemEnd;
+                    itemEnd = itemEnd.plus(intervalIncrease());
+                }
+            }
+            horizontalPagination.setDisabled(horizontalPagination.getItems()
+                    .size() < 2);
+        }
+
+    }
 }
