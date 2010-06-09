@@ -263,7 +263,7 @@ public class LongOperationFeedback {
     /**
      * Executes a long operation. The background operation can send
      * <code>T</code> objects that can update desktop state. A
-     * {@link IDesktopUpdatesEmitter} that handle this objects is necessary.
+     * {@link IDesktopUpdatesEmitter} that handle these objects is necessary.
      * Trying to update the components in any other way would fail.
      */
     public static <T> void progressive(final Desktop desktop,
