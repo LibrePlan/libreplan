@@ -136,12 +136,6 @@ public interface ILimitingResourceQueueModel {
     void removeUnassignedLimitingResourceQueueElement(
             LimitingResourceQueueElement element);
 
-
-    List<LimitingResourceQueue> getAssignableQueues(
-            LimitingResourceQueueElement element);
-
-    void init(LimitingResourceQueueElement element);
-
     boolean userCanRead(Order order, String loginName);
 
 }

@@ -94,17 +94,15 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private Component insertionPointTimetracker;
 
     public void paginationDown() {
-        paginatorFilter.previous();
-        reloadPanelComponents();
-        horizontalPagination.setSelectedIndex(Math.max(0, horizontalPagination
-                .getSelectedIndex()) + 1);
+        horizontalPagination.setSelectedIndex(horizontalPagination
+                .getSelectedIndex() - 1);
+        goToSelectedHorizontalPage();
     }
 
     public void paginationUp() {
-        paginatorFilter.next();
-        reloadPanelComponents();
-        horizontalPagination.setSelectedIndex(Math.max(0, horizontalPagination
-                .getSelectedIndex()) + 1);
+        horizontalPagination.setSelectedIndex(Math.max(1, horizontalPagination
+                .getSelectedIndex() + 1));
+        goToSelectedHorizontalPage();
     }
 
     @Autowired
@@ -153,7 +151,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         treeModel = createModelForTree();
 
         timeTrackerComponent = timeTrackerForLimitingResourcesPanel(timeTracker);
-        queueListComponent = new QueueListComponent(timeTracker, treeModel);
+        queueListComponent = new QueueListComponent(this, timeTracker,
+                treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel, queueListComponent);
         registerNeededScripts();
@@ -267,7 +266,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
 
         // Pagination stuff
-        paginationUpButton.setDisabled(isLastPage());
+        paginationUpButton.setDisabled(paginatorFilter.isLastPage());
 
         paginatorFilter.setInterval(timeTracker.getRealInterval());
         timeTracker.setFilter(paginatorFilter);
@@ -302,8 +301,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 // Position in first page
                 paginatorFilter.goToHorizontalPage(0);
                 reloadComponent();
-                queueListComponent.invalidate();
-                queueListComponent.afterCompose();
                 rebuildDependencies();
 
             }
@@ -362,10 +359,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             timeTrackerHeader.afterCompose();
             timeTrackerComponent.afterCompose();
         }
-    }
-
-    private boolean isLastPage() {
-        return true;
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {
@@ -456,17 +449,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     public void goToSelectedHorizontalPage() {
         paginatorFilter.goToHorizontalPage(horizontalPagination
                 .getSelectedIndex());
-
-
         doDirectPaginationStuff();
         reloadComponent();
-
-        queueListComponent.invalidate();
-        queueListComponent.afterCompose();
-
         rebuildDependencies();
-        // paginatorFilter.populateHorizontalListbox();
-
     }
 
     private void reloadComponent() {
@@ -481,6 +466,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 timeTracker.setFilter(paginatorFilter);
             }
         });
+        queueListComponent.invalidate();
+        queueListComponent.afterCompose();
     }
 
     private class PaginatorFilter implements IDetailItemFilter {
@@ -532,18 +519,17 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
 
         public void paginationDown() {
-            paginatorFilter.previous();
-            reloadPanelComponents();
-            horizontalPagination.setSelectedIndex(horizontalPagination
+            paginatorFilter.goToHorizontalPage(horizontalPagination
                     .getSelectedIndex() - 1);
-
+            reloadComponent();
+            rebuildDependencies();
         }
 
         public void paginationUp() {
-            paginatorFilter.next();
-            reloadPanelComponents();
-            horizontalPagination.setSelectedIndex(Math.max(0,
-                    horizontalPagination.getSelectedIndex()) + 1);
+            paginatorFilter.goToHorizontalPage(horizontalPagination
+                    .getSelectedIndex() + 1);
+            reloadComponent();
+            rebuildDependencies();
         }
 
         @Override
@@ -622,16 +608,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             paginationUpButton.setDisabled(isLastPage());
         }
 
-        public void next() {
-            paginatorStart = paginatorStart.plus(intervalIncrease());
-            paginatorEnd = paginatorEnd.plus(intervalIncrease());
-            // Avoid reduced last intervals
-            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
-                paginatorEnd = paginatorEnd.plus(intervalIncrease());
-            }
-            updatePaginationButtons();
-        }
-
         public void previous() {
             paginatorStart = paginatorStart.minus(intervalIncrease());
             paginatorEnd = paginatorEnd.minus(intervalIncrease());
@@ -639,8 +615,14 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
 
         public boolean isFirstPage() {
-            return !(paginatorStart.isAfter(intervalStart));
+            return (horizontalPagination.getSelectedIndex() <= 0)
+                    || horizontalPagination.isDisabled();
         }
 
+        private boolean isLastPage() {
+            return (horizontalPagination.getItemCount() == (horizontalPagination
+                    .getSelectedIndex() + 1))
+                    || horizontalPagination.isDisabled();
+        }
     }
 }
