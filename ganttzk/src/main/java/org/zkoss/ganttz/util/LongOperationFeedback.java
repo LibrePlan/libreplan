@@ -130,8 +130,8 @@ public class LongOperationFeedback {
                     backgroundOperation.doOperation(notBlockingDesktopUpdates);
                 } finally {
                     notBlockingDesktopUpdates.finish();
+                    waitUntilShowingAllUpdates(future);
                 }
-                waitUntilShowingAllUpdates(future);
             }
 
             private void waitUntilShowingAllUpdates(Future<?> future) {
