@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
@@ -143,6 +144,17 @@ public abstract class DayAssignment extends BaseEntity {
     public static List<GenericDayAssignment> generic(
             Collection<? extends DayAssignment> dayAssignments) {
         return getOfType(GenericDayAssignment.class, dayAssignments);
+    }
+
+    public static <T extends DayAssignment> List<T> withScenario(
+            Scenario scenario, Collection<T> dayAssignments) {
+        List<T> result = new ArrayList<T>();
+        for (T each : dayAssignments) {
+            if (ObjectUtils.equals(each.getScenario(), scenario)) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     @Min(0)
