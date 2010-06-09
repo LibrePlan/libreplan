@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -263,6 +264,23 @@ public class QueueComponent extends XulElement implements
 
         result.setClass(cssClass);
 
+        Task task = queueElement.getResourceAllocation().getTask();
+        if (task.getDeadline() != null) {
+            Div deadline = new Div();
+            deadline.setId("deadline" + result.getUuid());
+            deadline.setSclass("deadline");
+            deadline
+                    .setStyle("left:"
+                            + getDeadlinePixels(datesMapper, task.getDeadline())
+                            + "px");
+
+            result.appendChild(deadline);
+            result.appendChild(generateNonWorkableShade(datesMapper,
+                    queueElement));
+        }
+
+        result.appendChild(generateCompletionShade(datesMapper, queueElement));
+
         return result;
     }
 
@@ -296,6 +314,31 @@ public class QueueComponent extends XulElement implements
         return notWorkableHoursShade;
     }
 
+    private static Div generateCompletionShade(IDatesMapper datesMapper,
+            LimitingResourceQueueElement queueElement) {
+
+        int workableHours = queueElement.getLimitingResourceQueue()
+                .getResource().getCalendar().getCapacityAt(
+                        queueElement.getEndDate());
+
+        int shadeWidth = new Long((24 - workableHours)
+                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                / datesMapper.getMilisecondsPerPixel()).intValue();
+
+        int shadeLeft = new Long((workableHours - queueElement.getEndHour())
+                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                / datesMapper.getMilisecondsPerPixel()).intValue()
+                + shadeWidth;
+        ;
+        Div notWorkableHoursShade = new Div();
+        notWorkableHoursShade.setContext("");
+        notWorkableHoursShade.setSclass("limiting-completion");
+
+        notWorkableHoursShade.setStyle("left: " + shadeLeft + "px; width: "
+                + shadeWidth + "px;");
+        return notWorkableHoursShade;
+    }
+
     private static int getWidthPixels(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
         return datesMapper.toPixels(getEndMillis(queueElement)
@@ -306,6 +349,13 @@ public class QueueComponent extends XulElement implements
         return queueElement.getStartDate().toDateMidnight().getMillis()
                 + (queueElement.getStartHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
     }
+
+    private static int getDeadlinePixels(IDatesMapper datesMapper,
+            LocalDate deadlineDate) {
+        return datesMapper.toPixelsAbsolute((deadlineDate.toDateMidnight()
+                .getMillis()));
+    }
+
 
     private static long getEndMillis(LimitingResourceQueueElement queueElement) {
         return queueElement.getEndDate().toDateMidnight().getMillis()
