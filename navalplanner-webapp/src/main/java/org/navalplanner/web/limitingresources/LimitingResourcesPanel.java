@@ -298,10 +298,14 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
                 paginatorFilter.populateHorizontalListbox();
 
-                // Position in first page
                 paginatorFilter.goToHorizontalPage(0);
                 reloadComponent();
                 rebuildDependencies();
+
+                // Position in first page
+                if (newDetailLevel == ZoomLevel.DETAIL_THREE) {
+                    invalidate();
+                }
 
             }
 
@@ -349,16 +353,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             timeTrackerComponent.afterCompose();
         }
         dependencyList.invalidate();
-    }
-
-    private void doDirectPaginationStuff() {
-        timeTrackerComponent.getChildren().clear();
-        timeTrackerHeader.getChildren().clear();
-
-        if (timeTrackerHeader != null) {
-            timeTrackerHeader.afterCompose();
-            timeTrackerComponent.afterCompose();
-        }
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {
@@ -449,7 +443,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     public void goToSelectedHorizontalPage() {
         paginatorFilter.goToHorizontalPage(horizontalPagination
                 .getSelectedIndex());
-        doDirectPaginationStuff();
         reloadComponent();
         rebuildDependencies();
     }
@@ -492,11 +485,11 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             case DETAIL_THREE:
                 return Period.years(2);
             case DETAIL_FOUR:
-                return Period.months(6);
+                return Period.months(12);
             case DETAIL_FIVE:
-                return Period.weeks(6);
+                return Period.weeks(12);
             case DETAIL_SIX:
-                return Period.weeks(6);
+                return Period.weeks(12);
             }
             // Default month
             return Period.years(2);

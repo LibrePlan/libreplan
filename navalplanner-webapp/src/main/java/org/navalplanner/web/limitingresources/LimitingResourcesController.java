@@ -111,6 +111,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
         reload();
+        limitingResourcesPanel.invalidate();
     }
 
     private Listbox listAssignableQueues;
@@ -124,9 +125,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
             // Initialize interval
             timeTracker = buildTimeTracker();
-
             limitingResourcesPanel = buildLimitingResourcesPanel();
-            addListeners();
 
             this.parent.getChildren().clear();
             this.parent.appendChild(limitingResourcesPanel);
@@ -164,22 +163,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public ILimitingResourceQueueModel getLimitingResourceQueueModel() {
         return limitingResourceQueueModel;
-    }
-
-    private void addListeners() {
-        filterChangedListener = new IFilterChangedListener() {
-
-            @Override
-            public void filterChanged(boolean filter) {
-                onApplyFilter(filter);
-            }
-        };
-        // this.limitingResourcesPanel.addFilterListener(filterChangedListener);
-    }
-
-    public void onApplyFilter(boolean filterByResources) {
-        limitingResourcesPanel.clearComponents();
-        reload();
     }
 
     private void addCommands(LimitingResourcesPanel limitingResourcesPanel) {

@@ -125,11 +125,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<LimitingResourceQueue> queues = loadLimitingResourceQueues();
         queuesState = new QueuesState(queues, unassigned);
         final Date startingDate = getEarliestDate();
-        // TODO Replace by get latestDate and fill with minimum size
-        System.out.println("DOGLOBAL!");
         Date endDate = (new LocalDate(startingDate)).plusYears(2)
                 .toDateTimeAtCurrentTime().toDate();
         viewInterval = new Interval(startingDate, endDate);
+
+        Date currentDate = new Date();
+        viewInterval = new Interval(
+                startingDate.after(currentDate) ? currentDate : startingDate,
+                endDate);
+
     }
 
     private Date getEarliestDate() {
