@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.reports;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,8 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.reports.dtos.WorkingProgressPerTaskDTO;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,32 +68,52 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
         return result;
     }
 
-    private void initializeOrderElements(List<OrderElement> orderElements) {
-        for (OrderElement each: orderElements) {
-            initializeOrderElement(each);
-        }
-    }
-
-    private void initializeOrderElement(OrderElement orderElement) {
-        orderElement.getName();
-    }
-
     @Override
     @Transactional(readOnly = true)
     public JRDataSource getWorkingProgressPerTaskReport(Order order,
             Date referenceDate) {
 
         orderDAO.reattachUnmodifiedEntity(order);
-        initializeOrderElements(order.getAllChildren());
+        order.useSchedulingDataFor(scenarioManager.getCurrent());
+        LocalDate referenceLocalDate = new LocalDate(referenceDate);
 
         final List<WorkingProgressPerTaskDTO> workingHoursPerWorkerList =
-            taskDAO.getWorkingProgressPerTaskReport(order, new LocalDate(referenceDate));
+            new ArrayList<WorkingProgressPerTaskDTO>();
 
-        if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
+        final List<TaskElement> tasks = order.getAllChildrenAssociatedTaskElements();
+        final List<TaskElement> sortTasks = sortTasks(order, tasks);
+        for (TaskElement task : sortTasks) {
+            if(task instanceof Task) {
+                workingHoursPerWorkerList.add(
+                        new WorkingProgressPerTaskDTO((Task) task, referenceLocalDate));
+            }
+        }
+        if (!workingHoursPerWorkerList.isEmpty()) {
             return new JRBeanCollectionDataSource(workingHoursPerWorkerList);
         } else {
             return new JREmptyDataSource();
         }
     }
 
+    private List<TaskElement> sortTasks(Order order, List<TaskElement> tasks) {
+        List<TaskElement> sortTasks = new ArrayList<TaskElement>();
+        final List<OrderElement> orderElements = order.getAllChildren();
+        for (OrderElement orderElement : orderElements) {
+            TaskElement task = findOrderElementInTasks(orderElement, tasks);
+            if (task != null) {
+                sortTasks.add(task);
+            }
+        }
+        return sortTasks;
+    }
+
+    private TaskElement findOrderElementInTasks(OrderElement orderElement,
+            List<TaskElement> tasks) {
+        for (TaskElement task : tasks) {
+            if (task != null && task.getOrderElement().getId().equals(orderElement.getId())) {
+                return task;
+            }
+        }
+        return null;
+    }
 }
