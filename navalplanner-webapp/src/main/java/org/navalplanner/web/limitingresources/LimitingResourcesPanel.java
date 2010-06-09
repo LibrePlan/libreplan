@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-import org.joda.time.base.AbstractInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
@@ -92,14 +91,20 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private Button paginationUpButton;
 
     public void paginationDown() {
+        paginatorFilter.previous();
+        doPaginationStuff();
+        horizontalPagination.setSelectedIndex(Math.max(0, horizontalPagination
+                .getSelectedIndex()) + 1);
     }
 
     public void paginationUp() {
+        paginatorFilter.next();
+        doPaginationStuff();
+        horizontalPagination.setSelectedIndex(Math.max(0, horizontalPagination
+                .getSelectedIndex()) + 1);
     }
 
     private Listbox horizontalPagination;
-
-    private AbstractInstant intervalEnd;
 
     private WeakReferencedListeners<IFilterChangedListener> zoomListeners = WeakReferencedListeners
             .create();
@@ -251,9 +256,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     public void afterCompose() {
 
         super.afterCompose();
-
         paginatorFilter = new PaginatorFilter();
-
         listZoomLevels = (Listbox) getFellow("listZoomLevels");
         horizontalPagination = (Listbox) getFellow("horizontalPagination");
         // First two levels are excluded
@@ -262,8 +265,13 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         // Pagination stuff
         paginationUpButton = (Button) getFellow("paginationUpButton");
+        paginationDownButton = (Button) getFellow("paginationDownButton");
         paginationUpButton.setDisabled(isLastPage());
-        doPaginationStuff(timeTracker.getDetailLevel());
+
+        paginatorFilter.setInterval(timeTracker.getRealInterval());
+        timeTracker.setFilter(paginatorFilter);
+        paginatorFilter.setZoomLevel(timeTracker.getDetailLevel());
+        doPaginationStuff();
 
         // Insert leftPane component with limitingresources list
         getFellow("insertionPointLeftPanel").appendChild(leftPane);
@@ -281,13 +289,19 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         IZoomLevelChangedListener zoomChangedListener = new IZoomLevelChangedListener() {
             @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
+            public void zoomLevelChanged(ZoomLevel newDetailLevel) {
                 dependencyList.getChildren().clear();
                 getFellow("insertionPointRightPanel").appendChild(
                         dependencyList);
                 dependencyList = generateDependencyComponentsList();
                 dependencyList.afterCompose();
-                doPaginationStuff(detailLevel);
+
+                paginatorFilter.setInterval(timeTracker.getRealInterval());
+                timeTracker.setFilter(paginatorFilter);
+
+
+                paginatorFilter.setZoomLevel(newDetailLevel);
+                doPaginationStuff();
             }
 
         };
@@ -296,19 +310,15 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         // Insert timetracker headers
         timeTrackerHeader = createTimeTrackerHeader();
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
-
         timeTrackerHeader.afterCompose();
         timeTrackerComponent.afterCompose();
 
     }
 
-    private void doPaginationStuff(ZoomLevel detailLevel) {
-        paginatorFilter.setZoomLevel(detailLevel != null ? detailLevel
-                : ZoomLevel.DETAIL_THREE);
-
+    private void doPaginationStuff() {
         paginatorFilter.setInterval(timeTracker.getRealInterval());
         timeTracker.setFilter(paginatorFilter);
-        timeTrackerComponent.invalidate();
+        timeTrackerComponent.getChildren().clear();
         paginatorFilter.populateHorizontalListbox();
 
         if (timeTrackerHeader != null) {
@@ -316,6 +326,18 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             timeTrackerComponent.afterCompose();
         }
     }
+
+    private void doDirectPaginationStuff() {
+        timeTrackerComponent.getChildren().clear();
+        timeTrackerHeader.getChildren().clear();
+
+        if (timeTrackerHeader != null) {
+            timeTrackerHeader.afterCompose();
+            timeTrackerComponent.afterCompose();
+        }
+    }
+
+
 
     private boolean isLastPage() {
         return true;
@@ -404,6 +426,29 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         queueListComponent.refreshQueue(queue);
     }
 
+    public void goToSelectedHorizontalPage() {
+        paginatorFilter.goToHorizontalPage(horizontalPagination
+                .getSelectedIndex());
+
+        doDirectPaginationStuff();
+        reloadComponent();
+    }
+
+    private void reloadComponent() {
+        timeTrackerHeader.recreate();
+        timeTrackerComponent.recreate();
+        // Reattach listener for zoomLevel changes. May be optimized
+        timeTracker.addZoomListener(new IZoomLevelChangedListener() {
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                paginatorFilter.setZoomLevel(detailLevel);
+                paginatorFilter.setInterval(timeTracker.getRealInterval());
+                timeTracker.setFilter(paginatorFilter);
+            }
+        });
+    }
+
+
     private class PaginatorFilter implements IDetailItemFilter {
 
         private DateTime intervalStart;
@@ -412,16 +457,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         private DateTime paginatorStart;
         private DateTime paginatorEnd;
 
-        private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
+        private ZoomLevel zoomLevel = ZoomLevel.DETAIL_THREE;
 
         private Period intervalIncrease() {
             switch (zoomLevel) {
             case DETAIL_ONE:
                 return Period.years(5);
             case DETAIL_TWO:
-                return Period.years(2);
+                return Period.years(5);
             case DETAIL_THREE:
-                return Period.years(1);
+                return Period.years(2);
             case DETAIL_FOUR:
                 return Period.months(6);
             case DETAIL_FIVE:
@@ -429,7 +474,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             case DETAIL_SIX:
                 return Period.weeks(6);
             }
-            return Period.years(1);
+            // Default month
+            return Period.years(2);
         }
 
         public void setInterval(Interval realInterval) {
@@ -440,6 +486,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
                 paginatorEnd = intervalEnd;
             }
+            updatePaginationButtons();
         }
 
         public void setZoomLevel(ZoomLevel detailLevel) {
@@ -447,12 +494,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
 
         public void paginationDown() {
+            paginatorFilter.previous();
+            doPaginationStuff();
             horizontalPagination.setSelectedIndex(horizontalPagination
                     .getSelectedIndex() - 1);
 
         }
 
         public void paginationUp() {
+            paginatorFilter.next();
+            doPaginationStuff();
             horizontalPagination.setSelectedIndex(Math.max(0,
                     horizontalPagination.getSelectedIndex()) + 1);
         }
@@ -510,6 +561,45 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             }
             horizontalPagination.setDisabled(horizontalPagination.getItems()
                     .size() < 2);
+        }
+
+        public void goToHorizontalPage(int interval) {
+            if (interval >= 0) {
+                paginatorStart = intervalStart;
+                for (int i = 0; i < interval; i++) {
+                    paginatorStart = paginatorStart.plus(intervalIncrease());
+                }
+                paginatorEnd = paginatorStart.plus(intervalIncrease());
+                if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+                    paginatorEnd = paginatorEnd.plus(intervalIncrease());
+                }
+                updatePaginationButtons();
+            }
+        }
+
+        private void updatePaginationButtons() {
+            paginationDownButton.setDisabled(isFirstPage());
+            paginationUpButton.setDisabled(isLastPage());
+        }
+
+        public void next() {
+            paginatorStart = paginatorStart.plus(intervalIncrease());
+            paginatorEnd = paginatorEnd.plus(intervalIncrease());
+            // Avoid reduced last intervals
+            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+                paginatorEnd = paginatorEnd.plus(intervalIncrease());
+            }
+            updatePaginationButtons();
+        }
+
+        public void previous() {
+            paginatorStart = paginatorStart.minus(intervalIncrease());
+            paginatorEnd = paginatorEnd.minus(intervalIncrease());
+            updatePaginationButtons();
+        }
+
+        public boolean isFirstPage() {
+            return !(paginatorStart.isAfter(intervalStart));
         }
 
     }
