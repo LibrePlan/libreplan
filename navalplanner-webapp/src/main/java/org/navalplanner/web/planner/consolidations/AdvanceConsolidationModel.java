@@ -156,6 +156,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
             ganttTask.fireChangesForPreviousValues(previousStartDate,
                     previousLength);
+            ganttTask.reloadResourcesText();
             context.reloadCharts();
         }
     }
