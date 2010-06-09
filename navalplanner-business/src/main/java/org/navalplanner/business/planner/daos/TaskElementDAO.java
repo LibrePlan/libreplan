@@ -36,7 +36,6 @@ import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.reports.dtos.CompletedEstimatedHoursPerTaskDTO;
 import org.navalplanner.business.reports.dtos.WorkingProgressPerTaskDTO;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -139,19 +138,6 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
         }
 
         return query.list();
-    }
-
-    @Override
-    public List<CompletedEstimatedHoursPerTaskDTO> getCompletedEstimatedHoursPerTaskReport(
-            Order order, LocalDate deadline) {
-
-        List<CompletedEstimatedHoursPerTaskDTO> result = new ArrayList<CompletedEstimatedHoursPerTaskDTO>();
-
-        final List<Task> tasks = getTasksByOrderAndDate(order, deadline);
-        for (Task task: tasks) {
-            result.add(new CompletedEstimatedHoursPerTaskDTO(task, deadline));
-        }
-        return result;
     }
 
     @Override
