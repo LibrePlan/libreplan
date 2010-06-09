@@ -106,8 +106,9 @@ function addLimitingResourcesListMethods(object) {
 	};
 
 	object.adjustResourceLoadRows = function(cmp) {
+		var width = YAHOO.util.Selector.query('.rightpanellayout #timetracker .z-grid-header')[0].clientWidth + "px";
 		YAHOO.util.Selector.query('.row_resourceload').each(function(node) {
-			node.style["width"] = cmp.clientWidth + "px";
+		node.style["width"] = width;
 		});
 	};
 

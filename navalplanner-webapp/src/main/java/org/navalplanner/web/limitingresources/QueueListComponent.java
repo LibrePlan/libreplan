@@ -125,6 +125,8 @@ public class QueueListComponent extends HtmlMacroComponent implements
         for (QueueComponent each : fromQueueToComponent.values()) {
             each.afterCompose();
         }
+        response(null, new AuInvoke(QueueListComponent.this,
+                "adjustResourceLoadRows"));
     }
 
     public List<QueueTask> getQueueTasks() {
