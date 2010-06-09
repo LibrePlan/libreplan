@@ -40,6 +40,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.AfterCopy;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 
@@ -229,6 +230,7 @@ public abstract class DayAssignment extends BaseEntity {
                 && day.compareTo(endExclusive) < 0;
     }
 
+    @AfterCopy
     protected void associateToResource() {
         getResource().addNewAssignments(Arrays.asList(this));
     }

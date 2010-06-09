@@ -270,26 +270,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             IAssignmentsOnResourceCalculator {
 
         private Set<DayAssignment> previousAssignmentsSet;
-        private Map<Resource, List<DayAssignment>> newAssignments;
 
-        public ReturningNewAssignments(List<DayAssignment> previousAssignments,
-                List<DayAssignment> newAssignments) {
+        public ReturningNewAssignments(List<DayAssignment> previousAssignments) {
             this.previousAssignmentsSet = new HashSet<DayAssignment>(
                     previousAssignments);
-            this.newAssignments = byResource(newAssignments);
-        }
-
-        private Map<Resource, List<DayAssignment>> byResource(List<DayAssignment> newAssignments) {
-            Map<Resource, List<DayAssignment>> result = new HashMap<Resource, List<DayAssignment>>();
-            for (DayAssignment each : newAssignments) {
-                Resource resource = each.getResource();
-                List<DayAssignment> list = result.get(resource);
-                if (list == null) {
-                    result.put(resource, new ArrayList<DayAssignment>());
-                }
-                result.get(resource).add(each);
-            }
-            return result;
         }
 
         @Override
@@ -300,15 +284,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     result.add(each);
                 }
             }
-            result.addAll(newAssignmentsFor(resource));
             return result;
         }
 
-        private List<DayAssignment> newAssignmentsFor(Resource resource) {
-            List<DayAssignment> result = newAssignments.get(resource);
-            return result == null ? Collections.<DayAssignment> emptyList()
-                    : result;
-        }
     }
 
     private final class TaskElementNavigator implements
@@ -1001,7 +979,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .createInitialVersion(currentScenario);
         orderReloaded.writeSchedulingDataChangesTo(currentScenario, newVersion);
         assigmentsOnResourceCalculator = new ReturningNewAssignments(
-                previousAssignments, orderReloaded.getDayAssignments());
+                previousAssignments);
         return createScenarioInfoForNotOwnerScenario(orderReloaded, previousVersion,
                 newVersion);
     }
