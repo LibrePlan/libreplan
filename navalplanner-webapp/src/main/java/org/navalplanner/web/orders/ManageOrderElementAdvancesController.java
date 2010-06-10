@@ -658,7 +658,12 @@ public class ManageOrderElementAdvancesController extends
                     }
                 });
 
-        if (advance instanceof IndirectAdvanceAssignment) {
+        if ((advance.getAdvanceType() != null)
+                && (advance.getAdvanceType().isQualityForm())) {
+            addMeasurementButton.setDisabled(true);
+            addMeasurementButton
+                    .setTooltiptext(_("Advances that are reported by quality forms can not be modified"));
+        } else if (advance instanceof IndirectAdvanceAssignment) {
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
                     .setTooltiptext(_("Calculated advances can not be modified"));
@@ -680,7 +685,12 @@ public class ManageOrderElementAdvancesController extends
             }
         });
 
-        if (advance instanceof IndirectAdvanceAssignment) {
+        if ((advance.getAdvanceType() != null)
+                && (advance.getAdvanceType().isQualityForm())) {
+            removeButton.setDisabled(true);
+            removeButton
+                    .setTooltiptext(_("Advances that are reported by quality forms can not be modified"));
+        } else if (advance instanceof IndirectAdvanceAssignment) {
             removeButton.setDisabled(true);
             removeButton
                     .setTooltiptext(_("Calculated advances can not be removed"));
@@ -1177,9 +1187,23 @@ public class ManageOrderElementAdvancesController extends
         }
 
         private void appendRemoveButton(final Listitem listItem) {
-            final AdvanceMeasurement advance = (AdvanceMeasurement) listItem
+
+            final AdvanceMeasurement measure = (AdvanceMeasurement) listItem
                     .getValue();
             final Button removeButton = createRemoveButton();
+
+            DirectAdvanceAssignment advance = (DirectAdvanceAssignment) measure
+                    .getAdvanceAssignment();
+            if ((advance.getAdvanceType() != null)
+                    && (advance.getAdvanceType().isQualityForm())) {
+                removeButton.setDisabled(true);
+                removeButton
+                        .setTooltiptext(_("Advances measurements that are reported by quality forms can not be removed"));
+            } else if (advance.isFake()) {
+                removeButton.setDisabled(true);
+                removeButton
+                        .setTooltiptext(_("Calculated advances measurement can not be removed"));
+            }
 
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
