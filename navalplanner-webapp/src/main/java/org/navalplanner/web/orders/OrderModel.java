@@ -918,4 +918,11 @@ public class OrderModel implements IOrderModel {
         return isAlreadyInUse(order) && (order.getScenarios().size() == 1);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void useSchedulingDataForCurrentScenario(Order order) {
+        orderDAO.reattach(order);
+        order.useSchedulingDataFor(scenarioManager.getCurrent());
+    }
+
 }

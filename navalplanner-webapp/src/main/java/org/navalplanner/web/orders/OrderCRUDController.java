@@ -628,6 +628,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void schedule(Order order) {
+        orderModel.useSchedulingDataForCurrentScenario(order);
         if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             if (order.isScheduled()) {
                 planningControllerEntryPoints.goToScheduleOf(order);

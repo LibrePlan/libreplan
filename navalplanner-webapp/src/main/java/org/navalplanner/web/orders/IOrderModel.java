@@ -123,4 +123,6 @@ public interface IOrderModel {
 
     boolean isAlreadyInUseAndIsOnlyInCurrentScenario(Order order);
 
+    void useSchedulingDataForCurrentScenario(Order order);
+
 }
