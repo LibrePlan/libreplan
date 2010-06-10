@@ -292,12 +292,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    @NotNull
     private Task task;
 
     private AssignmentFunction assignmentFunction;
 
-    @NotNull
     @OnCopy(Strategy.SHARE)
     private ResourcesPerDay resourcesPerDay;
 
@@ -307,7 +305,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private Set<LimitingResourceQueueElement> limitingResourceQueueElements = new HashSet<LimitingResourceQueueElement>();
 
-    @Min(0)
     private int originalTotalAssignment = 0;
 
     /**
@@ -363,6 +360,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         this.resourcesPerDay = resourcesPerDay;
     }
 
+    @NotNull
     public Task getTask() {
         return task;
     }
@@ -371,6 +369,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         this.originalTotalAssignment = originalTotalAssigment;
     }
 
+    @Min(0)
     public int getOriginalTotalAssigment() {
         return originalTotalAssignment;
     }
@@ -905,6 +904,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return calculateResourcesPerDayFromAssignments(getConsolidatedAssignments());
     }
 
+    @NotNull
     public ResourcesPerDay getResourcesPerDay() {
         return resourcesPerDay;
     }
