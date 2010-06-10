@@ -229,10 +229,12 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         .getEndDate());
 
                 Integer pendingHours = BigDecimal.ONE.subtract(
-                        value.getValue().divide(new BigDecimal(100),
-                                RoundingMode.DOWN)).multiply(
-                        new BigDecimal(resourceAllocation
-                                .getOriginalTotalAssigment())).intValue();
+                        value.getValue().setScale(2).divide(
+                                new BigDecimal(100), RoundingMode.DOWN))
+                        .multiply(
+                                new BigDecimal(resourceAllocation
+                                        .getOriginalTotalAssigment()))
+                        .intValue();
 
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
