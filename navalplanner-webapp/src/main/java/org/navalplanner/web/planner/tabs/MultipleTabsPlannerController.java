@@ -31,6 +31,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
 import org.navalplanner.web.limitingresources.LimitingResourcesController;
@@ -170,6 +171,9 @@ public class MultipleTabsPlannerController implements Composer,
     @Autowired
     private URLHandlerRegistry registry;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private TabsConfiguration buildTabsConfiguration() {
 
         Map<String, String[]> parameters = getURLQueryParametersMap();
@@ -233,7 +237,7 @@ public class MultipleTabsPlannerController implements Composer,
         final State<Void> typeChanged = typeChangedState();
         ITab advancedAllocation = doFeedbackOn(AdvancedAllocationTabCreator.create(mode,
                 transactionService, orderDAO, taskElementDAO, resourceDAO,
-                returnToPlanningTab()));
+                scenarioManager.getCurrent(), returnToPlanningTab()));
         return TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))

@@ -186,30 +186,35 @@ public class AdvancedAllocationTabCreator {
     private final ITaskElementDAO taskElementDAO;
 
     private final IResourceDAO resourceDAO;
+    private final Scenario currentScenario;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario,
+            IBack onBack) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO, taskElementDAO, resourceDAO, onBack).build();
+                orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack)
+                .build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
         Validate.notNull(resourceDAO);
         Validate.notNull(onBack);
+        Validate.notNull(currentScenario);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
         this.onBack = onBack;
         this.taskElementDAO = taskElementDAO;
         this.resourceDAO = resourceDAO;
+        this.currentScenario = currentScenario;
     }
 
     private ITab build() {
@@ -277,6 +282,7 @@ public class AdvancedAllocationTabCreator {
 
     private List<AllocationInput> createAllocationInputsFor(Order order) {
         Order orderReloaded = reload(order);
+        orderReloaded.useSchedulingDataFor(currentScenario);
         return createAllocationsWithOrderReloaded(orderReloaded);
     }
 
