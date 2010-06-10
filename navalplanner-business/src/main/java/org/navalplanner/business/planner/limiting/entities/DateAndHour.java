@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.limiting.entities;
 import java.util.Iterator;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 /**
@@ -73,6 +74,10 @@ public class DateAndHour implements Comparable<DateAndHour> {
 
     public String toString() {
         return date + "; " + hour;
+    }
+
+    public DateTime toDateTime() {
+        return date.toDateTimeAtStartOfDay().plusHours(hour);
     }
 
     public static DateAndHour Max(DateAndHour arg0, DateAndHour arg1) {

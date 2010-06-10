@@ -50,6 +50,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Div;
@@ -281,9 +282,26 @@ public class QueueComponent extends XulElement implements
             }
         }
 
+
         result.appendChild(generateCompletionShade(datesMapper, queueElement));
+        result.appendChild(generateProgressBar(datesMapper, queueElement, task,
+                startPixels));
 
         return result;
+    }
+
+    private static Component generateProgressBar(IDatesMapper datesMapper,
+            LimitingResourceQueueElement queueElement, Task task,
+            int startPixels) {
+        DateAndHour advancementEndDate = getAdvancementEndDate(queueElement);
+        long millis = (advancementEndDate.toDateTime().getMillis() - queueElement
+                .getStartTime().toDateTime().getMillis());
+        Div progressBar = new Div();
+        if (!queueElement.getStartDate().isEqual(advancementEndDate.getDate())) {
+            progressBar.setWidth(datesMapper.toPixels(millis) + "px");
+            progressBar.setSclass("queue-progress-bar");
+        }
+        return progressBar;
     }
 
     private static Div generateNonWorkableShade(IDatesMapper datesMapper,

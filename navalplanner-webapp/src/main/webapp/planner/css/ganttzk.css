@@ -1119,3 +1119,9 @@ body .perspectives-column {
 	overflow-y:scroll;
 }
 
+.queue-progress-bar {
+    background-color: #75D9B0;
+    height: 5px;
+    margin-top: 5px;
+    -moz-border-radius-bottomleft: 4px;
+}
