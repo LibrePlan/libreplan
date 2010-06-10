@@ -56,10 +56,10 @@ import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
-import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
+import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.trees.ITreeNode;
 
 /**
@@ -269,8 +269,6 @@ public abstract class OrderElementTemplate extends BaseEntity implements
             }
         }
     }
-
-    public abstract OrderElement createElement();
 
     public abstract OrderElement createElement(OrderLineGroup parent);
 

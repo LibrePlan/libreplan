@@ -420,13 +420,13 @@ public class OrderModel implements IOrderModel {
     }
 
     private Order createOrderFrom(OrderTemplate template) {
-        return (Order) createOrderElementFrom(null, template);
+        return template.createOrder();
     }
 
     private OrderElement createOrderElementFrom(OrderLineGroup parent,
             OrderElementTemplate template) {
-        return (parent != null) ? template.createElement(parent) : template
-                .createElement();
+        Validate.notNull(parent);
+        return template.createElement(parent);
     }
 
     private void setDefaultOrderCode() throws ConcurrentModificationException {

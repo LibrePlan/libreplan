@@ -50,7 +50,7 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         throw new UnsupportedOperationException();
     }
 
-    public Order createElement() {
+    public Order createOrder() {
         Order order = Order.create();
         order.setInitDate(today());
         order.setCalendar(calendar);
