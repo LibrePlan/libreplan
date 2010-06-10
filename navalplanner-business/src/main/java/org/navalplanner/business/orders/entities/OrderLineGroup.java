@@ -47,6 +47,7 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
 import org.navalplanner.business.trees.ITreeParentNode;
@@ -892,6 +893,10 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         return result;
+    }
+
+    public OrderVersion getCurrentOrderVersion() {
+        return getCurrentSchedulingData().getOriginOrderVersion();
     }
 
 }

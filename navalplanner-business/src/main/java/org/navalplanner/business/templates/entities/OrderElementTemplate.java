@@ -209,6 +209,12 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return orderElement;
     }
 
+    protected <T extends OrderElement> T setupVersioningInfo(
+            OrderLineGroup parent, T orderElement) {
+        orderElement.useSchedulingDataFor(parent.getCurrentOrderVersion());
+        return orderElement;
+    }
+
     private void setupInfoComponent(OrderElement orderElement) {
         orderElement.setCode(getCode());
         orderElement.setName(getName());

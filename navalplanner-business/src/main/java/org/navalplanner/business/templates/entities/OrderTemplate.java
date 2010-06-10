@@ -29,6 +29,8 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -50,8 +52,11 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         throw new UnsupportedOperationException();
     }
 
-    public Order createOrder() {
+    public Order createOrder(Scenario currentScenario) {
         Order order = Order.create();
+        order.setVersionForScenario(currentScenario, OrderVersion
+                .createInitialVersion(currentScenario));
+        order.useSchedulingDataFor(currentScenario);
         order.setInitDate(today());
         order.setCalendar(calendar);
         return setupGroupParts(setupSchedulingStateType(order));

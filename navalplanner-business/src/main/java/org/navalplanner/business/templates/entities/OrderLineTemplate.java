@@ -109,8 +109,8 @@ public class OrderLineTemplate extends OrderElementTemplate {
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
-        OrderLine line = setupSchedulingStateType(OrderLine
-                .createOrderLineWithUnfixedPercentage(getWorkHours()));
+        OrderLine line = setupSchedulingStateType(setupVersioningInfo(parent,
+                OrderLine.createOrderLineWithUnfixedPercentage(getWorkHours())));
         line.initializeTemplate(this);
         parent.add(line);
         return setupElementParts(line);

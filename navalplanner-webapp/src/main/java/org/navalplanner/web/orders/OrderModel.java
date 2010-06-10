@@ -420,7 +420,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private Order createOrderFrom(OrderTemplate template) {
-        return template.createOrder();
+        return template.createOrder(scenarioManager.getCurrent());
     }
 
     private OrderElement createOrderElementFrom(OrderLineGroup parent,
