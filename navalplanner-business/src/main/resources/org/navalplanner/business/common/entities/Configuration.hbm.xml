@@ -12,6 +12,7 @@
         </id>
         <version name="version" access="property" type="long" />
 
+        <!-- Not indexed -->
         <many-to-one name="defaultCalendar" cascade="none"
             column="CONFIGURATION_ID" />
 

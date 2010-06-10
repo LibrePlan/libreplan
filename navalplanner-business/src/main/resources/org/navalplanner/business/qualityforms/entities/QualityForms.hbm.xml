@@ -20,6 +20,7 @@
       </type>
     </property>
 
+    <!-- Index created in a database-object section -->
     <list name="qualityFormItems" table="QUALITY_FORM_ITEMS">
         <key column="QUALITY_FORM_ID"/>
         <index column="idx"/>
@@ -54,6 +55,7 @@
         column="ORDER_ELEMENT_ID"
         index="idx_taskqualityform_on_orderelement"/>
 
+    <!-- Index created in a database-object section -->
     <list name="taskQualityFormItems" table="TASK_QUALITY_FORM_ITEMS">
         <key column="TASK_QUALITY_FORM_ID"/>
         <index column="idx"/>
@@ -69,5 +71,23 @@
     <property name="reportAdvance" access="field" />
 
 </class>
+
+<!-- Index to boost the search of QualityFormItems inside a QualityForm -->
+<database-object>
+    <create>CREATE INDEX idx_QualityForm_on_QualityFormItems
+        ON QUALITY_FORM_ITEMS (QUALITY_FORM_ID)</create>
+    <drop>DROP INDEX idx_QualityForm_on_QualityFormItems</drop>
+    <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+    <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+</database-object>
+
+<!-- Index to boost the search of TaskQualityFormItems inside a TaskQualityForm -->
+<database-object>
+    <create>CREATE INDEX idx_TaskQualityForm_on_TaskQualityFormItems
+        ON TASK_QUALITY_FORM_ITEMS (TASK_QUALITY_FORM_ID)</create>
+    <drop>DROP INDEX idx_TaskQualityForm_on_TaskQualityFormItems</drop>
+    <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+    <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+</database-object>
 
 </hibernate-mapping>

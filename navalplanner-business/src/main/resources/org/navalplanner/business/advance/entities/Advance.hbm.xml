@@ -56,6 +56,7 @@
                 <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
         </set>
 
+        <!-- Not indexed -->
         <set name="nonCalculatedConsolidations"
             cascade="none"
             inverse="true"
@@ -75,6 +76,7 @@
             column="INDIRECT_ORDER_ELEMENT_ID"
             index="idx_indirectadvanceassigment_on_orderelement"/>
 
+        <!-- Not indexed -->
         <set name="calculatedConsolidations"
             cascade="none"
             inverse="true"
@@ -101,6 +103,7 @@
     <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field" />
     <property name="communicationDate" access="field" />
 
+    <!-- Not indexed -->
     <set name="nonCalculatedConsolidatedValues" access="field" cascade="none" inverse="true">
         <key column="ADVANCE_MEASUREMENT_ID" />
         <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue" />

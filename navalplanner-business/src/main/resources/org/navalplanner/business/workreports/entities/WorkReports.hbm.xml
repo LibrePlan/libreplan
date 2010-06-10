@@ -23,11 +23,13 @@
       </type>
     </property>
 
+    <!-- Not indexed -->
     <set name="workReportLabelTypeAssigments" cascade="all-delete-orphan">
         <key column="WORK_REPORT_TYPE_ID"/>
         <one-to-many class="WorkReportLabelTypeAssigment"/>
     </set>
 
+    <!-- Not indexed -->
     <set name="headingFields" table="HEADING_FIELD">
         <key column="HEADING_ID"/>
         <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionField">
@@ -37,6 +39,7 @@
         </composite-element>
     </set>
 
+    <!-- Not indexed -->
     <set name="lineFields" table="LINE_FIELD">
         <key column="HEADING_ID"/>
         <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionField">
@@ -63,23 +66,31 @@
 
     <property name="generateCode" not-null="true" />
 
+    <!-- Not indexed -->
     <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
 
-    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID"/>
+    <!-- Indexed -->
+    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID"
+        index="idx_Resource_on_WorkReport" />
 
-    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID"/>
+    <!-- Indexed -->
+    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement"
+        column="ORDER_ELEMENT_ID" index="idx_OrderElement_on_WorkReport" />
 
+    <!-- Not indexed -->
     <set name="labels" table="WORKREPORTS_LABELS">
         <key column="WORK_REPORT_ID"/>
         <many-to-many column="LABEL_ID"
             class="org.navalplanner.business.labels.entities.Label"/>
     </set>
 
+    <!-- Indexed on the other side -->
     <set name="workReportLines" cascade="all-delete-orphan" inverse="true">
         <key column="WORK_REPORT_ID"/>
         <one-to-many class="WorkReportLine"/>
     </set>
 
+    <!-- Not indexed -->
     <set name="descriptionValues" table="DESCRIPTION_VALUES">
         <key column="DESCRIPTION_VALUE_ID"/>
         <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionValue">
@@ -107,20 +118,34 @@
     <property name="clockFinish" access="field"
         type="org.joda.time.contrib.hibernate.PersistentLocalTimeExact" />
 
-    <many-to-one name="workReport" class="org.navalplanner.business.workreports.entities.WorkReport" column="WORK_REPORT_ID" />
+    <!-- Indexed -->
+    <many-to-one name="workReport" class="org.navalplanner.business.workreports.entities.WorkReport"
+        column="WORK_REPORT_ID"
+        index="idx_WorkReport_on_WorkReportLine" />
 
-    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID" not-null="true"/>
+    <!-- Indexed -->
+    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
+        column="RESOURCE_ID" not-null="true"
+        index="idx_Resource_on_WorkReportLine" />
 
-    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" not-null="true"/>
+    <!-- Indexed -->
+    <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement"
+        column="ORDER_ELEMENT_ID" not-null="true"
+        index="idx_OrderElement_on_WorkReportLine" />
 
-    <many-to-one name="typeOfWorkHours" class="org.navalplanner.business.costcategories.entities.TypeOfWorkHours" column="TYPE_WORK_HOURS_ID" not-null="true"/>
+    <!-- Indexed -->
+    <many-to-one name="typeOfWorkHours" class="org.navalplanner.business.costcategories.entities.TypeOfWorkHours"
+        column="TYPE_WORK_HOURS_ID" not-null="true"
+        index="idx_TypeOfWorkHours_on_WorkReportLine" />
 
+    <!-- Not indexed -->
     <set name="labels" table="WORKREPORTSLINES_LABELS">
         <key column="WORK_REPORT_LINE_ID"/>
         <many-to-many column="LABEL_ID"
             class="org.navalplanner.business.labels.entities.Label"/>
     </set>
 
+    <!-- Not indexed -->
     <set name="descriptionValues" table="DESCRIPTION_VALUES_IN_LINE">
         <key column="DESCRIPTION_VALUE_ID"/>
         <composite-element class="org.navalplanner.business.workreports.valueobjects.DescriptionValue">
@@ -142,8 +167,10 @@
     <property name="labelsSharedByLines"/>
     <property name="positionNumber"/>
 
+    <!-- Not indexed -->
     <many-to-one name="labelType" class="org.navalplanner.business.labels.entities.LabelType" column="LABEL_TYPE_ID" />
 
+    <!-- Not indexed -->
     <many-to-one name="defaultLabel" class="org.navalplanner.business.labels.entities.Label" column="LABEL_ID" />
 
 </class>

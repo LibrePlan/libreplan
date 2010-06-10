@@ -16,17 +16,20 @@
 
         <property name="name" access="field"/>
 
+        <!-- Index created in a database-object section -->
         <set name="exceptions" access="field" cascade="all-delete-orphan">
             <key column="BASE_CALENDAR_ID" />
             <one-to-many class="CalendarException" />
         </set>
 
+        <!-- Index on the other side -->
         <list name="calendarDataVersions" access="field" cascade="all-delete-orphan">
             <key column="BASE_CALENDAR_ID" />
             <index column="POSITION_IN_CALENDAR" />
             <one-to-many class="CalendarData" />
         </list>
 
+        <!-- Not indexed -->
         <list name="calendarAvailabilities" access="field" cascade="all-delete-orphan">
             <key column="BASE_CALENDAR_ID" />
             <index column="POSITION_IN_CALENDAR" />
@@ -56,6 +59,7 @@
         <property name="date" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
         <property name="hours" access="field"/>
+        <!-- Not indexed -->
         <many-to-one name="type" cascade="none"
             column="CALENDAR_EXCEPTION_ID" />
 
@@ -95,7 +99,9 @@
             <element column="HOURS" type="integer" />
         </map>
 
-        <many-to-one name="parent" class="BaseCalendar" access="field"/>
+        <!-- Indexed -->
+        <many-to-one name="parent" class="BaseCalendar" access="field"
+            index="idx_CalendarData_on_BaseCalendar" />
 
         <property name="expiringDate" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
@@ -117,4 +123,11 @@
 
     </class>
 
+    <!-- Index to boost the search of CalendarExceptions inside BaseCalendar -->
+    <database-object>
+        <create>CREATE INDEX idx_CalendarException_on_BaseCalendar ON CalendarException (BASE_CALENDAR_ID)</create>
+        <drop>DROP INDEX idx_CalendarException_on_BaseCalendar</drop>
+        <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+        <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+    </database-object>
 </hibernate-mapping>
