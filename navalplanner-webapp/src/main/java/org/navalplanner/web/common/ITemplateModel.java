@@ -37,6 +37,8 @@ public interface ITemplateModel {
 
     public interface IOnFinished {
         public void onWithoutErrorFinish();
+
+        public void errorHappened(Exception exceptionHappened);
     }
 
     void setScenario(String loginName, Scenario scenario,

@@ -423,6 +423,7 @@ public class TemplateModel implements ITemplateModel {
             @Override
             public void doOperation(
                     final IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
+                Exception exceptionHappened = null;
                 try {
                     transactionService
                             .runOnTransaction(new IOnTransaction<Void>() {
@@ -433,17 +434,25 @@ public class TemplateModel implements ITemplateModel {
                                     return null;
                                 }
                             });
+                } catch (Exception e) {
+                    exceptionHappened = e;
                 } finally {
                     desktopUpdateEmitter.doUpdate(showEnd());
                 }
-                desktopUpdateEmitter.doUpdate(executeFinish(onFinish));
+                if (exceptionHappened == null) {
+                    desktopUpdateEmitter.doUpdate(notifySuccess(onFinish));
+                } else {
+                    desktopUpdateEmitter.doUpdate(notifyException(onFinish,
+                            exceptionHappened));
+                }
             }
+
         };
         LongOperationFeedback.progressive(desktop, LongOperationFeedback
                 .withAsyncUpates(reassignations));
     }
 
-    private IDesktopUpdate executeFinish(
+    private IDesktopUpdate notifySuccess(
             final IOnFinished onFinish) {
         return new IDesktopUpdate() {
 
@@ -454,6 +463,16 @@ public class TemplateModel implements ITemplateModel {
         };
     }
 
+    private IDesktopUpdate notifyException(final IOnFinished onFinish,
+            final Exception exceptionHappened) {
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                onFinish.errorHappened(exceptionHappened);
+            }
+        };
+    }
 
     private void doReassignations(Scenario scenario,
             IDesktopUpdatesEmitter<IDesktopUpdate> emitter) {

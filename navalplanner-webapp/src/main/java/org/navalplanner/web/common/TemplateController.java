@@ -20,9 +20,13 @@
 
 package org.navalplanner.web.common;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.ITemplateModel.IOnFinished;
@@ -46,6 +50,8 @@ import org.zkoss.zul.Window;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TemplateController extends GenericForwardComposer {
 
+    private static final Log LOG = LogFactory.getLog(TemplateController.class);
+
     @Autowired
     private ITemplateModel templateModel;
 
@@ -54,10 +60,14 @@ public class TemplateController extends GenericForwardComposer {
 
     private Window window;
 
+    private IMessagesForUser windowMessages;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         window = (Window) comp.getFellow("changeScenarioWindow");
+        windowMessages = new MessagesForUser(window
+                .getFellow("messagesContainer"));
     }
 
     public Scenario getScenario() {
@@ -88,6 +98,15 @@ public class TemplateController extends GenericForwardComposer {
                     public void onWithoutErrorFinish() {
                         window.setVisible(false);
                         Executions.sendRedirect("/");
+                    }
+
+                    @Override
+                    public void errorHappened(Exception exceptionHappened) {
+                        LOG.error("error doing reassignation",
+                                exceptionHappened);
+                        windowMessages.showMessage(Level.ERROR, _(
+                                "error doing reassignation: {0}",
+                                exceptionHappened));
                     }
                 });
     }

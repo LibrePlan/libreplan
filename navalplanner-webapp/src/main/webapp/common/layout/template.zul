@@ -70,6 +70,7 @@
                     label="${templateCtrl.scenario.name}" />
                 <window id="changeScenarioWindow" visible="false"
                     title="${i18n:_('Change scenario')}">
+                    <div id="messagesContainer" />
                     <grid>
                         <rows>
                             <row>

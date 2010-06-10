@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.IScenarioManager;
@@ -61,6 +63,9 @@ import org.zkoss.zul.api.Window;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class ScenarioCRUDController extends GenericForwardComposer {
+
+    private static final Log LOG = LogFactory
+            .getLog(ScenarioCRUDController.class);
 
     @Autowired
     private IScenarioModel scenarioModel;
@@ -234,8 +239,15 @@ public class ScenarioCRUDController extends GenericForwardComposer {
                                             Executions
                                                     .sendRedirect("/scenarios/scenarios.zul");
                                         }
+
+                                        @Override
+                                        public void errorHappened(
+                                                Exception exceptionHappened) {
+                                            errorHappenedDoingReassignation(exceptionHappened);
+                                        }
                                     });
                         }
+
                     });
             if (isCurrentScenario) {
                 connectButton.setDisabled(true);
@@ -250,6 +262,12 @@ public class ScenarioCRUDController extends GenericForwardComposer {
             item.setOpen(true);
         }
 
+    }
+
+    private void errorHappenedDoingReassignation(Exception exceptionHappened) {
+        LOG.error("error happened doing reassignation", exceptionHappened);
+        messagesForUser.showMessage(Level.ERROR, _(
+                "error doing reassignation: {0}", exceptionHappened));
     }
 
     public Set<Order> getOrders() {
