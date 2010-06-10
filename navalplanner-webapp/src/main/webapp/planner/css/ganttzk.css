@@ -711,6 +711,10 @@ div.limitingresourcesleftpane  {
     -moz-border-radius: 12px 0 0 12px;
 }
 
+.queue-element.unmet-deadline {
+    background-color: #FF8888;
+}
+
 /* ---------- End Limiting resources ----------------- */
 
 

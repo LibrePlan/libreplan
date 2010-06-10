@@ -252,19 +252,18 @@ public class QueueComponent extends XulElement implements
         int startPixels = getStartPixels(datesMapper, queueElement);
         result.setLeft(forCSS(startPixels));
         if (startPixels < 0) {
-            cssClass += " truncated-start";
+            cssClass += " truncated-start ";
         }
 
         int taskWidth = getWidthPixels(datesMapper, queueElement);
         if ((startPixels + taskWidth) > datesMapper.getHorizontalSize()) {
             taskWidth = datesMapper.getHorizontalSize() - startPixels;
-            cssClass += " truncated-end";
+            cssClass += " truncated-end ";
         } else {
             result.appendChild(generateNonWorkableShade(datesMapper,
                     queueElement));
         }
         result.setWidth(forCSS(taskWidth));
-        result.setClass(cssClass);
 
         Task task = queueElement.getResourceAllocation().getTask();
         if (task.getDeadline() != null) {
@@ -280,9 +279,13 @@ public class QueueComponent extends XulElement implements
                 result.appendChild(generateNonWorkableShade(datesMapper,
                         queueElement));
             }
+            if (task.getDeadline().isBefore(queueElement.getEndDate())) {
+                cssClass += " unmet-deadline ";
+            }
         }
 
 
+        result.setClass(cssClass);
         result.appendChild(generateCompletionShade(datesMapper, queueElement));
         result.appendChild(generateProgressBar(datesMapper, queueElement, task,
                 startPixels));
