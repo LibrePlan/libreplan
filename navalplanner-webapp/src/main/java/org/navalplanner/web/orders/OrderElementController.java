@@ -131,6 +131,7 @@ public class OrderElementController extends GenericForwardComposer {
             manageOrderElementAdvancesController
                     .refreshChangesFromOrderElement();
             manageOrderElementAdvancesController.createAndLoadBindings();
+            manageOrderElementAdvancesController.refreshSelectedAdvance();
         }
     }
 

@@ -27,16 +27,16 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Window;
 
 /**
  * Controller for {@link Advance} consolidation view.
@@ -53,35 +53,41 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     private Grid advancesGrid;
 
+    private Window window;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        window = (Window) comp;
     }
 
-    public void init(IContextWithPlannerTask<TaskElement> context,
+    public void showWindow(IContextWithPlannerTask<TaskElement> context,
             org.navalplanner.business.planner.entities.Task task,
-            PlanningState planningState, IMessagesForUser messagesForUser) {
+            PlanningState planningState) {
         advanceConsolidationModel.initAdvancesFor(task, context, planningState);
-        reloadAdvanceGrid();
-    }
 
-    // Triggered when closable button is clicked
-    public void onClose(Event event) {
-        cancel();
-        event.stopPropagation();
+        try {
+            Util.reloadBindings(window);
+            window.doModal();
+        } catch (SuspendNotAllowedException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void cancel() {
-        clear();
         advanceConsolidationModel.cancel();
-    }
-
-    private void clear() {
+        close();
     }
 
     public void accept() {
         advanceConsolidationModel.accept();
-        clear();
+        close();
+    }
+
+    private void close() {
+        window.setVisible(false);
     }
 
     public String getInfoAdvance() {
@@ -100,6 +106,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     public void reloadAdvanceGrid() {
         advanceConsolidationModel.initLastConsolidatedDate();
+        advanceConsolidationModel.setReadOnlyConsolidations();
         Util.reloadBindings(advancesGrid);
     }
 
@@ -113,6 +120,17 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     public String infoMessages() {
         return advanceConsolidationModel.infoMessages();
+    }
+
+    public String getReadOnlySclass() {
+        if (advanceConsolidationModel.hasLimitingResourceAllocation()) {
+            return "readonly";
+        }
+        return "";
+    }
+
+    public boolean isUnitType() {
+        return advanceConsolidationModel.isUnitType();
     }
 
 }

@@ -120,6 +120,8 @@ public class GanttDiagramGraph<V, D> {
 
         boolean isVisible(D dependency);
 
+        boolean isFixed(V task);
+
     }
 
     static class GanttZKAdapter implements IAdapter<Task, Dependency> {
@@ -228,6 +230,11 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public Date getSmallestBeginDateFromChildrenFor(Task container) {
             return ((TaskContainer) container).getSmallestBeginDateFromChildren();
+        }
+
+        @Override
+        public boolean isFixed(Task task) {
+            return task.isFixed();
         }
 
     }
@@ -772,11 +779,7 @@ public class GanttDiagramGraph<V, D> {
 
         private void doRecalculations(List<Recalculation> recalculationsNeeded) {
             Set<V> allModified = new HashSet<V>();
-            List<Recalculation> calculated = new ArrayList<Recalculation>();
             for (Recalculation each : recalculationsNeeded) {
-                if (each.haveToDoCalculation()) {
-                    calculated.add(each);
-                }
                 boolean modified = each.doRecalculation();
                 if (modified) {
                     allModified.add(each.taskPoint.task);
@@ -1032,6 +1035,9 @@ public class GanttDiagramGraph<V, D> {
         @SuppressWarnings("unchecked")
         private boolean enforceEndDate(V task, Date previousEndDate,
                 Set<D> incoming) {
+            if (adapter.isFixed(task)) {
+                return false;
+            }
             Constraint<Date> currentLength = adapter
                     .getCurrentLenghtConstraintFor(task);
             Constraint<Date> respectStartDate = adapter
@@ -1048,6 +1054,9 @@ public class GanttDiagramGraph<V, D> {
         }
 
         private boolean enforceStartDate(V task, Set<D> incoming) {
+            if (adapter.isFixed(task)) {
+                return false;
+            }
             Date newStart = calculateStartDateFor(task, incoming);
             if (!adapter.getStartDate(task).equals(newStart)) {
                 adapter.setStartDateFor(task, newStart);

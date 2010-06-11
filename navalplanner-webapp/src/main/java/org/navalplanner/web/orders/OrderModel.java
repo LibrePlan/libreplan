@@ -504,6 +504,20 @@ public class OrderModel implements IOrderModel {
             order.writeSchedulingDataChanges();
         }
         saveDerivedScenarios();
+        calculateAdvancePercentage(order);
+        for (OrderElement orderElement : order.getAllChildren()) {
+            calculateAdvancePercentage(orderElement);
+        }
+    }
+
+    private void calculateAdvancePercentage(OrderElement orderElement) {
+        BigDecimal advancePercentage = orderElement.getAdvancePercentage();
+        if (orderElement.getTaskSource() != null) {
+            if (orderElement.getTaskSource().getTask() != null) {
+                orderElement.getTaskSource().getTask().setAdvancePercentage(
+                        advancePercentage);
+            }
+        }
     }
 
     private void createAndSaveNewOrderVersion(Scenario currentScenario,

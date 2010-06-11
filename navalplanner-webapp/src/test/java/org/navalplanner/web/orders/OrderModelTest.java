@@ -334,7 +334,7 @@ public class OrderModelTest {
                     for (OrderElement orderElement : elements) {
                         assertThat(((OrderLineGroup) orderElement)
                                 .getIndirectAdvanceAssignments().size(),
-                                equalTo(1));
+                                equalTo(0));
                     }
                     for (int i = 0; i < containers.length; i++) {
                         assertThat(elements.get(i).getId(),

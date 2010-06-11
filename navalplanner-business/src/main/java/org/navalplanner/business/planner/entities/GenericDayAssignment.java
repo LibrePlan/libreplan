@@ -114,6 +114,7 @@ public class GenericDayAssignment extends DayAssignment {
         }
     }
 
+
     public static GenericDayAssignment create(LocalDate day, int hours,
             Resource resource) {
         GenericDayAssignment result = new GenericDayAssignment(day, hours,
@@ -127,6 +128,7 @@ public class GenericDayAssignment extends DayAssignment {
         Set<GenericDayAssignment> result = new HashSet<GenericDayAssignment>();
         for (GenericDayAssignment a : assignemnts) {
             GenericDayAssignment created = copy(newParent, a);
+            created.associateToResource();
             result.add(created);
         }
         return result;
@@ -137,6 +139,7 @@ public class GenericDayAssignment extends DayAssignment {
             GenericDayAssignment toBeCopied) {
         GenericDayAssignment result = create(toBeCopied.getDay(), toBeCopied
                 .getHours(), toBeCopied.getResource());
+        result.setConsolidated(toBeCopied.isConsolidated());
         result.parentState = result.parentState.setParent(newParent);
         result.associateToResource();
         return result;
@@ -170,6 +173,7 @@ public class GenericDayAssignment extends DayAssignment {
     }
 
     protected void detachFromAllocation() {
+        this.parentState = new ContainerNotSpecified();
     }
 
     @Override
@@ -186,6 +190,16 @@ public class GenericDayAssignment extends DayAssignment {
     @Override
     public Scenario getScenario() {
         return parentState.getScenario();
+    }
+
+    public DayAssignment withHours(int newHours) {
+        GenericDayAssignment result = create(getDay(), newHours, getResource());
+        if (container != null) {
+            result.parentState.setParent(container);
+        } else if (this.getGenericResourceAllocation() != null) {
+            result.parentState.setParent(this.getGenericResourceAllocation());
+        }
+        return result;
     }
 
 }

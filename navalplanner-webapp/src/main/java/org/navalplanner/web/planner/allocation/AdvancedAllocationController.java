@@ -48,6 +48,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -56,7 +57,6 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.planner.allocation.streches.StrechesFunctionConfiguration;
-import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.PairOfLists;
@@ -87,6 +87,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
@@ -138,10 +139,22 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return new Interval(task.getStartDate(), task
                         .getEndDate());
             } else {
-                LocalDate start = all.get(0).getStartDate();
-                LocalDate end = getEnd(all);
+                LocalDate start = min(all.get(0)
+                        .getStartConsideringAssignments(), all.get(0)
+                        .getStartDate());
+                LocalDate taskEndDate = LocalDate.fromDateFields(task
+                        .getEndDate());
+                LocalDate end = max(getEnd(all), taskEndDate);
                 return new Interval(asDate(start), asDate(end));
             }
+        }
+
+        private LocalDate min(LocalDate... dates) {
+            return Collections.min(Arrays.asList(dates), null);
+        }
+
+        private LocalDate max(LocalDate... dates) {
+            return Collections.max(Arrays.asList(dates), null);
         }
 
         private static LocalDate getEnd(List<ResourceAllocation<?>> all) {
@@ -401,6 +414,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Component associatedComponent;
 
     private Listbox advancedAllocationHorizontalPagination;
+    private Listbox advancedAllocationVerticalPagination;
 
     public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs) {
@@ -454,6 +468,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         private DateTime paginatorEnd;
 
         private ZoomLevel zoomLevel = ZoomLevel.DETAIL_ONE;
+
+        @Override
+        public Interval getCurrentPaginationInterval() {
+            return new Interval(intervalStart.toDate(), intervalEnd.toDate());
+        }
 
         private Period intervalIncrease() {
             switch (zoomLevel) {
@@ -580,6 +599,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 paginatorEnd = intervalEnd;
             }
             updatePaginationButtons();
+        }
+
+        @Override
+        public void resetInterval() {
+            setInterval(timeTracker.getRealInterval());
         }
     }
 
@@ -725,7 +749,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public ListModel getZoomLevels() {
-        return new SimpleListModel(ZoomLevel.values());
+        ZoomLevel[] selectableZoomlevels = { ZoomLevel.DETAIL_ONE,
+                ZoomLevel.DETAIL_TWO, ZoomLevel.DETAIL_THREE,
+                ZoomLevel.DETAIL_FOUR, ZoomLevel.DETAIL_FIVE };
+        return new SimpleListModel(selectableZoomlevels);
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
@@ -747,18 +774,23 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Component normalLayout;
     private Component noDataLayout;
     private TimeTrackedTableWithLeftPane<Row, Row> timeTrackedTableWithLeftPane;
+
     private int verticalIndex = 0;
+    private List<Integer> verticalPaginationIndexes;
+    private int verticalPage;
 
     private List<Row> getRows() {
         if (rowsCached != null) {
             return filterRows(rowsCached);
         }
         rowsCached = new ArrayList<Row>();
+        int position = 1;
         for (AllocationInput allocationInput : allocationInputs) {
             if (allocationInput.getAggregate()
                     .getAllocationsSortedByStartDate().isEmpty()) {
             } else {
                 Row groupingRow = buildGroupingRow(allocationInput);
+                groupingRow.setDescription(position + " " + allocationInput.getTaskName());
                 groupingRows.put(allocationInput, groupingRow);
                 rowsCached.add(groupingRow);
                 List<Row> genericRows = genericRows(allocationInput);
@@ -767,8 +799,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 List<Row> specificRows = specificRows(allocationInput);
                 groupingRow.listenTo(specificRows);
                 rowsCached.addAll(specificRows);
+                position++;
             }
         }
+        populateVerticalListbox();
         return filterRows(rowsCached);
     }
 
@@ -777,12 +811,23 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         verticalPaginationDownButton
                 .setDisabled((verticalIndex + VERTICAL_MAX_ELEMENTS) >= rows
                         .size());
-        return rows.subList(verticalIndex, Math.min(rows.size(),
-                verticalIndex + VERTICAL_MAX_ELEMENTS));
+        if(advancedAllocationVerticalPagination.getChildren().size() >= 2) {
+            advancedAllocationVerticalPagination.setDisabled(false);
+            advancedAllocationVerticalPagination.setSelectedIndex(
+                    verticalPage);
+        }
+        else {
+            advancedAllocationVerticalPagination.setDisabled(true);
+        }
+        return rows.subList(verticalIndex,
+                verticalPage + 1 < verticalPaginationIndexes.size() ?
+                       verticalPaginationIndexes.get(verticalPage + 1).intValue() :
+                       rows.size());
     }
 
     public void verticalPagedown() {
-        verticalIndex = verticalIndex + VERTICAL_MAX_ELEMENTS;
+        verticalPage++;
+        verticalIndex = verticalPaginationIndexes.get(verticalPage);
         timeTrackedTableWithLeftPane.reload();
     }
 
@@ -791,30 +836,77 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     public void verticalPageup() {
-        verticalIndex = Math.max(verticalIndex - VERTICAL_MAX_ELEMENTS, 0);
+        verticalPage--;
+        verticalIndex = verticalPaginationIndexes.get(verticalPage);
         timeTrackedTableWithLeftPane.reload();
     }
 
+    public void goToSelectedVerticalPage() {
+        verticalPage = advancedAllocationVerticalPagination.
+            getSelectedIndex();
+        verticalIndex = verticalPaginationIndexes.get(verticalPage);
+        timeTrackedTableWithLeftPane.reload();
+    }
+
+    public void populateVerticalListbox() {
+        if (rowsCached != null) {
+            verticalPage = 0;
+            verticalPaginationIndexes = new ArrayList<Integer>();
+            for(int i=0; i<rowsCached.size(); i=
+                    correctVerticalPageDownPosition(i+VERTICAL_MAX_ELEMENTS)) {
+                int endPosition = correctVerticalPageUpPosition(Math.min(
+                        rowsCached.size(), i+VERTICAL_MAX_ELEMENTS) - 1);
+                String label = rowsCached.get(i).getDescription() + " - " +
+                    rowsCached.get(endPosition).getDescription();
+                Listitem item = new Listitem();
+                item.appendChild(new Listcell(label));
+                advancedAllocationVerticalPagination.appendChild(item);
+                verticalPaginationIndexes.add(new Integer(i));
+            }
+        }
+    }
+
+    private int correctVerticalPageUpPosition(int position) {
+        int correctedPosition = position;
+        //moves the pointer up until it finds the previous grouping row
+        //or the beginning of the list
+        while(correctedPosition > 0 &&
+                !rowsCached.get(correctedPosition).isGroupingRow()) {
+            correctedPosition--;
+        }
+        return correctedPosition;
+    }
+
+    private int correctVerticalPageDownPosition(int position) {
+        int correctedPosition = position;
+        //moves the pointer down until it finds the next grouping row
+        //or the end of the list
+        while(correctedPosition < rowsCached.size() &&
+                !rowsCached.get(correctedPosition).isGroupingRow()) {
+            correctedPosition++;
+        }
+        return correctedPosition;
+    }
 
     private List<Row> specificRows(AllocationInput allocationInput) {
         List<Row> result = new ArrayList<Row>();
         for (SpecificResourceAllocation specificResourceAllocation : allocationInput.getAggregate()
                 .getSpecificAllocations()) {
             result.add(createSpecificRow(specificResourceAllocation,
-                    allocationInput.getResultReceiver().createRestriction()));
+                    allocationInput.getResultReceiver().createRestriction(), allocationInput.task));
         }
         return result;
     }
 
     private Row createSpecificRow(
             SpecificResourceAllocation specificResourceAllocation,
-            Restriction restriction) {
+            Restriction restriction, TaskElement task) {
         return Row.createRow(messages, restriction,
                 specificResourceAllocation.getResource()
                         .getName(), 1, Arrays
                 .asList(specificResourceAllocation), specificResourceAllocation
                 .getResource().getShortDescription(),
-                specificResourceAllocation.getResource().isLimitingResource());
+                specificResourceAllocation.getResource().isLimitingResource(), task);
     }
 
     private List<Row> genericRows(AllocationInput allocationInput) {
@@ -822,18 +914,18 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (GenericResourceAllocation genericResourceAllocation : allocationInput.getAggregate()
                 .getGenericAllocations()) {
             result.add(buildGenericRow(genericResourceAllocation,
-                    allocationInput.getResultReceiver().createRestriction()));
+                    allocationInput.getResultReceiver().createRestriction(), allocationInput.task));
         }
         return result;
     }
 
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation,
-            Restriction restriction) {
+            Restriction restriction, TaskElement task) {
         return Row.createRow(messages, restriction, Criterion
                 .getNames(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation), genericResourceAllocation
-                .isLimiting());
+                .isLimiting(), task);
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
@@ -841,7 +933,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 .createRestriction();
         String taskName = _("{0}", allocationInput.getTaskName());
         Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
-                allocationInput.getAllocationsSortedByStartDate(), false);
+                allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
         return groupingRow;
     }
 
@@ -957,9 +1049,9 @@ class Row {
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
  List<? extends ResourceAllocation<?>> allocations,
-            String description, boolean limiting) {
+            String description, boolean limiting, TaskElement task) {
         Row newRow = new Row(messages, restriction, name, level, allocations,
-                limiting);
+                limiting, task);
         newRow.setDescription(description);
         return newRow;
     }
@@ -967,9 +1059,9 @@ class Row {
     static Row createRow(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction, String name,
             int level, List<? extends ResourceAllocation<?>> allocations,
-            boolean limiting) {
+            boolean limiting, TaskElement task) {
         return new Row(messages, restriction, name, level, allocations,
-                limiting);
+                limiting, task);
     }
 
     public void markErrorOnTotal(String message) {
@@ -995,6 +1087,8 @@ class Row {
     private final AdvancedAllocationController.Restriction restriction;
 
     private final IMessagesForUser messages;
+
+    private TaskElement task;
 
     void listenTo(Collection<Row> rows) {
         for (Row row : rows) {
@@ -1307,12 +1401,13 @@ class Row {
             AdvancedAllocationController.Restriction restriction,
             String name, int level,
  List<? extends ResourceAllocation<?>> allocations,
-            boolean limiting) {
+            boolean limiting, TaskElement task) {
         this.messages = messages;
         this.restriction = restriction;
         this.name = name;
         this.level = level;
         this.isLimiting = limiting;
+        this.task = task;
         this.aggregate = new AggregateOfResourceAllocations(
                 new ArrayList<ResourceAllocation<?>>(allocations));
     }
@@ -1325,8 +1420,11 @@ class Row {
     }
 
     Component hoursOnInterval(DetailItem item) {
-        Component result = isGroupingRow() ? new Label() : disableIfNeeded(
-                item, noNegativeIntbox());
+        Component result =
+            isGroupingRow() || isBeforeTaskStartDate(item) ||
+                isBeforeLatestConsolidation(item) ?
+                    new Label() :
+                    disableIfNeeded(item, noNegativeIntbox());
         reloadHoursOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
@@ -1346,7 +1444,8 @@ class Row {
 
     private void addListenerIfNeeded(final DetailItem item,
             final Component component) {
-        if (isGroupingRow()) {
+        if (isGroupingRow() || isBeforeTaskStartDate(item) ||
+                isBeforeLatestConsolidation(item)) {
             return;
         }
         final Intbox intbox = (Intbox) component;
@@ -1374,6 +1473,15 @@ class Row {
             Label label = (Label) component;
             label.setValue(getHoursForDetailItem(item) + "");
             label.setClass("calculated-hours");
+        }
+        else if (isBeforeTaskStartDate(item)) {
+            Label label = (Label) component;
+            label.setValue(getHoursForDetailItem(item) + "");
+            label.setClass("unmodifiable-hours");
+        } else if (isBeforeLatestConsolidation(item)) {
+            Label label = (Label) component;
+            label.setValue(getHoursForDetailItem(item) + "");
+            label.setClass("consolidated-hours");
         } else {
             Intbox intbox = (Intbox) component;
             intbox.setValue(getHoursForDetailItem(item));
@@ -1383,6 +1491,23 @@ class Row {
         }
     }
 
+    private boolean isBeforeTaskStartDate(DetailItem item) {
+        DateTime taskStartDate =
+            new DateTime(task.getStartDate().getTime());
+        return item.getEndDate().compareTo(taskStartDate) < 0;
+    }
+
+    private boolean isBeforeLatestConsolidation(DetailItem item) {
+        if(!((Task)task).hasConsolidations()) {
+            return false;
+        }
+        LocalDate d = ((Task)task).getFirstDayNotConsolidated();
+        DateTime firstDayNotConsolidated =
+            new DateTime(d.getYear(), d.getMonthOfYear(),
+                    d.getDayOfMonth(), 0, 0, 0, 0);
+        return item.getStartDate().compareTo(firstDayNotConsolidated) < 0;
+    }
+
     private ResourceAllocation<?> getAllocation() {
         if (isGroupingRow()) {
             throw new IllegalStateException("is grouping row");
@@ -1390,7 +1515,7 @@ class Row {
         return aggregate.getAllocationsSortedByStartDate().get(0);
     }
 
-    private boolean isGroupingRow() {
+    public boolean isGroupingRow() {
         return level == 0;
     }
 
@@ -1400,6 +1525,14 @@ class Row {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

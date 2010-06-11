@@ -26,7 +26,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.IEditTaskUtilities;
 import org.navalplanner.web.planner.order.PlanningState;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -42,7 +41,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 public class AdvanceConsolidationCommand implements
         IAdvanceConsolidationCommand {
 
-    private EditTaskController editTaskController;
+    private AdvanceConsolidationController advanceConsolidationController;
     private PlanningState planningState;
 
     @Autowired
@@ -57,7 +56,7 @@ public class AdvanceConsolidationCommand implements
         editTaskUtilities.reattach(task);
 
         if (isApplicableTo(task)) {
-            this.editTaskController.showEditFormAdvanceConsolidation(context,
+            this.advanceConsolidationController.showWindow(context,
                     (Task) task, planningState);
         }
     }
@@ -68,9 +67,10 @@ public class AdvanceConsolidationCommand implements
     }
 
     @Override
-    public void initialize(EditTaskController editTaskController,
+    public void initialize(
+            AdvanceConsolidationController advanceConsolidationController,
             PlanningState planningState) {
-        this.editTaskController = editTaskController;
+        this.advanceConsolidationController = advanceConsolidationController;
         this.planningState = planningState;
     }
 

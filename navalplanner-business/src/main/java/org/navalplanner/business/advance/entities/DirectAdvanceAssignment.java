@@ -101,6 +101,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     public AdvanceMeasurement getLastAdvanceMeasurement() {
+
         if (advanceMeasurements.isEmpty()) {
             return null;
         }
@@ -136,13 +137,14 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         if (advanceMeasurement == null) {
             return BigDecimal.ZERO;
         }
-        return advanceMeasurement.getValue().setScale(2).divide(maxValue,
+        return advanceMeasurement.getValue().divide(maxValue, 2,
                 RoundingMode.DOWN);
     }
 
     public void addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
         this.advanceMeasurements.add(advanceMeasurement);
         advanceMeasurement.setAdvanceAssignment(this);
+        getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
     public AdvanceMeasurement getAdvanceMeasurementAtExactDate(LocalDate date) {

@@ -294,8 +294,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             BigDecimal advancePercentage;
             Integer hours;
             if (orderElement != null) {
-                advancePercentage = orderElement
-                        .getAdvancePercentage();
+                advancePercentage = taskElement.getAdvancePercentage();
                 hours = taskElement.getTotalHoursAssigned();
             } else {
                 advancePercentage = new BigDecimal(0);
@@ -322,8 +321,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public BigDecimal getAdvancePercentage() {
-            if (taskElement.getOrderElement() != null) {
-                return taskElement.getOrderElement().getAdvancePercentage();
+            if (taskElement != null) {
+                return taskElement.getAdvancePercentage();
             }
             return new BigDecimal(0);
         }
@@ -431,7 +430,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return new HashSet<Label>();
         }
 
-
         private String buildLabelsText() {
             StringBuilder result = new StringBuilder();
 
@@ -491,6 +489,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return "["
                     + StringUtils.join(forCriterionRepresentations,
                             ", ") + "]";
+        }
+
+        @Override
+        public String updateTooltipText() {
+            return buildTooltipText();
         }
 
         private String buildTooltipText() {
@@ -559,6 +562,20 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
+        public Date getConsolidatedline() {
+            if (!taskElement.isLeaf() || !taskElement.hasConsolidations()) {
+                return null;
+            }
+            LocalDate consolidatedline = ((Task) taskElement)
+                    .getFirstDayNotConsolidated();
+            if (consolidatedline == null) {
+                return null;
+            }
+            return consolidatedline.toDateTimeAtStartOfDay()
+                    .toDate();
+        }
+
+        @Override
         public boolean isSubcontracted() {
             return taskElement.isSubcontracted();
         }
@@ -590,6 +607,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public String getAssignedStatus() {
             return taskElement.getAssignedStatus();
+        }
+
+        @Override
+        public boolean isFixed() {
+            return taskElement.isLimitingAndHasDayAssignments();
         }
 
     }

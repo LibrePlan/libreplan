@@ -38,8 +38,10 @@ import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearc
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.orders.OrderElementPredicate;
+import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
+import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -90,6 +92,12 @@ public class OrderPlanningController implements Composer {
     private EditTaskController editTaskController;
 
     @Autowired
+    private AdvanceConsolidationController advanceConsolidationController;
+
+    @Autowired
+    private AdvanceAssignmentPlanningController advanceAssignmentPlanningController;
+
+    @Autowired
     private OrderCRUDController orderCRUDController;
 
     private Order order;
@@ -121,6 +129,7 @@ public class OrderPlanningController implements Composer {
         this.order = order;
         this.additional = Arrays.asList(additionalCommands);
         if (planner != null) {
+            ensureIsInPlanningOrderView();
             updateConfiguration();
         }
     }
@@ -131,6 +140,10 @@ public class OrderPlanningController implements Composer {
 
     public CalendarAllocationController getCalendarAllocationController() {
         return calendarAllocationController;
+    }
+
+    private void ensureIsInPlanningOrderView() {
+        viewSwitcher.goToPlanningOrderView();
     }
 
     public ViewSwitcher getViewSwitcher() {
@@ -173,8 +186,9 @@ public class OrderPlanningController implements Composer {
     private void updateConfiguration() {
         if (order != null) {
             model.setConfigurationToPlanner(planner, order, viewSwitcher,
-                    editTaskController, calendarAllocationController,
-                    additional);
+                    editTaskController, advanceAssignmentPlanningController,
+                    advanceConsolidationController,
+                    calendarAllocationController, additional);
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
         }
@@ -316,6 +330,14 @@ public class OrderPlanningController implements Composer {
                                 foundTaskElement, model.getPlanningState());
             }
         }
+    }
+
+    public AdvanceConsolidationController getAdvanceConsolidationController() {
+        return advanceConsolidationController;
+    }
+
+    public AdvanceAssignmentPlanningController getAdvanceAssignmentPlanningController() {
+        return advanceAssignmentPlanningController;
     }
 
 }

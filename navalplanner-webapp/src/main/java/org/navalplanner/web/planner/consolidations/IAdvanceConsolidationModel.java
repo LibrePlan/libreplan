@@ -41,9 +41,15 @@ public interface IAdvanceConsolidationModel {
 
     void initLastConsolidatedDate();
 
+    boolean hasLimitingResourceAllocation();
+
+    void setReadOnlyConsolidations();
+
     boolean isVisibleAdvances();
 
     boolean isVisibleMessages();
+
+    boolean isUnitType();
 
     List<AdvanceConsolidationDTO> getConsolidationDTOs();
 

@@ -40,13 +40,13 @@ resourcesLoadPanel = self;
         <separator/>
         <hbox id="additionalFilterInsertionPoint1" />
         <separator/>
-        Filter:
+        ${i18n:_('Filter')}:
         <listbox id="listFilters" mold="select" rows="1" width="100px"
             model="${resourcesLoadPanel.filters}"
             onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
         </listbox>
         <separator/>
-        ${i18n:_('Name filter')}:
+        <label id="filterByNameLabel">${i18n:_('Name filter')}:</label>
         <combobox id="filterByNameCombo" width="50px"
             onChange="resourcesLoadPanel.onSelectFilterByName(self.selectedItemApi.value)" />
         <separator/>
@@ -60,11 +60,11 @@ resourcesLoadPanel = self;
                     splittable="true" autoscroll="true">
 
                     <borderlayout >
-                        <north border="0" height="38px" flex="true" collapsible="true">
+                        <north border="0" height="35px" flex="true" collapsible="true">
                             <vbox pack="top" align="center">
                             <tree fixedLayout="true">
                                 <treecols>
-                                    <treecol label="Name" height="29px"/>
+                                    <treecol label="${i18n:_('Name')}" height="29px"/>
                                 </treecols>
                             </tree>
 
@@ -78,7 +78,7 @@ resourcesLoadPanel = self;
 
                 <center sclass="taskspanel">
                     <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker"></div></north>
+                        <north border="0"><div sclass="timetrackergap" height="30px" id="insertionPointTimetracker"></div></north>
                         <center autoscroll="true" border="0" sclass="rightpanellayout">
                             <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
                         </center>
@@ -87,7 +87,7 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="200px" collapsible="true" title="Graphics"
+        <south height="200px" collapsible="true" title="${i18n:_('Graphics')}"
             sclass="scheduling-graphics" id="graphics"
             onOpen="resourcesLoadPanel.changeChartVisibility(event.open);">
             <div id="insertionPointChart" />

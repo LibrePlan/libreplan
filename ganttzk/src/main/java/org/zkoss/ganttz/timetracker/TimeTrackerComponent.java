@@ -57,11 +57,17 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                recreate();
+                if (isInPage()) {
+                    recreate();
+                }
             }
         };
         this.timeTracker.addZoomListener(zoomListener);
         timeTrackerElementId = timetrackerId;
+    }
+
+    private boolean isInPage() {
+        return getPage() != null;
     }
 
     public int getHorizontalSizePixels() {

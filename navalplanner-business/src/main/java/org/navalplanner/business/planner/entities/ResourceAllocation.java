@@ -21,12 +21,14 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +51,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Allocator
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
@@ -307,6 +310,38 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private int originalTotalAssignment = 0;
 
+    private IOnDayAssignmentRemoval dayAssignmenteRemoval = new DoNothing();
+
+    public interface IOnDayAssignmentRemoval {
+
+        public void onRemoval(ResourceAllocation<?> allocation,
+                DayAssignment assignment);
+    }
+
+    public static class DoNothing implements IOnDayAssignmentRemoval {
+
+        @Override
+        public void onRemoval(
+                ResourceAllocation<?> allocation, DayAssignment assignment) {
+        }
+    }
+
+    public static class DetachDayAssignmentOnRemoval implements
+            IOnDayAssignmentRemoval {
+
+        @Override
+        public void onRemoval(ResourceAllocation<?> allocation,
+                DayAssignment assignment) {
+            assignment.detach();
+        }
+    }
+
+    public void setOnDayAssignmentRemoval(
+            IOnDayAssignmentRemoval dayAssignmentRemoval) {
+        Validate.notNull(dayAssignmentRemoval);
+        this.dayAssignmenteRemoval = dayAssignmentRemoval;
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -365,8 +400,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return task;
     }
 
-    public void setOriginalTotalAssigment(int originalTotalAssigment) {
-        this.originalTotalAssignment = originalTotalAssigment;
+    private void updateOriginalTotalAssigment() {
+        if ((task.getConsolidation() == null)
+                || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
+            originalTotalAssignment = getNonConsolidatedHours();
+        } else {
+            BigDecimal lastConslidation = task.getConsolidation()
+                    .getConsolidatedValues().last().getValue();
+            originalTotalAssignment = new BigDecimal(getNonConsolidatedHours())
+                    .divide(
+                            BigDecimal.ONE.subtract(lastConslidation.divide(
+                                    new BigDecimal(100), RoundingMode.DOWN)),
+                            RoundingMode.DOWN).intValue();
+        }
     }
 
     @Min(0)
@@ -414,14 +460,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 @Override
                 public void allocate(ResourcesPerDay resourcesPerDay) {
                     Task currentTask = getTask();
-                    LocalDate startInclusive = new LocalDate(currentTask
+                    LocalDate taskStart = LocalDate.fromDateFields(currentTask
                             .getStartDate());
+                    LocalDate startInclusive = (currentTask
+                            .getFirstDayNotConsolidated().compareTo(taskStart) >= 0) ? currentTask
+                            .getFirstDayNotConsolidated()
+                            : taskStart;
                     List<T> assignmentsCreated = createAssignments(
-                            resourcesPerDay, startInclusive,
-                            endExclusive);
+                            resourcesPerDay, startInclusive, endExclusive);
                     resetAssignmentsTo(assignmentsCreated);
                     setResourcesPerDay(calculateResourcesPerDayFromAssignments());
                 }
+
             };
         }
 
@@ -476,7 +526,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private void allocate(LocalDate end, int hours) {
-            LocalDate startInclusive = new LocalDate(getTask().getStartDate());
+            LocalDate taskStart = LocalDate.fromDateFields(task.getStartDate());
+            LocalDate startInclusive = (task.getFirstDayNotConsolidated()
+                    .compareTo(taskStart) >= 0) ? task
+                    .getFirstDayNotConsolidated() : taskStart;
             List<T> assignmentsCreated = createAssignments(startInclusive, end,
                     hours);
             resetAssignmentsTo(assignmentsCreated);
@@ -485,12 +538,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private void allocate(LocalDate startInclusive, LocalDate endExclusive,
                 int hours) {
+            LocalDate firstDayNotConsolidated = getTask().getFirstDayNotConsolidated();
+            LocalDate start = startInclusive.compareTo(firstDayNotConsolidated) >= 0 ? startInclusive
+            : firstDayNotConsolidated;
             List<T> assignmentsCreated = createAssignments(startInclusive,
                     endExclusive, hours);
-            removingAssignments(getAssignments(startInclusive, endExclusive));
-            addingAssignments(assignmentsCreated);
-            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
-            setOriginalTotalAssigment(getAssignedHours());
+            resetAssigmentsForInterval(start, endExclusive, assignmentsCreated);
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
@@ -596,10 +649,31 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
-    private void resetAssignmentsTo(List<T> assignments) {
-        removingAssignments(getAssignments());
+    protected void resetAssignmentsTo(List<T> assignments) {
+        removingAssignments((List<? extends DayAssignment>) removeConsolidated(getAssignments()));
         addingAssignments(assignments);
-        setOriginalTotalAssigment(getAssignedHours());
+        updateOriginalTotalAssigment();
+    }
+
+    protected void resetAssigmentsForInterval(LocalDate startInclusive,
+            LocalDate endExclusive, List<T> assignmentsCreated) {
+        removingAssignments(removeConsolidated(getAssignments(startInclusive,
+                endExclusive)));
+        addingAssignments(assignmentsCreated);
+        setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
+        updateOriginalTotalAssigment();
+    }
+
+    private List<? extends DayAssignment> removeConsolidated(
+            List<? extends DayAssignment> assignments) {
+        for (Iterator<? extends DayAssignment> iterator = assignments
+                .iterator(); iterator.hasNext();) {
+            DayAssignment dayAssignment = (DayAssignment) iterator.next();
+            if (dayAssignment.isConsolidated()) {
+                iterator.remove();
+            }
+        }
+        return assignments;
     }
 
     protected final void addingAssignments(Collection<? extends T> assignments) {
@@ -610,13 +684,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         allocateLimitingDayAssignments(Collections.<T>emptyList());
     }
 
-    public void allocateLimitingDayAssignments(List<T> assignments) {
+    @SuppressWarnings("unchecked")
+    public void allocateLimitingDayAssignments(List<? extends DayAssignment> assignments) {
         assert isLimiting();
-        resetAssignmentsTo(assignments);
+        resetAssignmentsTo((List<T>) assignments);
     }
 
-    protected final void removingAssignments(
-            List<? extends DayAssignment> assignments){
+    private void removingAssignments(
+            List<? extends DayAssignment> assignments) {
         getDayAssignmentsState().removingAssignments(assignments);
     }
 
@@ -776,6 +851,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 List<? extends DayAssignment> assignments){
             removeAssignments(assignments);
             clearCachedData();
+            for (DayAssignment each : assignments) {
+                dayAssignmenteRemoval.onRemoval(ResourceAllocation.this, each);
+            }
         }
 
         protected abstract void removeAssignments(
@@ -877,11 +955,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getDayAssignmentsState().getOrderedDayAssignments();
     }
 
-    public List<? extends T> getNonConsolidatedAssignments(){
+    public List<T> getNonConsolidatedAssignments() {
         return getDayAssignmentsByConsolidated(false);
     }
 
-    public List<? extends T> getConsolidatedAssignments() {
+    public List<T> getConsolidatedAssignments() {
         return getDayAssignmentsByConsolidated(true);
     }
 
@@ -937,6 +1015,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public Set<DerivedAllocation> getDerivedAllocations() {
         return Collections.unmodifiableSet(derivedAllocations);
+    }
+
+    public LocalDate getStartConsideringAssignments() {
+        List<? extends DayAssignment> assignments = getAssignments();
+        if (assignments.isEmpty()) {
+            return getStartDate();
+        }
+        return assignments.get(0).getDay();
     }
 
     public LocalDate getStartDate() {
@@ -1011,7 +1097,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         switchToScenario(scenario);
         mergeAssignments(modifications);
         setResourcesPerDay(modifications.getResourcesPerDay());
-        setOriginalTotalAssigment(modifications.getOriginalTotalAssigment());
+        updateOriginalTotalAssigment();
         setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(scenario, modifications.getDerivedAllocations());
     }

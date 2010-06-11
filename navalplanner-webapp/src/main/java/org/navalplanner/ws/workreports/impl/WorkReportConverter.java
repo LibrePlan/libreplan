@@ -369,7 +369,7 @@ public final class WorkReportConverter {
                 updateLabel(labelDTO, labels);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("work report have not this label type assigned"));
+                        _("work report has not this label type assigned"));
             }
         }
 
@@ -390,7 +390,7 @@ public final class WorkReportConverter {
                 value.setValue(StringUtils.trim(valueDTO.value));
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("work report have not any description value with this field name"));
+                        _("work report has not any description value with this field name"));
             }
         }
 
@@ -448,7 +448,7 @@ public final class WorkReportConverter {
                 updateLabel(labelDTO, labels);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("work report line have not this label type assigned"));
+                        _("a work report line has not this label type assigned"));
             }
         }
 

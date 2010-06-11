@@ -18,8 +18,12 @@
 
         <property name="originalTotalAssignment" access="field"/>
 
-        <many-to-one class="Task" name="task" column="TASK" />
+        <!-- Indexed -->
+        <many-to-one class="Task" name="task" column="TASK" index="idx_resourceallocation_on_task"/>
 
+        <!-- It is not included index, navigation from assigment function to
+            ResourceAllocation not useful
+         -->
         <many-to-one class="AssignmentFunction" name="assignmentFunction"
             column="ASSIGNMENT_FUNCTION" not-null="false"
             cascade="all" lazy="false" />
@@ -29,9 +33,10 @@
             <one-to-many class="DerivedAllocation"/>
         </set>
 
+        <!-- Wrong mapping. A ResourceAllocation only has one limiting resource queue element associated -->
         <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true">
             <key column="RESOURCE_ALLOCATION_ID" />
-            <one-to-many class="LimitingResourceQueueElement"/>
+            <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"/>
         </set>
 
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
@@ -123,7 +128,7 @@
     </class>
 
     <!-- LimitingResourceQueueElement -->
-    <class name="LimitingResourceQueueElement" table="limiting_resource_queue_element">
+    <class name="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement" table="limiting_resource_queue_element">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -133,36 +138,44 @@
 
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" cascade="all" not-null="false" unique="true" />
 
-        <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" />
+        <!-- Indexed -->
+        <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" index="idx_resourcequeueelement_on_resourcequeue"/>
 
         <property name="earlierStartDateBecauseOfGantt" column="EARLIER_START_DATE_BECAUSE_OF_GANTT" />
 
+        <property name="earliestEndDateBecauseOfGantt" column="EARLIEST_END_DATE_BECAUSE_OF_GANTT" />
+
         <property name="creationTimestamp" column="CREATION_TIMESTAMP" />
 
-        <component name="startQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
+        <component name="startQueuePosition" class="org.navalplanner.business.planner.limiting.entities.QueuePosition">
             <property name="date" column="START_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="hour" column="START_HOUR" />
         </component>
 
-        <component name="endQueuePosition" class="org.navalplanner.business.planner.entities.QueuePosition">
+        <component name="endQueuePosition" class="org.navalplanner.business.planner.limiting.entities.QueuePosition">
             <property name="date" column="END_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="hour" column="END_HOUR" />
         </component>
 
+        <!--  Indexed the other side. Useful to browse the output dependencies of
+        a LimitingResourceQueueElement -->
         <set name="dependenciesAsOrigin" cascade="none" lazy="false">
             <key column="origin_queue_element_id"/>
-            <one-to-many class="LimitingResourceQueueDependency"/>
+            <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"/>
         </set>
 
+        <!-- Indexed the other side. Useful to browse the input dependencies of
+        a LimitingResourceQueueElement -->
         <set name="dependenciesAsDestiny" cascade="none" lazy="false">
             <key column="destiny_queue_element_id"/>
-            <one-to-many class="LimitingResourceQueueDependency"/>
+            <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"/>
         </set>
 
     </class>
 
     <!-- LimitingResourceQueueDependency -->
-    <class name="LimitingResourceQueueDependency" table="limiting_resource_queue_dependency">
+    <class name="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"
+     table="limiting_resource_queue_dependency">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -171,20 +184,25 @@
 
         <property name="type">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.navalplanner.business.planner.entities.LimitingResourceQueueDependency$QueueDependencyType</param>
+                <param name="enumClass">org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency$QueueDependencyType</param>
             </type>
         </property>
 
+        <!--  Indexed -->
         <many-to-one name="hasAsOrigin" cascade="none"
-            class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
+            class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"
             column="origin_queue_element_id"
-            not-null="false">
+            not-null="false"
+            index="idx_queuedependency_on_originqueue">
         </many-to-one>
 
+        <!-- Indexed -->
         <many-to-one name="hasAsDestiny" cascade="none"
-            class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement"
+            class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"
             column="destiny_queue_element_id"
-            not-null="false">
+            not-null="false"
+            index="idx_queuedependency_on_destinyqueue"
+            >
         </many-to-one>
 
         <one-to-one name="ganttDependency"
@@ -210,6 +228,8 @@
 
         <property name="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate" not-null="true"/>
 
+        <!-- Not indexed. It is not indexed because it is regarded that to navigate
+        from a resource to all his DayAssigments is not useful -->
         <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
           column="RESOURCE_ID" not-null="true">
         </many-to-one>
@@ -275,4 +295,5 @@
             <one-to-many class="DerivedDayAssignmentsContainer"/>
         </set>
     </class>
+
 </hibernate-mapping>

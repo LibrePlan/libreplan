@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -50,11 +50,10 @@ public class QueueTask extends Div {
         this.start = element.getStartDate();
         this.end = element.getEndDate();
         this.element = element;
-        setAction("onmouseover: zkLimitingDependencies.showDependenciesForQueueElement('"
+        setAction("onmouseover: zkLimitingResourcesList.showRelatedElementsForQueueElement('"
                 + getUuid()
-                + "');onmouseout: zkLimitingDependencies.hideDependenciesForQueueElement('"
+                + "');onmouseout: zkLimitingResourcesList.hideRelatedElementsForQueueElement('"
                 + getUuid() + "')");
-
         final String taskUid = this.getUuid();
         this.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override

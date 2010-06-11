@@ -20,11 +20,16 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.verify;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.consecutiveDays;
@@ -34,6 +39,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.easymock.IAnswer;
@@ -44,8 +50,11 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
+import org.navalplanner.business.planner.entities.ResourceAllocation.IOnDayAssignmentRemoval;
 import org.navalplanner.business.resources.entities.Worker;
 
 public class SpecificResourceAllocationTest {
@@ -143,6 +152,7 @@ public class SpecificResourceAllocationTest {
                 start.toDateTimeAtStartOfDay().toDate()).anyTimes();
         expect(task.getEndDate()).andReturn(
                 end.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(start).anyTimes();
         replay(task);
     }
 
@@ -245,6 +255,50 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void canBeNotifiedWhenADayAssignmentIsRemoved() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        List<SpecificDayAssignment> currentAssignments = specificResourceAllocation
+                .getAssignments();
+        IOnDayAssignmentRemoval dayAssignmentRemovalMock = createMock(IOnDayAssignmentRemoval.class);
+        for (SpecificDayAssignment each : currentAssignments) {
+            dayAssignmentRemovalMock
+                    .onRemoval(specificResourceAllocation, each);
+            expectLastCall().once();
+        }
+        specificResourceAllocation
+                .setOnDayAssignmentRemoval(dayAssignmentRemovalMock);
+        replay(dayAssignmentRemovalMock);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        verify(dayAssignmentRemovalMock);
+    }
+
+    @Test
+    public void canAutomaticallyDetachDayAssignmentsWhenRemoved() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+        List<SpecificDayAssignment> assignments = specificResourceAllocation
+                .getAssignments();
+        for (SpecificDayAssignment each : assignments) {
+            assertThat(each.getSpecificResourceAllocation(), notNullValue());
+        }
+
+        specificResourceAllocation
+                .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+        specificResourceAllocation.onInterval(start, start.plusDays(2))
+                .allocateHours(10);
+
+        for (SpecificDayAssignment each : assignments) {
+            assertThat(each.getSpecificResourceAllocation(), nullValue());
+        }
+    }
+
+    @Test
     public void thePreviousAssignmentsAreReplacedWhenAllocationHoursOnInterval() {
         givenResourceCalendarAlwaysReturning(3);
         LocalDate start = new LocalDate(2000, 2, 4);
@@ -297,6 +351,30 @@ public class SpecificResourceAllocationTest {
         specificResourceAllocation.onInterval(start, start.plusDays(2))
                 .allocateHours(10);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 8));
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void youCanAllocateHoursPreservingTheCurrentShape() {
+        final LocalDate start = new LocalDate(2000, 2, 4);
+        givenResourceCalendar(8, new HashMap<LocalDate, Integer>() {
+            {
+                put(start, 2);
+                put(start.plusDays(1), 4);
+                put(start.plusDays(3), 6);
+            }
+        });
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start, start.plusDays(4))
+                .allocateHours(20);
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 4,
+                8, 6));
+
+        specificResourceAllocation.allocateKeepingProportions(start, start
+                .plusDays(2), 9);
+
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(3, 6,
+                8, 6));
     }
 
     @Test

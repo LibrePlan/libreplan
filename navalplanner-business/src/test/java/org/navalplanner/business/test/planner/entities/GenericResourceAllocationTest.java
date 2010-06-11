@@ -95,6 +95,8 @@ public class GenericResourceAllocationTest {
                 .anyTimes();
         expect(task.getEndDate()).andReturn(interval.getEnd().toDate())
                 .anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(
+                interval.getStart().toLocalDate()).anyTimes();
         expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         replay(task);
         return this.task = task;

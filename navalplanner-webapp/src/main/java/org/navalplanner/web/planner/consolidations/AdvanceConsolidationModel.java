@@ -22,7 +22,10 @@ package org.navalplanner.web.planner.consolidations;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -31,17 +34,21 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
-import org.navalplanner.business.planner.entities.consolidations.PendingConsolidatedHoursPerResourceAllocation;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -61,6 +68,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
     private Task task;
 
     private PlanningState planningState;
@@ -70,6 +80,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     private Consolidation consolidation;
 
     private DirectAdvanceAssignment spreadAdvance;
+
+    private boolean isUnitType = false;
 
     private OrderElement orderElement;
 
@@ -100,14 +112,10 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     @Override
     public void initLastConsolidatedDate() {
         // init the lastConsolidatedDate
-        AdvanceConsolidationDTO.lastConsolidatedDate = null;
-        int i = 0;
-        while((i < consolidationDTOs.size()) && (!consolidationDTOs.get(i).isConsolidated())){
-            i++;
-        }
-        if(i < consolidationDTOs.size()){
-            AdvanceConsolidationDTO.lastConsolidatedDate = consolidationDTOs.get(i).getDate();
-        }
+        LocalDate consolidatedUntil = (task.getConsolidation() == null) ? null
+                : task.getConsolidation().getConsolidatedUntil();
+        AdvanceConsolidationDTO.lastConsolidatedDate = (consolidatedUntil == null) ? null
+                : consolidatedUntil.toDateTimeAtStartOfDay().toDate();
     }
 
     private void initLastConsolidatedAndSavedDate() {
@@ -129,9 +137,12 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void accept() {
         if (context != null && orderElement != null && isVisibleAdvances()) {
+            org.zkoss.ganttz.data.Task ganttTask = context.getTask();
+            Date previousStartDate = ganttTask.getBeginDate();
+            long previousLength = ganttTask.getLengthMilliseconds();
 
             createConsolidationIfNeeded();
 
@@ -143,6 +154,12 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 }
             }
 
+            updateConsolidationInAdvanceIfIsNeeded();
+
+            ganttTask.fireChangesForPreviousValues(previousStartDate,
+                    previousLength);
+            ganttTask.reloadResourcesText();
+            context.reloadCharts();
         }
     }
 
@@ -190,6 +207,62 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 ((CalculatedConsolidation) consolidation)
                         .addConsolidatedValue((CalculatedConsolidatedValue) value);
             }
+
+            LocalDate startInclusive = value.getDate().plusDays(1);
+            LocalDate taskStartDate = LocalDate.fromDateFields(task
+                    .getStartDate());
+            if (startInclusive.compareTo(taskStartDate) < 0) {
+                startInclusive = taskStartDate;
+            }
+
+            Set<ResourceAllocation<?>> allResourceAllocations = task
+                    .getAllResourceAllocations();
+            for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+                for (DayAssignment dayAssignment : resourceAllocation
+                        .getAssignments()) {
+                    if (dayAssignment.getDay().compareTo(startInclusive) < 0) {
+                        dayAssignment.setConsolidated(true);
+                    }
+                }
+
+                LocalDate endExclusive = LocalDate.fromDateFields(task
+                        .getEndDate());
+
+                Integer pendingHours = BigDecimal.ONE.subtract(
+                        value.getValue().setScale(2).divide(
+                                new BigDecimal(100), RoundingMode.DOWN))
+                        .multiply(
+                                new BigDecimal(resourceAllocation
+                                        .getOriginalTotalAssigment()))
+                        .intValue();
+
+                resourceAllocation
+                        .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+
+                if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
+                    LocalDate date = ResourceAllocation.allocating(
+                            Arrays.asList(resourceAllocation
+                                    .asResourcesPerDayModification()))
+                            .untilAllocating(pendingHours);
+                    task.setEndDate(date.toDateTimeAtStartOfDay().toDate());
+                } else {
+                    reassign(resourceAllocation, startInclusive, endExclusive,
+                            pendingHours);
+                }
+            }
+        }
+    }
+
+    private void reassign(ResourceAllocation<?> resourceAllocation,
+            LocalDate startInclusive, LocalDate endExclusive,
+            Integer pendingHours) {
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            ((SpecificResourceAllocation) resourceAllocation)
+                    .allocateKeepingProportions(startInclusive, endExclusive,
+                            pendingHours);
+        } else {
+            resourceAllocation.withPreviousAssociatedResources().onInterval(
+                    startInclusive, endExclusive).allocateHours(pendingHours);
         }
     }
 
@@ -197,30 +270,41 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             AdvanceConsolidationDTO dto) {
         if (consolidation != null && task != null) {
 
-            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours = ConsolidatedValue
-                    .createPendingConsolidatedHours(LocalDate
-                            .fromDateFields(dto.getDate()), task
-                            .getAllResourceAllocations());
-
             if (consolidation.isCalculated()) {
                 return CalculatedConsolidatedValue.create(LocalDate
-                        .fromDateFields(dto.getDate()), dto.getValue(),
-                        pendingConsolidatedHours);
+                        .fromDateFields(dto.getDate()), dto.getPercentage(),
+                        LocalDate.fromDateFields(task.getEndDate()));
             } else {
-                return NonCalculatedConsolidatedValue.create(LocalDate
-                    .fromDateFields(dto.getDate()), dto.getValue(), dto
-                        .getAdvanceMeasurement(), pendingConsolidatedHours);
+                AdvanceMeasurement measure = dto.getAdvanceMeasurement();
+                NonCalculatedConsolidatedValue consolidatedValue = NonCalculatedConsolidatedValue
+                        .create(LocalDate.fromDateFields(dto.getDate()), dto
+                                .getPercentage(), measure, LocalDate
+                                .fromDateFields(task
+                        .getEndDate()));
+                measure.getNonCalculatedConsolidatedValues().add(
+                        consolidatedValue);
+                return consolidatedValue;
             }
         }
         return null;
     }
 
     private void deleteConsolidationIfIsNeeded(AdvanceConsolidationDTO dto) {
-        if ((dto.getConsolidatedValue() != null)
-                && (dto.getConsolidatedValue().isNewObject())) {
+        if (dto.getConsolidatedValue() != null) {
             if (consolidation != null && task != null) {
+                LocalDate taskEndDate = LocalDate.fromDateFields(task
+                        .getEndDate());
+                LocalDate endExclusive = taskEndDate;
+                if (!consolidation.getConsolidatedValues().isEmpty()) {
+                    endExclusive = consolidation.getConsolidatedValues().last()
+                            .getTaskEndDate();
+                }
+
                 if (!consolidation.isCalculated()) {
                     ((NonCalculatedConsolidation) consolidation)
+                            .getNonCalculatedConsolidatedValues().remove(
+                                    dto.getConsolidatedValue());
+                    dto.getAdvanceMeasurement()
                             .getNonCalculatedConsolidatedValues().remove(
                                     dto.getConsolidatedValue());
                 } else {
@@ -228,6 +312,92 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                             .getCalculatedConsolidatedValues().remove(
                                     dto.getConsolidatedValue());
                 }
+
+                LocalDate firstDayNotConsolidated = task
+                        .getFirstDayNotConsolidated();
+                for (DayAssignment dayAssignment : task.getDayAssignments()) {
+                    if (dayAssignment.getDay().compareTo(
+                            firstDayNotConsolidated) >= 0) {
+                        dayAssignment.setConsolidated(false);
+                    }
+                }
+
+                Set<ResourceAllocation<?>> allResourceAllocations = task
+                        .getAllResourceAllocations();
+                for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+                    resourceAllocation
+                            .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+                    Integer pendingHours = resourceAllocation
+                            .getOriginalTotalAssigment();
+                    if (!consolidation.getConsolidatedValues().isEmpty()) {
+                        BigDecimal lastConslidation = task.getConsolidation()
+                                .getConsolidatedValues().last().getValue();
+                        pendingHours = BigDecimal.ONE.subtract(
+                                lastConslidation.divide(new BigDecimal(100),
+                                        RoundingMode.DOWN)).multiply(
+                                new BigDecimal(pendingHours)).intValue();
+                    }
+                    if (!taskEndDate.equals(endExclusive)) {
+                        if ((taskEndDate != null) && (endExclusive != null)
+                                && (taskEndDate.compareTo(endExclusive) <= 0)) {
+                            reassign(resourceAllocation, taskEndDate,
+                                    endExclusive, 0);
+                        } else {
+                            reassign(resourceAllocation, endExclusive,
+                                    taskEndDate, 0);
+                        }
+                        task.setEndDate(endExclusive.toDateTimeAtStartOfDay()
+                                .toDate());
+                    }
+                    reassign(resourceAllocation, firstDayNotConsolidated,
+                            endExclusive, pendingHours);
+                }
+            }
+        }
+    }
+
+    private void updateConsolidationInAdvanceIfIsNeeded() {
+        if (consolidation != null) {
+            if (consolidation.isEmpty()) {
+                removeConsolidationInAdvance();
+            } else {
+                addConsolidationInAdvance();
+            }
+        }
+    }
+
+    private void removeConsolidationInAdvance() {
+        if (advanceIsCalculated()) {
+            IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirecAdvanceAssignment();
+            indirectAdvanceAssignment.getCalculatedConsolidation().remove(
+                    (CalculatedConsolidation) consolidation);
+            ((CalculatedConsolidation) consolidation)
+                    .setIndirectAdvanceAssignment(null);
+        } else {
+            spreadAdvance.getNonCalculatedConsolidation().remove(
+                    (NonCalculatedConsolidation) consolidation);
+            ((NonCalculatedConsolidation) consolidation)
+                    .setDirectAdvanceAssignment(null);
+        }
+    }
+
+    private void addConsolidationInAdvance() {
+        if (advanceIsCalculated()) {
+            IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirecAdvanceAssignment();
+            if (!indirectAdvanceAssignment.getCalculatedConsolidation()
+                    .contains(consolidation)) {
+                indirectAdvanceAssignment.getCalculatedConsolidation().add(
+                    (CalculatedConsolidation) consolidation);
+                ((CalculatedConsolidation) consolidation)
+                        .setIndirectAdvanceAssignment(indirectAdvanceAssignment);
+            }
+        } else {
+            if (!spreadAdvance.getNonCalculatedConsolidation().contains(
+                    consolidation)) {
+                spreadAdvance.getNonCalculatedConsolidation().add(
+                    (NonCalculatedConsolidation) consolidation);
+                ((NonCalculatedConsolidation) consolidation)
+                        .setDirectAdvanceAssignment(spreadAdvance);
             }
         }
     }
@@ -238,25 +408,58 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             IContextWithPlannerTask<TaskElement> context,
             PlanningState planningState) {
         this.context = context;
-        initTask(task);
         this.planningState = planningState;
+        initTask(task);
+        initOrderElement();
+        initConsolidation();
         initAdvanceConsolidationsDTOs(task);
     }
 
     private void initTask(Task task) {
         this.task = task;
         taskElementDAO.reattach(this.task);
+
+        orderElement = task.getOrderElement();
+        orderElementDAO.reattach(orderElement);
+    }
+
+    private void initOrderElement() {
+        spreadAdvance = orderElement.getReportGlobalAdvanceAssignment();
+        initSpreadAdvance();
+    }
+
+    private void initConsolidation() {
+        consolidation = task.getConsolidation();
+        if (consolidation != null) {
+            consolidation.getConsolidatedValues().size();
+        }
     }
 
     private void initAdvanceConsolidationsDTOs(Task task) {
-        orderElement = task.getOrderElement();
-        spreadAdvance = orderElement.getReportGlobalAdvanceAssignment();
-        consolidation = task.getConsolidation();
-
         if (spreadAdvance != null) {
+            isUnitType = (!spreadAdvance.getAdvanceType().getPercentage());
             createAdvanceConsolidationDTOs();
             initConsolidatedDates();
             addNonConsolidatedAdvances();
+            setReadOnlyConsolidations();
+        }
+    }
+
+    private void initSpreadAdvance() {
+        if (spreadAdvance != null) {
+            if (advanceIsCalculated()) {
+                IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirecAdvanceAssignment();
+                indirectAdvanceAssignment.getCalculatedConsolidation().size();
+            } else {
+                spreadAdvance.getNonCalculatedConsolidation().size();
+                initAdvanceMeasurements(spreadAdvance.getAdvanceMeasurements());
+            }
+        }
+    }
+
+    private void initAdvanceMeasurements(Set<AdvanceMeasurement> measures) {
+        for (AdvanceMeasurement measure : measures) {
+            measure.getNonCalculatedConsolidatedValues().size();
         }
     }
 
@@ -281,7 +484,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private void addNonConsolidatedAdvances() {
-        int i = 0;
         for (AdvanceMeasurement advance : getAdvances()) {
             if (canBeConsolidateAndShow(advance)) {
                 consolidationDTOs.add(new AdvanceConsolidationDTO(advance));
@@ -330,7 +532,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     @Override
     public boolean isVisibleMessages() {
-        return (getAdvances().size() == 0);
+        return ((getAdvances().size() == 0) || (isSubcontrated()) || (!hasResourceAllocation()));
     }
 
     private boolean advanceIsCalculated(){
@@ -338,6 +540,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     public String infoMessages() {
+        if (getAdvances().size() > 0) {
+            return _("It is not allowed to consolidate advances.");
+        }
         return _("There are not any assigned advance to current task");
     }
 
@@ -351,6 +556,28 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             return consolidationDTOs;
         }
         return new ArrayList<AdvanceConsolidationDTO>();
+    }
+
+    private boolean hasResourceAllocation() {
+        return ((task != null) && (task.hasResourceAllocations()));
+    }
+
+    private boolean isSubcontrated() {
+        return ((task != null) && (task.isSubcontracted()));
+    }
+
+    public boolean hasLimitingResourceAllocation() {
+        return ((task != null) && (task.hasLimitedResourceAllocation()));
+    }
+
+    @Override
+    public void setReadOnlyConsolidations() {
+        // set all advance consolidations as read only
+        AdvanceConsolidationDTO.setAllReadOnly(hasLimitingResourceAllocation());
+    }
+
+    public boolean isUnitType() {
+        return this.isUnitType;
     }
 
 }

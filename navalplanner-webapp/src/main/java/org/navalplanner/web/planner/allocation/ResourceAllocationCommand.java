@@ -75,7 +75,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
 
     @Override
     public void initialize(
-            EditTaskController editTaskController,
+EditTaskController editTaskController,
             PlanningState planningState) {
         this.editTaskController = editTaskController;
         this.planningState = planningState;

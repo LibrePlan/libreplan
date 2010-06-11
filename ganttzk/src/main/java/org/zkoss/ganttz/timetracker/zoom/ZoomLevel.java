@@ -93,6 +93,19 @@ public enum ZoomLevel {
         public boolean isSuitableFor(int days) {
             return true;
         }
+    },
+    DETAIL_SIX(_("Hour")) {
+        @Override
+        public TimeTrackerState getTimeTrackerState(
+                IDetailItemModificator firstLevel,
+                IDetailItemModificator secondLevel) {
+            return new DetailSixTimeTrackerState(firstLevel, secondLevel);
+        }
+
+        @Override
+        public boolean isSuitableFor(int days) {
+            return true;
+        }
     };
 
     private String name;

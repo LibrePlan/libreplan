@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -141,5 +142,9 @@ public interface IWorkerModel {
     public List<Worker> getFilteredWorker(ResourcePredicate predicate);
 
     public List<Worker> getAllCurrentWorkers();
+
+    boolean canRemove(Worker worker);
+
+    void confirmRemove(Worker worker) throws InstanceNotFoundException;
 
 }

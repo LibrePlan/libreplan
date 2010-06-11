@@ -115,6 +115,7 @@ public class SpecificDayAssignment extends DayAssignment {
         }
     }
 
+
     public static Set<SpecificDayAssignment> copy(
             SpecificDayAssignmentsContainer container,
             Collection<? extends SpecificDayAssignment> specificDaysAssignment) {
@@ -123,6 +124,7 @@ public class SpecificDayAssignment extends DayAssignment {
             SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
                     .getResource());
             created.parentState = created.parentState.setParent(container);
+            created.setConsolidated(s.isConsolidated());
             created.associateToResource();
             result.add(created);
         }
@@ -172,5 +174,21 @@ public class SpecificDayAssignment extends DayAssignment {
     @Override
     public Scenario getScenario() {
         return parentState.getScenario();
+    }
+
+    @Override
+    public DayAssignment withHours(int newHours) {
+        SpecificDayAssignment result = create(getDay(), newHours, getResource());
+        if (container != null) {
+            result.parentState.setParent(container);
+        } else if (this.getSpecificResourceAllocation() != null) {
+            result.parentState.setParent(this.getSpecificResourceAllocation());
+        }
+        return result;
+    }
+
+    @Override
+    protected void detachFromAllocation() {
+        this.parentState = new ContainerNotSpecified();
     }
 }

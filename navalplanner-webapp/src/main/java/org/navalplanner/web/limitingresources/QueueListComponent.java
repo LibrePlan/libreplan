@@ -25,8 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -45,6 +44,8 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 public class QueueListComponent extends HtmlMacroComponent implements
         AfterCompose {
 
+    private final LimitingResourcesPanel limitingResourcesPanel;
+
     private final IZoomLevelChangedListener zoomListener;
 
     private MutableTreeModel<LimitingResourceQueue> model;
@@ -53,9 +54,11 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private Map<LimitingResourceQueue, QueueComponent> fromQueueToComponent = new HashMap<LimitingResourceQueue, QueueComponent>();
 
-    public QueueListComponent(TimeTracker timeTracker,
+    public QueueListComponent(LimitingResourcesPanel limitingResourcesPanel,
+            TimeTracker timeTracker,
             MutableTreeModel<LimitingResourceQueue> timelinesTree) {
 
+        this.limitingResourcesPanel = limitingResourcesPanel;
         this.model = timelinesTree;
 
         zoomListener = adjustTimeTrackerSizeListener();
@@ -72,7 +75,7 @@ public class QueueListComponent extends HtmlMacroComponent implements
     }
 
     private void insertAsComponent(LimitingResourceQueue queue) {
-        QueueComponent component = QueueComponent.create(timeTracker, queue);
+        QueueComponent component = QueueComponent.create(this, timeTracker, queue);
         this.appendChild(component);
         fromQueueToComponent.put(queue, component);
     }
@@ -83,7 +86,7 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     public void invalidate() {
         fromQueueToComponent.clear();
-        this.getChildren().clear();
+        getChildren().clear();
         insertAsComponents(model.asList());
         super.invalidate();
     }
@@ -92,20 +95,12 @@ public class QueueListComponent extends HtmlMacroComponent implements
         QueueComponent queueComponent = fromQueueToComponent.get(element
                 .getLimitingResourceQueue());
         queueComponent.appendQueueElement(element);
-        addDependenciesInPanel(element);
     }
 
-    private void addDependenciesInPanel(LimitingResourceQueueElement element) {
-        LimitingResourcesPanel panel = LimitingResourcesPanel
-                .getLimitingResourcesPanel(this);
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsDestiny()) {
-            panel.addDependencyComponent(each);
-        }
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsOrigin()) {
-            panel.addDependencyComponent(each);
-        }
+    public void refreshQueue(LimitingResourceQueue queue) {
+        QueueComponent queueComponent = fromQueueToComponent.get(queue);
+        queueComponent.setLimitingResourceQueue(queue);
+        queueComponent.invalidate();
     }
 
     private IZoomLevelChangedListener adjustTimeTrackerSizeListener() {
@@ -113,6 +108,9 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
+
+                invalidate();
+                afterCompose();
                 response(null, new AuInvoke(QueueListComponent.this,
                         "adjustTimeTrackerSize"));
                 response(null, new AuInvoke(QueueListComponent.this,
@@ -127,6 +125,8 @@ public class QueueListComponent extends HtmlMacroComponent implements
         for (QueueComponent each : fromQueueToComponent.values()) {
             each.afterCompose();
         }
+        response(null, new AuInvoke(QueueListComponent.this,
+                "adjustResourceLoadRows"));
     }
 
     public List<QueueTask> getQueueTasks() {
@@ -143,6 +143,10 @@ public class QueueListComponent extends HtmlMacroComponent implements
             result.put(each.getLimitingResourceQueueElement(), each);
         }
         return result;
+    }
+
+    public LimitingResourcesPanel getLimitingResourcePanel() {
+        return limitingResourcesPanel;
     }
 
 }

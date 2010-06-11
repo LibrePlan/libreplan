@@ -22,7 +22,7 @@ package org.navalplanner.business.resources.entities;
 import java.util.Comparator;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 
 /**
  *

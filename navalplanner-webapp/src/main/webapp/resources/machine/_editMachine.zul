@@ -61,7 +61,7 @@
                                 constraint="no empty:${i18n:_('Description cannot be null or empty')}" />
                         </row>
                        <row>
-                            <label value="${i18n:_('Limted resource')}" />
+                            <label value="${i18n:_('Limited resource')}" />
                             <listbox mold="select" width="200px"
                                 model="@{controller.limitingResourceOptionList}"
                                 selectedItem="@{controller.limitingResource}"

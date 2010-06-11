@@ -10,7 +10,132 @@
     <packaging>war</packaging>
     <name>NavalPlan Web Client Module</name>
 
-	<build>
+    <profiles>
+        <profile>
+            <id>reports</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- =========================================================== -->
+                    <!-- Jasper reports configuration -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jasperreports-maven-plugin</artifactId>
+                        <version>1.0-beta-2</version>
+                        <configuration>
+                            <sourceDirectory>${project.build.sourceDirectory}/../jasper</sourceDirectory>
+                            <outputDirectory>${project.build.sourceDirectory}/../../../target/classes</outputDirectory>
+                            <xmlValidation>true</xmlValidation>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile-reports</goal>
+                                </goals>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <!--
+                                note this must be repeated here to pick up correct xml
+                                validation
+                            -->
+                            <dependency>
+                                <groupId>jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>3.7.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>userguide</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                          <execution>
+                          <id>user-doc-generation</id>
+                          <goals>
+                           <goal>run</goal>
+                          </goals>
+                         <phase>process-resources</phase>
+                         <inherited>false</inherited>
+                         <configuration>
+                          <tasks>
+                            <echo>Executing make html</echo>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/gl/"/>
+                                <arg value="html"/>
+                            </exec>
+                            <copy todir="src/main/webapp/help/gl" failonerror="false">
+                                <fileset dir="../doc/src/user/gl/html"/>
+                            </copy>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/es/"/>
+                                <arg value="html"/>
+                            </exec>
+                            <copy todir="src/main/webapp/help/es" failonerror="false">
+                                <fileset dir="../doc/src/user/es/html"/>
+                            </copy>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/en/"/>
+                                <arg value="html"/>
+                            </exec>
+                            <copy todir="src/main/webapp/help/en" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
+                          </tasks>
+                         </configuration>
+                        </execution>
+                          <execution>
+                          <id>user-doc-clean</id>
+                          <goals>
+                           <goal>run</goal>
+                          </goals>
+                         <phase>clean</phase>
+                         <inherited>false</inherited>
+                         <configuration>
+                          <tasks>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/gl/"/>
+                                <arg value="clean"/>
+                            </exec>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/es/"/>
+                                <arg value="clean"/>
+                            </exec>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/en/"/>
+                                <arg value="clean"/>
+                            </exec>
+                            <delete dir="src/main/webapp/help" failonerror="false" />
+                          </tasks>
+                         </configuration>
+                        </execution>
+                       </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
         <finalName>navalplanner-webapp</finalName>
 
         <!--
@@ -36,106 +161,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- =========================================================== -->
-            <!-- Jasper reports configuration -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jasperreports-maven-plugin</artifactId>
-                <version>1.0-beta-2</version>
-                <configuration>
-                    <sourceDirectory>${project.build.sourceDirectory}/../jasper</sourceDirectory>
-                    <outputDirectory>${project.build.sourceDirectory}/../../../target/classes</outputDirectory>
-                    <xmlValidation>true</xmlValidation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile-reports</goal>
-                        </goals>
-                        <phase>compile</phase>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <!--note this must be repeated here to pick up correct xml validation -->
-                    <dependency>
-                      <groupId>jasperreports</groupId>
-                      <artifactId>jasperreports</artifactId>
-                      <version>3.7.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                  <execution>
-                  <id>user-doc-generation</id>
-                  <goals>
-                   <goal>run</goal>
-                  </goals>
-                 <phase>process-resources</phase>
-                 <inherited>false</inherited>
-                 <configuration>
-                  <tasks>
-                    <echo>Executing make html</echo>
-                    <exec executable="make" failifexecutionfails="false">
-                        <arg value="-C"/>
-                        <arg value="../doc/src/user/gl/"/>
-                        <arg value="html"/>
-                    </exec>
-                    <copy todir="src/main/webapp/help/gl" failonerror="false">
-                        <fileset dir="../doc/src/user/gl/html"/>
-                    </copy>
-                    <exec executable="make" failifexecutionfails="false">
-                        <arg value="-C"/>
-                        <arg value="../doc/src/user/es/"/>
-                        <arg value="html"/>
-                    </exec>
-                    <copy todir="src/main/webapp/help/es" failonerror="false">
-                        <fileset dir="../doc/src/user/es/html"/>
-                    </copy>
-                    <exec executable="make" failifexecutionfails="false">
-                        <arg value="-C"/>
-                        <arg value="../doc/src/user/en/"/>
-                        <arg value="html"/>
-                    </exec>
-                    <copy todir="src/main/webapp/help/en" failonerror="false">
-                        <fileset dir="../doc/src/user/en/html"/>
-                    </copy>
-                  </tasks>
-                 </configuration>
-                </execution>
-                  <execution>
-                  <id>user-doc-clean</id>
-                  <goals>
-                   <goal>run</goal>
-                  </goals>
-                 <phase>clean</phase>
-                 <inherited>false</inherited>
-                 <configuration>
-                  <tasks>
-                    <exec executable="make" failifexecutionfails="false">
-                        <arg value="-C"/>
-                        <arg value="../doc/src/user/gl/"/>
-                        <arg value="clean"/>
-                    </exec>
-                    <exec executable="make" failifexecutionfails="false">
-                        <arg value="-C"/>
-                        <arg value="../doc/src/user/es/"/>
-                        <arg value="clean"/>
-                    </exec>
-                    <exec executable="make" failifexecutionfails="false">
-                        <arg value="-C"/>
-                        <arg value="../doc/src/user/en/"/>
-                        <arg value="clean"/>
-                    </exec>
-                    <delete dir="src/main/webapp/help" failonerror="false" />
-                  </tasks>
-                 </configuration>
-                </execution>
-               </executions>
             </plugin>
         </plugins>
 

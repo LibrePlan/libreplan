@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
+import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
@@ -161,6 +162,31 @@ public class Planner extends HtmlMacroComponent  {
         return getTaskList().getTasksNumber();
     }
 
+    private static int PIXELS_PER_TASK_LEVEL = 21;
+    private static int PIXELS_PER_CHARACTER = 5;
+
+    public int calculateMinimumWidthForTaskNameColumn(boolean expand) {
+        return calculateMinimumWidthForTaskNameColumn(expand, getTaskList().getAllTasks());
+    }
+
+    private int calculateMinimumWidthForTaskNameColumn(boolean expand, List<Task> tasks) {
+        IDomainAndBeansMapper<?> mapper = getContext().getMapper();
+        int widest = 0;
+        for(Task task : tasks) {
+            int numberOfAncestors =
+                mapper.findPositionFor(task).getAncestors().size();
+            int numberOfCharacters = task.getName().length();
+            widest = Math.max(widest,
+                    numberOfCharacters * PIXELS_PER_CHARACTER +
+                    numberOfAncestors * PIXELS_PER_TASK_LEVEL);
+            if(expand && !task.isLeaf()) {
+                widest = Math.max(widest,
+                        calculateMinimumWidthForTaskNameColumn(expand, task.getTasks()));
+            }
+        }
+        return widest;
+    }
+
     public int getAllTasksNumber() {
         return diagramGraph.getTasks().size();
     }
@@ -206,7 +232,10 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public ListModel getZoomLevels() {
-        return new SimpleListModel(ZoomLevel.values());
+        ZoomLevel[] selectableZoomlevels = { ZoomLevel.DETAIL_ONE,
+                ZoomLevel.DETAIL_TWO, ZoomLevel.DETAIL_THREE,
+                ZoomLevel.DETAIL_FOUR, ZoomLevel.DETAIL_FIVE };
+        return new SimpleListModel(selectableZoomlevels);
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
@@ -262,10 +291,7 @@ public class Planner extends HtmlMacroComponent  {
                 .getStartConstraints(), configuration.getEndConstraints(), configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration, diagramGraph);
-        diagramGraph.addPreChangeListeners(configuration
-                .getPreChangeListeners());
-        diagramGraph.addPostChangeListeners(configuration
-                .getPostChangeListeners());
+        addGraphChangeListenersFromConfiguration(configuration);
         this.contextualizedGlobalCommands = contextualize(newContext,
                 configuration.getGlobalCommands());
         this.commandsOnTasksContextualized = contextualize(newContext,
@@ -625,6 +651,14 @@ public class Planner extends HtmlMacroComponent  {
     public void addChartVisibilityListener(
             IChartVisibilityChangedListener chartVisibilityChangedListener) {
         chartVisibilityListeners.addListener(chartVisibilityChangedListener);
+    }
+
+    public void addGraphChangeListenersFromConfiguration(
+            PlannerConfiguration<?> configuration) {
+        diagramGraph.addPreChangeListeners(configuration
+                .getPreChangeListeners());
+        diagramGraph.addPostChangeListeners(configuration
+                .getPostChangeListeners());
     }
 
 }

@@ -44,6 +44,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -89,6 +90,14 @@ public class AdvancedAllocationTabCreator {
 
         private void loadNeededDataOfTask() {
             BaseCalendarModel.forceLoadBaseCalendar(task.getCalendar());
+            loadConsolidationRelatedData(task);
+        }
+
+        private void loadConsolidationRelatedData(Task task) {
+            Consolidation consolidation = task.getConsolidation();
+            if (consolidation != null) {
+                consolidation.getConsolidatedValues().size();
+            }
         }
 
         private Set<Resource> getAssociatedResources(Task task) {

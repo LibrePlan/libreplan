@@ -50,4 +50,6 @@ public interface IDayAssignmentDAO extends IGenericDAO<DayAssignment, Long> {
 
     public List<DayAssignment> findByResources(Scenario scenario, List<Resource> resources);
 
+    public List<DayAssignment> findByResources(List<Resource> resources);
+
 }

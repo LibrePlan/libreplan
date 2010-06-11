@@ -43,8 +43,7 @@
 .listdetails div.z-tree {
     background: #FFFFFF;
 }
-
-.listdetails img {
+ .listdetails img {
     display: none;
 }
 
@@ -156,7 +155,9 @@
 }
 
 .standard-task {
-    background-color: #aaccee; /* NOT_ALLOCATED_TASK_BLUE */
+    background-color: #abcde1; /* NOT_ALLOCATED_TASK_BLUE */
+
+
 }
 
 .subcontracted-task {
@@ -228,16 +229,18 @@ div.box.limiting-unassigned {
 .completion {
     width: 0%;
     margin-top: 0px;
-    height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
+    height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #FFCC99;
     border: 0px;
+    margin-top: -5px;
 }
 
 .completion2 {
     width: 0%;
-    height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
-    background-color: #75d9b0;
+    height: 6px;
+    background-color: #004469;
     border: 0px;
+    margin-top: 4px;
 }
 
 .taskgroup_start,.taskgroup_end {
@@ -283,7 +286,7 @@ div.box.limiting-unassigned {
     padding-right:2px;
     heigth: 12px !important;
     position: relative;
-    top: -12px;
+    top: -8px;
     left:10;
     display: block;
     clear: both;
@@ -344,6 +347,10 @@ div.box.limiting-unassigned {
 /* Watermark alternate row color */
 #watermark .timetracker_column_even {
     background-color: #EEEEEE !important;
+    height: 458px;
+}
+
+.limitingresources #watermark .bankHoliday {
     height: 458px;
 }
 
@@ -703,6 +710,13 @@ div.limitingresourcesleftpane  {
     position:absolute;
 }
 
+.queue-element.truncated-end {
+    -moz-border-radius: 12px 0 0 12px;
+}
+
+.queue-element.unmet-deadline {
+    background-color: #FF8888;
+}
 
 /* ---------- End Limiting resources ----------------- */
 
@@ -854,6 +868,12 @@ div.z-tree {
 .advancedallocationlayout .calculated-hours.z-label {
     font-weight: bold;
     color: #555555;
+}
+.advancedallocationlayout .unmodifiable-hours.z-label {
+    color: #555555;
+}
+.advancedallocationlayout .consolidated-hours.z-label {
+    color: #FF0000;
 }
 .advancedallocationlayout .z-row .z-intbox-disd {
     color: 0 !important;
@@ -1024,7 +1044,31 @@ div.z-tree {
     left:-100px; /* Hide when it has't been set */
     width:10px;
     height:22px;
-    background-image: url("../../zkau/web/ganttz/img/deadline2.png");
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
+}
+
+.consolidatedline {
+    position:absolute;
+    /* border-right: solid 2px red; */
+    margin-top: -5px;
+    float:left;
+    left:-100px; /* Hide when it has't been set */
+    width:10px;
+    height:22px;
+    background-image: url("../../zkau/web/ganttz/img/deadline_green.png");
+}
+
+
+
+.queue-element .deadline {
+    position: relative;
+    margin-top: -5px;
+    float: left;
+    left: -100px; /* Hide when it has't been set */
+    width: 10px;
+    height: 22px;
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
+    display: none;
 }
 
 body .perspectives-column {
@@ -1070,7 +1114,7 @@ body .perspectives-column {
 }
 
 .row .assigned {
-    background-color: #007BBE; /* ALLOCATED_TASK_BLUE */
+    background-color: #3c90be; /* ALLOCATED_TASK_BLUE */
 }
 
 .row .partially-assigned {
@@ -1080,4 +1124,24 @@ body .perspectives-column {
 /* ------------ Limiting resources  ------------ */
 .limiting-resources-buffer .z-south-body {
 	overflow-y:scroll;
+}
+
+.queue-progress-bar {
+    background-color: #407865;
+    height: 6px;
+    margin-top: 2px;
+    -moz-border-radius-bottomleft: 2px;
+    -moz-border-radius-topleft: 2px;
+}
+
+.limiting-assigned .completion2, .limiting-unassigned .completion2 {
+    background-color: #407865;
+}
+
+.queue-element.unmet-deadline .queue-progress-bar {
+    background-color: #c06666;
+}
+
+.subcontracted-task .completion2 {
+    background-color: #484e4d;
 }

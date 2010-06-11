@@ -18,27 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.zkoss.ganttz;
+package org.navalplanner.web.planner.advances;
 
-import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.PlanningState;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
- *
- * @author Francisco Javier Moran Rúa
- *
+ * Contract for {@link AdvanceAssignmentPlanningCommand}.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class TaskAssignmentMoveCommand extends Command {
+public interface IAdvanceAssignmentPlanningCommand extends
+        ICommandOnTask<TaskElement> {
 
-    public TaskAssignmentMoveCommand(String event,int flags) {
-        super(event,flags);
-    }
-
-    protected void process(AuRequest request) {
-
-        System.out.println("Processing command");
-
-
-    }
+    void initialize(
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
+            PlanningState state);
 
 }

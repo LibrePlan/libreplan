@@ -49,7 +49,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public void initEdit(OrderElement orderElement);
 
-    public void addNewLineAdvaceAssignment();
+    public boolean addNewLineAdvaceAssignment();
 
     public void addNewLineAdvaceMeasurement();
 
@@ -108,4 +108,12 @@ public interface IManageOrderElementAdvancesModel {
             AdvanceMeasurement advanceMeasurement);
 
     public void resetAdvanceAssignment();
+
+    BigDecimal getMaxValue(AdvanceType advanceType);
+
+    AdvanceAssignment getSpreadAdvance();
+
+    void createPercentageAdvances(OrderElement orderElement)
+            throws DuplicateAdvanceAssignmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException;
 }

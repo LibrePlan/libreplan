@@ -45,6 +45,10 @@
                         tooltiptext="${i18n:_('Edit')}"
                         onClick="controller.goToEditVirtualWorkerForm(self.getParent().getParent().value);">
                     </button>
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="controller.confirmRemove(self.parent.parent.value);"/>
 
                 </hbox>
             </row>

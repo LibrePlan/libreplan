@@ -18,39 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities;
+package org.navalplanner.business.planner.limiting.daos;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import java.util.List;
 
-import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
+import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
+ * DAO interface for {@link ILimitingResourceQueueDAO}
  *
- * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Diego Pino García <dpino@igalia.com>
  */
-public class QueuePosition {
+public interface ILimitingResourceQueueDAO extends
+        IGenericDAO<LimitingResourceQueue, Long> {
 
-    private LocalDate date;
+    LimitingResourceQueue findQueueByResource(Resource resource);
 
-    private int hour = 0;
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
-    public void setHour(int hour) {
-        Validate.isTrue(hour >= 0 && hour <= 23, _("Hour should be a value between 0 and 23"));
-        this.hour = hour;
-    }
+    List<LimitingResourceQueue> getAll();
 
 }

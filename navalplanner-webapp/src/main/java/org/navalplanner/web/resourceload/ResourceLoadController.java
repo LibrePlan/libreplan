@@ -62,9 +62,11 @@ import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
+import org.zkoss.ganttz.resourceload.IPaginationFilterChangedListener;
 import org.zkoss.ganttz.resourceload.ISeeScheduledOfListener;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel;
 import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
+import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.PaginationType;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
@@ -73,9 +75,9 @@ import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -85,6 +87,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
+import org.zkoss.zul.api.Combobox;
 
 /**
  * Controller for global resourceload view
@@ -117,6 +120,7 @@ public class ResourceLoadController implements Composer {
 
     private boolean currentFilterByResources = true;
     private boolean filterHasChanged = false;
+    private boolean firstLoad = true;
 
     private ZoomLevel zoomLevel;
 
@@ -140,11 +144,10 @@ public class ResourceLoadController implements Composer {
     }
 
     public void reload() {
-        // by default show the task by resources
-        boolean filterByResources = true;
         timeTracker = null;
         resourcesLoadPanel = null;
-        reload(filterByResources);
+        firstLoad = true;
+        reload(currentFilterByResources);
     }
 
     private void reload(boolean filterByResources) {
@@ -171,6 +174,10 @@ public class ResourceLoadController implements Composer {
         resourcesLoadPanel.afterCompose();
         addSchedulingScreenListeners();
         addCommands(resourcesLoadPanel);
+        if(firstLoad || filterHasChanged) {
+            setupNameFilter();
+        }
+        firstLoad = false;
     }
 
     private void addListeners() {
@@ -186,13 +193,23 @@ public class ResourceLoadController implements Composer {
         addNameFilterListener();
     }
 
-    private void addNameFilterListener() {
-        resourcesLoadPanel.addNameFilterListener(new IFilterChangedListener() {
+    /*
+     * This object is stored in an attribute to keep one reference to it, so the
+     * garbage collector doesn't get rid of it. It's necessary because it is stored
+     * by ResourcesLoadPanel using weak references.
+     */
+    private IPaginationFilterChangedListener keepAlivePaginationListener =
+        new IPaginationFilterChangedListener() {
             @Override
-            public void filterChanged(boolean filter) {
+            public void filterChanged(int initialPosition) {
+                resourceLoadModel.setPageFilterPosition(initialPosition);
+                reload(currentFilterByResources);
                 addSchedulingScreenListeners();
             }
-        });
+        };
+
+    private void addNameFilterListener() {
+        resourcesLoadPanel.addNameFilterListener(keepAlivePaginationListener);
     }
 
     private void addSchedulingScreenListeners() {
@@ -208,6 +225,7 @@ public class ResourceLoadController implements Composer {
     }
 
     public void onApplyFilter(boolean filterByResources) {
+        resourceLoadModel.setPageFilterPosition(0);
         reload(filterByResources);
     }
 
@@ -242,25 +260,27 @@ public class ResourceLoadController implements Composer {
                 }
 
                 //if the bandbox filter is active, we disable the name filter
-                resourcesLoadPanel.setNameFilterDisabled(
+                resourcesLoadPanel.setInternalPaginationDisabled(
                         !bandBox.getSelectedElements().isEmpty());
             }
             resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
                     timeTracker);
+            resourcesLoadPanel.setLoadChart(buildChart());
             if(filterHasChanged) {
                 addNameFilterListener();
             }
         } else {
             resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
                     .getLoadTimeLines(), timeTracker, parent, resourceLoadModel
-                    .isExpandResourceLoadViewCharts());
+                    .isExpandResourceLoadViewCharts(), PaginationType.EXTERNAL_PAGINATION);
+
             if(filterBy == null) {
                 addWorkersBandbox();
                 addTimeFilter();
             }
+            resourcesLoadPanel.setLoadChart(buildChart());
             addListeners();
         }
-        resourcesLoadPanel.setLoadChart(buildChart());
     }
 
     private void addWorkersBandbox() {
@@ -325,6 +345,76 @@ public class ResourceLoadController implements Composer {
         hbox.setAlign("center");
 
         resourcesLoadPanel.setVariable("additionalFilter1", hbox, true);
+    }
+
+    private void setupNameFilter() {
+        Combobox filterByNameCombo = resourcesLoadPanel.getPaginationFilterCombobox();
+        filterByNameCombo.getChildren().clear();
+        List<Resource> resources = resourceLoadModel.getAllResourcesList();
+        List<Criterion> criteria = resourceLoadModel.getAllCriteriaList();
+        int size;
+        if(currentFilterByResources) {
+            size = resources.size();
+        }
+        else {
+            size = criteria.size();
+        }
+        int pageSize = resourceLoadModel.getPageSize();
+
+        if(size > pageSize) {
+            int position = 0;
+            while(position < size) {
+                String firstName;
+                String lastName;
+                int newPosition = position + pageSize;
+                if(currentFilterByResources) {
+                    firstName = resources.get(position).getName();
+                    if(newPosition - 1 < size) {
+                        lastName = resources.get(newPosition - 1)
+                        .getName();
+                    }
+                    else {
+                        lastName = resources.get(size - 1)
+                        .getName();
+                    }
+                }
+                else {
+                    Criterion criterion = criteria.get(position);
+                    firstName = criterion.getType().getName() + ": " + criterion.getName();
+                    if(newPosition - 1 < size) {
+                        criterion = criteria.get(newPosition - 1);
+                        lastName = criterion.getType().getName() + ": " + criterion.getName();
+                    }
+                    else {
+                        criterion = criteria.get(size - 1);
+                        lastName = criterion.getType().getName() + ": " + criterion.getName();
+                    }
+                }
+
+                Comboitem item = new Comboitem();
+                item.setLabel(firstName.substring(0, 1) + " - " + lastName.substring(0, 1));
+                item.setDescription(firstName + " - " + lastName);
+                item.setValue(new Integer(position));
+                filterByNameCombo.appendChild(item);
+                if(resourceLoadModel.getPageFilterPosition() == position) {
+                    filterByNameCombo.setSelectedItemApi(item);
+                }
+                position = newPosition;
+            }
+        }
+
+        Comboitem lastItem = new Comboitem();
+        lastItem.setLabel(_("All"));
+        lastItem.setDescription(_("Show all elements"));
+        lastItem.setValue(new Integer(-1));
+        filterByNameCombo.appendChild(lastItem);
+        if(resourceLoadModel.getPageFilterPosition() == -1) {
+            filterByNameCombo.setSelectedItemApi(lastItem);
+        }
+
+        if(filterByNameCombo.getSelectedIndex() == -1) {
+            filterByNameCombo.setSelectedIndex(0);
+        }
     }
 
     private void resetAdditionalFilters() {
@@ -496,13 +586,21 @@ public class ResourceLoadController implements Composer {
             chart.getChildren().clear();
             chart.invalidate();
 
-            String javascript = "zkTasklist.timeplotcontainer_rescroll();";
-            Clients.evalJavaScript(javascript);
-
             resetMinimumAndMaximumValueForChart();
 
-            Plotinfo plotInfoLoad = createPlotinfo(getLoad(interval.getStart(),
-                    interval.getFinish()), interval);
+            Date start = interval.getStart();
+            Date finish = interval.getFinish();
+            if ((resourceLoadModel.getInitDateFilter() != null)
+                    && (resourceLoadModel.getInitDateFilter().compareTo(start) > 0)) {
+                start = resourceLoadModel.getInitDateFilter();
+            }
+            if ((resourceLoadModel.getEndDateFilter() != null)
+                    && (resourceLoadModel.getEndDateFilter().compareTo(finish) < 0)) {
+                finish = resourceLoadModel.getEndDateFilter();
+            }
+
+            Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish),
+                    interval);
             plotInfoLoad
                     .setFillColor(CompanyPlanningModel.COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
@@ -515,8 +613,7 @@ public class ResourceLoadController implements Composer {
             plotInfoMax.setFillColor("#FFFFFF");
             plotInfoMax.setLineWidth(2);
 
-            Plotinfo plotInfoOverload = createPlotinfo(getOverload(interval
-                    .getStart(), interval.getFinish()), interval);
+            Plotinfo plotInfoOverload = createPlotinfo(getOverload(start, finish), interval);
             plotInfoOverload
                     .setFillColor(CompanyPlanningModel.COLOR_OVERLOAD_GLOBAL);
             plotInfoOverload.setLineWidth(0);
@@ -539,7 +636,15 @@ public class ResourceLoadController implements Composer {
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
 
-            return mapDayAssignments;
+            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+            for (LocalDate day : mapDayAssignments.keySet()) {
+                if ((day.compareTo(new LocalDate(start)) >= 0)
+                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
+                    result.put(day, mapDayAssignments.get(day));
+                }
+            }
+
+            return result;
         }
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
@@ -561,7 +666,15 @@ public class ResourceLoadController implements Composer {
                 }
             }
 
-            return mapDayAssignments;
+            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+            for (LocalDate day : mapDayAssignments.keySet()) {
+                if ((day.compareTo(new LocalDate(start)) >= 0)
+                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
+                    result.put(day, mapDayAssignments.get(day));
+                }
+            }
+
+            return result;
         }
 
         private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(

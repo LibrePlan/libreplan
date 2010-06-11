@@ -31,16 +31,16 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.FormBinder;
-import org.navalplanner.web.planner.allocation.LimitingResourceAllocationController;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
-import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
+import org.navalplanner.web.planner.limiting.allocation.LimitingResourceAllocationController;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.order.SubcontractController;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController.ResourceAllocationTypeEnum;
@@ -51,6 +51,7 @@ import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Tab;
 import org.zkoss.zul.api.Tabbox;
 import org.zkoss.zul.api.Tabpanel;
@@ -75,9 +76,6 @@ public class EditTaskController extends GenericForwardComposer {
     private LimitingResourceAllocationController limitingResourceAllocationController;
 
     @Autowired
-    private AdvanceConsolidationController advanceConsolidationController;
-
-    @Autowired
     private SubcontractController subcontractController;
 
     private Window window;
@@ -87,12 +85,10 @@ public class EditTaskController extends GenericForwardComposer {
     private Tab resourceAllocationTab;
     private Tab limitingResourceAllocationTab;
     private Tab subcontractTab;
-    private Tab advanceConsolidationTab;
 
     private Tabpanel taskPropertiesTabpanel;
     private Tabpanel resourceAllocationTabpanel;
     private Tabpanel limitingResourceAllocationTabpanel;
-    private Tabpanel advanceConsolidationTabpanel;
     private Tabpanel subcontractTabpanel;
 
     private Component messagesContainer;
@@ -111,8 +107,6 @@ public class EditTaskController extends GenericForwardComposer {
         window = (Window) comp;
         taskPropertiesController.doAfterCompose(taskPropertiesTabpanel);
         resourceAllocationController.doAfterCompose(resourceAllocationTabpanel);
-        advanceConsolidationController
-                .doAfterCompose(advanceConsolidationTabpanel);
         subcontractController.doAfterCompose(subcontractTabpanel);
         limitingResourceAllocationController.doAfterCompose(limitingResourceAllocationTabpanel);
         messagesForUser = new MessagesForUser(messagesContainer);
@@ -130,10 +124,6 @@ public class EditTaskController extends GenericForwardComposer {
         return limitingResourceAllocationController;
     }
 
-    public AdvanceConsolidationController getAdvanceConsolidationController() {
-        return advanceConsolidationController;
-    }
-
     public SubcontractController getSubcontractController() {
         return subcontractController;
     }
@@ -145,11 +135,6 @@ public class EditTaskController extends GenericForwardComposer {
         this.planningState = planningState;
 
         taskPropertiesController.init(this, context, taskElement);
-
-        if (isTask(taskElement)) {
-            advanceConsolidationController.init(context, (Task) taskElement,
-                    planningState, messagesForUser);
-        }
 
         try {
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
@@ -237,17 +222,6 @@ public class EditTaskController extends GenericForwardComposer {
         showEditForm(context, taskElement, planningState);
     }
 
-    public void showEditFormAdvanceConsolidation(
-            IContextWithPlannerTask<TaskElement> context,
-    TaskElement taskElement, PlanningState planningState) {
-        if (isNotSubcontractedAndIsTask(taskElement)) {
-            editTaskTabbox.setSelectedPanelApi(advanceConsolidationTabpanel);
-        } else {
-            editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
-        }
-        showEditForm(context, taskElement, planningState);
-    }
-
     public void accept() {
         try {
             if (taskPropertiesController.stateHasChanged()) {
@@ -257,12 +231,6 @@ public class EditTaskController extends GenericForwardComposer {
 
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
             taskPropertiesController.accept();
-
-            if (isTask(taskElement)) {
-                editTaskTabbox
-                        .setSelectedPanelApi(advanceConsolidationTabpanel);
-                advanceConsolidationController.accept();
-            }
 
             ResourceAllocationTypeEnum currentState = taskPropertiesController.getCurrentState();
             if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(currentState)) {
@@ -316,7 +284,6 @@ public class EditTaskController extends GenericForwardComposer {
         taskPropertiesController.cancel();
         subcontractController.cancel();
         resourceAllocationController.cancel();
-        advanceConsolidationController.cancel();
 
         taskElement = null;
         context = null;
@@ -430,6 +397,16 @@ public class EditTaskController extends GenericForwardComposer {
     public void setStartConstraintDate(Date date) {
         if ((taskElement != null) && (isTask())) {
             resourceAllocationController.setStartDate(date);
+        }
+    }
+
+    public void showNonPermitChangeResourceAllocationType() {
+        String message = _("The task has got advance consolidations.It must delete all consolidations to change the resource allocation type ");
+        try {
+            Messagebox.show(message, _("Information"), Messagebox.OK,
+                    Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.INFO, message);
         }
     }
 

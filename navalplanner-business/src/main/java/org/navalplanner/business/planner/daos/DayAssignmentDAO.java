@@ -151,15 +151,19 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
 
     @Override
     public List<DayAssignment> findByResources(Scenario scenario, List<Resource> resources) {
+        // TODO incorporate scenario filtering to the query instead of doing it
+        // in memory
+        return DayAssignment.withScenario(scenario, findByResources(resources));
+    }
+
+    @Override
+    public List<DayAssignment> findByResources(List<Resource> resources) {
         if (resources.isEmpty()) {
             return Collections.emptyList();
         }
         Criteria criteria = getSession().createCriteria(DayAssignment.class)
                 .add(Restrictions.in("resource", resources));
-        List<DayAssignment> list = criteria.list();
-        // TODO incorporate scenario filtering to the query instead of doing it
-        // in memory
-        return DayAssignment.withScenario(scenario, list);
+        return (List<DayAssignment>) criteria.list();
     }
 
 }

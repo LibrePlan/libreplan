@@ -168,7 +168,7 @@ public abstract class DayAssignment extends BaseEntity {
     @OnCopy(Strategy.SHARE)
     private Resource resource;
 
-    private Boolean consolidated;
+    private Boolean consolidated = false;
 
     protected DayAssignment() {
 
@@ -237,7 +237,10 @@ public abstract class DayAssignment extends BaseEntity {
 
     final void detach() {
         getResource().removeAssignments(Arrays.asList(this));
+        detachFromAllocation();
     }
+
+    protected abstract void detachFromAllocation();
 
     public abstract boolean belongsTo(Object allocation);
 
@@ -246,5 +249,7 @@ public abstract class DayAssignment extends BaseEntity {
      *         still has not been explicitly associated to a {@link Scenario}
      */
     public abstract Scenario getScenario();
+
+    public abstract DayAssignment withHours(int newHours);
 
 }

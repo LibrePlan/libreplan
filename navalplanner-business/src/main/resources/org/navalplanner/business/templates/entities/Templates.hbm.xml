@@ -23,13 +23,19 @@
             </type>
         </property>
 
-        <many-to-one name="parent" access="field" class="org.navalplanner.business.templates.entities.OrderLineGroupTemplate"/>
+        <!-- Indexed -->
+        <many-to-one name="parent"
+            access="field"
+            class="org.navalplanner.business.templates.entities.OrderLineGroupTemplate"
+            index="idx_orderelementtemplate_on_parent"/>
 
+        <!-- Indexed the other side -->
         <set name="criterionRequirements" cascade="all-delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement" />
         </set>
 
+        <!-- Indexed the other side -->
         <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
             <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignmentTemplate" />
@@ -45,6 +51,7 @@
             <many-to-many column="QUALITY_FORM_ID" class="org.navalplanner.business.qualityforms.entities.QualityForm"/>
         </set>
 
+        <!-- Indexed the other side -->
         <set name="advanceAssignmentTemplates" cascade="all-delete-orphan" inverse="true">
             <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
             <one-to-many class="org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate" />
@@ -55,11 +62,13 @@
             <list name="children" access="field" cascade="all">
                 <key column="parent" not-null="false"></key>
                 <index column="positionInContainer"></index>
+                <!-- Indexed the other side -->
                 <one-to-many class="OrderElementTemplate" />
             </list>
 
             <joined-subclass name="OrderTemplate">
                 <key column="ORDER_TEMPLATE_ID"></key>
+                <!-- Not indexed -->
                 <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
                     class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
             </joined-subclass>
@@ -68,6 +77,7 @@
         <joined-subclass name="OrderLineTemplate">
             <key column="ORDER_LINE_TEMPLATE_ID" />
 
+            <!-- Indexed the other side -->
             <set name="hoursGroups" access="field" cascade="all-delete-orphan" inverse="true">
                 <key column="ORDER_LINE_TEMPLATE" />
                 <one-to-many class="org.navalplanner.business.orders.entities.HoursGroup" />

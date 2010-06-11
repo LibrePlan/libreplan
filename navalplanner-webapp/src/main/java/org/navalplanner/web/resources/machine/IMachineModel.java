@@ -99,4 +99,8 @@ public interface IMachineModel {
     List<Machine> getFilteredMachines(ResourcePredicate predicate);
 
     public List<Machine> getAllMachines();
+
+    boolean canRemove(Machine machine);
+
+    void confirmRemove(Machine machine) throws InstanceNotFoundException;
 }

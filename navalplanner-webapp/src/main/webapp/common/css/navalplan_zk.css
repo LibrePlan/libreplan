@@ -1054,11 +1054,7 @@ span.z-dottree-line {
 }
 .perspective.limiting-resources .z-button-cm,
 .perspective-active.limiting-resources .z-button-cm {
-    background-image: url(../img/ico_order-load.png);
-}
-.perspective.limiting-resources {
-    /* FIX: Temporary disabled */
-    display: none;
+    background-image: url(../img/ico_limiting-resources.png);
 }
 .perspective.order-limiting-resources {
     display: none;
@@ -1342,3 +1338,6 @@ tr.z-tree-row-seld .z-row-cnt {
     background-color: #CCCCCC;
 }
 
+.readonly .z-grid-body .z-row-inner {
+    background-color: #CCCCCC;
+}

@@ -88,6 +88,9 @@ public class ProportionalDistributor {
     }
 
     public int[] distribute(final int total) {
+        if (proportions.length == 0) {
+            return new int[0];
+        }
         int[] result = new int[proportions.length];
         int remaining = total - assignIntegerParts(total, result);
         if (remaining == 0) {
@@ -117,7 +120,8 @@ public class ProportionalDistributor {
                 .transform(difference(currentProportions));
         Collections.sort(transform, Collections.reverseOrder());
         for (int i = 0; i < remaining; i++) {
-            ProportionWithPosition proportionWithPosition = transform.get(i);
+            ProportionWithPosition proportionWithPosition = transform.get(i
+                    % currentProportions.length);
             result[proportionWithPosition.position] = result[proportionWithPosition.position] + 1;
         }
     }

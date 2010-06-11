@@ -700,4 +700,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
         resourceAllocationModel.setStartDate(date);
     }
 
+    public boolean hasResourceAllocations() {
+        return ((getResourceAllocations().size() > 1));
+    }
+
 }

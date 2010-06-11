@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-access="field" package="org.navalplanner.business.resources.entities">
+
   <class name="Resource">
     <id name="id" access="property" type="long">
       <generator class="hilo">
@@ -19,20 +20,25 @@
 
     <property name="limitingResource" column="LIMITED_RESOURCE" not-null="true"/>
 
+    <!-- It is appropiate the index by the foreign key in the many-to-one side -->
     <set access="field" cascade="all-delete-orphan" inverse="true" name="criterionSatisfactions">
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>
     </set>
 
+    <!-- Assess the need of this mapping. It seems very heavy and should not be used. Remove it ¿?-->
     <set access="field" inverse="true" name="dayAssignments">
       <key column="RESOURCE_ID" not-null="true"/>
       <one-to-many class="org.navalplanner.business.planner.entities.DayAssignment"/>
     </set>
 
+    <!-- Not indexed. Navigation from calendars to all the resources which have that calendar
+    associated not used -->
     <many-to-one name="calendar" access="field" cascade="all"
         class="org.navalplanner.business.calendars.entities.ResourceCalendar"
         column="BASE_CALENDAR_ID" unique="true" />
 
+    <!--  Indexed in the other side -->
     <set name="resourcesCostCategoryAssignments" inverse="true" cascade="all-delete-orphan">
         <key column="RESOURCE_ID"/>
         <one-to-many class="org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment"/>
@@ -64,7 +70,6 @@
     </set>
 
     </joined-subclass>
-
   </class>
 
   <!-- LimitingResourceQueue -->
@@ -78,10 +83,11 @@
 
     <many-to-one name="resource" column="RESOURCE_ID" not-null="false" unique="true" />
 
+    <!--  Indexed the other side -->
     <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true"
             sort="org.navalplanner.business.resources.entities.LimitingResourceQueueElementComparator">
         <key column="LIMITING_RESOURCE_QUEUE_ID" not-null="true" />
-        <one-to-many class="org.navalplanner.business.planner.entities.LimitingResourceQueueElement" />
+        <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement" />
     </set>
 
   </class>
@@ -99,13 +105,19 @@
     <property access="field" name="active"/>
     <many-to-one access="field" name="type" column="id_criterion_type" not-null="true" />
 
-    <many-to-one name="parent" column="parent" access="field" not-null="false"/>
+    <!--  Indexed. It is probable to navigate from a criterion
+    to its children criteria -->
+    <many-to-one name="parent" column="parent" access="field" not-null="false"
+    index="idx_criterion_on_parent"/>
 
+    <!-- Indexed the other side -->
     <set name="children" access="field" lazy="true" cascade="save-update">
         <key column="parent" not-null="false"></key>
         <one-to-many class="Criterion"/>
     </set>
 
+    <!-- Assess the removal of this mapping. It is not used frequently. It is not
+    included index in the many-to-one side -->
     <set name="criterionRequirements" access="field">
         <key column="CRITERION_ID" not-null="false"></key>
         <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
@@ -130,8 +142,12 @@
     <property access="field" name="startDate" not-null="true"/>
     <property access="field" name="finishDate"/>
     <property access="field" name="isDeleted"/>
+
+    <!-- Indexed. It is not probable to ask for the criterion satisfactions of a criterion -->
     <many-to-one access="field" name="criterion" not-null="true"/>
-    <many-to-one access="field" column="resource" name="resource" not-null="true"/>
+
+    <!-- Iindexed. It is useful to know the criterion satisfactoions of a resource -->
+    <many-to-one access="field" name="resource" not-null="true" index="idx_criterionsatisfaction_on_resource" column="resource" />
   </class>
 
   <!-- CriterionType -->
@@ -152,6 +168,8 @@
         <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
       </type>
     </property>
+
+    <!-- Indexed the other side-->
     <set name="criterions" cascade="all,delete-orphan" inverse="true">
         <key column="id_criterion_type" />
         <one-to-many class="Criterion" />

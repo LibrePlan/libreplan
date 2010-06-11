@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities.consolidations;
 
+import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -71,7 +72,16 @@ public class NonCalculatedConsolidation extends Consolidation {
 
     @Override
     public SortedSet<ConsolidatedValue> getConsolidatedValues() {
-        return new TreeSet<ConsolidatedValue>(consolidatedValues);
+        TreeSet<ConsolidatedValue> result = new TreeSet<ConsolidatedValue>(
+                new Comparator<ConsolidatedValue>() {
+                    @Override
+                    public int compare(ConsolidatedValue arg0,
+                            ConsolidatedValue arg1) {
+                        return arg0.getDate().compareTo(arg1.getDate());
+                    }
+                });
+        result.addAll(consolidatedValues);
+        return result;
     }
 
     public SortedSet<NonCalculatedConsolidatedValue> getNonCalculatedConsolidatedValues() {

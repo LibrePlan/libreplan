@@ -31,13 +31,12 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.jfree.util.Log;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
@@ -51,19 +50,22 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Window;
+import org.zkoss.zul.api.Rows;
 
 /**
  * Controller for limiting resources view
@@ -71,7 +73,7 @@ import org.zkoss.zul.RowRenderer;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class LimitingResourcesController implements Composer {
+public class LimitingResourcesController extends GenericForwardComposer {
 
     @Autowired
     private ILimitingResourceQueueModel limitingResourceQueueModel;
@@ -87,6 +89,10 @@ public class LimitingResourcesController implements Composer {
     private TimeTracker timeTracker;
 
     private Grid gridUnassignedLimitingResourceQueueElements;
+
+    private Checkbox cbSelectAll;
+
+    private Window manualAllocationWindow;
 
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
@@ -105,31 +111,32 @@ public class LimitingResourcesController implements Composer {
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
         reload();
+        limitingResourcesPanel.invalidate();
     }
+
+    private Listbox listAssignableQueues;
+
+    private Listbox listCandidateGaps;
 
     public void reload() {
-        // by default show the task by resources
-        boolean filterByResources = true;
-        reload(filterByResources);
-    }
-
-    private void reload(boolean filterByResources) {
         try {
-            if (filterBy == null) {
-                limitingResourceQueueModel.initGlobalView(filterByResources);
-            } else {
-                limitingResourceQueueModel.initGlobalView(filterBy,
-                        filterByResources);
-            }
+
+            limitingResourceQueueModel.initGlobalView();
+
+            // Initialize interval
             timeTracker = buildTimeTracker();
             limitingResourcesPanel = buildLimitingResourcesPanel();
-            addListeners();
 
             this.parent.getChildren().clear();
             this.parent.appendChild(limitingResourcesPanel);
             limitingResourcesPanel.afterCompose();
+
             gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
                     .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
+            cbSelectAll = (Checkbox) limitingResourcesPanel.getFellowIfAny("cbSelectAll");
+
+            initManualAllocationWindow();
+
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
             try {
@@ -142,20 +149,20 @@ public class LimitingResourcesController implements Composer {
         }
     }
 
-    private void addListeners() {
-        filterChangedListener = new IFilterChangedListener() {
-
-            @Override
-            public void filterChanged(boolean filter) {
-                onApplyFilter(filter);
-            }
-        };
-        // this.limitingResourcesPanel.addFilterListener(filterChangedListener);
+    private void initManualAllocationWindow() {
+        manualAllocationWindow = (Window) limitingResourcesPanel.getFellowIfAny("manualAllocationWindow");
+        ManualAllocationController manualAllocationController = getManualAllocationController();
+        manualAllocationController.setLimitingResourcesController(this);
+        manualAllocationController.setLimitingResourcesPanel(limitingResourcesPanel);
     }
 
-    public void onApplyFilter(boolean filterByResources) {
-        limitingResourcesPanel.clearComponents();
-        reload(filterByResources);
+    private ManualAllocationController getManualAllocationController() {
+        return (ManualAllocationController) manualAllocationWindow.getVariable(
+                "manualAllocationController", true);
+    }
+
+    public ILimitingResourceQueueModel getLimitingResourceQueueModel() {
+        return limitingResourceQueueModel;
     }
 
     private void addCommands(LimitingResourcesPanel limitingResourcesPanel) {
@@ -164,8 +171,8 @@ public class LimitingResourcesController implements Composer {
 
     private TimeTracker buildTimeTracker() {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
-                .getViewInterval(), limitingResourceQueueModel
-                .calculateInitialZoomLevel(), SeveralModificators.create(),
+                .getViewInterval(), ZoomLevel.DETAIL_THREE,
+                SeveralModificators.create(),
                 SeveralModificators.create(new BankHolidaysMarker()), parent);
     }
 
@@ -300,25 +307,41 @@ public class LimitingResourcesController implements Composer {
         public void render(Row row, Object data) throws Exception {
             LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
+            row.appendChild(automaticQueueing(element));
             row.appendChild(label(element.getOrderName()));
             row.appendChild(label(element.getTaskName()));
             row.appendChild(label(element.getResourceOrCriteria()));
             row.appendChild(label(element.getDate()));
             row.appendChild(label(element.getHoursToAllocate().toString()));
             row.appendChild(operations(element));
-            row.appendChild(automaticQueueing(element));
         }
 
         private Hbox operations(LimitingResourceQueueElementDTO element) {
             Hbox hbox = new Hbox();
-            hbox.appendChild(assignButton(element));
+            hbox.appendChild(automaticButton(element));
+            hbox.appendChild(manualButton(element));
             hbox.appendChild(removeButton(element));
             return hbox;
         }
 
-        private Button removeButton(final LimitingResourceQueueElementDTO element) {
+        private Button manualButton(final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
-            result.setLabel(_("Remove"));
+            result.setLabel(_("Manual"));
+            result.setTooltiptext(_("Assign elemento to queue manually"));
+            result.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    showManualAllocationWindow(element.getOriginal());
+                }
+            });
+            return result;
+        }
+
+        private Button removeButton(final LimitingResourceQueueElementDTO element) {
+            Button result = new Button("", "/common/img/ico_borrar1.png");
+            result.setHoverImage("/common/img/ico_borrar.png");
+            result.setSclass("icono");
             result.setTooltiptext(_("Remove limiting resource element"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
@@ -339,11 +362,11 @@ public class LimitingResourcesController implements Composer {
             Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
         }
 
-        private Button assignButton(
+        private Button automaticButton(
                 final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
-            result.setLabel(_("Assign"));
-            result.setTooltiptext(_("Assign to queue"));
+            result.setLabel(_("Automatic"));
+            result.setTooltiptext(_("Assign element to queue automatically"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
@@ -358,10 +381,16 @@ public class LimitingResourcesController implements Composer {
                 LimitingResourceQueueElementDTO dto) {
 
             LimitingResourceQueueElement element = dto.getOriginal();
-            if (limitingResourceQueueModel
-                    .assignLimitingResourceQueueElement(element)) {
+            List<LimitingResourceQueueElement> inserted = limitingResourceQueueModel
+                    .assignLimitingResourceQueueElement(element);
+            if (!inserted.isEmpty()) {
                 Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
-                limitingResourcesPanel.appendQueueElementToQueue(element);
+                for (LimitingResourceQueueElement each : inserted) {
+                    // FIXME visually wrong if an element jumps from a queue to
+                    // another
+                    limitingResourcesPanel.refreshQueue(each
+                            .getLimitingResourceQueue());
+                }
             } else {
                 showErrorMessage(_("Cannot allocate selected element. There is not any queue " +
                         "that matches resource allocation criteria at any interval of time"));
@@ -396,6 +425,46 @@ public class LimitingResourcesController implements Composer {
     public void unschedule(QueueTask task) {
         limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
         Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+    }
+
+    public boolean moveTask(LimitingResourceQueueElement element) {
+        showManualAllocationWindow(element);
+        limitingResourcesPanel.reloadComponent();
+        return getManualAllocationWindowStatus() == Messagebox.OK;
+    }
+
+    private void showManualAllocationWindow(LimitingResourceQueueElement element) {
+        getManualAllocationController().show(element);
+    }
+
+    public int getManualAllocationWindowStatus() {
+        Integer status = getManualAllocationController().getStatus();
+        return (status != null) ? status.intValue() : -1;
+    }
+
+    public void reloadUnassignedLimitingResourceQueueElements() {
+        Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+    }
+
+    public void selectedAllUnassignedQueueElements() {
+        final boolean value = cbSelectAll.isChecked();
+
+        final Rows rows = gridUnassignedLimitingResourceQueueElements.getRows();
+        for (Object each: rows.getChildren()) {
+            final Row row = (Row) each;
+            Checkbox cbAutoQueueing = getAutoQueueing(row);
+            cbAutoQueueing.setChecked(value);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Checkbox getAutoQueueing(Row row) {
+        List<Component> children = row.getChildren();
+        return (Checkbox) children.get(0);
+    }
+
+    public void assignAllSelectedElements() {
+
     }
 
 }

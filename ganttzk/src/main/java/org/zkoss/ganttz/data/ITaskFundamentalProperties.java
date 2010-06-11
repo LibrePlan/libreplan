@@ -50,6 +50,8 @@ public interface ITaskFundamentalProperties {
      */
     public Date getDeadline();
 
+    public Date getConsolidatedline();
+
     public void setLengthMilliseconds(long lengthMilliseconds);
 
     public long getLengthMilliseconds();
@@ -87,5 +89,9 @@ public interface ITaskFundamentalProperties {
     public boolean canBeExplicitlyResized();
 
     public String getAssignedStatus();
+
+    public boolean isFixed();
+
+    public String updateTooltipText();
 
 }

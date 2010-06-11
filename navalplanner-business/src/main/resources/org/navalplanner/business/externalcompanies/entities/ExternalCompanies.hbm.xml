@@ -27,6 +27,7 @@
 
     <property name="ourCompanyPassword" />
 
+    <!-- Not indexed, navigation from User to this is not even implemented -->
     <many-to-one name="companyUser" class="org.navalplanner.business.users.entities.User" />
 </class>
 

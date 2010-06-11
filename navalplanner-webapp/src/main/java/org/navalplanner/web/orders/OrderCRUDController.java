@@ -33,6 +33,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
+import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -272,6 +274,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void setupOrderElementTreeController() throws Exception {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         if (orderElementTreeController == null) {
             OrderElementController orderElementController = new OrderElementController();
             orderElementController.doAfterCompose(self
@@ -288,6 +294,23 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    /*
+     * Operations to do before to change the selected tab
+     */
+    private boolean confirmLastTab() {
+        if (getCurrentTab() != null) {
+            // Confirm advances tab.
+            if (getCurrentTab().getId().equals("tabAdvances")) {
+                if (!manageOrderElementAdvancesController.save()) {
+                    resetSelectedTab();
+                    selectTab("tabAdvances");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void redraw(Component comp) {
         Util.createBindingsFor(comp);
         Util.reloadBindings(comp);
@@ -301,6 +324,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private AssignedHoursToOrderElementController assignedHoursController;
 
     public void setupAssignedHoursToOrderElementController() throws Exception {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         if (assignedHoursController == null) {
             Component orderElementHours = editWindow
                     .getFellowIfAny("orderElementHours");
@@ -315,6 +342,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
     public void setupManageOrderElementAdvancesController() throws Exception {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         Component orderElementAdvances = editWindow
                 .getFellowIfAny("orderElementAdvances");
         if (manageOrderElementAdvancesController == null) {
@@ -325,6 +356,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         } else {
             manageOrderElementAdvancesController.refreshChangesFromOrderElement();
             manageOrderElementAdvancesController.createAndLoadBindings();
+            manageOrderElementAdvancesController.refreshSelectedAdvance();
         }
     }
 
@@ -332,6 +364,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void setupAssignedLabelsToOrderElementController()
     throws Exception {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         if (assignedLabelsController == null) {
             LabelsAssignmentToOrderElementComponent labelsAssignment = (LabelsAssignmentToOrderElementComponent) editWindow
                 .getFellow("orderElementLabels");
@@ -346,6 +382,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void setupAssignedCriterionRequirementsToOrderElementController()
             throws Exception {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         if (assignedCriterionRequirementController == null) {
             Component orderElementCriterionRequirements = editWindow
                 .getFellowIfAny("orderElementCriterionRequirements");
@@ -364,6 +404,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void setupAssignedMaterialsToOrderElementController()
             throws Exception {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         if (assignedMaterialsController == null) {
             OrderElementMaterialAssignmentsComponent assignmentsComponent = (OrderElementMaterialAssignmentsComponent) editWindow
                 .getFellowIfAny("orderElementMaterials");
@@ -378,6 +422,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;
 
     public void setupAssignedTaskQualityFormsToOrderElementController() throws Exception {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         Component orderElementTaskQualityForms = editWindow
                 .getFellowIfAny("orderElementTaskQualityForms");
         if (assignedTaskQualityFormController == null) {
@@ -394,6 +442,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OrderAuthorizationController orderAuthorizationController;
 
     public void setupOrderAuthorizationController() {
+        if (!confirmLastTab())
+            return;
+        setCurrentTab();
+
         Component orderElementAuthorizations = editWindow
                 .getFellowIfAny("orderElementAuthorizations");
         if (orderAuthorizationController == null) {
@@ -442,9 +494,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndContinue() {
-        setCurrentTab();
         Order order = (Order) orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
+        setCurrentTab();
+        Tab previousTab = getCurrentTab();
         final boolean couldSave = save();
         if (couldSave) {
             if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
@@ -460,13 +513,15 @@ public class OrderCRUDController extends GenericForwardComposer {
                 showWindow(editWindow);
 
                 // come back to the current tab after initialize all tabs.
-                selectTab(getCurrentTab().getId());
-                Events.sendEvent(new SelectEvent(Events.ON_SELECT,
-                        getCurrentTab(), null));
+                resetSelectedTab();
+                selectTab(previousTab.getId());
+                Events.sendEvent(new SelectEvent(Events.ON_SELECT, previousTab,
+                        null));
 
                 if (isNewObject) {
                     this.planningControllerEntryPoints.goToOrderDetails(order);
                 }
+
             }
             else {
                 try {
@@ -492,24 +547,31 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
             if (!manageOrderElementAdvancesController.save()) {
+                setCurrentTab();
                 return false;
             }
         }
         if (assignedCriterionRequirementController != null) {
             selectTab("tabRequirements");
             if (!assignedCriterionRequirementController.close()) {
+                setCurrentTab();
                 return false;
             }
         }
         if (assignedTaskQualityFormController != null) {
             selectTab("tabTaskQualityForm");
             if (!assignedTaskQualityFormController.confirm()) {
-            return false;
+                setCurrentTab();
+                return false;
         }
         }
 
-        // come back to the current tab after validate other tabs.
-        selectTab(getCurrentTab().getId());
+        createPercentageAdvances();
+
+        // come back to the default tab.
+        if (getCurrentTab() != null) {
+            selectTab(getCurrentTab().getId());
+        }
 
         try {
             orderModel.save();
@@ -525,13 +587,48 @@ public class OrderCRUDController extends GenericForwardComposer {
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
         }
+        setCurrentTab();
         return false;
     }
 
     Tab tabGeneralData;
 
+    private void createPercentageAdvances() {
+
+        try {
+            if (manageOrderElementAdvancesController == null) {
+                Component orderElementAdvances = editWindow
+                        .getFellowIfAny("orderElementAdvances");
+                manageOrderElementAdvancesController = (ManageOrderElementAdvancesController) orderElementAdvances
+                        .getVariable("manageOrderElementAdvancesController",
+                                true);
+            }
+            manageOrderElementAdvancesController
+                    .createPercentageAdvances(getOrderElementModel());
+        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("cannot include an Advance of the same Advance type twice"));
+        } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("spread values are not valid, at least one value should be true"));
+        } catch (Exception e) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("incorrect initialization of the advance assignment controller."));
+        }
+    }
+
     private void selectDefaultTab() {
         selectTab("tabGeneralData");
+    }
+
+    private void resetSelectedTab() {
+        selectedTab = null;
     }
 
     private void setCurrentTab() {
@@ -566,7 +663,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void reloadHoursGroupOrder() {
-        assignedCriterionRequirementController.reload();
+        if (getCurrentTab().getId().equals("tabRequirements")) {
+            assignedCriterionRequirementController.reload();
+        }
     }
 
     private void showWindow(Window window) {
@@ -695,6 +794,12 @@ public class OrderCRUDController extends GenericForwardComposer {
         selectDefaultTab();
         reloadDefaultTab();
         loadCustomerComponent();
+    }
+
+    public void setupOrderDetails() {
+        confirmLastTab();
+        setCurrentTab();
+        reloadDefaultTab();
     }
 
     public void reloadDefaultTab() {
@@ -1049,14 +1154,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderElementFilter.setVisible(false);
     }
 
-    private void showOrderElementFilter() {
+    public void showOrderElementFilter() {
         if (orderFilter != null)
             orderFilter.setVisible(false);
         if (orderElementFilter != null)
             orderElementFilter.setVisible(true);
     }
 
-    private void showCreateButtons(boolean showCreate) {
+    public void showCreateButtons(boolean showCreate) {
         createOrderButton.setVisible(showCreate);
         createOrderFromTemplateButton.setVisible(showCreate);
         saveOrderAndContinueButton.setVisible(!showCreate);

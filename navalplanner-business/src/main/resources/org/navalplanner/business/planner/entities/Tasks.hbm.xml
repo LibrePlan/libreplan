@@ -14,21 +14,27 @@
         <property name="startDate" type="timestamp" not-null="true"/>
         <property name="endDate" type="timestamp" not-null="true"/>
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+        <property name="advancePercentage" column="ADVANCE_PERCENTAGE" />
 
-        <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"/>
+        <!-- Indexed -->
+        <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
+            index="idx_TaskElement_on_TaskGroup" />
 
         <one-to-one name="taskSource" cascade="none"/>
 
+        <!-- Indexed on the other side -->
         <set name="dependenciesWithThisOrigin" cascade="all-delete-orphan">
             <key column="ORIGIN"></key>
             <one-to-many class="Dependency" />
         </set>
 
+        <!-- Not indexed -->
         <set name="dependenciesWithThisDestination" cascade="all-delete-orphan">
             <key column="DESTINATION"></key>
             <one-to-many class="Dependency" />
         </set>
 
+        <!-- Not indexed -->
         <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
             class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
 
@@ -51,11 +57,13 @@
             <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"
                 cascade="all"/>
 
+            <!-- Indexed on the other side -->
             <set name="resourceAllocations" cascade="all-delete-orphan">
                 <key column="TASK" />
                 <one-to-many class="ResourceAllocation" />
             </set>
 
+            <!-- Already indexed because it's unique -->
             <many-to-one name="subcontractedTaskData"
                 column="SUBCONTRATED_TASK_DATA_ID"
                 unique="true" cascade="all" lazy="false" />
@@ -66,6 +74,8 @@
 
         <joined-subclass name="TaskGroup">
             <key column="TASK_ELEMENT_ID"></key>
+
+            <!-- Indexed on the other side -->
             <list name="taskElements" cascade="all">
                 <key column="parent" not-null="false"></key>
                 <index column="positionInParent"></index>
@@ -83,11 +93,19 @@
             <generator class="hilo"></generator>
         </id>
         <version name="version" access="property" type="long" />
+
+        <!-- Indexed -->
         <many-to-one class="TaskElement" name="origin"
-            column="ORIGIN" />
+            column="ORIGIN"
+            index="idx_Dependency_on_TaskElement_origin" />
+
+        <!-- Not indexed, navigation in that direction is not useful -->
         <many-to-one class="TaskElement" name="destination"
             column="DESTINATION" />
-        <many-to-one class="LimitingResourceQueueDependency" cascade="all"
+
+        <!-- Not indexed, relation from the other side is one-to-one -->
+        <many-to-one class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"
+            cascade="all"
             name="queueDependency"
             column="queue_dependency"
             unique="false"
@@ -107,6 +125,7 @@
         </id>
         <version name="version" access="property" type="long" />
 
+        <!-- Not indexed, navigation from ExternalCompany to this is not even implemented -->
         <many-to-one name="externalCompany" class="org.navalplanner.business.externalcompanies.entities.ExternalCompany" />
 
         <one-to-one name="task" class="Task"

@@ -296,6 +296,10 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getTooltipText();
     }
 
+    public String updateTooltipText() {
+        return fundamentalProperties.updateTooltipText();
+    }
+
     public String getLabelsText() {
         return fundamentalProperties.getLabelsText();
     }
@@ -314,6 +318,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     @Override
     public Date getDeadline() {
         return fundamentalProperties.getDeadline();
+    }
+
+    @Override
+    public Date getConsolidatedline() {
+        return fundamentalProperties.getConsolidatedline();
     }
 
     public void addConstraintViolationListener(
@@ -371,6 +380,10 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public String getAssignedStatus() {
         return fundamentalProperties.getAssignedStatus();
+    }
+
+    public boolean isFixed() {
+        return fundamentalProperties.isFixed();
     }
 
 }

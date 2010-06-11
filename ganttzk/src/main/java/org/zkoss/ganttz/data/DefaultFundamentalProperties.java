@@ -189,4 +189,18 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return "unassigned";
     }
 
+    @Override
+    public boolean isFixed() {
+        return false;
+    }
+
+    @Override
+    public Date getConsolidatedline() {
+        return null;
+    }
+
+    public String updateTooltipText() {
+        return null;
+    }
+
 }

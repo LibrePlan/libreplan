@@ -38,6 +38,8 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
+import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
@@ -48,8 +50,10 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +101,12 @@ public class MachineModel implements IMachineModel {
     private IWorkerDAO workerDAO;
     @Autowired
     private IConfigurationDAO configurationDAO;
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
+    @Autowired
+    private IResourceAllocationDAO resourceAllocationDAO;
 
     private ClassValidator<Machine> validator = new ClassValidator<Machine>(
             Machine.class);
@@ -339,5 +349,21 @@ public class MachineModel implements IMachineModel {
 
     public List<Machine> getAllMachines() {
         return machineList;
+    }
+
+    @Override
+    @Transactional(readOnly=true)
+    public boolean canRemove(Machine machine) {
+        List<Resource> resourcesList = new ArrayList<Resource>();
+        resourcesList.add(machine);
+        return dayAssignmentDAO.findByResources(resourcesList).isEmpty() &&
+            workReportLineDAO.findByResources(resourcesList).isEmpty() &&
+            resourceAllocationDAO.findAllocationsRelatedToAnyOf(resourcesList).isEmpty();
+    }
+
+    @Override
+    @Transactional
+    public void confirmRemove(Machine machine) throws InstanceNotFoundException {
+        resourceDAO.remove(machine.getId());
     }
 }

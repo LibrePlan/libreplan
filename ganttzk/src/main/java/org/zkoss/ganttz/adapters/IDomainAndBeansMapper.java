@@ -20,10 +20,12 @@
 
 package org.zkoss.ganttz.adapters;
 
+import java.util.List;
 import java.util.Map;
 
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.TaskContainer;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -61,6 +63,14 @@ public interface IDomainAndBeansMapper<T> {
      *             is found
      */
     Task findAssociatedBean(T domainObject) throws IllegalArgumentException;
+
+    /**
+     * Used to know the parents for a given task.
+     * @return If the task is top level returns an empty list.<br />
+     *         Otherwise it returns the list of parents from more immediate to
+     *         most distant parent
+     */
+    List<? extends TaskContainer> getParents(Task task);
 
     public Map<T, Task> getMapDomainToTask();
 }

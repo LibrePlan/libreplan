@@ -86,6 +86,10 @@ public class AdvanceMeasurement extends BaseEntity {
             this.value.setScale(2, BigDecimal.ROUND_DOWN);
         }
         resetCommunicationDate();
+        if (advanceAssignment != null) {
+            advanceAssignment.getOrderElement()
+                    .markAsDirtyLastAdvanceMeasurementForSpreading();
+        }
     }
 
     @NotNull(message = "value not specified")

@@ -33,12 +33,17 @@
 
     <property name="reportGlobalAdvance" access="field"/>
 
+    <!-- Not indexed -->
     <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
 
     <joined-subclass name="DirectAdvanceAssignment">
         <key column="ADVANCE_ASSIGNMENT_ID"></key>
 
-        <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="DIRECT_ORDER_ELEMENT_ID"/>
+        <!-- Indexed -->
+        <many-to-one name="orderElement"
+            class="org.navalplanner.business.orders.entities.OrderElement"
+            column="DIRECT_ORDER_ELEMENT_ID"
+            index="idx_directadvanceassigment_on_orderelement"/>
 
         <property name="maxValue" access="field" scale="2"/>
 
@@ -51,6 +56,7 @@
                 <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
         </set>
 
+        <!-- Not indexed -->
         <set name="nonCalculatedConsolidations"
             cascade="none"
             inverse="true"
@@ -64,8 +70,13 @@
     <joined-subclass name="IndirectAdvanceAssignment">
         <key column="ADVANCE_ASSIGNMENT_ID"></key>
 
-        <many-to-one name="orderElement" class="org.navalplanner.business.orders.entities.OrderElement" column="INDIRECT_ORDER_ELEMENT_ID"/>
+        <!-- Indexed -->
+        <many-to-one name="orderElement"
+            class="org.navalplanner.business.orders.entities.OrderElement"
+            column="INDIRECT_ORDER_ELEMENT_ID"
+            index="idx_indirectadvanceassigment_on_orderelement"/>
 
+        <!-- Not indexed -->
         <set name="calculatedConsolidations"
             cascade="none"
             inverse="true"
@@ -92,6 +103,7 @@
     <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field" />
     <property name="communicationDate" access="field" />
 
+    <!-- Not indexed -->
     <set name="nonCalculatedConsolidatedValues" access="field" cascade="none" inverse="true">
         <key column="ADVANCE_MEASUREMENT_ID" />
         <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue" />
@@ -108,8 +120,15 @@
 
     <version name="version" access="property" type="long" />
 
+    <!-- Not indexed -->
     <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
-    <many-to-one name="template" class="org.navalplanner.business.templates.entities.OrderElementTemplate" column="ORDER_ELEMENT_TEMPLATE_ID"/>
+
+    <!-- Indexed -->
+    <many-to-one name="template"
+        class="org.navalplanner.business.templates.entities.OrderElementTemplate"
+        column="ORDER_ELEMENT_TEMPLATE_ID"
+        index="idx_advanceassigmenttemplate_on_template"/>
+
     <property name="reportGlobalAdvance" access="field"/>
     <property name="maxValue" access="field" scale="2"/>
 

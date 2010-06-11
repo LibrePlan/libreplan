@@ -406,14 +406,6 @@ public class GenericResourceAllocation extends
         return result;
     }
 
-    public List<GenericDayAssignment> getNonConsolidatedAssignments() {
-        return getDayAssignmentsByConsolidated(false);
-    }
-
-    public List<GenericDayAssignment> getConsolidatedAssignments() {
-        return getDayAssignmentsByConsolidated(true);
-    }
-
     @Override
     protected Class<GenericDayAssignment> getDayAssignmentType() {
         return GenericDayAssignment.class;
@@ -529,6 +521,13 @@ public class GenericResourceAllocation extends
                 scenario);
         if (container != null) {
             genericDayAssignmentsContainers.remove(container);
+        }
+    }
+
+    public void overrideConsolidatedDayAssignments(
+            GenericResourceAllocation origin) {
+        if (origin != null) {
+            resetAssignmentsTo(origin.getConsolidatedAssignments());
         }
     }
 

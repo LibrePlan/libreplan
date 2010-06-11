@@ -202,7 +202,7 @@ public class ResourceConverter {
                         RESOURCE_CALENDAR_ENTITY_TYPE, e.getKey().toString());
         } catch (MultipleInstancesException e) {
             throw new ValidationException(_(
-                    "there exist multiple resource calendars with name  {0}",
+                    "there exist multiple resource calendars with name {0}",
                     calendarCode));
         }
     }

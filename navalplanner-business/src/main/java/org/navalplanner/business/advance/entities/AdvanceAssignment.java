@@ -43,6 +43,9 @@ public abstract class AdvanceAssignment extends BaseEntity {
 
     public void setReportGlobalAdvance(boolean reportGlobalAdvance) {
         this.reportGlobalAdvance = reportGlobalAdvance;
+        if (this.orderElement != null) {
+            this.orderElement.markAsDirtyLastAdvanceMeasurementForSpreading();
+        }
     }
 
     public boolean getReportGlobalAdvance() {

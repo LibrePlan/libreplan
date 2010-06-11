@@ -25,7 +25,9 @@ import java.util.List;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
+import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
+import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;
@@ -38,6 +40,8 @@ public interface IOrderPlanningModel {
     void setConfigurationToPlanner(Planner planner, Order order,
             ViewSwitcher viewSwitcher,
             EditTaskController editTaskController,
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
+            AdvanceConsolidationController advanceConsolidationController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional);
 

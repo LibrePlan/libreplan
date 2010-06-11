@@ -73,4 +73,9 @@ public class DatesMapperOnInterval implements IDatesMapper {
         return millisecondsPerPixel;
     }
 
+    @Override
+    public int getHorizontalSize() {
+        return this.horizontalSize;
+    }
+
 }

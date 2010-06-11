@@ -407,6 +407,20 @@ zkTask.setAttr = function(cmp, name, val) {
 	}
 };
 
+zkTask.setAttr = function(cmp, name, val) {
+	switch (name) {
+        case "taskTooltipText":{
+            var taskTooltipTextElement = YAHOO.util.Selector.query(
+                    '.task_tooltip', cmp, true);
+            taskTooltipTextElement.innerHTML = val;
+            return true;
+        }
+        default: {
+            return false;
+        }
+	}
+};
+
 zkTask.addDependency = function(cmp) {
 	zkTask.createArrow(cmp);
 };
@@ -567,10 +581,18 @@ zkTask.getElementsByAttribute = function(oElm, strTagName, strAttributeName,
 	return arrReturnElements;
 }
 
+
 zkTask.moveDeadline = function(cmp, width) {
 	var deadlineDiv = zkTask.next(cmp);
 	deadlineDiv["style"].left = width;
 }
+
+zkTask.moveConsolidatedline = function(cmp, width) {
+	var deadlineDiv = zkTask.next(cmp);
+	var consolidatedlineDiv = zkTask.next(deadlineDiv);
+	consolidatedlineDiv["style"].left = width;
+}
+
 
 zkTask.resizeCompletionAdvance = function(cmp, width) {
 	var completionDiv = YAHOO.util.Selector.query('.completion', cmp, true);

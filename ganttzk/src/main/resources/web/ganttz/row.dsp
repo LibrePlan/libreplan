@@ -8,4 +8,5 @@
         ${z:redraw(child, null)}
     </c:forEach>
     <div id="deadline${self.uuid}" class="deadline"></div>
+    <div id="consolidatedline${self.uuid}" class="consolidatedline"></div>
 </div>

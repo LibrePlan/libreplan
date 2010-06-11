@@ -20,11 +20,18 @@
 <?xel-method prefix="i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
     signature="java.lang.String _(java.lang.String name)" ?>
 
+<?component name="manualAllocationWindow"
+    macroURI="/limitingresources/manualAllocation.zul"
+    inline="true" ?>
+
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-<zscript><![CDATA[
-resourcesLoadPanel = self;
-]]>
-</zscript>
+
+    <n:script type="text/javascript" src="/navalplanner-webapp/js/highlightDaysInInterval.js" />
+
+    <zscript><![CDATA[
+        limitingResourcesPanel = self;
+    ]]>
+    </zscript>
 
     <borderlayout sclass="resourcesloadlayout" width="auto">
 
@@ -43,31 +50,20 @@ resourcesLoadPanel = self;
                 <!-- Zoom -->
                 <label>${i18n:_('Zoom')}:</label>
                 <listbox id="listZoomLevels" mold="select" rows="1"
-                    model="${resourcesLoadPanel.zoomLevels}"
-                    onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
+                    model="${limitingResourcesPanel.zoomLevels}"
+                    onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
                 </listbox>
 
-                <separator/>
+            <separator/>
+            <label>${i18n:_('Pagination')}:</label>
+            <button tooltiptext="${i18n:_('Page down')}" image="/common/img/ico_left.png" id="paginationDownButton"
+            onClick="limitingResourcesPanel.paginationDown();" disabled="true" />
+            <listbox mold="select" rows="1" visible="true" id="horizontalPagination"
+            onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
+            <button tooltiptext="${i18n:_('Page up')}" image="/common/img/ico_right.png" id="paginationUpButton"
+            onClick="limitingResourcesPanel.paginationUp();" />
 
-                <!-- Pagination -->
-                <label>${i18n:_('Pagination')}:</label>
-                <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
-                    onClick="advancedAllocationController.paginationDown();" disabled="true" />
-                <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
-                    onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
-                <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
-                    onClick="advancedAllocationController.paginationUp();" />
 
-                <separator/>
-
-                <!-- Filter -->
-                <label>${i18n:_('Filter')}:</label>
-                <listbox id="listFilters" mold="select" rows="1" width="200px"
-                    model="${resourcesLoadPanel.filters}"
-                    onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);" />
-                <button image="/common/img/ico_filter.png" style="margin-top: -4px"
-                    tooltiptext="${i18n:_('Apply filtering to resource load satisfying required criteria')}"
-                    onClick="resourcesLoadPanel.onApplyFilter()"/>
             </hbox>
         </north>
 
@@ -78,7 +74,7 @@ resourcesLoadPanel = self;
                     splittable="true" autoscroll="true">
 
                     <borderlayout >
-                        <north border="0" height="38px" flex="true" collapsible="true">
+                        <north border="0" height="35px" flex="true" collapsible="true">
                             <vbox pack="top" align="center">
                             <tree fixedLayout="true">
                                 <treecols>
@@ -96,7 +92,7 @@ resourcesLoadPanel = self;
 
                 <center sclass="taskspanel">
                     <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" height="33px" id="insertionPointTimetracker"></div></north>
+                        <north border="0"><div sclass="timetrackergap" height="30px" id="insertionPointTimetracker"></div></north>
                         <center autoscroll="true" border="0" sclass="rightpanellayout">
                             <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
                         </center>
@@ -105,24 +101,42 @@ resourcesLoadPanel = self;
             </borderlayout>
         </center>
 
-        <!-- List of unassigned queue elements -->
         <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
-            <grid id="gridUnassignedLimitingResourceQueueElements"
-                    model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
-                    rowRenderer="@{limitingResourcesController.limitingResourceQueueElementsRenderer}"
-                    fixedLayout="true"
-                    style="margin: 10px" >
-                <columns sizable="true">
-                    <column label="${i18n:_('Order')}" sort="auto(orderName)"/>
-                    <column label="${i18n:_('Task')}" sort="auto(taskName)"/>
-                    <column label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
-                    <column label="${i18n:_('Date')}" sort="auto(date)"/>
-                    <column label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
-                    <column label="${i18n:_('Operations')}" width="150px"/>
-                    <column label="${i18n:_('Auto queueing')}" width="100px" />
-                </columns>
-            </grid>
+            <div>
+                <!-- Assign selected elements -->
+                <hbox style="padding-left: 10px; padding-top: 3px">
+                    <button id="btnAssignSelectedItems"
+                            label="${i18n:_('Assign selected items')}"
+                            onClick="limitingResourcesController.assignAllSelectedElements()"/>
+                </hbox>
+
+                <!-- List of unassigned queue elements -->
+                <grid id="gridUnassignedLimitingResourceQueueElements"
+                        model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
+                        rowRenderer="@{limitingResourcesController.limitingResourceQueueElementsRenderer}"
+                        fixedLayout="true"
+                        style="margin: 10px" >
+                    <columns sizable="true">
+                        <column width="40px" >
+                            <hbox pack="center" style="margin-left:2px">
+                                <checkbox id="cbSelectAll"
+                                    onCheck="limitingResourcesController.selectedAllUnassignedQueueElements()"
+                                    tooltiptext="Select/deselect all"/>
+                            </hbox>
+                        </column>
+                        <column label="${i18n:_('Order')}" sort="auto(orderName)"/>
+                        <column label="${i18n:_('Task')}" sort="auto(taskName)"/>
+                        <column label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
+                        <column label="${i18n:_('Date')}" sort="auto(date)"/>
+                        <column label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
+                        <column label="${i18n:_('Operations')}" width="200px"/>
+                    </columns>
+                </grid>
+            </div>
         </south>
 
     </borderlayout>
+
+    <manualAllocationWindow id="manualAllocationWindow" />
+
 </zk>

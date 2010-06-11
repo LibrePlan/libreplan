@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,7 +53,6 @@ import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlob
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,7 +144,8 @@ public class ManageOrderElementAdvancesModel implements
                 listAdvanceAssignments);
         fillVariables();
         for (AdvanceAssignment advance : listAdvanceAssignmentsCopy) {
-            if (!listAdvanceAssignments.contains(advance)) {
+            if ((!listAdvanceAssignments.contains(advance))
+                    && (advance instanceof DirectAdvanceAssignment)) {
                 listAdvanceAssignments.add(advance);
             }
         }
@@ -153,15 +154,58 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public void prepareEditAdvanceMeasurements(AdvanceAssignment assignment) {
         if (assignment instanceof IndirectAdvanceAssignment) {
-            this.advanceAssignment = ((OrderLineGroup) this.orderElement)
+            this.advanceAssignment = orderElement
                     .calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) assignment);
             this.isIndirectAdvanceAssignment = true;
         } else {
-	    if (assignment instanceof DirectAdvanceAssignment) {
-	    this.advanceAssignment = (DirectAdvanceAssignment) assignment;
-            this.isIndirectAdvanceAssignment = false;
-	    }
+            if (assignment instanceof DirectAdvanceAssignment) {
+                this.advanceAssignment = (DirectAdvanceAssignment) assignment;
+                this.isIndirectAdvanceAssignment = false;
+            }
         }
+    }
+
+    public void createPercentageAdvances(OrderElement orderElement)
+            throws DuplicateAdvanceAssignmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException {
+
+        if (orderElement != null) {
+            DirectAdvanceAssignment advancePercentage = orderElement
+                    .getAdvanceAssignmentByType(PredefinedAdvancedTypes.PERCENTAGE
+                            .getType());
+
+            boolean existDirectPercentageAdvance = ((advancePercentage != null) && (!advancePercentage
+                    .isFake()));
+
+            if ((orderElement.isSchedulingPoint())
+                    && (orderElement.getReportGlobalAdvanceAssignment() == null)
+                    && (!existDirectPercentageAdvance)) {
+                createPercentageAdvance(orderElement);
+
+            } else if (!existDirectPercentageAdvance) {
+
+                for (OrderElement child : orderElement.getChildren()) {
+                    createPercentageAdvances(child);
+                }
+            }
+        }
+    }
+
+    private void createPercentageAdvance(OrderElement orderElement)
+            throws DuplicateAdvanceAssignmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException {
+        DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
+        newAdvance.setOrderElement(orderElement);
+
+        for (AdvanceType type : this.listAdvanceTypes) {
+            if (type.getUnitName().equals(
+                    PredefinedAdvancedTypes.PERCENTAGE.getTypeName())) {
+                newAdvance.setAdvanceType(type);
+                newAdvance.setMaxValue(getMaxValue(type));
+            }
+        }
+        newAdvance.setReportGlobalAdvance(true);
+        orderElement.addAdvanceAssignment(newAdvance);
     }
 
     @Override
@@ -182,14 +226,17 @@ public class ManageOrderElementAdvancesModel implements
                 .getDirectAdvanceAssignments()) {
             forceLoadAdvanceConsolidatedValues(each);
             each.getNonCalculatedConsolidation().size();
+            each.getAdvanceType().getUnitName();
         }
-        if (orderElement instanceof OrderLineGroup) {
-            ((OrderLineGroup) orderElement).getIndirectAdvanceAssignments().size();
-            for (IndirectAdvanceAssignment each : ((OrderLineGroup) orderElement)
+
+        for (IndirectAdvanceAssignment each : orderElement
                     .getIndirectAdvanceAssignments()) {
-                each.getCalculatedConsolidation().size();
-            }
+            each.getCalculatedConsolidation().size();
+            each.getAdvanceType().getUnitName();
+            forceLoadAdvanceConsolidatedValues(orderElement
+                    .calculateFakeDirectAdvanceAssignment(each));
         }
+
     }
 
     private void forceLoadAdvanceConsolidatedValues(
@@ -211,23 +258,51 @@ public class ManageOrderElementAdvancesModel implements
             this.listAdvanceAssignments.add(each);
         }
 
-        if (this.orderElement instanceof OrderLineGroup) {
-            for (IndirectAdvanceAssignment each : ((OrderLineGroup) this.orderElement)
-                    .getIndirectAdvanceAssignments()) {
+        for (IndirectAdvanceAssignment each : orderElement
+                .getIndirectAdvanceAssignments()) {
                 this.listAdvanceAssignments.add(each);
             }
-        }
     }
 
     @Override
-    public void addNewLineAdvaceAssignment() {
+    public boolean addNewLineAdvaceAssignment() {
         DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
         newAdvance.setOrderElement(this.orderElement);
+
+        /*
+         * set the first advance type of the list as the default
+         */
+        List<AdvanceType> listAdvanceType = getPossibleAdvanceTypes(newAdvance);
+        if (!listAdvanceType.isEmpty()) {
+            newAdvance.setAdvanceType(listAdvanceType.get(0));
+            newAdvance.setMaxValue(getMaxValue(listAdvanceType.get(0)));
+        } else {
+            return false;
+        }
 
         if (listAdvanceAssignments.isEmpty()) {
             newAdvance.setReportGlobalAdvance(true);
         }
         listAdvanceAssignments.add(newAdvance);
+        return true;
+    }
+
+    @Override
+    public BigDecimal getMaxValue(AdvanceType advanceType) {
+        if (advanceType != null) {
+            return advanceType.getDefaultMaxValue();
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public AdvanceAssignment getSpreadAdvance() {
+        for(AdvanceAssignment advance : getAdvanceAssignments()){
+            if(advance.getReportGlobalAdvance()){
+                return advance;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -279,6 +354,27 @@ public class ManageOrderElementAdvancesModel implements
             }
             advanceTypes.add(advanceType);
         }
+        return getSpecificOrder(advanceTypes);
+    }
+
+    private List<AdvanceType> getSpecificOrder(List<AdvanceType> advanceTypes ){
+        Collections.sort(advanceTypes, new Comparator<AdvanceType>(){
+
+            @Override
+            public int compare(AdvanceType arg0, AdvanceType arg1) {
+                if((arg0 == null) || (arg0.getUnitName() == null)){
+                    return -1;
+                }
+                if((arg1 == null) || (arg1.getUnitName() == null) || (arg1.getUnitName().equals(PredefinedAdvancedTypes.PERCENTAGE.getTypeName()))){
+                    return 1;
+                }
+                if (arg0.getUnitName().equals(
+                        PredefinedAdvancedTypes.PERCENTAGE.getTypeName())) {
+                    return -1;
+                }
+                return (arg0.getUnitName().compareTo(arg1.getUnitName()));
+            }
+        });
         return advanceTypes;
     }
 
@@ -463,15 +559,17 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void sortListAdvanceMeasurement() {
-        ArrayList<AdvanceMeasurement> advanceMeasurements = new ArrayList<AdvanceMeasurement>(
-                this.advanceAssignment.getAdvanceMeasurements());
-        Collections.sort(advanceMeasurements,
+        if (advanceAssignment != null) {
+            ArrayList<AdvanceMeasurement> advanceMeasurements = new ArrayList<AdvanceMeasurement>(
+                advanceAssignment.getAdvanceMeasurements());
+            Collections.sort(advanceMeasurements,
                 new AdvanceMeasurementComparator());
-        TreeSet<AdvanceMeasurement> measurements = new TreeSet<AdvanceMeasurement>(
+            TreeSet<AdvanceMeasurement> measurements = new TreeSet<AdvanceMeasurement>(
                 new AdvanceMeasurementComparator());
-        measurements.addAll(advanceMeasurements);
-        this.advanceAssignment
+            measurements.addAll(advanceMeasurements);
+            this.advanceAssignment
                 .setAdvanceMeasurements(measurements);
+        }
     }
 
     @Override
@@ -485,10 +583,8 @@ public class ManageOrderElementAdvancesModel implements
 
         BigDecimal maxValue;
         if (assignment instanceof IndirectAdvanceAssignment) {
-            maxValue = ((OrderLineGroup) this.orderElement)
-                    .calculateFakeDirectAdvanceAssignment(
-                            (IndirectAdvanceAssignment) assignment)
-                    .getMaxValue();
+            maxValue = orderElement.calculateFakeDirectAdvanceAssignment(
+                    (IndirectAdvanceAssignment) assignment).getMaxValue();
         } else {
             maxValue = ((DirectAdvanceAssignment) assignment)
                     .getMaxValue();
@@ -503,42 +599,35 @@ public class ManageOrderElementAdvancesModel implements
             return BigDecimal.ZERO;
         }
 
-        return value.setScale(2).divide(maxValue, RoundingMode.DOWN).multiply(
-                new BigDecimal(100));
+        BigDecimal division = value.divide(maxValue, 2, RoundingMode.DOWN);
+        return (division.multiply(new BigDecimal(100))).setScale(0,
+                RoundingMode.DOWN);
     }
 
     @Override
     @Transactional(readOnly = true)
     public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
-        if (orderElement == null) {
-            return null;
-        }
-
-        if (!(orderElement instanceof OrderLineGroup)) {
+        if ((orderElement == null) || (orderElement.isLeaf())) {
             return null;
         }
 
         reattachmentOrderElement();
 
-        return ((OrderLineGroup) orderElement)
+        return orderElement
                 .calculateFakeDirectAdvanceAssignment(indirectAdvanceAssignment);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getAdvancePercentageChildren() {
-        if (orderElement == null) {
-            return null;
-        }
-
-        if (!(orderElement instanceof OrderLineGroup)) {
+        if ((orderElement == null) || orderElement.isLeaf()) {
             return null;
         }
 
         reattachmentOrderElement();
 
-        return ((OrderLineGroup) orderElement).getAdvancePercentageChildren();
+        return orderElement.getAdvancePercentageChildren();
     }
 
     @Override
@@ -599,7 +688,7 @@ public class ManageOrderElementAdvancesModel implements
         Iterator<AdvanceMeasurement> iterator = advance
                 .getAdvanceMeasurements().iterator();
         while (iterator.hasNext()) {
-            if (hasConsolidatedAdvances(iterator.next())) {
+            if (hasConsolidatedAdvances(iterator.next(), advance.isFake())) {
                 return true;
             }
         }
@@ -607,16 +696,23 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Transactional(readOnly = true)
-    public boolean hasConsolidatedAdvances(
-            AdvanceMeasurement advanceMeasurement) {
+    public boolean hasConsolidatedAdvances(AdvanceMeasurement advanceMeasurement) {
+        return hasConsolidatedAdvances(advanceMeasurement,
+                isIndirectAdvanceAssignment);
+    }
 
-        if (advanceMeasurement.isNewObject() || isIndirectAdvanceAssignment) {
+    private boolean hasConsolidatedAdvances(
+            AdvanceMeasurement advanceMeasurement,
+            boolean isIndirectAdvanceAssignment) {
+
+        if (isIndirectAdvanceAssignment) {
             return false;
         }
 
         if (!advanceMeasurement.getNonCalculatedConsolidatedValues().isEmpty()) {
             return true;
         }
+
         return findIndirectConsolidation(advanceMeasurement);
     }
 
@@ -643,6 +739,7 @@ public class ManageOrderElementAdvancesModel implements
                 types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
             }
 
+            orderElementDAO.reattach(orderElement);
             Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
                     orderElement, types);
 
@@ -659,7 +756,6 @@ public class ManageOrderElementAdvancesModel implements
     private Set<IndirectAdvanceAssignment> getSpreadIndirectAdvanceAssignmentWithSameType(
             OrderElement orderElement, List<String> types) {
 
-        orderElementDAO.reattach(orderElement);
         Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
 
         for (IndirectAdvanceAssignment indirect : orderElement

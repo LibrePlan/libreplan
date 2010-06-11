@@ -14,15 +14,26 @@
     <version access="property" name="version" type="long"/>
 
     <!-- Inverse navigation from CriterionRequirement to HoursGroup -->
-    <many-to-one class="org.navalplanner.business.orders.entities.HoursGroup" column="HOURS_GROUP_ID" name="hoursGroup"/>
+    <!-- Indexed -->
+    <many-to-one class="org.navalplanner.business.orders.entities.HoursGroup"
+        column="HOURS_GROUP_ID"
+        name="hoursGroup"
+        index="idx_criterionrequirement_on_hoursgroup"
+    />
 
     <!-- Inverse navigation from CriterionRequirement to OrderElement -->
-    <many-to-one class="org.navalplanner.business.orders.entities.OrderElement" column="ORDER_ELEMENT_ID" name="orderElement"/>
+    <!-- Indexed -->
+    <many-to-one class="org.navalplanner.business.orders.entities.OrderElement"
+        column="ORDER_ELEMENT_ID"
+        name="orderElement"
+        index="idx_criterionrequirement_on_orderelement"
+        />
 
     <!-- Inverse navigation from CriterionRequirement to OrderTemplateElement -->
     <many-to-one class="org.navalplanner.business.templates.entities.OrderElementTemplate" column="ORDER_ELEMENT_TEMPLATE_ID" name="orderElementTemplate"/>
 
     <!-- Inverse navigation from CriterionRequirement to Criterion -->
+    <!-- Not indexed. Other side navigation not useful -->
     <many-to-one class="org.navalplanner.business.resources.entities.Criterion" column="CRITERION_ID" name="criterion"/>
 
     <subclass discriminator-value="DIRECT" name="DirectCriterionRequirement">

@@ -78,8 +78,8 @@ public class Interval {
 
     public double getProportion(Date date) {
         if (!isIncluded(date)) {
-            throw new IllegalArgumentException("date " + date
-                    + " must be between [" + start + "," + finish + "]");
+            // Negative proportions are allowed for tasks starting before
+            // interval so no exception raised
         }
         return ((double) date.getTime() - start.getTime()) / lengthBetween;
     }

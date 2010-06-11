@@ -18,24 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities;
+package org.navalplanner.business.planner.limiting.entities;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
- *
- * Entity which represents an element in the queue which represents
- * the limiting resources.
- *
+ * Entity which represents an element in the queue which represents the limiting
+ * resources.
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
@@ -47,17 +53,17 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private Date earlierStartDateBecauseOfGantt;
 
+    private Date earliestEndDateBecauseOfGantt;
+
     private QueuePosition startQueuePosition;
 
     private QueuePosition endQueuePosition;
 
     private long creationTimestamp;
 
-    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin =
-        new HashSet<LimitingResourceQueueDependency>();
+    private Set<LimitingResourceQueueDependency> dependenciesAsOrigin = new HashSet<LimitingResourceQueueDependency>();
 
-    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny =
-        new HashSet<LimitingResourceQueueDependency>();
+    private Set<LimitingResourceQueueDependency> dependenciesAsDestiny = new HashSet<LimitingResourceQueueDependency>();
 
     public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
@@ -83,7 +89,8 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return limitingResourceQueue;
     }
 
-    public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
+    public void setLimitingResourceQueue(
+            LimitingResourceQueue limitingResourceQueue) {
         this.limitingResourceQueue = limitingResourceQueue;
     }
 
@@ -123,9 +130,12 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return earlierStartDateBecauseOfGantt;
     }
 
-    public void setEarlierStartDateBecauseOfGantt(
-            Date earlierStartDateBecauseOfGantt) {
-        this.earlierStartDateBecauseOfGantt = earlierStartDateBecauseOfGantt;
+    public Date getEarliestEndDateBecauseOfGantt() {
+        if (earliestEndDateBecauseOfGantt == null) {
+            // can be null because it's a new column
+            return earlierStartDateBecauseOfGantt;
+        }
+        return earliestEndDateBecauseOfGantt;
     }
 
     public long getCreationTimestamp() {
@@ -164,9 +174,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
         } else if (d.getHasAsDestiny().equals(this)) {
             dependenciesAsDestiny.add(d);
         } else {
-            throw new IllegalArgumentException("It cannot be added a dependency" +
-                    " in which the current queue element is neither origin" +
-                    " not desinty");
+            throw new IllegalArgumentException(
+                    "It cannot be added a dependency"
+                            + " in which the current queue element is neither origin"
+                            + " not desinty");
         }
     }
 
@@ -184,4 +195,84 @@ public class LimitingResourceQueueElement extends BaseEntity {
     public Set<LimitingResourceQueueDependency> getDependenciesAsDestiny() {
         return Collections.unmodifiableSet(dependenciesAsDestiny);
     }
+
+    public void updateDates(Date orderInitDate,
+            Collection<? extends Dependency> incomingDependencies) {
+        this.earlierStartDateBecauseOfGantt = calculateStartDate(orderInitDate,
+                incomingDependencies);
+        this.earliestEndDateBecauseOfGantt = calculateEndDate(orderInitDate,
+                incomingDependencies);
+    }
+
+    private Date calculateStartDate(Date orderInitDate,
+            Collection<? extends Dependency> dependenciesWithThisDestination) {
+        Date result = orderInitDate;
+        for (Dependency each : dependenciesWithThisDestination) {
+            if (!each.isDependencyBetweenLimitedAllocatedTasks()
+                    && each.getType().modifiesDestinationStart()) {
+                result = bigger(result, each.getDateFromOrigin());
+            }
+        }
+        return result;
+    }
+
+    private Date calculateEndDate(Date orderInitDate,
+            Collection<? extends Dependency> incomingDependencies) {
+        Date result = orderInitDate;
+        for (Dependency each : incomingDependencies) {
+            if (!each.isDependencyBetweenLimitedAllocatedTasks()
+                    && each.getType().modifiesDestinationEnd()) {
+                result = bigger(result, each.getDateFromOrigin());
+            }
+        }
+        return result;
+    }
+
+    private Date bigger(Date one, Date another) {
+        if (one == null) {
+            return another;
+        }
+        if (another == null) {
+            return one;
+        }
+        return one.compareTo(another) >= 0 ? one : another;
+    }
+
+    public void detach() {
+        setLimitingResourceQueue(null);
+        setStartDate(null);
+        setStartHour(0);
+        setEndDate(null);
+        setEndHour(0);
+        getResourceAllocation().removeLimitingDayAssignments();
+    }
+
+    public boolean isDetached() {
+        return getStartDate() == null;
+    }
+
+    public boolean isSpecific() {
+        return resourceAllocation instanceof SpecificResourceAllocation;
+    }
+
+    public boolean isGeneric() {
+        return resourceAllocation instanceof GenericResourceAllocation;
+    }
+
+    public Set<Criterion> getCriteria() {
+        if (!isGeneric()) {
+            throw new IllegalStateException("this is not a generic element");
+        }
+        final ResourceAllocation<?> resourceAllocation = getResourceAllocation();
+        return ((GenericResourceAllocation) resourceAllocation).getCriterions();
+    }
+
+    public boolean hasDayAssignments() {
+        return !getResourceAllocation().getAssignments().isEmpty();
+    }
+
+    public List<? extends DayAssignment> getDayAssignments() {
+        return resourceAllocation.getAssignments();
+    }
+
 }

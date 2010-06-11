@@ -112,8 +112,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private boolean filterByResources = true;
 
+    /**
+     * Contains the resources to be shown when specified manually using
+     * the Bandbox
+     */
     private List<Resource> resourcesToShowList = new ArrayList<Resource>();
 
+    /**
+     * Contains the criteria to be shown when specified manually using
+     * the Bandbox
+     */
     private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
 
     private Date initDateFilter;
@@ -127,6 +135,19 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    private int pageFilterPosition = 0;
+    private int pageSize = 10;
+
+    /**
+     * Contains all the resources which have to be filtered page by page
+     */
+    private List<Resource> allResourcesList;
+
+    /**
+     * Contains all the resources which have to be filtered page by page
+     */
+    List<Criterion> allCriteriaList;
 
     @Override
     @Transactional(readOnly = true)
@@ -209,8 +230,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
             return resourceAllocationDAO
                     .findGenericAllocationsBySomeCriterion(criteriaToShowList, initDateFilter, endDateFilter);
         }
+        Map<Criterion, List<GenericResourceAllocation>> toReturn;
         if (filter()) {
-            List<Criterion> criterions = new ArrayList<Criterion>();
+            allCriteriaList = new ArrayList<Criterion>();
             List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
             List<Task> tasks = justTasks(filterBy
                     .getAllChildrenAssociatedTaskElements());
@@ -219,14 +241,30 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 List<ResourceAllocation<?>> listAllocations = new ArrayList<ResourceAllocation<?>>(
                         task.getSatisfiedResourceAllocations());
                 for (GenericResourceAllocation generic : (onlyGeneric(listAllocations))) {
-                    criterions.addAll(generic.getCriterions());
+                    allCriteriaList.addAll(generic.getCriterions());
                 }
             }
-            return resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(criterions, initDateFilter, endDateFilter);
+            allCriteriaList = Criterion.sortByTypeAndName(allCriteriaList);
+            toReturn = resourceAllocationDAO
+                    .findGenericAllocationsBySomeCriterion(allCriteriaList, initDateFilter, endDateFilter);
         } else {
-            return resourceAllocationDAO.findGenericAllocationsByCriterion(initDateFilter, endDateFilter);
+            toReturn =
+                resourceAllocationDAO.findGenericAllocationsByCriterion(initDateFilter, endDateFilter);
+            allCriteriaList = Criterion.sortByTypeAndName(toReturn.keySet());
         }
+        if(pageFilterPosition == -1) {
+            return toReturn;
+        }
+        //return only the elements in the page filter
+        Map<Criterion, List<GenericResourceAllocation>> toReturnFiltered =
+            new HashMap<Criterion, List<GenericResourceAllocation>>();
+        for(int i = pageFilterPosition; i < getEndPositionForCriterionPageFilter(); i++) {
+            Criterion criterion = allCriteriaList.get(i);
+            if(toReturn.get(criterion) != null) {
+                toReturnFiltered.put(criterion, toReturn.get(criterion));
+            }
+        }
+        return toReturnFiltered;
     }
 
     private List<Resource> resourcesToShow() {
@@ -235,10 +273,50 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         // if we haven't manually specified some resources to show, we load them
         if (filter()) {
-            return resourcesForActiveTasks();
+            allResourcesList = resourcesForActiveTasks();
         } else {
-            return allResources();
+            allResourcesList = allResources();
         }
+        if(pageFilterPosition == -1) {
+            return allResourcesList;
+        }
+        int endPosition =
+            (pageFilterPosition + pageSize < allResourcesList.size())?
+                pageFilterPosition + pageSize :
+                allResourcesList.size();
+        return allResourcesList.subList(pageFilterPosition, endPosition);
+    }
+
+    @Override
+    public List<Resource> getAllResourcesList() {
+        return allResourcesList;
+    }
+
+    @Override
+    public List<Criterion> getAllCriteriaList() {
+        return allCriteriaList;
+    }
+
+    @Override
+    public int getPageFilterPosition() {
+        return pageFilterPosition;
+    }
+
+    @Override
+    public void setPageFilterPosition(int pageFilterPosition) {
+        this.pageFilterPosition = pageFilterPosition;
+    }
+
+    @Override
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    private int getEndPositionForCriterionPageFilter() {
+        return
+            (pageFilterPosition + pageSize < allCriteriaList.size())?
+                pageFilterPosition + pageSize :
+                allCriteriaList.size();
     }
 
     private boolean filter() {
@@ -276,9 +354,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimeLine> groupsFor(
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        List<Criterion> criterions = Criterion
-                .sortByTypeAndName(genericAllocationsByCriterion.keySet());
-        for (Criterion criterion : criterions) {
+        List<Criterion> criteriaList;
+        if(pageFilterPosition == -1) {
+            criteriaList = allCriteriaList;
+        }
+        else {
+            criteriaList = allCriteriaList.subList(
+                    pageFilterPosition, getEndPositionForCriterionPageFilter());
+        }
+        for(Criterion criterion : criteriaList) {
             List<GenericResourceAllocation> allocations = ResourceAllocation
                     .sortedByStartDate(genericAllocationsByCriterion
                             .get(criterion));
@@ -333,7 +417,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
 
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(criterion,
-                "Others ordes", "global-generic", allocations,
+                "Other orders", "global-generic", allocations,
                 getCurrentTimeLineRole(null)),
                 buildTimeLinesGroupForOrder(
                 criterion, byOrder));
@@ -414,7 +498,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private String getCriterionSatisfactionDescription(
             Set<CriterionSatisfaction> satisfactions) {
         if (satisfactions.isEmpty()) {
-            return _("");
+            return "";
         }
         List<Criterion> criterions = new ArrayList<Criterion>();
         for (CriterionSatisfaction satisfaction : satisfactions) {
@@ -496,7 +580,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(null);
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(resource,
-                _("Others ordes"), resourceAllocations, "resource", role),
+                _("Other orders"), resourceAllocations, "resource", role),
                 buildTimeLinesGroupForOrder(resource, byOrder));
         return group;
     }

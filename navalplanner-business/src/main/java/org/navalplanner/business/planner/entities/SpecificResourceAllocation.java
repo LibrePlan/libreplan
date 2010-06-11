@@ -37,8 +37,10 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -422,6 +424,43 @@ public class SpecificResourceAllocation extends
                 scenario);
         if (container != null) {
             specificDayAssignmentsContainers.remove(container);
+        }
+    }
+
+    public void allocateKeepingProportions(LocalDate start,
+            LocalDate endExclusive, int newHoursForInterval) {
+        List<DayAssignment> assignments = getAssignments(start, endExclusive);
+        ProportionalDistributor distributor = ProportionalDistributor
+                .create(asHours(assignments));
+        int[] newHoursPerDay = distributor.distribute(newHoursForInterval);
+        resetAssigmentsForInterval(start, endExclusive, assignmentsForNewHours(
+                assignments, newHoursPerDay));
+    }
+
+    private List<SpecificDayAssignment> assignmentsForNewHours(
+            List<DayAssignment> assignments, int[] newHoursPerDay) {
+        List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
+        int i = 0;
+        for (DayAssignment each : assignments) {
+            result.add(SpecificDayAssignment.create(each.getDay(),
+                    newHoursPerDay[i++], resource));
+        }
+        return result;
+    }
+
+    private int[] asHours(List<DayAssignment> assignments) {
+        int[] result = new int[assignments.size()];
+        int i = 0;
+        for (DayAssignment each : assignments) {
+            result[i++] = each.getHours();
+        }
+        return result;
+    }
+
+    public void overrideConsolidatedDayAssignments(
+            SpecificResourceAllocation origin) {
+        if (origin != null) {
+            resetAssignmentsTo(origin.getConsolidatedAssignments());
         }
     }
 

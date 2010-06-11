@@ -1,10 +1,10 @@
-package org.navalplanner.business.planner.daos;
+package org.navalplanner.business.planner.limiting.daos;
 
 import java.util.List;
 
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.Dependency;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;

@@ -70,4 +70,14 @@ public interface IResourceLoadModel {
 
     boolean isExpandResourceLoadViewCharts();
 
+    List<Resource> getAllResourcesList();
+
+    List<Criterion> getAllCriteriaList();
+
+    int getPageSize();
+
+    int getPageFilterPosition();
+
+    void setPageFilterPosition(int pageFilterPosition);
+
 }

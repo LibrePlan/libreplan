@@ -20,8 +20,6 @@
 
 package org.zkoss.ganttz.data.resourceload;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -55,13 +53,13 @@ public class TimeLineRole<T> {
      */
     public enum TimeLineRoleEnum {
 
-        NONE(_("None")), WORKER(_("Worker")), ORDER(_("Order")), TASK(_("Task")) {
+        NONE("None"), WORKER("Worker"), ORDER("Order"), TASK("Task") {
             @Override
             public boolean isVisibleScheduled() {
                 return true;
             }
         },
-        CRITERION(_("Criterion"));
+        CRITERION("Criterion");
 
         private String name;
 

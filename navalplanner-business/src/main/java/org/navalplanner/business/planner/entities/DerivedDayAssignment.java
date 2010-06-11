@@ -90,6 +90,20 @@ public class DerivedDayAssignment extends DayAssignment {
         }
     }
 
+    private class DetachedState extends ParentState {
+
+        @Override
+        protected DerivedAllocation getAllocation() {
+            return null;
+        }
+
+        @Override
+        public Scenario getScenario() {
+            return null;
+        }
+
+    }
+
     @NotNull
     private DerivedDayAssignmentsContainer container;
 
@@ -143,6 +157,16 @@ public class DerivedDayAssignment extends DayAssignment {
     @Override
     public Scenario getScenario() {
         return parentState.getScenario();
+    }
+
+    @Override
+    public DayAssignment withHours(int newHours) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void detachFromAllocation() {
+        this.parentState = new DetachedState();
     }
 
 }

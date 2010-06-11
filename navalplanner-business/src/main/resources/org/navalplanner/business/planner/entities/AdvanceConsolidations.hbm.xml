@@ -13,22 +13,22 @@
 
         <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="value" scale="2" access="field" />
-
-        <set name="pendingConsolidatedHours" table="PENDING_CONSOLIDATED_HOURS">
-            <key column="PENDING_HOURS_ID"/>
-            <composite-element class="org.navalplanner.business.planner.entities.consolidations.PendingConsolidatedHoursPerResourceAllocation">
-                <property name="pendingConsolidatedHours"/>
-                <many-to-one name="resourceAllocation" class="org.navalplanner.business.planner.entities.ResourceAllocation" column="RESOURCE_ALLOCATION_ID" access="field" />
-            </composite-element>
-        </set>
+        <property name="taskEndDate" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
 
         <subclass name="NonCalculatedConsolidatedValue" discriminator-value="NonCalculated">
-            <many-to-one name="consolidation" class="NonCalculatedConsolidation" column="CONSOLIDATION_ID" access="field" />
+            <!-- Indexed -->
+            <many-to-one name="consolidation" class="NonCalculatedConsolidation"
+                column="CONSOLIDATION_ID" access="field"
+                index="idx_NonCalculatedConsolidatedValue_on_NonCalculatedConsolidation" />
+            <!-- Not indexed -->
             <many-to-one name="advanceMeasurement" class="org.navalplanner.business.advance.entities.AdvanceMeasurement" column="ADVANCE_MEASUREMENT_ID" access="field" />
         </subclass>
 
         <subclass name="CalculatedConsolidatedValue" discriminator-value="Calculated">
-            <many-to-one name="consolidation" class="CalculatedConsolidation" column="CONSOLIDATION_ID" access="field" />
+            <!-- Indexed -->
+            <many-to-one name="consolidation" class="CalculatedConsolidation"
+                column="CONSOLIDATION_ID" access="field"
+                index="idx_CalculatedConsolidatedValue_on_CalculatedConsolidation" />
         </subclass>
 
 </class>
@@ -46,9 +46,11 @@
 
         <subclass name="NonCalculatedConsolidation" discriminator-value="NonCalculated">
 
+           <!-- Not indexed -->
            <many-to-one name="directAdvanceAssignment" column="DIR_ADVANCE_ASSIGNMENT_ID" access="field"
                 class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
 
+            <!-- Indexed on the other side -->
             <set name="consolidatedValues"
                 access="field"
                 cascade="all,delete-orphan"
@@ -62,9 +64,11 @@
 
         <subclass name="CalculatedConsolidation" discriminator-value="Calculated">
 
+            <!-- Not indexed -->
             <many-to-one name="indirectAdvanceAssignment" column="IND_ADVANCE_ASSIGNMENT_ID" access="field"
             class="org.navalplanner.business.advance.entities.IndirectAdvanceAssignment"/>
 
+            <!-- Indexed on the other side -->
             <set name="consolidatedValues"
                 access="field"
                 cascade="all,delete-orphan"

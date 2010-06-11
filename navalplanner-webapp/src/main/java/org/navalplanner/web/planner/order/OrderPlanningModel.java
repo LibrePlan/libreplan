@@ -84,6 +84,8 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
+import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
+import org.navalplanner.web.planner.advances.IAdvanceAssignmentPlanningCommand;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
@@ -92,6 +94,7 @@ import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
@@ -315,6 +318,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public void setConfigurationToPlanner(Planner planner, Order order,
             ViewSwitcher switcher,
             EditTaskController editTaskController,
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
+            AdvanceConsolidationController advanceConsolidationController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
         currentScenario = scenarioManager.getCurrent();
@@ -344,8 +349,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
+        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+        configuration.addCommandOnTask(advanceAssignmentPlanningCommand);
         configuration
-                .addCommandOnTask(buildAdvanceConsolidationCommand(editTaskController));
+                .addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
         configuration
                 .addCommandOnTask(buildSubcontractCommand(editTaskController));
 
@@ -369,9 +376,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         appendTabpanels(chartComponent, chartLoadTimeplot,
                 chartEarnedValueTimeplot, earnedValueChartFiller);
 
-        Chart loadChart = setupChart(orderReloaded,
-                new OrderLoadChartFiller(orderReloaded), chartLoadTimeplot,
-                planner);
+        Chart loadChart = setupChart(orderReloaded, new OrderLoadChartFiller(
+                orderReloaded), chartLoadTimeplot, planner);
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 loadChart);
         Chart earnedValueChart = setupChart(orderReloaded,
@@ -380,6 +386,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         refillLoadChartWhenNeeded(configuration, planner, saveCommand,
                 earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
+        planner.addGraphChangeListenersFromConfiguration(configuration);
     }
 
     private Timeplot createEmptyTimeplot() {
@@ -810,10 +817,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return taskPropertiesCommand;
     }
 
+    private IAdvanceAssignmentPlanningCommand buildAdvanceAssignmentPlanningCommand(
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
+        IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = getAdvanceAssignmentPlanningCommand();
+        advanceAssignmentPlanningCommand.initialize(
+                advanceAssignmentPlanningController, planningState);
+        return advanceAssignmentPlanningCommand;
+    }
+
     private IAdvanceConsolidationCommand buildAdvanceConsolidationCommand(
-            EditTaskController editTaskController) {
+            AdvanceConsolidationController advanceConsolidationController) {
         IAdvanceConsolidationCommand advanceConsolidationCommand = getAdvanceConsolidationCommand();
-        advanceConsolidationCommand.initialize(editTaskController,
+        advanceConsolidationCommand.initialize(advanceConsolidationController,
                 planningState);
         return advanceConsolidationCommand;
     }
@@ -1122,6 +1137,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     protected abstract IAdvanceConsolidationCommand getAdvanceConsolidationCommand();
 
+    protected abstract IAdvanceAssignmentPlanningCommand getAdvanceAssignmentPlanningCommand();
+
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 
     private Order reload(Order order) {
@@ -1159,7 +1176,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(orderDayAssignments);
 
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : order.getResources()) {
+            for (Resource resource : reloadResources(order.getResources())) {
                 resourcesDayAssignments.addAll(assigmentsOnResourceCalculator
                         .getAssignments(resource));
             }
@@ -1213,6 +1230,17 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             chart.setHeight("150px");
         }
 
+        private List<Resource> reloadResources(
+                Collection<? extends Resource> resources) {
+            List<Resource> result = new ArrayList<Resource>();
+            for (Resource each : resources) {
+                Resource reloaded = resourceDAO
+                        .findExistingEntity(each.getId());
+                result.add(reloaded);
+            }
+            return result;
+        }
+
         private void resetMaps() {
             mapOrderLoad.clear();
             mapOrderOverload.clear();
@@ -1250,9 +1278,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     Integer hoursOrder = orderDayAssignmentsGrouped.get(day).get(
                             resource);
 
-                    Integer hoursOther = resourceDayAssignmentsGrouped.get(day)
-                            .get(resource)
-                            - hoursOrder;
+                    // FIXME review why is null sometimes
+                    Integer hoursOther = 0;
+                    if ((resourceDayAssignmentsGrouped.get(day) != null) && (resourceDayAssignmentsGrouped
+                            .get(day).get(resource) != null)) {
+                        hoursOther = resourceDayAssignmentsGrouped.get(day)
+                                .get(resource)
+                                - hoursOrder;
+                    }
 
                     if (hoursOrder <= workableHours) {
                         orderLoad += hoursOrder;

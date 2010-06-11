@@ -55,16 +55,12 @@ public class Order extends OrderLineGroup {
     public static Order create() {
         Order order = new Order();
         order.setNewObject(true);
-
-        OrderLineGroup.setupOrderLineGroup(order);
-
         return order;
     }
 
 
     public static Order createUnvalidated(String code) {
         Order order = create(new Order(), code);
-        OrderLineGroup.setupOrderLineGroup(order);
         return order;
     }
 

@@ -20,6 +20,26 @@
 
 zkLimitingResourcesList = addLimitingResourcesListMethods( {});
 
+zkLimitingResourcesList.showRelatedElementsForQueueElement = function (task) {
+	zkLimitingDependencies.showDependenciesForQueueElement(task);
+	zkLimitingResourcesList.SetVisibleDeadlineForQueueElement(task, "inline");
+}
+
+zkLimitingResourcesList.hideRelatedElementsForQueueElement = function (task) {
+	zkLimitingDependencies.hideDependenciesForQueueElement(task);
+	zkLimitingResourcesList.SetVisibleDeadlineForQueueElement(task, "none");
+}
+
+zkLimitingResourcesList.SetVisibleDeadlineForQueueElement = function(task, visible) {
+	var deadlines = YAHOO.util.Selector.query('.deadline');
+	for ( var i = 0; i < deadlines.length; i++) {
+		if ((deadlines[i].parentNode.id == task)) {
+			deadlines[i].style.display = visible;
+		}
+	}
+}
+
+
 function addLimitingResourcesListMethods(object) {
 	var scrollSync;
 
@@ -86,21 +106,29 @@ function addLimitingResourcesListMethods(object) {
 	}
 
 	object.adjustTimeTrackerSize = function(cmp) {
-		watermark().style["height"] = cmp.clientHeight + "px";
-		timetracker().style["width"] = cmp.clientWidth + "px";
-		/* Set watermark width */
-		YAHOO.util.Selector.query('.limitingresourceslist')[0].style["width"] = YAHOO.util.Selector
-				.query('.second_level_')[0].clientWidth
-				+ "px";
-		YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0].style["height"] =
-		/* Calculate min : taskspanelgap().clientHeight + 120 + 'px'; )  */
-		YAHOO.util.Selector.query('.limitingresourceslist')[0].clientHeight + 120
-				+ "px";
+		var _firstWatarmark = YAHOO.util.Selector.query('.rightpanellayout tr#watermark td')[0];
+
+		if (watermark() != null) {
+			watermark().style["height"] = cmp.clientHeight + "px";
+		}
+
+		if (timetracker() != null) {
+			timetracker().style["width"] = cmp.clientWidth + "px";
+
+			YAHOO.util.Selector.query('.limitingresourceslist')[0].style["width"] = YAHOO.util.Selector
+				.query('.second_level_')[0].clientWidth + "px";
+
+			if (_firstWatarmark != undefined ) {
+				_firstWatarmark.style["height"] =YAHOO.util.Selector.query('.limitingresourceslist')[0].clientHeight + 120 + "px";
+			}
+
+		}
 	};
 
 	object.adjustResourceLoadRows = function(cmp) {
+		var width = YAHOO.util.Selector.query('.rightpanellayout #timetracker .z-grid-header')[0].clientWidth + "px";
 		YAHOO.util.Selector.query('.row_resourceload').each(function(node) {
-			node.style["width"] = cmp.clientWidth + "px";
+		node.style["width"] = width;
 		});
 	};
 

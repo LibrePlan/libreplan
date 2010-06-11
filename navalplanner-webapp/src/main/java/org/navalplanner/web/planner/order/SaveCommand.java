@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.order;
 
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.toQueueDependencyType;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
@@ -32,12 +33,16 @@ import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
+import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
-import org.navalplanner.business.planner.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -46,8 +51,6 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignmentsContainer;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueDependency;
-import org.navalplanner.business.planner.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -58,6 +61,9 @@ import org.navalplanner.business.planner.entities.consolidations.ConsolidatedVal
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
+import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDependencyDAO;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -92,6 +98,9 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
@@ -147,6 +156,7 @@ public class SaveCommand implements ISaveCommand {
         state.getScenarioInfo().saveVersioningInfo();
         saveTasksToSave();
         removeTasksToRemove();
+        saveAndDontPoseAsTransientOrderElements();
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
     }
 
@@ -166,6 +176,10 @@ public class SaveCommand implements ISaveCommand {
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
             removeEmptyConsolidation(taskElement);
+            if (taskElement.isLimiting()) {
+                Task task = (Task) taskElement;
+                updateLimitingResourceQueueElementDates(task);
+            }
             taskElementDAO.save(taskElement);
             if (taskElement.getTaskSource() != null
                     && taskElement.getTaskSource().isNewObject()) {
@@ -189,6 +203,15 @@ public class SaveCommand implements ISaveCommand {
         for (TaskElement each : taskElement.getChildren()) {
             saveTaskSources(each);
         }
+    }
+
+    private void updateLimitingResourceQueueElementDates(Task task) {
+        LimitingResourceQueueElement limiting = task
+                .getAssociatedLimitingResourceQueueElementIfAny();
+        Date initDate = state
+                .getRootTask().getOrderElement().getInitDate();
+        limiting.updateDates(initDate, task
+                .getDependenciesWithThisDestination());
     }
 
     private void removeEmptyConsolidation(TaskElement taskElement) {
@@ -276,12 +299,9 @@ public class SaveCommand implements ISaveCommand {
             LimitingResourceQueueElement destiny =
                 calculateQueueElementFromDependency((Task) d.getDestination());
 
-            LimitingResourceQueueDependency queueDependency =
-                LimitingResourceQueueDependency.create(origin,
-                    destiny,
-                    d,
-                    LimitingResourceQueueDependency.
-                        convertFromTypeToQueueDepedencyType(d.getType()));
+            LimitingResourceQueueDependency queueDependency = LimitingResourceQueueDependency
+                    .create(origin, destiny, d,
+                            toQueueDependencyType(d.getType()));
             d.setQueueDependency(queueDependency);
             limitingResourceQueueDependencyDAO.save(queueDependency);
             queueDependency.dontPoseAsTransientObjectAnymore();
@@ -327,6 +347,37 @@ public class SaveCommand implements ISaveCommand {
             }
     }
 
+    private void dontPoseAsTransient(OrderElement orderElement) {
+        OrderElement order = (OrderElement) orderElementDAO
+                .loadOrderAvoidingProxyFor(orderElement);
+        order.dontPoseAsTransientObjectAnymore();
+        dontPoseAsTransientAdvances(order.getDirectAdvanceAssignments());
+        dontPoseAsTransientAdvances(order.getIndirectAdvanceAssignments());
+
+        for (OrderElement child : order.getAllChildren()) {
+            child.dontPoseAsTransientObjectAnymore();
+            dontPoseAsTransientAdvances(child.getDirectAdvanceAssignments());
+            dontPoseAsTransientAdvances(child.getIndirectAdvanceAssignments());
+        }
+    }
+
+    private void dontPoseAsTransientAdvances(
+            Set<? extends AdvanceAssignment> advances) {
+        for (AdvanceAssignment advance : advances) {
+            advance.dontPoseAsTransientObjectAnymore();
+            if (advance instanceof DirectAdvanceAssignment) {
+                dontPoseAsTransientMeasure(((DirectAdvanceAssignment) advance)
+                        .getAdvanceMeasurements());
+            }
+        }
+    }
+
+    private void dontPoseAsTransientMeasure(SortedSet<AdvanceMeasurement> list) {
+        for (AdvanceMeasurement measure : list) {
+            measure.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
     private void dontPoseAsTransient(Consolidation consolidation) {
         if (consolidation != null) {
             consolidation.dontPoseAsTransientObjectAnymore();
@@ -336,6 +387,15 @@ public class SaveCommand implements ISaveCommand {
             } else {
                 dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
                         .getNonCalculatedConsolidatedValues());
+            }
+        }
+    }
+
+    private void saveAndDontPoseAsTransientOrderElements() {
+        for (TaskElement taskElement : state.getTasksToSave()) {
+            if (taskElement.getOrderElement() != null) {
+                orderElementDAO.save(taskElement.getOrderElement());
+                dontPoseAsTransient(taskElement.getOrderElement());
             }
         }
     }

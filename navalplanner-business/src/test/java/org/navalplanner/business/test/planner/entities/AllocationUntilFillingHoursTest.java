@@ -203,6 +203,8 @@ public class AllocationUntilFillingHoursTest {
                 startDate.toDateTimeAtStartOfDay().toDate()).anyTimes();
         expect(task.getCriterions()).andReturn(
                 Collections.<Criterion> emptySet()).anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(startDate)
+                .anyTimes();
         replay(task);
     }
 

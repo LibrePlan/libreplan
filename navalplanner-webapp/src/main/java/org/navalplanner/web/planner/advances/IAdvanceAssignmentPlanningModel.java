@@ -18,28 +18,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.planner.allocation;
+package org.navalplanner.web.planner.advances;
 
-import java.util.List;
-
-import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.PlanningState;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * Contract for {@link Task}.
- *
- * @author Diego Pino García <dpino@igalia.com>
+ * @author Susana Montes Pedreira<smontes@wirelessgalicia.com>
  */
-public interface ILimitingResourceAllocationModel extends INewAllocationsAdder {
+public interface IAdvanceAssignmentPlanningModel {
 
-    void confirmSave();
+    public interface IAdvanceAssignmentPlanningContext<T> {
+        public T doInsideTransaction();
+    }
 
-    List<AggregatedHoursGroup> getHoursAggregatedByCriteria();
+    /**
+     * Cancel operation
+     */
+    void cancel();
 
-    Integer getOrderHours();
+    /**
+     * Save task
+     */
+    void accept();
 
-    List<LimitingAllocationRow> getResourceAllocationRows();
+    /**
+     * Starts the use case
+     * @param task
+     * @param ganttTask
+     * @param planningState
+     */
+    void initAdvancesFor(TaskElement task,
+            IContextWithPlannerTask<TaskElement> context,
+            PlanningState planningState);
 
-    void init(Task task);
-
+    public OrderElement getOrderElement();
 }

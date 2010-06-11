@@ -21,7 +21,6 @@
 package org.navalplanner.business.planner.entities.consolidations;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
@@ -41,32 +40,27 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value,
-            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+            BigDecimal value, LocalDate taskEndDate) {
         return create(new NonCalculatedConsolidatedValue(date, value,
-                pendingConsolidatedHours));
+                taskEndDate));
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value,
-            AdvanceMeasurement advanceMeasurement,
-            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
+            BigDecimal value, AdvanceMeasurement advanceMeasurement,
+            LocalDate taskEndDate) {
         return create(new NonCalculatedConsolidatedValue(date, value,
-                advanceMeasurement, pendingConsolidatedHours));
+                advanceMeasurement, taskEndDate));
     }
 
     protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
-            AdvanceMeasurement advanceMeasurement,
-            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
-        this(date, value, pendingConsolidatedHours);
+            AdvanceMeasurement advanceMeasurement, LocalDate taskEndDate) {
+        this(date, value, taskEndDate);
         this.advanceMeasurement = advanceMeasurement;
     }
 
-    protected NonCalculatedConsolidatedValue(
-            LocalDate date,
-            BigDecimal value,
-            Set<PendingConsolidatedHoursPerResourceAllocation> pendingConsolidatedHours) {
-        super(date, value, pendingConsolidatedHours);
+    protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
+            LocalDate taskEndDate) {
+        super(date, value, taskEndDate);
     }
 
     protected NonCalculatedConsolidatedValue() {

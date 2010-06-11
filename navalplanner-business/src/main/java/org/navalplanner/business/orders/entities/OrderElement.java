@@ -103,6 +103,10 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private OrderElementTemplate template;
 
+    private BigDecimal lastAdvanceMeausurementForSpreading = BigDecimal.ZERO;
+
+    private Boolean dirtyLastAdvanceMeasurementForSpreading = true;
+
     public OrderElementTemplate getTemplate() {
         return template;
     }
@@ -502,9 +506,12 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public DirectAdvanceAssignment getDirectAdvanceAssignmentByType(
             AdvanceType advanceType) {
-        for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
-            if (directAdvanceAssignment.getAdvanceType().equals(advanceType)) {
+        if (advanceType != null) {
+            for (DirectAdvanceAssignment directAdvanceAssignment : getDirectAdvanceAssignments()) {
+                if (directAdvanceAssignment.getAdvanceType().getId().equals(
+                    advanceType.getId())) {
                 return directAdvanceAssignment;
+                }
             }
         }
         return null;
@@ -532,6 +539,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (this.getParent() != null) {
                 this.getParent().removeIndirectAdvanceAssignment(
                         advanceAssignment.getAdvanceType());
+                removeChildrenAdvanceInParents(this.getParent());
             }
         }
     }
@@ -584,9 +592,39 @@ public abstract class OrderElement extends IntegrationEntity implements
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
         if (this.getParent() != null) {
+            addChildrenAdvanceInParents(this.getParent());
             this.getParent().addIndirectAdvanceAssignment(
                     newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
         }
+    }
+
+    public void addChildrenAdvanceInParents(OrderLineGroup parent) {
+        if ((parent != null) && (!parent.existChildrenAdvance())) {
+            parent.addChildrenAdvanceOrderLineGroup();
+            addChildrenAdvanceInParents(parent.getParent());
+        }
+
+    }
+
+    public void removeChildrenAdvanceInParents(OrderLineGroup parent) {
+        if ((parent != null) && (parent.existChildrenAdvance())
+                && (!itsChildsHasAdvances(parent))) {
+            parent.removeChildrenAdvanceOrderLineGroup();
+            removeChildrenAdvanceInParents(parent.getParent());
+        }
+    }
+
+    private boolean itsChildsHasAdvances(OrderElement orderElement) {
+        for (OrderElement child : orderElement.getChildren()) {
+            if ((!child.getIndirectAdvanceAssignments().isEmpty())
+                    || (!child.getDirectAdvanceAssignments().isEmpty())) {
+                return true;
+            }
+            if (itsChildsHasAdvances(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void checkNoOtherGlobalAdvanceAssignment(
@@ -616,7 +654,9 @@ public abstract class OrderElement extends IntegrationEntity implements
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
+                .getDirectAdvanceAssignments()) {
+
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
@@ -642,7 +682,8 @@ public abstract class OrderElement extends IntegrationEntity implements
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
+                .getDirectAdvanceAssignments()) {
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
@@ -660,12 +701,22 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public BigDecimal getAdvancePercentage() {
-        return getAdvancePercentage(null);
+        if ((dirtyLastAdvanceMeasurementForSpreading == null)
+                || dirtyLastAdvanceMeasurementForSpreading) {
+            lastAdvanceMeausurementForSpreading = getAdvancePercentage(null);
+            dirtyLastAdvanceMeasurementForSpreading = false;
+        }
+        return lastAdvanceMeausurementForSpreading;
     }
 
     public abstract BigDecimal getAdvancePercentage(LocalDate date);
 
     public abstract Set<IndirectAdvanceAssignment> getIndirectAdvanceAssignments();
+
+    public abstract DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
+            IndirectAdvanceAssignment indirectAdvanceAssignment);
+
+    public abstract BigDecimal getAdvancePercentageChildren();
 
     public List<OrderElement> getAllChildren() {
         List<OrderElement> children = getChildren();
@@ -1196,4 +1247,12 @@ public abstract class OrderElement extends IntegrationEntity implements
     protected IIntegrationEntityDAO<OrderElement> getIntegrationEntityDAO() {
         return Registry.getOrderElementDAO();
     }
+
+    public void markAsDirtyLastAdvanceMeasurementForSpreading() {
+        if (parent != null) {
+            parent.markAsDirtyLastAdvanceMeasurementForSpreading();
+        }
+        dirtyLastAdvanceMeasurementForSpreading = true;
+    }
+
 }

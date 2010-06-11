@@ -16,6 +16,7 @@
 
     <property name="enabled"/>
 
+    <!-- Indexed the other side -->
     <set name="hourCosts" inverse="true" cascade="all-delete-orphan">
         <key column="COST_CATEGORY_ID"/>
         <one-to-many class="HourCost"/>
@@ -40,7 +41,11 @@
 
     <many-to-one name="type" class="TypeOfWorkHours" column="TYPE_OF_WORK_HOURS_ID" />
 
-    <many-to-one name="category" class="CostCategory" column="COST_CATEGORY_ID"/>
+    <!-- Indexed -->
+    <many-to-one name="category"
+        class="CostCategory"
+        column="COST_CATEGORY_ID"
+        index="idx_hourcost_on_category"/>
 
 </class>
 
@@ -80,9 +85,16 @@
 
     <property name="endDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
 
-    <many-to-one name="costCategory" class="CostCategory" column="COST_CATEGORY_ID"/>
+    <!-- Not Indexed -->
+    <many-to-one name="costCategory"
+        class="CostCategory"
+        column="COST_CATEGORY_ID"/>
 
-    <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource" column="RESOURCE_ID"/>
+    <!-- Indexed -->
+    <many-to-one name="resource"
+        class="org.navalplanner.business.resources.entities.Resource"
+        column="RESOURCE_ID"
+        index="idx_resourcecostcategoryassigment_on_resource"/>
 
 </class>
 </hibernate-mapping>

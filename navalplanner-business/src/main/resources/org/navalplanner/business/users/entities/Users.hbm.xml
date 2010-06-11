@@ -23,6 +23,8 @@
         <property name="password" not-null="true"/>
         <property name="email"/>
         <property name="disabled"/>
+
+        <!-- Index created in a database-object section -->
         <set name="roles" table="USER_ROLES">
             <key column="userId"/>
             <element>
@@ -33,6 +35,8 @@
                 </type>
             </element>
         </set>
+
+        <!-- Index created in a database-object section -->
         <set name="profiles" table="USER_PROFILES">
             <key column="USER_ID"/>
             <many-to-many column="PROFILE_ID"
@@ -52,6 +56,7 @@
 
         <property name="profileName" not-null="true" unique="true"/>
 
+        <!-- Index created in a database-object section -->
         <set name="roles" table="PROFILE_ROLES">
             <key column="profileId"/>
             <element>
@@ -94,5 +99,29 @@
         </subclass>
 
     </class>
+
+    <!-- Index to boost the search of roles inside users -->
+    <database-object>
+        <create>CREATE INDEX idx_User_on_UserRoles ON USER_ROLES (userId)</create>
+        <drop>DROP INDEX idx_User_on_UserRoles</drop>
+        <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+        <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+    </database-object>
+
+    <!-- Index to boost the search of roles inside profiles -->
+    <database-object>
+        <create>CREATE INDEX idx_Profile_on_ProfileRoles ON PROFILE_ROLES (profileId)</create>
+        <drop>DROP INDEX idx_Profile_on_ProfileRoles</drop>
+        <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+        <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+    </database-object>
+
+    <!-- Index to boost the search of profiles inside users -->
+    <database-object>
+        <create>CREATE INDEX idx_User_on_UserProfiles ON USER_PROFILES (USER_ID)</create>
+        <drop>DROP INDEX idx_User_on_UserProfiles</drop>
+        <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+        <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+    </database-object>
 
 </hibernate-mapping>

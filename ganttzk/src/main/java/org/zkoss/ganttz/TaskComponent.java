@@ -62,6 +62,8 @@ public class TaskComponent extends Div implements AfterCompose {
     private static final Log LOG = LogFactory.getLog(TaskComponent.class);
 
     private static final int HEIGHT_PER_TASK = 10;
+    private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
+
 
     private static Pattern pixelsSpecificationPattern = Pattern
             .compile("\\s*(\\d+)px\\s*;?\\s*");
@@ -207,6 +209,9 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 response("setClass", new AuInvoke(TaskComponent.this,
                         "setClass", cssClass));
+
+                // FIXME: Refactorize to another listener
+                updateDeadline();
             }
 
         };
@@ -437,9 +442,17 @@ public class TaskComponent extends Div implements AfterCompose {
             String position = getMapper().toPixels(task.getDeadline()) + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
         }
+        if (task.getConsolidatedline() != null) {
+            String position = (getMapper().toPixels(task.getConsolidatedline()) - CONSOLIDATED_MARK_HALF_WIDTH)
+                    + "px";
+            response(null, new AuInvoke(this, "moveConsolidatedline", position));
+        } else {
+            // Move consolidated line out of visible area
+            response(null, new AuInvoke(this, "moveConsolidatedline", "-100px"));
+        }
     }
 
-    private void updateCompletionIfPossible() {
+    public void updateCompletionIfPossible() {
         try {
             updateCompletion();
         } catch (Exception e) {
@@ -473,6 +486,10 @@ public class TaskComponent extends Div implements AfterCompose {
                 + "px";
         response(null, new AuInvoke(this, "resizeCompletion2Advance",
                 widthAdvancePercentage));
+    }
+
+    public void updateTooltipText() {
+        smartUpdate("taskTooltipText", task.updateTooltipText());
     }
 
     private DependencyList getDependencyList() {

@@ -329,6 +329,11 @@ public class TemplateModel implements ITemplateModel {
             task.moveTo(scenario, newStart);
         }
 
+        @Override
+        public boolean isFixed(TaskElement task) {
+            return task.isLimitingAndHasDayAssignments();
+        }
+
     }
 
     @Autowired

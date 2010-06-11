@@ -108,25 +108,69 @@ public class OrderLineGroup extends OrderElement implements
     public static OrderLineGroup create() {
         OrderLineGroup result = new OrderLineGroup();
         result.setNewObject(true);
-
-        setupOrderLineGroup(result);
-
         return result;
     }
 
     public static OrderLineGroup createUnvalidated(String code) {
         OrderLineGroup orderLineGroup = create(new OrderLineGroup(), code);
-        setupOrderLineGroup(orderLineGroup);
         return orderLineGroup;
     }
 
-    protected static void setupOrderLineGroup(OrderLineGroup result) {
+    public void addChildrenAdvanceOrderLineGroup() {
+        boolean spread = (getReportGlobalAdvanceAssignment() == null);
         IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
-                .create(true);
+                .create(spread);
         AdvanceType advanceType = PredefinedAdvancedTypes.CHILDREN.getType();
         indirectAdvanceAssignment.setAdvanceType(advanceType);
-        indirectAdvanceAssignment.setOrderElement(result);
-        result.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
+        indirectAdvanceAssignment.setOrderElement(this);
+        addIndirectAdvanceAssignment(indirectAdvanceAssignment);
+    }
+
+    public void removeChildrenAdvanceOrderLineGroup() {
+        for (IndirectAdvanceAssignment advance : getIndirectAdvanceAssignments()) {
+            if (advance.getAdvanceType().getUnitName().equals(
+                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+                indirectAdvanceAssignments.remove(advance);
+                updateSpreadAdvance();
+            }
+        }
+    }
+
+    private void updateSpreadAdvance(){
+        if(getReportGlobalAdvanceAssignment() == null){
+            AdvanceType type = PredefinedAdvancedTypes.PERCENTAGE.getType();
+            DirectAdvanceAssignment advancePercentage = getAdvanceAssignmentByType(type);
+            if(advancePercentage != null) {
+                if(advancePercentage.isFake()){
+                    for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
+                        if (type != null && each.getAdvanceType().getId().equals(type.getId())) {
+                            each.setReportGlobalAdvance(true);
+                        }
+                    }
+                }else{
+                    advancePercentage.setReportGlobalAdvance(true);
+                }
+            } else {
+                for (DirectAdvanceAssignment advance : getDirectAdvanceAssignments()) {
+                    advance.setReportGlobalAdvance(true);
+                    return;
+                }
+                for (IndirectAdvanceAssignment advance : getIndirectAdvanceAssignments()) {
+                    advance.setReportGlobalAdvance(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    public boolean existChildrenAdvance() {
+        for (IndirectAdvanceAssignment advance : getIndirectAdvanceAssignments()) {
+            if (advance.getAdvanceType().getUnitName().equals(
+                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<OrderElement> children = new ArrayList<OrderElement>();
@@ -301,6 +345,7 @@ public class OrderLineGroup extends OrderElement implements
         return BigDecimal.ZERO;
     }
 
+    @Override
     public BigDecimal getAdvancePercentageChildren() {
         return getAdvancePercentageChildren(null);
     }
@@ -329,6 +374,7 @@ public class OrderLineGroup extends OrderElement implements
         return result;
     }
 
+    @Override
     public DirectAdvanceAssignment calculateFakeDirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
         if (indirectAdvanceAssignment.getAdvanceType().getUnitName().equals(

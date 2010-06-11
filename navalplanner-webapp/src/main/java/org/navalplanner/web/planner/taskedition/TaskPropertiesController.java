@@ -326,8 +326,14 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
                 final ResourceAllocationTypeEnum oldState = getOldState();
                 ResourceAllocationTypeEnum newState = getSelectedValue(new ArrayList(se.getSelectedItems()));
-                if (thereIsTransition(newState)) {
-                    changeResourceAllocationType(oldState, newState);
+                        if (thereIsTransition(newState)) {
+                            if (isConsolidatedTask()) {
+                                restoreOldState();
+                                editTaskController
+                                        .showNonPermitChangeResourceAllocationType();
+                            } else {
+                                changeResourceAllocationType(oldState, newState);
+                            }
                 }
                 if (oldState == null) {
                     setOldState(newState);
@@ -339,6 +345,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 final Listcell cell = (Listcell) item.getChildren().get(0);
                 return ResourceAllocationTypeEnum.asEnum(cell.getLabel());
             }
+
+                    private void restoreOldState() {
+                        Util.reloadBindings(lbResourceAllocationType);
+                    }
 
         });
 
@@ -594,4 +604,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
         return ResourceAllocationTypeEnum.asEnum(cell.getLabel());
     }
 
+    public boolean isConsolidatedTask() {
+        Task task = asTask(currentTaskElement);
+        if (task != null) {
+            return task.hasConsolidations();
+        }
+        return false;
+    }
 }

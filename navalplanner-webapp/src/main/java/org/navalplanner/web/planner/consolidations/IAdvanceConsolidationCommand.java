@@ -22,7 +22,6 @@ package org.navalplanner.web.planner.consolidations;
 
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.PlanningState;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
@@ -32,6 +31,8 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 public interface IAdvanceConsolidationCommand extends
         ICommandOnTask<TaskElement> {
 
-    void initialize(EditTaskController editTaskController, PlanningState state);
+    void initialize(
+            AdvanceConsolidationController advanceConsolidationController,
+            PlanningState state);
 
 }

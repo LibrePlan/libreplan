@@ -170,14 +170,17 @@ public class CutyPrint {
         // Static width and time delay parameters (FIX)
         captureString += " --delay=3000 ";
 
+        boolean expanded = Planner.
+                guessContainersExpandedByDefaultGivenPrintParameters(parameters);
+
         String generatedCSSFile = createCSSFile(
                 absolutePath + "/planner/css/print.css",
                 plannerWidth,
                 planner,
                 parameters.get("labels"),
                 parameters.get("resources"),
-                Planner
-                        .guessContainersExpandedByDefaultGivenPrintParameters(parameters));
+                expanded,
+                planner.calculateMinimumWidthForTaskNameColumn(expanded));
 
         // Relative user styles
         captureString += "--user-styles=" + generatedCSSFile;
@@ -241,7 +244,8 @@ public class CutyPrint {
     }
 
     private static String createCSSFile(String srFile, int width,
-            Planner planner, String labels, String resources, boolean expanded) {
+            Planner planner, String labels, String resources, boolean expanded,
+            int minimumWidthForTaskNameColumn) {
         File generatedCSS = null;
         try {
             generatedCSS = File.createTempFile("print", ".css");
@@ -266,6 +270,7 @@ public class CutyPrint {
             }
             includeCSSLines += heightCSS(expanded ? planner.getAllTasksNumber()
                     : planner.getTaskNumber());
+            includeCSSLines += widthForTaskNamesColumnCSS(minimumWidthForTaskNameColumn);
 
             out.write(includeCSSLines.getBytes());
             in.close();
@@ -281,5 +286,24 @@ public class CutyPrint {
             return generatedCSS.getAbsolutePath();
         } else
             return srFile;
+    }
+
+    private static String widthForTaskNamesColumnCSS(
+            int minWidthPixels) {
+        String css = "/* ------ Make the area for task names wider ------ */\n";
+        css += "th.z-tree-col {width: 76px !important;}\n";
+        css += "th.tree-text {width: " + (24 + minWidthPixels) + "px !important;}\n";
+        css += ".taskdetailsContainer, .z-west-body, .z-tree-header, .z-tree-body {";
+        css += "width: " + (176 + minWidthPixels) + "px !important;}\n";
+        css += ".listdetails .depth_1 input.task_title {";
+        css += "width: " + (minWidthPixels - 1) + "px !important;}\n";
+        css += ".listdetails .depth_2 input.task_title {";
+        css += "width: " + (minWidthPixels - 22) + "px !important;}\n";
+        css += ".listdetails .depth_3 input.task_title {";
+        css += "width: " + (minWidthPixels - 43) + "px !important;}\n";
+        css += ".listdetails .depth_4 input.task_title {";
+        css += "width: " + (minWidthPixels - 64) + "px !important;}\n";
+
+        return css;
     }
 }

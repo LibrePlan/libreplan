@@ -98,7 +98,7 @@
     </component>
 
     <component>
-        <component-name>LimitingResourcesLeftPane</component-name>
+        <component-name>limitingResourcesLeftPane</component-name>
         <component-class>org.navalplanner.web.limitingresources.LimitingResourcesLeftPane</component-class>
         <macro-uri>/limitingresources/leftPane.zul</macro-uri>
     </component>

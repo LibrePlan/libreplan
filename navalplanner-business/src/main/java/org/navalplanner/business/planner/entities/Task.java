@@ -45,6 +45,7 @@ import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWo
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -186,6 +187,14 @@ public class Task extends TaskElement {
     private ResourceAllocation<?> getAssociatedLimitingResourceAllocation() {
         Set<ResourceAllocation<?>> resourceAllocations = getLimitingResourceAllocations();
         return (resourceAllocations.size() > 0) ? resourceAllocations.iterator().next() : null;
+    }
+
+    public LimitingResourceQueueElement getAssociatedLimitingResourceQueueElementIfAny() {
+        if (!isLimiting()) {
+            throw new IllegalStateException("this is not a limiting task");
+        }
+        return getAssociatedLimitingResourceAllocation()
+                .getLimitingResourceQueueElement();
     }
 
     public boolean isLimitingAndHasDayAssignments() {
@@ -449,14 +458,8 @@ public class Task extends TaskElement {
         reassign(scenario, new WithAnotherResources(resourceDAO));
     }
 
-    private void reassign(Scenario onScenario,
-            AllocationModificationStrategy strategy) {
+    private void reassign(Scenario onScenario, AllocationModificationStrategy strategy) {
         if (isLimiting()) {
-            Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
-            ResourceAllocation<?> resourceAlloation = resourceAllocations
-                    .iterator().next();
-            resourceAlloation.getLimitingResourceQueueElement()
-                    .setEarlierStartDateBecauseOfGantt(getStartDate());
             return;
         }
         List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
@@ -624,4 +627,15 @@ public class Task extends TaskElement {
     public boolean hasConsolidations() {
         return ((consolidation != null) && (!consolidation.isEmpty()));
     }
+
+    public LocalDate getFirstDayNotConsolidated() {
+        if (consolidation != null) {
+            LocalDate until = consolidation.getConsolidatedUntil();
+            if (until != null) {
+                return until.plusDays(1);
+            }
+        }
+        return LocalDate.fromDateFields(getStartDate());
+    }
+
 }

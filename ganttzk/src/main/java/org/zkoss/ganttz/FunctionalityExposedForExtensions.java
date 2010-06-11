@@ -161,6 +161,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             return result;
         }
 
+        @Override
+        public List<? extends TaskContainer> getParents(Task task) {
+            Position position = findPositionFor(task);
+            return position.getAncestors();
+        }
+
     }
 
     private final Planner planner;

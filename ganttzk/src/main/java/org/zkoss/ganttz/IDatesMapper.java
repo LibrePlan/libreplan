@@ -38,4 +38,6 @@ public interface IDatesMapper {
 
     long getMilisecondsPerPixel();
 
+    int getHorizontalSize();
+
 }

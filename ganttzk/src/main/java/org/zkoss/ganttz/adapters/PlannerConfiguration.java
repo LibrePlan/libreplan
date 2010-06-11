@@ -393,13 +393,17 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     public void addPreGraphChangeListener(
             IGraphChangeListener preGraphChangeListener) {
         Validate.notNull(preGraphChangeListener);
-        preGraphChangeListeners.add(preGraphChangeListener);
+        if (!preGraphChangeListeners.contains(preGraphChangeListener)) {
+            preGraphChangeListeners.add(preGraphChangeListener);
+        }
     }
 
     public void addPostGraphChangeListener(
             IGraphChangeListener postGraphChangeListener) {
         Validate.notNull(postGraphChangeListener);
-        postGraphChangeListeners.add(postGraphChangeListener);
+        if (!postGraphChangeListeners.contains(postGraphChangeListener)) {
+            postGraphChangeListeners.add(postGraphChangeListener);
+        }
     }
 
     public List<IGraphChangeListener> getPreChangeListeners() {

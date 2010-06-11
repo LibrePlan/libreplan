@@ -59,7 +59,10 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
     }
 
     public LocalDate untilAllocating(int hoursToAllocate) {
-        LocalDate start = LocalDate.fromDateFields(task.getStartDate());
+        LocalDate taskStart = LocalDate.fromDateFields(task.getStartDate());
+        LocalDate start = (task.getFirstDayNotConsolidated().compareTo(
+                taskStart) >= 0) ? task.getFirstDayNotConsolidated()
+                : taskStart;
         int i = 0;
         int maxDaysElapsed = 0;
         for (HoursPerAllocation each : hoursPerAllocation(start,
