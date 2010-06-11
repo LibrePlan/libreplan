@@ -43,8 +43,7 @@
 .listdetails div.z-tree {
     background: #FFFFFF;
 }
-
-.listdetails img {
+ .listdetails img {
     display: none;
 }
 
@@ -156,7 +155,9 @@
 }
 
 .standard-task {
-    background-color: #aaccee; /* NOT_ALLOCATED_TASK_BLUE */
+    background-color: #abcde1; /* NOT_ALLOCATED_TASK_BLUE */
+
+
 }
 
 .subcontracted-task {
@@ -228,16 +229,18 @@ div.box.limiting-unassigned {
 .completion {
     width: 0%;
     margin-top: 0px;
-    height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
+    height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
     background-color: #FFCC99;
     border: 0px;
+    margin-top: -5px;
 }
 
 .completion2 {
     width: 0%;
-    height: 5px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
-    background-color: #75d9b0;
+    height: 6px;
+    background-color: #004469;
     border: 0px;
+    margin-top: 4px;
 }
 
 .taskgroup_start,.taskgroup_end {
@@ -283,7 +286,7 @@ div.box.limiting-unassigned {
     padding-right:2px;
     heigth: 12px !important;
     position: relative;
-    top: -12px;
+    top: -8px;
     left:10;
     display: block;
     clear: both;
@@ -1111,7 +1114,7 @@ body .perspectives-column {
 }
 
 .row .assigned {
-    background-color: #007BBE; /* ALLOCATED_TASK_BLUE */
+    background-color: #3c90be; /* ALLOCATED_TASK_BLUE */
 }
 
 .row .partially-assigned {
@@ -1124,8 +1127,23 @@ body .perspectives-column {
 }
 
 .queue-progress-bar {
-    background-color: #75D9B0;
-    height: 5px;
-    margin-top: 5px;
-    -moz-border-radius-bottomleft: 4px;
+    background-color: #407865;
+    height: 6px;
+    margin-top: 2px;
+    -moz-border-radius-bottomleft: 2px;
+    -moz-border-radius-topleft: 2px;
 }
+
+.limiting-assigned .completion2, .limiting-unassigned .completion2 {
+    background-color: #407865;
+}
+
+.queue-element.unmet-deadline .queue-progress-bar {
+    background-color: #c06666;
+}
+
+.subcontracted-task .completion2 {
+    background-color: #484e4d;
+}
+
+
