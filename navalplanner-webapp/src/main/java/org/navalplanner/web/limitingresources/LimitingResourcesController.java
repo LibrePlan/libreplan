@@ -132,13 +132,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
-            try {
-                e.printStackTrace();
-                Messagebox.show(_("Limiting resources error") + e, _("Error"),
-                        Messagebox.OK, Messagebox.ERROR);
-            } catch (InterruptedException o) {
-                throw new RuntimeException(e);
-            }
+            e.printStackTrace();
         }
     }
 
