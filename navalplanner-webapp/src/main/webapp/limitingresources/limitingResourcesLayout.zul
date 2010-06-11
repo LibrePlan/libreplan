@@ -112,8 +112,6 @@
 
                 <!-- List of unassigned queue elements -->
                 <grid id="gridUnassignedLimitingResourceQueueElements"
-                        model="@{limitingResourcesController.unassignedLimitingResourceQueueElements}"
-                        rowRenderer="@{limitingResourcesController.limitingResourceQueueElementsRenderer}"
                         fixedLayout="true"
                         style="margin: 10px" >
                     <columns sizable="true">
