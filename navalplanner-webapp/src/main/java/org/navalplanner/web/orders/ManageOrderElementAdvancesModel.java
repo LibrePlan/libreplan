@@ -306,7 +306,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void addNewLineAdvaceMeasurement() {
+    public AdvanceMeasurement addNewLineAdvaceMeasurement() {
         if (this.advanceAssignment != null) {
             AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();
             newMeasurement.setDate(new LocalDate());
@@ -317,7 +317,9 @@ public class ManageOrderElementAdvancesModel implements
                 this.advanceAssignment.getAdvanceMeasurements().add(
                         newMeasurement);
             }
+            return newMeasurement;
         }
+        return null;
     }
 
     @Override
@@ -674,8 +676,7 @@ public class ManageOrderElementAdvancesModel implements
                             .getNonCalculatedConsolidation().isEmpty())) {
                 return true;
             }
-            return (!((DirectAdvanceAssignment) advance).isFake())
-                    && (containsAnyConsolidatedAdvanceMeasurement((DirectAdvanceAssignment) advance));
+            return ((!((DirectAdvanceAssignment) advance).isFake()) && (!canBeRemovedAllAdvanceMeasurements((DirectAdvanceAssignment) advance)));
 
         } else {
             return ((advance.getReportGlobalAdvance()) && (!((IndirectAdvanceAssignment) advance)
@@ -683,16 +684,21 @@ public class ManageOrderElementAdvancesModel implements
         }
     }
 
-    private boolean containsAnyConsolidatedAdvanceMeasurement(
+    private boolean canBeRemovedAllAdvanceMeasurements(
             DirectAdvanceAssignment advance) {
         Iterator<AdvanceMeasurement> iterator = advance
                 .getAdvanceMeasurements().iterator();
         while (iterator.hasNext()) {
-            if (hasConsolidatedAdvances(iterator.next(), advance.isFake())) {
-                return true;
+            if (!canRemoveOrChange(iterator.next())) {
+                return false;
             }
         }
-        return false;
+        return true;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean canRemoveOrChange(AdvanceMeasurement advanceMeasurement) {
+        return (!hasConsolidatedAdvances(advanceMeasurement));
     }
 
     @Transactional(readOnly = true)
@@ -728,7 +734,6 @@ public class ManageOrderElementAdvancesModel implements
     @Transactional(readOnly = true)
     public boolean findIndirectConsolidation(
             AdvanceMeasurement advanceMeasurement) {
-
         AdvanceAssignment advance = advanceMeasurement.getAdvanceAssignment();
         if ((orderElement != null) && (orderElement.getParent() != null) && (advance instanceof DirectAdvanceAssignment)) {
 
@@ -781,7 +786,8 @@ public class ManageOrderElementAdvancesModel implements
         for (CalculatedConsolidation consolidation : consolidations) {
             for (CalculatedConsolidatedValue value : consolidation
                     .getCalculatedConsolidatedValues()) {
-                if (value.getDate().compareTo(advance.getDate()) == 0) {
+                if ((value.getDate() != null) && (advance.getDate() != null)
+                        && (value.getDate().compareTo(advance.getDate()) == 0)) {
                     return true;
                 }
             }

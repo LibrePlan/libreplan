@@ -51,7 +51,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public boolean addNewLineAdvaceAssignment();
 
-    public void addNewLineAdvaceMeasurement();
+    public AdvanceMeasurement addNewLineAdvaceMeasurement();
 
     public void removeLineAdvanceAssignment(AdvanceAssignment advance);
 
@@ -103,6 +103,8 @@ public interface IManageOrderElementAdvancesModel {
     public boolean hasConsolidatedAdvances(AdvanceAssignment advance);
 
     public boolean hasConsolidatedAdvances(AdvanceMeasurement advanceMeasurement);
+
+    public boolean canRemoveOrChange(AdvanceMeasurement advanceMeasurement);
 
     public boolean findIndirectConsolidation(
             AdvanceMeasurement advanceMeasurement);
