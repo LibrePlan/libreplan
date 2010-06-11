@@ -172,10 +172,7 @@ public class SaveCommand implements ISaveCommand {
         for (TaskElement taskElement : state.getTasksToSave()) {
             removeDetachedDerivedDayAssignments(taskElement);
             removeEmptyConsolidation(taskElement);
-            if (taskElement.isLimiting()) {
-                Task task = (Task) taskElement;
-                updateLimitingResourceQueueElementDates(task);
-            }
+            updateLimitingResourceQueueElementDates(taskElement);
             taskElementDAO.save(taskElement);
         }
 
@@ -187,6 +184,17 @@ public class SaveCommand implements ISaveCommand {
 
         if (!state.getTasksToSave().isEmpty()) {
             updateRootTaskPosition();
+        }
+    }
+
+    private void updateLimitingResourceQueueElementDates(TaskElement taskElement) {
+        if (taskElement.isLimiting()) {
+            Task task = (Task) taskElement;
+            updateLimitingResourceQueueElementDates(task);
+        } else if (!taskElement.isLeaf()) {
+            for (TaskElement each : taskElement.getChildren()) {
+                updateLimitingResourceQueueElementDates(each);
+            }
         }
     }
 
