@@ -296,7 +296,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 paginatorFilter.populateHorizontalListbox();
                 paginatorFilter.goToHorizontalPage(0);
                 reloadComponent();
-                rebuildDependencies();
 
                 // Reset mapper for first detail
                 if (newDetailLevel == ZoomLevel.DETAIL_THREE) {
@@ -440,14 +439,14 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         paginatorFilter.goToHorizontalPage(horizontalPagination
                 .getSelectedIndex());
         reloadComponent();
-        rebuildDependencies();
     }
 
-    private void reloadComponent() {
+    public void reloadComponent() {
         timeTrackerHeader.recreate();
         timeTrackerComponent.recreate();
         queueListComponent.invalidate();
         queueListComponent.afterCompose();
+        rebuildDependencies();
     }
 
     private class PaginatorFilter implements IDetailItemFilter {
@@ -502,14 +501,12 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             paginatorFilter.goToHorizontalPage(horizontalPagination
                     .getSelectedIndex() - 1);
             reloadComponent();
-            rebuildDependencies();
         }
 
         public void paginationUp() {
             paginatorFilter.goToHorizontalPage(horizontalPagination
                     .getSelectedIndex() + 1);
             reloadComponent();
-            rebuildDependencies();
         }
 
         @Override
