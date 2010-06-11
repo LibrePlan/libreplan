@@ -60,10 +60,11 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Rows;
 
@@ -110,31 +111,23 @@ public class LimitingResourcesController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
-        reload();
-        limitingResourcesPanel.invalidate();
     }
-
-    private Listbox listAssignableQueues;
-
-    private Listbox listCandidateGaps;
 
     public void reload() {
         try {
-
             limitingResourceQueueModel.initGlobalView();
 
             // Initialize interval
             timeTracker = buildTimeTracker();
             limitingResourcesPanel = buildLimitingResourcesPanel();
 
-            this.parent.getChildren().clear();
             this.parent.appendChild(limitingResourcesPanel);
             limitingResourcesPanel.afterCompose();
 
-            gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
-                    .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
-            cbSelectAll = (Checkbox) limitingResourcesPanel.getFellowIfAny("cbSelectAll");
+            cbSelectAll = (Checkbox) limitingResourcesPanel
+                    .getFellowIfAny("cbSelectAll");
 
+            initGridUnassignedLimitingResourceQueueElements();
             initManualAllocationWindow();
 
             addCommands(limitingResourcesPanel);
@@ -147,6 +140,16 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private void initGridUnassignedLimitingResourceQueueElements() {
+        gridUnassignedLimitingResourceQueueElements = (Grid) limitingResourcesPanel
+                .getFellowIfAny("gridUnassignedLimitingResourceQueueElements");
+        gridUnassignedLimitingResourceQueueElements
+                .setModel(new SimpleListModel(
+                        getUnassignedLimitingResourceQueueElements()));
+        gridUnassignedLimitingResourceQueueElements
+                .setRowRenderer(getLimitingResourceQueueElementsRenderer());
     }
 
     private void initManualAllocationWindow() {
@@ -359,7 +362,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             LimitingResourceQueueElement element = dto.getOriginal();
             limitingResourceQueueModel
                     .removeUnassignedLimitingResourceQueueElement(element);
-            Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+            reloadUnassignedLimitingResourceQueueElements();
         }
 
         private Button automaticButton(
@@ -384,7 +387,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             List<LimitingResourceQueueElement> inserted = limitingResourceQueueModel
                     .assignLimitingResourceQueueElement(element);
             if (!inserted.isEmpty()) {
-                Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+                reloadUnassignedLimitingResourceQueueElements();
                 for (LimitingResourceQueueElement each : inserted) {
                     // FIXME visually wrong if an element jumps from a queue to
                     // another
@@ -424,7 +427,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public void unschedule(QueueTask task) {
         limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
-        Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+        reloadUnassignedLimitingResourceQueueElements();
     }
 
     public boolean moveTask(LimitingResourceQueueElement element) {
@@ -443,7 +446,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void reloadUnassignedLimitingResourceQueueElements() {
-        Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+        gridUnassignedLimitingResourceQueueElements
+                .setModel(new SimpleListModel(getUnassignedLimitingResourceQueueElements()));
     }
 
     public void selectedAllUnassignedQueueElements() {
