@@ -176,10 +176,7 @@ public class SaveCommand implements ISaveCommand {
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
             removeEmptyConsolidation(taskElement);
-            if (taskElement.isLimiting()) {
-                Task task = (Task) taskElement;
-                updateLimitingResourceQueueElementDates(task);
-            }
+            updateLimitingResourceQueueElementDates(taskElement);
             taskElementDAO.save(taskElement);
             if (taskElement.getTaskSource() != null
                     && taskElement.getTaskSource().isNewObject()) {
@@ -202,6 +199,17 @@ public class SaveCommand implements ISaveCommand {
         }
         for (TaskElement each : taskElement.getChildren()) {
             saveTaskSources(each);
+        }
+    }
+
+    private void updateLimitingResourceQueueElementDates(TaskElement taskElement) {
+        if (taskElement.isLimiting()) {
+            Task task = (Task) taskElement;
+            updateLimitingResourceQueueElementDates(task);
+        } else if (!taskElement.isLeaf()) {
+            for (TaskElement each : taskElement.getChildren()) {
+                updateLimitingResourceQueueElementDates(each);
+            }
         }
     }
 
