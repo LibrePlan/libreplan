@@ -117,10 +117,11 @@
                         fixedLayout="true"
                         style="margin: 10px" >
                     <columns sizable="true">
-                        <column label="Select all" width="100px" >
-                            <hbox style="padding-left: 2px; margin-top: -17px">
+                        <column width="40px" >
+                            <hbox pack="center" style="margin-left:2px">
                                 <checkbox id="cbSelectAll"
-                                    onCheck="limitingResourcesController.selectedAllUnassignedQueueElements()"/>
+                                    onCheck="limitingResourcesController.selectedAllUnassignedQueueElements()"
+                                    tooltiptext="Select/deselect all"/>
                             </hbox>
                         </column>
                         <column label="${i18n:_('Order')}" sort="auto(orderName)"/>
