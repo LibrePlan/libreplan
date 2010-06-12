@@ -316,6 +316,7 @@ public class QueuesState {
             LimitingResourceQueueElement element) {
         Set<LimitingResourceQueueDependency> outgoingEdgesOf = graph
                 .outgoingEdgesOf(element);
+        result.addVertex(element);
         for (LimitingResourceQueueDependency each : outgoingEdgesOf) {
             addDependency(result, each);
             buildOutgoingGraphFor(result, each.getHasAsDestiny());
