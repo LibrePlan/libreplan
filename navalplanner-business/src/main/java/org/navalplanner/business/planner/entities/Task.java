@@ -51,6 +51,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.AfterCopy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -86,6 +87,13 @@ public class Task extends TaskElement {
 
     @Valid
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
+
+    @AfterCopy
+    private void ifLimitingAllocationRemove() {
+        if (isLimiting()) {
+            resourceAllocations.clear();
+        }
+    }
 
     private TaskStartConstraint startConstraint = new TaskStartConstraint();
 

@@ -306,6 +306,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();
 
+    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<LimitingResourceQueueElement> limitingResourceQueueElements = new HashSet<LimitingResourceQueueElement>();
 
     private int originalTotalAssignment = 0;
