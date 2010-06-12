@@ -314,6 +314,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         if (resource != null) {
             Hibernate.initialize(resource);
             initializeCalendarIfAny(resource.getCalendar());
+            resource.getAssignments();
             for (CriterionSatisfaction each : resource
                     .getCriterionSatisfactions()) {
                 Hibernate.initialize(each);
