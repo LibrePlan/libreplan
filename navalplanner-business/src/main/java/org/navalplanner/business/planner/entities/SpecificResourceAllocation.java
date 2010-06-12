@@ -82,12 +82,16 @@ public class SpecificResourceAllocation extends
         return result;
     }
 
-    @NotNull
     @OnCopy(Strategy.SHARE)
     private Resource resource;
 
-    @Valid
     private Set<SpecificDayAssignmentsContainer> specificDayAssignmentsContainers = new HashSet<SpecificDayAssignmentsContainer>();
+
+    @Valid
+    private Set<SpecificDayAssignmentsContainer> getSpecificDayAssignmentsContainers() {
+        return new HashSet<SpecificDayAssignmentsContainer>(
+                specificDayAssignmentsContainers);
+    }
 
     public static SpecificResourceAllocation createForTesting(
             ResourcesPerDay resourcesPerDay, Task task) {
@@ -134,6 +138,7 @@ public class SpecificResourceAllocation extends
         return new TransientState(new HashSet<SpecificDayAssignment>());
     }
 
+    @NotNull
     public Resource getResource() {
         return resource;
     }

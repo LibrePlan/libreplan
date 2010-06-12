@@ -101,8 +101,13 @@ public class GenericResourceAllocation extends
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
-    @Valid
     private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
+
+    @Valid
+    private Set<GenericDayAssignmentsContainer> getGenericDayAssignmentsContainers() {
+        return new HashSet<GenericDayAssignmentsContainer>(
+                genericDayAssignmentsContainers);
+    }
 
     @OnCopy(Strategy.IGNORE)
     private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
