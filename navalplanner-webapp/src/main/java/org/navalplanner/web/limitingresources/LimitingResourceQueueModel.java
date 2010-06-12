@@ -63,6 +63,8 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -113,6 +115,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private Set<LimitingResourceQueueElement> toBeSaved = new HashSet<LimitingResourceQueueElement>();
 
+    private Scenario master;
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView() {
@@ -121,6 +125,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
 
     private void doGlobalView() {
+        master = PredefinedScenarios.MASTER.getScenario();
         List<LimitingResourceQueueElement> unassigned = findUnassignedLimitingResourceQueueElements();
         List<LimitingResourceQueue> queues = loadLimitingResourceQueues();
         queuesState = new QueuesState(queues, unassigned);
@@ -195,6 +200,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             LimitingResourceQueueElement element) {
         ResourceAllocation<?> resourceAllocation = element
                 .getResourceAllocation();
+        resourceAllocation.switchToScenario(master);
         resourceAllocation = initializeResourceAllocationIfNecessary(resourceAllocation);
         element.setResourceAllocation(resourceAllocation);
         initializeTask(resourceAllocation.getTask());
