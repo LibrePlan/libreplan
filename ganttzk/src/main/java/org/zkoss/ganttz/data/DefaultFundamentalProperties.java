@@ -203,4 +203,8 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return null;
     }
 
+    @Override
+    public void setDeadline(Date date) {
+    }
+
 }
