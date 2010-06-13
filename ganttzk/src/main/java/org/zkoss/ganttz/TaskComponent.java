@@ -441,7 +441,11 @@ public class TaskComponent extends Div implements AfterCompose {
         if (task.getDeadline() != null) {
             String position = getMapper().toPixels(task.getDeadline()) + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
+        } else {
+            // Move deadline out of visible area
+            response(null, new AuInvoke(this, "moveDeadline","-100px"));
         }
+
         if (task.getConsolidatedline() != null) {
             String position = (getMapper().toPixels(task.getConsolidatedline()) - CONSOLIDATED_MARK_HALF_WIDTH)
                     + "px";
