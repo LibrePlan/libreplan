@@ -169,9 +169,9 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void add(LimitingResourceQueueDependency d) {
         Validate.notNull(d);
-        if (d.getHasAsOrigin().equals(this)) {
+        if (d.getHasAsOrigin().getId().equals(this.getId())) {
             dependenciesAsOrigin.add(d);
-        } else if (d.getHasAsDestiny().equals(this)) {
+        } else if (d.getHasAsDestiny().getId().equals(this.getId())) {
             dependenciesAsDestiny.add(d);
         } else {
             throw new IllegalArgumentException(
