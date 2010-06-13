@@ -563,7 +563,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public void setDeadline(Date date) {
-            taskElement.setDeadline(LocalDate.fromDateFields(date));
+            if (date != null) {
+                taskElement.setDeadline(LocalDate.fromDateFields(date));
+            } else {
+                taskElement.setDeadline(null);
+            }
         }
 
         @Override
