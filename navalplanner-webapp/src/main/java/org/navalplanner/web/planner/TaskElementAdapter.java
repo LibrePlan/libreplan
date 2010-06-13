@@ -562,6 +562,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
+        public void setDeadline(Date date) {
+            taskElement.setDeadline(LocalDate.fromDateFields(date));
+        }
+
+        @Override
         public Date getConsolidatedline() {
             if (!taskElement.isLeaf() || !taskElement.hasConsolidations()) {
                 return null;

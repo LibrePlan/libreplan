@@ -321,6 +321,14 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
+    public void setDeadline(Date date) {
+        Date previousValue = fundamentalProperties.getDeadline();
+        fundamentalProperties.setDeadline(date);
+        fundamentalPropertiesListeners.firePropertyChange("deadline",
+                previousValue, date);
+    }
+
+    @Override
     public Date getConsolidatedline() {
         return fundamentalProperties.getConsolidatedline();
     }
