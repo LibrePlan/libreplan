@@ -40,6 +40,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -74,9 +75,12 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
     private List<LimitingAllocationRow> limitingAllocationRows = new ArrayList<LimitingAllocationRow>();
 
+    private PlanningState planningState;
+
     @Override
-    public void init(Task task) {
+    public void init(Task task, PlanningState planningState) {
         this.task = task;
+        this.planningState = planningState;
         limitingAllocationRows = LimitingAllocationRow.toRows(task);
     }
 
@@ -94,15 +98,18 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     public void addGeneric(Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
         if (resources.size() >= 1) {
-            reattachResources(resources);
-            addGenericResourceAllocation(criteria, resources);
+            planningState.reassociateResourcesWithSession();
+            addGenericResourceAllocation(criteria, reloadResources(resources));
         }
     }
 
-    private void reattachResources(Collection<? extends Resource> resources) {
+    private List<Resource> reloadResources(
+            Collection<? extends Resource> resources) {
+        List<Resource> result = new ArrayList<Resource>();
         for (Resource each: resources) {
-            resourceDAO.reattach(each);
+            result.add(resourceDAO.findExistingEntity(each.getId()));
         }
+        return result;
     }
 
     private void addGenericResourceAllocation(Set<Criterion> criteria,
@@ -142,9 +149,10 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         if (resources.size() >= 1) {
-            Resource resource = getFirstChild(resources);
-            resourceDAO.reattach(resource);
-            addSpecificResourceAllocation(resource);
+            planningState.reassociateResourcesWithSession();
+            List<Resource> reloaded = reloadResources(
+                    Collections.singleton(getFirstChild(resources)));
+            addSpecificResourceAllocation(getFirstChild(reloaded));
         }
     }
 

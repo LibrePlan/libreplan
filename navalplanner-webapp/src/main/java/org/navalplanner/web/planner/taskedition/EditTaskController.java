@@ -167,7 +167,8 @@ public class EditTaskController extends GenericForwardComposer {
             showNonLimitingResourcesTab();
         } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES
                 .equals(resourceAllocationType)) {
-            limitingResourceAllocationController.init(asTask(taskElement), messagesForUser);
+            limitingResourceAllocationController.init(asTask(taskElement),
+                    planningState, messagesForUser);
             showLimitingResourcesTab();
         }
 

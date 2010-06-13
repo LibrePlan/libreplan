@@ -25,6 +25,7 @@ import java.util.List;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
+import org.navalplanner.web.planner.order.PlanningState;
 
 /**
  * Contract for {@link Task}.
@@ -41,6 +42,6 @@ public interface ILimitingResourceAllocationModel extends INewAllocationsAdder {
 
     List<LimitingAllocationRow> getResourceAllocationRows();
 
-    void init(Task task);
+    void init(Task task, PlanningState planningState);
 
 }

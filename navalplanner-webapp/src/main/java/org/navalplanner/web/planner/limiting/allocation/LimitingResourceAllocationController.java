@@ -30,8 +30,8 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.HoursRendererColumn;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -95,9 +95,10 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
      * @param planningState
      */
     public void init(org.navalplanner.business.planner.entities.Task task,
+            PlanningState planningState,
             IMessagesForUser messagesForUser) {
         try {
-            resourceAllocationModel.init(task);
+            resourceAllocationModel.init(task, planningState);
             tabLimitingWorkerSearch.setDisabled(existsResourceAllocationWithDayAssignments());
             limitingNewAllocationSelector.setAllocationsAdder(resourceAllocationModel);
             gridLimitingOrderElementHours.setModel(new ListModelList(
