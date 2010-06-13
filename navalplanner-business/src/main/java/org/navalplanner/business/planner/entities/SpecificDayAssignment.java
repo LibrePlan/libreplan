@@ -20,8 +20,10 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -121,12 +123,26 @@ public class SpecificDayAssignment extends DayAssignment {
             Collection<? extends SpecificDayAssignment> specificDaysAssignment) {
         Set<SpecificDayAssignment> result = new HashSet<SpecificDayAssignment>();
         for (SpecificDayAssignment s : specificDaysAssignment) {
-            SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
-                    .getResource());
+            SpecificDayAssignment created = copyFromWithoutParent(s);
             created.parentState = created.parentState.setParent(container);
             created.setConsolidated(s.isConsolidated());
             created.associateToResource();
             result.add(created);
+        }
+        return result;
+    }
+
+    private static SpecificDayAssignment copyFromWithoutParent(
+            SpecificDayAssignment assignment) {
+        return create(assignment.getDay(), assignment.getHours(), assignment
+                .getResource());
+    }
+
+    public static List<SpecificDayAssignment> copyToAssignmentsWithoutParent(
+            Collection<? extends SpecificDayAssignment> assignments) {
+        List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
+        for (SpecificDayAssignment each : assignments) {
+            result.add(copyFromWithoutParent(each));
         }
         return result;
     }

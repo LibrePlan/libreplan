@@ -20,8 +20,10 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -137,11 +139,25 @@ public class GenericDayAssignment extends DayAssignment {
     private static GenericDayAssignment copy(
             GenericDayAssignmentsContainer newParent,
             GenericDayAssignment toBeCopied) {
-        GenericDayAssignment result = create(toBeCopied.getDay(), toBeCopied
-                .getHours(), toBeCopied.getResource());
+        GenericDayAssignment result = copyFromWithoutParent(toBeCopied);
         result.setConsolidated(toBeCopied.isConsolidated());
         result.parentState = result.parentState.setParent(newParent);
         result.associateToResource();
+        return result;
+    }
+
+    private static GenericDayAssignment copyFromWithoutParent(
+            GenericDayAssignment toBeCopied) {
+        return create(toBeCopied.getDay(), toBeCopied
+                .getHours(), toBeCopied.getResource());
+    }
+
+    public static List<GenericDayAssignment> copyToAssignmentsWithoutParent(
+            Collection<? extends GenericDayAssignment> assignments) {
+        List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
+        for (GenericDayAssignment each : assignments) {
+            result.add(copyFromWithoutParent(each));
+        }
         return result;
     }
 

@@ -465,7 +465,10 @@ public class SpecificResourceAllocation extends
     public void overrideConsolidatedDayAssignments(
             SpecificResourceAllocation origin) {
         if (origin != null) {
-            resetAssignmentsTo(origin.getConsolidatedAssignments());
+            List<SpecificDayAssignment> originAssignments = origin
+                    .getConsolidatedAssignments();
+            resetAssignmentsTo(SpecificDayAssignment
+                    .copyToAssignmentsWithoutParent(originAssignments));
         }
     }
 

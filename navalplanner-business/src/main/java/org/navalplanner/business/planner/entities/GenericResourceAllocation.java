@@ -521,7 +521,10 @@ public class GenericResourceAllocation extends
     public void overrideConsolidatedDayAssignments(
             GenericResourceAllocation origin) {
         if (origin != null) {
-            resetAssignmentsTo(origin.getConsolidatedAssignments());
+            List<GenericDayAssignment> originAssignments = origin
+                    .getConsolidatedAssignments();
+            resetAssignmentsTo(GenericDayAssignment
+                    .copyToAssignmentsWithoutParent(originAssignments));
         }
     }
 
