@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.limiting.allocation;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +43,8 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -77,6 +81,8 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
     private PlanningState planningState;
 
+    private LimitingResourceAllocationController limitingResourceAllocationController;
+
     @Override
     public void init(Task task, PlanningState planningState) {
         this.task = task;
@@ -97,6 +103,15 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Transactional(readOnly = true)
     public void addGeneric(Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
+
+        if (resources.isEmpty()) {
+            getMessagesForUser()
+                    .showMessage(Level.ERROR,
+                            _("there are no resources for required criteria: {0}. " +
+                                    "So the generic allocation can't be added",
+                                    Criterion.getNames(criteria)));
+        }
+
         if (resources.size() >= 1) {
             planningState.reassociateResourcesWithSession();
             addGenericResourceAllocation(criteria, reloadResources(resources));
@@ -112,8 +127,13 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         return result;
     }
 
+    private IMessagesForUser getMessagesForUser() {
+        return limitingResourceAllocationController.getMessagesForUser();
+    }
+
     private void addGenericResourceAllocation(Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
+
         if (isNew(criteria, resources)) {
             limitingAllocationRows.clear();
             LimitingAllocationRow allocationRow = LimitingAllocationRow.create(
@@ -282,6 +302,12 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         LimitingResourceQueueElement element = LimitingResourceQueueElement.create();
         resourceAllocation.setLimitingResourceQueueElement(element);
         task.addResourceAllocation(resourceAllocation, false);
+    }
+
+    @Override
+    public void setLimitingResourceAllocationController(
+            LimitingResourceAllocationController limitingResourceAllocationController) {
+        this.limitingResourceAllocationController = limitingResourceAllocationController;
     }
 
 }

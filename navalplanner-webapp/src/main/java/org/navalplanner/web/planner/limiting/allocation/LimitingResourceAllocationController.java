@@ -32,6 +32,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.HoursRendererColumn;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -67,6 +68,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     @Autowired
     private ILimitingResourceAllocationModel resourceAllocationModel;
 
+    private EditTaskController editTaskController;
+
     private Tab tabLimitingResourceAllocation;
 
     private Tab tabLimitingWorkerSearch;
@@ -99,6 +102,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
             IMessagesForUser messagesForUser) {
         try {
             resourceAllocationModel.init(task, planningState);
+            resourceAllocationModel.setLimitingResourceAllocationController(this);
             tabLimitingWorkerSearch.setDisabled(existsResourceAllocationWithDayAssignments());
             limitingNewAllocationSelector.setAllocationsAdder(resourceAllocationModel);
             gridLimitingOrderElementHours.setModel(new ListModelList(
@@ -261,6 +265,14 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
                 .getResourceAllocationRows();
         return (limitingAllocationRows.size() > 0) ? limitingAllocationRows
                 .get(0) : null;
+    }
+
+    public void setEditTaskController(EditTaskController editTaskController) {
+        this.editTaskController = editTaskController;
+    }
+
+    public IMessagesForUser getMessagesForUser() {
+        return editTaskController.getMessagesForUser();
     }
 
 }

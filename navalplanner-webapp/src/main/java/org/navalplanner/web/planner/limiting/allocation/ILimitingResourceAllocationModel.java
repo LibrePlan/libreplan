@@ -44,4 +44,7 @@ public interface ILimitingResourceAllocationModel extends INewAllocationsAdder {
 
     void init(Task task, PlanningState planningState);
 
+    void setLimitingResourceAllocationController(
+            LimitingResourceAllocationController limitingResourceAllocationController);
+
 }

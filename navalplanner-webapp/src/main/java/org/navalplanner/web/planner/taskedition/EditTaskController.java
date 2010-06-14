@@ -103,12 +103,22 @@ public class EditTaskController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
+
         window = (Window) comp;
         taskPropertiesController.doAfterCompose(taskPropertiesTabpanel);
         resourceAllocationController.doAfterCompose(resourceAllocationTabpanel);
         subcontractController.doAfterCompose(subcontractTabpanel);
+        initLimitingResourceAllocationController();
+    }
+
+    public void initLimitingResourceAllocationController() throws Exception {
         limitingResourceAllocationController.doAfterCompose(limitingResourceAllocationTabpanel);
-        messagesForUser = new MessagesForUser(messagesContainer);
+        limitingResourceAllocationController.setEditTaskController(this);
+    }
+
+    public IMessagesForUser getMessagesForUser() {
+        return messagesForUser;
     }
 
     public TaskPropertiesController getTaskPropertiesController() {
