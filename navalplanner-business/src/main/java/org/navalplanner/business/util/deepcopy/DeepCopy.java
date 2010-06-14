@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
@@ -145,10 +147,13 @@ public class DeepCopy {
             return instantiate(object.getClass());
         }
 
-        private Set<Object> instantiate(Class<? extends Object> klass) {
+        private Set<Object> instantiate(final Class<? extends Object> klass) {
             return new ImplementationInstantiation() {
                 @Override
                 protected Set<?> createDefault() {
+                    if (SortedSet.class.isAssignableFrom(klass)) {
+                        return new TreeSet<Object>();
+                    }
                     return new HashSet<Object>();
                 }
             }.instantiate(klass);
@@ -235,7 +240,8 @@ public class DeepCopy {
     private static abstract class ImplementationInstantiation {
 
         private static final String[] VETOED_IMPLEMENTATIONS = {
-                "PersistentSet", "PersistentList", "PersistentMap" };
+                "PersistentSet", "PersistentList", "PersistentMap",
+                "PersistentSortedSet" };
 
         ImplementationInstantiation() {
         }
@@ -374,7 +380,12 @@ public class DeepCopy {
                 Object sourceValue = readFieldValue(source, each);
                 if (sourceValue != null) {
                     Strategy strategy = getStrategy(each, sourceValue);
-                    writeFieldValue(target, each, copy(sourceValue, strategy));
+                    try {
+                        writeFieldValue(target, each, copy(sourceValue, strategy));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }

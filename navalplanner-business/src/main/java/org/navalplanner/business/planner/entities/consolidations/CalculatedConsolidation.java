@@ -25,6 +25,10 @@ import java.util.TreeSet;
 
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.util.deepcopy.AfterCopy;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -35,6 +39,15 @@ public class CalculatedConsolidation extends Consolidation {
     private SortedSet<CalculatedConsolidatedValue> consolidatedValues = new TreeSet<CalculatedConsolidatedValue>(
             new ConsolidatedValueComparator());
 
+    @AfterCopy
+    private void instantiateConsolidatedValuesWithComparator() {
+        SortedSet<CalculatedConsolidatedValue> previous = consolidatedValues;
+        consolidatedValues = new TreeSet<CalculatedConsolidatedValue>(
+                new ConsolidatedValueComparator());
+        consolidatedValues.addAll(previous);
+    }
+
+    @OnCopy(Strategy.SHARE)
     private IndirectAdvanceAssignment indirectAdvanceAssignment;
 
     public static CalculatedConsolidation create(Task task,
@@ -51,7 +64,10 @@ public class CalculatedConsolidation extends Consolidation {
                 consolidatedValues));
     }
 
-    protected CalculatedConsolidation() {
+    /**
+     * Constructor for {@link DeepCopy}. DO NOT USE!
+     */
+    public CalculatedConsolidation() {
 
     }
 
