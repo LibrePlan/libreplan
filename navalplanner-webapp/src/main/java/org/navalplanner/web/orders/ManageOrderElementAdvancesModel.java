@@ -311,11 +311,10 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();
             newMeasurement.setDate(new LocalDate());
             newMeasurement.setAdvanceAssignment(this.advanceAssignment);
-            if (!this.advanceAssignment.getAdvanceMeasurements().add(
+            if (!this.advanceAssignment.addAdvanceMeasurements(
                     newMeasurement)) {
                 newMeasurement.setDate(null);
-                this.advanceAssignment.getAdvanceMeasurements().add(
-                        newMeasurement);
+                this.advanceAssignment.addAdvanceMeasurements(newMeasurement);
             }
             return newMeasurement;
         }
@@ -331,7 +330,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void removeLineAdvanceMeasurement(AdvanceMeasurement advance) {
-        this.advanceAssignment.getAdvanceMeasurements().remove(advance);
+        this.advanceAssignment.removeAdvanceMeasurements(advance);
     }
 
     @Override
@@ -418,7 +417,7 @@ public class ManageOrderElementAdvancesModel implements
     @Override
     public void cleanAdvance(DirectAdvanceAssignment advanceAssignment) {
         if (advanceAssignment != null) {
-            advanceAssignment.getAdvanceMeasurements().clear();
+            advanceAssignment.clearAdvanceMeasurements();
         }
     }
 

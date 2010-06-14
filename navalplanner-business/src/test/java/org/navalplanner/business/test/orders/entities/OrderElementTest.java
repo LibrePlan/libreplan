@@ -179,12 +179,11 @@ public class OrderElementTest {
 
         DirectAdvanceAssignment advanceAssignment = givenAdvanceAssigement(
                 maxValue, advanceType);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement);
         advanceAssignment.setReportGlobalAdvance(reportGlobalAdvance);
 
-        advanceMeasurement.setAdvanceAssignment(advanceAssignment);
-
         orderElement.addAdvanceAssignment(advanceAssignment);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement);
+        advanceMeasurement.setAdvanceAssignment(advanceAssignment);
     }
 
     private static AdvanceType givenAdvanceType(String name) {
@@ -613,22 +612,22 @@ public class OrderElementTest {
         AdvanceMeasurement advanceMeasurement1 = AdvanceMeasurement.create();
         advanceMeasurement1.setDate(date1);
         advanceMeasurement1.setValue(value1);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement1);
         advanceMeasurement1.setAdvanceAssignment(advanceAssignment);
 
         AdvanceMeasurement advanceMeasurement2 = AdvanceMeasurement.create();
         advanceMeasurement2.setDate(date2);
         advanceMeasurement2.setValue(value2);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement2);
         advanceMeasurement2.setAdvanceAssignment(advanceAssignment);
 
         AdvanceMeasurement advanceMeasurement3 = AdvanceMeasurement.create();
         advanceMeasurement3.setDate(five);
         advanceMeasurement3.setValue(date3);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement3);
         advanceMeasurement3.setAdvanceAssignment(advanceAssignment);
 
         orderElement.addAdvanceAssignment(advanceAssignment);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement1);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement2);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement3);
     }
 
     @Test

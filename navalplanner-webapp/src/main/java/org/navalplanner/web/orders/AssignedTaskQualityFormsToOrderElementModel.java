@@ -329,7 +329,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
                     DirectAdvanceAssignment advanceAssignment = orderElement
                             .getAdvanceAssignmentByType(taskQualityForm
                                     .getQualityForm().getAdvanceType());
-                    advanceAssignment.getAdvanceMeasurements().clear();
+                    advanceAssignment.clearAdvanceMeasurements();
                     addAdvanceMeasurements(taskQualityForm, advanceAssignment);
                 }
             }

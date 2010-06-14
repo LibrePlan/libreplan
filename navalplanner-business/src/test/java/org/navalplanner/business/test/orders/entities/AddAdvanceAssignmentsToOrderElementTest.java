@@ -273,15 +273,17 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
         DirectAdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
         advanceAssignmentA.setAdvanceType(advanceTypeA);
-        advanceAssignmentA.getAdvanceMeasurements().add(advanceMeasurement);
+
         DirectAdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(false);
         advanceAssignmentB.setAdvanceType(advanceTypeB);
-        advanceAssignmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
         OrderElementTest
                 .removeReportGlobalAdvanceFromChildrenAdvance(container);
         container.addAdvanceAssignment(advanceAssignmentA);
         son.addAdvanceAssignment(advanceAssignmentB);
+
+        advanceAssignmentA.addAdvanceMeasurements(advanceMeasurement);
+        advanceAssignmentB.addAdvanceMeasurements(advanceMeasurement);
     }
 
     @Test
@@ -352,15 +354,15 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
         DirectAdvanceAssignment advanceAssignmentA = createValidAdvanceAssignment(true);
         advanceAssignmentA.setAdvanceType(advanceTypeA);
-        advanceAssignmentA.getAdvanceMeasurements().add(advanceMeasurement);
         DirectAdvanceAssignment advanceAssignmentB = createValidAdvanceAssignment(false);
         advanceAssignmentB.setAdvanceType(advanceTypeA);
-        advanceAssignmentB.getAdvanceMeasurements().add(advanceMeasurement);
 
         grandSon.addAdvanceAssignment(advanceAssignmentA);
+        advanceAssignmentA.addAdvanceMeasurements(advanceMeasurement);
 
         try {
             parent.addAdvanceAssignment(advanceAssignmentB);
+            advanceAssignmentB.addAdvanceMeasurements(advanceMeasurement);
             fail("It should throw an exception  ");
         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
             // Ok

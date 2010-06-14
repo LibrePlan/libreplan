@@ -541,6 +541,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                         advanceAssignment.getAdvanceType());
                 removeChildrenAdvanceInParents(this.getParent());
             }
+            markAsDirtyLastAdvanceMeasurementForSpreading();
         }
     }
 
