@@ -995,6 +995,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         orderReloaded.writeSchedulingDataChangesTo(currentScenario, newVersion);
         assigmentsOnResourceCalculator = new ReturningNewAssignments(
                 previousAssignments);
+        switchAllocationsToScenario(currentScenario, orderReloaded
+                .getAssociatedTaskElement());
         return createScenarioInfoForNotOwnerScenario(orderReloaded, previousVersion,
                 newVersion);
     }
