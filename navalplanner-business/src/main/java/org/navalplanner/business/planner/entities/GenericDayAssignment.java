@@ -148,8 +148,10 @@ public class GenericDayAssignment extends DayAssignment {
 
     private static GenericDayAssignment copyFromWithoutParent(
             GenericDayAssignment toBeCopied) {
-        return create(toBeCopied.getDay(), toBeCopied
-                .getHours(), toBeCopied.getResource());
+        GenericDayAssignment copy = create(toBeCopied.getDay(), toBeCopied
+                        .getHours(), toBeCopied.getResource());
+        copy.setConsolidated(toBeCopied.isConsolidated());
+        return copy;
     }
 
     public static List<GenericDayAssignment> copyToAssignmentsWithoutParent(

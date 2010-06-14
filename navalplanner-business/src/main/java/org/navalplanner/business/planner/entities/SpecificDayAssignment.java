@@ -134,8 +134,11 @@ public class SpecificDayAssignment extends DayAssignment {
 
     private static SpecificDayAssignment copyFromWithoutParent(
             SpecificDayAssignment assignment) {
-        return create(assignment.getDay(), assignment.getHours(), assignment
-                .getResource());
+        SpecificDayAssignment copy = create(assignment.getDay(), assignment
+                .getHours(), assignment
+                        .getResource());
+        copy.setConsolidated(assignment.isConsolidated());
+        return copy;
     }
 
     public static List<SpecificDayAssignment> copyToAssignmentsWithoutParent(
