@@ -47,7 +47,6 @@ import org.navalplanner.web.planner.taskedition.TaskPropertiesController.Resourc
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -274,10 +273,6 @@ public class EditTaskController extends GenericForwardComposer {
         if (context != null) {
             context.getTask().reloadResourcesText();
             context.reloadCharts();
-
-            if (context.getRelativeTo() instanceof TaskComponent) {
-                ((TaskComponent) context.getRelativeTo()).invalidate();
-            }
         }
     }
 

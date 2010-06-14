@@ -331,7 +331,8 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public boolean isMovingTasksEnabled() {
-        return disabilityConfiguration.isMovingTasksEnabled()
+        return (disabilityConfiguration != null)
+                && disabilityConfiguration.isMovingTasksEnabled()
                 && task.canBeExplicitlyMoved();
     }
 
@@ -415,7 +416,7 @@ public class TaskComponent extends Div implements AfterCompose {
         updateProperties();
     }
 
-    private void updateProperties() {
+    public void updateProperties() {
         if (!isInPage()) {
             return;
         }
