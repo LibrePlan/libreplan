@@ -539,8 +539,7 @@ public class OrderLineGroup extends OrderElement implements
                     BigDecimal orderElementHours = new BigDecimal(next1
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add = add.multiply(orderElementHours).divide(totalHours,
-                            RoundingMode.DOWN);
+                    add = addMeasure(add, totalHours, orderElementHours);
                 }
 
                 if (iterator1.hasNext()) {
@@ -558,8 +557,7 @@ public class OrderLineGroup extends OrderElement implements
                     BigDecimal orderElementHours = new BigDecimal(next2
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add = add.multiply(orderElementHours).divide(totalHours,
-                            RoundingMode.DOWN);
+                    add = addMeasure(add, totalHours, orderElementHours);
                 }
 
                 if (iterator2.hasNext()) {
@@ -581,15 +579,12 @@ public class OrderLineGroup extends OrderElement implements
                     BigDecimal orderElementHours1 = new BigDecimal(next1
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add1 = add1.multiply(orderElementHours1).divide(totalHours,
-                            RoundingMode.DOWN);
+                    add1 = addMeasure(add1, totalHours, orderElementHours1);
 
                     BigDecimal orderElementHours2 = new BigDecimal(next2
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add2 = add2.multiply(orderElementHours2).divide(totalHours,
-                            RoundingMode.DOWN);
-
+                    add2 = addMeasure(add2, totalHours, orderElementHours2);
                     add = add1.add(add2);
                 }
 
@@ -624,8 +619,7 @@ public class OrderLineGroup extends OrderElement implements
                 BigDecimal orderElementHours = new BigDecimal(next1
                         .getAdvanceAssignment().getOrderElement()
                         .getWorkHours());
-                add = add.multiply(orderElementHours).divide(totalHours,
-                        RoundingMode.DOWN);
+                add = addMeasure(add, totalHours, orderElementHours);
             }
 
             if (iterator1.hasNext()) {
@@ -653,8 +647,7 @@ public class OrderLineGroup extends OrderElement implements
                 BigDecimal orderElementHours = new BigDecimal(next2
                         .getAdvanceAssignment().getOrderElement()
                         .getWorkHours());
-                add = add.multiply(orderElementHours).divide(totalHours,
-                        RoundingMode.DOWN);
+                add = addMeasure(add, totalHours, orderElementHours);
             }
 
             if (iterator2.hasNext()) {
@@ -672,6 +665,17 @@ public class OrderLineGroup extends OrderElement implements
             result.add(advanceMeasurement);
         }
 
+    }
+
+    private BigDecimal addMeasure(BigDecimal add, BigDecimal totalHours,
+            BigDecimal orderElementHours) {
+        if ((totalHours != null) && (totalHours.compareTo(BigDecimal.ZERO) > 0)) {
+            add = add.multiply(orderElementHours).divide(totalHours,
+                    RoundingMode.DOWN);
+        } else {
+            add = add.multiply(orderElementHours);
+        }
+        return add;
     }
 
     private Date getGreatestDate(Date communicationDate, Date communicationDate2) {
