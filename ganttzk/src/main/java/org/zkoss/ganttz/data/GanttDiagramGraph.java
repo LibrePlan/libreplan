@@ -383,22 +383,27 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
-    public void addTask(V task) {
-        graph.addVertex(task);
-        adapter.registerDependenciesEnforcerHookOn(task, enforcer);
-        if (adapter.isContainer(task)) {
-            List<D> dependenciesToAdd = new ArrayList<D>();
-            for (V child : adapter.getChildren(task)) {
-                fromChildToParent.put(child, task);
-                addTask(child);
-                dependenciesToAdd.add(adapter.createInvisibleDependency(child, task,
-                        DependencyType.END_END));
-                dependenciesToAdd.add(adapter.createInvisibleDependency(task,
-                        child, DependencyType.START_START));
+    public void addTask(V original) {
+        List<V> stack = new LinkedList<V>();
+        stack.add(original);
+        List<D> dependenciesToAdd = new ArrayList<D>();
+        while (!stack.isEmpty()){
+            V task = stack.remove(0);
+            graph.addVertex(task);
+            adapter.registerDependenciesEnforcerHookOn(task, enforcer);
+            if (adapter.isContainer(task)) {
+                for (V child : adapter.getChildren(task)) {
+                    fromChildToParent.put(child, task);
+                    stack.add(0, child);
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            child, task, DependencyType.END_END));
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            task, child, DependencyType.START_START));
+                }
             }
-            for (D each : dependenciesToAdd) {
-                add(each);
-            }
+        }
+        for (D each : dependenciesToAdd) {
+            add(each);
         }
     }
 
