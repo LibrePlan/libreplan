@@ -198,7 +198,7 @@ public class QueueComponent extends XulElement implements
         StringBuilder result = new StringBuilder();
         result.append(_("Order: {0} ", order.getName()));
         result.append(_("Task: {0} ", task.getName()));
-        result.append(_("Completed: {0} ", getAdvancementEndDate(element)));
+        result.append(_("Completed: {0}% ", element.getAdvancePercentage().multiply(new BigDecimal(100))));
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
         if (resourceAllocation instanceof SpecificResourceAllocation) {
@@ -213,13 +213,17 @@ public class QueueComponent extends XulElement implements
         return result.toString();
     }
 
-    private static DateAndHour getAdvancementEndDate(LimitingResourceQueueElement element) {
-        final Task task = element.getResourceAllocation().getTask();
-
+    /**
+     * Returns end date considering % of task completion
+     *
+     * @param element
+     * @return
+     */
+    private static DateAndHour getAdvanceEndDate(LimitingResourceQueueElement element) {
         int hoursWorked = 0;
         final List<? extends DayAssignment> dayAssignments = element.getDayAssignments();
         if (element.hasDayAssignments()) {
-            final int estimatedWorkedHours = estimatedWorkedHours(element.getIntentedTotalHours(), task.getAdvancePercentage());
+            final int estimatedWorkedHours = estimatedWorkedHours(element.getIntentedTotalHours(), element.getAdvancePercentage());
 
             for (DayAssignment each: dayAssignments) {
                 hoursWorked += each.getHours();
@@ -296,7 +300,7 @@ public class QueueComponent extends XulElement implements
     private static Component generateProgressBar(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement, Task task,
             int startPixels) {
-        DateAndHour advancementEndDate = getAdvancementEndDate(queueElement);
+        DateAndHour advancementEndDate = getAdvanceEndDate(queueElement);
         long millis = (advancementEndDate.toDateTime().getMillis() - queueElement
                 .getStartTime().toDateTime().getMillis());
         Div progressBar = new Div();

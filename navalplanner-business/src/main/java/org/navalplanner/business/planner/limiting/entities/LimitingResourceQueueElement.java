@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.limiting.entities;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -273,6 +274,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public List<? extends DayAssignment> getDayAssignments() {
         return resourceAllocation.getAssignments();
+    }
+
+    public BigDecimal getAdvancePercentage() {
+        return resourceAllocation.getTask().getAdvancePercentage();
     }
 
 }
