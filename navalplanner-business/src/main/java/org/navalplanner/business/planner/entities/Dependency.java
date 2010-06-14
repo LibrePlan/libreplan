@@ -25,6 +25,8 @@ import java.util.Date;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.util.deepcopy.OnCopy;
 
 /**
  * Entity which represents an associated with properties
@@ -99,6 +101,7 @@ public class Dependency extends BaseEntity {
 
     private TaskElement destination;
 
+    @OnCopy(Strategy.IGNORE)
     private LimitingResourceQueueDependency queueDependency;
 
     private Type type;
