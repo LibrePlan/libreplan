@@ -403,7 +403,7 @@ public class GanttDiagramGraph<V, D> {
             }
         }
         for (D each : dependenciesToAdd) {
-            add(each);
+            add(each, false);
         }
     }
 
