@@ -72,7 +72,7 @@ public class SpecificResourceAllocation extends
      * @param task
      * @return
      */
-    public static SpecificResourceAllocation create(Resource resource,
+    public static SpecificResourceAllocation createForLimiting(Resource resource,
             Task task) {
         assert resource.isLimitingResource();
         SpecificResourceAllocation result = create(new SpecificResourceAllocation(

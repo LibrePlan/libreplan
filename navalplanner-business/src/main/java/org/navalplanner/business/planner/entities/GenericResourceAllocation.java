@@ -128,10 +128,11 @@ public class GenericResourceAllocation extends
                 task));
     }
 
-    public static GenericResourceAllocation create(Task task,
+    public static GenericResourceAllocation createForLimiting(Task task,
             Collection<? extends Criterion> criterions) {
         GenericResourceAllocation result = new GenericResourceAllocation(task);
         result.criterions = new HashSet<Criterion>(criterions);
+        result.setResourcesPerDay(ResourcesPerDay.amount(1));
         return create(result);
     }
 
