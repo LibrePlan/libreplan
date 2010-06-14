@@ -97,12 +97,10 @@ public class Task extends TaskElement {
 
     private TaskStartConstraint startConstraint = new TaskStartConstraint();
 
-    @Valid
     private SubcontractedTaskData subcontractedTaskData;
 
     private Integer priority;
 
-    @Valid
     private Consolidation consolidation;
 
     /**
@@ -557,6 +555,7 @@ public class Task extends TaskElement {
         this.subcontractedTaskData = subcontractedTaskData;
     }
 
+    @Valid
     public SubcontractedTaskData getSubcontractedTaskData() {
         return subcontractedTaskData;
     }
@@ -622,6 +621,7 @@ public class Task extends TaskElement {
         this.consolidation = consolidation;
     }
 
+    @Valid
     public Consolidation getConsolidation() {
         return consolidation;
     }
