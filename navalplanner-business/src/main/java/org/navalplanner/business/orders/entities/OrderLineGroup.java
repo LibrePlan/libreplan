@@ -712,12 +712,9 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceType advanceType) {
         Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
 
-        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
-            if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
-                    .equals(advanceType.getUnitName())) {
-                result.add(indirectAdvanceAssignment);
-                break;
-            }
+        IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirectAdvanceAssignment(advanceType);
+        if(indirectAdvanceAssignment != null){
+            result.add(indirectAdvanceAssignment);
         }
 
         for (OrderElement orderElement : children) {
@@ -726,6 +723,17 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         return result;
+    }
+
+    public IndirectAdvanceAssignment getIndirectAdvanceAssignment(
+            AdvanceType advanceType) {
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
+                    .equals(advanceType.getUnitName())) {
+                return indirectAdvanceAssignment;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -810,6 +818,18 @@ public class OrderLineGroup extends OrderElement implements
             IndirectAdvanceAssignment newIndirectAdvanceAssignment) {
         String unitName = newIndirectAdvanceAssignment.getAdvanceType()
                 .getUnitName();
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (unitName.equals(indirectAdvanceAssignment.getAdvanceType()
+                    .getUnitName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean existsIndirectAdvanceAssignmentWithTheSameType(
+            AdvanceType type) {
+        String unitName = type.getUnitName();
         for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
             if (unitName.equals(indirectAdvanceAssignment.getAdvanceType()
                     .getUnitName())) {
