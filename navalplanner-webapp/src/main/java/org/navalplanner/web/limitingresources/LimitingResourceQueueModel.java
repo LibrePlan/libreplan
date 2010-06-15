@@ -21,6 +21,7 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -71,6 +72,7 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.planner.order.SaveCommand;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -533,7 +535,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 saveQueueElement(each);
             }
         }
+        SaveCommand.dontPoseAsTransientAndChildrenObjects(getAllocations(toBeSaved));
         toBeSaved.clear();
+    }
+
+    private List<ResourceAllocation<?>> getAllocations(
+            Collection<? extends LimitingResourceQueueElement> elements) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (LimitingResourceQueueElement each : elements) {
+            if (each.getResourceAllocation() != null) {
+                result.add(each.getResourceAllocation());
+            }
+        }
+        return result;
     }
 
     private void saveQueueElement(LimitingResourceQueueElement element) {

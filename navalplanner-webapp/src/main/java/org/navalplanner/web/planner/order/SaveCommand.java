@@ -272,7 +272,7 @@ public class SaveCommand implements ISaveCommand {
         dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
         dontPoseAsTransient(taskElement.getDependenciesWithThisDestination());
         Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
-        dontPoseAsTransient(resourceAllocations);
+        dontPoseAsTransientAndChildrenObjects(resourceAllocations);
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {
                 dontPoseAsTransient(each);
@@ -415,8 +415,8 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private void dontPoseAsTransient(
-            Set<ResourceAllocation<?>> resourceAllocations) {
+    public static void dontPoseAsTransientAndChildrenObjects(
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.dontPoseAsTransientObjectAnymore();
             each.makeAssignmentsContainersDontPoseAsTransientAnyMore();
@@ -439,7 +439,7 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private void dontPoseAsTransient(LimitingResourceQueueElement element) {
+    private static void dontPoseAsTransient(LimitingResourceQueueElement element) {
         if (element != null) {
             for (LimitingResourceQueueDependency d: element.getDependenciesAsOrigin()) {
                 d.dontPoseAsTransientObjectAnymore();
