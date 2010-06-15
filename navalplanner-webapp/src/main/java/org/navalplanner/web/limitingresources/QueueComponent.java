@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -210,6 +211,7 @@ public class QueueComponent extends XulElement implements
         }
         result.append("[" + element.getStartDate().toString() + ","
                 + element.getEndDate().toString() + "]");
+
         return result.toString();
     }
 
@@ -248,9 +250,11 @@ public class QueueComponent extends XulElement implements
     private static QueueTask createDivForElement(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
 
+        final Task task = queueElement.getResourceAllocation().getTask();
+        final OrderElement order = getRootOrder(task);
+
         QueueTask result = new QueueTask(queueElement);
         String cssClass = "queue-element";
-
         result.setTooltiptext(createTooltiptext(queueElement));
 
         int startPixels = getStartPixels(datesMapper, queueElement);
@@ -269,13 +273,21 @@ public class QueueComponent extends XulElement implements
         }
         result.setWidth(forCSS(taskWidth));
 
-        Task task = queueElement.getResourceAllocation().getTask();
-        if (task.getDeadline() != null) {
-            int deadlinePosition = getDeadlinePixels(datesMapper, task
-                    .getDeadline());
+        LocalDate deadlineDate = task.getDeadline();
+        boolean isOrderDeadline = false;
+        if (deadlineDate == null) {
+            Date orderDate = order.getDeadline();
+            if (orderDate != null) {
+                deadlineDate = LocalDate.fromDateFields(orderDate);
+                isOrderDeadline = true;
+            }
+        }
+        if (deadlineDate != null) {
+            int deadlinePosition = getDeadlinePixels(datesMapper, deadlineDate);
             if (deadlinePosition < datesMapper.getHorizontalSize()) {
                 Div deadline = new Div();
-                deadline.setSclass("deadline");
+                deadline.setSclass(isOrderDeadline ? "deadline order-deadline"
+                        : "deadline");
                 deadline
                         .setLeft((deadlinePosition - startPixels - DEADLINE_MARK_HALF_WIDTH)
                                 + "px");
@@ -283,11 +295,10 @@ public class QueueComponent extends XulElement implements
                 result.appendChild(generateNonWorkableShade(datesMapper,
                         queueElement));
             }
-            if (task.getDeadline().isBefore(queueElement.getEndDate())) {
+            if (deadlineDate.isBefore(queueElement.getEndDate())) {
                 cssClass += " unmet-deadline ";
             }
         }
-
 
         result.setClass(cssClass);
         result.appendChild(generateCompletionShade(datesMapper, queueElement));

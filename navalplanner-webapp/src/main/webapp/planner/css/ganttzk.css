@@ -1071,6 +1071,18 @@ div.z-tree {
     display: none;
 }
 
+.queue-element .deadline.order-deadline {
+    position:absolute;
+    margin-top: -5px;
+    background-repeat: repeat-y;
+    float:left;
+    width:10px;
+    height:22px;
+    background-image: url("../../zkau/web/ganttz/img/watermark_deadline.png");
+}
+
+
+
 body .perspectives-column {
     display:inline;
 }
