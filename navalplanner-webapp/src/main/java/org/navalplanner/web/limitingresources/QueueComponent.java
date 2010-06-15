@@ -209,7 +209,7 @@ public class QueueComponent extends XulElement implements
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
             result.append(_("Criteria: {0} ", Criterion.getNames(generic.getCriterions())));
         }
-        result.append(_("Allocation: [{0}%,{1}%]", element.getStartDate()
+        result.append(_("Allocation: [{0},{1}]", element.getStartDate()
                 .toString(), element.getEndDate()));
 
         return result.toString();

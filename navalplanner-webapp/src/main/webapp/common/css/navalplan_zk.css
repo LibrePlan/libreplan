@@ -1357,3 +1357,7 @@ tr.z-tree-row-seld .z-row-cnt {
     margin-top:5px;
 }
 
+.tooltip-actions {
+    margin-bottom: 10px;
+    margin-left: 10px;
+}

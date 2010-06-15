@@ -81,11 +81,11 @@
                 <tabPanelSubcontract id="subcontractTabpanel" />
             </tabpanels>
         </tabbox>
-        <hbox>
-            <button id="ok" label="${i18n:_('Accept')}"
+        <hbox sclass="tooltip-actions">
+            <button id="ok" label="${i18n:_('Accept')}" sclass="save-button global-action"
                 onClick="editController.accept();" />
-            <button id="cancel" label="${i18n:_('Cancel')}"
-                onClick="editController.cancel();" />
+            <button id="cancel" label="${i18n:_('Cancel')}" sclass="cancel-button global-action"
+                            onClick="editController.cancel();" />
         </hbox>
     </window>
 
@@ -176,9 +176,9 @@
             </combobox>
 
             <hbox>
-                <button label="${i18n:_('Assign')}"
+                <button label="${i18n:_('Assign')}" sclass="save-button"
                     onClick="calendarController.assign(calendarCombo.selectedItem);" />
-                <button label="${i18n:_('Cancel')}"
+                <button label="${i18n:_('Cancel')}" sclass="cancel-button"
                     onClick="calendarController.cancel();" />
             </hbox>
 
