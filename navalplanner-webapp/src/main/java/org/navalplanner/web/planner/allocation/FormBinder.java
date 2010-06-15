@@ -46,7 +46,6 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
-import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -390,6 +389,7 @@ public class FormBinder {
         loadValueForEndDate();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
+        Util.reloadBindings(allocationsGrid);
     }
 
     @SuppressWarnings("unchecked")
