@@ -155,6 +155,10 @@ public class Scenario extends BaseEntity {
         return predecessor != null;
     }
 
+    public boolean isMaster() {
+        return PredefinedScenarios.MASTER.getScenario().getId().equals(getId());
+    }
+
     public Scenario newDerivedScenario() {
         Scenario result = new Scenario(_("Derived from {0}", name), this);
         for (Order order : orders.keySet()) {
