@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -78,6 +79,7 @@ public class LimitingResourceQueueElement extends BaseEntity {
         endQueuePosition.setHour(0);
     }
 
+    @Valid
     public ResourceAllocation<?> getResourceAllocation() {
         return resourceAllocation;
     }
