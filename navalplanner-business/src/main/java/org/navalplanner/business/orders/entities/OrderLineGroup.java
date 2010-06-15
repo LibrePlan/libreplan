@@ -631,7 +631,7 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
-            checkAndSetValue(advanceMeasurement, previousResult);
+            checkAndSetValue(advanceMeasurement, previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
@@ -659,7 +659,7 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
-            checkAndSetValue(advanceMeasurement, previousResult);
+            checkAndSetValue(advanceMeasurement, previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
