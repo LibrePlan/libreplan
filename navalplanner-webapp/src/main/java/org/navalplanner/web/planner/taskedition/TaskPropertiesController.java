@@ -180,7 +180,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private ResourceAllocationTypeEnum originalState;
 
-    public void init(EditTaskController editTaskController,
+    public void init(final EditTaskController editTaskController,
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
         this.editTaskController = editTaskController;
@@ -195,6 +195,17 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintTypes.setDisabled(disabled);
         startConstraintDate.setDisabled(disabled);
         lbResourceAllocationType.setDisabled(disabled);
+
+        lbResourceAllocationType.addEventListener(Events.ON_SELECT,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+
+                        editTaskController
+                                .selectAssignmentTab(lbResourceAllocationType
+                                        .getSelectedIndex() + 1);
+                    }
+                });
 
         taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         updateComponentValuesForTask();

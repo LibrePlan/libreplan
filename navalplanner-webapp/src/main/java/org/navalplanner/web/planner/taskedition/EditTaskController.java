@@ -221,6 +221,10 @@ public class EditTaskController extends GenericForwardComposer {
         showEditForm(context, taskElement, planningState);
     }
 
+    public void selectAssignmentTab(int index) {
+        editTaskTabbox.setSelectedIndex(index);
+    }
+
     public void showEditFormSubcontract(
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
