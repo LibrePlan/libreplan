@@ -410,8 +410,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     .getConsolidatedValues().last().getValue();
             originalTotalAssignment = new BigDecimal(getNonConsolidatedHours())
                     .divide(
-                            BigDecimal.ONE.subtract(lastConslidation.divide(
-                                    new BigDecimal(100), RoundingMode.DOWN)),
+                            BigDecimal.ONE.subtract(lastConslidation
+                                    .setScale(2).divide(new BigDecimal(100),
+                                            RoundingMode.DOWN)),
                             RoundingMode.DOWN).intValue();
         }
     }
