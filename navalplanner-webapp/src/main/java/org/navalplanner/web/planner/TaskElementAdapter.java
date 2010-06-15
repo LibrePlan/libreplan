@@ -620,7 +620,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public boolean isFixed() {
-            return taskElement.isLimitingAndHasDayAssignments();
+            return taskElement.isLimitingAndHasDayAssignments()
+                || taskElement.hasConsolidations();
         }
 
     }
