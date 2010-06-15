@@ -52,6 +52,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -85,6 +86,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private IOrderDAO orderDAO;
@@ -222,7 +226,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
-        if(!criteriaToShowList.isEmpty()) {
+        if (!criteriaToShowList.isEmpty()) {
+            reattachCriteriaToShow();
+            // reattaching criterions so the query returns the same criteria as
+            // keys
+            allCriteriaList = new ArrayList<Criterion>(criteriaToShowList);
             return resourceAllocationDAO
                     .findGenericAllocationsBySomeCriterion(criteriaToShowList, initDateFilter, endDateFilter);
         }
@@ -260,6 +268,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
             }
         }
         return toReturnFiltered;
+    }
+
+    private void reattachCriteriaToShow() {
+        for (Criterion each : criteriaToShowList) {
+            criterionDAO.reattachUnmodifiedEntity(each);
+        }
     }
 
     private List<Resource> resourcesToShow() {
