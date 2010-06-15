@@ -1345,3 +1345,15 @@ tr.z-tree-row-seld .z-row-cnt {
 .current-queue-information .z-grid-body {
     overflow: hidden;
 }
+
+.z-fieldset legend {
+    color:#0F3B82;
+}
+
+.z-fieldset {
+    border: solid 1px #B1CBD5;
+    margin-right:10px;
+    margin-bottom:5px;
+    margin-top:5px;
+}
+
