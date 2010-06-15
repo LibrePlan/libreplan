@@ -242,23 +242,25 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
         HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) ((Row) combobox
                 .getParent()).getValue();
 
-        try {
-            int status = Messagebox
+        if (combobox.getSelectedItem() != null) {
+            try {
+                int status = Messagebox
                     .show(
                             _("Are you sure of changing the resource type? You will lose the criterions with different resource type."),
                             "Question", Messagebox.OK | Messagebox.CANCEL,
                             Messagebox.QUESTION);
 
-            if (Messagebox.OK == status) {
-                ResourceEnum resource = (ResourceEnum) combobox
+                if (Messagebox.OK == status) {
+                    ResourceEnum resource = (ResourceEnum) combobox
                         .getSelectedItem().getValue();
-                hoursGroupWrapper.assignResourceType(resource);
-                updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
+                    hoursGroupWrapper.assignResourceType(resource);
+                    updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
+                }
+            } catch (InterruptedException e) {
+                messagesForUser.showMessage(Level.ERROR, e.getMessage());
+                LOG.error(_("Error on showing removing element: ",
+                        hoursGroupWrapper.getHoursGroup().getId()), e);
             }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ",
-                    hoursGroupWrapper.getHoursGroup().getId()), e);
         }
         Util.reloadBindings(listHoursGroups);
     }
