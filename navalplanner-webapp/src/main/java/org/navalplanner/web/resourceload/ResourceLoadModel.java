@@ -358,6 +358,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     pageFilterPosition, getEndPositionForCriterionPageFilter());
         }
         for(Criterion criterion : criteriaList) {
+            if (genericAllocationsByCriterion.get(criterion) == null) {
+                // no allocations found for criterion
+                continue;
+            }
             List<GenericResourceAllocation> allocations = ResourceAllocation
                     .sortedByStartDate(genericAllocationsByCriterion
                             .get(criterion));
