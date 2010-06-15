@@ -46,7 +46,6 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -89,9 +88,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -233,7 +229,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
         Map<Criterion, List<GenericResourceAllocation>> toReturn;
         if (filter()) {
             allCriteriaList = new ArrayList<Criterion>();
-            List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
             List<Task> tasks = justTasks(filterBy
                     .getAllChildrenAssociatedTaskElements());
             for (Task task : tasks) {
