@@ -127,6 +127,10 @@ public class TaskSource extends BaseEntity {
         if (task.getEndDate() == null) {
             task.initializeEndDateIfDoesntExist();
         }
+        if (task.getSatisfiedResourceAllocations().isEmpty()) {
+            task.setEndDate(null);
+            task.initializeEndDateIfDoesntExist();
+        }
         task.updateDeadlineFromOrderElement();
     }
 
