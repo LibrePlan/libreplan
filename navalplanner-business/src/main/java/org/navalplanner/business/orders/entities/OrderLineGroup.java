@@ -604,7 +604,7 @@ public class OrderLineGroup extends OrderElement implements
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
             previousResult = previousResult.add(add);
-            advanceMeasurement.setValue(previousResult);
+            checkAndSetValue(advanceMeasurement, previousResult);
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
         }
@@ -631,7 +631,7 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
-            advanceMeasurement.setValue(previousResult.add(add));
+            checkAndSetValue(advanceMeasurement, previousResult);
             previousResult = advanceMeasurement.getValue();
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
@@ -659,12 +659,38 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
-            advanceMeasurement.setValue(previousResult.add(add));
+            checkAndSetValue(advanceMeasurement, previousResult);
             previousResult = advanceMeasurement.getValue();
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
         }
 
+    }
+
+    private void checkAndSetValue(AdvanceMeasurement advanceMeasurement,
+            BigDecimal previousResult) {
+        advanceMeasurement.setValue(previousResult);
+        boolean checkPrecision = advanceMeasurement
+                .checkConstraintValidPrecision();
+        if (!checkPrecision) {
+            AdvanceAssignment advanceAssignment = advanceMeasurement
+                    .getAdvanceAssignment();
+            if ((previousResult == null) || (advanceAssignment == null)
+                    || (advanceAssignment.getAdvanceType() == null)) {
+                return;
+            }
+
+            BigDecimal precision = advanceAssignment.getAdvanceType()
+                    .getUnitPrecision();
+            BigDecimal result[] = previousResult.divideAndRemainder(precision);
+            BigDecimal checkResult;
+            if (previousResult.compareTo(result[1]) >= 0) {
+                checkResult = previousResult.subtract(result[1]);
+            } else {
+                checkResult = previousResult.add(result[1]);
+            }
+            advanceMeasurement.setValue(checkResult);
+        }
     }
 
     private BigDecimal addMeasure(BigDecimal add, BigDecimal totalHours,
