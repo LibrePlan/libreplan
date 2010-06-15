@@ -115,6 +115,10 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public void reload() {
         try {
+            // FIXME: Temporary fix, it seems the page was already rendered, so
+            // clear it all as it's going to be rendered again
+            parent.getChildren().clear();
+
             limitingResourceQueueModel.initGlobalView();
 
             // Initialize interval
