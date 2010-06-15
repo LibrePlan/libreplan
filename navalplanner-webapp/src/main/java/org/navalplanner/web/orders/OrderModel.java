@@ -473,7 +473,21 @@ public class OrderModel implements IOrderModel {
                 }
             });
             order.dontPoseAsTransientObjectAnymore();
+            // this way we don't have dontPoseAsTransient all children of the
+            // order
+            initEditAfterSave();
         }
+    }
+
+    private void initEditAfterSave() {
+        transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        initEdit(order);
+                        return null;
+                    }
+                });
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
