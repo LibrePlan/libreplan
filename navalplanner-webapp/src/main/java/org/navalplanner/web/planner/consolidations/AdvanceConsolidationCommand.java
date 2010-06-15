@@ -76,7 +76,7 @@ public class AdvanceConsolidationCommand implements
 
     @Override
     public String getIcon() {
-        return "/common/img/ico_ok.png";
+        return "/common/img/ico_consolidation.png";
     }
 
     @Override

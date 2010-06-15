@@ -78,7 +78,7 @@ public class AdvanceAssignmentPlanningCommand implements IAdvanceAssignmentPlann
 
     @Override
     public String getIcon() {
-        return "/common/img/ico_submenu.png";
+        return "/common/img/ico_advance.png";
     }
 
     @Override
