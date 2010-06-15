@@ -1341,3 +1341,7 @@ tr.z-tree-row-seld .z-row-cnt {
 .readonly .z-grid-body .z-row-inner {
     background-color: #CCCCCC;
 }
+
+.current-queue-information .z-grid-body {
+    overflow: hidden;
+}

@@ -205,6 +205,20 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 .getEarlierStartDateBecauseOfGantt());
     }
 
+    public static String getResourceOrCriteria(
+            ResourceAllocation<?> resourceAllocation) {
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            final Resource resource = ((SpecificResourceAllocation) resourceAllocation)
+                    .getResource();
+            return (resource != null) ? resource.getName() : "";
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation)
+                    .getCriterions();
+            return Criterion.getNames(criteria);
+        }
+        return StringUtils.EMPTY;
+    }
+
     /**
      * DTO for list of unassigned {@link LimitingResourceQueueElement}
      *
@@ -235,19 +249,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
             this.taskName = taskName;
             this.date = DATE_FORMAT.format(date);
             this.hoursToAllocate = element.getIntentedTotalHours();
-            this.resourceOrCriteria = getResourceOrCriteria(element.getResourceAllocation());
-        }
-
-        private String getResourceOrCriteria(ResourceAllocation<?> resourceAllocation) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                final Resource resource = ((SpecificResourceAllocation) resourceAllocation)
-                        .getResource();
-                return (resource != null) ? resource.getName() : "";
-            } else if (resourceAllocation instanceof GenericResourceAllocation) {
-                Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation).getCriterions();
-                return Criterion.getNames(criteria);
-            }
-            return StringUtils.EMPTY;
+            this.resourceOrCriteria = LimitingResourcesController
+                    .getResourceOrCriteria(element.getResourceAllocation());
         }
 
         public LimitingResourceQueueElement getOriginal() {
