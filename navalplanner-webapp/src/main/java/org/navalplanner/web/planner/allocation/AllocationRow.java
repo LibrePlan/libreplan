@@ -168,19 +168,7 @@ public abstract class AllocationRow {
 
     private String name;
 
-    private int originalHours;
-
-    private int totalHours;
-
-    private int consolidatedHours;
-
-    private int nonConsolidatedHours;
-
-    private ResourcesPerDay totalResourcesPerDay;
-
     private ResourcesPerDay nonConsolidatedResourcesPerDay;
-
-    private ResourcesPerDay consolidatedResourcesPerDay;
 
     private Intbox hoursInput = new Intbox();
 
@@ -211,13 +199,7 @@ public abstract class AllocationRow {
     }
 
     public AllocationRow() {
-        originalHours = 0;
-        totalHours = 0;
-        consolidatedHours = 0;
-        nonConsolidatedHours = 0;
-        consolidatedResourcesPerDay = ResourcesPerDay.amount(0);
         setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
-        totalResourcesPerDay = ResourcesPerDay.amount(0);
         initializeResourcesPerDayInput();
         hoursInput.setValue(0);
         hoursInput.setWidth("80px");
@@ -438,53 +420,64 @@ public abstract class AllocationRow {
         }
     }
 
-    public void setOriginalHours(int originalHours) {
-        this.originalHours = originalHours;
-    }
-
     public int getOriginalHours() {
-        return originalHours;
-    }
-
-    public void setTotalHours(int totalHours) {
-        this.totalHours = totalHours;
+        if (temporal != null) {
+            return temporal.getOriginalTotalAssigment();
+        }
+        if (origin != null) {
+            return origin.getOriginalTotalAssigment();
+        }
+        return 0;
     }
 
     public int getTotalHours() {
-        return totalHours;
-    }
-
-    public void setConsolidatedHours(int consolidatedHours) {
-        this.consolidatedHours = consolidatedHours;
+        if (temporal != null) {
+            return temporal.getAssignedHours();
+        }
+        if (origin != null) {
+            return origin.getAssignedHours();
+        }
+        return 0;
     }
 
     public int getConsolidatedHours() {
-        return consolidatedHours;
-    }
-
-    public void setNonConsolidatedHours(int nonConsolidatedHours) {
-        this.nonConsolidatedHours = nonConsolidatedHours;
+        if (temporal != null) {
+            return temporal.getConsolidatedHours();
+        }
+        if (origin != null) {
+            return origin.getConsolidatedHours();
+        }
+        return 0;
     }
 
     public int getNonConsolidatedHours() {
-        return nonConsolidatedHours;
-    }
-
-    public void setTotalResourcesPerDay(ResourcesPerDay totalResourcesPerDay) {
-        this.totalResourcesPerDay = totalResourcesPerDay;
+        if (temporal != null) {
+            return temporal.getNonConsolidatedHours();
+        }
+        if (origin != null) {
+            return origin.getNonConsolidatedHours();
+        }
+        return 0;
     }
 
     public ResourcesPerDay getTotalResourcesPerDay() {
-        return totalResourcesPerDay;
-    }
-
-    public void setConsolidatedResourcesPerDay(
-            ResourcesPerDay consolidatedResourcesPerDay) {
-        this.consolidatedResourcesPerDay = consolidatedResourcesPerDay;
+        if (temporal != null) {
+            return temporal.getResourcesPerDay();
+        }
+        if (origin != null) {
+            return origin.getResourcesPerDay();
+        }
+        return ResourcesPerDay.amount(0);
     }
 
     public ResourcesPerDay getConsolidatedResourcesPerDay() {
-        return consolidatedResourcesPerDay;
+        if (temporal != null) {
+            return temporal.getConsolidatedResourcePerDay();
+        }
+        if (origin != null) {
+            return origin.getConsolidatedResourcePerDay();
+        }
+        return ResourcesPerDay.amount(0);
     }
 
 }

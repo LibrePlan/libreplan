@@ -87,16 +87,8 @@ public class SpecificAllocationRow extends AllocationRow {
         SpecificAllocationRow result = forResource(specific.getResource());
         result.setOrigin(specific);
 
-        result.setOriginalHours(specific.getOriginalTotalAssigment());
-        result.setTotalHours(specific.getAssignedHours());
-        result.setConsolidatedHours(specific.getConsolidatedHours());
-        result.setNonConsolidatedHours(specific.getNonConsolidatedHours());
-
         result.setNonConsolidatedResourcesPerDay(specific
                 .getNonConsolidatedResourcePerDay());
-        result.setConsolidatedResourcesPerDay(specific
-                .getConsolidatedResourcePerDay());
-        result.setTotalResourcesPerDay(specific.getResourcesPerDay());
 
         return result;
     }
