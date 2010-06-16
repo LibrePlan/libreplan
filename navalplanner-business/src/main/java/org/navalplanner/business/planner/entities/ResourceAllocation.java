@@ -706,7 +706,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getWorkHoursPerDay().toHours(day, resourcesPerDay);
     }
 
-    private ResourcesPerDay calculateResourcesPerDayFromAssignments() {
+    public ResourcesPerDay calculateResourcesPerDayFromAssignments() {
         return calculateResourcesPerDayFromAssignments(getAssignments());
     }
 

@@ -462,10 +462,10 @@ public abstract class AllocationRow {
 
     public ResourcesPerDay getTotalResourcesPerDay() {
         if (temporal != null) {
-            return temporal.getResourcesPerDay();
+            return temporal.calculateResourcesPerDayFromAssignments();
         }
         if (origin != null) {
-            return origin.getResourcesPerDay();
+            return origin.calculateResourcesPerDayFromAssignments();
         }
         return ResourcesPerDay.amount(0);
     }
@@ -478,6 +478,22 @@ public abstract class AllocationRow {
             return origin.getConsolidatedResourcePerDay();
         }
         return ResourcesPerDay.amount(0);
+    }
+
+    public void loadResourcesPerDay() {
+        if (temporal != null) {
+            nonConsolidatedResourcesPerDay = temporal.getNonConsolidatedResourcePerDay();
+        } else {
+            if (origin != null) {
+                nonConsolidatedResourcesPerDay = origin
+                        .getNonConsolidatedResourcePerDay();
+            } else {
+                nonConsolidatedResourcesPerDay = ResourcesPerDay.amount(0);
+            }
+        }
+
+        resourcesPerDayInput.setValue(nonConsolidatedResourcesPerDay
+                .getAmount());
     }
 
 }

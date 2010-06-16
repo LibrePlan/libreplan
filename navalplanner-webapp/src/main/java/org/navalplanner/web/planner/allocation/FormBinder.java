@@ -384,6 +384,7 @@ public class FormBinder {
     }
 
     private void reloadValues() {
+        loadResourcesPerDay();
         loadHoursValues();
         loadValueForAssignedHoursComponent();
         loadValueForEndDate();
@@ -414,6 +415,12 @@ public class FormBinder {
     private void loadHoursValues() {
         for (AllocationRow each : rows) {
             each.loadHours();
+        }
+    }
+
+    private void loadResourcesPerDay() {
+        for (AllocationRow each : rows) {
+            each.loadResourcesPerDay();
         }
     }
 
