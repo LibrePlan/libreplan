@@ -78,7 +78,7 @@ public class SpecificResourceAllocation extends
         SpecificResourceAllocation result = create(new SpecificResourceAllocation(
                 task));
         result.setResource(resource);
-        result.setResourcesPerDay(ResourcesPerDay.amount(1));
+        result.updateResourcesPerDay();
         return result;
     }
 

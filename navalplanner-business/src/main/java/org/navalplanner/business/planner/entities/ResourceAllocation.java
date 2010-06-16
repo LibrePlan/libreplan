@@ -214,8 +214,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         ResourceAllocation<?> allocation,
                         ResourcesPerDay resourcesPerDay,
                         List<DayAssignment> dayAssignments) {
-                    allocation.setResourcesPerDay(resourcesPerDay);
                     allocation.resetGenericAssignmentsTo(dayAssignments);
+                    allocation.updateResourcesPerDay();
                 }
 
                 @Override
@@ -375,9 +375,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
-    protected void setResourcesPerDay(ResourcesPerDay resourcesPerDay) {
-        Validate.notNull(resourcesPerDay);
-        this.resourcesPerDay = resourcesPerDay;
+    protected void updateResourcesPerDay() {
+        ResourcesPerDay resourcesPerDay = calculateResourcesPerDayFromAssignments(getAssignments());
+        if (resourcesPerDay == null) {
+            this.resourcesPerDay = ResourcesPerDay.amount(0);
+        } else {
+            this.resourcesPerDay = resourcesPerDay;
+        }
     }
 
     public ResourceAllocation(Task task) {
@@ -440,8 +444,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             LocalDate endExclusive = new LocalDate(currentTask.getEndDate());
             List<T> assignmentsCreated = createAssignments(resourcesPerDay,
                     startInclusive, endExclusive);
-            setResourcesPerDay(resourcesPerDay);
             resetAssignmentsTo(assignmentsCreated);
+            updateResourcesPerDay();
         }
 
         private List<T> createAssignments(ResourcesPerDay resourcesPerDay,
@@ -471,7 +475,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     List<T> assignmentsCreated = createAssignments(
                             resourcesPerDay, startInclusive, endExclusive);
                     resetAssignmentsTo(assignmentsCreated);
-                    setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+                    updateResourcesPerDay();
                 }
 
             };
@@ -535,7 +539,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             List<T> assignmentsCreated = createAssignments(startInclusive, end,
                     hours);
             resetAssignmentsTo(assignmentsCreated);
-            setResourcesPerDay(calculateResourcesPerDayFromAssignments());
+            updateResourcesPerDay();
         }
 
         private void allocate(LocalDate startInclusive, LocalDate endExclusive,
@@ -662,8 +666,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         removingAssignments(removeConsolidated(getAssignments(startInclusive,
                 endExclusive)));
         addingAssignments(assignmentsCreated);
-        setResourcesPerDay(calculateResourcesPerDayFromAssignments(getAssignments()));
         updateOriginalTotalAssigment();
+        updateResourcesPerDay();
     }
 
     private List<? extends DayAssignment> removeConsolidated(
@@ -1098,8 +1102,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
         switchToScenario(scenario);
         mergeAssignments(modifications);
-        setResourcesPerDay(modifications.getResourcesPerDay());
         updateOriginalTotalAssigment();
+        updateResourcesPerDay();
         setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(scenario, modifications.getDerivedAllocations());
     }
