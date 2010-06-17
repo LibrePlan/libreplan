@@ -220,10 +220,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (filterByResources) {
             result.addAll(groupsFor(resourcesToShow()));
         } else {
-            result.addAll(groupsFor(genericAllocationsByCriterion()));
+            calculatedGenericAllocationsByCriterion =
+                genericAllocationsByCriterion();
+            result.addAll(groupsFor(calculatedGenericAllocationsByCriterion));
         }
         return result;
     }
+
+    Map<Criterion, List<GenericResourceAllocation>> calculatedGenericAllocationsByCriterion;
 
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
         if (!criteriaToShowList.isEmpty()) {
@@ -856,8 +860,22 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Transactional(readOnly = true)
     public List<DayAssignment> getDayAssignments() {
-        return dayAssignmentDAO.findByResources(scenarioManager.getCurrent(),
-                getResources());
+        if(filterByResources) {
+            return dayAssignmentDAO.findByResources(scenarioManager.getCurrent(),
+                    getResources());
+        }
+        else {
+            List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
+            for(Entry<Criterion, List<GenericResourceAllocation>> entry :
+                calculatedGenericAllocationsByCriterion.entrySet()) {
+
+                for(GenericResourceAllocation allocation : entry.getValue()) {
+                    dayAssignments.addAll(allocation.getAssignments());
+                }
+            }
+
+            return dayAssignments;
+        }
     }
 
     @Override
