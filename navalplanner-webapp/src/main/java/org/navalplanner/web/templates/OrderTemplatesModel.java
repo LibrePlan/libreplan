@@ -46,6 +46,7 @@ import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.orders.QualityFormsOnConversation;
@@ -159,13 +160,17 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public void createTemplateFrom(OrderElement orderElement) {
         initializeAcompanyingObjectsOnConversation();
         Order order = orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
-        order.useSchedulingDataFor(scenarioManager.getCurrent());
+        order.useSchedulingDataFor(getCurrentScenario());
         OrderElement orderElementOrigin = orderElementDAO
                 .findExistingEntity(orderElement
                 .getId());
         template = orderElementOrigin.createTemplate();
         loadAssociatedData(template);
         treeModel = new TemplatesTree(template);
+    }
+
+    public Scenario getCurrentScenario() {
+        return scenarioManager.getCurrent();
     }
 
     @Override

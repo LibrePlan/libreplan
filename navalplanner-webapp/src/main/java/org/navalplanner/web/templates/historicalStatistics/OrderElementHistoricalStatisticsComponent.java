@@ -187,7 +187,7 @@ public class OrderElementHistoricalStatisticsComponent extends
     private List<OrderElement> getFinishedApplications() {
         List<OrderElement> result = new ArrayList<OrderElement>();
         for (OrderElement orderElement : orderElements) {
-            if (orderElement.isFinishPlanificationPointTask()) {
+            if (orderElement.isFinishedAdvance()) {
                 result.add(orderElement);
             }
         }

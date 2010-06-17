@@ -28,6 +28,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.tree.EntitiesTree;
 
@@ -65,4 +66,5 @@ public interface IOrderTemplatesModel {
 
     Map<CriterionType, List<Criterion>> getMapCriterions();
 
+    Scenario getCurrentScenario();
 }
