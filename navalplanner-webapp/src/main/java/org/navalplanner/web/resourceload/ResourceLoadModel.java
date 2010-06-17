@@ -368,7 +368,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         List<Criterion> criteriaList;
-        if(pageFilterPosition == -1) {
+        if(!criteriaToShowList.isEmpty()) {
+            criteriaList = criteriaToShowList;
+        }
+        else if(pageFilterPosition == -1) {
             criteriaList = allCriteriaList;
         }
         else {
