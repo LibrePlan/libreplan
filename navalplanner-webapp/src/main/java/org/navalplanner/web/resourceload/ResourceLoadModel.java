@@ -300,6 +300,21 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return allResourcesList.subList(pageFilterPosition, endPosition);
     }
 
+    private List<Criterion> criteriaToShow() {
+        List<Criterion> criteriaList;
+        if(!criteriaToShowList.isEmpty()) {
+            criteriaList = criteriaToShowList;
+        }
+        else if(pageFilterPosition == -1) {
+            criteriaList = allCriteriaList;
+        }
+        else {
+            criteriaList = allCriteriaList.subList(
+                    pageFilterPosition, getEndPositionForCriterionPageFilter());
+        }
+        return criteriaList;
+    }
+
     @Override
     public List<Resource> getAllResourcesList() {
         return allResourcesList;
@@ -367,18 +382,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimeLine> groupsFor(
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        List<Criterion> criteriaList;
-        if(!criteriaToShowList.isEmpty()) {
-            criteriaList = criteriaToShowList;
-        }
-        else if(pageFilterPosition == -1) {
-            criteriaList = allCriteriaList;
-        }
-        else {
-            criteriaList = allCriteriaList.subList(
-                    pageFilterPosition, getEndPositionForCriterionPageFilter());
-        }
-        for(Criterion criterion : criteriaList) {
+        for(Criterion criterion : criteriaToShow()) {
             if (genericAllocationsByCriterion.get(criterion) == null) {
                 // no allocations found for criterion
                 continue;
@@ -884,7 +888,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public List<Resource> getResources() {
-        List<Resource> resources = resourcesToShow();
+        List<Resource> resources;
+        if(filterByResources) {
+            resources = resourcesToShow();
+        }
+        else {
+            resources =resourcesDAO
+                .findSatisfyingCriterionsAtSomePoint(criteriaToShow());
+        }
         for (Resource resource : resources) {
             resourcesDAO.reattach(resource);
             ResourceCalendar calendar = resource.getCalendar();
