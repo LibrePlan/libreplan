@@ -192,9 +192,11 @@ public class TimeTracker {
     }
 
     public int getHorizontalSize() {
-        Collection<DetailItem> detailsSecondLevel = getDetailsSecondLevel();
-        return detailsSecondLevel.size()
-                * getTimeTrackerState().getSecondLevelSize();
+        int horizontalSize = 0;
+        for (DetailItem detailItem : getDetailsSecondLevel()) {
+            horizontalSize += detailItem.getSize();
+        }
+        return horizontalSize;
     }
 
     private void clearDetailLevelDependantData() {
