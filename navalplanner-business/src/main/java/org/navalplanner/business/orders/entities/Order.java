@@ -495,8 +495,19 @@ public class Order extends OrderLineGroup {
         scenarios.put(currentScenario, orderVersion);
     }
 
-    public void removeOrderVersionForScenario(Scenario scenario) {
-        scenarios.remove(scenario);
+    /**
+     * Disassociates this order and its children from the scenario
+     *
+     * @param scenario
+     * @return <code>null</code> if there is no order version for the scenario;
+     *         the order version associated to the supplied scenario
+     */
+    public OrderVersion disassociateFrom(Scenario scenario) {
+        OrderVersion existentVersion = scenarios.remove(scenario);
+        if (existentVersion != null) {
+            removeVersion(existentVersion);
+        }
+        return existentVersion;
     }
 
     public OrderVersion getOrderVersionFor(Scenario current) {
@@ -506,5 +517,18 @@ public class Order extends OrderLineGroup {
 
     public void setOrderVersion(Scenario scenario, OrderVersion newOrderVersion) {
         scenarios.put(scenario, newOrderVersion);
+    }
+
+    public boolean hasNoVersions() {
+        return scenarios.isEmpty();
+    }
+
+    public boolean isVersionUsed(OrderVersion orderVersion) {
+        for (OrderVersion each : getScenarios().values()) {
+            if (each.getId().equals(orderVersion.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

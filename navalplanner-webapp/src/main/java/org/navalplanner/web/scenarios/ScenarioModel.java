@@ -149,7 +149,7 @@ public class ScenarioModel implements IScenarioModel {
                     }
                 }
             } else {
-                order.removeOrderVersionForScenario(scenario);
+                order.disassociateFrom(scenario);
                 orderDAO.save(order);
             }
         }

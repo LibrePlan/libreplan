@@ -643,45 +643,60 @@ public class OrderModel implements IOrderModel {
 
     @Override
     @Transactional
-    public void remove(Order order) {
-        if (order.getScenarios().size() == 1) {
-            try {
-                orderDAO.remove(order.getId());
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            orderDAO.save(order);
+    public void remove(Order detachedOrder) {
+        Order order = orderDAO.findExistingEntity(detachedOrder.getId());
+        removeVersions(order);
+        if (order.hasNoVersions()) {
+            removeOrderFromDB(order);
+        }
+    }
 
-            Scenario scenario = scenarioManager.getCurrent();
-            OrderVersion currentOrderVersion = scenario.getOrderVersion(order);
-            order.removeOrderVersionForScenario(scenario);
+    private void removeVersions(Order order) {
+        Map<Long, OrderVersion> versionsRemovedById = new HashMap<Long, OrderVersion>();
+        List<Scenario> currentAndDerived = currentAndDerivedScenarios();
+        for (Scenario each : currentAndDerived) {
+            OrderVersion versionRemoved = order.disassociateFrom(each);
+            if (versionRemoved != null) {
+                versionsRemovedById.put(versionRemoved.getId(), versionRemoved);
+            }
+        }
+        for (OrderVersion each : versionsRemovedById.values()) {
+            if (!order.isVersionUsed(each)) {
+                removeOrderVersionAt(each, currentAndDerived);
+                removeOrderVersionFromDB(each);
+            }
+        }
+    }
 
-            derivedScenarios = scenarioDAO.getDerivedScenarios(scenario);
-            for (Scenario derivedScenario : derivedScenarios) {
-                OrderVersion orderVersion = order
-                        .getOrderVersionFor(derivedScenario);
-                if ((orderVersion != null)
-                        && (orderVersion.getId()
-                                .equals(currentOrderVersion.getId()))) {
-                    order.removeOrderVersionForScenario(derivedScenario);
-                }
-            }
+    private void removeOrderVersionAt(OrderVersion orderVersion,
+            Collection<? extends Scenario> currentAndDerived) {
+        for (Scenario each : currentAndDerived) {
+            each.removeVersion(orderVersion);
+        }
+    }
 
-            boolean orderVersionNotUsed = true;
-            for (OrderVersion orderVersion : order.getScenarios().values()) {
-                if (orderVersion.getId().equals(currentOrderVersion.getId())) {
-                    orderVersionNotUsed = false;
-                    break;
-                }
-            }
-            if (orderVersionNotUsed) {
-                try {
-                    orderVersionDAO.remove(currentOrderVersion.getId());
-                } catch (InstanceNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+    private List<Scenario> currentAndDerivedScenarios() {
+        List<Scenario> scenariosToBeDisassociatedFrom = new ArrayList<Scenario>();
+        Scenario currentScenario = scenarioManager.getCurrent();
+        scenariosToBeDisassociatedFrom.add(currentScenario);
+        scenariosToBeDisassociatedFrom.addAll(scenarioDAO
+                .getDerivedScenarios(currentScenario));
+        return scenariosToBeDisassociatedFrom;
+    }
+
+    private void removeOrderVersionFromDB(OrderVersion currentOrderVersion) {
+        try {
+            orderVersionDAO.remove(currentOrderVersion.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void removeOrderFromDB(Order order) {
+        try {
+            orderDAO.remove(order.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

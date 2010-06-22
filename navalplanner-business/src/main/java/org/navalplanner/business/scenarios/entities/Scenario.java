@@ -25,11 +25,13 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -82,6 +84,16 @@ public class Scenario extends BaseEntity {
     public Scenario(String name, Scenario predecessor) {
         this.name = name;
         this.predecessor = predecessor;
+    }
+
+    public void removeVersion(OrderVersion orderVersion) {
+        Iterator<OrderVersion> iterator = orders.values().iterator();
+        while (iterator.hasNext()) {
+            OrderVersion each = iterator.next();
+            if (ObjectUtils.equals(orderVersion, each)) {
+                iterator.remove();
+            }
+        }
     }
 
     public OrderVersion addOrder(Order order) {

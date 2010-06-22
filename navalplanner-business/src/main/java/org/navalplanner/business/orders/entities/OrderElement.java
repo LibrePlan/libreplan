@@ -115,6 +115,13 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private Map<OrderVersion, SchedulingDataForVersion> schedulingDatasForVersion = new HashMap<OrderVersion, SchedulingDataForVersion>();
 
+    protected void removeVersion(OrderVersion orderVersion) {
+        schedulingDatasForVersion.remove(orderVersion);
+        for (OrderElement each : getChildren()) {
+            each.removeVersion(orderVersion);
+        }
+    }
+
     private SchedulingDataForVersion.Data current = null;
 
     public SchedulingDataForVersion.Data getCurrentSchedulingData() {
