@@ -20,7 +20,7 @@
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
             index="idx_TaskElement_on_TaskGroup" />
 
-        <one-to-one name="taskSource" cascade="none"/>
+        <one-to-one name="taskSource" cascade="delete"/>
 
         <!-- Indexed on the other side -->
         <set name="dependenciesWithThisOrigin" cascade="all-delete-orphan">

@@ -198,7 +198,7 @@
             </type>
         </property>
         <many-to-one name="orderElement" column="ORDER_ELEMENT_ID"></many-to-one>
-        <one-to-one name="taskSource" class="TaskSource" access="field" property-ref="schedulingData" />
+        <one-to-one name="taskSource" class="TaskSource" cascade="all" access="field" property-ref="schedulingData" />
     </class>
 
     <class name="TaskSource">
@@ -211,7 +211,7 @@
         <many-to-one name="schedulingData" class="SchedulingDataForVersion"
             cascade="none" unique="true" access="field" />
         <one-to-one name="task" class="org.navalplanner.business.planner.entities.TaskElement"
-            constrained="true" cascade="all" access="field" lazy="false"/>
+            constrained="true" cascade="delete" access="field" lazy="false"/>
 
         <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field">
             <key column="TASK_SOURCE_ID"></key>
