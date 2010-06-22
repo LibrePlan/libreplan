@@ -23,32 +23,16 @@ package org.navalplanner.business.planner.daos;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IGenericDAO;
-import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.reports.dtos.CompletedEstimatedHoursPerTaskDTO;
-import org.navalplanner.business.reports.dtos.WorkingProgressPerTaskDTO;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
 
-    /**
-     * Removes {@link DayAssignment} that have no parent
-     */
-    void removeOrphanedDayAssignments();
-
     List<TaskElement> findChildrenOf(TaskGroup each);
-
-    List<WorkingProgressPerTaskDTO> getWorkingProgressPerTaskReport(
-            Order order, LocalDate deadline);
-
-    List<CompletedEstimatedHoursPerTaskDTO> getCompletedEstimatedHoursPerTaskReport(
-            Order order, LocalDate deadline);
 
     List<TaskElement> listFilteredByDate(Date start, Date end);
 

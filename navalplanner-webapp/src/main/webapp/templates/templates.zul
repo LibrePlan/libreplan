@@ -44,10 +44,10 @@
 
 <zk>
     <zscript><![CDATA[
-        templateController = orderTemplatesController;
+        templatesForOrdersController = orderTemplatesController;
     ]]>
     </zscript>
-    <div self="@{define(content)}" apply="${templateController}">
+    <div self="@{define(content)}" apply="${templatesForOrdersController}">
         <vbox id="messagesContainer" />
         <list top_id="listWindow" />
         <window id="editWindow" title="${i18n:_('Edit template')}">
@@ -55,7 +55,7 @@
             <tabbox>
                 <tabs>
                     <tab id="tabGeneralData" label="${i18n:_('General data')}" />
-                    <tab label="${i18n:_('Template Tree')}" disabled="@{templateController.templateTreeDisabled}"/>
+                    <tab label="${i18n:_('Template Tree')}" disabled="@{templatesForOrdersController.templateTreeDisabled}"/>
                     <tab label="${i18n:_('Advances')}" />
                     <tab label="${i18n:_('Labels')}" />
                     <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
@@ -74,24 +74,24 @@
                             <rows>
                                 <row>
                                     <label value="${i18n:_('Name')}" />
-                                    <textbox id="name" value="@{templateController.template.name}" width="500px"
-                                        constraint = "@{templateController.validateTemplateName}"/>
+                                    <textbox id="name" value="@{templatesForOrdersController.template.name}" width="500px"
+                                        constraint = "@{templatesForOrdersController.validateTemplateName}"/>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Code')}" />
                                     <hbox>
-                                        <textbox value="@{templateController.template.code}" width="250px" />
+                                        <textbox value="@{templatesForOrdersController.template.code}" width="250px" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Delay from beginning (days)')}" />
                                     <intbox
-                                        value="@{templateController.template.startAsDaysFromBeginning}" constraint="no negative"/>
+                                        value="@{templatesForOrdersController.template.startAsDaysFromBeginning}" constraint="no negative"/>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Days from Beginning to Deadline')}" />
                                     <intbox
-                                        value="@{templateController.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
+                                        value="@{templatesForOrdersController.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
                                 </row>
                             </rows>
                         </grid>
@@ -123,11 +123,11 @@
                 </tabpanels>
             </tabbox>
             <hbox>
-                <button label="${i18n:_('Save')}" onClick="templateController.saveAndExit()"
+                <button label="${i18n:_('Save')}" onClick="templatesForOrdersController.saveAndExit()"
                     sclass="save-button global-action" />
-                <button label="${i18n:_('Save &amp; Continue')}" onClick="templateController.saveAndContinue()"
+                <button label="${i18n:_('Save &amp; Continue')}" onClick="templatesForOrdersController.saveAndContinue()"
                     sclass="saveandcontinue-button global-action" />
-                <button label="${i18n:_('Cancel')}" onClick="templateController.cancel()"
+                <button label="${i18n:_('Cancel')}" onClick="templatesForOrdersController.cancel()"
                     sclass="cancel-button global-action" />
             </hbox>
     </window>

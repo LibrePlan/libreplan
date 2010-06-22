@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.reports;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +33,10 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.reports.dtos.CompletedEstimatedHoursPerTaskDTO;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -53,10 +57,13 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
     @Autowired
     ITaskElementDAO taskDAO;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        return orderDAO.getOrders();
+        return orderDAO.getOrdersByScenario(scenarioManager.getCurrent());
     }
 
     private void initializeOrderElements(List<OrderElement> orderElements) {
@@ -79,10 +86,19 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
     public JRDataSource getCompletedEstimatedHoursReportPerTask(
             Order order, Date deadline) {
         reattachmentOrder(order);
-        final List<CompletedEstimatedHoursPerTaskDTO> completedEstimatedHoursPerTaskList =
-            taskDAO.getCompletedEstimatedHoursPerTaskReport(order, new LocalDate(deadline));
+        order.useSchedulingDataFor(scenarioManager.getCurrent());
+        LocalDate deadlineLocalDate = new LocalDate(deadline);
 
-        if (completedEstimatedHoursPerTaskList != null && !completedEstimatedHoursPerTaskList.isEmpty()) {
+        final List<TaskElement> tasks = order.getAllChildrenAssociatedTaskElements();
+        final List<CompletedEstimatedHoursPerTaskDTO> completedEstimatedHoursPerTaskList =
+            new ArrayList<CompletedEstimatedHoursPerTaskDTO>();
+        for (TaskElement task: tasks) {
+            if(task instanceof Task) {
+                completedEstimatedHoursPerTaskList.add(
+                        new CompletedEstimatedHoursPerTaskDTO((Task)task, deadlineLocalDate));
+            }
+        }
+        if (!completedEstimatedHoursPerTaskList.isEmpty()) {
             return new JRBeanCollectionDataSource(completedEstimatedHoursPerTaskList);
         } else {
             return new JREmptyDataSource();

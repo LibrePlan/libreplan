@@ -36,6 +36,7 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
@@ -44,6 +45,8 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.orders.QualityFormsOnConversation;
@@ -84,6 +87,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     @Autowired
     private IAdHocTransactionService transaction;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private OrderElementTemplate template;
 
@@ -153,13 +159,18 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Transactional(readOnly = true)
     public void createTemplateFrom(OrderElement orderElement) {
         initializeAcompanyingObjectsOnConversation();
-        orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
+        Order order = orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
+        order.useSchedulingDataFor(getCurrentScenario());
         OrderElement orderElementOrigin = orderElementDAO
                 .findExistingEntity(orderElement
                 .getId());
         template = orderElementOrigin.createTemplate();
         loadAssociatedData(template);
         treeModel = new TemplatesTree(template);
+    }
+
+    public Scenario getCurrentScenario() {
+        return scenarioManager.getCurrent();
     }
 
     @Override

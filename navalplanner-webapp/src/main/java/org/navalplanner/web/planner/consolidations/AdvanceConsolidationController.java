@@ -31,6 +31,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -55,6 +56,8 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     private Window window;
 
+    private IContextWithPlannerTask<TaskElement> context;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -64,6 +67,8 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
     public void showWindow(IContextWithPlannerTask<TaskElement> context,
             org.navalplanner.business.planner.entities.Task task,
             PlanningState planningState) {
+
+        this.context = context;
         advanceConsolidationModel.initAdvancesFor(task, context, planningState);
 
         try {
@@ -83,6 +88,10 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
 
     public void accept() {
         advanceConsolidationModel.accept();
+        if (context.getRelativeTo() instanceof TaskComponent) {
+            ((TaskComponent) context.getRelativeTo()).invalidate();
+            ((TaskComponent) context.getRelativeTo()).updateProperties();
+        }
         close();
     }
 

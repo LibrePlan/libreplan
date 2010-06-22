@@ -923,18 +923,19 @@ public class ManageOrderElementAdvancesController extends
                 Listitem listItem = (Listitem) editAdvancesMeasurement.getChildren().get(i);
                 AdvanceMeasurement advance = (AdvanceMeasurement) listItem
                         .getValue();
+                if (advance != null) {
+                    // Validate the value of the advance measurement
+                    Decimalbox valueBox = getDecimalboxBy(listItem);
+                    valueBox.setValue(advance.getValue());
 
-                // Validate the value of the advance measurement
-                Decimalbox valueBox = getDecimalboxBy(listItem);
-                valueBox.setValue(advance.getValue());
-
-                // Validate the date of the advance measurement
-                Datebox dateBox = getDateboxBy(listItem);
-                if (advance.getDate() == null) {
-                    dateBox.setValue(null);
-                } else {
-                    dateBox.setValue(advance.getDate().toDateTimeAtStartOfDay()
-                        .toDate());
+                    // Validate the date of the advance measurement
+                    Datebox dateBox = getDateboxBy(listItem);
+                    if (advance.getDate() == null) {
+                        dateBox.setValue(null);
+                    } else {
+                        dateBox.setValue(advance.getDate()
+                                .toDateTimeAtStartOfDay().toDate());
+                    }
                 }
             }
         }

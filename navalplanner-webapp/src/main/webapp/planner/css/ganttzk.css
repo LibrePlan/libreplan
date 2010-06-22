@@ -873,7 +873,7 @@ div.z-tree {
     color: #555555;
 }
 .advancedallocationlayout .consolidated-hours.z-label {
-    color: #FF0000;
+    color: #75d9b0;
 }
 .advancedallocationlayout .z-row .z-intbox-disd {
     color: 0 !important;
@@ -1071,6 +1071,18 @@ div.z-tree {
     display: none;
 }
 
+.queue-element .deadline.order-deadline {
+    position:absolute;
+    margin-top: -5px;
+    background-repeat: repeat-y;
+    float:left;
+    width:10px;
+    height:22px;
+    background-image: url("../../zkau/web/ganttz/img/watermark_deadline.png");
+}
+
+
+
 body .perspectives-column {
     display:inline;
 }
@@ -1145,5 +1157,3 @@ body .perspectives-column {
 .subcontracted-task .completion2 {
     background-color: #484e4d;
 }
-
-

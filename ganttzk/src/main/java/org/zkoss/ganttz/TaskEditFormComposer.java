@@ -43,6 +43,8 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     private Datebox endDateBox;
 
+    private Datebox deadLineDateBox;
+
     private Textbox notes;
 
     @Override
@@ -62,6 +64,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         startDateBox.setValue(taskDTO.beginDate);
         endDateBox.setValue(taskDTO.endDate);
         notes.setValue(taskDTO.notes);
+        deadLineDateBox.setValue(taskDTO.deadlineDate);
     }
 
     public void accept() {
@@ -82,6 +85,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         public String name;
         public Date beginDate;
         public Date endDate;
+        public Date deadlineDate;
         public String notes;
     }
 
@@ -93,6 +97,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         result.endDate = new Date(task.getBeginDate().getTime()
                 + task.getLengthMilliseconds());
         result.notes = task.getNotes();
+        result.deadlineDate = task.getDeadline();
 
         return result;
     }
@@ -103,6 +108,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         currentTask.setLengthMilliseconds(taskDTO.endDate.getTime()
                 - taskDTO.beginDate.getTime());
         currentTask.setNotes(taskDTO.notes);
+        currentTask.setDeadline(taskDTO.deadlineDate);
     }
 
     public TaskDTO getTaskDTO() {

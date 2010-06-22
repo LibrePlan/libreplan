@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -198,7 +199,7 @@ public class QueueComponent extends XulElement implements
         StringBuilder result = new StringBuilder();
         result.append(_("Order: {0} ", order.getName()));
         result.append(_("Task: {0} ", task.getName()));
-        result.append(_("Completed: {0} ", getAdvancementEndDate(element)));
+        result.append(_("Completed: {0}% ", element.getAdvancePercentage().multiply(new BigDecimal(100))));
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
         if (resourceAllocation instanceof SpecificResourceAllocation) {
@@ -208,18 +209,23 @@ public class QueueComponent extends XulElement implements
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
             result.append(_("Criteria: {0} ", Criterion.getNames(generic.getCriterions())));
         }
-        result.append("[" + element.getStartDate().toString() + ","
-                + element.getEndDate().toString() + "]");
+        result.append(_("Allocation: [{0},{1}]", element.getStartDate()
+                .toString(), element.getEndDate()));
+
         return result.toString();
     }
 
-    private static DateAndHour getAdvancementEndDate(LimitingResourceQueueElement element) {
-        final Task task = element.getResourceAllocation().getTask();
-
+    /**
+     * Returns end date considering % of task completion
+     *
+     * @param element
+     * @return
+     */
+    private static DateAndHour getAdvanceEndDate(LimitingResourceQueueElement element) {
         int hoursWorked = 0;
         final List<? extends DayAssignment> dayAssignments = element.getDayAssignments();
         if (element.hasDayAssignments()) {
-            final int estimatedWorkedHours = estimatedWorkedHours(element.getIntentedTotalHours(), task.getAdvancePercentage());
+            final int estimatedWorkedHours = estimatedWorkedHours(element.getIntentedTotalHours(), element.getAdvancePercentage());
 
             for (DayAssignment each: dayAssignments) {
                 hoursWorked += each.getHours();
@@ -244,9 +250,11 @@ public class QueueComponent extends XulElement implements
     private static QueueTask createDivForElement(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
 
+        final Task task = queueElement.getResourceAllocation().getTask();
+        final OrderElement order = getRootOrder(task);
+
         QueueTask result = new QueueTask(queueElement);
         String cssClass = "queue-element";
-
         result.setTooltiptext(createTooltiptext(queueElement));
 
         int startPixels = getStartPixels(datesMapper, queueElement);
@@ -265,13 +273,21 @@ public class QueueComponent extends XulElement implements
         }
         result.setWidth(forCSS(taskWidth));
 
-        Task task = queueElement.getResourceAllocation().getTask();
-        if (task.getDeadline() != null) {
-            int deadlinePosition = getDeadlinePixels(datesMapper, task
-                    .getDeadline());
+        LocalDate deadlineDate = task.getDeadline();
+        boolean isOrderDeadline = false;
+        if (deadlineDate == null) {
+            Date orderDate = order.getDeadline();
+            if (orderDate != null) {
+                deadlineDate = LocalDate.fromDateFields(orderDate);
+                isOrderDeadline = true;
+            }
+        }
+        if (deadlineDate != null) {
+            int deadlinePosition = getDeadlinePixels(datesMapper, deadlineDate);
             if (deadlinePosition < datesMapper.getHorizontalSize()) {
                 Div deadline = new Div();
-                deadline.setSclass("deadline");
+                deadline.setSclass(isOrderDeadline ? "deadline order-deadline"
+                        : "deadline");
                 deadline
                         .setLeft((deadlinePosition - startPixels - DEADLINE_MARK_HALF_WIDTH)
                                 + "px");
@@ -279,11 +295,10 @@ public class QueueComponent extends XulElement implements
                 result.appendChild(generateNonWorkableShade(datesMapper,
                         queueElement));
             }
-            if (task.getDeadline().isBefore(queueElement.getEndDate())) {
+            if (deadlineDate.isBefore(queueElement.getEndDate())) {
                 cssClass += " unmet-deadline ";
             }
         }
-
 
         result.setClass(cssClass);
         result.appendChild(generateCompletionShade(datesMapper, queueElement));
@@ -296,7 +311,7 @@ public class QueueComponent extends XulElement implements
     private static Component generateProgressBar(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement, Task task,
             int startPixels) {
-        DateAndHour advancementEndDate = getAdvancementEndDate(queueElement);
+        DateAndHour advancementEndDate = getAdvanceEndDate(queueElement);
         long millis = (advancementEndDate.toDateTime().getMillis() - queueElement
                 .getStartTime().toDateTime().getMillis());
         Div progressBar = new Div();

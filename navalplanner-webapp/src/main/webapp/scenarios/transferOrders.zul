@@ -1,0 +1,84 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+                     Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?page id="work_report_admin"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+
+<window self="@{define(content)}" id="transferOrdersWindow"
+    title="${i18n:_('Transfer orders between scenarios')}"
+    apply="org.navalplanner.web.scenarios.TransferOrdersController">
+
+    <vbox id="messagesContainer"></vbox>
+
+    <hbox>
+        <vbox>
+            <label value="${i18n:_('Source scenario')}" />
+            <hbox>
+                <label value="${i18n:_('Select scenario')}" />
+                <bandboxSearch
+                    id="sourceScenarioBandboxSearch"
+                    finder="ScenarioBandboxFinder"
+                    model="@{transferOrdersController.scenarios}"
+                    selectedElement="@{transferOrdersController.sourceScenario}" />
+            </hbox>
+            <label value="${i18n:_('Orders')}" />
+            <listbox id="sourceScenarioOrders"
+                model="@{transferOrdersController.sourceScenarioOrders}"
+                itemRenderer="@{transferOrdersController.sourceOrderRenderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Code')}" />
+                    <listheader label="${i18n:_('Name')}" />
+                    <listheader label="${i18n:_('Version')}" />
+                    <listheader label="${i18n:_('Operations')}" />
+                </listhead>
+            </listbox>
+        </vbox>
+        <vbox>
+            <label value="${i18n:_('Destination scenario')}" />
+            <hbox>
+                <label value="${i18n:_('Select scenario')}" />
+                <bandboxSearch
+                    id="destinationScenarioBandboxSearch"
+                    finder="ScenarioBandboxFinder"
+                    model="@{transferOrdersController.scenarios}"
+                    selectedElement="@{transferOrdersController.destinationScenario}" />
+            </hbox>
+            <label value="${i18n:_('Orders')}" />
+            <listbox id="destinationScenarioOrders"
+                model="@{transferOrdersController.destinationScenarioOrders}"
+                itemRenderer="@{transferOrdersController.destinationOrderRenderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Code')}" />
+                    <listheader label="${i18n:_('Name')}" />
+                    <listheader label="${i18n:_('Version')}" />
+                </listhead>
+            </listbox>
+        </vbox>
+    </hbox>
+
+</window>
+
+</zk>

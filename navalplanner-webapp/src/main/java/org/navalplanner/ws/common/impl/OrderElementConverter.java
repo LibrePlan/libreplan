@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -55,6 +56,8 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.common.api.CriterionRequirementDTO;
 import org.navalplanner.ws.common.api.DirectCriterionRequirementDTO;
@@ -226,8 +229,18 @@ public final class OrderElementConverter {
     public final static OrderElement toEntity(OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
             throws ValidationException {
+        return toEntity(null, orderElementDTO, configuration);
+    }
+
+    public final static OrderElement toEntity(OrderVersion orderVersion,
+            OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration) {
+        if (orderVersion == null) {
+            Scenario current = Registry.getScenarioManager().getCurrent();
+            orderVersion = OrderVersion.createInitialVersion(current);
+        }
         OrderElement orderElement = toEntityExceptCriterionRequirements(
-                orderElementDTO, configuration);
+                orderVersion, orderElementDTO, configuration);
         if (configuration.isCriterionRequirements()) {
             addOrCriterionRequirements(orderElement, orderElementDTO);
         }
@@ -314,9 +327,11 @@ public final class OrderElementConverter {
     }
 
     private final static OrderElement toEntityExceptCriterionRequirements(
+            OrderVersion parentOrderVersion,
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
             throws ValidationException {
+        Validate.notNull(parentOrderVersion);
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
@@ -336,13 +351,12 @@ public final class OrderElementConverter {
                                 orderElementDTO.code, 0);
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
-            List<OrderElement> children = new ArrayList<OrderElement>();
-            for (OrderElementDTO element : ((OrderLineGroupDTO) orderElementDTO).children) {
-                children.add(toEntity(element, configuration));
-            }
 
             if (orderElementDTO instanceof OrderDTO) {
                 orderElement = Order.createUnvalidated(orderElementDTO.code);
+                Scenario current = Registry.getScenarioManager().getCurrent();
+                ((Order) orderElement).setVersionForScenario(current,
+                        parentOrderVersion);
                 ((Order) orderElement)
                         .setDependenciesConstraintsHavePriority(((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority);
                 List<BaseCalendar> calendars = Registry.getBaseCalendarDAO()
@@ -358,6 +372,12 @@ public final class OrderElementConverter {
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 orderElement = OrderLineGroup
                         .createUnvalidated(orderElementDTO.code);
+            }
+            orderElement.useSchedulingDataFor(parentOrderVersion);
+            List<OrderElement> children = new ArrayList<OrderElement>();
+            for (OrderElementDTO element : ((OrderLineGroupDTO) orderElementDTO).children) {
+                children.add(toEntity(parentOrderVersion, element,
+                        configuration));
             }
 
             for (OrderElement child : children) {
@@ -506,7 +526,11 @@ public final class OrderElementConverter {
                                     .getClass().getName()));
 
                 }
-
+                Order order = (Order) orderElement;
+                OrderVersion orderVersion = order.getOrderVersionFor(Registry
+                        .getScenarioManager()
+                        .getCurrent());
+                order.useSchedulingDataFor(orderVersion);
                 Boolean dependenciesConstraintsHavePriority = ((OrderDTO) orderElementDTO).dependenciesConstraintsHavePriority;
                 if (dependenciesConstraintsHavePriority != null) {
                     ((Order) orderElement)

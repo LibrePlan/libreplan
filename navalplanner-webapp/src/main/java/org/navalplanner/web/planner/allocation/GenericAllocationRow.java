@@ -67,17 +67,8 @@ public class GenericAllocationRow extends AllocationRow {
         GenericAllocationRow result = createDefault();
         result.setOrigin(resourceAllocation);
 
-        result.setOriginalHours(resourceAllocation.getOriginalTotalAssigment());
-        result.setTotalHours(resourceAllocation.getAssignedHours());
-        result.setConsolidatedHours(resourceAllocation.getConsolidatedHours());
-        result.setNonConsolidatedHours(resourceAllocation
-                .getNonConsolidatedHours());
-
         result.setNonConsolidatedResourcesPerDay(resourceAllocation
                 .getNonConsolidatedResourcePerDay());
-        result.setConsolidatedResourcesPerDay(resourceAllocation
-                .getConsolidatedResourcePerDay());
-        result.setTotalResourcesPerDay(resourceAllocation.getResourcesPerDay());
 
         result.criterions = resourceAllocation.getCriterions();
         result.resources = resourceDAO.findSatisfyingCriterionsAtSomePoint(result.criterions);
@@ -112,8 +103,7 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     private GenericResourceAllocation createGenericAllocation(Task task) {
-        GenericResourceAllocation result = GenericResourceAllocation.create(
-                task, criterions);
+        GenericResourceAllocation result = GenericResourceAllocation.createForLimiting(task, criterions);
         GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
         if (origin != null) {
             result.overrideAssignedHoursForResource(origin);

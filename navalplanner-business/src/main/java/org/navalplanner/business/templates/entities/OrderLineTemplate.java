@@ -34,8 +34,6 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.requirements.entities.CriterionRequirement;
-import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -110,15 +108,9 @@ public class OrderLineTemplate extends OrderElementTemplate {
     }
 
     @Override
-    public OrderLine createElement() {
-        return setupElementParts(setupSchedulingStateType(OrderLine
-                .createOrderLineWithUnfixedPercentage(getWorkHours())));
-    }
-
-    @Override
     public OrderElement createElement(OrderLineGroup parent) {
-        OrderLine line = setupSchedulingStateType(OrderLine
-                .createOrderLineWithUnfixedPercentage(getWorkHours()));
+        OrderLine line = setupSchedulingStateType(setupVersioningInfo(parent,
+                OrderLine.createOrderLineWithUnfixedPercentage(getWorkHours())));
         line.initializeTemplate(this);
         parent.add(line);
         return setupElementParts(line);

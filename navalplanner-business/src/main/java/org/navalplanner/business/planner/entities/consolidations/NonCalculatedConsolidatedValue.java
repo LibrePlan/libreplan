@@ -24,6 +24,9 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -33,6 +36,7 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
 
     private NonCalculatedConsolidation consolidation;
 
+    @OnCopy(Strategy.SHARE)
     private AdvanceMeasurement advanceMeasurement;
 
     public static NonCalculatedConsolidatedValue create() {
@@ -63,7 +67,10 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
         super(date, value, taskEndDate);
     }
 
-    protected NonCalculatedConsolidatedValue() {
+    /**
+     * Constructor for {@link DeepCopy}. DO NOT USE!
+     */
+    public NonCalculatedConsolidatedValue() {
     }
 
     public void setAdvanceMeasurement(AdvanceMeasurement advanceMeasurement) {

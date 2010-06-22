@@ -154,10 +154,13 @@ public class AdvanceConsolidationDTO {
     }
 
     public Boolean canNotBeConsolidated() {
-        if (isAllReadOnly()
-                || ((isConsolidated()) && (consolidatedValue != null) && (!consolidatedValue
-                        .isNewObject()))) {
-            if (lastConsolidatedDate.equals(date)) {
+        if (isAllReadOnly()) {
+            return true;
+        }
+        if ((isConsolidated()) && (consolidatedValue != null)
+                && (!consolidatedValue.isNewObject())) {
+            if ((lastConsolidatedDate == null)
+                    || (lastConsolidatedDate.equals(date))) {
                 return false;
             }
             return true;

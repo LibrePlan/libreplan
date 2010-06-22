@@ -20,18 +20,23 @@
 
 package org.navalplanner.web.templates.historicalAssignment;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.templates.IOrderTemplatesModel;
@@ -40,6 +45,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zul.Messagebox;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -60,11 +66,14 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
 
     private IGlobalViewEntryPoints globalView;
 
+    private IOrderDAO orderDAO;
+
     @Transactional(readOnly = true)
     public void afterCompose() {
         super.afterCompose();
         this.adHocTransactionService = (IAdHocTransactionService) getBean("adHocTransactionService");
         this.orderElementDAO = (IOrderElementDAO) getBean("orderElementDAO");
+        this.orderDAO = (IOrderDAO) getBean("orderDAO");
     }
 
     public void useModel(IOrderTemplatesModel model,
@@ -121,7 +130,36 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
     public void view(final OrderElementHistoricAssignmentDTO dto) {
         OrderElement orderElement = dto.getOrderElement();
         Order order = dto.getOrder();
-        globalView.goToOrderElementDetails(orderElement, order);
+        if (model.getCurrentScenario().contains(order)) {
+            globalView.goToOrderElementDetails(orderElement, order);
+        } else {
+            try {
+                String scenarios = "";
+                for (Scenario scene : getScenarios(order)) {
+                    scenarios = scenarios.concat(scene.getName() + "\n");
+                }
+                Messagebox
+                        .show(
+                                _("Its planning is not in the current scene.\nShould change to any of the following scenarios:\n"
+                                        + scenarios),
+                                _("Information"), Messagebox.OK,
+                                Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private Set<Scenario> getScenarios(final Order order) {
+        return this.adHocTransactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Set<Scenario>>() {
+            @Override
+            public Set<Scenario> execute() {
+                        orderDAO.reattachUnmodifiedEntity(order);
+                        order.getScenarios().keySet().size();
+                        return order.getScenarios().keySet();
+                    }
+                });
     }
 
     private Object getBean(String classname) {

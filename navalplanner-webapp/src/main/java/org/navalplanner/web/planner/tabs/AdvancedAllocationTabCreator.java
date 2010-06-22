@@ -33,6 +33,7 @@ import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
@@ -46,6 +47,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AllocationResult;
@@ -73,10 +75,12 @@ public class AdvancedAllocationTabCreator {
         private AllocationResult allocationResult;
         private final Task task;
         private Set<Resource> associatedResources;
+        private final Scenario currentScenario;
 
-        public ResultReceiver(Order order, Task task) {
+        public ResultReceiver(Scenario currentScenario, Order order, Task task) {
+            this.currentScenario = currentScenario;
             this.calculatedValue = task.getCalculatedValue();
-            this.allocationResult = AllocationResult.createCurrent(task);
+            this.allocationResult = AllocationResult.createCurrent(currentScenario, task);
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
             this.associatedResources = getAssociatedResources(task);
@@ -178,8 +182,7 @@ public class AdvancedAllocationTabCreator {
 
         private void applyChanges() {
             taskElementDAO.save(task);
-            allocationResult.applyTo(task);
-            taskElementDAO.removeOrphanedDayAssignments();
+            allocationResult.applyTo(currentScenario, task);
         }
     }
 
@@ -192,30 +195,35 @@ public class AdvancedAllocationTabCreator {
     private final ITaskElementDAO taskElementDAO;
 
     private final IResourceDAO resourceDAO;
+    private final Scenario currentScenario;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario,
+            IBack onBack) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO, taskElementDAO, resourceDAO, onBack).build();
+                orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack)
+                .build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
         Validate.notNull(resourceDAO);
         Validate.notNull(onBack);
+        Validate.notNull(currentScenario);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
         this.onBack = onBack;
         this.taskElementDAO = taskElementDAO;
         this.resourceDAO = resourceDAO;
+        this.currentScenario = currentScenario;
     }
 
     private ITab build() {
@@ -283,6 +291,7 @@ public class AdvancedAllocationTabCreator {
 
     private List<AllocationInput> createAllocationInputsFor(Order order) {
         Order orderReloaded = reload(order);
+        orderReloaded.useSchedulingDataFor(currentScenario);
         return createAllocationsWithOrderReloaded(orderReloaded);
     }
 
@@ -313,7 +322,9 @@ public class AdvancedAllocationTabCreator {
     }
 
     private AllocationInput createAllocationInputFor(Order order, Task task) {
-        ResultReceiver resultReceiver = new ResultReceiver(order, task);
+        Scenario currentScenario = Registry.getScenarioManager().getCurrent();
+        ResultReceiver resultReceiver = new ResultReceiver(currentScenario,
+                order, task);
         return new AllocationInput(resultReceiver.getAggregate(), task,
                 resultReceiver);
     }

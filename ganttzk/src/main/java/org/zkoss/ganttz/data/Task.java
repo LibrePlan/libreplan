@@ -69,7 +69,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     private ConstraintViolationNotificator<Date> violationNotificator = ConstraintViolationNotificator
             .create();
 
-    private IDependenciesEnforcerHook dependenciesEnforcerHook = doNothingHook();
+    private IDependenciesEnforcerHook dependenciesEnforcerHook = GanttDiagramGraph.doNothingHook();
 
     private final INotificationAfterDependenciesEnforcement notifyDates = new INotificationAfterDependenciesEnforcement() {
 
@@ -92,21 +92,6 @@ public abstract class Task implements ITaskFundamentalProperties {
                     "lengthMilliseconds", previousValue, fundamentalProperties
                             .getLengthMilliseconds());
         }
-    };
-
-    private IDependenciesEnforcerHook doNothingHook() {
-        return new IDependenciesEnforcerHook() {
-
-            @Override
-            public void setLengthMilliseconds(long previousLengthMilliseconds,
-                    long lengthMilliseconds) {
-            }
-
-            @Override
-            public void setStartDate(Date previousStart, long previousLength,
-                    Date newStart) {
-            }
-        };
     };
 
     public Task(ITaskFundamentalProperties fundamentalProperties) {
@@ -333,6 +318,14 @@ public abstract class Task implements ITaskFundamentalProperties {
     @Override
     public Date getDeadline() {
         return fundamentalProperties.getDeadline();
+    }
+
+    @Override
+    public void setDeadline(Date date) {
+        Date previousValue = fundamentalProperties.getDeadline();
+        fundamentalProperties.setDeadline(date);
+        fundamentalPropertiesListeners.firePropertyChange("deadline",
+                previousValue, date);
     }
 
     @Override

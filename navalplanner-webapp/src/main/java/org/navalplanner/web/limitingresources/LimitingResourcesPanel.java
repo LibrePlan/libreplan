@@ -301,6 +301,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 if (newDetailLevel == ZoomLevel.DETAIL_THREE) {
                     timeTracker.resetMapper();
                     queueListComponent.invalidate();
+                    queueListComponent.afterCompose();
+                    rebuildDependencies();
                 }
             }
 

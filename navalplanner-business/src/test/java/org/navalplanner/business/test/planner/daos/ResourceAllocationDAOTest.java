@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -54,6 +55,10 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -67,6 +72,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class ResourceAllocationDAOTest {
+
+    public static OrderVersion setupVersionUsing(
+            IScenarioManager scenarioManager, Order order) {
+        Scenario current = scenarioManager.getCurrent();
+        OrderVersion result = OrderVersion.createInitialVersion(current);
+        order.setVersionForScenario(current, result);
+        return result;
+    }
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -89,13 +102,26 @@ public class ResourceAllocationDAOTest {
     @Autowired
     IResourceDAO resourceDAO;
 
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     enum ResourceAllocationType {
         SPECIFIC_RESOURCE_ALLOCATION, GENERIC_RESOURCE_ALLOCATION
+    }
+
+    @Before
+    public void loadRequiredData() {
+        scenariosBootstrap.loadRequiredData();
     }
 
     private OrderLine createValidOrderLine() {
         Order order = new Order();
         order.setInitDate(new Date());
+        OrderVersion orderVersion = setupVersionUsing(scenarioManager, order);
+        order.useSchedulingDataFor(orderVersion);
         OrderLine orderLine = OrderLine.create();
         order.add(orderLine);
         orderLine.setName(UUID.randomUUID().toString());
@@ -116,6 +142,10 @@ public class ResourceAllocationDAOTest {
     private ResourceAllocation<?> createValidResourceAllocation(
             ResourceAllocationType type) {
         OrderLine orderLine = createValidOrderLine();
+        Order order = orderLine.getOrder();
+        OrderVersion orderVersion = setupVersionUsing(scenarioManager,
+                order);
+        orderLine.useSchedulingDataFor(orderVersion);
         orderLine.getSchedulingState().schedule();
         orderElementDAO.save(orderLine);
 
@@ -124,7 +154,9 @@ public class ResourceAllocationDAOTest {
         hoursGroupDAO.save(hoursGroup);
 
         List<HoursGroup> hoursGroups = Arrays.asList(hoursGroup);
-        TaskSource taskSource = TaskSource.create(orderLine, hoursGroups);
+        TaskSource taskSource = TaskSource.create(orderLine
+                        .getCurrentSchedulingDataForVersion(),
+                        hoursGroups);
         TaskSourceSynchronization synchronization = TaskSource
                 .mustAdd(taskSource);
         synchronization.apply(taskSourceDAO);

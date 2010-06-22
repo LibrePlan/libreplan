@@ -121,7 +121,6 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     @Override
     public void afterCompose() {
-        super.afterCompose();
         for (QueueComponent each : fromQueueToComponent.values()) {
             each.afterCompose();
         }

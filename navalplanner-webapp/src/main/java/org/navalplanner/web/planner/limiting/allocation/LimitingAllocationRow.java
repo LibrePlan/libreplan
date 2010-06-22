@@ -69,7 +69,7 @@ public class LimitingAllocationRow {
     }
 
     public static LimitingAllocationRow create(Resource resource, Task task) {
-        return new LimitingAllocationRow(SpecificResourceAllocation.create(resource, task), task);
+        return new LimitingAllocationRow(SpecificResourceAllocation.createForLimiting(resource, task), task);
     }
 
     private LimitingAllocationRow(ResourceAllocation<?> resourceAllocation,
@@ -103,7 +103,7 @@ public class LimitingAllocationRow {
     public static LimitingAllocationRow create(Set<Criterion> criteria,
             Collection<? extends Resource> resources, Task task, int priority) {
         LimitingAllocationRow result = new LimitingAllocationRow(
-                GenericResourceAllocation.create(task, criteria), task,
+                GenericResourceAllocation.createForLimiting(task, criteria), task,
                 priority);
         result.setResources(resources);
         return result;
@@ -115,7 +115,7 @@ public class LimitingAllocationRow {
 
     public static LimitingAllocationRow create(Resource resource, Task task,
             int priority) {
-        return new LimitingAllocationRow(SpecificResourceAllocation.create(
+        return new LimitingAllocationRow(SpecificResourceAllocation.createForLimiting(
                 resource, task), task, priority);
     }
 

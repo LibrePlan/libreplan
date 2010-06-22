@@ -64,6 +64,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -85,6 +86,35 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
+    public static List<Constraint<Date>> getStartConstraintsFor(
+            TaskElement taskElement) {
+        if (taskElement instanceof Task) {
+            Task task = (Task) taskElement;
+            TaskStartConstraint startConstraint = task.getStartConstraint();
+            final StartConstraintType constraintType = startConstraint
+                    .getStartConstraintType();
+            switch (constraintType) {
+            case AS_SOON_AS_POSSIBLE:
+                return Collections.emptyList();
+            case START_IN_FIXED_DATE:
+                return Collections.singletonList(DateConstraint
+                        .equalTo(startConstraint.getConstraintDate()));
+            case START_NOT_EARLIER_THAN:
+                return Collections
+                        .singletonList(DateConstraint
+                                .biggerOrEqualThan(startConstraint
+                                        .getConstraintDate()));
+            default:
+                throw new RuntimeException("can't handle " + constraintType);
+            }
+        } else if (taskElement.isMilestone()) {
+            return Collections.singletonList(DateConstraint
+                    .biggerOrEqualThan(taskElement.getStartDate()));
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     @Autowired
     private IAdHocTransactionService transactionService;
 
@@ -103,14 +133,25 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
+    private Scenario scenario;
+
+
+    @Override
+    public void useScenario(Scenario scenario) {
+        this.scenario = scenario;
+    }
+
     public TaskElementAdapter() {
     }
 
     private class TaskElementWrapper implements ITaskFundamentalProperties {
 
         private final TaskElement taskElement;
+        private final Scenario currentScenario;
 
-        protected TaskElementWrapper(TaskElement taskElement) {
+        protected TaskElementWrapper(Scenario currentScenario,
+                TaskElement taskElement) {
+            this.currentScenario = currentScenario;
             this.taskElement = taskElement;
         }
 
@@ -141,8 +182,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public long getLengthMilliseconds() {
-            return taskElement.getEndDate().getTime()
-                    - taskElement.getStartDate().getTime();
+            return taskElement.getLengthMilliseconds();
         }
 
         @Override
@@ -188,7 +228,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private Long setBeginDateInsideTransaction(final Date beginDate) {
-            taskElement.moveTo(beginDate);
+            taskElement.moveTo(currentScenario, beginDate);
             return getLengthMilliseconds();
         }
 
@@ -206,8 +246,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private void updateEndDate(long lengthMilliseconds) {
-            taskElement.resizeTo(new Date(getBeginDate().getTime()
-                    + lengthMilliseconds));
+            Date endDate = new Date(getBeginDate().getTime()
+                    + lengthMilliseconds);
+            taskElement.resizeTo(currentScenario, endDate);
         }
 
         @Override
@@ -329,7 +370,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         @Override
                         public String execute() {
                             orderElementDAO.reattach(taskElement
-                                            .getOrderElement());
+                                    .getOrderElement());
                             return buildTooltipText();
                         }
                     });
@@ -499,30 +540,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public List<Constraint<Date>> getStartConstraints() {
-            if (taskElement instanceof Task) {
-                Task task = (Task) taskElement;
-                TaskStartConstraint startConstraint = task.getStartConstraint();
-                final StartConstraintType constraintType = startConstraint
-                        .getStartConstraintType();
-                switch (constraintType) {
-                case AS_SOON_AS_POSSIBLE:
-                    return Collections.emptyList();
-                case START_IN_FIXED_DATE:
-                    return Collections.singletonList(DateConstraint
-                            .equalTo(startConstraint.getConstraintDate()));
-                case START_NOT_EARLIER_THAN:
-                    return Collections.singletonList(DateConstraint
-                            .biggerOrEqualThan(startConstraint
-                                    .getConstraintDate()));
-                default:
-                    throw new RuntimeException("can't handle " + constraintType);
-                }
-            } else if (taskElement.isMilestone()) {
-                return Collections.singletonList(DateConstraint
-                        .biggerOrEqualThan(taskElement.getStartDate()));
-            } else {
-                return Collections.emptyList();
-            }
+            return getStartConstraintsFor(this.taskElement);
         }
 
         @Override
@@ -541,6 +559,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return null;
             }
             return deadline.toDateTimeAtStartOfDay().toDate();
+        }
+
+        @Override
+        public void setDeadline(Date date) {
+            if (date != null) {
+                taskElement.setDeadline(LocalDate.fromDateFields(date));
+            } else {
+                taskElement.setDeadline(null);
+            }
         }
 
         @Override
@@ -593,14 +620,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public boolean isFixed() {
-            return taskElement.isLimitingAndHasDayAssignments();
+            return taskElement.isLimitingAndHasDayAssignments()
+                || taskElement.hasConsolidations();
         }
 
     }
 
     @Override
     public ITaskFundamentalProperties adapt(final TaskElement taskElement) {
-        return new TaskElementWrapper(taskElement);
+        return new TaskElementWrapper(scenario, taskElement);
     }
 
 

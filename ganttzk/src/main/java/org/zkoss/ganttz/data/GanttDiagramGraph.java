@@ -57,6 +57,27 @@ public class GanttDiagramGraph<V, D> {
 
     private static final Log LOG = LogFactory.getLog(GanttDiagramGraph.class);
 
+    public static IDependenciesEnforcerHook doNothingHook() {
+        return new IDependenciesEnforcerHook() {
+
+            @Override
+            public void setLengthMilliseconds(long previousLengthMilliseconds,
+                    long lengthMilliseconds) {
+            }
+
+            @Override
+            public void setStartDate(Date previousStart, long previousLength,
+                    Date newStart) {
+            }
+        };
+    }
+
+    private static final GanttZKAdapter GANTTZK_ADAPTER = new GanttZKAdapter();
+
+    public static IAdapter<Task, Dependency> taskAdapter() {
+        return GANTTZK_ADAPTER;
+    }
+
     public interface IAdapter<V, D> {
         List<V> getChildren(V task);
 
@@ -79,7 +100,7 @@ public class GanttDiagramGraph<V, D> {
 
         Constraint<Date> getEndDateBiggerThanStartDateConstraintFor(V task);
 
-        List<Constraint<Date>> getConstraintsGivenIncoming(Set<D> incoming);
+        List<Constraint<Date>> getEndConstraintsGivenIncoming(Set<D> incoming);
 
         List<Constraint<Date>> getStartCosntraintsGiven(Set<D> withDependencies);
 
@@ -175,7 +196,7 @@ public class GanttDiagramGraph<V, D> {
         }
 
         @Override
-        public List<Constraint<Date>> getConstraintsGivenIncoming(
+        public List<Constraint<Date>> getEndConstraintsGivenIncoming(
                 Set<Dependency> incoming) {
             return Dependency.getEndConstraints(incoming);
         }
@@ -226,7 +247,7 @@ public class GanttDiagramGraph<V, D> {
                 List<Constraint<Date>> globalStartConstraints,
                 List<Constraint<Date>> globalEndConstraints,
                 boolean dependenciesConstraintsHavePriority) {
-            super(new GanttZKAdapter(), globalStartConstraints,
+            super(GANTTZK_ADAPTER, globalStartConstraints,
                     globalEndConstraints,
                     dependenciesConstraintsHavePriority);
         }
@@ -322,6 +343,14 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
+    public static <V, D> GanttDiagramGraph<V, D> create(IAdapter<V, D> adapter,
+            List<Constraint<Date>> globalStartConstraints,
+            List<Constraint<Date>> globalEndConstraints,
+            boolean dependenciesConstraintsHavePriority) {
+        return new GanttDiagramGraph<V, D>(adapter, globalStartConstraints,
+                globalEndConstraints, dependenciesConstraintsHavePriority);
+    }
+
     protected GanttDiagramGraph(IAdapter<V, D> adapter,
             List<Constraint<Date>> globalStartConstraints,
             List<Constraint<Date>> globalEndConstraints,
@@ -354,22 +383,27 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
-    public void addTask(V task) {
-        graph.addVertex(task);
-        adapter.registerDependenciesEnforcerHookOn(task, enforcer);
-        if (adapter.isContainer(task)) {
-            List<D> dependenciesToAdd = new ArrayList<D>();
-            for (V child : adapter.getChildren(task)) {
-                fromChildToParent.put(child, task);
-                addTask(child);
-                dependenciesToAdd.add(adapter.createInvisibleDependency(child, task,
-                        DependencyType.END_END));
-                dependenciesToAdd.add(adapter.createInvisibleDependency(task,
-                        child, DependencyType.START_START));
+    public void addTask(V original) {
+        List<V> stack = new LinkedList<V>();
+        stack.add(original);
+        List<D> dependenciesToAdd = new ArrayList<D>();
+        while (!stack.isEmpty()){
+            V task = stack.remove(0);
+            graph.addVertex(task);
+            adapter.registerDependenciesEnforcerHookOn(task, enforcer);
+            if (adapter.isContainer(task)) {
+                for (V child : adapter.getChildren(task)) {
+                    fromChildToParent.put(child, task);
+                    stack.add(0, child);
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            child, task, DependencyType.END_END));
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            task, child, DependencyType.START_START));
+                }
             }
-            for (D each : dependenciesToAdd) {
-                add(each);
-            }
+        }
+        for (D each : dependenciesToAdd) {
+            add(each, false);
         }
     }
 
@@ -384,6 +418,8 @@ public class GanttDiagramGraph<V, D> {
     public interface IDependenciesEnforcerHookFactory<T> {
         public IDependenciesEnforcerHook create(T task,
                 INotificationAfterDependenciesEnforcement notification);
+
+        public IDependenciesEnforcerHook create(T task);
     }
 
     public interface INotificationAfterDependenciesEnforcement {
@@ -392,6 +428,18 @@ public class GanttDiagramGraph<V, D> {
 
         public void onLengthChange(long previousLength, long newLength);
     }
+
+    private static final INotificationAfterDependenciesEnforcement EMPTY_NOTIFICATOR  = new INotificationAfterDependenciesEnforcement() {
+
+        @Override
+        public void onStartDateChange(Date previousStart, long previousLength,
+                Date newStart) {
+        }
+
+        @Override
+        public void onLengthChange(long previousLength, long newLength) {
+        }
+    };
 
     public class DeferedNotifier {
 
@@ -516,6 +564,11 @@ public class GanttDiagramGraph<V, D> {
                 INotificationAfterDependenciesEnforcement notificator) {
             return onlyEnforceDependenciesOnEntrance(onEntrance(task),
                     onNotification(task, notificator));
+        }
+
+        @Override
+        public IDependenciesEnforcerHook create(V task) {
+            return create(task, EMPTY_NOTIFICATOR);
         }
 
         private IDependenciesEnforcerHook onEntrance(final V task) {
@@ -996,7 +1049,7 @@ public class GanttDiagramGraph<V, D> {
                     .getEndDateBiggerThanStartDateConstraintFor(task);
             Date newEnd = Constraint.<Date> initialValue(null)
                     .withConstraints(currentLength)
-                    .withConstraints(adapter.getConstraintsGivenIncoming(incoming))
+                    .withConstraints(adapter.getEndConstraintsGivenIncoming(incoming))
                     .withConstraints(respectStartDate)
                     .apply();
             if (!adapter.getEndDateFor(task).equals(newEnd)) {
@@ -1093,10 +1146,20 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public void add(D dependency) {
+        add(dependency, true);
+    }
+
+    public void addWithoutEnforcingConstraints(D dependency) {
+        add(dependency, false);
+    }
+
+    private void add(D dependency, boolean enforceRestrictions) {
         V source = adapter.getSource(dependency);
         V destination = adapter.getDestination(dependency);
         graph.addEdge(source, destination, dependency);
-        enforceRestrictions(destination);
+        if (enforceRestrictions) {
+            enforceRestrictions(destination);
+        }
     }
 
     public void enforceRestrictions(final V task) {
@@ -1236,7 +1299,7 @@ public class GanttDiagramGraph<V, D> {
      * property or none of the properties
      * @author Óscar González Fernández <ogonzalez@igalia.com>
      */
-    enum PointType {
+    public enum PointType {
         BOTH, END, NONE;
 
         public boolean sendsModificationsThrough(DependencyType type) {
@@ -1253,7 +1316,7 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
-    static class TaskPoint<T, D> {
+    public static class TaskPoint<T, D> {
 
         public static <T, D> TaskPoint<T, D> both(IAdapter<T, D> adapter, T task) {
             return new TaskPoint<T, D>(adapter, task, PointType.BOTH);
@@ -1270,7 +1333,7 @@ public class GanttDiagramGraph<V, D> {
 
         private final IAdapter<T, D> adapter;
 
-        TaskPoint(IAdapter<T, D> adapter, T task, PointType pointType) {
+        public TaskPoint(IAdapter<T, D> adapter, T task, PointType pointType) {
             this.adapter = adapter;
             this.task = task;
             this.pointType = pointType;
@@ -1342,6 +1405,7 @@ public class GanttDiagramGraph<V, D> {
         }
         return result;
     }
+
 }
 
 interface IReentranceCases {

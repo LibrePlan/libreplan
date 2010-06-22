@@ -159,7 +159,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 @Override
                 public Void execute() {
                     stepsBeforeDoingAllocation();
-                    allocationRowsHandler.doAllocation().applyTo(task);
+                    allocationRowsHandler.doAllocation().applyTo(
+                            planningState.getCurrentScenario(), task);
                     return null;
                 }
             });
@@ -173,7 +174,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 @Override
                 public Void execute() {
                     stepsBeforeDoingAllocation();
-                    modifiedAllocationResult.applyTo(task);
+                    modifiedAllocationResult.applyTo(planningState
+                            .getCurrentScenario(), task);
                     return null;
                 }
             });
@@ -241,7 +243,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         loadResources(this.task.getSatisfiedResourceAllocations());
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(task
-				.getNonLimitingResourceAllocations(), resourceDAO);
+                .getNonLimitingResourceAllocations(), resourceDAO);
         allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
                 createWorkerFinder());
         return allocationRowsHandler;

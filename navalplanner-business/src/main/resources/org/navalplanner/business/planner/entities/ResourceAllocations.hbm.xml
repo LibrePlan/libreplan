@@ -45,10 +45,9 @@
             <many-to-one name="resource"
                 class="org.navalplanner.business.resources.entities.Resource" />
 
-            <!-- Indexed the other side -->
-            <set name="specificDaysAssignment" cascade="all">
-                <key column="SPECIFIC_RESOURCE_ALLOCATION_ID"/>
-                <one-to-many class="SpecificDayAssignment"/>
+            <set name="specificDayAssignmentsContainers" cascade="all-delete-orphan">
+                <key column="RESOURCE_ALLOCATION_ID" />
+                <one-to-many class="SpecificDayAssignmentsContainer"/>
             </set>
         </joined-subclass>
 
@@ -60,13 +59,72 @@
                 <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
-            <!-- Indexed the other side -->
-            <set name="genericDayAssignments" cascade="all">
-                <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
-                <one-to-many class="GenericDayAssignment"/>
+            <set name="genericDayAssignmentsContainers" cascade="all-delete-orphan">
+                <key column="RESOURCE_ALLOCATION_ID" />
+                <one-to-many class="GenericDayAssignmentsContainer"/>
             </set>
         </joined-subclass>
 
+    </class>
+
+    <class name="SpecificDayAssignmentsContainer">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <!-- natural-id use has to be discarded due to:
+             Resource allocation and scenario should be an unique key.
+             natural-id could be used for that but was discarded due to:
+             https://forum.hibernate.org/viewtopic.php?p=2372348
+        -->
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+        <many-to-one name="scenario" />
+        <set name="dayAssignments" cascade="all-delete-orphan">
+            <key column="SPECIFIC_CONTAINER_ID" />
+            <one-to-many class="SpecificDayAssignment"/>
+        </set>
+    </class>
+
+    <class name="GenericDayAssignmentsContainer">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <!-- natural-id use has to be discarded due to:
+             Resource allocation and scenario should be an unique key.
+             natural-id could be used for that but was discarded due to:
+             https://forum.hibernate.org/viewtopic.php?p=2372348
+        -->
+        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+        <many-to-one name="scenario" />
+        <set name="dayAssignments" cascade="all-delete-orphan">
+            <key column="GENERIC_CONTAINER_ID" />
+            <one-to-many class="GenericDayAssignment"/>
+        </set>
+    </class>
+
+    <class name="DerivedDayAssignmentsContainer">
+        <id name="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <!-- natural-id use has to be discarded due to:
+             Resource allocation and scenario should be an unique key.
+             natural-id could be used for that but was discarded due to:
+             https://forum.hibernate.org/viewtopic.php?p=2372348
+        -->
+        <many-to-one name="resourceAllocation" column="DERIVED_ALLOCATION_ID"/>
+        <many-to-one name="scenario" />
+        <set name="dayAssignments" cascade="all-delete-orphan">
+            <key column="DERIVED_CONTAINER_ID" />
+            <one-to-many class="DerivedDayAssignment"/>
+        </set>
     </class>
 
     <!-- LimitingResourceQueueElement -->
@@ -178,25 +236,15 @@
 
         <!-- SpecificDayAssignment -->
         <subclass name="SpecificDayAssignment" discriminator-value="SPECIFIC_DAY">
-            <!-- Indexed. -->
-            <many-to-one name="specificResourceAllocation"
-                class="SpecificResourceAllocation"
-                column="SPECIFIC_RESOURCE_ALLOCATION_ID"
-                index="idx_specificdayassigment_on_resourceallocation"
-                />
+            <many-to-one name="container" column="SPECIFIC_CONTAINER_ID" />
         </subclass>
 
         <!-- GenericDayAssignment -->
         <subclass name="GenericDayAssignment" discriminator-value="GENERIC_DAY">
-            <!--  Indexed -->
-            <many-to-one name="genericResourceAllocation"
-                class="GenericResourceAllocation"
-                column="GENERIC_RESOURCE_ALLOCATION_ID"
-                index="idx_genericdayassigment_on_resourceallocation"
-                />
+            <many-to-one name="container" column="GENERIC_CONTAINER_ID" />
         </subclass>
         <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
-            <many-to-one name="allocation" column="DERIVED_ALLOCATION_ID"/>
+            <many-to-one name="container" column="DERIVED_CONTAINER_ID" />
         </subclass>
     </class>
 
@@ -242,9 +290,9 @@
                      name="derivedFrom" />
         <many-to-one class="org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit"
             name="configurationUnit" not-null="true"/>
-        <set name="assignments" cascade="all">
-            <key column="DERIVED_ALLOCATION_ID"/>
-            <one-to-many class="DerivedDayAssignment"/>
+        <set name="derivedDayAssignmentsContainers" cascade="all-delete-orphan">
+            <key column="DERIVED_ALLOCATION_ID" />
+            <one-to-many class="DerivedDayAssignmentsContainer"/>
         </set>
     </class>
 

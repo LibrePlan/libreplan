@@ -56,6 +56,9 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.web.orders.OrderModelTest;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.subcontract.api.IReportAdvancesService;
 import org.navalplanner.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
@@ -87,6 +90,9 @@ public class ReportAdvancesServiceTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
+    @Resource
+    private IDataBootstrap scenariosBootstrap;
+
     @Before
     public void loadRequiredaData() {
 
@@ -96,6 +102,7 @@ public class ReportAdvancesServiceTest {
             public Void execute() {
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
                 configurationBootstrap.loadRequiredData();
+		scenariosBootstrap.loadRequiredData();
                 return null;
             }
         };
@@ -117,6 +124,9 @@ public class ReportAdvancesServiceTest {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private ExternalCompany getSubcontractorExternalCompanySaved(String name,
             String nif) {
@@ -190,7 +200,9 @@ public class ReportAdvancesServiceTest {
         order.setInitDate(new Date());
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
-
+        OrderVersion version = OrderModelTest.setupVersionUsing(
+                scenarioManager, order);
+        order.useSchedulingDataFor(version);
         OrderLine orderLine = OrderLine
                 .createOrderLineWithUnfixedPercentage(1000);
         order.add(orderLine);

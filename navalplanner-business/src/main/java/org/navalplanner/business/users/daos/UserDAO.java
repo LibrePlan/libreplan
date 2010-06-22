@@ -26,6 +26,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.entities.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -105,6 +106,13 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     public List<User> listNotDisabled() {
         Criteria c = getSession().createCriteria(User.class);
         c.add(Restrictions.eq("disabled", false));
+        return c.list();
+    }
+
+    @Override
+    public List<User> findByLastConnectedScenario(Scenario scenario) {
+        Criteria c = getSession().createCriteria(User.class);
+        c.add(Restrictions.eq("lastConnectedScenario", scenario));
         return c.list();
     }
 

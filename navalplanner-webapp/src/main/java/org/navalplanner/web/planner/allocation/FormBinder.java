@@ -41,11 +41,11 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
-import org.navalplanner.web.resourceload.ResourceLoadModel;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -168,13 +168,13 @@ public class FormBinder {
 
     private Decimalbox allResourcesPerDay;
 
-    public FormBinder(
+    public FormBinder(Scenario currentScenario,
             AllocationRowsHandler allocationRowsHandler,
             IResourceAllocationModel resourceAllocationModel) {
         this.allocationRowsHandler = allocationRowsHandler;
         this.resourceAllocationModel = resourceAllocationModel;
         this.lastAllocation = this.allocationRowsHandler
-            .getInitialAllocation();
+                .getInitialAllocation(currentScenario);
         this.aggregate = this.lastAllocation.getAggregate();
     }
 
@@ -384,11 +384,13 @@ public class FormBinder {
     }
 
     private void reloadValues() {
+        loadResourcesPerDay();
         loadHoursValues();
         loadValueForAssignedHoursComponent();
         loadValueForEndDate();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
+        Util.reloadBindings(allocationsGrid);
     }
 
     @SuppressWarnings("unchecked")
@@ -413,6 +415,12 @@ public class FormBinder {
     private void loadHoursValues() {
         for (AllocationRow each : rows) {
             each.loadHours();
+        }
+    }
+
+    private void loadResourcesPerDay() {
+        for (AllocationRow each : rows) {
+            each.loadResourcesPerDay();
         }
     }
 

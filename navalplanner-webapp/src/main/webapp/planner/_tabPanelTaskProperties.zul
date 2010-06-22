@@ -38,6 +38,10 @@
                 value="@{propertiesController.ganttTaskDTO.endDate}" />
             </row>
             <row>
+                <label value="${i18n:_('Deadline')}"/>
+                <datebox id="deadLineDateBox" value="@{propertiesController.ganttTaskDTO.deadlineDate}"/>
+            </row>
+            <row>
                 <label value="${i18n:_('Notes')}" />
                 <textbox id="notes" value="@{propertiesController.ganttTaskDTO.notes}" />
             </row>

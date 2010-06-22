@@ -59,12 +59,17 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.resources.criterion.ICriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
@@ -86,16 +91,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class OrderModelTest {
 
+    public static OrderVersion setupVersionUsing(
+            IScenarioManager scenarioManager, Order order) {
+        Scenario current = scenarioManager.getCurrent();
+        OrderVersion result = OrderVersion.createInitialVersion(current);
+        order.setVersionForScenario(current, result);
+        return result;
+    }
+
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
     @Resource
     private IDataBootstrap configurationBootstrap;
 
+    @Resource
+    private IDataBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
+        scenariosBootstrap.loadRequiredData();
     }
 
     public static Date year(int year) {
@@ -110,6 +130,9 @@ public class OrderModelTest {
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
@@ -144,6 +167,8 @@ public class OrderModelTest {
         order.setCode("code-" + UUID.randomUUID());
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
+        setupVersionUsing(scenarioManager, order);
+        order.useSchedulingDataFor(scenarioManager.getCurrent());
         return order;
     }
 
@@ -171,16 +196,53 @@ public class OrderModelTest {
         assertTrue(orderDAO.exists(order.getId()));
     }
 
-    @Test
-    public void testCreation1() throws ValidationException {
-        orderModel.prepareForCreate();
+    private Order givenOrderFromPrepareForCreate() {
+        adHocTransaction
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        orderModel.prepareForCreate();
+                        return null;
+                    }
+                });
         Order order = (Order) orderModel.getOrder();
         order.setName("name");
         order.setCode("code");
         order.setInitDate(new Date());
         order.setCustomer(createValidExternalCompany());
+        return order;
+    }
+
+    @Test
+    public void testCreationUsingPrepareForCreate() {
+        Order order = givenOrderFromPrepareForCreate();
         orderModel.save();
         assertTrue(orderDAO.exists(order.getId()));
+    }
+
+    @Test
+    public void createOrderWithScheduledOrderLine() {
+        Order order = givenOrderFromPrepareForCreate();
+        OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
+        order.add(line);
+        line.setName(UUID.randomUUID().toString());
+        line.setCode(UUID.randomUUID().toString());
+        line.getSchedulingState().schedule();
+        orderModel.save();
+        assertTrue(orderDAO.exists(order.getId()));
+        TaskSource lineTaskSource = line.getTaskSource();
+        assertTrue(taskSourceDAO.exists(lineTaskSource.getId()));
+    }
+
+    @Test
+    public void itKnowsIfSchedulingDataHasBeenModified() {
+        Order order = givenOrderFromPrepareForCreate();
+        assertFalse(order.hasSchedulingDataBeingModified());
+        OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
+        order.add(line);
+        assertFalse(order.hasSchedulingDataBeingModified());
+        line.getSchedulingState().schedule();
+        assertTrue(order.hasSchedulingDataBeingModified());
     }
 
     @Ignore("Test ignored until having the possibility to have a user " +
@@ -331,13 +393,13 @@ public class OrderModelTest {
                         return OrderLineGroup.create();
                     }
                 });
+        order.add(container);
         container.setName("bla");
         container.setCode("code-" + UUID.randomUUID());
         OrderLine leaf = OrderLine.create();
         leaf.setName("leaf");
         leaf.setCode("code-" + UUID.randomUUID());
         container.add(leaf);
-        order.add(container);
         HoursGroup hoursGroup = HoursGroup.create(leaf);
         hoursGroup.setCode("hoursGroupName");
         hoursGroup.setWorkingHours(3);

@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.limiting.allocation;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +42,9 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -74,9 +79,14 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
     private List<LimitingAllocationRow> limitingAllocationRows = new ArrayList<LimitingAllocationRow>();
 
+    private PlanningState planningState;
+
+    private LimitingResourceAllocationController limitingResourceAllocationController;
+
     @Override
-    public void init(Task task) {
+    public void init(Task task, PlanningState planningState) {
         this.task = task;
+        this.planningState = planningState;
         limitingAllocationRows = LimitingAllocationRow.toRows(task);
     }
 
@@ -93,20 +103,37 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Transactional(readOnly = true)
     public void addGeneric(Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
+
+        if (resources.isEmpty()) {
+            getMessagesForUser()
+                    .showMessage(Level.ERROR,
+                            _("there are no resources for required criteria: {0}. " +
+                                    "So the generic allocation can't be added",
+                                    Criterion.getNames(criteria)));
+        }
+
         if (resources.size() >= 1) {
-            reattachResources(resources);
-            addGenericResourceAllocation(criteria, resources);
+            planningState.reassociateResourcesWithSession();
+            addGenericResourceAllocation(criteria, reloadResources(resources));
         }
     }
 
-    private void reattachResources(Collection<? extends Resource> resources) {
+    private List<Resource> reloadResources(
+            Collection<? extends Resource> resources) {
+        List<Resource> result = new ArrayList<Resource>();
         for (Resource each: resources) {
-            resourceDAO.reattach(each);
+            result.add(resourceDAO.findExistingEntity(each.getId()));
         }
+        return result;
+    }
+
+    private IMessagesForUser getMessagesForUser() {
+        return limitingResourceAllocationController.getMessagesForUser();
     }
 
     private void addGenericResourceAllocation(Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
+
         if (isNew(criteria, resources)) {
             limitingAllocationRows.clear();
             LimitingAllocationRow allocationRow = LimitingAllocationRow.create(
@@ -142,9 +169,10 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         if (resources.size() >= 1) {
-            Resource resource = getFirstChild(resources);
-            resourceDAO.reattach(resource);
-            addSpecificResourceAllocation(resource);
+            planningState.reassociateResourcesWithSession();
+            List<Resource> reloaded = reloadResources(
+                    Collections.singleton(getFirstChild(resources)));
+            addSpecificResourceAllocation(getFirstChild(reloaded));
         }
     }
 
@@ -274,6 +302,12 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         LimitingResourceQueueElement element = LimitingResourceQueueElement.create();
         resourceAllocation.setLimitingResourceQueueElement(element);
         task.addResourceAllocation(resourceAllocation, false);
+    }
+
+    @Override
+    public void setLimitingResourceAllocationController(
+            LimitingResourceAllocationController limitingResourceAllocationController) {
+        this.limitingResourceAllocationController = limitingResourceAllocationController;
     }
 
 }

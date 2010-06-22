@@ -390,5 +390,5 @@ public class ConfigurationModel implements IConfigurationModel {
         }
         return configuration.isExpandResourceLoadViewCharts();
     }
-   
+
 }

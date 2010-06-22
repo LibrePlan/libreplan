@@ -50,6 +50,8 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.AfterCopy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -85,14 +87,24 @@ public class Task extends TaskElement {
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
+    @Valid
+    private Set<ResourceAllocation<?>> getResourceAlloations() {
+        return new HashSet<ResourceAllocation<?>>(resourceAllocations);
+    }
+
+    @AfterCopy
+    private void ifLimitingAllocationRemove() {
+        if (isLimiting()) {
+            resourceAllocations.clear();
+        }
+    }
+
     private TaskStartConstraint startConstraint = new TaskStartConstraint();
 
-    @Valid
     private SubcontractedTaskData subcontractedTaskData;
 
     private Integer priority;
 
-    @Valid
     private Consolidation consolidation;
 
     /**
@@ -292,12 +304,12 @@ public class Task extends TaskElement {
 
     public static class ModifiedAllocation {
 
-        public static List<ModifiedAllocation> copy(
+        public static List<ModifiedAllocation> copy(Scenario onScenario,
                 Collection<ResourceAllocation<?>> resourceAllocations) {
             List<ModifiedAllocation> result = new ArrayList<ModifiedAllocation>();
             for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
                 result.add(new ModifiedAllocation(resourceAllocation,
-                        resourceAllocation.copy()));
+                        resourceAllocation.copy(onScenario)));
             }
             return result;
         }
@@ -333,7 +345,8 @@ public class Task extends TaskElement {
 
     }
 
-    public void mergeAllocation(CalculatedValue calculatedValue,
+    public void mergeAllocation(Scenario scenario,
+            CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
@@ -343,11 +356,12 @@ public class Task extends TaskElement {
         }
         final LocalDate start = aggregate.getStart();
         final LocalDate end = aggregate.getEnd();
-        mergeAllocation(start, end, calculatedValue, newAllocations,
+        mergeAllocation(scenario, start, end, calculatedValue, newAllocations,
                 modifications, toRemove);
     }
 
-    private void mergeAllocation(final LocalDate start, final LocalDate end,
+    private void mergeAllocation(Scenario scenario, final LocalDate start,
+            final LocalDate end,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
@@ -357,11 +371,11 @@ public class Task extends TaskElement {
         setDaysDuration(Days.daysBetween(start, end).getDays());
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
-            pair.getOriginal().mergeAssignmentsAndResourcesPerDay(
+            pair.getOriginal().mergeAssignmentsAndResourcesPerDay(scenario,
                     pair.getModification());
         }
         remove(toRemove);
-        addAllocations(newAllocations);
+        addAllocations(scenario, newAllocations);
     }
 
     private void remove(Collection<? extends ResourceAllocation<?>> toRemove) {
@@ -370,8 +384,10 @@ public class Task extends TaskElement {
         }
     }
 
-    private void addAllocations(List<ResourceAllocation<?>> newAllocations) {
+    private void addAllocations(Scenario scenario,
+            List<ResourceAllocation<?>> newAllocations) {
         for (ResourceAllocation<?> resourceAllocation : newAllocations) {
+            resourceAllocation.switchToScenario(scenario);
             addResourceAllocation(resourceAllocation);
         }
     }
@@ -436,21 +452,28 @@ public class Task extends TaskElement {
         }
     }
 
+    public void copyAssignmentsFromOneScenarioToAnother(Scenario from, Scenario to) {
+        for (ResourceAllocation<?> each : getAllResourceAllocations()) {
+            each.copyAssignmentsFromOneScenarioToAnother(from, to);
+        }
+    }
+
     @Override
-    protected void moveAllocations() {
-        reassign(new WithTheSameHoursAndResourcesPerDay());
+    protected void moveAllocations(Scenario scenario) {
+        reassign(scenario, new WithTheSameHoursAndResourcesPerDay());
     }
 
-    public void reassignAllocationsWithNewResources(IResourceDAO resourceDAO) {
-        reassign(new WithAnotherResources(resourceDAO));
+    public void reassignAllocationsWithNewResources(Scenario scenario,
+            IResourceDAO resourceDAO) {
+        reassign(scenario, new WithAnotherResources(resourceDAO));
     }
 
-    private void reassign(AllocationModificationStrategy strategy) {
+    private void reassign(Scenario onScenario, AllocationModificationStrategy strategy) {
         if (isLimiting()) {
             return;
         }
-        List<ModifiedAllocation> copied = ModifiedAllocation
-                .copy(getSatisfiedResourceAllocations());
+        List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
+                getSatisfiedResourceAllocations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
                 .modified(copied);
         List<ResourcesPerDayModification> allocations = strategy
@@ -479,7 +502,8 @@ public class Task extends TaskElement {
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
         updateDerived(copied);
-        mergeAllocation(asLocalDate(getStartDate()), asLocalDate(getEndDate()),
+        mergeAllocation(onScenario, asLocalDate(getStartDate()),
+                asLocalDate(getEndDate()),
                 calculatedValue, Collections
                         .<ResourceAllocation<?>> emptyList(), copied,
                 Collections.<ResourceAllocation<?>> emptyList());
@@ -535,6 +559,7 @@ public class Task extends TaskElement {
         this.subcontractedTaskData = subcontractedTaskData;
     }
 
+    @Valid
     public SubcontractedTaskData getSubcontractedTaskData() {
         return subcontractedTaskData;
     }
@@ -600,6 +625,7 @@ public class Task extends TaskElement {
         this.consolidation = consolidation;
     }
 
+    @Valid
     public Consolidation getConsolidation() {
         return consolidation;
     }

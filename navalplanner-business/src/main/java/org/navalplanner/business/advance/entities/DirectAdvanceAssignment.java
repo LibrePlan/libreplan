@@ -22,6 +22,7 @@ package org.navalplanner.business.advance.entities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -92,12 +93,13 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
     }
 
     public SortedSet<AdvanceMeasurement> getAdvanceMeasurements() {
-        return this.advanceMeasurements;
+        return Collections.unmodifiableSortedSet(this.advanceMeasurements);
     }
 
     public void setAdvanceMeasurements(
             SortedSet<AdvanceMeasurement> advanceMeasurements) {
-        this.advanceMeasurements = advanceMeasurements;
+        this.advanceMeasurements = new TreeSet<AdvanceMeasurement>(
+                advanceMeasurements);
     }
 
     public AdvanceMeasurement getLastAdvanceMeasurement() {
@@ -141,10 +143,29 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
                 RoundingMode.DOWN);
     }
 
-    public void addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
-        this.advanceMeasurements.add(advanceMeasurement);
-        advanceMeasurement.setAdvanceAssignment(this);
+    public boolean addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
+        boolean result = this.advanceMeasurements.add(advanceMeasurement);
+        if (result) {
+            advanceMeasurement.setAdvanceAssignment(this);
+            if (getOrderElement() != null) {
+                getOrderElement()
+                        .markAsDirtyLastAdvanceMeasurementForSpreading();
+            }
+        }
+        return result;
+    }
+
+    public void removeAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
+        this.advanceMeasurements.remove(advanceMeasurement);
+        advanceMeasurement.setAdvanceAssignment(null);
         getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
+    }
+
+    public void clearAdvanceMeasurements() {
+        this.advanceMeasurements.clear();
+        if (getOrderElement() != null) {
+            getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
+        }
     }
 
     public AdvanceMeasurement getAdvanceMeasurementAtExactDate(LocalDate date) {

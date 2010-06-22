@@ -27,6 +27,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
@@ -35,20 +40,186 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 public abstract class PlanningState {
+
+    public static IScenarioInfo ownerScenarioInfo(
+            IOrderVersionDAO orderVersionDAO, Scenario scenario,
+            OrderVersion currentVersionForScenario) {
+        return new UsingOwnerScenario(orderVersionDAO, scenario,
+                currentVersionForScenario);
+    }
+
+    public static IScenarioInfo forNotOwnerScenario(IOrderDAO orderDAO,
+            IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO,
+            Order order, OrderVersion previousVersion,
+            Scenario currentScenario, OrderVersion newVersion) {
+        return new UsingNotOwnerScenario(orderDAO, scenarioDAO, taskSourceDAO,
+                order, previousVersion,
+                currentScenario, newVersion);
+    }
+
+    public interface IScenarioInfo {
+
+        public Scenario getCurrentScenario();
+
+        public boolean isUsingTheOwnerScenario();
+
+        /**
+         * @throws IllegalStateException
+         *             if it's using the owner scenario
+         */
+        public void saveVersioningInfo() throws IllegalStateException;
+
+        public void afterCommit();
+    }
+
+    private static class EmptySchedulingScenarioInfo implements IScenarioInfo {
+
+        private final Scenario currentScenario;
+
+        public EmptySchedulingScenarioInfo(Scenario currentScenario) {
+            this.currentScenario = currentScenario;
+        }
+
+        @Override
+        public void afterCommit() {
+        }
+
+        @Override
+        public Scenario getCurrentScenario() {
+            return currentScenario;
+        }
+
+        @Override
+        public boolean isUsingTheOwnerScenario() {
+            return true;
+        }
+
+        @Override
+        public void saveVersioningInfo()
+                throws IllegalStateException {
+        }
+
+    }
+
+    private static class UsingOwnerScenario implements IScenarioInfo {
+
+        private final Scenario currentScenario;
+        private final OrderVersion currentVersionForScenario;
+        private final IOrderVersionDAO orderVersionDAO;
+
+        public UsingOwnerScenario(IOrderVersionDAO orderVersionDAO,
+                Scenario currentScenario,
+                OrderVersion currentVersionForScenario) {
+            Validate.notNull(orderVersionDAO);
+            Validate.notNull(currentScenario);
+            Validate.notNull(currentVersionForScenario);
+            this.orderVersionDAO = orderVersionDAO;
+            this.currentScenario = currentScenario;
+            this.currentVersionForScenario = currentVersionForScenario;
+        }
+
+        @Override
+        public boolean isUsingTheOwnerScenario() {
+            return true;
+        }
+
+        @Override
+        public void saveVersioningInfo() throws IllegalStateException {
+            currentVersionForScenario.savingThroughOwner();
+            orderVersionDAO.save(currentVersionForScenario);
+        }
+
+        @Override
+        public void afterCommit() {
+            // do nothing
+        }
+
+        @Override
+        public Scenario getCurrentScenario() {
+            return currentScenario;
+        }
+    }
+
+    private static class UsingNotOwnerScenario implements IScenarioInfo {
+
+        private final IOrderDAO orderDAO;
+        private final IScenarioDAO scenarioDAO;
+        private final ITaskSourceDAO taskSourceDAO;
+
+        private final OrderVersion previousVersion;
+        private final Scenario currentScenario;
+        private final OrderVersion newVersion;
+        private final Order order;
+        private boolean versionSaved = false;
+
+        public UsingNotOwnerScenario(IOrderDAO orderDAO,
+                IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO,
+                Order order, OrderVersion previousVersion,
+                Scenario currentScenario,
+                OrderVersion newVersion) {
+            Validate.notNull(order);
+            Validate.notNull(previousVersion);
+            Validate.notNull(currentScenario);
+            Validate.notNull(newVersion);
+            Validate.notNull(orderDAO);
+            Validate.notNull(scenarioDAO);
+            Validate.notNull(taskSourceDAO);
+            this.orderDAO = orderDAO;
+            this.scenarioDAO = scenarioDAO;
+            this.taskSourceDAO = taskSourceDAO;
+            this.previousVersion = previousVersion;
+            this.currentScenario = currentScenario;
+            this.newVersion = newVersion;
+            this.order = order;
+        }
+
+        @Override
+        public boolean isUsingTheOwnerScenario() {
+            return versionSaved;
+        }
+
+        @Override
+        public void saveVersioningInfo() throws IllegalStateException {
+            if (versionSaved) {
+                return;
+            }
+            orderDAO.save(order);
+            TaskSource taskSource = order.getTaskSource();
+            taskSourceDAO.save(taskSource);
+            taskSource.dontPoseAsTransientObjectAnymore();
+            taskSource.getTask().dontPoseAsTransientObjectAnymore();
+            scenarioDAO.updateDerivedScenariosWithNewVersion(previousVersion,
+                    order, currentScenario, newVersion);
+        }
+
+        @Override
+        public void afterCommit() {
+            versionSaved = true;
+        }
+
+        @Override
+        public Scenario getCurrentScenario() {
+            return currentScenario;
+        }
+    }
 
     public static PlanningState create(TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources,
-            ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
+            ICriterionDAO criterionDAO, IResourceDAO resourceDAO,
+            IScenarioInfo scenarioInfo) {
         return new WithDataPlanningState(rootTask, initialState,
-                initialResources,
-                criterionDAO, resourceDAO);
+                initialResources, criterionDAO, resourceDAO, scenarioInfo);
     }
 
-    public static PlanningState createEmpty() {
-        return new EmptyPlannigState();
+    public static PlanningState createEmpty(Scenario currentScenario) {
+        return new EmptyPlannigState(currentScenario);
     }
 
     public abstract Collection<? extends TaskElement> getTasksToSave();
@@ -64,6 +235,12 @@ public abstract class PlanningState {
     public abstract void added(TaskElement taskElement);
 
     public abstract TaskGroup getRootTask();
+
+    public abstract IScenarioInfo getScenarioInfo();
+
+    public Scenario getCurrentScenario() {
+        return getScenarioInfo().getCurrentScenario();
+    }
 
     static class WithDataPlanningState extends PlanningState {
 
@@ -81,19 +258,33 @@ public abstract class PlanningState {
 
         private final IResourceDAO resourceDAO;
 
+        private final IScenarioInfo scenarioInfo;
+
         private WithDataPlanningState(TaskGroup rootTask,
                 Collection<? extends TaskElement> initialState,
                 Collection<? extends Resource> initialResources,
-                ICriterionDAO criterionDAO, IResourceDAO resourceDAO) {
+                ICriterionDAO criterionDAO, IResourceDAO resourceDAO,
+                IScenarioInfo scenarioInfo) {
             this.rootTask = rootTask;
             this.criterionDAO = criterionDAO;
             this.resourceDAO = resourceDAO;
+            this.scenarioInfo = scenarioInfo;
             this.initial = new ArrayList<TaskElement>(initialState);
             this.toSave = new HashSet<TaskElement>(initialState);
             this.toRemove = new HashSet<TaskElement>();
             this.resources = OrderPlanningModel
                     .loadRequiredDataFor(new HashSet<Resource>(
                     initialResources));
+            associateWithScenario(this.resources);
+        }
+
+        private void associateWithScenario(
+                Collection<? extends Resource> resources) {
+            Scenario currentScenario = getCurrentScenario();
+            for (Resource each : resources) {
+                each.useScenario(currentScenario);
+
+            }
         }
 
         @Override
@@ -136,6 +327,7 @@ public abstract class PlanningState {
         private void addingNewlyCreated(IResourceDAO resourceDAO) {
             Set<Resource> newResources = getNewResources(resourceDAO);
             OrderPlanningModel.loadRequiredDataFor(newResources);
+            associateWithScenario(newResources);
             resources.addAll(newResources);
         }
 
@@ -193,9 +385,20 @@ public abstract class PlanningState {
         public TaskGroup getRootTask() {
             return rootTask;
         }
+
+        @Override
+        public IScenarioInfo getScenarioInfo() {
+            return scenarioInfo;
+        }
     }
 
     private static class EmptyPlannigState extends PlanningState {
+
+        private final Scenario currentScenario;
+
+        private EmptyPlannigState(Scenario currentScenario) {
+            this.currentScenario = currentScenario;
+        }
 
         @Override
         public void added(TaskElement taskElement) {
@@ -226,6 +429,11 @@ public abstract class PlanningState {
         }
 
         public void removed(TaskElement taskElement) {
+        }
+
+        @Override
+        public IScenarioInfo getScenarioInfo() {
+            return new EmptySchedulingScenarioInfo(currentScenario);
         }
 
     }

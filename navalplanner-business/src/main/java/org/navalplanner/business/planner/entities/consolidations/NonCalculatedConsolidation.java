@@ -26,6 +26,10 @@ import java.util.TreeSet;
 
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.util.deepcopy.AfterCopy;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 
 /**
@@ -37,6 +41,15 @@ public class NonCalculatedConsolidation extends Consolidation {
     private SortedSet<NonCalculatedConsolidatedValue> consolidatedValues = new TreeSet<NonCalculatedConsolidatedValue>(
             new ConsolidatedValueComparator());
 
+    @AfterCopy
+    private void instantiateConsolidatedValuesWithComparator() {
+        SortedSet<NonCalculatedConsolidatedValue> previous = consolidatedValues;
+        consolidatedValues = new TreeSet<NonCalculatedConsolidatedValue>(
+                new ConsolidatedValueComparator());
+        consolidatedValues.addAll(previous);
+    }
+
+    @OnCopy(Strategy.SHARE)
     private DirectAdvanceAssignment directAdvanceAssignment;
 
     public static NonCalculatedConsolidation create(Task task,
@@ -53,7 +66,10 @@ public class NonCalculatedConsolidation extends Consolidation {
                 consolidatedValues));
     }
 
-    protected NonCalculatedConsolidation() {
+    /**
+     * Constructor for {@link DeepCopy}. DO NOT USE!
+     */
+    public NonCalculatedConsolidation() {
 
     }
 

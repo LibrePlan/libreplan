@@ -61,6 +61,8 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.test.planner.entities.TaskTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +80,8 @@ public class OrderElementTest {
 
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+
+    private static OrderVersion mockedOrderVersion = TaskTest.mockOrderVersion();
 
     @Before
     public void loadRequiredaData() {
@@ -100,11 +104,12 @@ public class OrderElementTest {
     }
 
     private static OrderLineGroup givenOrderLineGroupWithOneOrderLine(
+            OrderVersion orderVersion,
             Integer hours) {
         OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName("OrderLineGroup1");
         orderLineGroup.setCode("1");
-
+        orderLineGroup.useSchedulingDataFor(orderVersion);
         OrderLine orderLine = givenOrderLine("OrderLine1", "1.1", hours);
         orderLineGroup.add(orderLine);
 
@@ -113,9 +118,18 @@ public class OrderElementTest {
 
     public static OrderLineGroup givenOrderLineGroupWithTwoOrderLines(
             Integer hours1, Integer hours2) {
-        OrderLineGroup orderLineGroup = givenOrderLineGroupWithOneOrderLine(hours1);
+        return givenOrderLineGroupWithTwoOrderLines(mockedOrderVersion, hours1,
+                hours2);
+    }
+
+    public static OrderLineGroup givenOrderLineGroupWithTwoOrderLines(
+            OrderVersion orderVersion,
+            Integer hours1, Integer hours2) {
+        OrderLineGroup orderLineGroup = givenOrderLineGroupWithOneOrderLine(
+                orderVersion, hours1);
 
         OrderLine orderLine = givenOrderLine("OrderLine2", "1.2", hours2);
+
         orderLineGroup.add(orderLine);
 
         return orderLineGroup;
@@ -165,12 +179,11 @@ public class OrderElementTest {
 
         DirectAdvanceAssignment advanceAssignment = givenAdvanceAssigement(
                 maxValue, advanceType);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement);
         advanceAssignment.setReportGlobalAdvance(reportGlobalAdvance);
 
-        advanceMeasurement.setAdvanceAssignment(advanceAssignment);
-
         orderElement.addAdvanceAssignment(advanceAssignment);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement);
+        advanceMeasurement.setAdvanceAssignment(advanceAssignment);
     }
 
     private static AdvanceType givenAdvanceType(String name) {
@@ -599,22 +612,22 @@ public class OrderElementTest {
         AdvanceMeasurement advanceMeasurement1 = AdvanceMeasurement.create();
         advanceMeasurement1.setDate(date1);
         advanceMeasurement1.setValue(value1);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement1);
         advanceMeasurement1.setAdvanceAssignment(advanceAssignment);
 
         AdvanceMeasurement advanceMeasurement2 = AdvanceMeasurement.create();
         advanceMeasurement2.setDate(date2);
         advanceMeasurement2.setValue(value2);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement2);
         advanceMeasurement2.setAdvanceAssignment(advanceAssignment);
 
         AdvanceMeasurement advanceMeasurement3 = AdvanceMeasurement.create();
         advanceMeasurement3.setDate(five);
         advanceMeasurement3.setValue(date3);
-        advanceAssignment.getAdvanceMeasurements().add(advanceMeasurement3);
         advanceMeasurement3.setAdvanceAssignment(advanceAssignment);
 
         orderElement.addAdvanceAssignment(advanceAssignment);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement1);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement2);
+        advanceAssignment.addAdvanceMeasurements(advanceMeasurement3);
     }
 
     @Test
@@ -752,11 +765,13 @@ public class OrderElementTest {
         orderLineGroup_1_1.setName("OrderLineGroup 1.1");
         orderLineGroup_1_1.setCode("1.1");
 
+        orderLineGroup_1.useSchedulingDataFor(mockedOrderVersion);
+
         OrderLine orderLine_1_1_1 = givenOrderLine("OrderLine 1.1.1", "1.1.1",
                 1000);
 
-        orderLineGroup_1_1.add(orderLine_1_1_1);
         orderLineGroup_1.add(orderLineGroup_1_1);
+        orderLineGroup_1_1.add(orderLine_1_1_1);
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
                 10000), true, new BigDecimal(1), true, false);
@@ -785,7 +800,7 @@ public class OrderElementTest {
         OrderLineGroup orderLineGroup_1 = OrderLineGroup.create();
         orderLineGroup_1.setName("OrderLineGroup 1");
         orderLineGroup_1.setCode("1");
-
+        orderLineGroup_1.useSchedulingDataFor(mockedOrderVersion);
         OrderLineGroup orderLineGroup_1_1 = OrderLineGroup.create();
         orderLineGroup_1_1.setName("OrderLineGroup 1.1");
         orderLineGroup_1_1.setCode("1.1");
@@ -793,8 +808,8 @@ public class OrderElementTest {
         OrderLine orderLine_1_1_1 = givenOrderLine("OrderLine 1.1.1", "1.1.1",
                 1000);
 
-        orderLineGroup_1_1.add(orderLine_1_1_1);
         orderLineGroup_1.add(orderLineGroup_1_1);
+        orderLineGroup_1_1.add(orderLine_1_1_1);
 
         AdvanceType advanceType1 = AdvanceType.create("test1", new BigDecimal(
                 10000), true, new BigDecimal(1), true, false);

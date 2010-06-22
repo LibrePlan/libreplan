@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.entities.consolidations;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -46,7 +47,10 @@ public class CalculatedConsolidatedValue extends ConsolidatedValue {
         super(date, value, taskEndDate);
     }
 
-    protected CalculatedConsolidatedValue() {
+    /**
+     * Constructor for {@link DeepCopy}. DO NOT USE!
+     */
+    public CalculatedConsolidatedValue() {
     }
 
     public void setConsolidation(CalculatedConsolidation consolidation) {

@@ -39,8 +39,10 @@
         <tabpanels>
             <tabpanel>
                 <!-- Order element information -->
-                <groupbox mold="3d" closable="false">
-                    <caption label="${i18n:_('Order Element Information')}:" />
+
+        <panel title="${i18n:_('Order Element Information')}:" border="normal">
+            <panelchildren>
+
                     <grid id="gridLimitingOrderElementHours">
                         <columns>
                               <column label="${i18n:_('Criteria')}" width="200px" align="center"/>
@@ -62,11 +64,12 @@
                             </row>
                           </rows>
                     </grid>
-                </groupbox>
+                </panelchildren>
+                </panel>
 
                 <!-- Allocations -->
-                <groupbox mold="3d" style="margin-top: 5px" sclass="assignedresources" closable="false">
-                    <caption label="${i18n:_('Allocations')}" />
+                <panel style="margin-top: 5px" sclass="assignedresources" closable="false" title="${i18n:_('Allocations')}">
+                    <panelchildren>
                     <grid id="gridLimitingAllocations"
                         model="@{limitingAllocationController.resourceAllocationRows}"
                         rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
@@ -78,7 +81,8 @@
                             <column label="${i18n:_('Priority')}" />
                         </columns>
                     </grid>
-                </groupbox>
+                </panelchildren>
+        </panel>
 
             </tabpanel>
 

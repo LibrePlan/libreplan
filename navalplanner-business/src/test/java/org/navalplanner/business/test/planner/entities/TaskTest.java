@@ -21,6 +21,7 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -39,12 +40,14 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -62,6 +65,14 @@ public class TaskTest {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    private static final OrderVersion mockedOrderVersion = mockOrderVersion();
+
+    public static final OrderVersion mockOrderVersion() {
+        OrderVersion result = createNiceMock(OrderVersion.class);
+        replay(result);
+        return result;
+    }
+
     private Task task;
 
     private HoursGroup hoursGroup;
@@ -70,10 +81,13 @@ public class TaskTest {
         hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
         Order order = new Order();
+        order.useSchedulingDataFor(mockedOrderVersion);
         order.setInitDate(new Date());
         OrderLine orderLine = OrderLine.create();
         order.add(orderLine);
-        TaskSource taskSource = TaskSource.create(orderLine, Arrays
+        SchedulingDataForVersion version = TaskElementTest
+                .mockSchedulingDataForVersion(orderLine);
+        TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
         task = Task.createTask(taskSource);
     }
@@ -99,9 +113,12 @@ public class TaskTest {
         hoursGroup.setWorkingHours(3);
         OrderLine orderLine = OrderLine.create();
         Order order = new Order();
+        order.useSchedulingDataFor(mockedOrderVersion);
         order.setInitDate(new Date());
         order.add(orderLine);
-        TaskSource taskSource = TaskSource.create(orderLine, Arrays
+        SchedulingDataForVersion version = TaskElementTest
+                .mockSchedulingDataForVersion(orderLine);
+        TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
         return Task.createTask(taskSource);
     }
@@ -179,6 +196,8 @@ public class TaskTest {
         expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
         expect(resourceAllocation.hasAssignments()).andReturn(true).anyTimes();
         expect(resourceAllocation.isSatisfied()).andReturn(true).anyTimes();
+        resourceAllocation.detach();
+        expectLastCall().anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;
     }
@@ -190,8 +209,6 @@ public class TaskTest {
         SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         resourceAllocation.setLimitingResourceQueueElement(element);
         task.addResourceAllocation(resourceAllocation);
-        taskElementDAO.save(task);
-
         assertTrue(task.getLimitingResourceAllocations().size() == 1);
     }
 
@@ -200,8 +217,6 @@ public class TaskTest {
         Task task = createValidTask();
         SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         task.addResourceAllocation(resourceAllocation);
-        taskElementDAO.save(task);
-
         assertTrue(task.getNonLimitingResourceAllocations().size() == 1);
     }
 

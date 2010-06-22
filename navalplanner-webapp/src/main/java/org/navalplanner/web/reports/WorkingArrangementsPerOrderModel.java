@@ -41,6 +41,8 @@ import org.navalplanner.business.planner.entities.TaskStatusEnum;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.reports.dtos.WorkingArrangementPerOrderDTO;
 import org.navalplanner.business.reports.dtos.WorkingArrangementPerOrderDTO.DependencyWorkingArrangementDTO;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +69,18 @@ public class WorkingArrangementsPerOrderModel implements
     @Autowired
     IWorkReportLineDAO workReportLineDAO;
 
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        final List<Order> orders = orderDAO.getOrders();
+        Scenario currentScenario = scenarioManager.getCurrent();
+        final List<Order> orders = orderDAO
+                .getOrdersByScenario(currentScenario);
         for (Order each: orders) {
             initializeOrderElements(each.getOrderElements());
+            each.useSchedulingDataFor(currentScenario);
         }
         return orders;
     }
@@ -87,15 +95,17 @@ public class WorkingArrangementsPerOrderModel implements
     @Transactional(readOnly = true)
     public JRDataSource getWorkingArrangementsPerOrderReportReport(
             Order order, TaskStatusEnum taskStatus, boolean showDependencies) {
-
         if (order == null) {
             return new JREmptyDataSource();
         }
 
+        orderDAO.reattach(order);
+
         List<WorkingArrangementPerOrderDTO> workingArrangementPerOrderList =
             new ArrayList<WorkingArrangementPerOrderDTO>();
 
-        final List<Task> tasks = orderDAO.getTasksByOrder(order);
+        final List<Task> tasks = filterOnlyTasks(order
+                .getAllChildrenAssociatedTaskElements());
         final List<Task> sortTasks = sortTasks(order, tasks);
         final Date deadLineOrder = order.getDeadline();
         for (Task each : sortTasks) {
@@ -118,6 +128,16 @@ public class WorkingArrangementsPerOrderModel implements
             }
         }
         return new JRBeanCollectionDataSource(workingArrangementPerOrderList);
+    }
+
+    private List<Task> filterOnlyTasks(List<TaskElement> taskElements) {
+        List<Task> result = new ArrayList<Task>();
+        for (TaskElement taskElement : taskElements) {
+            if (taskElement instanceof Task) {
+                result.add((Task) taskElement);
+            }
+        }
+        return result;
     }
 
     private List<Task> sortTasks(Order order, List<Task> tasks) {

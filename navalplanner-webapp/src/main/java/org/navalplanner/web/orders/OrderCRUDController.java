@@ -710,13 +710,13 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void remove(Order order) {
-        boolean alreadyInUse = orderModel.isAlreadyInUse(order);
+        boolean alreadyInUse = orderModel.isAlreadyInUseAndIsOnlyInCurrentScenario(order);
         if (alreadyInUse) {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the order element \"{0}\" because of any of its order elements are already in use in some work reports",
+                                    "You can not remove the order \"{0}\" because of any of its order elements are already in use in some work reports and the order just exists in the current scenario",
                                     order.getName()));
         } else {
             orderModel.remove(order);
@@ -727,6 +727,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void schedule(Order order) {
+        orderModel.useSchedulingDataForCurrentScenario(order);
         if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             if (order.isScheduled()) {
                 planningControllerEntryPoints.goToScheduleOf(order);

@@ -29,6 +29,8 @@ import java.util.Set;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * Machine Workers Configuration Unit<br />
@@ -36,6 +38,7 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class MachineWorkersConfigurationUnit extends BaseEntity {
 
+    @OnCopy(Strategy.SHARE)
     private Machine machine;
 
     private BigDecimal alpha;
@@ -44,6 +47,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
 
     private Set<MachineWorkerAssignment> workerAssignments = new HashSet<MachineWorkerAssignment>();
 
+    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> requiredCriterions = new HashSet<Criterion>();
 
     public static MachineWorkersConfigurationUnit create(Machine machine,

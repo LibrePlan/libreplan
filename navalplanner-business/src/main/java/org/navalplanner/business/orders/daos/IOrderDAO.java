@@ -26,8 +26,8 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.entities.User;
 
 /**
@@ -54,12 +54,6 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
             Date startingDate, Date endingDate);
 
     /**
-     * @param order
-     * @return
-     */
-    List<Task> getTasksByOrder(Order order);
-
-    /**
      * Returns a list of orders filtered by the read authorizations of the indicated
      * user. Write authorizations are also counted, because they implicitly suppose
      * read access.
@@ -76,6 +70,9 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
      */
     List<Order> getOrdersByWriteAuthorization(User user);
 
+    List<Order> getOrdersByReadAuthorizationByScenario(User user,
+            Scenario scenario);
+
     /**
      * Returns the order filtered by the name. If name is blank (whitespace,
      * empty ("") or null, it throws <code>InstanceNotFoundException</code>.
@@ -85,5 +82,7 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
      */
     public Order findByNameAnotherTransaction(String name)
             throws InstanceNotFoundException;
+
+    List<Order> getOrdersByScenario(Scenario scenario);
 
 }

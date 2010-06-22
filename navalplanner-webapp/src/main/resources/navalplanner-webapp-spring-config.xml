@@ -59,6 +59,9 @@
 
     <bean id="criterionMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"
         init-method="init" />
+    <bean id="scenarioManager"
+        class="org.navalplanner.web.scenarios.CurrentUserScenarioAwareManager"
+        scope="singleton"/>
 
     <context:component-scan base-package="org.navalplanner"/>
 

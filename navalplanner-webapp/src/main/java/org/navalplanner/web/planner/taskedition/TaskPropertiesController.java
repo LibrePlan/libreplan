@@ -31,7 +31,9 @@ import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.web.common.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskEditFormComposer;
@@ -148,6 +150,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
      * Controller from the Gantt to manage common fields on edit {@link Task}
      * popup.
      */
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
 
     private EditTaskController editTaskController;
@@ -174,7 +180,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private ResourceAllocationTypeEnum originalState;
 
-    public void init(EditTaskController editTaskController,
+    public void init(final EditTaskController editTaskController,
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
         this.editTaskController = editTaskController;
@@ -189,6 +195,17 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintTypes.setDisabled(disabled);
         startConstraintDate.setDisabled(disabled);
         lbResourceAllocationType.setDisabled(disabled);
+
+        lbResourceAllocationType.addEventListener(Events.ON_SELECT,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+
+                        editTaskController
+                                .selectAssignmentTab(lbResourceAllocationType
+                                        .getSelectedIndex() + 1);
+                    }
+                });
 
         taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         updateComponentValuesForTask();
@@ -392,6 +409,13 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
         private String option;
 
+        private static final List<ResourceAllocationTypeEnum> nonMasterOptionList = new ArrayList<ResourceAllocationTypeEnum>() {
+            {
+                add(NON_LIMITING_RESOURCES);
+                add(SUBCONTRACT);
+            }
+        };
+
         private ResourceAllocationTypeEnum(String option) {
             this.option = option;
         }
@@ -402,6 +426,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
         public static List<ResourceAllocationTypeEnum> getOptionList() {
             return Arrays.asList(values());
+        }
+
+        public static List<ResourceAllocationTypeEnum> getOptionListForNonMasterBranch() {
+            return nonMasterOptionList;
         }
 
         public static ResourceAllocationTypeEnum getDefault() {
@@ -422,7 +450,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public List<ResourceAllocationTypeEnum> getResourceAllocationTypeOptionList() {
-        return ResourceAllocationTypeEnum.getOptionList();
+        if (scenarioManager.getCurrent().isMaster()) {
+            return ResourceAllocationTypeEnum.getOptionList();
+        } else {
+            return ResourceAllocationTypeEnum.getOptionListForNonMasterBranch();
+        }
     }
 
     public ResourceAllocationTypeEnum getResourceAllocationType() {

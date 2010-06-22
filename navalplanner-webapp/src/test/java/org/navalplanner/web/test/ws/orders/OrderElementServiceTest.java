@@ -53,6 +53,8 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
@@ -68,6 +70,7 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.common.api.ConstraintViolationDTO;
 import org.navalplanner.ws.common.api.CriterionRequirementDTO;
@@ -118,18 +121,26 @@ public class OrderElementServiceTest {
     @Resource
     private IDataBootstrap criterionsBootstrap;
 
-    @Test
-    @Rollback(false)
-    public void loadRequiredaData() {
-        defaultAdvanceTypesBootstrapListener.loadRequiredData();
-        configurationBootstrap.loadRequiredData();
-        materialCategoryBootstrap.loadRequiredData();
-        criterionsBootstrap.loadRequiredData();
-    }
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Before
-    public void loadRequiredUnitTypeData() {
-        unitTypeBootstrap.loadRequiredData();
+    public void loadRequiredaData() {
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                materialCategoryBootstrap.loadRequiredData();
+                criterionsBootstrap.loadRequiredData();
+                unitTypeBootstrap.loadRequiredData();
+                configurationBootstrap.loadRequiredData();
+                defaultAdvanceTypesBootstrapListener.loadRequiredData();
+                scenariosBootstrap.loadRequiredData();
+                return null;
+            }
+        });
     }
 
     @Autowired
@@ -329,7 +340,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
         // Mandatory fields: name, workingHours
-        assertThat(constraintViolations.size(), equalTo(2));
+        assertThat(constraintViolations.size(), equalTo(1));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
             assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
                     mustEnd("workingHours")));

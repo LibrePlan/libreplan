@@ -55,6 +55,7 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskGroupSynchronization;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -69,6 +70,9 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.test.externalcompanies.daos.ExternalCompanyDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
@@ -120,16 +124,32 @@ public class TaskElementDAOTest {
     @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private HoursGroup associatedHoursGroup;
+
+    @Before
+    public void loadRequiredData() {
+        scenariosBootstrap.loadRequiredData();
+    }
 
     private Task createValidTask() {
         associatedHoursGroup = new HoursGroup();
         associatedHoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         OrderLine orderLine = createOrderLine();
         orderLine.addHoursGroup(associatedHoursGroup);
-        TaskSource taskSource = TaskSource
-                .create(orderLine, Arrays
-                .asList(associatedHoursGroup));
+        OrderVersion orderVersion = ResourceAllocationDAOTest
+                .setupVersionUsing(scenarioManager,
+                orderLine.getOrder());
+        orderLine.useSchedulingDataFor(orderVersion);
+        SchedulingDataForVersion schedulingDataForVersion = orderLine
+                .getCurrentSchedulingDataForVersion();
+        TaskSource taskSource = TaskSource.create(schedulingDataForVersion,
+                Arrays.asList(associatedHoursGroup));
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(taskSourceDAO);
         Task task = (Task) taskSource.getTask();
@@ -144,9 +164,12 @@ public class TaskElementDAOTest {
         hoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
         orderLine.addHoursGroup(hoursGroup);
         Order order = Order.create();
+        OrderVersion orderVersion = ResourceAllocationDAOTest
+                .setupVersionUsing(scenarioManager, order);
         order.setName("bla");
         order.setInitDate(new Date());
         order.setCode("code-" + UUID.randomUUID());
+        order.useSchedulingDataFor(orderVersion);
         order.add(orderLine);
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
@@ -161,13 +184,20 @@ public class TaskElementDAOTest {
 
     private TaskGroup createValidTaskGroup() {
         OrderLine orderLine = createOrderLine();
-        TaskSource taskSource = TaskSource.createForGroup(orderLine);
+        OrderVersion orderVersion = ResourceAllocationDAOTest
+                .setupVersionUsing(scenarioManager, orderLine
+                        .getOrder());
+        orderLine.useSchedulingDataFor(orderVersion);
+        SchedulingDataForVersion schedulingDataForVersion = orderLine
+                .getCurrentSchedulingDataForVersion();
+        TaskSource taskSource = TaskSource
+                .createForGroup(schedulingDataForVersion);
         TaskGroupSynchronization synchronization = new TaskGroupSynchronization(
                 taskSource, Collections.<TaskSourceSynchronization> emptyList()) {
 
             @Override
             protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                    List<TaskElement> children) {
+                    List<TaskElement> children, boolean preexistent) {
                 TaskGroup result = TaskGroup.create(taskSource);
                 Date today = new Date();
                 result.setStartDate(today);

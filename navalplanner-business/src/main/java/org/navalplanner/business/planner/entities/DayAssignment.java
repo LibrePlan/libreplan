@@ -32,12 +32,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.AfterCopy;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 public abstract class DayAssignment extends BaseEntity {
 
@@ -142,6 +147,17 @@ public abstract class DayAssignment extends BaseEntity {
         return getOfType(GenericDayAssignment.class, dayAssignments);
     }
 
+    public static <T extends DayAssignment> List<T> withScenario(
+            Scenario scenario, Collection<T> dayAssignments) {
+        List<T> result = new ArrayList<T>();
+        for (T each : dayAssignments) {
+            if (ObjectUtils.equals(each.getScenario(), scenario)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     @Min(0)
     private int hours;
 
@@ -149,6 +165,7 @@ public abstract class DayAssignment extends BaseEntity {
     private LocalDate day;
 
     @NotNull
+    @OnCopy(Strategy.SHARE)
     private Resource resource;
 
     private Boolean consolidated = false;
@@ -213,6 +230,7 @@ public abstract class DayAssignment extends BaseEntity {
                 && day.compareTo(endExclusive) < 0;
     }
 
+    @AfterCopy
     protected void associateToResource() {
         getResource().addNewAssignments(Arrays.asList(this));
     }
@@ -225,6 +243,12 @@ public abstract class DayAssignment extends BaseEntity {
     protected abstract void detachFromAllocation();
 
     public abstract boolean belongsTo(Object allocation);
+
+    /**
+     * @return <code>null</code> if {@link DayAssignment this} day assignment
+     *         still has not been explicitly associated to a {@link Scenario}
+     */
+    public abstract Scenario getScenario();
 
     public abstract DayAssignment withHours(int newHours);
 

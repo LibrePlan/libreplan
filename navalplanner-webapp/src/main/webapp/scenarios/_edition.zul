@@ -1,0 +1,70 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+                     Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="${arg.top_id}" title="${arg.title}">
+
+    <grid  fixedLayout="true" style="margin-bottom: 10px;">
+        <columns>
+            <column width="200px" />
+            <column/>
+        </columns>
+        <rows>
+            <row>
+                <label value="${i18n:_('Name')}" />
+                <textbox value="@{scenarioController.scenario.name}" width="300px"
+                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                    disabled="@{scenarioController.scenario.predefined}" />
+            </row>
+            <row visible="@{scenarioController.scenario.derived}">
+                <label value="${i18n:_('Predecessor')}" />
+                <label value="@{scenarioController.scenario.predecessor.name}" />
+            </row>
+            <row>
+                <label value="${i18n:_('Description')}" />
+                <textbox value="@{scenarioController.scenario.description}"
+                    rows="5" width="300px" />
+            </row>
+            <row>
+                <label value="${i18n:_('Orders')}" />
+                <listbox model="@{scenarioController.orders}">
+                    <listhead>
+                        <listheader label="${i18n:_('Code')}" />
+                        <listheader label="${i18n:_('Name')}" />
+                    </listhead>
+                    <listitem self="@{each='order'}" value="@{order}">
+                        <listcell label="@{order.code}" />
+                        <listcell label="@{order.name}" />
+                    </listitem>
+                </listbox>
+            </row>
+        </rows>
+    </grid>
+
+    <hbox>
+        <button onClick="scenarioController.save();"
+            label="${arg.save_button_label}"
+            sclass="save-button global-action"
+            visible="${arg.save_button_visible}" />
+        <button onClick="scenarioController.cancel();"
+            label="${arg.cancel_button_label}"
+            sclass="cancel-button global-action" />
+    </hbox>
+
+</window>

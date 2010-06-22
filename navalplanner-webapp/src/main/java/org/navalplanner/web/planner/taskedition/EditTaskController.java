@@ -47,7 +47,6 @@ import org.navalplanner.web.planner.taskedition.TaskPropertiesController.Resourc
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -104,12 +103,22 @@ public class EditTaskController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
+
         window = (Window) comp;
         taskPropertiesController.doAfterCompose(taskPropertiesTabpanel);
         resourceAllocationController.doAfterCompose(resourceAllocationTabpanel);
         subcontractController.doAfterCompose(subcontractTabpanel);
+        initLimitingResourceAllocationController();
+    }
+
+    public void initLimitingResourceAllocationController() throws Exception {
         limitingResourceAllocationController.doAfterCompose(limitingResourceAllocationTabpanel);
-        messagesForUser = new MessagesForUser(messagesContainer);
+        limitingResourceAllocationController.setEditTaskController(this);
+    }
+
+    public IMessagesForUser getMessagesForUser() {
+        return messagesForUser;
     }
 
     public TaskPropertiesController getTaskPropertiesController() {
@@ -167,7 +176,8 @@ public class EditTaskController extends GenericForwardComposer {
             showNonLimitingResourcesTab();
         } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES
                 .equals(resourceAllocationType)) {
-            limitingResourceAllocationController.init(asTask(taskElement), messagesForUser);
+            limitingResourceAllocationController.init(asTask(taskElement),
+                    planningState, messagesForUser);
             showLimitingResourcesTab();
         }
 
@@ -209,6 +219,10 @@ public class EditTaskController extends GenericForwardComposer {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
         }
         showEditForm(context, taskElement, planningState);
+    }
+
+    public void selectAssignmentTab(int index) {
+        editTaskTabbox.setSelectedIndex(index);
     }
 
     public void showEditFormSubcontract(
@@ -273,10 +287,6 @@ public class EditTaskController extends GenericForwardComposer {
         if (context != null) {
             context.getTask().reloadResourcesText();
             context.reloadCharts();
-
-            if (context.getRelativeTo() instanceof TaskComponent) {
-                ((TaskComponent) context.getRelativeTo()).invalidate();
-            }
         }
     }
 

@@ -483,7 +483,7 @@ public abstract class BaseCalendarEditionController extends
         } else {
             Clients.closeErrorBox(dateboxEndDate);
         }
-        if (startDate.compareTo(endDate) > 0) {
+        if (new LocalDate(startDate).compareTo(new LocalDate(endDate)) > 0) {
             throw new WrongValueException(
                     dateboxEndDate,
                     _("Exception end date should be greater or equals than start date"));

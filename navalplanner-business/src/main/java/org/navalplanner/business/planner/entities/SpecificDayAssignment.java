@@ -20,12 +20,19 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 
 /**
@@ -35,22 +42,119 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class SpecificDayAssignment extends DayAssignment {
 
+    private abstract class ParentState {
+        abstract SpecificResourceAllocation getResourceAllocation();
+
+        abstract ParentState setParent(
+                SpecificResourceAllocation genericResourceAllocation);
+
+        abstract ParentState setParent(SpecificDayAssignmentsContainer container);
+
+        abstract Scenario getScenario();
+    }
+
+    private class ContainerNotSpecified extends ParentState {
+
+        private SpecificResourceAllocation parent;
+
+        @Override
+        SpecificResourceAllocation getResourceAllocation() {
+            return parent;
+        }
+
+        @Override
+        ParentState setParent(
+                SpecificResourceAllocation genericResourceAllocation) {
+            if (parent != null) {
+                throw new IllegalStateException(
+                        "the allocation cannot be changed once it has been set");
+            }
+            this.parent = genericResourceAllocation;
+            return this;
+        }
+
+        @Override
+        ParentState setParent(SpecificDayAssignmentsContainer container) {
+            return new OnContainer(container);
+        }
+
+        @Override
+        Scenario getScenario() {
+            return null;
+        }
+
+    }
+
+    private class OnContainer extends ParentState {
+
+        OnContainer(SpecificDayAssignmentsContainer container) {
+            Validate.notNull(container);
+            SpecificDayAssignment.this.container = container;
+        }
+
+        public OnContainer() {
+        }
+
+        @Override
+        SpecificResourceAllocation getResourceAllocation() {
+            return container.getResourceAllocation();
+        }
+
+        @Override
+        ParentState setParent(
+                SpecificResourceAllocation genericResourceAllocation) {
+            throw new IllegalStateException("parent already set");
+        }
+
+        @Override
+        ParentState setParent(SpecificDayAssignmentsContainer container) {
+            throw new IllegalStateException("parent already set");
+        }
+
+        @Override
+        Scenario getScenario() {
+            return container.getScenario();
+        }
+    }
+
+
     public static Set<SpecificDayAssignment> copy(
-            SpecificResourceAllocation allocation,
-            Collection<SpecificDayAssignment> specificDaysAssignment) {
+            SpecificDayAssignmentsContainer container,
+            Collection<? extends SpecificDayAssignment> specificDaysAssignment) {
         Set<SpecificDayAssignment> result = new HashSet<SpecificDayAssignment>();
         for (SpecificDayAssignment s : specificDaysAssignment) {
-            SpecificDayAssignment created = create(s.getDay(), s.getHours(), s
-                    .getResource());
+            SpecificDayAssignment created = copyFromWithoutParent(s);
+            created.parentState = created.parentState.setParent(container);
             created.setConsolidated(s.isConsolidated());
-            created.setSpecificResourceAllocation(allocation);
             created.associateToResource();
             result.add(created);
         }
         return result;
     }
 
-    private SpecificResourceAllocation specificResourceAllocation;
+    private static SpecificDayAssignment copyFromWithoutParent(
+            SpecificDayAssignment assignment) {
+        SpecificDayAssignment copy = create(assignment.getDay(), assignment
+                .getHours(), assignment
+                        .getResource());
+        copy.setConsolidated(assignment.isConsolidated());
+        return copy;
+    }
+
+    public static List<SpecificDayAssignment> copyToAssignmentsWithoutParent(
+            Collection<? extends SpecificDayAssignment> assignments) {
+        List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
+        for (SpecificDayAssignment each : assignments) {
+            result.add(copyFromWithoutParent(each));
+        }
+        return result;
+    }
+
+    @OnCopy(Strategy.IGNORE)
+    private ParentState parentState;
+
+    @NotNull
+    private SpecificDayAssignmentsContainer container;
 
     public static SpecificDayAssignment create(LocalDate day, int hours,
             Resource resource) {
@@ -60,43 +164,50 @@ public class SpecificDayAssignment extends DayAssignment {
 
     public SpecificDayAssignment(LocalDate day, int hours, Resource resource) {
         super(day, hours, resource);
+        this.parentState = new ContainerNotSpecified();
     }
 
     /**
      * Constructor for hibernate. DO NOT USE!
      */
     public SpecificDayAssignment() {
-
+        this.parentState = new OnContainer();
     }
 
     public SpecificResourceAllocation getSpecificResourceAllocation() {
-        return specificResourceAllocation;
+        return parentState.getResourceAllocation();
     }
 
     public void setSpecificResourceAllocation(
             SpecificResourceAllocation specificResourceAllocation) {
-        if (this.specificResourceAllocation != null) {
-            throw new IllegalStateException(
-                    "the allocation cannot be changed once it has been set");
-        }
-        this.specificResourceAllocation = specificResourceAllocation;
-    }
-
-    @Override
-    protected void detachFromAllocation() {
-        this.specificResourceAllocation = null;
+        this.parentState = this.parentState
+                .setParent(specificResourceAllocation);
     }
 
     @Override
     public boolean belongsTo(Object resourceAllocation) {
         return resourceAllocation != null
-                && specificResourceAllocation.equals(resourceAllocation);
+                && getSpecificResourceAllocation().equals(resourceAllocation);
+    }
+
+    @Override
+    public Scenario getScenario() {
+        return parentState.getScenario();
     }
 
     @Override
     public DayAssignment withHours(int newHours) {
         SpecificDayAssignment result = create(getDay(), newHours, getResource());
-        result.specificResourceAllocation = specificResourceAllocation;
+        if (container != null) {
+            result.parentState.setParent(container);
+        } else if (this.getSpecificResourceAllocation() != null) {
+            result.parentState.setParent(this.getSpecificResourceAllocation());
+        }
         return result;
+    }
+
+    @Override
+    protected void detachFromAllocation() {
+        this.parentState = new ContainerNotSpecified();
     }
 }

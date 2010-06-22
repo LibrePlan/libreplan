@@ -22,8 +22,11 @@ package org.navalplanner.business.orders.daos;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
@@ -35,9 +38,11 @@ import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -62,6 +67,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
@@ -184,11 +192,41 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     @Override
     public void remove(Long id) throws InstanceNotFoundException {
         OrderElement orderElement = find(id);
-        for (TaskSource each : orderElement.getTaskSourcesFromBottomToTop()) {
+        removeTaskSourcesFor(this.taskSourceDAO, orderElement);
+        for (WorkReport each : getWorkReportsPointingTo(orderElement)) {
+            workReportDAO.remove(each.getId());
+        }
+        super.remove(id);
+    }
+
+    public static void removeTaskSourcesFor(ITaskSourceDAO taskSourceDAO,
+            OrderElement orderElement) throws InstanceNotFoundException {
+        List<SchedulingDataForVersion> allVersions = orderElement
+        .getSchedulingDatasForVersionFromBottomToTop();
+        for (TaskSource each : taskSourcesFrom(allVersions)) {
             each.detachAssociatedTaskFromParent();
             taskSourceDAO.remove(each.getId());
         }
-        super.remove(id);
+    }
+
+    private static List<TaskSource> taskSourcesFrom(
+            List<SchedulingDataForVersion> list) {
+        List<TaskSource> result = new ArrayList<TaskSource>();
+        for (SchedulingDataForVersion each : list) {
+            if (each.getTaskSource() != null) {
+                result.add(each.getTaskSource());
+            }
+        }
+        return result;
+    }
+
+    private Set<WorkReport> getWorkReportsPointingTo(OrderElement orderElement) {
+        Set<WorkReport> result = new HashSet<WorkReport>();
+        for (WorkReportLine each : workReportLineDAO
+                        .findByOrderElementAndChildren(orderElement)) {
+            result.add(each.getWorkReport());
+        }
+        return result;
     }
 
     @Override

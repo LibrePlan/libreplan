@@ -74,15 +74,16 @@ public class ResourceAllocationDAO extends
     }
 
     @SuppressWarnings("unchecked")
-    private List<GenericResourceAllocation> findGenericAllocationsFor(
-            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+    private List<GenericResourceAllocation> findGenericAllocationsFor(List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
         if(resources.isEmpty()) {
             return new ArrayList<GenericResourceAllocation>();
         }
         Criteria criteria  = getSession().createCriteria(GenericResourceAllocation.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-            .createCriteria("genericDayAssignments")
-            .add(Restrictions.in("resource", resources));
+            .createCriteria(
+                "genericDayAssignmentsContainers").createCriteria(
+                "dayAssignments").add(
+                Restrictions.in("resource", resources));
 
         if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
             Criteria dateCriteria = criteria.createCriteria("task");

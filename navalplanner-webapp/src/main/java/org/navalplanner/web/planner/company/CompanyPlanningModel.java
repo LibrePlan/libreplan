@@ -57,11 +57,12 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
-import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
@@ -151,9 +152,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     @Autowired
     private ICostCalculator hoursCostCalculator;
 
-    @Autowired
-    private OrderCRUDController orderCRUDController;
-
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private MultipleTabsPlannerController tabs;
@@ -162,6 +160,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    private Scenario currentScenario;
 
     private List<Order> ordersToShow;
 
@@ -212,6 +215,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
             IPredicate predicate) {
+
         PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
         configuration.setExpandPlanningViewCharts(configurationDAO
                 .getConfiguration().isExpandCompanyPlanningViewCharts());
@@ -596,10 +600,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return zoomListener;
     }
 
-    private PlannerConfiguration<TaskElement> createConfiguration() {
-        return createConfiguration(null);
-    }
-
     private PlannerConfiguration<TaskElement> createConfiguration(
             IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
@@ -651,9 +651,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return result;
         }
 
-        List<Order> list = sortByStartDate(orderDAO.getOrdersByReadAuthorization(user));
-
+        currentScenario = scenarioManager.getCurrent();
+        List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
+                user, currentScenario);
         for (Order order : list) {
+            order.useSchedulingDataFor(currentScenario);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
             if (associatedTaskElement != null) {
@@ -753,7 +755,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             resetMinimumAndMaximumValueForChart();
 
             Date start = filterStartDate!=null ? filterStartDate : interval.getStart();
-            Date finish = filterFinishDate!=null ? filterFinishDate : interval.getFinish();
+            Date finish = filterFinishDate != null ? filterFinishDate
+                    : interval.getFinish();
 
             Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish), interval);
             plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
@@ -781,8 +784,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
-            List<DayAssignment> dayAssignments = getFilteredDayAssignments(start, finish);
-
+            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
+                    currentScenario, LocalDate.fromDateFields(start), LocalDate
+                            .fromDateFields(finish));
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
 
@@ -791,7 +795,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
                 Date finish) {
-            List<DayAssignment> dayAssignments = getFilteredDayAssignments(start, finish);
+            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario, LocalDate.fromDateFields(start), LocalDate.fromDateFields(finish));
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
@@ -808,11 +812,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             }
 
             return mapDayAssignments;
-        }
-
-        private List<DayAssignment> getFilteredDayAssignments(Date start, Date finish) {
-            return dayAssignmentDAO.listFilteredByDate(
-                    new LocalDate(start.getTime()), new LocalDate(finish.getTime()));
         }
 
         private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(

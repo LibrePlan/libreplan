@@ -26,9 +26,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -50,7 +53,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
-import org.navalplanner.business.orders.entities.SchedulingState.ITypeChangedListener;
+import org.navalplanner.business.orders.entities.SchedulingDataForVersion.Data;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
@@ -60,8 +63,11 @@ import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
 
 public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
@@ -90,14 +96,10 @@ public abstract class OrderElement extends IntegrationEntity implements
     protected CriterionRequirementOrderElementHandler criterionRequirementHandler =
         CriterionRequirementOrderElementHandler.getInstance();
 
-    private SchedulingState.Type schedulingStateType = Type.NO_SCHEDULED;
-
     /**
      * This field is transient
      */
     private SchedulingState schedulingState = null;
-
-    private TaskSource taskSource;
 
     private OrderElementTemplate template;
 
@@ -111,16 +113,45 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private String externalCode;
 
+    private Map<OrderVersion, SchedulingDataForVersion> schedulingDatasForVersion = new HashMap<OrderVersion, SchedulingDataForVersion>();
+
+    private SchedulingDataForVersion.Data current = null;
+
+    public SchedulingDataForVersion.Data getCurrentSchedulingData() {
+        if (current == null) {
+            throw new IllegalStateException(
+                    "in order to use scheduling state related data "
+                            + "useSchedulingDataFor(OrderVersion orderVersion) "
+                            + "must be called first");
+        }
+        return current;
+    }
+
+    private void schedulingDataNowPointsTo(DeepCopy deepCopy,
+            OrderVersion version) {
+        current = getCurrentSchedulingData().pointsTo(deepCopy, version,
+                schedulingVersionFor(version));
+        for (OrderElement each : getChildren()) {
+            each.schedulingDataNowPointsTo(deepCopy, version);
+        }
+    }
+
+    protected void addNeededReplaces(DeepCopy deepCopy,
+            OrderVersion newOrderVersion) {
+        SchedulingDataForVersion currentVersion = getCurrentSchedulingData()
+                .getVersion();
+        SchedulingDataForVersion newSchedulingVersion = schedulingVersionFor(newOrderVersion);
+        deepCopy.replace(currentVersion, newSchedulingVersion);
+        for (OrderElement each : getChildren()) {
+            each.addNeededReplaces(deepCopy, newOrderVersion);
+        }
+    }
+
     public SchedulingState getSchedulingState() {
         if (schedulingState == null) {
             schedulingState = SchedulingState.createSchedulingState(
                     getSchedulingStateType(), getChildrenStates(),
-                    new ITypeChangedListener() {
-                        @Override
-                        public void typeChanged(Type newType) {
-                            schedulingStateType = newType;
-                        }
-                    });
+                    getCurrentSchedulingData().onTypeChangeListener());
         }
         return schedulingState;
     }
@@ -133,35 +164,131 @@ public abstract class OrderElement extends IntegrationEntity implements
         return result;
     }
 
+    public boolean hasSchedulingDataBeingModified() {
+        return getCurrentSchedulingData().hasPendingChanges()
+                || someSchedullingDataModified();
+    }
+
+    private boolean someSchedullingDataModified() {
+        for (OrderElement each : getChildren()) {
+            if (each.hasSchedulingDataBeingModified()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean isSchedulingDataInitialized() {
+        return current != null;
+    }
+
+    public void useSchedulingDataFor(OrderVersion orderVersion) {
+        Validate.notNull(orderVersion);
+        SchedulingDataForVersion schedulingVersion = schedulingVersionFor(orderVersion);
+        for (OrderElement each : getChildren()) {
+            each.useSchedulingDataFor(orderVersion);
+        }
+        current = schedulingVersion.makeAvailableFor(orderVersion);
+    }
+
+    private SchedulingDataForVersion schedulingVersionFor(
+            OrderVersion orderVersion) {
+        SchedulingDataForVersion currentSchedulingData = schedulingDatasForVersion
+                .get(orderVersion);
+        if (currentSchedulingData == null) {
+            currentSchedulingData = SchedulingDataForVersion
+                    .createInitialFor(this);
+            schedulingDatasForVersion.put(orderVersion, currentSchedulingData);
+        }
+        return currentSchedulingData;
+    }
+
+    public SchedulingDataForVersion getCurrentSchedulingDataForVersion() {
+        return getCurrentSchedulingData().getVersion();
+    }
+
+    protected void writeSchedulingDataChanges() {
+        Data currentSchedulingState = getCurrentSchedulingData();
+        currentSchedulingState.writeSchedulingDataChanges();
+        List<OrderElement> children = getChildren();
+        for (OrderElement each : children) {
+            each.writeSchedulingDataChanges();
+        }
+    }
+
+    protected void writeSchedulingDataChangesTo(DeepCopy deepCopy,
+            OrderVersion newOrderVersion) {
+        schedulingDataNowPointsTo(deepCopy, newOrderVersion);
+        writeSchedulingDataChanges();
+    }
+
+    protected void removeSpuriousDayAssignments(Scenario scenario) {
+        removeAtNotCurrent(scenario);
+        removeAtCurrent(scenario);
+        for (OrderElement each : getChildren()) {
+            each.removeSpuriousDayAssignments(scenario);
+        }
+    }
+
+    private void removeAtNotCurrent(Scenario scenario) {
+        SchedulingDataForVersion currentDataForVersion = getCurrentSchedulingDataForVersion();
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion
+                .entrySet()) {
+            SchedulingDataForVersion dataForVersion = each.getValue();
+            if (!currentDataForVersion.equals(dataForVersion)) {
+                dataForVersion.removeSpuriousDayAssignments(scenario);
+            }
+        }
+    }
+
+    private void removeAtCurrent(Scenario scenario) {
+        TaskElement associatedTaskElement = getAssociatedTaskElement();
+        if (associatedTaskElement != null) {
+            associatedTaskElement.removePredecessorsDayAssignmentsFor(scenario);
+        }
+    }
+
     public List<TaskSourceSynchronization> calculateSynchronizationsNeeded() {
+        SchedulingDataForVersion schedulingDataForVersion = getCurrentSchedulingData()
+                .getVersion();
+        return calculateSynchronizationsNeeded(schedulingDataForVersion);
+    }
+
+    private List<TaskSourceSynchronization> calculateSynchronizationsNeeded(
+            SchedulingDataForVersion schedulingDataForVersion) {
         List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
         if (isSchedulingPoint()) {
-            result.add(synchronizationForSchedulingPoint());
+            result
+                    .addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
             removeUnscheduled(result);
             if (wasASchedulingPoint()) {
                 result.add(taskSourceRemoval());
             }
-            result.add(synchronizationForSuperelement());
+            result
+                    .add(synchronizationForSuperelement(schedulingDataForVersion));
         } else if (schedulingState.isNoScheduled()) {
             removeTaskSource(result);
         }
         return result;
     }
 
-    private TaskSourceSynchronization synchronizationForSuperelement() {
+    private TaskSourceSynchronization synchronizationForSuperelement(
+            SchedulingDataForVersion schedulingState) {
         List<TaskSourceSynchronization> childrenSynchronizations = childrenSynchronizations();
         if (thereIsNoTaskSource()) {
-            taskSource = TaskSource.createForGroup(this);
-            return TaskSource
-                    .mustAddGroup(taskSource, childrenSynchronizations);
+            getCurrentSchedulingData().requestedCreationOf(
+                    TaskSource.createForGroup(schedulingState));
+            return TaskSource.mustAddGroup(getTaskSource(),
+                    childrenSynchronizations);
         } else {
-            return taskSource.modifyGroup(childrenSynchronizations);
+            return getTaskSource().modifyGroup(childrenSynchronizations);
         }
     }
 
     private boolean wasASchedulingPoint() {
-        return taskSource != null && taskSource.getTask() instanceof Task;
+        return getTaskSource() != null
+                && getTaskSource().getTask() instanceof Task;
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {
@@ -179,23 +306,37 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
-    private TaskSourceSynchronization synchronizationForSchedulingPoint() {
+    private List<TaskSourceSynchronization> synchronizationForSchedulingPoint(
+            SchedulingDataForVersion schedulingState) {
         if (thereIsNoTaskSource()) {
-            taskSource = TaskSource.create(this, getHoursGroups());
-            return TaskSource.mustAdd(taskSource);
+            getCurrentSchedulingData().requestedCreationOf(
+                    TaskSource.create(schedulingState, getHoursGroups()));
+            return Collections.singletonList(TaskSource
+                    .mustAdd(getTaskSource()));
+        } else if (getTaskSource().getTask().isLeaf()) {
+            return Collections.singletonList(getTaskSource()
+                    .withCurrentHoursGroup(getHoursGroups()));
         } else {
-            if (taskSource.getTask().isLeaf()) {
-                return taskSource.withCurrentHoursGroup(getHoursGroups());
-            } else {
-                List<TaskSource> toBeRemoved = getTaskSourcesFromBottomToTop();
-                taskSource = TaskSource.create(this, getHoursGroups());
-                return TaskSource.mustReplace(toBeRemoved, taskSource);
-            }
+            return synchronizationsForFromPartiallyScheduledToSchedulingPoint(schedulingState);
         }
     }
 
+    private List<TaskSourceSynchronization> synchronizationsForFromPartiallyScheduledToSchedulingPoint(
+            SchedulingDataForVersion schedulingState) {
+        List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
+        for (TaskSource each : getTaskSourcesFromBottomToTop()) {
+            OrderElement orderElement = each.getOrderElement();
+            result.add(orderElement.taskSourceRemoval());
+        }
+        TaskSource newTaskSource = TaskSource.create(schedulingState,
+                getHoursGroups());
+        getCurrentSchedulingData().requestedCreationOf(newTaskSource);
+        result.add(TaskSource.mustAdd(newTaskSource));
+        return result;
+    }
+
     private boolean thereIsNoTaskSource() {
-        return taskSource == null;
+        return getTaskSource() == null;
     }
 
     private List<OrderElement> getSomewhatScheduledOrderElements() {
@@ -220,15 +361,16 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private void removeTaskSource(List<TaskSourceSynchronization> result) {
         removeChildrenTaskSource(result);
-        if (taskSource != null) {
+        if (getTaskSource() != null) {
             result.add(taskSourceRemoval());
         }
     }
 
     private TaskSourceSynchronization taskSourceRemoval() {
-        Validate.notNull(taskSource);
-        TaskSourceSynchronization result = TaskSource.mustRemove(taskSource);
-        taskSource = null;
+        Validate.notNull(getTaskSource());
+        TaskSourceSynchronization result = TaskSource
+                .mustRemove(getTaskSource());
+        getCurrentSchedulingData().taskSourceRemovalRequested();
         return result;
     }
 
@@ -247,10 +389,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         if (!isNewObject()) {
             throw new IllegalStateException();
         }
-        if (schedulingStateType != Type.NO_SCHEDULED) {
-            throw new IllegalStateException("already initialized");
-        }
-        schedulingStateType = type;
+        getCurrentSchedulingData().initializeType(type);
         schedulingState = null;
     }
 
@@ -273,10 +412,10 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public TaskElement getAssociatedTaskElement() {
-        if (taskSource == null) {
+        if (getTaskSource() == null) {
             return null;
         } else {
-            return taskSource.getTask();
+            return getTaskSource().getTask();
         }
     }
 
@@ -333,7 +472,7 @@ public abstract class OrderElement extends IntegrationEntity implements
     public abstract OrderLineGroup toContainer();
 
     public boolean isScheduled() {
-        return taskSource != null;
+        return getTaskSource() != null;
     }
 
     public boolean checkAtLeastOneHoursGroup() {
@@ -402,6 +541,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                         advanceAssignment.getAdvanceType());
                 removeChildrenAdvanceInParents(this.getParent());
             }
+            markAsDirtyLastAdvanceMeasurementForSpreading();
         }
     }
 
@@ -691,22 +831,18 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public SchedulingState.Type getSchedulingStateType() {
-        if (schedulingStateType == null) {
-            schedulingStateType = Type.NO_SCHEDULED;
-        }
-        return schedulingStateType;
+        return getCurrentSchedulingData().getSchedulingStateType();
     }
 
-    @Valid
     public TaskSource getTaskSource() {
-        return taskSource;
+        return getCurrentSchedulingData().getTaskSource();
     }
 
     public Set<TaskElement> getTaskElements() {
-        if (taskSource == null) {
+        if (getTaskSource() == null) {
             return Collections.emptySet();
         }
-        return Collections.singleton(taskSource.getTask());
+        return Collections.singleton(getTaskSource().getTask());
     }
 
     public List<TaskSource> getTaskSourcesFromBottomToTop() {
@@ -715,12 +851,45 @@ public abstract class OrderElement extends IntegrationEntity implements
         return result;
     }
 
+    public List<TaskSource> getAllScenariosTaskSourcesFromBottomToTop() {
+        List<TaskSource> result = new ArrayList<TaskSource>();
+        allScenariosTaskSourcesFromBottomToTop(result);
+        return result;
+    }
+
+    public List<SchedulingDataForVersion> getSchedulingDatasForVersionFromBottomToTop() {
+        List<SchedulingDataForVersion> result = new ArrayList<SchedulingDataForVersion>();
+        schedulingDataForVersionFromBottomToTop(result);
+        return result;
+    }
+
+    private void schedulingDataForVersionFromBottomToTop(
+            List<SchedulingDataForVersion> result) {
+        for (OrderElement each : getChildren()) {
+            each.schedulingDataForVersionFromBottomToTop(result);
+        }
+        result.addAll(schedulingDatasForVersion.values());
+    }
+
     private void taskSourcesFromBottomToTop(List<TaskSource> result) {
         for (OrderElement each : getChildren()) {
             each.taskSourcesFromBottomToTop(result);
         }
-        if (taskSource != null) {
-            result.add(taskSource);
+        if (getTaskSource() != null) {
+            result.add(getTaskSource());
+        }
+    }
+
+    private void allScenariosTaskSourcesFromBottomToTop(List<TaskSource> result) {
+        for (OrderElement each : getChildren()) {
+            each.allScenariosTaskSourcesFromBottomToTop(result);
+        }
+        for (Entry<OrderVersion, SchedulingDataForVersion> each : schedulingDatasForVersion
+                .entrySet()) {
+            TaskSource taskSource = each.getValue().getTaskSource();
+            if (taskSource != null) {
+                result.add(taskSource);
+            }
         }
     }
 

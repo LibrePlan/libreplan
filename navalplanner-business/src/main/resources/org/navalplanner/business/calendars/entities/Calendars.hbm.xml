@@ -100,8 +100,7 @@
         </map>
 
         <!-- Indexed -->
-        <many-to-one name="parent" class="BaseCalendar" access="field"
-            index="idx_CalendarData_on_BaseCalendar" />
+        <many-to-one name="parent" class="BaseCalendar" access="field" />
 
         <property name="expiringDate" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
@@ -130,4 +129,13 @@
         <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
         <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
     </database-object>
+
+    <!-- Index to boost the search of CalendarData that hang from a BaseCalendar -->
+    <database-object>
+        <create>CREATE INDEX idx_CalendarData_on_BaseCalendar ON CalendarData (BASE_CALENDAR_ID)</create>
+        <drop>DROP INDEX idx_CalendarData_on_BaseCalendar</drop>
+        <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
+        <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
+    </database-object>
+
 </hibernate-mapping>

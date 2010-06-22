@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
@@ -73,15 +75,20 @@ public class DBUserDetailsService implements UserDetailsService {
             allRoles.addAll(eachProfile.getRoles());
         }
 
-        return new org.springframework.security.userdetails.User(
+        Scenario scenario = user.getLastConnectedScenario();
+        if (scenario == null) {
+            scenario = PredefinedScenarios.MASTER.getScenario();
+        }
+
+        return new CustomUser(
             user.getLoginName(),
             user.getPassword(),
             !user.isDisabled(),
             true, // accountNonExpired
             true, // credentialsNonExpired
             true, // accountNonLocked
-            getGrantedAuthorities(allRoles));
-
+            getGrantedAuthorities(allRoles),
+            scenario);
     }
 
     private GrantedAuthority[] getGrantedAuthorities(Set<UserRole> roles) {

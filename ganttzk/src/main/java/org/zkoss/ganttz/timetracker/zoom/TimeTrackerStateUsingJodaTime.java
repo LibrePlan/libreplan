@@ -50,7 +50,7 @@ public abstract class TimeTrackerStateUsingJodaTime extends TimeTrackerState {
         DetailItem create(DateTime dateTime);
     }
 
-    public static Collection<DetailItem> createDetails(Interval interval,
+    public Collection<DetailItem> createDetails(Interval interval,
             ReadablePeriod period, IDetailItemCreator detailItemCreator) {
         DateTime current = asLocalDate(interval.getStart())
                 .toDateTimeAtStartOfDay();

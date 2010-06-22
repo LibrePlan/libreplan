@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.IWorkHours;
@@ -43,6 +43,9 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * Represents the relation between {@link Task} and a generic {@link Resource}.
@@ -95,25 +98,29 @@ public class GenericResourceAllocation extends
         }
     }
 
-    private static void initializeIfNeeded_(
-            Map<Task, List<GenericResourceAllocation>> result, Task task) {
-        if (!result.containsKey(task)) {
-            result.put(task, new ArrayList<GenericResourceAllocation>());
-        }
-    }
-
+    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
-    private Set<GenericDayAssignment> genericDayAssignments = new HashSet<GenericDayAssignment>();
+    private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
 
+    @Valid
+    private Set<GenericDayAssignmentsContainer> getGenericDayAssignmentsContainers() {
+        return new HashSet<GenericDayAssignmentsContainer>(
+                genericDayAssignmentsContainers);
+    }
+
+    @OnCopy(Strategy.IGNORE)
     private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
 
     private GenericResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
         super(resourcesPerDay, task);
     }
 
+    /**
+     * Constructor for Hibernate. DO NOT USE!
+     */
     public GenericResourceAllocation() {
-
+        this.assignmentsState = buildFromDBState();
     }
 
     public static GenericResourceAllocation create(Task task) {
@@ -121,20 +128,48 @@ public class GenericResourceAllocation extends
                 task));
     }
 
-    public static GenericResourceAllocation create(Task task,
+    public static GenericResourceAllocation createForLimiting(Task task,
             Collection<? extends Criterion> criterions) {
         GenericResourceAllocation result = new GenericResourceAllocation(task);
         result.criterions = new HashSet<Criterion>(criterions);
+        result.updateResourcesPerDay();
         return create(result);
     }
 
     private GenericResourceAllocation(Task task) {
         super(task);
         this.criterions = task.getCriterions();
+        this.assignmentsState = buildInitialTransientState();
     }
 
-    public Set<GenericDayAssignment> getGenericDayAssignments() {
-        return Collections.unmodifiableSet(genericDayAssignments);
+    private GenericDayAssignmentsContainer retrieveOrCreateContainerFor(
+            Scenario scenario) {
+        Map<Scenario, GenericDayAssignmentsContainer> containers = containersByScenario();
+        GenericDayAssignmentsContainer retrieved = containers.get(scenario);
+        if (retrieved != null) {
+            return retrieved;
+        }
+        GenericDayAssignmentsContainer result = GenericDayAssignmentsContainer
+                .create(this, scenario);
+        genericDayAssignmentsContainers.add(result);
+        return result;
+    }
+
+    private DayAssignmentsState buildFromDBState() {
+        return new GenericDayAssignmentsNoExplicitlySpecifiedScenario();
+    }
+
+    private TransientState buildInitialTransientState() {
+        return new TransientState(new HashSet<GenericDayAssignment>());
+    }
+
+    private Map<Scenario, GenericDayAssignmentsContainer> containersByScenario() {
+        Map<Scenario, GenericDayAssignmentsContainer> result = new HashMap<Scenario, GenericDayAssignmentsContainer>();
+        for (GenericDayAssignmentsContainer each : genericDayAssignmentsContainers) {
+            assert !result.containsKey(each);
+            result.put(each.getScenario(), each);
+        }
+        return result;
     }
 
     public List<GenericDayAssignment> getOrderedAssignmentsFor(Resource resource) {
@@ -149,14 +184,10 @@ public class GenericResourceAllocation extends
     private Map<Resource, List<GenericDayAssignment>> getOrderedAssignmentsFor() {
         if (orderedDayAssignmentsByResource == null) {
             orderedDayAssignmentsByResource = DayAssignment
-                    .byResourceAndOrdered(genericDayAssignments);
+                    .byResourceAndOrdered(getDayAssignmentsState()
+                            .getUnorderedAssignments());
         }
         return orderedDayAssignmentsByResource;
-    }
-
-    private void clearFieldsCalculatedFromAssignments() {
-        this.orderedDayAssignmentsByResource = null;
-        this.orderedDayAssignmentsCached = null;
     }
 
     public Set<Criterion> getCriterions() {
@@ -234,55 +265,141 @@ public class GenericResourceAllocation extends
         return new GenericAllocation(new ArrayList<Resource>(resources));
     }
 
-    @Override
-    protected void addingAssignments(
-            Collection<? extends GenericDayAssignment> assignments) {
-        setParentFor(assignments);
-        this.genericDayAssignments.addAll(assignments);
-        clearFieldsCalculatedFromAssignments();
-    }
+    private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
+        private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
 
-    @Override
-    protected void removeAssignments(List<? extends DayAssignment> assignments) {
-        this.genericDayAssignments.removeAll(assignments);
-        clearFieldsCalculatedFromAssignments();
-    }
+        private final GenericDayAssignmentsContainer container;
 
-    private void setParentFor(
-            Collection<? extends GenericDayAssignment> assignmentsCreated) {
-        for (GenericDayAssignment genericDayAssignment : assignmentsCreated) {
-            genericDayAssignment.setGenericResourceAllocation(this);
+        ExplicitlySpecifiedScenarioState(Scenario scenario) {
+            this.container = retrieveOrCreateContainerFor(scenario);
+        }
+
+        @Override
+        protected void clearFieldsCalculatedFromAssignments() {
+            orderedDayAssignmentsByResource = null;
+        }
+
+        @Override
+        protected Collection<GenericDayAssignment> getUnorderedAssignments() {
+            return container.getDayAssignments();
+        }
+
+        @Override
+        protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            container.removeAll(assignments);
+        }
+
+        @Override
+        protected void setParentFor(GenericDayAssignment each) {
+            each.setGenericResourceAllocation(outerGenericAllocation);
+        }
+
+        @Override
+        protected void addAssignments(
+                Collection<? extends GenericDayAssignment> assignments) {
+            container.addAll(assignments);
+        }
+
+        @Override
+        protected void resetTo(Collection<GenericDayAssignment> assignments) {
+            container.resetTo(assignments);
+        }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            return new ExplicitlySpecifiedScenarioState(
+                    scenario);
         }
     }
 
-    private List<GenericDayAssignment> orderedDayAssignmentsCached;
+    private class TransientState extends DayAssignmentsState {
+        private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
+
+        private final Set<GenericDayAssignment> genericDayAssignments;
+
+        TransientState(Set<GenericDayAssignment> genericDayAssignments) {
+            this.genericDayAssignments = genericDayAssignments;
+        }
+
+        @Override
+        protected void clearFieldsCalculatedFromAssignments() {
+            orderedDayAssignmentsByResource = null;
+        }
+
+        @Override
+        protected Collection<GenericDayAssignment> getUnorderedAssignments() {
+            return genericDayAssignments;
+        }
+
+        @Override
+        protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            genericDayAssignments.removeAll(assignments);
+        }
+
+        @Override
+        protected void setParentFor(GenericDayAssignment each) {
+            each.setGenericResourceAllocation(outerGenericAllocation);
+        }
+
+        @Override
+        protected void addAssignments(
+                Collection<? extends GenericDayAssignment> assignments) {
+            genericDayAssignments.addAll(assignments);
+        }
+
+        @Override
+        protected void resetTo(Collection<GenericDayAssignment> assignments) {
+            genericDayAssignments.clear();
+            genericDayAssignments.addAll(assignments);
+        }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
+                    scenario);
+            result.resetTo(genericDayAssignments);
+            return result;
+        }
+    }
+
+    private Set<GenericDayAssignment> getUnorderedForScenario(
+            Scenario scenario) {
+        GenericDayAssignmentsContainer container = containersByScenario()
+                .get(scenario);
+        if (container == null) {
+            return new HashSet<GenericDayAssignment>();
+        }
+        return container.getDayAssignments();
+    }
+
+    private class GenericDayAssignmentsNoExplicitlySpecifiedScenario extends
+            NoExplicitlySpecifiedScenario {
+
+        @Override
+        protected Collection<GenericDayAssignment> getUnorderedAssignmentsForScenario(
+                Scenario scenario) {
+            return getUnorderedForScenario(scenario);
+        }
+
+        @Override
+        protected DayAssignmentsState switchTo(Scenario scenario) {
+            return new ExplicitlySpecifiedScenarioState(scenario);
+        }
+    }
+
+    @OnCopy(Strategy.IGNORE)
+    private DayAssignmentsState assignmentsState;
 
     @Override
-    public List<GenericDayAssignment> getAssignments() {
-        if (orderedDayAssignmentsCached != null) {
-            return orderedDayAssignmentsCached;
-        }
-        return orderedDayAssignmentsCached = DayAssignment
-                .orderedByDay(genericDayAssignments);
+    protected void scenarioChangedTo(Scenario scenario) {
+        assignmentsState = getDayAssignmentsState().switchTo(scenario);
     }
 
-    private List<GenericDayAssignment> getDayAssignmentsByConsolidated(
-            boolean consolidated) {
-        List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
-        for (GenericDayAssignment day : getAssignments()) {
-            if (day.isConsolidated() == consolidated) {
-                result.add(day);
-            }
-        }
-        return result;
-    }
-
-    public List<GenericDayAssignment> getNonConsolidatedAssignments() {
-        return getDayAssignmentsByConsolidated(false);
-    }
-
-    public List<GenericDayAssignment> getConsolidatedAssignments() {
-        return getDayAssignmentsByConsolidated(true);
+    @Override
+    protected ResourceAllocation<GenericDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
+        return assignmentsState;
     }
 
     @Override
@@ -300,22 +417,6 @@ public class GenericResourceAllocation extends
                 day, hours));
     }
 
-    @Override
-    public void mergeAssignments(ResourceAllocation<?> modifications) {
-        Validate.isTrue(modifications instanceof GenericResourceAllocation);
-        mergeAssignments((GenericResourceAllocation) modifications);
-    }
-
-    private void mergeAssignments(GenericResourceAllocation modifications) {
-        detachAssignments();
-        moveToThis(modifications.genericDayAssignments);
-        clearFieldsCalculatedFromAssignments();
-    }
-
-    private void moveToThis(Set<GenericDayAssignment> assignemnts) {
-        this.genericDayAssignments = GenericDayAssignment.copy(this,
-                assignemnts);
-    }
 
     @Override
     public List<Resource> getAssociatedResources() {
@@ -329,14 +430,19 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    ResourceAllocation<GenericDayAssignment> createCopy() {
+    ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
-        allocation.genericDayAssignments = new HashSet<GenericDayAssignment>(
-                this.genericDayAssignments);
+        allocation
+                .toTransientStateWithInitial(getUnorderedForScenario(scenario));
         allocation.criterions = new HashSet<Criterion>(criterions);
         allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
                 this);
         return allocation;
+    }
+
+    private void toTransientStateWithInitial(
+            Set<GenericDayAssignment> initialAssignments) {
+        this.assignmentsState = new TransientState(initialAssignments);
     }
 
     @Override
@@ -380,11 +486,47 @@ public class GenericResourceAllocation extends
         return result;
     }
 
+    @Override
+    public void makeAssignmentsContainersDontPoseAsTransientAnyMore() {
+        for (GenericDayAssignmentsContainer each : genericDayAssignmentsContainers) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
+    @Override
+    public void copyAssignments(Scenario from, Scenario to) {
+        GenericDayAssignmentsContainer fromContainer = retrieveOrCreateContainerFor(from);
+        GenericDayAssignmentsContainer toContainer = retrieveOrCreateContainerFor(to);
+        toContainer.resetTo(fromContainer.getDayAssignments());
+    }
+
+    @Override
+    protected void removePredecessorContainersFor(Scenario scenario) {
+        Map<Scenario, GenericDayAssignmentsContainer> byScenario = containersByScenario();
+        for (Scenario each : scenario.getPredecessors()) {
+            GenericDayAssignmentsContainer container = byScenario.get(each);
+            if (container != null) {
+                genericDayAssignmentsContainers.remove(container);
+            }
+        }
+    }
+
+    @Override
+    protected void removeContainersFor(Scenario scenario) {
+        GenericDayAssignmentsContainer container = containersByScenario().get(
+                scenario);
+        if (container != null) {
+            genericDayAssignmentsContainers.remove(container);
+        }
+    }
+
     public void overrideConsolidatedDayAssignments(
             GenericResourceAllocation origin) {
         if (origin != null) {
-            this.genericDayAssignments = GenericDayAssignment.copy(this, origin
-                    .getConsolidatedAssignments());
+            List<GenericDayAssignment> originAssignments = origin
+                    .getConsolidatedAssignments();
+            resetAssignmentsTo(GenericDayAssignment
+                    .copyToAssignmentsWithoutParent(originAssignments));
         }
     }
 

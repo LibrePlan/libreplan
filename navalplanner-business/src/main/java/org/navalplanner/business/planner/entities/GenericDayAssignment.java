@@ -20,12 +20,19 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  *
@@ -34,61 +41,163 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public class GenericDayAssignment extends DayAssignment {
 
-    private GenericResourceAllocation genericResourceAllocation;
+    private abstract class ParentState {
+        abstract GenericResourceAllocation getResourceAllocation();
+
+        abstract ParentState setParent(
+                GenericResourceAllocation genericResourceAllocation);
+
+        abstract ParentState setParent(GenericDayAssignmentsContainer container);
+
+        abstract Scenario getScenario();
+    }
+
+    private class ContainerNotSpecified extends ParentState {
+
+        private GenericResourceAllocation parent;
+
+        @Override
+        GenericResourceAllocation getResourceAllocation() {
+            return parent;
+        }
+
+        @Override
+        ParentState setParent(
+                GenericResourceAllocation genericResourceAllocation) {
+            if (parent != null) {
+                throw new IllegalStateException(
+                        "the allocation cannot be changed once it has been set");
+            }
+            this.parent = genericResourceAllocation;
+            return this;
+        }
+
+        @Override
+        ParentState setParent(GenericDayAssignmentsContainer container) {
+            return new OnContainer(container);
+        }
+
+        @Override
+        Scenario getScenario() {
+            return null;
+        }
+
+    }
+
+    private class OnContainer extends ParentState {
+
+        OnContainer(GenericDayAssignmentsContainer container) {
+            Validate.notNull(container);
+            GenericDayAssignment.this.container = container;
+        }
+
+        public OnContainer() {
+        }
+
+        @Override
+        GenericResourceAllocation getResourceAllocation() {
+            return container.getResourceAllocation();
+        }
+
+        @Override
+        ParentState setParent(
+                GenericResourceAllocation genericResourceAllocation) {
+            throw new IllegalStateException("parent already set");
+        }
+
+        @Override
+        ParentState setParent(GenericDayAssignmentsContainer container) {
+            throw new IllegalStateException("parent already set");
+        }
+
+        @Override
+        Scenario getScenario() {
+            return container.getScenario();
+        }
+    }
+
 
     public static GenericDayAssignment create(LocalDate day, int hours,
             Resource resource) {
-        return create(new GenericDayAssignment(day, hours,
-                resource));
+        GenericDayAssignment result = new GenericDayAssignment(day, hours,
+                        resource);
+        return create(result);
     }
 
     public static Set<GenericDayAssignment> copy(
-            GenericResourceAllocation newAllocation,
-            Collection<GenericDayAssignment> assignemnts) {
+            GenericDayAssignmentsContainer newParent,
+            Collection<? extends GenericDayAssignment> assignemnts) {
         Set<GenericDayAssignment> result = new HashSet<GenericDayAssignment>();
         for (GenericDayAssignment a : assignemnts) {
-            GenericDayAssignment created = create(a.getDay(), a.getHours(), a
-                    .getResource());
-            created.setConsolidated(a.isConsolidated());
-            created.setGenericResourceAllocation(newAllocation);
+            GenericDayAssignment created = copy(newParent, a);
             created.associateToResource();
             result.add(created);
         }
         return result;
     }
 
+    private static GenericDayAssignment copy(
+            GenericDayAssignmentsContainer newParent,
+            GenericDayAssignment toBeCopied) {
+        GenericDayAssignment result = copyFromWithoutParent(toBeCopied);
+        result.setConsolidated(toBeCopied.isConsolidated());
+        result.parentState = result.parentState.setParent(newParent);
+        result.associateToResource();
+        return result;
+    }
+
+    private static GenericDayAssignment copyFromWithoutParent(
+            GenericDayAssignment toBeCopied) {
+        GenericDayAssignment copy = create(toBeCopied.getDay(), toBeCopied
+                        .getHours(), toBeCopied.getResource());
+        copy.setConsolidated(toBeCopied.isConsolidated());
+        return copy;
+    }
+
+    public static List<GenericDayAssignment> copyToAssignmentsWithoutParent(
+            Collection<? extends GenericDayAssignment> assignments) {
+        List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
+        for (GenericDayAssignment each : assignments) {
+            result.add(copyFromWithoutParent(each));
+        }
+        return result;
+    }
+
     private GenericDayAssignment(LocalDate day, int hours, Resource resource) {
         super(day, hours, resource);
+        parentState = new ContainerNotSpecified();
     }
 
     /**
      * Constructor for hibernate. DO NOT USE!
      */
     public GenericDayAssignment() {
-
+        parentState = new OnContainer();
     }
 
+    @NotNull
+    private GenericDayAssignmentsContainer container;
+
+    @OnCopy(Strategy.IGNORE)
+    private ParentState parentState;
+
     public GenericResourceAllocation getGenericResourceAllocation() {
-        return genericResourceAllocation;
+        return parentState.getResourceAllocation();
     }
 
     protected void setGenericResourceAllocation(
             GenericResourceAllocation genericResourceAllocation) {
-        if (this.genericResourceAllocation != null) {
-            throw new IllegalStateException(
-                    "the allocation cannot be changed once it has been set");
-        }
-        this.genericResourceAllocation = genericResourceAllocation;
+        parentState = parentState.setParent(genericResourceAllocation);
     }
 
     protected void detachFromAllocation() {
-        genericResourceAllocation = null;
+        this.parentState = new ContainerNotSpecified();
     }
 
     @Override
     public boolean belongsTo(Object allocation) {
         return allocation != null
-                && genericResourceAllocation.equals(allocation);
+                && getGenericResourceAllocation().equals(allocation);
     }
 
     @Override
@@ -97,9 +206,17 @@ public class GenericDayAssignment extends DayAssignment {
     }
 
     @Override
+    public Scenario getScenario() {
+        return parentState.getScenario();
+    }
+
     public DayAssignment withHours(int newHours) {
         GenericDayAssignment result = create(getDay(), newHours, getResource());
-        result.genericResourceAllocation = genericResourceAllocation;
+        if (container != null) {
+            result.parentState.setParent(container);
+        } else if (this.getGenericResourceAllocation() != null) {
+            result.parentState.setParent(this.getGenericResourceAllocation());
+        }
         return result;
     }
 

@@ -79,6 +79,9 @@
                 <value>
                     org/navalplanner/business/planner/entities/AdvanceConsolidations.hbm.xml
                 </value>
+                <value>
+                    org/navalplanner/business/scenarios/entities/Scenarios.hbm.xml
+                </value>
                 </list>
         </property>
     </bean>
@@ -108,5 +111,9 @@
     <bean id="CriterionRequirementOrderElementHandler"
         class="org.navalplanner.business.orders.entities.CriterionRequirementOrderElementHandler"
         factory-method="getInstance" />
+
+    <bean id="scenarioManager"
+        class="org.navalplanner.business.scenarios.OnlyMainScenarioAwareManager"
+        scope="singleton"/>
 
 </beans>

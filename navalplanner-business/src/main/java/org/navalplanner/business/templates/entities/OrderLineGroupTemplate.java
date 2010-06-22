@@ -261,16 +261,9 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
     }
 
     @Override
-    public OrderLineGroup createElement() {
-        OrderLineGroup orderLineGroup = OrderLineGroup.create();
-        orderLineGroup.initializeTemplate(this);
-        return setupGroupParts(setupSchedulingStateType(orderLineGroup));
-    }
-
-    @Override
     public OrderElement createElement(OrderLineGroup parent) {
-        OrderLineGroup result = setupSchedulingStateType(OrderLineGroup
-                .create());
+        OrderLineGroup result = setupSchedulingStateType(setupVersioningInfo(
+                parent, OrderLineGroup.create()));
         result.initializeTemplate(this);
         parent.add(result);
         return setupGroupParts(result);

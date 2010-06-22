@@ -54,6 +54,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -67,14 +68,19 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
@@ -93,6 +99,7 @@ import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
+import org.navalplanner.web.planner.order.PlanningState.IScenarioInfo;
 import org.navalplanner.web.planner.reassign.IReassignCommand;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
@@ -219,9 +226,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private ICriterionDAO criterionDAO;
 
     @Autowired
-    private IWorkReportLineDAO workReportLineDAO;
-
-    @Autowired
     private ITaskElementDAO taskDAO;
 
     @Autowired
@@ -232,6 +236,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
@@ -248,6 +255,42 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    private IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator = new Resource.AllResourceAssignments();
+
+    private Scenario currentScenario;
+
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
+    private final class ReturningNewAssignments implements
+            IAssignmentsOnResourceCalculator {
+
+        private Set<DayAssignment> previousAssignmentsSet;
+
+        public ReturningNewAssignments(List<DayAssignment> previousAssignments) {
+            this.previousAssignmentsSet = new HashSet<DayAssignment>(
+                    previousAssignments);
+        }
+
+        @Override
+        public List<DayAssignment> getAssignments(Resource resource) {
+            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            for (DayAssignment each : resource.getAssignments()) {
+                if (!previousAssignmentsSet.contains(each)) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+    }
 
     private final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -279,6 +322,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             AdvanceConsolidationController advanceConsolidationController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
+        currentScenario = scenarioManager.getCurrent();
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
         configuration.setExpandPlanningViewCharts(configurationDAO
@@ -900,6 +944,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private PlannerConfiguration<TaskElement> createConfiguration(
             Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
+        taskElementAdapter.useScenario(currentScenario);
         planningState = createPlanningStateFor(orderReloaded);
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
@@ -913,15 +958,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private PlanningState createPlanningStateFor(
             Order orderReloaded) {
         if (!orderReloaded.isSomeTaskElementScheduled()) {
-            return PlanningState.createEmpty();
+            return PlanningState.createEmpty(currentScenario);
         }
         final List<Resource> allResources = resourceDAO.list(Resource.class);
         criterionDAO.list(Criterion.class);
         TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
         forceLoadOfChildren(Arrays.asList(taskElement));
         forceLoadDayAssignments(orderReloaded.getResources());
+        switchAllocationsToScenario(currentScenario, taskElement);
+        final IScenarioInfo scenarioInfo = buildScenarioInfo(orderReloaded);
         PlanningState result = PlanningState.create(taskElement, orderReloaded
-                .getAssociatedTasks(), allResources, criterionDAO, resourceDAO);
+                .getAssociatedTasks(), allResources, criterionDAO, resourceDAO,
+                scenarioInfo);
         forceLoadOfDependenciesCollections(result.getInitial());
         forceLoadOfWorkingHours(result.getInitial());
         forceLoadOfLabels(result.getInitial());
@@ -932,6 +980,39 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         for (Resource resource : resources) {
             resource.getAssignments().size();
         }
+    }
+
+    private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
+        if (orderReloaded.isUsingTheOwnerScenario()) {
+            return createOwnerScenarioInfoFor(orderReloaded);
+        }
+        final List<DayAssignment> previousAssignments = orderReloaded
+                .getDayAssignments();
+        OrderVersion previousVersion = currentScenario
+                .getOrderVersion(orderReloaded);
+        OrderVersion newVersion = OrderVersion
+                .createInitialVersion(currentScenario);
+        orderReloaded.writeSchedulingDataChangesTo(currentScenario, newVersion);
+        assigmentsOnResourceCalculator = new ReturningNewAssignments(
+                previousAssignments);
+        switchAllocationsToScenario(currentScenario, orderReloaded
+                .getAssociatedTaskElement());
+        return createScenarioInfoForNotOwnerScenario(orderReloaded, previousVersion,
+                newVersion);
+    }
+
+    private IScenarioInfo createOwnerScenarioInfoFor(Order orderReloaded) {
+        return PlanningState.ownerScenarioInfo(orderVersionDAO,
+                currentScenario,
+                currentScenario.getOrderVersion(orderReloaded));
+    }
+
+    private IScenarioInfo createScenarioInfoForNotOwnerScenario(
+            Order orderReloaded, OrderVersion previousVersion,
+            OrderVersion newVersion) {
+        return PlanningState.forNotOwnerScenario(orderDAO, scenarioDAO,
+                taskSourceDAO, orderReloaded,
+                previousVersion, currentScenario, newVersion);
     }
 
     private void forceLoadOfChildren(Collection<? extends TaskElement> initial) {
@@ -952,6 +1033,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
         }
         each.hasConsolidations();
+    }
+
+    private static void switchAllocationsToScenario(Scenario scenario,
+            TaskElement task) {
+        for (ResourceAllocation<?> each : task.getAllResourceAllocations()) {
+            each.switchToScenario(scenario);
+        }
     }
 
     /**
@@ -1056,11 +1144,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 
     private Order reload(Order order) {
-        try {
-            return orderDAO.find(order.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Order result = orderDAO.findExistingEntity(order.getId());
+        result.useSchedulingDataFor(currentScenario);
+        return result;
     }
 
     private class OrderLoadChartFiller extends ChartFiller {
@@ -1092,8 +1178,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(orderDayAssignments);
 
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : reloadResources(order.getResources())) {
-                resourcesDayAssignments.addAll(resource.getAssignments());
+            for (Resource resource : order.getResources()) {
+                resourcesDayAssignments.addAll(assigmentsOnResourceCalculator
+                        .getAssignments(resource));
             }
             SortedMap<LocalDate, Map<Resource, Integer>> resourceDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(resourcesDayAssignments);
 
@@ -1143,17 +1230,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             chart.setWidth(size + "px");
             chart.setHeight("150px");
-        }
-
-        private List<Resource> reloadResources(
-                Collection<? extends Resource> resources) {
-            List<Resource> result = new ArrayList<Resource>();
-            for (Resource each : resources) {
-                Resource reloaded = resourceDAO
-                        .findExistingEntity(each.getId());
-                result.add(reloaded);
-            }
-            return result;
         }
 
         private void resetMaps() {

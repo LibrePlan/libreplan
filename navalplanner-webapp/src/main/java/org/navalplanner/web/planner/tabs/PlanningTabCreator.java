@@ -191,6 +191,7 @@ public class PlanningTabCreator {
             protected void afterShowAction() {
 
                 orderPlanningController.setOrder(reload(mode.getOrder()));
+                orderPlanningController.setShowedTask(null);
                 Order order = orderPlanningController.getOrder();
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 arguments.put("orderPlanningController",

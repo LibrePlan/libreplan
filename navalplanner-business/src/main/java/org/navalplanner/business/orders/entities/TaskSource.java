@@ -20,6 +20,7 @@
 package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,18 +33,21 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.util.deepcopy.OnCopy;
+import org.navalplanner.business.util.deepcopy.Strategy;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class TaskSource extends BaseEntity {
 
-    public static TaskSource create(OrderElement orderElement,
+    public static TaskSource create(SchedulingDataForVersion schedulingState,
             List<HoursGroup> hoursGroups) {
-        TaskSource result = create(new TaskSource(orderElement));
+        TaskSource result = create(new TaskSource(schedulingState));
         result.setHoursGroups(new HashSet<HoursGroup>(hoursGroups));
         return result;
     }
@@ -63,7 +67,13 @@ public class TaskSource extends BaseEntity {
     }
 
     public static abstract class TaskSourceSynchronization {
-        public abstract TaskElement apply(ITaskSourceDAO taskSourceDAO);
+
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+            return apply(taskSourceDAO, true);
+        }
+
+        public abstract TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent);
     }
 
     static class TaskSourceMustBeAdded extends TaskSourceSynchronization {
@@ -75,7 +85,8 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
             Task result = Task.createTask(taskSource);
             taskSource.setTask(result);
             taskSourceDAO.save(taskSource);
@@ -92,7 +103,8 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preeexistent) {
             updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
             taskSourceDAO.save(taskSource);
             return taskSource.getTask();
@@ -115,41 +127,11 @@ public class TaskSource extends BaseEntity {
         if (task.getEndDate() == null) {
             task.initializeEndDateIfDoesntExist();
         }
+        if (task.getSatisfiedResourceAllocations().isEmpty()) {
+            task.setEndDate(null);
+            task.initializeEndDateIfDoesntExist();
+        }
         task.updateDeadlineFromOrderElement();
-    }
-
-    static class TaskGroupMustBeReplacedByTask extends
-            TaskSourceSynchronization {
-        private final List<TaskSource> toBeRemovedFromBottomToTop;
-
-        private final TaskSource taskSource;
-
-        private TaskGroupMustBeReplacedByTask(
-                List<TaskSource> toBeRemovedFromBottomToTop,
-                TaskSource taskSource) {
-            this.toBeRemovedFromBottomToTop = toBeRemovedFromBottomToTop;
-            this.taskSource = taskSource;
-        }
-
-        @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
-            for (TaskSource each : toBeRemovedFromBottomToTop) {
-                remove(taskSourceDAO, each);
-            }
-            taskSourceDAO.flush();
-            // flush must be done to avoid ERROR: duplicate key value
-            // violates unique constraint "tasksource_orderelement_key"
-            return new TaskSourceMustBeAdded(taskSource)
-                    .apply(taskSourceDAO);
-        }
-
-        private void remove(ITaskSourceDAO taskSourceDAO, TaskSource each) {
-            try {
-                taskSourceDAO.remove(each.getId());
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     public static abstract class TaskGroupSynchronization extends
@@ -172,15 +154,17 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
-            List<TaskElement> children = getChildren(taskSourceDAO);
-            return apply(taskSourceDAO, children);
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
+            List<TaskElement> children = getChildren(taskSourceDAO, preexistent);
+            return apply(taskSourceDAO, children, preexistent);
         }
 
-        private List<TaskElement> getChildren(ITaskSourceDAO taskSourceDAO) {
+        private List<TaskElement> getChildren(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
             List<TaskElement> result = new ArrayList<TaskElement>();
             for (TaskSourceSynchronization each : synchronizations) {
-                TaskElement t = each.apply(taskSourceDAO);
+                TaskElement t = each.apply(taskSourceDAO, preexistent);
                 if (t != null) {
                     // TaskSourceMustBeRemoved gives null
                     result.add(t);
@@ -190,7 +174,7 @@ public class TaskSource extends BaseEntity {
         }
 
         protected abstract TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children);
+                List<TaskElement> children, boolean preexistent);
     }
 
     static class TaskGroupMustBeAdded extends TaskGroupSynchronization {
@@ -202,7 +186,7 @@ public class TaskSource extends BaseEntity {
 
         @Override
         protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children) {
+                List<TaskElement> children, boolean preexistent) {
             TaskGroup result = TaskGroup.create(taskSource);
             for (TaskElement taskElement : children) {
                 result.addTaskElement(taskElement);
@@ -224,7 +208,7 @@ public class TaskSource extends BaseEntity {
 
         @Override
         protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children) {
+                List<TaskElement> children, boolean preexistent) {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
             taskGroup.setTaskChildrenTo(children);
             updateTaskWithOrderElement(taskGroup, taskSource.getOrderElement());
@@ -242,7 +226,12 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
+        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
+                boolean preexistent) {
+            if (!preexistent) {
+                removeDependenciesFor(taskSource.getTask());
+                return null;
+            }
             try {
                 taskSourceDAO.remove(taskSource.getId());
 
@@ -258,38 +247,60 @@ public class TaskSource extends BaseEntity {
             return null;
         }
 
+        private void removeDependenciesFor(TaskElement task) {
+            for (Dependency each : copy(task
+                    .getDependenciesWithThisDestination())) {
+                removeDependency(each);
+            }
+            for (Dependency each : copy(task.getDependenciesWithThisOrigin())) {
+                removeDependency(each);
+            }
+        }
+
+        private void removeDependency(Dependency each) {
+            each.getOrigin().removeDependencyWithDestination(
+                    each.getDestination(),
+                    each.getType());
+        }
+
+        /**
+         * Copy the dependencies to a list in order to avoid
+         * {@link ConcurrentModificationException}
+         */
+        private List<Dependency> copy(Set<Dependency> dependencies) {
+            return new ArrayList<Dependency>(dependencies);
+        }
+
     }
 
-    public static TaskSource withHoursGroupOf(OrderElement orderElement) {
-        return create(new TaskSource(orderElement));
+    public static TaskSource withHoursGroupOf(
+            SchedulingDataForVersion schedulingState) {
+        return create(new TaskSource(schedulingState));
     }
 
-    public static TaskSource createForGroup(OrderElement orderElement) {
-        return create(new TaskSource(orderElement));
+    public static TaskSource createForGroup(
+            SchedulingDataForVersion schedulingState) {
+        return create(new TaskSource(schedulingState));
     }
-
-    public static TaskSourceSynchronization mustReplace(
-            final List<TaskSource> toBeRemovedFromBottomToTop,
-            final TaskSource taskSource) {
-        return new TaskGroupMustBeReplacedByTask(toBeRemovedFromBottomToTop,
-                taskSource);
-    }
-
-    @NotNull
-    private OrderElement orderElement;
 
     @NotNull
     private TaskElement task;
 
+    private SchedulingDataForVersion schedulingData;
+
+    @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
 
     public TaskSource() {
     }
 
-    public TaskSource(OrderElement orderElement) {
-        Validate.notNull(orderElement);
-        this.setOrderElement(orderElement);
-        Type orderElementType = orderElement.getSchedulingState().getType();
+    public TaskSource(SchedulingDataForVersion schedulingState) {
+        Validate.notNull(schedulingState);
+        Validate.notNull(schedulingState.getOrderElement());
+        this.schedulingData = schedulingState;
+        OrderElement orderElement = schedulingState.getOrderElement();
+        Type orderElementType = orderElement
+                .getSchedulingState().getType();
         if (orderElementType == SchedulingState.Type.SCHEDULING_POINT) {
             this.setHoursGroups(new HashSet<HoursGroup>(orderElement
                     .getHoursGroups()));
@@ -311,17 +322,13 @@ public class TaskSource extends BaseEntity {
         this.task = task;
     }
 
-    private void setOrderElement(OrderElement orderElement) {
-        this.orderElement = orderElement;
-    }
-
     @Valid
     public TaskElement getTask() {
         return task;
     }
 
     public OrderElement getOrderElement() {
-        return orderElement;
+        return schedulingData.getOrderElement();
     }
 
     private void setHoursGroups(Set<HoursGroup> hoursGroups) {

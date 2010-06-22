@@ -147,7 +147,8 @@ public class ResourceLoadController implements Composer {
         timeTracker = null;
         resourcesLoadPanel = null;
         firstLoad = true;
-        reload(currentFilterByResources);
+        resourceLoadModel.setPageFilterPosition(0);
+        reload(true); //show filter by resources by default
     }
 
     private void reload(boolean filterByResources) {

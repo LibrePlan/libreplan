@@ -23,7 +23,6 @@ package org.navalplanner.web.resourceload;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -47,17 +46,18 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -88,10 +88,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
-    private IOrderDAO orderDAO;
+    private ICriterionDAO criterionDAO;
 
     @Autowired
-    private ITaskElementDAO taskElementDAO;
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -101,6 +101,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private List<LoadTimeLine> loadTimeLines;
     private Interval viewInterval;
@@ -158,6 +161,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Transactional(readOnly = true)
     public void initGlobalView(Order filterBy, boolean filterByResources) {
         this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
+        this.filterBy.useSchedulingDataFor(scenarioManager.getCurrent());
         this.filterByResources = filterByResources;
         doGlobalView();
     }
@@ -165,8 +169,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public Order getOrderByTask(TaskElement task) {
-        return orderElementDAO
-                .loadOrderAvoidingProxyFor(task.getOrderElement());
+        Order result = orderElementDAO.loadOrderAvoidingProxyFor(task
+                .getOrderElement());
+        result.useSchedulingDataFor(scenarioManager.getCurrent());
+        return result;
     }
 
     @Override
@@ -214,20 +220,27 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (filterByResources) {
             result.addAll(groupsFor(resourcesToShow()));
         } else {
-            result.addAll(groupsFor(genericAllocationsByCriterion()));
+            calculatedGenericAllocationsByCriterion =
+                genericAllocationsByCriterion();
+            result.addAll(groupsFor(calculatedGenericAllocationsByCriterion));
         }
         return result;
     }
 
+    Map<Criterion, List<GenericResourceAllocation>> calculatedGenericAllocationsByCriterion;
+
     private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
-        if(!criteriaToShowList.isEmpty()) {
+        if (!criteriaToShowList.isEmpty()) {
+            reattachCriteriaToShow();
+            // reattaching criterions so the query returns the same criteria as
+            // keys
+            allCriteriaList = new ArrayList<Criterion>(criteriaToShowList);
             return resourceAllocationDAO
                     .findGenericAllocationsBySomeCriterion(criteriaToShowList, initDateFilter, endDateFilter);
         }
         Map<Criterion, List<GenericResourceAllocation>> toReturn;
         if (filter()) {
             allCriteriaList = new ArrayList<Criterion>();
-            List<GenericResourceAllocation> generics = new ArrayList<GenericResourceAllocation>();
             List<Task> tasks = justTasks(filterBy
                     .getAllChildrenAssociatedTaskElements());
             for (Task task : tasks) {
@@ -261,6 +274,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return toReturnFiltered;
     }
 
+    private void reattachCriteriaToShow() {
+        for (Criterion each : criteriaToShowList) {
+            criterionDAO.reattachUnmodifiedEntity(each);
+        }
+    }
+
     private List<Resource> resourcesToShow() {
         if(!resourcesToShowList.isEmpty()) {
             return getResourcesToShowReattached();
@@ -279,6 +298,21 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 pageFilterPosition + pageSize :
                 allResourcesList.size();
         return allResourcesList.subList(pageFilterPosition, endPosition);
+    }
+
+    private List<Criterion> criteriaToShow() {
+        List<Criterion> criteriaList;
+        if(!criteriaToShowList.isEmpty()) {
+            criteriaList = criteriaToShowList;
+        }
+        else if(pageFilterPosition == -1) {
+            criteriaList = allCriteriaList;
+        }
+        else {
+            criteriaList = allCriteriaList.subList(
+                    pageFilterPosition, getEndPositionForCriterionPageFilter());
+        }
+        return criteriaList;
     }
 
     @Override
@@ -348,15 +382,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimeLine> groupsFor(
             Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        List<Criterion> criteriaList;
-        if(pageFilterPosition == -1) {
-            criteriaList = allCriteriaList;
-        }
-        else {
-            criteriaList = allCriteriaList.subList(
-                    pageFilterPosition, getEndPositionForCriterionPageFilter());
-        }
-        for(Criterion criterion : criteriaList) {
+        for(Criterion criterion : criteriaToShow()) {
+            if (genericAllocationsByCriterion.get(criterion) == null) {
+                // no allocations found for criterion
+                continue;
+            }
             List<GenericResourceAllocation> allocations = ResourceAllocation
                     .sortedByStartDate(genericAllocationsByCriterion
                             .get(criterion));
@@ -837,13 +867,35 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Transactional(readOnly = true)
     public List<DayAssignment> getDayAssignments() {
-        return dayAssignmentDAO.findByResources(getResources());
+        if(filterByResources) {
+            return dayAssignmentDAO.findByResources(scenarioManager.getCurrent(),
+                    getResources());
+        }
+        else {
+            List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
+            for(Entry<Criterion, List<GenericResourceAllocation>> entry :
+                calculatedGenericAllocationsByCriterion.entrySet()) {
+
+                for(GenericResourceAllocation allocation : entry.getValue()) {
+                    dayAssignments.addAll(allocation.getAssignments());
+                }
+            }
+
+            return dayAssignments;
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Resource> getResources() {
-        List<Resource> resources = resourcesToShow();
+        List<Resource> resources;
+        if(filterByResources) {
+            resources = resourcesToShow();
+        }
+        else {
+            resources =resourcesDAO
+                .findSatisfyingCriterionsAtSomePoint(criteriaToShow());
+        }
         for (Resource resource : resources) {
             resourcesDAO.reattach(resource);
             ResourceCalendar calendar = resource.getCalendar();

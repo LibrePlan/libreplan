@@ -20,12 +20,20 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
 import org.joda.time.Weeks;
+import org.zkoss.ganttz.util.Interval;
 
 /**
  * Zoom level for months and years and weeks in the second level
@@ -41,8 +49,15 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
         super(firstLevelModificator, secondLevelModificator);
     }
 
-    private static final int FIRST_LEVEL_SIZE = 200;
-    private static final int SECOND_LEVEL_SIZE = 50;
+    private static final int FIRST_LEVEL_SIZE = 210;
+    private static final int SECOND_LEVEL_SIZE = 56;
+    private static final int MAX_DAYS = 8;
+
+    private int daysWeek = 7;
+
+    public final double pixelPerDay() {
+        return (SECOND_LEVEL_SIZE / (double) 7);
+    }
 
     public final double daysPerPixel() {
         return ((double) 7 / SECOND_LEVEL_SIZE);
@@ -55,7 +70,7 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
             @Override
             public DetailItem create(DateTime dateTime) {
-                return new DetailItem(FIRST_LEVEL_SIZE, dateTime
+                return new DetailItem(getSizeMonth(dateTime), dateTime
                         .toString("MMMM,YYYY"), dateTime, dateTime
                         .plusMonths(1));
             }
@@ -68,9 +83,13 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
 
             @Override
             public DetailItem create(DateTime dateTime) {
-                return new DetailItem(SECOND_LEVEL_SIZE, dateTime
+                daysWeek = MAX_DAYS - dateTime.getDayOfWeek();
+                int sizeWeek = (new BigDecimal(pixelPerDay() * daysWeek))
+                        .intValue();
+
+                return new DetailItem(sizeWeek, dateTime
                         .getWeekOfWeekyear()
-                        + "",dateTime,dateTime.plusWeeks(1));
+                        + "", dateTime, dateTime.plusDays(daysWeek));
             }
         };
     }
@@ -109,4 +128,35 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
         return SECOND_LEVEL_SIZE;
     }
 
+    @Override
+    public Collection<DetailItem> createDetails(Interval interval,
+            ReadablePeriod period, IDetailItemCreator detailItemCreator) {
+        if (period.equals(getPeriodFirstLevel())) {
+            return super.createDetails(interval, period, detailItemCreator);
+        } else {
+            return createDetails(interval, detailItemCreator);
+        }
+    }
+
+    private Collection<DetailItem> createDetails(Interval interval,
+            IDetailItemCreator detailItemCreator) {
+        DateTime current = asLocalDate(interval.getStart())
+                .toDateTimeAtStartOfDay();
+        DateTime end = asLocalDate(interval.getFinish())
+                .toDateTimeAtStartOfDay();
+        List<DetailItem> result = new ArrayList<DetailItem>();
+        while (current.isBefore(end)) {
+            result.add(detailItemCreator.create(current));
+            current = current.plus(Days.days(daysWeek));
+        }
+        return result;
+    }
+
+    private int getSizeMonth(DateTime dateTime) {
+        Calendar cal = new GregorianCalendar(dateTime.getYear(), dateTime
+                .getMonthOfYear() - 1, dateTime.getDayOfMonth());
+        // Get the number of days in that month
+        int days = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        return new BigDecimal(pixelPerDay() * days).intValue();
+    }
 }

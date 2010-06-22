@@ -47,6 +47,7 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
 import org.navalplanner.business.trees.ITreeParentNode;
@@ -76,6 +77,10 @@ public class OrderLineGroup extends OrderElement implements
 
         @Override
         protected SchedulingState getSchedulingStateFrom(OrderElement node) {
+            if (!node.isSchedulingDataInitialized()) {
+                node.useSchedulingDataFor(getCurrentSchedulingData()
+                        .getOriginOrderVersion());
+            }
             return node.getSchedulingState();
         }
 
@@ -534,8 +539,7 @@ public class OrderLineGroup extends OrderElement implements
                     BigDecimal orderElementHours = new BigDecimal(next1
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add = add.multiply(orderElementHours).divide(totalHours,
-                            RoundingMode.DOWN);
+                    add = addMeasure(add, totalHours, orderElementHours);
                 }
 
                 if (iterator1.hasNext()) {
@@ -553,8 +557,7 @@ public class OrderLineGroup extends OrderElement implements
                     BigDecimal orderElementHours = new BigDecimal(next2
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add = add.multiply(orderElementHours).divide(totalHours,
-                            RoundingMode.DOWN);
+                    add = addMeasure(add, totalHours, orderElementHours);
                 }
 
                 if (iterator2.hasNext()) {
@@ -576,15 +579,12 @@ public class OrderLineGroup extends OrderElement implements
                     BigDecimal orderElementHours1 = new BigDecimal(next1
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add1 = add1.multiply(orderElementHours1).divide(totalHours,
-                            RoundingMode.DOWN);
+                    add1 = addMeasure(add1, totalHours, orderElementHours1);
 
                     BigDecimal orderElementHours2 = new BigDecimal(next2
                             .getAdvanceAssignment().getOrderElement()
                             .getWorkHours());
-                    add2 = add2.multiply(orderElementHours2).divide(totalHours,
-                            RoundingMode.DOWN);
-
+                    add2 = addMeasure(add2, totalHours, orderElementHours2);
                     add = add1.add(add2);
                 }
 
@@ -604,7 +604,7 @@ public class OrderLineGroup extends OrderElement implements
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
             previousResult = previousResult.add(add);
-            advanceMeasurement.setValue(previousResult);
+            checkAndSetValue(advanceMeasurement, previousResult);
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
         }
@@ -619,8 +619,7 @@ public class OrderLineGroup extends OrderElement implements
                 BigDecimal orderElementHours = new BigDecimal(next1
                         .getAdvanceAssignment().getOrderElement()
                         .getWorkHours());
-                add = add.multiply(orderElementHours).divide(totalHours,
-                        RoundingMode.DOWN);
+                add = addMeasure(add, totalHours, orderElementHours);
             }
 
             if (iterator1.hasNext()) {
@@ -632,7 +631,7 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
-            advanceMeasurement.setValue(previousResult.add(add));
+            checkAndSetValue(advanceMeasurement, previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
@@ -648,8 +647,7 @@ public class OrderLineGroup extends OrderElement implements
                 BigDecimal orderElementHours = new BigDecimal(next2
                         .getAdvanceAssignment().getOrderElement()
                         .getWorkHours());
-                add = add.multiply(orderElementHours).divide(totalHours,
-                        RoundingMode.DOWN);
+                add = addMeasure(add, totalHours, orderElementHours);
             }
 
             if (iterator2.hasNext()) {
@@ -661,12 +659,49 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create();
             advanceMeasurement.setAdvanceAssignment(advanceAssignment);
             advanceMeasurement.setDate(date);
-            advanceMeasurement.setValue(previousResult.add(add));
+            checkAndSetValue(advanceMeasurement, previousResult.add(add));
             previousResult = advanceMeasurement.getValue();
             advanceMeasurement.setCommunicationDate(communicationDate);
             result.add(advanceMeasurement);
         }
 
+    }
+
+    private void checkAndSetValue(AdvanceMeasurement advanceMeasurement,
+            BigDecimal previousResult) {
+        advanceMeasurement.setValue(previousResult);
+        boolean checkPrecision = advanceMeasurement
+                .checkConstraintValidPrecision();
+        if (!checkPrecision) {
+            AdvanceAssignment advanceAssignment = advanceMeasurement
+                    .getAdvanceAssignment();
+            if ((previousResult == null) || (advanceAssignment == null)
+                    || (advanceAssignment.getAdvanceType() == null)) {
+                return;
+            }
+
+            BigDecimal precision = advanceAssignment.getAdvanceType()
+                    .getUnitPrecision();
+            BigDecimal result[] = previousResult.divideAndRemainder(precision);
+            BigDecimal checkResult;
+            if (previousResult.compareTo(result[1]) >= 0) {
+                checkResult = previousResult.subtract(result[1]);
+            } else {
+                checkResult = previousResult.add(result[1]);
+            }
+            advanceMeasurement.setValue(checkResult);
+        }
+    }
+
+    private BigDecimal addMeasure(BigDecimal add, BigDecimal totalHours,
+            BigDecimal orderElementHours) {
+        if ((totalHours != null) && (totalHours.compareTo(BigDecimal.ZERO) > 0)) {
+            add = add.multiply(orderElementHours).divide(totalHours,
+                    RoundingMode.DOWN);
+        } else {
+            add = add.multiply(orderElementHours);
+        }
+        return add;
     }
 
     private Date getGreatestDate(Date communicationDate, Date communicationDate2) {
@@ -703,12 +738,9 @@ public class OrderLineGroup extends OrderElement implements
             AdvanceType advanceType) {
         Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
 
-        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
-            if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
-                    .equals(advanceType.getUnitName())) {
-                result.add(indirectAdvanceAssignment);
-                break;
-            }
+        IndirectAdvanceAssignment indirectAdvanceAssignment = getIndirectAdvanceAssignment(advanceType);
+        if(indirectAdvanceAssignment != null){
+            result.add(indirectAdvanceAssignment);
         }
 
         for (OrderElement orderElement : children) {
@@ -717,6 +749,17 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         return result;
+    }
+
+    public IndirectAdvanceAssignment getIndirectAdvanceAssignment(
+            AdvanceType advanceType) {
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (indirectAdvanceAssignment.getAdvanceType().getUnitName()
+                    .equals(advanceType.getUnitName())) {
+                return indirectAdvanceAssignment;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -801,6 +844,18 @@ public class OrderLineGroup extends OrderElement implements
             IndirectAdvanceAssignment newIndirectAdvanceAssignment) {
         String unitName = newIndirectAdvanceAssignment.getAdvanceType()
                 .getUnitName();
+        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
+            if (unitName.equals(indirectAdvanceAssignment.getAdvanceType()
+                    .getUnitName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean existsIndirectAdvanceAssignmentWithTheSameType(
+            AdvanceType type) {
+        String unitName = type.getUnitName();
         for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
             if (unitName.equals(indirectAdvanceAssignment.getAdvanceType()
                     .getUnitName())) {
@@ -934,6 +989,10 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         return result;
+    }
+
+    public OrderVersion getCurrentOrderVersion() {
+        return getCurrentSchedulingData().getOriginOrderVersion();
     }
 
 }

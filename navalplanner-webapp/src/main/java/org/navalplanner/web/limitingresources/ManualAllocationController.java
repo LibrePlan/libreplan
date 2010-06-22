@@ -31,11 +31,12 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
+import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -90,6 +92,9 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     private final CandidateGapRenderer candidateGapRenderer = new CandidateGapRenderer();
 
+    private Grid gridLimitingOrderElementHours;
+    private Grid gridCurrentQueue;
+
     public ManualAllocationController() {
 
     }
@@ -108,6 +113,11 @@ public class ManualAllocationController extends GenericForwardComposer {
 
         startAllocationDate = (Datebox) self.getFellowIfAny("startAllocationDate");
         cbAllocationType = (Checkbox) self.getFellowIfAny("cbAllocationType");
+
+        gridLimitingOrderElementHours = (Grid) self
+                .getFellowIfAny("gridLimitingOrderElementHours");
+        gridCurrentQueue = (Grid) self
+                .getFellowIfAny("gridCurrentQueue");
     }
 
     public void setLimitingResourcesPanel(LimitingResourcesPanel limitingResourcesPanel) {
@@ -203,7 +213,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     public void selectRadioAllocationDate(Event event) {
-        Radiogroup radiogroup = (Radiogroup) event.getTarget().getParent();
+        Radiogroup radiogroup = (Radiogroup) event.getTarget().getFellow("radioAllocationDate");
         startAllocationDate.setDisabled(radiogroup.getSelectedIndex() != 2);
     }
 
@@ -482,7 +492,10 @@ public class ManualAllocationController extends GenericForwardComposer {
             clear();
             setAssignableQueues(element);
             getLimitingResourceQueueModel().init(element);
+            Util.reloadBindings(gridLimitingOrderElementHours);
+            Util.reloadBindings(gridCurrentQueue);
             ((Window) self).doModal();
+            ((Window) self).setTitle(_("Manual assignment"));
         } catch (SuspendNotAllowedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -529,6 +542,47 @@ public class ManualAllocationController extends GenericForwardComposer {
     public void onCheckAllocationType(Event e) {
         Checkbox checkbox = (Checkbox) e.getTarget();
         enableRadiobuttons(checkbox.isChecked());
+    }
+
+    public int getHours() {
+        if (getBeingEditedElement() == null) {
+            return 0;
+        }
+        return getBeingEditedElement().getIntentedTotalHours();
+    }
+
+    public String getResourceOrCriteria() {
+        if (getBeingEditedElement() == null) {
+            return "";
+        }
+        return LimitingResourcesController
+                .getResourceOrCriteria(getBeingEditedElement()
+                        .getResourceAllocation());
+    }
+
+    public String getCurrentQueue() {
+        if (getBeingEditedElement() == null
+                || getBeingEditedElement().getLimitingResourceQueue() == null) {
+            return _("Unnasigned");
+        }
+        return getBeingEditedElement().getLimitingResourceQueue().getResource()
+                .getName();
+    }
+
+    public String getCurrentStart() {
+        if (getBeingEditedElement() == null
+                || getBeingEditedElement().getStartDate() == null) {
+            return _("Unnasigned");
+        }
+        return getBeingEditedElement().getStartDate().toString();
+    }
+
+    public String getCurrentEnd() {
+        if (getBeingEditedElement() == null
+                || getBeingEditedElement().getEndDate() == null) {
+            return _("Unnasigned");
+        }
+        return getBeingEditedElement().getEndDate().toString();
     }
 
 }

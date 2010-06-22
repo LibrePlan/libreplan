@@ -28,6 +28,7 @@ import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * DAO interface for {@link DayAssignment}
@@ -35,13 +36,19 @@ import org.navalplanner.business.resources.entities.Resource;
  * @author @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IDayAssignmentDAO extends
- IGenericDAO<DayAssignment, Long> {
+public interface IDayAssignmentDAO extends IGenericDAO<DayAssignment, Long> {
 
     public void removeDerived(
             Collection<? extends DerivedDayAssignment> derivedAllocations);
 
+    public List<DayAssignment> getAllFor(Scenario scenario);
+
+    public List<DayAssignment> getAllFor(Scenario scenario,
+            LocalDate initInclusive, LocalDate endInclusive);
+
     List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end);
+
+    public List<DayAssignment> findByResources(Scenario scenario, List<Resource> resources);
 
     public List<DayAssignment> findByResources(List<Resource> resources);
 

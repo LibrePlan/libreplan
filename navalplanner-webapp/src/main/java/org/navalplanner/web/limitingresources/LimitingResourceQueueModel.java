@@ -21,6 +21,7 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -63,12 +64,15 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.planner.order.SaveCommand;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -113,6 +117,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private Set<LimitingResourceQueueElement> toBeSaved = new HashSet<LimitingResourceQueueElement>();
 
+    private Scenario master;
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView() {
@@ -121,6 +127,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
 
     private void doGlobalView() {
+        master = PredefinedScenarios.MASTER.getScenario();
         List<LimitingResourceQueueElement> unassigned = findUnassignedLimitingResourceQueueElements();
         List<LimitingResourceQueue> queues = loadLimitingResourceQueues();
         queuesState = new QueuesState(queues, unassigned);
@@ -195,6 +202,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             LimitingResourceQueueElement element) {
         ResourceAllocation<?> resourceAllocation = element
                 .getResourceAllocation();
+        resourceAllocation.switchToScenario(master);
         resourceAllocation = initializeResourceAllocationIfNecessary(resourceAllocation);
         element.setResourceAllocation(resourceAllocation);
         initializeTask(resourceAllocation.getTask());
@@ -308,6 +316,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         if (resource != null) {
             Hibernate.initialize(resource);
             initializeCalendarIfAny(resource.getCalendar());
+            resource.getAssignments();
             for (CriterionSatisfaction each : resource
                     .getCriterionSatisfactions()) {
                 Hibernate.initialize(each);
@@ -518,7 +527,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void applyChanges() {
         removeQueueElements();
         saveQueueElements();
-        taskDAO.removeOrphanedDayAssignments();
     }
 
     private void saveQueueElements() {
@@ -527,7 +535,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 saveQueueElement(each);
             }
         }
+        SaveCommand.dontPoseAsTransientAndChildrenObjects(getAllocations(toBeSaved));
         toBeSaved.clear();
+    }
+
+    private List<ResourceAllocation<?>> getAllocations(
+            Collection<? extends LimitingResourceQueueElement> elements) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (LimitingResourceQueueElement each : elements) {
+            if (each.getResourceAllocation() != null) {
+                result.add(each.getResourceAllocation());
+            }
+        }
+        return result;
     }
 
     private void saveQueueElement(LimitingResourceQueueElement element) {

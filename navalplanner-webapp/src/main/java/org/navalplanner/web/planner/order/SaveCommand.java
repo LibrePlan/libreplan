@@ -43,13 +43,14 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
-import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
+import org.navalplanner.business.planner.entities.DerivedDayAssignmentsContainer;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -96,10 +97,10 @@ public class SaveCommand implements ISaveCommand {
     private ITaskElementDAO taskElementDAO;
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
+    private ITaskSourceDAO taskSourceDAO;
 
     @Autowired
-    private IDayAssignmentDAO dayAssignmentDAO;
+    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
@@ -121,15 +122,19 @@ public class SaveCommand implements ISaveCommand {
 
     @Override
     public void doAction(IContext<TaskElement> context) {
-        transactionService.runOnTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                doTheSaving();
-                return null;
-            }
-        });
-        fireAfterSave();
-        notifyUserThatSavingIsDone();
+        if (state.getScenarioInfo().isUsingTheOwnerScenario()
+                || userAcceptsCreateANewOrderVersion()) {
+            transactionService.runOnTransaction(new IOnTransaction<Void>() {
+                @Override
+                public Void execute() {
+                    doTheSaving();
+                    return null;
+                }
+            });
+            state.getScenarioInfo().afterCommit();
+            fireAfterSave();
+            notifyUserThatSavingIsDone();
+        }
     }
 
     private void fireAfterSave() {
@@ -148,10 +153,10 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void doTheSaving() {
+        state.getScenarioInfo().saveVersioningInfo();
         saveTasksToSave();
         removeTasksToRemove();
         saveAndDontPoseAsTransientOrderElements();
-        taskElementDAO.removeOrphanedDayAssignments();
         subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
     }
 
@@ -170,20 +175,30 @@ public class SaveCommand implements ISaveCommand {
 
     private void saveTasksToSave() {
         for (TaskElement taskElement : state.getTasksToSave()) {
-            removeDetachedDerivedDayAssignments(taskElement);
             removeEmptyConsolidation(taskElement);
             updateLimitingResourceQueueElementDates(taskElement);
             taskElementDAO.save(taskElement);
-        }
-
-        for (TaskElement taskElement : state.getTasksToSave()) {
+            if (taskElement.getTaskSource() != null
+                    && taskElement.getTaskSource().isNewObject()) {
+                saveTaskSources(taskElement);
+            }
             // Recursive iteration to put all the tasks of the
             // gantt as transiet
             dontPoseAsTransient(taskElement);
         }
-
         if (!state.getTasksToSave().isEmpty()) {
             updateRootTaskPosition();
+        }
+    }
+
+    private void saveTaskSources(TaskElement taskElement) {
+        taskSourceDAO.save(taskElement.getTaskSource());
+        taskElement.getTaskSource().dontPoseAsTransientObjectAnymore();
+        if (taskElement.isLeaf()) {
+            return;
+        }
+        for (TaskElement each : taskElement.getChildren()) {
+            saveTaskSources(each);
         }
     }
 
@@ -205,15 +220,6 @@ public class SaveCommand implements ISaveCommand {
                 .getRootTask().getOrderElement().getInitDate();
         limiting.updateDates(initDate, task
                 .getDependenciesWithThisDestination());
-    }
-
-    private void removeDetachedDerivedDayAssignments(TaskElement taskElement) {
-        for (ResourceAllocation<?> each : taskElement.getSatisfiedResourceAllocations()) {
-            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
-                removeAssigments(eachDerived.getDetached());
-                eachDerived.clearDetached();
-            }
-        }
     }
 
     private void removeEmptyConsolidation(TaskElement taskElement) {
@@ -257,16 +263,6 @@ public class SaveCommand implements ISaveCommand {
         });
     }
 
-    private void removeAssigments(Set<DerivedDayAssignment> detached) {
-        List<DerivedDayAssignment> toRemove = new ArrayList<DerivedDayAssignment>();
-        for (DerivedDayAssignment eachAssignment : detached) {
-            if (!eachAssignment.isNewObject()) {
-                toRemove.add(eachAssignment);
-            }
-        }
-        dayAssignmentDAO.removeDerived(toRemove);
-    }
-
     // newly added TaskElement such as milestones must be called
     // dontPoseAsTransientObjectAnymore
     private void dontPoseAsTransient(TaskElement taskElement) {
@@ -276,7 +272,7 @@ public class SaveCommand implements ISaveCommand {
         dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
         dontPoseAsTransient(taskElement.getDependenciesWithThisDestination());
         Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
-        dontPoseAsTransient(resourceAllocations);
+        dontPoseAsTransientAndChildrenObjects(resourceAllocations);
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {
                 dontPoseAsTransient(each);
@@ -419,15 +415,21 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private void dontPoseAsTransient(
-            Set<ResourceAllocation<?>> resourceAllocations) {
+    public static void dontPoseAsTransientAndChildrenObjects(
+            Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.dontPoseAsTransientObjectAnymore();
+            each.makeAssignmentsContainersDontPoseAsTransientAnyMore();
             for (DayAssignment eachAssignment : each.getAssignments()) {
                 eachAssignment.dontPoseAsTransientObjectAnymore();
             }
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 eachDerived.dontPoseAsTransientObjectAnymore();
+                Collection<DerivedDayAssignmentsContainer> containers = eachDerived
+                        .getContainers();
+                for (DerivedDayAssignmentsContainer eachContainer : containers) {
+                    eachContainer.dontPoseAsTransientObjectAnymore();
+                }
                 for (DerivedDayAssignment eachAssignment : eachDerived
                         .getAssignments()) {
                     eachAssignment.dontPoseAsTransientObjectAnymore();
@@ -437,7 +439,7 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private void dontPoseAsTransient(LimitingResourceQueueElement element) {
+    private static void dontPoseAsTransient(LimitingResourceQueueElement element) {
         if (element != null) {
             for (LimitingResourceQueueDependency d: element.getDependenciesAsOrigin()) {
                 d.dontPoseAsTransientObjectAnymore();
@@ -517,6 +519,19 @@ public class SaveCommand implements ISaveCommand {
     @Override
     public String getImage() {
         return "/common/img/ico_save.png";
+    }
+
+    private boolean userAcceptsCreateANewOrderVersion() {
+        try {
+            int status = Messagebox
+                    .show(
+                            _("Confirm creating a new order version for this scenario and derived. Are you sure?"),
+                            _("New order version"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
+            return (Messagebox.OK == status);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

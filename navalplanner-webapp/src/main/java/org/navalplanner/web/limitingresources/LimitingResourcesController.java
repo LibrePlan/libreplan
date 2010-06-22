@@ -115,6 +115,10 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public void reload() {
         try {
+            // FIXME: Temporary fix, it seems the page was already rendered, so
+            // clear it all as it's going to be rendered again
+            parent.getChildren().clear();
+
             limitingResourceQueueModel.initGlobalView();
 
             // Initialize interval
@@ -132,13 +136,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
-            try {
-                e.printStackTrace();
-                Messagebox.show(_("Limiting resources error") + e, _("Error"),
-                        Messagebox.OK, Messagebox.ERROR);
-            } catch (InterruptedException o) {
-                throw new RuntimeException(e);
-            }
+            e.printStackTrace();
         }
     }
 
@@ -211,6 +209,20 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 .getEarlierStartDateBecauseOfGantt());
     }
 
+    public static String getResourceOrCriteria(
+            ResourceAllocation<?> resourceAllocation) {
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            final Resource resource = ((SpecificResourceAllocation) resourceAllocation)
+                    .getResource();
+            return (resource != null) ? resource.getName() : "";
+        } else if (resourceAllocation instanceof GenericResourceAllocation) {
+            Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation)
+                    .getCriterions();
+            return Criterion.getNames(criteria);
+        }
+        return StringUtils.EMPTY;
+    }
+
     /**
      * DTO for list of unassigned {@link LimitingResourceQueueElement}
      *
@@ -241,19 +253,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
             this.taskName = taskName;
             this.date = DATE_FORMAT.format(date);
             this.hoursToAllocate = element.getIntentedTotalHours();
-            this.resourceOrCriteria = getResourceOrCriteria(element.getResourceAllocation());
-        }
-
-        private String getResourceOrCriteria(ResourceAllocation<?> resourceAllocation) {
-            if (resourceAllocation instanceof SpecificResourceAllocation) {
-                final Resource resource = ((SpecificResourceAllocation) resourceAllocation)
-                        .getResource();
-                return (resource != null) ? resource.getName() : "";
-            } else if (resourceAllocation instanceof GenericResourceAllocation) {
-                Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation).getCriterions();
-                return Criterion.getNames(criteria);
-            }
-            return StringUtils.EMPTY;
+            this.resourceOrCriteria = LimitingResourcesController
+                    .getResourceOrCriteria(element.getResourceAllocation());
         }
 
         public LimitingResourceQueueElement getOriginal() {

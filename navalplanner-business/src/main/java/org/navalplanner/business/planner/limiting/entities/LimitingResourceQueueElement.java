@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.limiting.entities;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -77,6 +79,7 @@ public class LimitingResourceQueueElement extends BaseEntity {
         endQueuePosition.setHour(0);
     }
 
+    @Valid
     public ResourceAllocation<?> getResourceAllocation() {
         return resourceAllocation;
     }
@@ -169,9 +172,9 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void add(LimitingResourceQueueDependency d) {
         Validate.notNull(d);
-        if (d.getHasAsOrigin().equals(this)) {
+        if (d.getHasAsOrigin().getId().equals(this.getId())) {
             dependenciesAsOrigin.add(d);
-        } else if (d.getHasAsDestiny().equals(this)) {
+        } else if (d.getHasAsDestiny().getId().equals(this.getId())) {
             dependenciesAsDestiny.add(d);
         } else {
             throw new IllegalArgumentException(
@@ -273,6 +276,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public List<? extends DayAssignment> getDayAssignments() {
         return resourceAllocation.getAssignments();
+    }
+
+    public BigDecimal getAdvancePercentage() {
+        return resourceAllocation.getTask().getAdvancePercentage();
     }
 
 }

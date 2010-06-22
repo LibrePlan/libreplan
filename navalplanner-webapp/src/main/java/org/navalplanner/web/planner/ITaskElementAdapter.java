@@ -21,6 +21,7 @@
 package org.navalplanner.web.planner;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 
 /**
@@ -29,4 +30,5 @@ import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
  */
 public interface ITaskElementAdapter extends IAdapterToTaskFundamentalProperties<TaskElement>{
 
+    void useScenario(Scenario scenario);
 }

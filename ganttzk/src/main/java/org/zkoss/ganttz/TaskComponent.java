@@ -331,7 +331,8 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public boolean isMovingTasksEnabled() {
-        return disabilityConfiguration.isMovingTasksEnabled()
+        return (disabilityConfiguration != null)
+                && disabilityConfiguration.isMovingTasksEnabled()
                 && task.canBeExplicitlyMoved();
     }
 
@@ -415,7 +416,7 @@ public class TaskComponent extends Div implements AfterCompose {
         updateProperties();
     }
 
-    private void updateProperties() {
+    public void updateProperties() {
         if (!isInPage()) {
             return;
         }
@@ -441,7 +442,11 @@ public class TaskComponent extends Div implements AfterCompose {
         if (task.getDeadline() != null) {
             String position = getMapper().toPixels(task.getDeadline()) + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
+        } else {
+            // Move deadline out of visible area
+            response(null, new AuInvoke(this, "moveDeadline","-100px"));
         }
+
         if (task.getConsolidatedline() != null) {
             String position = (getMapper().toPixels(task.getConsolidatedline()) - CONSOLIDATED_MARK_HALF_WIDTH)
                     + "px";

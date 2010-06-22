@@ -23,7 +23,6 @@ package org.navalplanner.business.test.orders.daos;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -31,6 +30,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -48,16 +48,24 @@ import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.test.calendars.entities.BaseCalendarTest;
 import org.navalplanner.business.test.orders.entities.OrderElementTest;
+import org.navalplanner.business.test.planner.daos.ResourceAllocationDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -86,6 +94,20 @@ public class OrderElementDAOTest {
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
+    @Autowired
+    private IBaseCalendarDAO calendarDAO;
+
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    @Before
+    public void loadRequiredData() {
+        scenariosBootstrap.loadRequiredData();
+    }
+
     @Test
     public void testInSpringContainer() {
         assertNotNull(orderElementDAO);
@@ -97,6 +119,18 @@ public class OrderElementDAOTest {
     }
 
     private OrderLine createValidOrderLine(String name, String code) {
+        Order order = createValidOrder();
+        OrderLine orderLine = createStandAloneLine(name, code);
+        order.add(orderLine);
+        return orderLine;
+    }
+
+    private OrderLine createStandAloneLine() {
+        String uniqueCode = UUID.randomUUID().toString();
+        return createStandAloneLine(uniqueCode, uniqueCode);
+    }
+
+    private OrderLine createStandAloneLine(String name, String code) {
         OrderLine orderLine = OrderLine.create();
         orderLine.setName(name);
         orderLine.setCode(code);
@@ -105,14 +139,37 @@ public class OrderElementDAOTest {
 
     private OrderLineGroup createValidOrderLineGroup() {
         String unique = UUID.randomUUID().toString();
-        return createValidOrderLineGroup(unique, unique);
+        OrderLineGroup result = createValidOrderLineGroup(unique, unique);
+        return result;
     }
 
     private OrderLineGroup createValidOrderLineGroup(String name, String code) {
+        Order order = createValidOrder();
         OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName(name);
         orderLineGroup.setCode(code);
+        order.add(orderLineGroup);
+        OrderLine line = OrderLine.createOrderLineWithUnfixedPercentage(10);
+        orderLineGroup.add(line);
+        line.setName(UUID.randomUUID().toString());
+        line.setCode(UUID.randomUUID().toString());
         return orderLineGroup;
+    }
+
+    private Order createValidOrder() {
+        Order order = Order.create();
+        order.setName(UUID.randomUUID().toString());
+        order.setCode(UUID.randomUUID().toString());
+        order.setInitDate(new Date());
+        BaseCalendar basicCalendar = BaseCalendarTest.createBasicCalendar();
+        calendarDAO.save(basicCalendar);
+        order.setCalendar(basicCalendar);
+        OrderVersion orderVersion = ResourceAllocationDAOTest
+                .setupVersionUsing(scenarioManager, order);
+        orderElementDAO.save(order);
+        orderElementDAO.flush();
+        order.useSchedulingDataFor(orderVersion);
+        return order;
     }
 
     @Test
@@ -140,16 +197,17 @@ public class OrderElementDAOTest {
             throws InstanceNotFoundException {
         // Create OrderLineGroupLine
         OrderLineGroup orderLineGroup = createValidOrderLineGroup();
-        orderElementDAO.save(orderLineGroup);
+        orderElementDAO.save(orderLineGroup.getOrder());
+        orderElementDAO.flush();
+
         orderLineGroup.setCode(((Long) orderLineGroup.getId()).toString());
-        orderElementDAO.save(orderLineGroup);
+        orderElementDAO.save(orderLineGroup.getOrder());
 
         // Create OrderLineGroup
-        OrderLine orderLine = createValidOrderLine();
+        OrderLine orderLine = createStandAloneLine();
         orderElementDAO.save(orderLine);
         orderLine.setCode(((Long) orderLine.getId()).toString());
         orderLineGroup.add(orderLine);
-        orderElementDAO.save(orderLine);
 
         OrderLine found = (OrderLine) orderElementDAO
                 .findUniqueByCodeAndParent(
@@ -160,13 +218,10 @@ public class OrderElementDAOTest {
     @Test
     public void testFindByCodeInRoot() throws InstanceNotFoundException {
         // Create OrderLineGroupLine
-        OrderLineGroup orderLineGroup = createValidOrderLineGroup();
-        orderElementDAO.save(orderLineGroup);
-        orderLineGroup.setCode(((Long) orderLineGroup.getId()).toString());
-        orderElementDAO.save(orderLineGroup);
+        Order order = createValidOrder();
 
         List<OrderElement> list = orderElementDAO.findByCodeAndParent(null,
-                orderLineGroup.getCode());
+                order.getCode());
         assertFalse(list.isEmpty());
     }
 
@@ -203,9 +258,13 @@ public class OrderElementDAOTest {
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException,
             InstanceNotFoundException {
+        Order order = createValidOrder();
+        OrderVersion orderVersion = order.getOrderVersionFor(scenarioManager
+                .getCurrent());
         OrderElement orderElement = OrderElementTest
-                .givenOrderLineGroupWithTwoOrderLines(2000,
-                3000);
+                .givenOrderLineGroupWithTwoOrderLines(orderVersion,
+                        2000, 3000);
+        order.add(orderElement);
 
         List<OrderElement> children = orderElement.getChildren();
 
@@ -262,16 +321,15 @@ public class OrderElementDAOTest {
         OrderLine found = (OrderLine) orderElementDAO.find(id);
         assertNotNull(found);
 
-        orderElementDAO.remove(id);
+        orderElementDAO.remove(orderLine.getOrder().getId());
         orderElementDAO.flush();
 
         try {
-            found = (OrderLine) orderElementDAO.find(id);
+            orderElementDAO.find(id);
             fail("It should throw an exception");
         } catch (InstanceNotFoundException e) {
-            found = null;
+            // ok
         }
-        assertNull(found);
     }
 
     @Test
@@ -279,8 +337,14 @@ public class OrderElementDAOTest {
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException,
             InstanceNotFoundException {
+        Order order = createValidOrder();
+        OrderVersion orderVersion = order.getOrderVersionFor(scenarioManager
+                .getCurrent());
         OrderElement orderElement = OrderElementTest
-                .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
+                .givenOrderLineGroupWithTwoOrderLines(orderVersion, 2000, 3000);
+        order.add(orderElement);
+        order.useSchedulingDataFor(order.getOrderVersionFor(scenarioManager
+                .getCurrent()));
 
         List<OrderElement> children = orderElement.getChildren();
 
@@ -306,9 +370,8 @@ public class OrderElementDAOTest {
             found = (OrderLineGroup) orderElementDAO.find(id);
             fail("It should throw an exception");
         } catch (InstanceNotFoundException e) {
-            found = null;
+            // ok
         }
-        assertNull(found);
     }
 
     @Test
@@ -317,18 +380,12 @@ public class OrderElementDAOTest {
                 .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
         QualityForm qualityForm = QualityForm.create(UUID.randomUUID()
                 .toString(), UUID.randomUUID().toString());
-        qualityFormDAO.save(qualityForm);
+
         TaskQualityForm taskQualityForm = orderElement
                 .addTaskQualityForm(qualityForm);
-
-        orderElementDAO.save(orderElement);
-        orderElementDAO.flush();
         assertThat(orderElement.getTaskQualityForms().size(), equalTo(1));
 
         orderElement.removeTaskQualityForm(taskQualityForm);
-
-        orderElementDAO.save(orderElement);
-        orderElementDAO.flush();
         assertThat(orderElement.getTaskQualityForms().size(), equalTo(0));
     }
 
@@ -338,25 +395,22 @@ public class OrderElementDAOTest {
                 .givenOrderLineGroupWithTwoOrderLines(2000, 3000);
         QualityForm qualityForm = QualityForm.create(UUID.randomUUID()
                 .toString(), UUID.randomUUID().toString());
-        qualityFormDAO.save(qualityForm);
         orderElement.addTaskQualityForm(qualityForm);
 
-        orderElementDAO.save(orderElement);
-        orderElementDAO.flush();
         assertThat(orderElement.getTaskQualityForms().size(), equalTo(1));
 
         try {
             orderElement.addTaskQualityForm(null);
             fail("It should throw an exception");
         } catch (IllegalArgumentException e) {
-            //
+            // ok
         }
 
         try {
             orderElement.addTaskQualityForm(qualityForm);
             fail("It should throw an exception");
         } catch (ValidationException e) {
-            //
+            // ok
         }
     }
 

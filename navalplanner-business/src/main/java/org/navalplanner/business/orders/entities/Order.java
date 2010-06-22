@@ -22,10 +22,14 @@ package org.navalplanner.business.orders.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -36,8 +40,11 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.util.deepcopy.DeepCopy;
 
 /**
  * It represents an {@link Order} with its related information. <br />
@@ -86,11 +93,92 @@ public class Order extends OrderLineGroup {
 
     private String customerReference;
 
+    private Map<Scenario, OrderVersion> scenarios = new HashMap<Scenario, OrderVersion>();
+
     private Set<OrderAuthorization> orderAuthorizations = new HashSet<OrderAuthorization>();
+
+    private CurrentVersionInfo currentVersionInfo;
+
+    public static class CurrentVersionInfo {
+
+        private final Scenario scenario;
+
+        private final OrderVersion orderVersion;
+
+        private final boolean modifyingTheOwnerScenario;
+
+        static CurrentVersionInfo create(Scenario scenario,
+                OrderVersion orderVersion) {
+            return new CurrentVersionInfo(scenario, orderVersion);
+        }
+
+        private CurrentVersionInfo(Scenario scenario, OrderVersion orderVersion) {
+            Validate.notNull(scenario);
+            Validate.notNull(orderVersion);
+            this.scenario = scenario;
+            this.orderVersion = orderVersion;
+            this.modifyingTheOwnerScenario = orderVersion.isOwnedBy(scenario);
+        }
+
+        public boolean isUsingTheOwnerScenario() {
+            return modifyingTheOwnerScenario;
+        }
+
+        public OrderVersion getOrderVersion() {
+            return orderVersion;
+        }
+    }
+
+    public CurrentVersionInfo getCurrentVersionInfo() {
+        if (currentVersionInfo == null) {
+            throw new IllegalStateException(
+                    "Order#useSchedulingDataFor(Scenario scenario)"
+                            + " must have been called first in order to use"
+                            + " this method");
+        }
+        return currentVersionInfo;
+    }
+
 
     public void addOrderAuthorization(OrderAuthorization orderAuthorization) {
         orderAuthorization.setOrder(this);
         orderAuthorizations.add(orderAuthorization);
+    }
+
+    public Map<Scenario, OrderVersion> getScenarios() {
+        return Collections.unmodifiableMap(scenarios);
+    }
+
+    public void useSchedulingDataFor(Scenario scenario) {
+        OrderVersion orderVersion = scenarios.get(scenario);
+        currentVersionInfo = CurrentVersionInfo.create(scenario, orderVersion);
+        useSchedulingDataFor(orderVersion);
+    }
+
+    @Override
+    public void writeSchedulingDataChanges() {
+        super.writeSchedulingDataChanges();
+    }
+
+    public void writeSchedulingDataChangesTo(Scenario currentScenario,
+            OrderVersion newOrderVersion) {
+        setVersionForScenario(currentScenario, newOrderVersion);
+        writeSchedulingDataChangesTo(
+                deepCopyWithNeededReplaces(newOrderVersion),
+                newOrderVersion);
+        useSchedulingDataFor(currentScenario);
+        removeSpuriousDayAssignments(currentScenario);
+    }
+
+    private DeepCopy deepCopyWithNeededReplaces(
+            OrderVersion newOrderVersion) {
+        DeepCopy result = new DeepCopy();
+        addNeededReplaces(result, newOrderVersion);
+        return result;
+    }
+
+    public boolean isUsingTheOwnerScenario() {
+        return getCurrentVersionInfo().isUsingTheOwnerScenario();
     }
 
     public BigDecimal getWorkBudget() {
@@ -373,4 +461,50 @@ public class Order extends OrderLineGroup {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((getId() == null || isNewObject()) ? super.hashCode()
+                        : getId().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || isNewObject())
+            return false;
+        if (!(obj instanceof Order)) {
+            return false;
+        }
+        Order other = (Order) obj;
+        if (getId() == null) {
+            if (other.getId() != null)
+                return false;
+        } else if (!getId().equals(other.getId()))
+            return false;
+        return true;
+    }
+
+    public void setVersionForScenario(Scenario currentScenario,
+            OrderVersion orderVersion) {
+        scenarios.put(currentScenario, orderVersion);
+    }
+
+    public void removeOrderVersionForScenario(Scenario scenario) {
+        scenarios.remove(scenario);
+    }
+
+    public OrderVersion getOrderVersionFor(Scenario current) {
+        return scenarios.get(current);
+    }
+
+
+    public void setOrderVersion(Scenario scenario, OrderVersion newOrderVersion) {
+        scenarios.put(scenario, newOrderVersion);
+    }
 }

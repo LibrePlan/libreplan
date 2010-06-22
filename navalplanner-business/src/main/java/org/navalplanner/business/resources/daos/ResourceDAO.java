@@ -37,6 +37,9 @@ import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -52,6 +55,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     IResourceDAO {
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     @Override
     public List<Worker> getWorkers() {
@@ -144,7 +150,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     @SuppressWarnings("unchecked")
     private List<Resource> findRelatedToGeneric(List<Task> taskElements) {
         String query = "SELECT DISTINCT resource FROM GenericResourceAllocation generic"
-                + " JOIN generic.genericDayAssignments dayAssignment"
+                + " JOIN generic.genericDayAssignmentsContainers container "
+                + " JOIN container.dayAssignments dayAssignment"
                 + " JOIN dayAssignment.resource resource"
                 + " WHERE generic.task IN(:taskElements)";
         return getSession().createQuery(query)
@@ -154,15 +161,18 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
     @SuppressWarnings("unchecked")
     private List<Resource> findRelatedToSpecific(List<Task> taskElements) {
+        Scenario scenario = scenarioManager.getCurrent();
         List<Resource> list = getSession()
                 .createQuery(
                         "SELECT DISTINCT specificAllocation.resource "
                                 + "FROM SpecificResourceAllocation specificAllocation "
+                                + "JOIN specificAllocation.specificDayAssignmentsContainers container "
                                 + "WHERE specificAllocation.task IN(:taskElements) "
-                                + "and specificAllocation.specificDaysAssignment IS NOT EMPTY")
-                .setParameterList(
-                "taskElements",
-                taskElements).list();
+                                + "and container.scenario = :scenario "
+                                + "and container.dayAssignments IS NOT EMPTY")
+                .setParameterList("taskElements", taskElements)
+                .setParameter("scenario", scenario)
+                .list();
         return list;
     }
 

@@ -48,6 +48,7 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
 import org.navalplanner.ws.common.api.OrderLineDTO;
@@ -78,10 +79,14 @@ public class SubcontractServiceTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
     @Before
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
+        scenariosBootstrap.loadRequiredData();
     }
 
     @Autowired

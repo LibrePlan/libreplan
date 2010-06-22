@@ -200,7 +200,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Limiting resources"),"/planner/index.zul;limiting_resources","01-introducion.html"),
             subItem(_("Templates list"), "/templates/templates.zul", ""),
             subItem(_("Subcontracted tasks list"), "/subcontract/subcontractedTasks.zul", ""),
-            subItem(_("Report advances"), "/subcontract/reportAdvances.zul", ""));
+            subItem(_("Report advances"), "/subcontract/reportAdvances.zul", ""),
+            subItem(_("Transfer orders between scenarios"), "/scenarios/transferOrders.zul", ""));
         topItem(_("Resources"), "/resources/worker/worker.zul", "",
             subItem(_("Workers List"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"),
             subItem(_("Machines List"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"),
@@ -229,7 +230,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Quality forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
                 subItem(_("Manage user profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles"),
                 subItem(_("Manage user accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
-                subItem(_("Manage external companies"), "/externalcompanies/externalcompanies.zul",""));
+                subItem(_("Manage external companies"), "/externalcompanies/externalcompanies.zul",""),
+                subItem(_("Manage scenarios"), "/scenarios/scenarios.zul",""));
             }
 
         topItem(_("Reports"), "", "",

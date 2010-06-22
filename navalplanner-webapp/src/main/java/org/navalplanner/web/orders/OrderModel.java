@@ -38,6 +38,8 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.navalplanner.business.common.entities.Configuration;
@@ -65,6 +67,11 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderTemplate;
@@ -82,6 +89,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.IPredicate;
+import org.zkoss.zul.Messagebox;
 
 /**
  * Model for UI operations related to {@link Order}. <br />
@@ -152,6 +160,17 @@ public class OrderModel implements IOrderModel {
 
     private List<Order> orderList = new ArrayList<Order>();
 
+    @Autowired
+    private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -170,6 +189,12 @@ public class OrderModel implements IOrderModel {
     }
 
     private QualityFormsOnConversation qualityFormsOnConversation;
+
+    private Scenario currentScenario;
+
+    private List<Scenario> derivedScenarios = new ArrayList<Scenario>();
+
+    private boolean isEditing = false;
 
     private QualityFormsOnConversation getQualityFormsOnConversation() {
         if (qualityFormsOnConversation == null) {
@@ -203,15 +228,16 @@ public class OrderModel implements IOrderModel {
             return new ArrayList<Order>();
         }
         getLabelsOnConversation().reattachLabels();
-        List<Order> orders = orderDAO.getOrdersByReadAuthorization(user);
+        List<Order> orders = orderDAO.getOrdersByReadAuthorizationByScenario(
+                user, scenarioManager.getCurrent());
+
         initializeOrders(orders);
         return orders;
     }
 
     private void initializeOrders(List<Order> list) {
         for (Order order : list) {
-            // Remove or not?
-            // orderDAO.reattachUnmodifiedEntity(order);
+            orderDAO.reattachUnmodifiedEntity(order);
             if (order.getCustomer() != null) {
                 order.getCustomer().getName();
             }
@@ -219,6 +245,7 @@ public class OrderModel implements IOrderModel {
             for (Label label : order.getLabels()) {
                 label.getName();
             }
+            order.getScenarios().size();
         }
         this.orderList = list;
     }
@@ -247,6 +274,7 @@ public class OrderModel implements IOrderModel {
     @Transactional(readOnly = true)
     public void initEdit(Order order) {
         Validate.notNull(order);
+        isEditing = true;
         loadNeededDataForConversation();
         this.order = getFromDB(order);
         this.orderElementTreeModel = new OrderElementTreeModel(this.order);
@@ -255,6 +283,8 @@ public class OrderModel implements IOrderModel {
         forceLoadCalendar(this.getCalendar());
         forceLoadCustomer(this.order.getCustomer());
         forceLoadLabels(this.order);
+        currentScenario = scenarioManager.getCurrent();
+        this.order.useSchedulingDataFor(currentScenario);
     }
 
     private void forceLoadLabels(OrderElement orderElement) {
@@ -353,6 +383,19 @@ public class OrderModel implements IOrderModel {
         this.order = Order.create();
         initializeOrder();
         initializeCalendar();
+        currentScenario = scenarioManager.getCurrent();
+        addOrderToCurrentScenario(this.order);
+        this.order.useSchedulingDataFor(currentScenario);
+    }
+
+    private OrderVersion addOrderToCurrentScenario(Order order) {
+        OrderVersion orderVersion = currentScenario.addOrder(order);
+        order.setVersionForScenario(currentScenario, orderVersion);
+        derivedScenarios = scenarioDAO.getDerivedScenarios(currentScenario);
+        for (Scenario scenario : derivedScenarios) {
+            scenario.addOrder(order, orderVersion);
+        }
+        return orderVersion;
     }
 
     private void initializeOrder() {
@@ -377,13 +420,13 @@ public class OrderModel implements IOrderModel {
     }
 
     private Order createOrderFrom(OrderTemplate template) {
-        return (Order) createOrderElementFrom(null, template);
+        return template.createOrder(scenarioManager.getCurrent());
     }
 
     private OrderElement createOrderElementFrom(OrderLineGroup parent,
             OrderElementTemplate template) {
-        return (parent != null) ? template.createElement(parent) : template
-                .createElement();
+        Validate.notNull(parent);
+        return template.createElement(parent);
     }
 
     private void setDefaultOrderCode() throws ConcurrentModificationException {
@@ -417,8 +460,37 @@ public class OrderModel implements IOrderModel {
     }
 
     @Override
-    @Transactional
     public void save() throws ValidationException {
+        final boolean newOrderVersionNeeded = isEditing
+                && order.hasSchedulingDataBeingModified()
+                && !order.isUsingTheOwnerScenario();
+        if (!newOrderVersionNeeded || userAcceptsCreateANewOrderVersion()) {
+            transactionService.runOnTransaction(new IOnTransaction<Void>() {
+                @Override
+                public Void execute() {
+                    saveOnTransaction(newOrderVersionNeeded);
+                    return null;
+                }
+            });
+            order.dontPoseAsTransientObjectAnymore();
+            // this way we don't have dontPoseAsTransient all children of the
+            // order
+            initEditAfterSave();
+        }
+    }
+
+    private void initEditAfterSave() {
+        transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        initEdit(order);
+                        return null;
+                    }
+                });
+    }
+
+    private void saveOnTransaction(boolean newOrderVersionNeeded) {
         reattachCriterions();
         reattachTasksForTasksSources();
 
@@ -426,11 +498,26 @@ public class OrderModel implements IOrderModel {
             generateOrderElementCodes();
         }
         calculateAndSetTotalHours();
-        this.orderDAO.save(order);
+        orderDAO.save(order);
         reattachCurrentTaskSources();
         deleteOrderElementWithoutParent();
-        synchronizeWithSchedule(order);
-
+        if (newOrderVersionNeeded) {
+            OrderVersion newVersion = OrderVersion
+                    .createInitialVersion(currentScenario);
+            reattachAllTaskSources();
+            order.writeSchedulingDataChangesTo(currentScenario, newVersion);
+            createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
+                    newVersion);
+            synchronizeWithSchedule(order, false);
+            order.writeSchedulingDataChanges();
+        } else {
+            OrderVersion orderVersion = order.getCurrentVersionInfo()
+                    .getOrderVersion();
+            orderVersion.savingThroughOwner();
+            synchronizeWithSchedule(order, true);
+            order.writeSchedulingDataChanges();
+        }
+        saveDerivedScenarios();
         calculateAdvancePercentage(order);
         for (OrderElement orderElement : order.getAllChildren()) {
             calculateAdvancePercentage(orderElement);
@@ -443,6 +530,36 @@ public class OrderModel implements IOrderModel {
             if (orderElement.getTaskSource().getTask() != null) {
                 orderElement.getTaskSource().getTask().setAdvancePercentage(
                         advancePercentage);
+            }
+        }
+    }
+
+    private void createAndSaveNewOrderVersion(Scenario currentScenario,
+            OrderVersion newOrderVersion) {
+        OrderVersion previousOrderVersion = currentScenario
+                .getOrderVersion(order);
+        currentScenario.setOrderVersion(order, newOrderVersion);
+        scenarioDAO.updateDerivedScenariosWithNewVersion(previousOrderVersion,
+                order, currentScenario, newOrderVersion);
+    }
+
+    private boolean userAcceptsCreateANewOrderVersion() {
+        try {
+            int status = Messagebox
+                    .show(
+                            _("Confirm creating a new order version for this scenario and derived. Are you sure?"),
+                            _("New order version"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
+            return (Messagebox.OK == status);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveDerivedScenarios() {
+        if (derivedScenarios != null) {
+            for (Scenario scenario : derivedScenarios) {
+                scenarioDAO.save(scenario);
             }
         }
     }
@@ -468,16 +585,26 @@ public class OrderModel implements IOrderModel {
         }
     }
 
+    private void reattachAllTaskSources() {
+        // avoid LazyInitializationException for when doing
+        // removePredecessorsDayAssignmentsFor
+        for (TaskSource each : order
+                .getAllScenariosTaskSourcesFromBottomToTop()) {
+            taskSourceDAO.reattach(each);
+        }
+    }
+
     private void reattachTasksForTasksSources() {
         for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
             each.reloadTask(taskElementDAO);
         }
     }
 
-    private void synchronizeWithSchedule(OrderElement orderElement) {
-        for (TaskSourceSynchronization each : order
+    private void synchronizeWithSchedule(OrderElement orderElement,
+            boolean preexistent) {
+        for (TaskSourceSynchronization each : orderElement
                 .calculateSynchronizationsNeeded()) {
-            each.apply(taskSourceDAO);
+            each.apply(taskSourceDAO, preexistent);
         }
     }
 
@@ -517,10 +644,44 @@ public class OrderModel implements IOrderModel {
     @Override
     @Transactional
     public void remove(Order order) {
-        try {
-            this.orderDAO.remove(order.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
+        if (order.getScenarios().size() == 1) {
+            try {
+                orderDAO.remove(order.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            orderDAO.save(order);
+
+            Scenario scenario = scenarioManager.getCurrent();
+            OrderVersion currentOrderVersion = scenario.getOrderVersion(order);
+            order.removeOrderVersionForScenario(scenario);
+
+            derivedScenarios = scenarioDAO.getDerivedScenarios(scenario);
+            for (Scenario derivedScenario : derivedScenarios) {
+                OrderVersion orderVersion = order
+                        .getOrderVersionFor(derivedScenario);
+                if ((orderVersion != null)
+                        && (orderVersion.getId()
+                                .equals(currentOrderVersion.getId()))) {
+                    order.removeOrderVersionForScenario(derivedScenario);
+                }
+            }
+
+            boolean orderVersionNotUsed = true;
+            for (OrderVersion orderVersion : order.getScenarios().values()) {
+                if (orderVersion.getId().equals(currentOrderVersion.getId())) {
+                    orderVersionNotUsed = false;
+                    break;
+                }
+            }
+            if (orderVersionNotUsed) {
+                try {
+                    orderVersionDAO.remove(currentOrderVersion.getId());
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -774,8 +935,22 @@ public class OrderModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isAlreadyInUse(OrderElement element) {
-        return orderElementDAO.isAlreadyInUseThisOrAnyOfItsChildren(element);
+    public boolean isAlreadyInUse(OrderElement orderElement) {
+        return orderElementDAO
+                .isAlreadyInUseThisOrAnyOfItsChildren(orderElement);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAlreadyInUseAndIsOnlyInCurrentScenario(Order order) {
+        return isAlreadyInUse(order) && (order.getScenarios().size() == 1);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void useSchedulingDataForCurrentScenario(Order order) {
+        orderDAO.reattach(order);
+        order.useSchedulingDataFor(scenarioManager.getCurrent());
     }
 
 }

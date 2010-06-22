@@ -108,6 +108,14 @@ public class LongOperationFeedback {
     private static final ExecutorService executor = Executors
             .newCachedThreadPool();
 
+    public static <T> IDesktopUpdatesEmitter<T> doNothingEmitter() {
+        return new IDesktopUpdatesEmitter<T>() {
+            @Override
+            public void doUpdate(T value) {
+            }
+        };
+    }
+
     public static <T> IBackGroundOperation<T> withAsyncUpates(
             final IBackGroundOperation<T> backgroundOperation) {
         return new IBackGroundOperation<T>() {
@@ -122,8 +130,8 @@ public class LongOperationFeedback {
                     backgroundOperation.doOperation(notBlockingDesktopUpdates);
                 } finally {
                     notBlockingDesktopUpdates.finish();
+                    waitUntilShowingAllUpdates(future);
                 }
-                waitUntilShowingAllUpdates(future);
             }
 
             private void waitUntilShowingAllUpdates(Future<?> future) {
@@ -255,7 +263,7 @@ public class LongOperationFeedback {
     /**
      * Executes a long operation. The background operation can send
      * <code>T</code> objects that can update desktop state. A
-     * {@link IDesktopUpdatesEmitter} that handle this objects is necessary.
+     * {@link IDesktopUpdatesEmitter} that handle these objects is necessary.
      * Trying to update the components in any other way would fail.
      */
     public static <T> void progressive(final Desktop desktop,

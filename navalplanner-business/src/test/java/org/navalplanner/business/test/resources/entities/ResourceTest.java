@@ -19,24 +19,28 @@
  */
 
 package org.navalplanner.business.test.resources.entities;
-import java.util.Date;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
+import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.date;
+import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -48,14 +52,35 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.business.test.resources.daos.CriterionDAOTest;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests for {@link Resource}. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        BUSINESS_SPRING_CONFIG_TEST_FILE })
+@Transactional
 public class ResourceTest {
+
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    @Before
+    public void loadRequiredData() {
+        scenariosBootstrap.loadRequiredData();
+    }
 
     @Test
     public void testGetSatisfactionsForCriterion() {
@@ -562,6 +587,7 @@ public class ResourceTest {
 
     private void givenWorker() {
         worker = Worker.create("firstName", "surName", "2333232");
+        worker.useScenario(scenarioManager.getCurrent());
     }
 
 }

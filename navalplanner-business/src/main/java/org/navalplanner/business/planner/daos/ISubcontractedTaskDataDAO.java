@@ -39,4 +39,6 @@ public interface ISubcontractedTaskDataDAO extends
 
     void removeOrphanedSubcontractedTaskData();
 
+    List<SubcontractedTaskData> getAllForMasterScenario();
+
 }

@@ -389,8 +389,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private boolean canChangeStartDate() {
         return disabilityConfiguration.isMovingTasksEnabled()
-                && task.canBeExplicitlyMoved()
-                && !task.isLimitingAndHasDayAssignments();
+                && task.canBeExplicitlyMoved();
     }
 
     private boolean canChangeEndDate() {
