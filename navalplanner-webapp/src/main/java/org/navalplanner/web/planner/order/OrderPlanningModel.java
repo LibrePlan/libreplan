@@ -1176,19 +1176,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             List<DayAssignment> orderDayAssignments = order.getDayAssignments();
             SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(orderDayAssignments);
-            SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGroupedReloaded = new TreeMap<LocalDate, Map<Resource,Integer>>();
-            for (LocalDate day : orderDayAssignmentsGrouped.keySet()) {
-                Map<Resource, Integer> map = new HashMap<Resource, Integer>();
-                for (Resource resource : orderDayAssignmentsGrouped.get(day)
-                        .keySet()) {
-                    Resource resourceReloaded = reloadResources(
-                            Arrays.asList(resource)).get(0);
-                    map.put(resourceReloaded, orderDayAssignmentsGrouped.get(
-                            day).get(resource));
-                }
-                orderDayAssignmentsGroupedReloaded.put(day, map);
-            }
-            orderDayAssignmentsGrouped = orderDayAssignmentsGroupedReloaded;
 
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
             for (Resource resource : reloadResources(order.getResources())) {
