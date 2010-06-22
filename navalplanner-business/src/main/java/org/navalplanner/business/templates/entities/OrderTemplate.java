@@ -59,6 +59,7 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         order.useSchedulingDataFor(currentScenario);
         order.setInitDate(today());
         order.setCalendar(calendar);
+        order.initializeTemplate(this);
         return setupGroupParts(setupSchedulingStateType(order));
     }
 

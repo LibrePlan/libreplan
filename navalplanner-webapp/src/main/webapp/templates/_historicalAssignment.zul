@@ -33,14 +33,16 @@
                     <columns>
                         <column label="${i18n:_('Order code')}" sort="orderCode" sortDirection="descending"/>
                         <column label="${i18n:_('Order element code')}" sort="auto(name)" sortDirection="descending"/>
+                        <column label="${i18n:_('Name')}" width="250px" sort="auto(name)" sortDirection="descending"/>
                         <column label="${i18n:_('Estimated hours')}" />
                         <column label="${i18n:_('worked hours')}" />
-                        <column label="${i18n:_('Operations')}" />
+                        <column label="${i18n:_('Operations')}" align="center" width="100px" />
                     </columns>
                     <rows>
                          <row self="@{each='orderElementDTO'}" value="@{orderElementDTO}">
                             <label value="@{orderElementDTO.orderCode}"/>
                             <label value="@{orderElementDTO.orderElementCode}"/>
+                            <label value="@{orderElementDTO.name}"/>
                             <label value="@{orderElementDTO.estimatedHours}"/>
                             <label value="@{orderElementDTO.workedHours}"/>
                             <button label="${i18n:_('View')}"
