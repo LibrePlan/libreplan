@@ -89,6 +89,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private boolean refreshNameFilter = true;
     private int filterByNamePosition = 0;
     private int numberOfGroupsByName = 10;
+    private int lastSelectedName = 0;
     private PaginationType paginationType;
 
     private WeakReferencedListeners<IPaginationFilterChangedListener> nameFilterListener =
@@ -409,12 +410,28 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         return groups.subList(filterByNamePosition, endPosition);
     }
 
-    public void onSelectFilterByName(Integer filterByNamePosition) {
-        if(paginationType != PaginationType.NONE) {
-            this.filterByNamePosition = filterByNamePosition.intValue();
-            this.feedBackMessage = _("filtering by name");
-            changeNameFilterWithFeedback();
+    public void onSelectFilterByName(Combobox comboByName) {
+        if (comboByName.getSelectedItemApi() == null) {
+            resetComboByName(comboByName);
+        } else {
+            Integer filterByNamePosition = (Integer) comboByName
+                    .getSelectedItemApi().getValue();
+            if (paginationType != PaginationType.NONE) {
+                this.filterByNamePosition = filterByNamePosition.intValue();
+                this.lastSelectedName = comboByName.getSelectedIndex();
+                this.feedBackMessage = _("filtering by name");
+                changeNameFilterWithFeedback();
+            }
         }
+    }
+
+    private void resetComboByName(Combobox comboByName) {
+        if (this.lastSelectedName == -1) {
+            comboByName.setSelectedIndex(0);
+        } else {
+            comboByName.setSelectedIndex(this.lastSelectedName);
+        }
+        comboByName.invalidate();
     }
 
     private void changeNameFilterWithFeedback() {

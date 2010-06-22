@@ -48,7 +48,7 @@ resourcesLoadPanel = self;
         <separator/>
         <label id="filterByNameLabel">${i18n:_('Name filter')}:</label>
         <combobox id="filterByNameCombo" width="50px"
-            onChange="resourcesLoadPanel.onSelectFilterByName(self.selectedItemApi.value)" />
+            onChange="resourcesLoadPanel.onSelectFilterByName(self)" />
         <separator/>
         <hbox id="additionalFilterInsertionPoint2" />
        </hbox>
