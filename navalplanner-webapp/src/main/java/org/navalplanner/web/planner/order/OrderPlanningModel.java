@@ -1178,7 +1178,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             SortedMap<LocalDate, Map<Resource, Integer>> orderDayAssignmentsGrouped = groupDayAssignmentsByDayAndResource(orderDayAssignments);
 
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : reloadResources(order.getResources())) {
+            for (Resource resource : order.getResources()) {
                 resourcesDayAssignments.addAll(assigmentsOnResourceCalculator
                         .getAssignments(resource));
             }
@@ -1230,17 +1230,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             chart.setWidth(size + "px");
             chart.setHeight("150px");
-        }
-
-        private List<Resource> reloadResources(
-                Collection<? extends Resource> resources) {
-            List<Resource> result = new ArrayList<Resource>();
-            for (Resource each : resources) {
-                Resource reloaded = resourceDAO
-                        .findExistingEntity(each.getId());
-                result.add(reloaded);
-            }
-            return result;
         }
 
         private void resetMaps() {
