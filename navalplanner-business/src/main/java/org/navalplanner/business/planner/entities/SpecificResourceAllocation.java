@@ -302,10 +302,8 @@ public class SpecificResourceAllocation extends
 
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
-            ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
+            return new ExplicitlySpecifiedScenarioState(
                     scenario);
-            result.resetTo(container.getDayAssignments());
-            return result;
         }
     }
 
