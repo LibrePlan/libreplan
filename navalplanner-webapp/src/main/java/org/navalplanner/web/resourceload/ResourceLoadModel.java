@@ -248,7 +248,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 List<ResourceAllocation<?>> listAllocations = new ArrayList<ResourceAllocation<?>>(
                         task.getSatisfiedResourceAllocations());
                 for (GenericResourceAllocation generic : (onlyGeneric(listAllocations))) {
-                    allCriteriaList.addAll(generic.getCriterions());
+                    for (Criterion criterion : generic.getCriterions()) {
+                        if (!allCriteriaList.contains(criterion)) {
+                            allCriteriaList.add(criterion);
+                        }
+                    }
                 }
             }
             allCriteriaList = Criterion.sortByTypeAndName(allCriteriaList);
