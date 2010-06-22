@@ -308,7 +308,8 @@ public class GenericResourceAllocation extends
 
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
-            return this;
+            return new ExplicitlySpecifiedScenarioState(
+                    scenario);
         }
     }
 
