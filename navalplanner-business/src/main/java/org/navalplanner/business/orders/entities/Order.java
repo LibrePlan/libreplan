@@ -504,7 +504,7 @@ public class Order extends OrderLineGroup {
      */
     public OrderVersion disassociateFrom(Scenario scenario) {
         OrderVersion existentVersion = scenarios.remove(scenario);
-        if (existentVersion != null) {
+        if (existentVersion != null && !isVersionUsed(existentVersion)) {
             removeVersion(existentVersion);
         }
         return existentVersion;
