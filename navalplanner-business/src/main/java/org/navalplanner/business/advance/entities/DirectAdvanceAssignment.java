@@ -98,8 +98,8 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
 
     public void setAdvanceMeasurements(
             SortedSet<AdvanceMeasurement> advanceMeasurements) {
-        this.advanceMeasurements = new TreeSet<AdvanceMeasurement>(
-                advanceMeasurements);
+        this.advanceMeasurements.clear();
+        this.advanceMeasurements.addAll(advanceMeasurements);
     }
 
     public AdvanceMeasurement getLastAdvanceMeasurement() {
