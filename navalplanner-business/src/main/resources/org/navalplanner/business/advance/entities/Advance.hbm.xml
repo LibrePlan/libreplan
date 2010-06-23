@@ -49,7 +49,6 @@
 
         <set name="advanceMeasurements"
              cascade="all,delete-orphan"
-             inverse="true"
              access="field"
              sort="org.navalplanner.business.advance.entities.AdvanceMeasurementComparator">
                 <key column="ADVANCE_ASSIGNMENT_ID" />
