@@ -1260,7 +1260,7 @@ public class ManageOrderElementAdvancesController extends
     private Button createAddMeasurementButton() {
         Button addButton = new Button();
         addButton.setLabel("Add measure");
-        addButton.setTooltiptext(_("Add new advnace measurement"));
+        addButton.setTooltiptext(_("Add new advance measurement"));
         return addButton;
     }
 
@@ -1283,7 +1283,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessageDeleteSpread() {
-        String message = _("This advance can not be removed, because is spread. it is necessary to select another advance as spread..");
+        String message = _("This advance can not be removed, because it is spread. It is necessary to select another advance as spread.");
         increaseScreenHeight();
         messagesForUser.showMessage(Level.ERROR, message);
     }

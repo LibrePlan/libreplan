@@ -331,7 +331,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
         private Button manualButton(final LimitingResourceQueueElementDTO element) {
             Button result = new Button();
             result.setLabel(_("Manual"));
-            result.setTooltiptext(_("Assign elemento to queue manually"));
+            result.setTooltiptext(_("Assign element to queue manually"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
