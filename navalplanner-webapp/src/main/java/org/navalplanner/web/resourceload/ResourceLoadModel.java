@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -240,22 +241,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         Map<Criterion, List<GenericResourceAllocation>> toReturn;
         if (filter()) {
-            allCriteriaList = new ArrayList<Criterion>();
             List<Task> tasks = justTasks(filterBy
                     .getAllChildrenAssociatedTaskElements());
-            for (Task task : tasks) {
-
-                List<ResourceAllocation<?>> listAllocations = new ArrayList<ResourceAllocation<?>>(
-                        task.getSatisfiedResourceAllocations());
-                for (GenericResourceAllocation generic : (onlyGeneric(listAllocations))) {
-                    for (Criterion criterion : generic.getCriterions()) {
-                        if (!allCriteriaList.contains(criterion)) {
-                            allCriteriaList.add(criterion);
-                        }
-                    }
-                }
-            }
-            allCriteriaList = Criterion.sortByTypeAndName(allCriteriaList);
+            allCriteriaList = Criterion.sortByTypeAndName(getCriterionsOn(tasks));
             toReturn = resourceAllocationDAO
                     .findGenericAllocationsBySomeCriterion(allCriteriaList, initDateFilter, endDateFilter);
         } else {
@@ -282,6 +270,19 @@ public class ResourceLoadModel implements IResourceLoadModel {
         for (Criterion each : criteriaToShowList) {
             criterionDAO.reattachUnmodifiedEntity(each);
         }
+    }
+
+    private List<Criterion> getCriterionsOn(Collection<? extends Task> tasks) {
+        Set<Criterion> result = new LinkedHashSet<Criterion>();
+        for (Task eachTask : tasks) {
+            for (GenericResourceAllocation eachAllocation : onlyGeneric(eachTask
+                    .getSatisfiedResourceAllocations())) {
+                for (Criterion eachCriterion : eachAllocation.getCriterions()) {
+                    result.add(eachCriterion);
+                }
+            }
+        }
+        return new ArrayList<Criterion>(result);
     }
 
     private List<Resource> resourcesToShow() {
@@ -670,7 +671,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<GenericResourceAllocation> onlyGeneric(
-            List<ResourceAllocation<?>> sortedByStartDate) {
+            Collection<? extends ResourceAllocation<?>> sortedByStartDate) {
         return ResourceAllocation.getOfType(GenericResourceAllocation.class,
                 sortedByStartDate);
     }
