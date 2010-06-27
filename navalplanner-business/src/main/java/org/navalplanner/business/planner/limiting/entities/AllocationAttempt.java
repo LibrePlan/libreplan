@@ -32,21 +32,21 @@ import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Resource;
 
-public abstract class AllocationOnGap {
+public abstract class AllocationAttempt {
 
-    public static AllocationOnGap invalidOn(Gap gap) {
-        return new InvalidAllocationOnGap(gap);
+    public static AllocationAttempt invalidOn(Gap gap) {
+        return new InvalidAllocationAttempt(gap);
     }
 
-    public static AllocationOnGap validOn(Gap gap, DateAndHour start,
+    public static AllocationAttempt validOn(Gap gap, DateAndHour start,
             DateAndHour endExclusive, int[] assignableHours) {
-        return new ValidAllocationOnGap(gap, start, endExclusive,
+        return new ValidAllocationAttempt(gap, start, endExclusive,
                 assignableHours);
     }
 
     private final Gap originalGap;
 
-    protected AllocationOnGap(Gap originalGap) {
+    protected AllocationAttempt(Gap originalGap) {
         Validate.notNull(originalGap);
         this.originalGap = originalGap;
     }
@@ -67,11 +67,11 @@ public abstract class AllocationOnGap {
     }
 }
 
-class InvalidAllocationOnGap extends AllocationOnGap {
+class InvalidAllocationAttempt extends AllocationAttempt {
 
     private static final String INVALID_ALLOCATION_ON_GAP = "invalid allocation on gap";
 
-    InvalidAllocationOnGap(Gap originalGap) {
+    InvalidAllocationAttempt(Gap originalGap) {
         super(originalGap);
     }
 
@@ -97,13 +97,13 @@ class InvalidAllocationOnGap extends AllocationOnGap {
     }
 }
 
-class ValidAllocationOnGap extends AllocationOnGap {
+class ValidAllocationAttempt extends AllocationAttempt {
 
     private final DateAndHour start;
     private final DateAndHour end;
     private final int[] assignableHours;
 
-    public ValidAllocationOnGap(Gap gap, DateAndHour startInclusive,
+    public ValidAllocationAttempt(Gap gap, DateAndHour startInclusive,
             DateAndHour endExclusive, int[] assignableHours) {
         super(gap);
         Validate.notNull(startInclusive);

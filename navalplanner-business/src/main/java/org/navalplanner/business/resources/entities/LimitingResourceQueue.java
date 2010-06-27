@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
-import org.navalplanner.business.planner.limiting.entities.GapRequirements;
+import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 
@@ -105,7 +105,7 @@ public class LimitingResourceQueue extends BaseEntity {
      *         <code>requirements</code> ordered by start date
      */
     public List<GapOnQueue> getGapsPotentiallyValidFor(
-            GapRequirements requirements) {
+            InsertionRequirements requirements) {
         List<GapOnQueue> result = new ArrayList<GapOnQueue>();
         for (GapOnQueue each : getGaps()) {
             if (requirements.isPotentiallyValid(each.getGap())) {

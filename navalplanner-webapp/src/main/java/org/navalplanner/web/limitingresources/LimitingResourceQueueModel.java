@@ -52,10 +52,10 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDAO;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueElementDAO;
-import org.navalplanner.business.planner.limiting.entities.AllocationOnGap;
+import org.navalplanner.business.planner.limiting.entities.AllocationAttempt;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
-import org.navalplanner.business.planner.limiting.entities.GapRequirements;
+import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
@@ -383,7 +383,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
         for (LimitingResourceQueueElement each : queuesState
                 .getInsertionsToBeDoneFor(externalQueueElement)) {
-            GapRequirements requirements = queuesState.getRequirementsFor(each);
+            InsertionRequirements requirements = queuesState.getRequirementsFor(each);
             boolean inserted = insert(requirements);
             if (!inserted) {
                 break;
@@ -393,14 +393,14 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private boolean insert(GapRequirements requirements) {
+    private boolean insert(InsertionRequirements requirements) {
         List<GapOnQueue> potentiallyValidGapsFor = queuesState
                 .getPotentiallyValidGapsFor(requirements);
         boolean generic = requirements.getElement().isGeneric();
         for (GapOnQueue each : potentiallyValidGapsFor) {
             for (GapOnQueue eachSubGap : getSubGaps(each, requirements
                     .getElement(), generic)) {
-                AllocationOnGap allocation = requirements
+                AllocationAttempt allocation = requirements
                         .guessValidity(eachSubGap);
                 if (allocation.isValid()) {
                     doAllocation(requirements, allocation, eachSubGap.getOriginQueue());
@@ -419,8 +419,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return Collections.singletonList(each);
     }
 
-    private void doAllocation(GapRequirements requirements,
-            AllocationOnGap allocation, LimitingResourceQueue queue) {
+    private void doAllocation(InsertionRequirements requirements,
+            AllocationAttempt allocation, LimitingResourceQueue queue) {
         Resource resource = queue.getResource();
         ResourceAllocation<?> resourceAllocation = requirements
                 .getElement().getResourceAllocation();

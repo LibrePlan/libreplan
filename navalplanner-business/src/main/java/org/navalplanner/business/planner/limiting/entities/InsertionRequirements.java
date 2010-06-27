@@ -33,7 +33,7 @@ import org.navalplanner.business.resources.entities.Resource;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GapRequirements {
+public class InsertionRequirements {
 
     private final LimitingResourceQueueElement element;
 
@@ -41,11 +41,11 @@ public class GapRequirements {
 
     private final DateAndHour earliestPossibleEnd;
 
-    public static GapRequirements forElement(
+    public static InsertionRequirements forElement(
             LimitingResourceQueueElement element,
             List<LimitingResourceQueueDependency> dependenciesAffectingStart,
             List<LimitingResourceQueueDependency> dependenciesAffectingEnd) {
-        return new GapRequirements(element, calculateEarliestPossibleStart(
+        return new InsertionRequirements(element, calculateEarliestPossibleStart(
                 element, dependenciesAffectingStart),
                 calculateEarliestPossibleEnd(element, dependenciesAffectingEnd));
     }
@@ -80,7 +80,7 @@ public class GapRequirements {
         return DateAndHour.from(LocalDate.fromDateFields(date));
     }
 
-    private GapRequirements(LimitingResourceQueueElement element,
+    private InsertionRequirements(LimitingResourceQueueElement element,
             DateAndHour earliestPossibleStart, DateAndHour earliestPossibleEnd) {
         Validate.notNull(element);
         Validate.notNull(earliestPossibleStart);
@@ -97,10 +97,10 @@ public class GapRequirements {
                         .isAfter(gapEnd));
     }
 
-    public AllocationOnGap guessValidity(GapOnQueue gapOnQueue) {
+    public AllocationAttempt guessValidity(GapOnQueue gapOnQueue) {
         Gap gap = gapOnQueue.getGap();
         if (!isPotentiallyValid(gap)) {
-            return AllocationOnGap.invalidOn(gap);
+            return AllocationAttempt.invalidOn(gap);
         }
         DateAndHour realStart = DateAndHour.Max(earliestPossibleStart, gap
                 .getStartTime());
@@ -110,7 +110,7 @@ public class GapRequirements {
                 earliestPossibleEnd, element.getIntentedTotalHours());
         int total = sum(hours);
         if (total < element.getIntentedTotalHours()) {
-            return AllocationOnGap.invalidOn(gap);
+            return AllocationAttempt.invalidOn(gap);
         } else if (total == element.getIntentedTotalHours()) {
             return validAllocation(gap, realStart, hours);
         } else {
@@ -123,9 +123,9 @@ public class GapRequirements {
 
     }
 
-    private AllocationOnGap validAllocation(Gap gap, DateAndHour realStart,
+    private AllocationAttempt validAllocation(Gap gap, DateAndHour realStart,
             List<Integer> hours) {
-        return AllocationOnGap.validOn(gap, realStart, calculateEnd(realStart,
+        return AllocationAttempt.validOn(gap, realStart, calculateEnd(realStart,
                 hours), asArray(hours));
     }
 
