@@ -27,10 +27,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
+import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.navalplanner.business.common.BaseEntity;
@@ -41,6 +45,7 @@ import org.navalplanner.business.planner.limiting.entities.InsertionRequirements
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.QueueDependencyType;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -281,6 +286,149 @@ public class QueuesState {
             }
         }
         return result;
+    }
+
+    public static class Edge {
+        public final LimitingResourceQueueElement source;
+
+        public final LimitingResourceQueueElement target;
+
+        public final QueueDependencyType type;
+
+        public static Edge from(LimitingResourceQueueDependency dependency) {
+            return new Edge(dependency.getHasAsOrigin(),
+                    dependency.getHasAsDestiny(), dependency.getType());
+        }
+
+        public static Edge insertionOrder(
+                LimitingResourceQueueElement element,
+                LimitingResourceQueueElement contiguousNext) {
+            return new Edge(element, contiguousNext,
+                    QueueDependencyType.END_START);
+        }
+
+        private Edge(LimitingResourceQueueElement source,
+                LimitingResourceQueueElement target, QueueDependencyType type) {
+            Validate.notNull(source);
+            Validate.notNull(target);
+            Validate.notNull(type);
+            this.source = source;
+            this.target = target;
+            this.type = type;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder().append(source).append(target)
+                    .append(type).toHashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Edge) {
+                Edge another = (Edge) obj;
+                return new EqualsBuilder().append(source, another.source)
+                        .append(target, another.target)
+                        .append(type, another.type).isEquals();
+            }
+            return false;
+        }
+
+    }
+
+    public DirectedGraph<LimitingResourceQueueElement, Edge> getPotentiallyAffectedByInsertion(
+            LimitingResourceQueueElement element) {
+        DirectedMultigraph<LimitingResourceQueueElement, Edge> result;
+        result = asEdges(onQueues(buildOutgoingGraphFor(getEquivalent(element))));
+        Map<LimitingResourceQueue, LimitingResourceQueueElement> earliestForEachQueue = earliest(byQueue(result
+                .vertexSet()));
+        for (Entry<LimitingResourceQueue, LimitingResourceQueueElement> each : earliestForEachQueue
+                .entrySet()) {
+            LimitingResourceQueue queue = each.getKey();
+            LimitingResourceQueueElement earliest = each.getValue();
+            addInsertionOrderOnQueueEdges(result, earliest,
+                    queue.getElementsAfter(earliest));
+        }
+        return result;
+
+    }
+
+    private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> onQueues(
+            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
+        SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result;
+        result = instantiateDirectedGraph();
+        for (LimitingResourceQueueDependency each : graph.edgeSet()) {
+            if (!each.getHasAsOrigin().isDetached()
+                    && !each.getHasAsDestiny().isDetached()) {
+                addDependency(result, each);
+            }
+        }
+        return result;
+    }
+
+    private DirectedMultigraph<LimitingResourceQueueElement, Edge> asEdges(
+            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
+        DirectedMultigraph<LimitingResourceQueueElement, Edge> result = instantiateMultiGraph();
+        for (LimitingResourceQueueDependency each : graph.edgeSet()) {
+            Edge edge = Edge.from(each);
+            result.addVertex(edge.source);
+            result.addVertex(edge.target);
+            result.addEdge(edge.source, edge.target, edge);
+        }
+        return result;
+    }
+
+    private DirectedMultigraph<LimitingResourceQueueElement, Edge> instantiateMultiGraph() {
+        return new DirectedMultigraph<LimitingResourceQueueElement, Edge>(
+                Edge.class);
+    }
+
+    private Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> byQueue(
+            Collection<? extends LimitingResourceQueueElement> vertexSet) {
+        Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> result = new HashMap<LimitingResourceQueue, List<LimitingResourceQueueElement>>();
+        for (LimitingResourceQueueElement each : vertexSet) {
+            assert each.getLimitingResourceQueue() != null;
+            forQueue(result, each.getLimitingResourceQueue()).add(each);
+        }
+        return result;
+    }
+
+    private List<LimitingResourceQueueElement> forQueue(
+            Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> map,
+            LimitingResourceQueue queue) {
+        List<LimitingResourceQueueElement> result = map.get(queue);
+        if (result == null) {
+            result = new ArrayList<LimitingResourceQueueElement>();
+            map.put(queue, result);
+        }
+        return result;
+    }
+
+    private static Map<LimitingResourceQueue, LimitingResourceQueueElement> earliest(
+            Map<LimitingResourceQueue, List<LimitingResourceQueueElement>> byQueue) {
+        Map<LimitingResourceQueue, LimitingResourceQueueElement> result = new HashMap<LimitingResourceQueue, LimitingResourceQueueElement>();
+        for (Entry<LimitingResourceQueue, List<LimitingResourceQueueElement>> each : byQueue
+                .entrySet()) {
+            result.put(each.getKey(), earliest(each.getValue()));
+        }
+        return result;
+    }
+
+    private static LimitingResourceQueueElement earliest(
+            List<LimitingResourceQueueElement> list) {
+        Validate.isTrue(!list.isEmpty());
+        return Collections.min(list, LimitingResourceQueueElement.byStartTimeComparator());
+    }
+
+    private void addInsertionOrderOnQueueEdges(
+            DirectedGraph<LimitingResourceQueueElement, Edge> result,
+            LimitingResourceQueueElement first,
+            List<LimitingResourceQueueElement> elements) {
+        LimitingResourceQueueElement previous = first;
+        for (LimitingResourceQueueElement each : elements) {
+            result.addEdge(previous, each, Edge.insertionOrder(previous, each));
+            previous = each;
+        }
     }
 
     /**
