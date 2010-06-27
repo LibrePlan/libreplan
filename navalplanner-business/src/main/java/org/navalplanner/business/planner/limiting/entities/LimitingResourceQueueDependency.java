@@ -83,6 +83,32 @@ public class LimitingResourceQueueDependency extends BaseEntity {
             }
         }
 
+        private Dependency.Type getDependencyType() {
+            return QueueDependencyType.toDependencyType(this);
+        }
+
+        public boolean modifiesDestinationStart() {
+            return getDependencyType().modifiesDestinationStart();
+        }
+
+        public boolean modifiesDestinationEnd() {
+            return getDependencyType().modifiesDestinationEnd();
+        }
+
+        public DateAndHour calculateDateTargetFrom(DateAndHour previousStartTime,
+                DateAndHour previousEndTime) {
+            switch (this) {
+            case START_END:
+            case START_START:
+                return previousStartTime;
+            case END_END:
+            case END_START:
+                return previousEndTime;
+            default:
+                throw new RuntimeException("unknown type: " + this);
+            }
+        }
+
     };
 
     public static LimitingResourceQueueDependency.QueueDependencyType toQueueDependencyType(
@@ -149,32 +175,20 @@ public class LimitingResourceQueueDependency extends BaseEntity {
         return !hasAsOrigin.isDetached();
     }
 
-    private Dependency.Type getDependencyType() {
-        return QueueDependencyType.toDependencyType(type);
-    }
-
     public boolean modifiesDestinationStart() {
-        return getDependencyType().modifiesDestinationStart();
+        return type.modifiesDestinationStart();
     }
 
     public boolean modifiesDestinationEnd() {
-        return getDependencyType().modifiesDestinationEnd();
+        return type.modifiesDestinationEnd();
     }
 
     public DateAndHour getDateFromOrigin() {
         if (hasAsOrigin.isDetached()) {
             throw new IllegalStateException("origin detached");
         }
-        switch (type) {
-        case START_END:
-        case START_START:
-            return hasAsOrigin.getStartTime();
-        case END_END:
-        case END_START:
-            return hasAsOrigin.getEndTime();
-        default:
-            throw new RuntimeException("unknown type: " + type);
-        }
+        return type.calculateDateTargetFrom(hasAsOrigin.getStartTime(), hasAsOrigin
+                .getEndTime());
     }
 
     public boolean propagatesThrough(LimitingResourceQueueDependency transitive) {
