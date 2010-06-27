@@ -19,9 +19,9 @@
  */
 package org.navalplanner.ws.resources.api;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
@@ -39,15 +39,18 @@ public class ResourcesCostCategoryAssignmentDTO extends IntegrationEntityDTO {
     public String costCategoryName;
 
     @XmlAttribute(name="start-date")
-    public Date startDate;
+    @XmlSchemaType(name="date")
+    public XMLGregorianCalendar startDate;
 
     @XmlAttribute(name="end-date")
-    public Date endDate;
+    @XmlSchemaType(name="date")
+    public XMLGregorianCalendar endDate;
 
     public ResourcesCostCategoryAssignmentDTO() {}
 
     public ResourcesCostCategoryAssignmentDTO(String code,
-        String costCategoryName, Date startDate, Date endDate) {
+        String costCategoryName, XMLGregorianCalendar startDate,
+        XMLGregorianCalendar endDate) {
 
         super(code);
         this.costCategoryName = costCategoryName;
@@ -61,8 +64,9 @@ public class ResourcesCostCategoryAssignmentDTO extends IntegrationEntityDTO {
      * to facilitate the implementation of test cases that add new instances
      * (such instances will have a unique code).
      */
-    public ResourcesCostCategoryAssignmentDTO(String costCategoryName,
-            Date startDate, Date endDate) {
+    public ResourcesCostCategoryAssignmentDTO(
+        String costCategoryName, XMLGregorianCalendar startDate,
+        XMLGregorianCalendar endDate) {
 
         this(generateCode(), costCategoryName, startDate, endDate);
 

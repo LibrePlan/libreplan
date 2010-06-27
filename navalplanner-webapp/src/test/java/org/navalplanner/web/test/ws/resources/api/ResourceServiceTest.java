@@ -41,6 +41,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -785,12 +790,13 @@ public class ResourceServiceTest {
         Machine m1Entity = machineDAO.findByCode(m1.code);
 
         assertEquals(m1Updated.name, m1Entity.getName()); // Modified.
-        assertEquals(m1.description, m1Entity.getDescription()); // Not
-                                                                 // modified.
-        assertTrue(m1s1Updated.startDate.equals(m1Entity
-                .getCriterionSatisfactionByCode(m1s1.code).getStartDate()));
-        assertTrue(m1s1.endDate.equals(m1Entity.getCriterionSatisfactionByCode(
-                m1s1.code).getEndDate())); // Not modified.
+        assertEquals(m1.description, m1Entity.getDescription()); //Not modified.
+        assertTrue(datesEquals( // Modified.
+            m1s1Updated.startDate,
+            m1Entity.getCriterionSatisfactionByCode(m1s1.code).getStartDate()));
+        assertTrue(datesEquals( // Not modified.
+            m1s1.endDate,
+            m1Entity.getCriterionSatisfactionByCode(m1s1.code).getEndDate()));
         m1Entity.getResourcesCostCategoryAssignmentByCode(m1a2.code); // New.
 
         /* Test worker update. */
@@ -799,14 +805,14 @@ public class ResourceServiceTest {
         assertEquals(w1Updated.surname, w1Entity.getSurname()); // Modified.
         assertEquals(w1.firstName, w1Entity.getFirstName()); // Not modified.
         w1Entity.getCriterionSatisfactionByCode(w1s2.code); // New.
-
-        Date startDate = w1Entity.getResourcesCostCategoryAssignmentByCode(
-                w1a1.code).getInitDate().toDateTimeAtStartOfDay().toDate();
-        Date endDate = w1Entity.getResourcesCostCategoryAssignmentByCode(
-                w1a1.code).getEndDate().toDateTimeAtStartOfDay().toDate();
-
-        assertTrue(w1a1Updated.startDate.equals(startDate)); // Modified.
-        assertTrue(w1a1.endDate.equals(endDate)); // Not modified.
+        assertTrue(datesEquals( // Modified.
+            w1a1Updated.startDate,
+            w1Entity.getResourcesCostCategoryAssignmentByCode(w1a1.code).
+                getInitDate()));
+        assertTrue(datesEquals( // Not modified.
+            w1a1.endDate,
+            w1Entity.getResourcesCostCategoryAssignmentByCode(w1a1.code).
+                getEndDate()));
 
     }
 
@@ -927,10 +933,10 @@ public class ResourceServiceTest {
 
     private MachineDTO createMachineDTOWithTwoCriterionSatisfactions(
         String machineName, String criterionTypeName,
-        String criterionName1, Date startDate1,
-        Date endDate1,
-        String criterionName2, Date startDate2,
-        Date endDate2) {
+        String criterionName1, XMLGregorianCalendar startDate1,
+        XMLGregorianCalendar endDate1,
+        String criterionName2, XMLGregorianCalendar startDate2,
+        XMLGregorianCalendar endDate2) {
 
         MachineDTO machineDTO = new MachineDTO(machineName, "desc");
 
@@ -947,7 +953,8 @@ public class ResourceServiceTest {
 
     private MachineDTO createMachineDTOWithTwoCostsAssignments(
         String machineName, String costCategoryName,
-        Date startDate1, Date endDate1, Date startDate2, Date endDate2) {
+        XMLGregorianCalendar startDate1, XMLGregorianCalendar endDate1,
+        XMLGregorianCalendar startDate2, XMLGregorianCalendar endDate2) {
 
         MachineDTO machineDTO = new MachineDTO(machineName, "desc");
 
@@ -962,9 +969,34 @@ public class ResourceServiceTest {
 
     }
 
-    private Date getDate(int year, int month, int day) {
-        return new LocalDate(year, month, day).toDateTimeAtStartOfDay()
-                .toDate();
+    private XMLGregorianCalendar getDate(int year, int month, int day) {
+
+        try {
+            return DatatypeFactory.newInstance().newXMLGregorianCalendarDate(
+                year, month, day, DatatypeConstants.FIELD_UNDEFINED);
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private boolean datesEquals(XMLGregorianCalendar date1, Date date2) {
+
+        GregorianCalendar date2AsGC = new GregorianCalendar();
+        date2AsGC.setTime(date2);
+
+        return datesEquals(date1.toGregorianCalendar(), date2AsGC);
+
+    }
+
+    private boolean datesEquals(XMLGregorianCalendar date1, LocalDate date2) {
+
+        GregorianCalendar date2AsGC = new GregorianCalendar(
+            date2.getYear(), date2.getMonthOfYear()-1, date2.getDayOfMonth());
+
+        return datesEquals(date1.toGregorianCalendar(), date2AsGC);
+
+
     }
 
     public boolean datesEquals(GregorianCalendar date1,

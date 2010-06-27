@@ -20,9 +20,9 @@
 
 package org.navalplanner.ws.resources.api;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
@@ -42,16 +42,18 @@ public class CriterionSatisfactionDTO extends IntegrationEntityDTO {
     public String criterionName;
 
     @XmlAttribute(name="start-date")
-    public Date startDate;
+    @XmlSchemaType(name="date")
+    public XMLGregorianCalendar startDate;
 
     @XmlAttribute(name="end-date")
-    public Date endDate;
+    @XmlSchemaType(name="date")
+    public XMLGregorianCalendar endDate;
 
     public CriterionSatisfactionDTO() {}
 
     public CriterionSatisfactionDTO(String code,
         String criterionTypeName, String criterionName,
-        Date startDate, Date endDate) {
+        XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
 
         super(code);
         this.criterionTypeName = criterionTypeName;
@@ -68,7 +70,7 @@ public class CriterionSatisfactionDTO extends IntegrationEntityDTO {
      */
     public CriterionSatisfactionDTO(
         String criterionTypeName, String criterionName,
-        Date startDate, Date endDate) {
+        XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
 
         this(generateCode(), criterionTypeName, criterionName, startDate,
             endDate);

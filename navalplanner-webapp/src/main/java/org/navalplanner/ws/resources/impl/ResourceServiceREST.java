@@ -60,27 +60,6 @@ public class ResourceServiceREST
     @Autowired
     private IResourceDAO resourceDAO;
 
-    @Autowired
-    private IWorkerDAO workerDAO;
-
-    @Autowired
-    private IMachineDAO machineDAO;
-
-    @Override
-    @GET
-    @Transactional(readOnly = true)
-    public ResourceListDTO getResources() {
-        return new ResourceListDTO(findAll());
-    }
-
-    @Override
-    protected List<ResourceDTO> findAll() {
-        List<Resource> result = new ArrayList<Resource>();
-        result.addAll(workerDAO.getWorkers());
-        result.addAll(machineDAO.getAll());
-        return toDTO(result);
-    }
-
     @Override
     @POST
     @Consumes("application/xml")
@@ -101,7 +80,7 @@ public class ResourceServiceREST
 
     @Override
     protected ResourceDTO toDTO(Resource entity) {
-       return ResourceConverter.toDTO(entity);
+        return ResourceConverter.toDTO(entity);
     }
 
     @Override
@@ -115,6 +94,27 @@ public class ResourceServiceREST
 
         ResourceConverter.updateResource(entity, entityDTO);
 
+    }
+
+    @Autowired
+    private IWorkerDAO workerDAO;
+
+    @Autowired
+    private IMachineDAO machineDAO;
+
+    @Override
+    @GET
+    @Transactional(readOnly = true)
+    public ResourceListDTO getResources() {
+        return new ResourceListDTO(findAll());
+    }
+
+    @Override
+    protected List<ResourceDTO> findAll() {
+        List<Resource> result = new ArrayList<Resource>();
+        result.addAll(workerDAO.getWorkers());
+        result.addAll(machineDAO.getAll());
+        return toDTO(result);
     }
 
 }
