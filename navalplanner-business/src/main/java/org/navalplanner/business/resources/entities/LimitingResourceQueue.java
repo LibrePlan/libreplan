@@ -29,9 +29,9 @@ import java.util.TreeSet;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 
 /**
  *
@@ -113,6 +113,16 @@ public class LimitingResourceQueue extends BaseEntity {
             }
         }
         return result;
+    }
+
+    public List<LimitingResourceQueueElement> getElementsAfter(
+            LimitingResourceQueueElement element) {
+        List<LimitingResourceQueueElement> queueElements = new ArrayList<LimitingResourceQueueElement>(
+                        limitingResourceQueueElements);
+        int position = Collections.binarySearch(queueElements, element,
+                LimitingResourceQueueElement.byStartTimeComparator());
+        assert position >= 0 : "the element must be in the list";
+        return queueElements.subList(position + 1, queueElements.size());
     }
 
 }

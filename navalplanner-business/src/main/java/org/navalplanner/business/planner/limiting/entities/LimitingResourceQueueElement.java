@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.limiting.entities;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.resources.entities.LimitingResourceQueueElementComparator;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -48,6 +50,10 @@ import org.navalplanner.business.resources.entities.Resource;
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class LimitingResourceQueueElement extends BaseEntity {
+
+    public static Comparator<LimitingResourceQueueElement> byStartTimeComparator() {
+        return new LimitingResourceQueueElementComparator();
+    }
 
     private ResourceAllocation<?> resourceAllocation;
 
