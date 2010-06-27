@@ -384,16 +384,21 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         for (LimitingResourceQueueElement each : queuesState
                 .getInsertionsToBeDoneFor(externalQueueElement)) {
             InsertionRequirements requirements = queuesState.getRequirementsFor(each);
-            boolean inserted = insertAtGap(requirements);
-            if (!inserted) {
+            AllocationAttempt allocationDone = insertAtGap(requirements);
+            if (allocationDone == null) {
                 break;
             }
+            assert allocationDone.isValid();
             result.add(requirements.getElement());
         }
         return result;
     }
 
-    private boolean insertAtGap(InsertionRequirements requirements) {
+    /**
+     * @return <code>null</code> if no suitable gap found; the allocation found
+     *         otherwise
+     */
+    private AllocationAttempt insertAtGap(InsertionRequirements requirements) {
         List<GapOnQueue> potentiallyValidGapsFor = queuesState
                 .getPotentiallyValidGapsFor(requirements);
         boolean generic = requirements.getElement().isGeneric();
@@ -404,11 +409,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                         .guessValidity(eachSubGap);
                 if (allocation.isValid()) {
                     doAllocation(requirements, allocation, eachSubGap.getOriginQueue());
-                    return true;
+                    return allocation;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private List<GapOnQueue> getSubGaps(GapOnQueue each,
