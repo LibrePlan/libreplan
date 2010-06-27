@@ -384,7 +384,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         for (LimitingResourceQueueElement each : queuesState
                 .getInsertionsToBeDoneFor(externalQueueElement)) {
             InsertionRequirements requirements = queuesState.getRequirementsFor(each);
-            boolean inserted = insert(requirements);
+            boolean inserted = insertAtGap(requirements);
             if (!inserted) {
                 break;
             }
@@ -393,7 +393,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private boolean insert(InsertionRequirements requirements) {
+    private boolean insertAtGap(InsertionRequirements requirements) {
         List<GapOnQueue> potentiallyValidGapsFor = queuesState
                 .getPotentiallyValidGapsFor(requirements);
         boolean generic = requirements.getElement().isGeneric();
