@@ -334,10 +334,9 @@ public class QueuesState {
         return onlyAssigned(toList(topologicalIterator(subGraph)));
     }
 
-    private TopologicalOrderIterator<LimitingResourceQueueElement, LimitingResourceQueueDependency> topologicalIterator(
-            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
-        return new TopologicalOrderIterator<LimitingResourceQueueElement, LimitingResourceQueueDependency>(
-                subGraph);
+    public static <V, E> TopologicalOrderIterator<V, E> topologicalIterator(
+            DirectedGraph<V, E> subGraph) {
+        return new TopologicalOrderIterator<V, E>(subGraph);
     }
 
     private static <T> List<T> toList(final Iterator<T> iterator) {
