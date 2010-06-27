@@ -408,7 +408,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 AllocationAttempt allocation = requirements
                         .guessValidity(eachSubGap);
                 if (allocation.isValid()) {
-                    doAllocation(requirements, allocation, eachSubGap.getOriginQueue());
+                    applyAllocation(allocation);
                     return allocation;
                 }
             }
@@ -424,21 +424,21 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return Collections.singletonList(each);
     }
 
-    private void doAllocation(InsertionRequirements requirements,
-            AllocationAttempt allocation, LimitingResourceQueue queue) {
+    private void applyAllocation(AllocationAttempt allocationStillNotDone) {
+        LimitingResourceQueueElement element = allocationStillNotDone
+                .getElement();
+        LimitingResourceQueue queue = allocationStillNotDone.getQueue();
         Resource resource = queue.getResource();
-        ResourceAllocation<?> resourceAllocation = requirements
-                .getElement().getResourceAllocation();
-        List<DayAssignment> assignments = allocation
+        ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
+        List<DayAssignment> assignments = allocationStillNotDone
                 .getAssignmentsFor(resourceAllocation, resource);
         resourceAllocation
                 .allocateLimitingDayAssignments(assignments);
-        updateStartAndEndTimes(requirements.getElement(),
-                allocation.getStartInclusive(), allocation
+        updateStartAndEndTimes(element, allocationStillNotDone
+                .getStartInclusive(), allocationStillNotDone
                         .getEndExclusive());
-        addLimitingResourceQueueElement(queue, requirements
-                        .getElement());
-        markAsModified(requirements.getElement());
+        addLimitingResourceQueueElement(queue, element);
+        markAsModified(element);
     }
 
     private DateAndHour getEndsAfterBecauseOfGantt(
