@@ -40,9 +40,11 @@ public abstract class AllocationAttempt {
         return new InvalidAllocationAttempt(gap);
     }
 
-    public static AllocationAttempt validOn(GapOnQueue gap, DateAndHour start,
+    public static AllocationAttempt validOn(
+            LimitingResourceQueueElement element, GapOnQueue gap,
+            DateAndHour start,
             DateAndHour endExclusive, int[] assignableHours) {
-        return new ValidAllocationAttempt(gap, start, endExclusive,
+        return new ValidAllocationAttempt(element, gap, start, endExclusive,
                 assignableHours);
     }
 
@@ -57,6 +59,9 @@ public abstract class AllocationAttempt {
 
     public abstract List<DayAssignment> getAssignmentsFor(
             ResourceAllocation<?> allocation, Resource resource)
+            throws IllegalStateException;
+
+    public abstract LimitingResourceQueueElement getElement()
             throws IllegalStateException;
 
     public abstract DateAndHour getStartInclusive()
@@ -93,6 +98,12 @@ class InvalidAllocationAttempt extends AllocationAttempt {
     }
 
     @Override
+    public LimitingResourceQueueElement getElement()
+            throws IllegalStateException {
+        throw new IllegalStateException(INVALID_ALLOCATION_ON_GAP);
+    }
+
+    @Override
     public DateAndHour getEndExclusive() throws IllegalStateException {
         throw new IllegalStateException(INVALID_ALLOCATION_ON_GAP);
     }
@@ -105,17 +116,21 @@ class InvalidAllocationAttempt extends AllocationAttempt {
 
 class ValidAllocationAttempt extends AllocationAttempt {
 
+    private final LimitingResourceQueueElement element;
     private final DateAndHour start;
     private final DateAndHour end;
     private final int[] assignableHours;
 
-    public ValidAllocationAttempt(GapOnQueue gap, DateAndHour startInclusive,
+    public ValidAllocationAttempt(LimitingResourceQueueElement element,
+            GapOnQueue gap, DateAndHour startInclusive,
             DateAndHour endExclusive, int[] assignableHours) {
         super(gap);
+        Validate.notNull(element);
         Validate.notNull(startInclusive);
         Validate.notNull(endExclusive);
         Validate.notNull(assignableHours);
         Validate.isTrue(endExclusive.isAfter(startInclusive));
+        this.element = element;
         this.start = startInclusive;
         this.end = endExclusive;
         Validate.isTrue(assignableHours.length == toFiniteList(
@@ -168,6 +183,11 @@ class ValidAllocationAttempt extends AllocationAttempt {
             i++;
         }
         return result;
+    }
+
+    @Override
+    public LimitingResourceQueueElement getElement() {
+        return element;
     }
 
     @Override

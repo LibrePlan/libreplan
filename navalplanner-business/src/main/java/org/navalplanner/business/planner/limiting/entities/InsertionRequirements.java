@@ -80,6 +80,12 @@ public class InsertionRequirements {
         return DateAndHour.from(LocalDate.fromDateFields(date));
     }
 
+    public static InsertionRequirements create(
+            LimitingResourceQueueElement element,
+            DateAndHour start, DateAndHour end) {
+        return new InsertionRequirements(element, start, end);
+    }
+
     private InsertionRequirements(LimitingResourceQueueElement element,
             DateAndHour earliestPossibleStart, DateAndHour earliestPossibleEnd) {
         Validate.notNull(element);
@@ -126,8 +132,8 @@ public class InsertionRequirements {
     private AllocationAttempt validAllocation(GapOnQueue gap,
             DateAndHour realStart,
             List<Integer> hours) {
-        return AllocationAttempt.validOn(gap, realStart, calculateEnd(realStart,
-                hours), asArray(hours));
+        return AllocationAttempt.validOn(element, gap, realStart, calculateEnd(
+                realStart, hours), asArray(hours));
     }
 
     private DateAndHour calculateEnd(DateAndHour realStart, List<Integer> hours) {
