@@ -30,23 +30,25 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
 public abstract class AllocationAttempt {
 
-    public static AllocationAttempt invalidOn(Gap gap) {
+    public static AllocationAttempt invalidOn(GapOnQueue gap) {
         return new InvalidAllocationAttempt(gap);
     }
 
-    public static AllocationAttempt validOn(Gap gap, DateAndHour start,
+    public static AllocationAttempt validOn(GapOnQueue gap, DateAndHour start,
             DateAndHour endExclusive, int[] assignableHours) {
         return new ValidAllocationAttempt(gap, start, endExclusive,
                 assignableHours);
     }
 
-    private final Gap originalGap;
+    private final GapOnQueue originalGap;
 
-    protected AllocationAttempt(Gap originalGap) {
+    protected AllocationAttempt(GapOnQueue originalGap) {
         Validate.notNull(originalGap);
         this.originalGap = originalGap;
     }
@@ -62,8 +64,12 @@ public abstract class AllocationAttempt {
 
     public abstract DateAndHour getEndExclusive() throws IllegalStateException;
 
-    public Gap getOriginalGap() {
-        return originalGap;
+    public Gap getGap() {
+        return originalGap.getGap();
+    }
+
+    public LimitingResourceQueue getQueue() {
+        return originalGap.getOriginQueue();
     }
 }
 
@@ -71,7 +77,7 @@ class InvalidAllocationAttempt extends AllocationAttempt {
 
     private static final String INVALID_ALLOCATION_ON_GAP = "invalid allocation on gap";
 
-    InvalidAllocationAttempt(Gap originalGap) {
+    InvalidAllocationAttempt(GapOnQueue originalGap) {
         super(originalGap);
     }
 
@@ -103,7 +109,7 @@ class ValidAllocationAttempt extends AllocationAttempt {
     private final DateAndHour end;
     private final int[] assignableHours;
 
-    public ValidAllocationAttempt(Gap gap, DateAndHour startInclusive,
+    public ValidAllocationAttempt(GapOnQueue gap, DateAndHour startInclusive,
             DateAndHour endExclusive, int[] assignableHours) {
         super(gap);
         Validate.notNull(startInclusive);

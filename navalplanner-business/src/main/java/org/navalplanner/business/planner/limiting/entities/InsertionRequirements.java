@@ -100,7 +100,7 @@ public class InsertionRequirements {
     public AllocationAttempt guessValidity(GapOnQueue gapOnQueue) {
         Gap gap = gapOnQueue.getGap();
         if (!isPotentiallyValid(gap)) {
-            return AllocationAttempt.invalidOn(gap);
+            return AllocationAttempt.invalidOn(gapOnQueue);
         }
         DateAndHour realStart = DateAndHour.Max(earliestPossibleStart, gap
                 .getStartTime());
@@ -110,20 +110,21 @@ public class InsertionRequirements {
                 earliestPossibleEnd, element.getIntentedTotalHours());
         int total = sum(hours);
         if (total < element.getIntentedTotalHours()) {
-            return AllocationAttempt.invalidOn(gap);
+            return AllocationAttempt.invalidOn(gapOnQueue);
         } else if (total == element.getIntentedTotalHours()) {
-            return validAllocation(gap, realStart, hours);
+            return validAllocation(gapOnQueue, realStart, hours);
         } else {
             assert total > element.getIntentedTotalHours();
             int hoursSurplus = total - element.getIntentedTotalHours();
             StartRemoval result = StartRemoval.removeStartSurplus(realStart,
                     hours, hoursSurplus);
-            return validAllocation(gap, result.newStart, result.hours);
+            return validAllocation(gapOnQueue, result.newStart, result.hours);
         }
 
     }
 
-    private AllocationAttempt validAllocation(Gap gap, DateAndHour realStart,
+    private AllocationAttempt validAllocation(GapOnQueue gap,
+            DateAndHour realStart,
             List<Integer> hours) {
         return AllocationAttempt.validOn(gap, realStart, calculateEnd(realStart,
                 hours), asArray(hours));
