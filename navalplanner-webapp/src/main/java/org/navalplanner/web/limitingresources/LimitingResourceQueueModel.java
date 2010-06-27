@@ -24,14 +24,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
@@ -55,11 +60,12 @@ import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueEle
 import org.navalplanner.business.planner.limiting.entities.AllocationAttempt;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.QueueDependencyType;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -72,6 +78,7 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.limitingresources.QueuesState.Edge;
 import org.navalplanner.web.planner.order.SaveCommand;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -380,16 +387,159 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     public List<LimitingResourceQueueElement> assignLimitingResourceQueueElement(
             LimitingResourceQueueElement externalQueueElement) {
+        InsertionRequirements requirements = queuesState
+                .getRequirementsFor(externalQueueElement);
+        AllocationAttempt allocationDone = insertAtGap(requirements);
+        if (allocationDone == null) {
+            return Collections.emptyList();
+        }
+
+        assert allocationDone.isValid();
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
-        for (LimitingResourceQueueElement each : queuesState
-                .getInsertionsToBeDoneFor(externalQueueElement)) {
-            InsertionRequirements requirements = queuesState.getRequirementsFor(each);
-            AllocationAttempt allocationDone = insertAtGap(requirements);
-            if (allocationDone == null) {
-                break;
+        result.add(requirements.getElement());
+
+        List<LimitingResourceQueueElement> moved = shift(
+                queuesState
+                .getPotentiallyAffectedByInsertion(externalQueueElement),
+                requirements.getElement(),
+                allocationDone);
+        result.addAll(moved);
+        return result;
+    }
+
+    /**
+     * Moves elements in order to satisfy dependencies
+     * @param potentiallyAffectedByInsertion
+     * @param elementInserted
+     * @param allocationAlreadyDone
+     * @return the elements that have been moved
+     */
+    private List<LimitingResourceQueueElement> shift(
+            DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
+            LimitingResourceQueueElement elementInserted,
+            AllocationAttempt allocationAlreadyDone) {
+        List<AllocationAttempt> allocationsToBeDone = getAllocationsToBeDone(
+                        potentiallyAffectedByInsertion, elementInserted,
+                        allocationAlreadyDone);
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        for (AllocationAttempt each : allocationsToBeDone) {
+            applyAllocation(each);
+            result.add(each.getElement());
+        }
+        return result;
+    }
+
+
+    private List<AllocationAttempt> getAllocationsToBeDone(
+            DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
+            LimitingResourceQueueElement elementInserted,
+            AllocationAttempt allocationAlreadyDone) {
+        List<AllocationAttempt> result = new ArrayList<AllocationAttempt>();
+        Map<LimitingResourceQueueElement, AllocationAttempt> allocationsToBeDoneByElement = new HashMap<LimitingResourceQueueElement, AllocationAttempt>();
+        allocationsToBeDoneByElement.put(elementInserted, allocationAlreadyDone);
+
+        List<LimitingResourceQueueElement> mightNeedShift = withoutElementInserted(
+                elementInserted,
+                QueuesState.topologicalIterator(potentiallyAffectedByInsertion));
+        for (LimitingResourceQueueElement each : mightNeedShift) {
+            AllocationAttempt futureAllocation = getAllocationToBeDoneFor(
+                    potentiallyAffectedByInsertion,
+                    allocationsToBeDoneByElement, each);
+            if (futureAllocation != null) {
+                result.add(futureAllocation);
+                allocationsToBeDoneByElement.put(each, futureAllocation);
             }
-            assert allocationDone.isValid();
-            result.add(requirements.getElement());
+        }
+        return result;
+    }
+
+    private List<LimitingResourceQueueElement> withoutElementInserted(
+            LimitingResourceQueueElement elementInserted,
+            final TopologicalOrderIterator<LimitingResourceQueueElement, Edge> topologicalIterator) {
+        List<LimitingResourceQueueElement> result = QueuesState
+                .toList(topologicalIterator);
+        result.remove(elementInserted);
+        return result;
+    }
+
+    private AllocationAttempt getAllocationToBeDoneFor(
+            DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
+            Map<LimitingResourceQueueElement, AllocationAttempt> allocationsToBeDoneByElement,
+            LimitingResourceQueueElement current) {
+        Validate.isTrue(!current.isDetached());
+        DateAndHour newStart = current.getStartTime();
+        DateAndHour newEnd = current.getEndTime();
+        Map<LimitingResourceQueueElement, List<Edge>> incoming = bySource(potentiallyAffectedByInsertion
+                .incomingEdgesOf(current));
+        for (Entry<LimitingResourceQueueElement, List<Edge>> each : incoming
+                .entrySet()) {
+            AllocationAttempt previous = allocationsToBeDoneByElement.get(each
+                    .getKey());
+            if (previous != null) {
+                newStart = DateAndHour.Max(newStart, getStartFrom(previous,
+                        each.getValue()));
+                newEnd = DateAndHour.Max(newEnd, getEndFrom(previous, each
+                        .getValue()));
+            }
+        }
+        if (current.getStartTime().compareTo(newStart) == 0
+                && current.getEndTime().compareTo(newEnd) == 0) {
+            return null;
+        }
+        InsertionRequirements requirements = InsertionRequirements.create(
+                current, newStart, newEnd);
+        GapOnQueue gap = Gap.untilEnd(current, newStart).onQueue(
+                current.getLimitingResourceQueue());
+        AllocationAttempt result = requirements.guessValidity(gap);
+        assert result.isValid();
+        return result;
+    }
+
+    private DateAndHour getStartFrom(AllocationAttempt previous,
+            List<Edge> edges) {
+        DateAndHour result = null;
+        for (Edge each : edges) {
+            result = DateAndHour.Max(result,
+                    calculateStart(previous, each.type));
+        }
+        return result;
+    }
+
+
+    private DateAndHour calculateStart(AllocationAttempt previous,
+            QueueDependencyType type) {
+        if (!type.modifiesDestinationStart()) {
+            return null;
+        }
+        return type.calculateDateTargetFrom(previous.getStartInclusive(), previous
+                .getEndExclusive());
+    }
+
+    private DateAndHour getEndFrom(AllocationAttempt previous, List<Edge> edges) {
+        DateAndHour result = null;
+        for (Edge each : edges) {
+            result = DateAndHour.Max(result, calculateEnd(previous, each.type));
+        }
+        return result;
+    }
+
+    private DateAndHour calculateEnd(AllocationAttempt previous,
+            QueueDependencyType type) {
+        if (!type.modifiesDestinationEnd()) {
+            return null;
+        }
+        return type.calculateDateTargetFrom(previous.getStartInclusive(),
+                previous.getEndExclusive());
+    }
+
+    private Map<LimitingResourceQueueElement, List<Edge>> bySource(
+            Collection<? extends Edge> incomingEdgesOf) {
+        Map<LimitingResourceQueueElement, List<Edge>> result = new HashMap<LimitingResourceQueueElement, List<Edge>>();
+        for (Edge each : incomingEdgesOf) {
+            if (result.get(each.source) == null) {
+                result.put(each.source, new ArrayList<Edge>());
+            }
+            result.get(each.source).add(each);
         }
         return result;
     }
@@ -437,7 +587,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         updateStartAndEndTimes(element, allocationStillNotDone
                 .getStartInclusive(), allocationStillNotDone
                         .getEndExclusive());
-        addLimitingResourceQueueElement(queue, element);
+        addLimitingResourceQueueElementIfNeeded(queue, element);
         markAsModified(element);
     }
 
@@ -468,7 +618,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         updateStartAndEndTimes(element, startTime, endTime);
 
         // Add element to queue
-        addLimitingResourceQueueElement(queue, element);
+        addLimitingResourceQueueElementIfNeeded(queue, element);
         markAsModified(element);
         return true;
     }
@@ -518,9 +668,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return date.toDateTimeAtStartOfDay().toDate();
     }
 
-    private void addLimitingResourceQueueElement(LimitingResourceQueue queue,
+    private void addLimitingResourceQueueElementIfNeeded(LimitingResourceQueue queue,
             LimitingResourceQueueElement element) {
-        queuesState.assignedToQueue(element, queue);
+        if (element.getLimitingResourceQueue() == null) {
+            queuesState.assignedToQueue(element, queue);
+        }
     }
 
     @Override

@@ -85,6 +85,11 @@ public class Gap implements Comparable<Gap> {
 
     }
 
+    public static Gap untilEnd(LimitingResourceQueueElement current,
+            DateAndHour startInclusive) {
+        return new Gap(current.getResource(), startInclusive, null);
+    }
+
     private DateAndHour startTime;
 
     private DateAndHour endTime;

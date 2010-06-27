@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -41,11 +41,11 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.QueueDependencyType;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -487,7 +487,7 @@ public class QueuesState {
         return new TopologicalOrderIterator<V, E>(subGraph);
     }
 
-    private static <T> List<T> toList(final Iterator<T> iterator) {
+    public static <T> List<T> toList(final Iterator<T> iterator) {
         List<T> result = new ArrayList<T>();
         while (iterator.hasNext()) {
             result.add(iterator.next());
