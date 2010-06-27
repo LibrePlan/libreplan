@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<order xmlns="http://rest.ws.navalplanner.org"
-  code="ORDER-1" name="Order" init-date="2010-01-01">
-  <children>
-    <order-line-group code="ORDER-1-OE-1" name="Order element 1">
-      <children>
-        <order-line code="ORDER-1-OE-1-1" name="Order element 1.1">
-          <material-assignments>
-            <material-assignment material-code="MATERIAL-1" units="100" unit-price="10.5" />
-          </material-assignments>
-          <hours-groups>
-            <hours-group code="HG-1" working-hours="1000" resource-type="WORKER" />
-          </hours-groups>
-        </order-line>
-        <order-line code="ORDER-1-OE-1-2" name="Order element 1.2">
-          <hours-groups>
-            <hours-group code="HG-1" working-hours="2000" resource-type="WORKER" />
-          </hours-groups>
-        </order-line>
-      </children>
-    </order-line-group>
-    <order-line code="ORDER-1-OE-2" name="Order element 2">
-      <hours-groups>
-        <hours-group code="HG-1" working-hours="1500" resource-type="WORKER" />
-      </hours-groups>
-    </order-line>
-  </children>
-</order>
+<order-list xmlns="http://rest.ws.navalplanner.org">
+  <order
+    code="ORDER-1" name="Order" init-date="2010-01-01">
+    <children>
+      <order-line-group code="ORDER-1-OE-1" name="Order element 1">
+        <children>
+          <order-line code="ORDER-1-OE-1-1" name="Order element 1.1">
+            <material-assignments>
+              <material-assignment material-code="MATERIAL-1" units="100" unit-price="10.5" />
+            </material-assignments>
+            <hours-groups>
+              <hours-group code="HG-1" working-hours="1000" resource-type="WORKER" />
+            </hours-groups>
+          </order-line>
+          <order-line code="ORDER-1-OE-1-2" name="Order element 1.2">
+            <hours-groups>
+              <hours-group code="HG-1" working-hours="2000" resource-type="WORKER" />
+            </hours-groups>
+          </order-line>
+        </children>
+      </order-line-group>
+      <order-line code="ORDER-1-OE-2" name="Order element 2">
+        <hours-groups>
+          <hours-group code="HG-1" working-hours="1500" resource-type="WORKER" />
+        </hours-groups>
+      </order-line>
+    </children>
+  </order>
+</order-list>
