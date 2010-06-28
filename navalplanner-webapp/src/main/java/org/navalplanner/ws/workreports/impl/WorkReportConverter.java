@@ -62,9 +62,14 @@ public final class WorkReportConverter {
         // Mandatory fields
         workReport.setCode(workReportDTO.code);
 
-        WorkReportType workReportType = Registry.getWorkReportTypeDAO()
-                .findUniqueByCode(workReportDTO.workReportType);
-        workReport.setWorkReportType(workReportType);
+        try {
+            WorkReportType workReportType = Registry.getWorkReportTypeDAO()
+                    .findUniqueByCode(workReportDTO.workReportType);
+            workReport.setWorkReportType(workReportType);
+        } catch (InstanceNotFoundException e) {
+            throw new ValidationException(
+                    _("There is no type of work report with this code"));
+        }
 
         for (WorkReportLineDTO workReportLineDTO : workReportDTO.workReportLines) {
             workReport
