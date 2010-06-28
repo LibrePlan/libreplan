@@ -34,13 +34,13 @@ import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 
-public abstract class AllocationAttempt {
+public abstract class AllocationSpec {
 
-    public static AllocationAttempt invalidOn(GapOnQueue gap) {
+    public static AllocationSpec invalidOn(GapOnQueue gap) {
         return new InvalidAllocationAttempt(gap);
     }
 
-    public static AllocationAttempt validOn(
+    public static AllocationSpec validOn(
             LimitingResourceQueueElement element, GapOnQueue gap,
             DateAndHour start,
             DateAndHour endExclusive, int[] assignableHours) {
@@ -50,7 +50,7 @@ public abstract class AllocationAttempt {
 
     private final GapOnQueue originalGap;
 
-    protected AllocationAttempt(GapOnQueue originalGap) {
+    protected AllocationSpec(GapOnQueue originalGap) {
         Validate.notNull(originalGap);
         this.originalGap = originalGap;
     }
@@ -78,7 +78,7 @@ public abstract class AllocationAttempt {
     }
 }
 
-class InvalidAllocationAttempt extends AllocationAttempt {
+class InvalidAllocationAttempt extends AllocationSpec {
 
     private static final String INVALID_ALLOCATION_ON_GAP = "invalid allocation on gap";
 
@@ -114,7 +114,7 @@ class InvalidAllocationAttempt extends AllocationAttempt {
     }
 }
 
-class ValidAllocationAttempt extends AllocationAttempt {
+class ValidAllocationAttempt extends AllocationSpec {
 
     private final LimitingResourceQueueElement element;
     private final DateAndHour start;

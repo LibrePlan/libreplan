@@ -57,7 +57,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDAO;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueElementDAO;
-import org.navalplanner.business.planner.limiting.entities.AllocationAttempt;
+import org.navalplanner.business.planner.limiting.entities.AllocationSpec;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
@@ -389,7 +389,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             LimitingResourceQueueElement externalQueueElement) {
         InsertionRequirements requirements = queuesState
                 .getRequirementsFor(externalQueueElement);
-        AllocationAttempt allocationDone = insertAtGap(requirements);
+        AllocationSpec allocationDone = insertAtGap(requirements);
         if (allocationDone == null) {
             return Collections.emptyList();
         }
@@ -417,12 +417,12 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private List<LimitingResourceQueueElement> shift(
             DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
             LimitingResourceQueueElement elementInserted,
-            AllocationAttempt allocationAlreadyDone) {
-        List<AllocationAttempt> allocationsToBeDone = getAllocationsToBeDone(
+            AllocationSpec allocationAlreadyDone) {
+        List<AllocationSpec> allocationsToBeDone = getAllocationsToBeDone(
                         potentiallyAffectedByInsertion, elementInserted,
                         allocationAlreadyDone);
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
-        for (AllocationAttempt each : allocationsToBeDone) {
+        for (AllocationSpec each : allocationsToBeDone) {
             applyAllocation(each);
             result.add(each.getElement());
         }
@@ -430,19 +430,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
 
-    private List<AllocationAttempt> getAllocationsToBeDone(
+    private List<AllocationSpec> getAllocationsToBeDone(
             DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
             LimitingResourceQueueElement elementInserted,
-            AllocationAttempt allocationAlreadyDone) {
-        List<AllocationAttempt> result = new ArrayList<AllocationAttempt>();
-        Map<LimitingResourceQueueElement, AllocationAttempt> allocationsToBeDoneByElement = new HashMap<LimitingResourceQueueElement, AllocationAttempt>();
+            AllocationSpec allocationAlreadyDone) {
+        List<AllocationSpec> result = new ArrayList<AllocationSpec>();
+        Map<LimitingResourceQueueElement, AllocationSpec> allocationsToBeDoneByElement = new HashMap<LimitingResourceQueueElement, AllocationSpec>();
         allocationsToBeDoneByElement.put(elementInserted, allocationAlreadyDone);
 
         List<LimitingResourceQueueElement> mightNeedShift = withoutElementInserted(
                 elementInserted,
                 QueuesState.topologicalIterator(potentiallyAffectedByInsertion));
         for (LimitingResourceQueueElement each : mightNeedShift) {
-            AllocationAttempt futureAllocation = getAllocationToBeDoneFor(
+            AllocationSpec futureAllocation = getAllocationToBeDoneFor(
                     potentiallyAffectedByInsertion,
                     allocationsToBeDoneByElement, each);
             if (futureAllocation != null) {
@@ -462,9 +462,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private AllocationAttempt getAllocationToBeDoneFor(
+    private AllocationSpec getAllocationToBeDoneFor(
             DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
-            Map<LimitingResourceQueueElement, AllocationAttempt> allocationsToBeDoneByElement,
+            Map<LimitingResourceQueueElement, AllocationSpec> allocationsToBeDoneByElement,
             LimitingResourceQueueElement current) {
         Validate.isTrue(!current.isDetached());
         DateAndHour newStart = current.getStartTime();
@@ -473,7 +473,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 .incomingEdgesOf(current));
         for (Entry<LimitingResourceQueueElement, List<Edge>> each : incoming
                 .entrySet()) {
-            AllocationAttempt previous = allocationsToBeDoneByElement.get(each
+            AllocationSpec previous = allocationsToBeDoneByElement.get(each
                     .getKey());
             if (previous != null) {
                 newStart = DateAndHour.Max(newStart, getStartFrom(previous,
@@ -490,12 +490,12 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 current, newStart, newEnd);
         GapOnQueue gap = Gap.untilEnd(current, newStart).onQueue(
                 current.getLimitingResourceQueue());
-        AllocationAttempt result = requirements.guessValidity(gap);
+        AllocationSpec result = requirements.guessValidity(gap);
         assert result.isValid();
         return result;
     }
 
-    private DateAndHour getStartFrom(AllocationAttempt previous,
+    private DateAndHour getStartFrom(AllocationSpec previous,
             List<Edge> edges) {
         DateAndHour result = null;
         for (Edge each : edges) {
@@ -506,7 +506,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
 
-    private DateAndHour calculateStart(AllocationAttempt previous,
+    private DateAndHour calculateStart(AllocationSpec previous,
             QueueDependencyType type) {
         if (!type.modifiesDestinationStart()) {
             return null;
@@ -515,7 +515,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 .getEndExclusive());
     }
 
-    private DateAndHour getEndFrom(AllocationAttempt previous, List<Edge> edges) {
+    private DateAndHour getEndFrom(AllocationSpec previous, List<Edge> edges) {
         DateAndHour result = null;
         for (Edge each : edges) {
             result = DateAndHour.Max(result, calculateEnd(previous, each.type));
@@ -523,7 +523,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private DateAndHour calculateEnd(AllocationAttempt previous,
+    private DateAndHour calculateEnd(AllocationSpec previous,
             QueueDependencyType type) {
         if (!type.modifiesDestinationEnd()) {
             return null;
@@ -548,14 +548,14 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      * @return <code>null</code> if no suitable gap found; the allocation found
      *         otherwise
      */
-    private AllocationAttempt insertAtGap(InsertionRequirements requirements) {
+    private AllocationSpec insertAtGap(InsertionRequirements requirements) {
         List<GapOnQueue> potentiallyValidGapsFor = queuesState
                 .getPotentiallyValidGapsFor(requirements);
         boolean generic = requirements.getElement().isGeneric();
         for (GapOnQueue each : potentiallyValidGapsFor) {
             for (GapOnQueue eachSubGap : getSubGaps(each, requirements
                     .getElement(), generic)) {
-                AllocationAttempt allocation = requirements
+                AllocationSpec allocation = requirements
                         .guessValidity(eachSubGap);
                 if (allocation.isValid()) {
                     applyAllocation(allocation);
@@ -574,7 +574,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return Collections.singletonList(each);
     }
 
-    private void applyAllocation(AllocationAttempt allocationStillNotDone) {
+    private void applyAllocation(AllocationSpec allocationStillNotDone) {
         LimitingResourceQueueElement element = allocationStillNotDone
                 .getElement();
         LimitingResourceQueue queue = allocationStillNotDone.getQueue();
