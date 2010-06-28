@@ -163,8 +163,8 @@
                 </executions>
             </plugin>
         </plugins>
-
     </build>
+
     <dependencies>
         <!-- Jasper Reports -->
         <dependency>

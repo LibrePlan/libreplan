@@ -594,6 +594,29 @@
                 <targetPath>../jetty</targetPath>
                 <filtering>true</filtering>
             </resource>
+
+            <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/workingArrangementsPerOrder_Bundle/</directory>
+            </resource>
+            <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/completedEstimatedHours_Bundle/</directory>
+            </resource>
+            <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/hoursWorkedPerWorker_Bundle/</directory>
+            </resource>
+            <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/orderCostsPerResource_Bundle/</directory>
+            </resource>
+            <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/schedulingProgressPerOrder_Bundle/</directory>
+            </resource>
+            <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/timeLineRequiredMaterial_Bundle/</directory>
+            </resource>
+            <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/workingProgressPerTask_Bundle/</directory>
+            </resource>
+
         </resources>
 
         <testResources>
