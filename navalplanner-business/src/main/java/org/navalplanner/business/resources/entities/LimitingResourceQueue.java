@@ -66,12 +66,16 @@ public class LimitingResourceQueue extends BaseEntity {
     public void addLimitingResourceQueueElement(LimitingResourceQueueElement element) {
         element.setLimitingResourceQueue(this);
         limitingResourceQueueElements.add(element);
-        cachedGaps = null;
+        invalidCachedGaps();
     }
 
     public void removeLimitingResourceQueueElement(LimitingResourceQueueElement element) {
         limitingResourceQueueElements.remove(element);
         element.detach();
+        invalidCachedGaps();
+    }
+
+    private void invalidCachedGaps() {
         cachedGaps = null;
     }
 
@@ -123,6 +127,11 @@ public class LimitingResourceQueue extends BaseEntity {
                 LimitingResourceQueueElement.byStartTimeComparator());
         assert position >= 0 : "the element must be in the list";
         return queueElements.subList(position + 1, queueElements.size());
+    }
+
+    public void queueElementMoved(
+            LimitingResourceQueueElement limitingResourceQueueElement) {
+        invalidCachedGaps();
     }
 
 }

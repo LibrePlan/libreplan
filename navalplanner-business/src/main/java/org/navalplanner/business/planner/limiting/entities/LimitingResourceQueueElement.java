@@ -109,6 +109,13 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void setStartDate(LocalDate date) {
         startQueuePosition.setDate(date);
+        notifyQueueElementIsMoved();
+    }
+
+    private void notifyQueueElementIsMoved() {
+        if (getLimitingResourceQueue() != null) {
+            getLimitingResourceQueue().queueElementMoved(this);
+        }
     }
 
     public int getStartHour() {
@@ -117,6 +124,7 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void setStartHour(int hour) {
         startQueuePosition.setHour(hour);
+        notifyQueueElementIsMoved();
     }
 
     public LocalDate getEndDate() {
@@ -124,6 +132,7 @@ public class LimitingResourceQueueElement extends BaseEntity {
     }
 
     public void setEndDate(LocalDate date) {
+        notifyQueueElementIsMoved();
         endQueuePosition.setDate(date);
     }
 
@@ -133,6 +142,7 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void setEndHour(int hour) {
         endQueuePosition.setHour(hour);
+        notifyQueueElementIsMoved();
     }
 
     public Date getEarlierStartDateBecauseOfGantt() {
