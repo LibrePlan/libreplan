@@ -89,8 +89,8 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
     public void accept() {
         advanceConsolidationModel.accept();
         if (context.getRelativeTo() instanceof TaskComponent) {
-            ((TaskComponent) context.getRelativeTo()).invalidate();
             ((TaskComponent) context.getRelativeTo()).updateProperties();
+            ((TaskComponent) context.getRelativeTo()).invalidate();
         }
         close();
     }

@@ -430,6 +430,7 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         updateDeadline();
         updateCompletionIfPossible();
+        updateClass();
     }
 
     private void updateWidth() {
