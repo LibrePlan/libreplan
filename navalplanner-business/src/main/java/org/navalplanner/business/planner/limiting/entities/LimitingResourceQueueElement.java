@@ -172,9 +172,9 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void add(LimitingResourceQueueDependency d) {
         Validate.notNull(d);
-        if (d.getHasAsOrigin().getId().equals(this.getId())) {
+        if (sameInDB(d.getHasAsOrigin())) {
             dependenciesAsOrigin.add(d);
-        } else if (d.getHasAsDestiny().getId().equals(this.getId())) {
+        } else if (sameInDB(d.getHasAsDestiny())) {
             dependenciesAsDestiny.add(d);
         } else {
             throw new IllegalArgumentException(
@@ -182,6 +182,11 @@ public class LimitingResourceQueueElement extends BaseEntity {
                             + " in which the current queue element is neither origin"
                             + " not desinty");
         }
+    }
+
+    private boolean sameInDB(LimitingResourceQueueElement other) {
+        return this == other || other.getId() != null && this.getId() != null
+                && other.getId().equals(this.getId());
     }
 
     public void remove(LimitingResourceQueueDependency d) {
