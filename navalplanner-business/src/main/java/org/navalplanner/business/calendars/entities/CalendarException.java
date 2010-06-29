@@ -88,10 +88,12 @@ public class CalendarException extends IntegrationEntity {
         this.type = type;
     }
 
+    @NotNull
     public LocalDate getDate() {
         return date;
     }
 
+    @NotNull
     public Integer getHours() {
         return hours != null ? hours : 0;
     }
