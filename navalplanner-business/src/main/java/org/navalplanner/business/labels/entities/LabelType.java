@@ -157,6 +157,11 @@ public class LabelType extends IntegrationEntity implements Comparable {
         }
     }
 
+    @AssertTrue(message = "label code is already being used")
+    public boolean checkConstraintNonRepeatedMaterialCodes() {
+        return getFirstRepeatedCode(this.getLabels()) == null;
+    }
+
     public Label getLabelByCode(String code) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(code)) {
