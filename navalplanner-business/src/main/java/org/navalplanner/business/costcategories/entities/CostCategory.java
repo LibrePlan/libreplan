@@ -45,6 +45,7 @@ public class CostCategory extends IntegrationEntity {
 
     private boolean enabled = true;
 
+    @Valid
     private Set<HourCost> hourCosts = new HashSet<HourCost>();
 
     // Default constructor, needed by Hibernate
