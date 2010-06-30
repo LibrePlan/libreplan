@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertFalse;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
@@ -202,6 +203,11 @@ public class CostCategory extends IntegrationEntity {
     @Override
     protected ICostCategoryDAO getIntegrationEntityDAO() {
         return Registry.getCostCategoryDAO();
+    }
+
+    @AssertTrue(message = "The hour cost codes must be unique.")
+    public boolean checkConstraintNonRepeatedHourCostCodes() {
+        return getFirstRepeatedCode(this.hourCosts) == null;
     }
 
 }
