@@ -22,9 +22,10 @@ package org.navalplanner.ws.costcategories.impl;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -34,6 +35,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.costcategories.api.CostCategoryDTO;
 import org.navalplanner.ws.costcategories.api.HourCostDTO;
 
@@ -65,15 +67,16 @@ public class CostCategoryConverter {
 
     public final static HourCostDTO toDTO(HourCost hourCost) {
 
-        Date initDate = null;
+        XMLGregorianCalendar initDate = null;
         if (hourCost.getInitDate() != null) {
-            initDate = hourCost.getInitDate().toDateTimeAtCurrentTime()
-                    .toDate();
+            initDate = DateConverter.toXMLGregorianCalendar(hourCost
+                    .getInitDate());
         }
 
-        Date endDate = null;
+        XMLGregorianCalendar endDate = null;
         if (hourCost.getEndDate() != null) {
-            endDate = hourCost.getEndDate().toDateTimeAtCurrentTime().toDate();
+            endDate = DateConverter.toXMLGregorianCalendar(hourCost
+                    .getEndDate());
         }
 
         String type = null;
@@ -108,15 +111,16 @@ public class CostCategoryConverter {
         // Mandatory properties
         LocalDate initDate = null;
         if(hourCostDTO.initDate != null){
-            initDate = LocalDate.fromDateFields(hourCostDTO.initDate);
+            initDate = DateConverter.toLocalDate(hourCostDTO.initDate);
         }
 
         //Create new hour cost
-        HourCost hourCost = HourCost.createUnvalidated(hourCostDTO.code, hourCostDTO.priceCost, initDate);
+        HourCost hourCost = HourCost.createUnvalidated(hourCostDTO.code,
+                hourCostDTO.priceCost, initDate);
 
         // optional properties
         if (hourCostDTO.endDate != null) {
-            hourCost.setEndDate(LocalDate.fromDateFields(hourCostDTO.endDate));
+            hourCost.setEndDate(DateConverter.toLocalDate(hourCostDTO.endDate));
         }
 
         if (hourCostDTO.type != null) {
@@ -168,7 +172,7 @@ public class CostCategoryConverter {
         // Mandatory properties
         LocalDate initDate = null;
         if (hourCostDTO.initDate != null) {
-            initDate = LocalDate.fromDateFields(hourCostDTO.initDate);
+            initDate = DateConverter.toLocalDate(hourCostDTO.initDate);
         }
 
         // Create new hour cost
@@ -176,7 +180,7 @@ public class CostCategoryConverter {
 
         // optional properties
         if (hourCostDTO.endDate != null) {
-            hourCost.setEndDate(LocalDate.fromDateFields(hourCostDTO.endDate));
+            hourCost.setEndDate(DateConverter.toLocalDate(hourCostDTO.endDate));
         }
 
         if (hourCostDTO.type != null) {

@@ -1,9 +1,9 @@
 package org.navalplanner.ws.costcategories.api;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -20,10 +20,10 @@ public class HourCostDTO extends IntegrationEntityDTO {
     public BigDecimal priceCost;
 
     @XmlAttribute
-    public Date initDate;
+    public XMLGregorianCalendar initDate;
 
     @XmlAttribute
-    public Date endDate;
+    public XMLGregorianCalendar endDate;
 
     @XmlAttribute(name = "work-hours-type")
     public String type;
@@ -31,8 +31,10 @@ public class HourCostDTO extends IntegrationEntityDTO {
     public HourCostDTO() {
     }
 
-    public HourCostDTO(String code, BigDecimal priceCost, Date initDate,
-            Date endDate, String type) {
+    public HourCostDTO(String code, BigDecimal priceCost,
+            XMLGregorianCalendar initDate,
+ XMLGregorianCalendar endDate,
+            String type) {
 
         super(code);
         this.initDate = initDate;
@@ -46,7 +48,8 @@ public class HourCostDTO extends IntegrationEntityDTO {
      * facilitate the implementation of test cases that add new instances (such
      * instances will have a unique code).
      */
-    public HourCostDTO(BigDecimal priceCost, Date initDate, Date endDate,
+    public HourCostDTO(BigDecimal priceCost, XMLGregorianCalendar initDate,
+            XMLGregorianCalendar endDate,
             String type) {
 
         this(generateCode(), priceCost, initDate, endDate, type);

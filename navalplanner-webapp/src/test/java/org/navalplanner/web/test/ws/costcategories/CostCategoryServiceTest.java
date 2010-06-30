@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -49,6 +51,7 @@ import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.costcategories.api.CostCategoryDTO;
 import org.navalplanner.ws.costcategories.api.CostCategoryListDTO;
 import org.navalplanner.ws.costcategories.api.HourCostDTO;
@@ -124,8 +127,13 @@ public class CostCategoryServiceTest {
 
         // Valid cost category DTO with a hour cost
         Set<HourCostDTO> cc3_HourCostDTOs = new HashSet<HourCostDTO>();
+
+        XMLGregorianCalendar initDate = DateConverter
+                .toXMLGregorianCalendar(new Date());
+        XMLGregorianCalendar endDate = initDate;
+
         HourCostDTO cc3_1_HourCostDTO = new HourCostDTO(new BigDecimal(3),
-                new Date(), new Date(), typeOfWorkHoursCodeA);
+                initDate, endDate, typeOfWorkHoursCodeA);
         cc3_HourCostDTOs.add(cc3_1_HourCostDTO);
         CostCategoryDTO cc3 = new CostCategoryDTO("cc3", true, cc3_HourCostDTOs);
 
@@ -177,8 +185,13 @@ public class CostCategoryServiceTest {
          final String hourCostCode = "code-HC";
 
          Set<HourCostDTO> cc1_HourCostDTOs = new HashSet<HourCostDTO>();
+
+        XMLGregorianCalendar initDate = DateConverter
+                .toXMLGregorianCalendar(new Date());
+        XMLGregorianCalendar endDate = initDate;
+
          HourCostDTO cc1_1_HourCostDTO = new HourCostDTO(hourCostCode,new BigDecimal(3),
-                 new Date(), new Date(), typeOfWorkHoursCodeA);
+ initDate, endDate, typeOfWorkHoursCodeA);
          cc1_HourCostDTOs.add(cc1_1_HourCostDTO);
          CostCategoryDTO cc1 = new CostCategoryDTO(costCategoryCode,"newCC1", true, cc1_HourCostDTOs);
 
@@ -190,6 +203,7 @@ public class CostCategoryServiceTest {
         hourCostDAO.flush();
 
          /* Test. */
+
          assertTrue(instanceConstraintViolationsList.toString(),
                  instanceConstraintViolationsList.size() == 0);
          assertTrue(costCategoryDAO.existsByCode(cc1.code));
@@ -197,6 +211,14 @@ public class CostCategoryServiceTest {
          try {
             costCategory = costCategoryDAO.findByCode(cc1.code);
              assertTrue(costCategory.getHourCosts().size() == 1);
+            HourCost hourCost = hourCostDAO.findByCode(hourCostCode);
+            LocalDate currentDate = LocalDate.fromDateFields(new Date());
+            assertTrue(hourCost.getInitDate().compareTo(currentDate) == 0);
+            assertFalse(hourCost.getEndDate() == null);
+            assertTrue(hourCost.getEndDate().compareTo(hourCost.getInitDate()) == 0);
+            assertTrue(hourCost.getPriceCost().compareTo(new BigDecimal(3)) == 0);
+            assertTrue(hourCost.getType().getCode().equalsIgnoreCase(
+                    typeOfWorkHoursCodeA));
          } catch (InstanceNotFoundException e) {
              assertTrue(false);
          }
@@ -206,8 +228,14 @@ public class CostCategoryServiceTest {
 
          // Update the previous cost category
          Set<HourCostDTO> cc2_HourCostDTOs = new HashSet<HourCostDTO>();
+
+        XMLGregorianCalendar initDate2 = DateConverter
+                .toXMLGregorianCalendar(new Date());
+        XMLGregorianCalendar endDate2 = DateConverter
+                .toXMLGregorianCalendar(getNextMonthDate());
+
         HourCostDTO cc2_1_HourCostDTO = new HourCostDTO(hourCostCode,
-                new BigDecimal(100), getNextMonthDate(), getNextMonthDate(),
+                new BigDecimal(100), initDate2, endDate2,
                 typeOfWorkHoursCodeB);
         cc2_HourCostDTOs.add(cc2_1_HourCostDTO);
          CostCategoryDTO cc2 = new CostCategoryDTO(costCategoryCode,"updateCC1", false, cc2_HourCostDTOs);
@@ -235,8 +263,10 @@ public class CostCategoryServiceTest {
             HourCost hourCost = hourCostDAO.findByCode(cc1_1_HourCostDTO.code);
             LocalDate nextMonthDate = LocalDate
                     .fromDateFields(getNextMonthDate());
-            assertTrue(hourCost.getInitDate().compareTo(nextMonthDate) == 0);
+            assertTrue(hourCost.getInitDate().compareTo(
+                    LocalDate.fromDateFields(new Date())) == 0);
             assertFalse(hourCost.getEndDate() == null);
+            assertTrue(hourCost.getEndDate().compareTo(nextMonthDate) == 0);
             assertTrue(hourCost.getPriceCost().compareTo(new BigDecimal(100)) == 0);
             assertTrue(hourCost.getType().getCode().equalsIgnoreCase(
                     typeOfWorkHoursCodeB));
