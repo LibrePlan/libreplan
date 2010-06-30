@@ -32,7 +32,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.hibernate.SessionFactory;
@@ -58,8 +57,8 @@ import org.navalplanner.ws.calendars.api.CalendarDataDTO;
 import org.navalplanner.ws.calendars.api.CalendarExceptionDTO;
 import org.navalplanner.ws.calendars.api.HoursPerDayDTO;
 import org.navalplanner.ws.calendars.api.ICalendarService;
-import org.navalplanner.ws.calendars.impl.CalendarConverter;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -167,11 +166,7 @@ public class BaseCalendarServiceTest {
     }
 
     private XMLGregorianCalendar toXml(Date date) {
-        try {
-            return CalendarConverter.toXMLGregorianCalendar(date);
-        } catch (DatatypeConfigurationException e) {
-            return null;
-        }
+        return DateConverter.toXMLGregorianCalendar(date);
     }
 
     @Test

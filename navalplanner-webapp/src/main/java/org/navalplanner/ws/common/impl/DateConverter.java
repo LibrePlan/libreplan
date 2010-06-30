@@ -85,11 +85,11 @@ public class DateConverter {
      *
      * @throws DatatypeConfigurationException
      */
-    public final static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
-        if (date == null) {
+    public final static XMLGregorianCalendar toXMLGregorianCalendar(
+            LocalDate localDate) {
+        if (localDate == null) {
             return null;
         } else {
-            LocalDate localDate = LocalDate.fromDateFields(date);
             DatatypeFactory factory;
             try {
                 factory = DatatypeFactory.newInstance();
@@ -100,6 +100,10 @@ public class DateConverter {
                     localDate.getMonthOfYear(), localDate.getDayOfMonth(),
                     DatatypeConstants.FIELD_UNDEFINED);
         }
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
+        return toXMLGregorianCalendar(LocalDate.fromDateFields(date));
     }
 
 }

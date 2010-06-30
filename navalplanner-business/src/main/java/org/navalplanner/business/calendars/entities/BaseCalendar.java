@@ -211,6 +211,11 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
     public void addExceptionDay(CalendarException day)
             throws IllegalArgumentException {
+
+        if (day.getDate() == null) {
+            throw new IllegalArgumentException(
+                    "This exception day has a incorrect date");
+        }
         if (isExceptionDayAlreadyInExceptions(day)) {
             throw new IllegalArgumentException(
                     "This day is already in the exception days");
@@ -459,6 +464,7 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
         if (version.getExpiringDate().toDateTimeAtStartOfDay().toDate()
                 .compareTo(new Date()) <= 0) {
+
             throw new IllegalArgumentException(
                     "You can not add a version with previous date than current date");
         }
@@ -1007,7 +1013,7 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the versions: the dates should be sorted and could not overlap ")
+    @AssertTrue(message = "the versions: the dates should be corrects and sorted and could not overlap ")
     public boolean checkConstraintDateCouldNotOverlap() {
 
         if (calendarDataVersions == null || calendarDataVersions.isEmpty()) {

@@ -25,16 +25,12 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,6 +47,7 @@ import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 import org.navalplanner.ws.calendars.api.CalendarDataDTO;
 import org.navalplanner.ws.calendars.api.CalendarExceptionDTO;
 import org.navalplanner.ws.calendars.api.HoursPerDayDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 
 /**
  * Converter from/to {@link BaseCalendar} related entities to/from DTOs.
@@ -84,14 +81,8 @@ public final class CalendarConverter {
 
     private final static CalendarExceptionDTO toDTO(
             CalendarException calendarException) {
-
-        XMLGregorianCalendar date = null;
-        try {
-            date = toXMLGregorianCalendar(calendarException.getDate());
-        } catch (DatatypeConfigurationException e) {
-            throw new ValidationException(e.getMessage());
-        }
-
+        XMLGregorianCalendar date = DateConverter
+                .toXMLGregorianCalendar(calendarException.getDate());
         return new CalendarExceptionDTO(calendarException.getCode(), date,
                 calendarException.getHours(), calendarException.getType()
                         .getCode());
@@ -106,15 +97,10 @@ public final class CalendarConverter {
             hoursPerDayDTOs.add(new HoursPerDayDTO(dayName, hours));
         }
 
-        XMLGregorianCalendar expiringDate = null;
-        try {
-            expiringDate = (calendarData.getExpiringDate() != null) ? toXMLGregorianCalendar(calendarData
+        XMLGregorianCalendar expiringDate = (calendarData.getExpiringDate() != null) ? DateConverter
+                .toXMLGregorianCalendar(calendarData
                     .getExpiringDate())
                 : null;
-        } catch (DatatypeConfigurationException e) {
-            throw new ValidationException(e.getMessage());
-        }
-
         String parentCalendar = (calendarData.getParent() != null) ? calendarData
                 .getParent().getCode()
                 : null;
@@ -155,7 +141,7 @@ public final class CalendarConverter {
 
         LocalDate date = null;
         if (calendarExceptionDTO.date != null) {
-            date = toLocalDate(calendarExceptionDTO.date);
+            date = DateConverter.toLocalDate(calendarExceptionDTO.date);
         }
 
         CalendarExceptionType type = findCalendarExceptionType(calendarExceptionDTO.calendarExceptionTypeCode);
@@ -167,7 +153,8 @@ public final class CalendarConverter {
     public final static CalendarData toEntity(CalendarDataDTO calendarDataDTO) {
         LocalDate expiringDate = null;
         if (calendarDataDTO.expiringDate != null) {
-            expiringDate = toLocalDate(calendarDataDTO.expiringDate);
+            expiringDate = DateConverter
+                    .toLocalDate(calendarDataDTO.expiringDate);
         }
 
         BaseCalendar parent = findBaseCalendarParent(calendarDataDTO.parentCalendar);
@@ -208,7 +195,8 @@ public final class CalendarConverter {
                 } catch (InstanceNotFoundException e) {
                     // find by date
                     CalendarException exception = baseCalendar
-                            .getOwnExceptionDay(toLocalDate(exceptionDTO.date));
+                            .getOwnExceptionDay(DateConverter
+                                    .toLocalDate(exceptionDTO.date));
                     if (exception != null) {
                         throw new ValidationException(
                                 _("exception date already exists"));
@@ -269,7 +257,7 @@ public final class CalendarConverter {
 
         LocalDate date = null;
         if (calendarExceptionDTO.date != null) {
-            date = toLocalDate(calendarExceptionDTO.date);
+            date = DateConverter.toLocalDate(calendarExceptionDTO.date);
         }
 
         CalendarExceptionType type = findCalendarExceptionType(calendarExceptionDTO.calendarExceptionTypeCode);
@@ -282,7 +270,8 @@ public final class CalendarConverter {
 
         LocalDate expiringDate = null;
         if (calendarDataDTO.expiringDate != null) {
-            expiringDate = toLocalDate(calendarDataDTO.expiringDate);
+            expiringDate = DateConverter
+                    .toLocalDate(calendarDataDTO.expiringDate);
         }
 
         BaseCalendar parent = findBaseCalendarParent(calendarDataDTO.parentCalendar);
@@ -303,12 +292,14 @@ public final class CalendarConverter {
         Map<Integer, Integer> hoursPerDays = new HashMap<Integer, Integer>();
         if (hoursPerDayDTOs != null) {
             for (HoursPerDayDTO hoursPerDayDTO : hoursPerDayDTOs) {
-                Integer day = CalendarData.Days.valueOf(hoursPerDayDTO.day)
+                try {
+                    Integer day = CalendarData.Days.valueOf(hoursPerDayDTO.day)
                         .ordinal();
-                if (day != null) {
                     hoursPerDays.put(day, hoursPerDayDTO.hours);
-                } else {
+                } catch (IllegalArgumentException e) {
                     throw new ValidationException(_("a day is not valid"));
+                } catch(NullPointerException e){
+                    throw new ValidationException(_("a day is empty"));
                 }
             }
         }
@@ -359,23 +350,6 @@ public final class CalendarConverter {
             }
         });
         return versions;
-    }
-
-    public static XMLGregorianCalendar toXMLGregorianCalendar(
-            LocalDate localDate) throws DatatypeConfigurationException {
-        DatatypeFactory factory = DatatypeFactory.newInstance();
-        return factory.newXMLGregorianCalendarDate(localDate.getYear(),
-                localDate.getMonthOfYear(), localDate.getDayOfMonth(),
-                DatatypeConstants.FIELD_UNDEFINED);
-    }
-
-    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date)
-            throws DatatypeConfigurationException {
-        return toXMLGregorianCalendar(LocalDate.fromDateFields(date));
-    }
-    public static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
-        return new LocalDate(calendar.getYear(), calendar.getMonth(), calendar
-                .getDay());
     }
 
 }
