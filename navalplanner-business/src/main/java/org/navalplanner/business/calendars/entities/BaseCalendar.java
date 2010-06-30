@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Valid;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
@@ -95,10 +96,13 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
     @NotEmpty
     private String name;
 
+    @Valid
     private Set<CalendarException> exceptions = new HashSet<CalendarException>();
 
+    @Valid
     private List<CalendarData> calendarDataVersions = new ArrayList<CalendarData>();
 
+    @Valid
     private List<CalendarAvailability> calendarAvailabilities = new ArrayList<CalendarAvailability>();
 
     public enum DayType {
