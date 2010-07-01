@@ -43,6 +43,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.springframework.security.context.SecurityContext;
+import org.springframework.security.context.SecurityContextHolder;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.servlets.CallbackServlet;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
@@ -134,9 +136,8 @@ public class CutyPrint {
 
         // Generate capture string
         String captureString = CUTYCAPT_COMMAND;
-
         String url = CallbackServlet.registerAndCreateURLFor(request,
-                new IServletRequestHandler() {
+                executeOnOriginalContext(new IServletRequestHandler() {
 
                     @Override
                     public void handle(HttpServletRequest request,
@@ -150,7 +151,7 @@ public class CutyPrint {
                         request.getRequestDispatcher(forwardURL).forward(
                                 request, response);
                     }
-                });
+                }));
 
         // Add capture destination callback URL
         captureString += " --url=http://" + request.getLocalName() + ":"
@@ -227,6 +228,21 @@ public class CutyPrint {
         } catch (IOException e) {
             LOG.error(_("Could not execute print command"), e);
         }
+    }
+
+    private static IServletRequestHandler executeOnOriginalContext(
+            final IServletRequestHandler original) {
+        final SecurityContext originalContext = SecurityContextHolder
+                .getContext();
+        return new IServletRequestHandler() {
+            @Override
+            public void handle(HttpServletRequest request,
+                    HttpServletResponse response) throws ServletException,
+                    IOException {
+                SecurityContextHolder.setContext(originalContext);
+                original.handle(request, response);
+            }
+        };
     }
 
     private static String heightCSS(int tasksNumber) {
