@@ -45,7 +45,7 @@ public class OrderElementHistoricAssignmentDTO {
         this.order = order;
         this.orderCode = order.getCode();
         this.orderElementCode = orderElement.getCode();
-        this.name = orderElement.getName();
+        this.name = order.getName();
         this.estimatedHours = estimatedHours;
         this.workedHours = workedHours;
     }
