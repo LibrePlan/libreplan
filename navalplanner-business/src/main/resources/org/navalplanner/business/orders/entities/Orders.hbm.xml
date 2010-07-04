@@ -198,7 +198,7 @@
             </type>
         </property>
         <many-to-one name="orderElement" column="ORDER_ELEMENT_ID"></many-to-one>
-        <one-to-one name="taskSource" class="TaskSource" cascade="all" access="field" property-ref="schedulingData" />
+        <one-to-one name="taskSource" class="TaskSource" cascade="delete" access="field" property-ref="schedulingData" />
     </class>
 
     <class name="TaskSource">
