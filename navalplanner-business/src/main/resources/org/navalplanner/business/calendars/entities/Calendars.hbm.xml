@@ -22,7 +22,7 @@
             <one-to-many class="CalendarException" />
         </set>
 
-        <!-- Index on the other side -->
+        <!-- Index created in a database-object section -->
         <list name="calendarDataVersions" access="field" cascade="all-delete-orphan">
             <key column="BASE_CALENDAR_ID" />
             <index column="POSITION_IN_CALENDAR" />
@@ -99,7 +99,7 @@
             <element column="HOURS" type="integer" />
         </map>
 
-        <!-- Indexed -->
+        <!-- Not indexed -->
         <many-to-one name="parent" class="BaseCalendar" access="field" />
 
         <property name="expiringDate" access="field"
