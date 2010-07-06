@@ -53,15 +53,21 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
     @Override
     public Worker findUniqueByNif(String nif) throws InstanceNotFoundException {
         Criteria criteria = getSession().createCriteria(Worker.class);
-        criteria.add(Restrictions.eq("nif", nif).ignoreCase());
+        criteria.add(Restrictions.eq("nif", nif.trim()).ignoreCase());
 
         List<Worker> list = criteria.list();
-
         if (list.size() != 1) {
             throw new InstanceNotFoundException(nif, Worker.class.getName());
         }
 
         return list.get(0);
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public Worker findByNifAnotherTransaction(String nif)
+            throws InstanceNotFoundException {
+        return findUniqueByNif(nif);
     }
 
     @Override
@@ -120,6 +126,22 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
     public List<Worker> findByFirstNameSecondNameAndNifAnotherTransaction(
             String firstname, String secondname, String nif) {
         return findByFirstNameSecondNameAndNif(firstname, secondname, nif);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Worker> findByFirstNameSecondName(String firstname,
+            String secondname) {
+        return getSession().createCriteria(Worker.class).add(
+                Restrictions.and(Restrictions.ilike("firstName", firstname),
+                        Restrictions.ilike("surname", secondname))).list();
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public List<Worker> findByFirstNameSecondNameAnotherTransaction(
+            String firstname, String secondname) {
+        return findByFirstNameSecondName(firstname, secondname);
     }
 
     @Override

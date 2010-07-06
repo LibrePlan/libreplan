@@ -118,4 +118,12 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
     List<Object[]> getWorkingHoursGroupedPerWorker(List<String> workerNifs,
             Date startingDate, Date endingDate);
 
+    Worker findByNifAnotherTransaction(String nif)
+            throws InstanceNotFoundException;
+
+    public List<Worker> findByFirstNameSecondName(String firstname,
+            String secondname);
+
+    public List<Worker> findByFirstNameSecondNameAnotherTransaction(
+            String firstname, String secondname);
 }

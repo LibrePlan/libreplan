@@ -395,7 +395,8 @@ public class ResourceServiceTest {
         machineDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(workerCt.getName() , "c1",
                 getDate(2001, 1, 1), null)); // Incorrect type.
-        WorkerDTO workerDTO = new WorkerDTO(getUniqueName(), "surname", "nif");
+        WorkerDTO workerDTO = new WorkerDTO(getUniqueName(), "surname",
+                getUniqueName());
         workerDTO.criterionSatisfactions.add(
             new CriterionSatisfactionDTO(machineCt.getName() , "c1",
                 getDate(2001, 1, 1), null)); // Incorrect type.
@@ -746,7 +747,8 @@ public class ResourceServiceTest {
         m1.resourcesCostCategoryAssignments.add(m1a1);
 
         /* Create a worker DTO. */
-        WorkerDTO w1 = new WorkerDTO(getUniqueName(), "surname", "nif");
+        String nif = getUniqueName();
+        WorkerDTO w1 = new WorkerDTO(getUniqueName(), "surname", nif);
         CriterionSatisfactionDTO w1s1 = new CriterionSatisfactionDTO(ct
                 .getName(), "c1", getDate(2000, 1, 1), getDate(2000, 2, 1));
         w1.criterionSatisfactions.add(w1s1);

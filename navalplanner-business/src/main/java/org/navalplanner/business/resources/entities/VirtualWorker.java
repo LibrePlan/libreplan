@@ -75,7 +75,7 @@ public class VirtualWorker extends Worker {
 
     @AssertTrue
     @Override
-    public boolean checkConstraintUniqueFirstNameSurnameNif() {
+    public boolean checkConstraintUniqueNif() {
         return true;
     }
 

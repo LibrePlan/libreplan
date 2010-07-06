@@ -21,12 +21,11 @@
 package org.navalplanner.business.resources.entities;
 
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
 /**
  * This class models a worker.
@@ -142,31 +141,27 @@ public class Worker extends Resource {
         return !isVirtual();
     }
 
-    @AssertTrue(message = "Worker with the same first name, surname and nif previously existed")
-    public boolean checkConstraintUniqueFirstNameSurnameNif() {
-
+    @AssertTrue(message = "Worker with the same nif previously existed")
+    public boolean checkConstraintUniqueNif() {
         if (!areFirstNameSurnameNifSpecified()) {
             return true;
         }
 
+        try {
         /* Check the constraint. */
-        List<Worker> list = Registry.getWorkerDAO()
-                .findByFirstNameSecondNameAndNifAnotherTransaction(firstName,
-                        surname, nif);
-
-        if (isNewObject()) {
-            return list.isEmpty();
-        } else {
-            if (list.isEmpty()) {
-                return true;
+            Worker worker = Registry.getWorkerDAO()
+                    .findByNifAnotherTransaction(nif);
+            if (isNewObject()) {
+                return false;
             } else {
-                return list.get(0).getId().equals(getId());
+                return worker.getId().equals(getId());
             }
+        } catch (InstanceNotFoundException e) {
+            return isNewObject();
         }
-
     }
 
-   private boolean areFirstNameSurnameNifSpecified() {
+    protected boolean areFirstNameSurnameNifSpecified() {
 
        return !StringUtils.isBlank(firstName) &&
            !StringUtils.isBlank(surname) &&
