@@ -38,7 +38,7 @@
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.reports.HoursWorkedPerWorkerController"
-        title="Hours worked per worker"
+        title="${i18n:_('Hours worked per worker')}"
         border="normal" >
 
          <!-- Select dates -->

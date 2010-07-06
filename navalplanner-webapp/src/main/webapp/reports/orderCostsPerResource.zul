@@ -38,7 +38,7 @@
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.reports.OrderCostsPerResourceController"
-        title="Order costs per resource">
+        title="${i18n:_('Order costs per resource')}">
 
     <tabbox>
         <tabs>
