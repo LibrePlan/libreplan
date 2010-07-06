@@ -92,6 +92,10 @@ public class UnitType extends IntegrationEntity{
 
     @AssertTrue(message = "the measure unit type has to be unique. It is already used")
     public boolean checkConstraintUniqueName() {
+        if (StringUtils.isBlank(measure)) {
+            return true;
+        }
+
         boolean result;
         if (isNewObject()) {
             result = !existsUnitTypeWithTheName();

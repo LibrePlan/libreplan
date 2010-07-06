@@ -8,4 +8,14 @@
   <unit-type measure="m2" code="000-006" />
   <unit-type measure="m3" code="000-007" />
   <unit-type measure="tn" code="000-008" />
+
+<!-- code repeated -->
+  <unit-type measure="m1" code="000-001" />
+<!-- without code  -->
+  <unit-type measure="m2" />
+<!-- measure repeated -->
+  <unit-type measure="units" code="000-009" />
+<!-- without measure  -->
+  <unit-type code="000-010" />
+
 </unit-type-list>
