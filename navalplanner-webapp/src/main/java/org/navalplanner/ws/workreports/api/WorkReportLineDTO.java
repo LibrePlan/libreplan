@@ -20,7 +20,6 @@
 
 package org.navalplanner.ws.workreports.api;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -44,7 +44,7 @@ public class WorkReportLineDTO extends IntegrationEntityDTO {
     public final static String ENTITY_TYPE = "work-report-line";
 
     @XmlAttribute
-    public Date date;
+    public XMLGregorianCalendar date;
 
     @XmlAttribute
     public String resource;
@@ -56,10 +56,10 @@ public class WorkReportLineDTO extends IntegrationEntityDTO {
     public String typeOfWorkHours;
 
     @XmlAttribute(name = "start-hour")
-    public Date clockStart;
+    public XMLGregorianCalendar clockStart;
 
     @XmlAttribute(name = "finish-hour")
-    public Date clockFinish;
+    public XMLGregorianCalendar clockFinish;
 
     @XmlAttribute(name = "hours")
     public Integer numHours;
@@ -75,9 +75,11 @@ public class WorkReportLineDTO extends IntegrationEntityDTO {
     public WorkReportLineDTO() {
     }
 
-    public WorkReportLineDTO(String code, Date date, String resource,
-            String orderElement, String typeOfWorkHours, Date clockStart,
-            Date clockFinish, Integer numHours, Set<LabelReferenceDTO> labels,
+    public WorkReportLineDTO(String code, XMLGregorianCalendar date,
+            String resource,
+ String orderElement, String typeOfWorkHours,
+            XMLGregorianCalendar clockStart, XMLGregorianCalendar clockFinish,
+            Integer numHours, Set<LabelReferenceDTO> labels,
             Set<DescriptionValueDTO> descriptionValues) {
         super(code);
         this.date = date;

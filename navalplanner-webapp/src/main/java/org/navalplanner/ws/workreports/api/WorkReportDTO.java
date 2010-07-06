@@ -20,7 +20,6 @@
 
 package org.navalplanner.ws.workreports.api;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -47,7 +47,7 @@ public class WorkReportDTO extends IntegrationEntityDTO {
     public String workReportType;
 
     @XmlAttribute
-    public Date date;
+    public XMLGregorianCalendar date;
 
     @XmlAttribute
     public String resource;
@@ -70,7 +70,8 @@ public class WorkReportDTO extends IntegrationEntityDTO {
     public WorkReportDTO() {
     }
 
-    public WorkReportDTO(String code, String workReportType, Date date,
+    public WorkReportDTO(String code, String workReportType,
+            XMLGregorianCalendar date,
             String resource, String orderElement, Set<LabelReferenceDTO> labels,
             Set<DescriptionValueDTO> descriptionValues,
             Set<WorkReportLineDTO> workReportLines) {

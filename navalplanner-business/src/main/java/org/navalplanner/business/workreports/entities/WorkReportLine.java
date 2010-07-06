@@ -272,6 +272,25 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return true;
     }
 
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "The start hour cannot be higher than finish hour")
+    public boolean checkCannotBeHigher() {
+        if (!firstLevelValidationsPassed()) {
+            return true;
+        }
+
+        if (workReport.getWorkReportType().getHoursManagement().equals(
+                HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
+            return checkCannotBeHigher(this.clockStart, this.clockFinish);
+        }
+        return true;
+    }
+
+    public boolean checkCannotBeHigher(LocalTime starting, LocalTime ending) {
+        return !((ending != null) && (starting != null) && (starting
+                .compareTo(ending) > 0));
+    }
+
     void updateItsFieldsAndLabels() {
         if (workReport != null) {
             assignItsLabels(workReport.getWorkReportType());
@@ -455,7 +474,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
             return true;
         }
 
-        if (this.workReport.getWorkReportType().getLineFields().size() != this.descriptionValues
+        if (this.workReport.getWorkReportType().getLineFields().size() > this.descriptionValues
                 .size()) {
             return false;
         }
@@ -466,6 +485,27 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
                 getDescriptionValueByFieldName(field.getFieldName());
             } catch (InstanceNotFoundException e) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "There are repeated description values in the work report line")
+    public boolean checkConstraintAssignedRepeatedDescriptionValues() {
+
+        Set<String> textFields = new HashSet<String>();
+
+        for (DescriptionValue v : this.descriptionValues) {
+
+            String name = v.getFieldName();
+
+            if (!StringUtils.isBlank(name)) {
+                if (textFields.contains(name.toLowerCase())) {
+                    return false;
+                } else {
+                    textFields.add(name.toLowerCase());
+                }
             }
         }
         return true;
@@ -504,5 +544,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
         throw new InstanceNotFoundException(type, LabelType.class.getName());
     }
+
 
 }

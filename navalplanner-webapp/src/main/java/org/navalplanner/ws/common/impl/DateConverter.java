@@ -28,6 +28,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  * A converter from <code>java.util.Date</code> to/from
@@ -58,9 +59,34 @@ public class DateConverter {
 
     /**
      * It converts a <code>XMLGregorianCalendar</code> representing a
-     * <code>xsd:date</code> XML type to a Joda's <code>LocalDate</code>.
-     * <br/><br/>
-     *
+     * <code>xsd:localTime</code> XML type to a <code>LocalTime</code>.<br/>
+     * <br/>
+     * If the localTime passed as a parameter is <code>null</code>, it also
+     * returns <code>null</code>.
+     */
+    public final static LocalTime toLocalTime(XMLGregorianCalendar date) {
+
+        if (date == null) {
+            return null;
+        } else {
+            if (isDefined(date.getHour()) && isDefined(date.getMinute())
+                    && isDefined(date.getSecond())){
+                return new LocalTime(date.getHour(), date.getMinute(), date
+                    .getSecond());
+            }
+            return null;
+        }
+
+    }
+
+    private static boolean isDefined(int hour){
+        return hour != DatatypeConstants.FIELD_UNDEFINED;
+    }
+
+    /**
+     * It converts a <code>XMLGregorianCalendar</code> representing a
+     * <code>xsd:date</code> XML type to a Joda's <code>LocalDate</code>. <br/>
+     * <br/>
      * If the date passed as a parameter is <code>null</code>, it also returns
      * <code>null</code>.
      */
@@ -106,4 +132,23 @@ public class DateConverter {
         return toXMLGregorianCalendar(LocalDate.fromDateFields(date));
     }
 
+    public static XMLGregorianCalendar toXMLGregorianCalendar(LocalTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        } else {
+            DatatypeFactory factory;
+            try {
+                factory = DatatypeFactory.newInstance();
+            } catch (DatatypeConfigurationException e) {
+                throw new RuntimeException(e);
+            }
+
+            LocalDate date = dateTime.toDateTimeToday().toLocalDate();
+            return factory.newXMLGregorianCalendarTime(dateTime
+                    .getHourOfDay(), dateTime.getMinuteOfHour(), dateTime
+                    .getSecondOfMinute(), dateTime.getMillisOfSecond(),
+                    DatatypeConstants.FIELD_UNDEFINED
+                    );
+        }
+    }
 }

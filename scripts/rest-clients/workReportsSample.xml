@@ -1,59 +1,374 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <work-report-list xmlns="http://rest.ws.navalplanner.org">
-<work-report work-order="proxecto-00006-00009"
-  resource="30303030D" date="2010-03-09T00:00:00+01:00"
-  work-report-type="codeXX"
-  code="c3573671-1245-4b49-91b2-2f0914a5cf8b">
+
+
+<!-- the type wr1 has got the following structure
+Date:			heading
+Resource:		heading
+Order Element:		heading
+Hours Management:	Number of assigned hours.-->
+
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-03-09"
+  work-report-type="wrt1"
+  code="wr1">
     <label-list>
-      <label code="b2b9cdee-2785-4c03-8e01-cec0a93b61aa" />
+      <label code="001-001" />
     </label-list>
     <work-report-line-list>
       <work-report-line hours="4"
-      finish-hour="2010-03-08T05:00:00+01:00"
-      start-hour="2010-03-08T01:00:00+01:00" hour-type="Normal"
-      work-order="proxecto-00006-00009" resource="30303030D"
-      date="2010-03-09T00:00:00+01:00"
-      code="77011765-2d77-4350-b315-84435d065a60">
-        <label-list>
-          <label code="774e42b9-c35c-4de2-a20b-487ff1c413ef" />
-        </label-list>
+      finish-hour="2010-03-08"
+      start-hour="2010-03-08" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="2010-03-09"
+      code="wrl1">
       </work-report-line>
        <work-report-line hours="6"
-      finish-hour="2010-03-08T07:00:00+01:00"
-      start-hour="2010-03-08T01:00:00+01:00" hour-type="Normal"
-      work-order="proxecto-00006-00009" resource="30303030D"
-      date="2010-03-09T00:00:00+01:00"
-      code="77011765-2d77-4350-b315-84435d065555">
-        <label-list>
-          <label code="a6256552-5ac7-46a7-95d6-8b8c8b415c65" />
-        </label-list>
+      finish-hour="2010-03-08"
+      start-hour="2010-03-08" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="2010-03-09"
+      code="wrl2">
       </work-report-line>
     </work-report-line-list>
   </work-report>
-  <work-report work-order="proxecto-00001-00002"
+
+
+<!-- repeated labels [OK , because it only saves one reference to the label  ]-->
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-03-09"
+  work-report-type="wrt1"
+  code="wr19">
+    <label-list>
+      <label code="001-001" />
+      <label code="001-001" />
+    </label-list>
+</work-report>
+
+
+<!-- work report type not found -->
+  <work-report work-order="PREFIX-00001"
   resource="66666666F" date="2010-03-18T00:00:00+01:00"
-  work-report-type="codeXY"
-  code="e230a3b4-3848-4ea9-9e7b-2c21e246200e">
-    <text-field-list>
-      <text-field value="oooh!" name="campoH" />
-    </text-field-list>
+  work-report-type="code not found"
+  code="wr2">
+  </work-report>
+
+<!-- with a incorrect date -->
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-13-09"
+  work-report-type="wrt1"
+  code="wr3">
+</work-report>
+
+<!-- with a incorrect order element code -->
+<work-report work-order="incorrect code"
+  resource="30303030D" date="2010-13-09"
+  work-report-type="wrt1"
+  code="wr4">
+</work-report>
+
+<!-- with a incorrect resource -->
+<work-report work-order="PREFIX-00001"
+  resource="resource not found" date="2010-13-09"
+  work-report-type="wrt1"
+  code="wr5">
+</work-report>
+
+<!-- code not specified  -->
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-11-09"
+  work-report-type="wrt1">
+</work-report>
+
+<!--label not assigned -->
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-03-09"
+  work-report-type="wrt1"
+  code="wr6">
+    <label-list>
+      <label code="002-001" />
+    </label-list>
+ </work-report>
+
+<!-- label code not found -->
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-03-09"
+  work-report-type="wrt1"
+  code="wr7">
+    <label-list>
+      <label code="002-001" />
+    </label-list>
+ </work-report>
+
+<!-- label code not found -->
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-03-09"
+  work-report-type="wrt1"
+  code="wr8">
+    <label-list>
+      <label code="002-001" />
+    </label-list>
+ </work-report>
+
+<!-- missing finish-hour (wrl1) OK -->
+<!-- incorrect date (wrl2) OK -->
+<work-report work-order="PREFIX-00001"
+  resource="30303030D" date="2010-03-09"
+  work-report-type="wrt1"
+  code="wr9">
     <work-report-line-list>
-      <work-report-line hours="12" hour-type="Normal"
-      work-order="proxecto-00001-00002" resource="66666666F"
-      date="2010-03-18T00:00:00+01:00"
-      code="89ec8b66-5c21-4076-a06f-22f8e190dd36">
-        <text-field-list>
-          <text-field value="aaaaa" name="campoA" />
-        </text-field-list>
+      <work-report-line hours="4"
+      start-hour="2010-03-08" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="2010-03-09"
+      code="wr9-wrl1">
       </work-report-line>
-      <work-report-line hours="15" hour-type="Normal"
-      work-order="proxecto-00001-00002" resource="66666666F"
-      date="2010-03-18T00:00:00+01:00"
-      code="89ec8b66-5c21-4076-a06f-22f8e190dd98">
-        <text-field-list>
-          <text-field value="xxxxx" name="campoA" />
-        </text-field-list>
+       <work-report-line hours="6"
+      finish-hour="2010-03-08"
+      start-hour="2010-03-08" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="210-03-09"
+      code="wr9-wrl2">
       </work-report-line>
     </work-report-line-list>
   </work-report>
+
+
+<!-- the work report type has got the following structure:
+Date:			line
+Resource:		line
+Order Element:		line
+Hours Management: 	Number of hours calculated by clock -->
+
+<!-- missing finish-hour  OK -->
+<work-report date="2010-03-09"
+  work-report-type="wrt3"
+  code="wr10">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      start-hour="201-07-05T00:00:00.000" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="2010-03-09" code="wr10-wrl2">
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- incorrect start hour -->
+<work-report date="2010-03-09"
+  work-report-type="wrt3"
+  code="wr10">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      start-hour="201-07-05T00:00:00.000" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="2010-03-09" code="wr10-wrl2">
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- finish-hour is incorrect  -->
+<work-report date="2010-03-09"
+  work-report-type="wrt3"
+  code="wr11">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="T01:00:00.000"
+      start-hour="T06:00:00.000" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="2010-03-09" code="wr11-wrl2">
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- finish-hour is before start-hour  -->
+<work-report date="2010-03-09"
+  work-report-type="wrt3"
+  code="wr12">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T01:00:00.000"
+      start-hour="2010-07-08T06:00:00.000" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="2010-03-09" code="wr12-wrl1">
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- date incorrect  -->
+<work-report date="2010-03-09"
+  work-report-type="wrt3"
+  code="wr13">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T06:00:00.000"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      work-order="PREFIX-00001" resource="30303030D"
+      date="200-03-09" code="wr13-wrl1">
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- resource not specified -->
+<!-- order element not specified -->
+<work-report date="2010-03-09"
+  work-report-type="wrt3"
+  code="wr14">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T06:00:00.000"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-09" code="wr14-wrl1">
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+
+<!-- the work report type (wrt4) has got the following structure :
+Date:			heading
+Resource:		heading
+Order Element:		heading
+Hours Management: 	Number of assigned hours and the time.
+ -->
+
+<!-- the work report date does not match with the work report line date [OK] -->
+<!-- the work report resource does not match with the work report line resource	[OK] -->
+<!-- the work report order element does not match with the work report order element [OK] -->
+<work-report date="2010-03-09"
+  work-order="PREFIX-00001"
+  resource="30303030D"
+  work-report-type="wrt4"
+  code="wr15">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T06:00:00.000"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr15-wrl1">
+	    <text-field-list>
+		<text-field name="etiqueta1" value="value-etiqueta1" />
+	    </text-field-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- the work report have not assigned the description field" -->
+<work-report date="2010-03-09"
+  work-order="PREFIX-00001"
+  resource="30303030D"
+  work-report-type="wrt4"
+  code="wr16">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T06:00:00.000"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr16-wrl1">
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+
+<!-- Two work report lines with the same code -->
+<work-report date="2010-03-09"
+  work-order="PREFIX-00001"
+  resource="30303030D"
+  work-report-type="wrt4"
+  code="wr17">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T06:00:00.000"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr17-wrl1">
+	    <text-field-list>
+		<text-field name="etiqueta1" value="value-etiqueta1" />
+	    </text-field-list>
+      </work-report-line>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T06:00:00.000"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr17-wrl1">
+	    <text-field-list>
+		<text-field name="etiqueta1" value="value-etiqueta1" />
+	    </text-field-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- Two text-fields with the same name -->
+<work-report date="2010-03-09"
+  work-order="PREFIX-00001"
+  resource="30303030D"
+  work-report-type="wrt4"
+  code="wr18">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      finish-hour="2010-07-08T06:00:00.000"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr18-wrl1">
+	    <text-field-list>
+		<text-field name="etiqueta1" value="value-etiqueta1" />
+		<text-field name="etiqueta1" value="value-etiqueta2" />
+	    </text-field-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- missing finish-hour [OK] -->
+<work-report date="2010-03-09"
+  work-order="PREFIX-00001"
+  resource="30303030D"
+  work-report-type="wrt4"
+  code="wr20">
+    <work-report-line-list>
+       <work-report-line hours="6"
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr20-wrl1">
+	    <text-field-list>
+		<text-field name="etiqueta1" value="value-etiqueta1" />
+	    </text-field-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+<!-- missing finish-hour and hours -->
+<work-report date="2010-03-09"
+  work-order="PREFIX-00001"
+  resource="30303030D"
+  work-report-type="wrt4"
+  code="wr21">
+    <work-report-line-list>
+       <work-report-line
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr21-wrl1">
+	    <text-field-list>
+		<text-field name="etiqueta1" value="value-etiqueta1" />
+	    </text-field-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
+
+<!-- repeated work report line code  -->
+<work-report date="2010-03-09"
+  work-order="PREFIX-00001"
+  resource="30303030D"
+  work-report-type="wrt4"
+  code="wr22">
+	 <work-report-line-list>
+       <work-report-line
+      start-hour="2010-07-08T01:00:00.000" hour-type="t1"
+      date="2010-03-12" work-order="PREFIX-00022"
+      resource="w18-nif" code="wr20-wrl1">
+	    <text-field-list>
+		<text-field name="etiqueta1" value="value-etiqueta1" />
+	    </text-field-list>
+      </work-report-line>
+    </work-report-line-list>
+  </work-report>
+
 </work-report-list>

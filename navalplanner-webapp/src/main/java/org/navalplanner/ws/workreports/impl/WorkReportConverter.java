@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -41,6 +43,7 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 import org.navalplanner.ws.common.api.LabelReferenceDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.common.impl.LabelReferenceConverter;
 import org.navalplanner.ws.workreports.api.DescriptionValueDTO;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
@@ -78,7 +81,7 @@ public final class WorkReportConverter {
 
         // Optional fields
         if (workReportDTO.date != null) {
-            workReport.setDate(workReportDTO.date);
+            workReport.setDate(DateConverter.toDate(workReportDTO.date));
         }
 
         if (workReportDTO.orderElement != null) {
@@ -88,6 +91,8 @@ public final class WorkReportConverter {
                 workReport.setOrderElement(orderElement);
             } catch (InstanceNotFoundException e) {
                 workReport.setOrderElement(null);
+                throw new ValidationException(
+                        _("There is no order element with this code"));
             }
         }
 
@@ -98,15 +103,24 @@ public final class WorkReportConverter {
                 workReport.setResource(worker);
             } catch (InstanceNotFoundException e) {
                 workReport.setResource(null);
+                throw new ValidationException(
+                        _("There is no resource with this nif"));
             }
         }
 
-        if (workReportDTO.labels != null) {
+        if (workReportDTO.labels != null && !workReportDTO.labels.isEmpty()) {
+            try {
                 workReport.setLabels(LabelReferenceConverter
                         .toEntity(workReportDTO.labels));
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        _("There is no label with this code "
+                                + (String) e.getKey()));
+            }
         }
 
-        if (workReportDTO.descriptionValues != null) {
+        if (workReportDTO.descriptionValues != null
+                && !workReportDTO.descriptionValues.isEmpty()) {
             workReport
                     .setDescriptionValues(toEntity(workReportDTO.descriptionValues));
         }
@@ -138,7 +152,8 @@ public final class WorkReportConverter {
 
         // Optional fields
         if (workReportLineDTO.date != null) {
-            workReportLine.setDate(workReportLineDTO.date);
+            workReportLine
+                    .setDate(DateConverter.toDate(workReportLineDTO.date));
         }
 
         if (workReportLineDTO.orderElement != null) {
@@ -148,6 +163,8 @@ public final class WorkReportConverter {
                 workReportLine.setOrderElement(orderElement);
             } catch (InstanceNotFoundException e) {
                 workReportLine.setOrderElement(null);
+                throw new ValidationException(
+                        _("There is no order element with this code"));
             }
         }
 
@@ -158,17 +175,22 @@ public final class WorkReportConverter {
             workReportLine.setResource(worker);
             } catch (InstanceNotFoundException e) {
                 workReportLine.setResource(null);
+                throw new ValidationException(
+                        _("There is no resource with this nif"));
             }
         }
 
         if (workReportLineDTO.clockStart != null) {
-            workReportLine.setClockStart(workReportLineDTO.clockStart);
+            workReportLine.setClockStart(DateConverter
+                    .toLocalTime(workReportLineDTO.clockStart));
         }
         if (workReportLineDTO.clockFinish != null) {
-            workReportLine.setClockFinish(workReportLineDTO.clockFinish);
+            workReportLine.setClockFinish(DateConverter
+                    .toLocalTime(workReportLineDTO.clockFinish));
         }
 
-        if (workReportLineDTO.labels != null) {
+        if (workReportLineDTO.labels != null
+                && !workReportLineDTO.labels.isEmpty()) {
             workReportLine.setLabels(LabelReferenceConverter
                     .toEntity(workReportLineDTO.labels));
         }
@@ -211,9 +233,9 @@ public final class WorkReportConverter {
         }
 
         // Optional fields
-        Date date = null;
+        XMLGregorianCalendar date = null;
         if (workReport.getDate() != null) {
-            date = workReport.getDate();
+            date = DateConverter.toXMLGregorianCalendar(workReport.getDate());
         }
 
         String orderElementCode = null;
@@ -262,7 +284,8 @@ public final class WorkReportConverter {
 
     public final static WorkReportLineDTO toDTO(WorkReportLine line){
         String code = line.getCode();
-        Date date = line.getDate();
+        XMLGregorianCalendar date = DateConverter.toXMLGregorianCalendar(line
+                .getDate());
 
         String resource = null;
         if((line.getResource() != null) && (line.getResource() instanceof Worker)){
@@ -279,14 +302,15 @@ public final class WorkReportConverter {
             typeOfWorkHours = line.getTypeOfWorkHours().getCode();
         }
 
-        Date clockStart = null;
+        XMLGregorianCalendar clockStart = null;
         if(line.getClockStart() != null){
-            clockStart = line.getClockStart().toDateTimeToday().toDate();
+            clockStart = DateConverter.toXMLGregorianCalendar(line.getClockStart());
         }
 
-        Date clockFinish = null;
+        XMLGregorianCalendar clockFinish = null;
         if(line.getClockFinish() != null){
-            clockFinish = line.getClockFinish().toDateTimeToday().toDate();
+            clockFinish = DateConverter.toXMLGregorianCalendar(line
+                    .getClockFinish());
         }
 
         Integer numHours = null;
@@ -331,6 +355,10 @@ public final class WorkReportConverter {
     public final static void updateWorkReport(WorkReport workReport,
             WorkReportDTO workReportDTO) throws ValidationException {
 
+        if (StringUtils.isBlank(workReportDTO.code)) {
+            throw new ValidationException(_("missing code in a work report."));
+        }
+
         WorkReportType type = workReport.getWorkReportType();
         /*
          * 1: Update the existing work report line or add new
@@ -361,41 +389,44 @@ public final class WorkReportConverter {
         /*
          * 2: Update the existing labels
          */
-        for (LabelReferenceDTO labelDTO : workReportDTO.labels) {
+        if (workReportDTO.labels != null) {
+            for (LabelReferenceDTO labelDTO : workReportDTO.labels) {
 
-            /* Step 2.1: requires each label reference DTO to have a code. */
-            if (StringUtils.isBlank(labelDTO.code)) {
-                throw new ValidationException(
-                        _("missing code in a label"));
-            }
+                /* Step 2.1: requires each label reference DTO to have a code. */
+                if (StringUtils.isBlank(labelDTO.code)) {
+                    throw new ValidationException(_("missing code in a label"));
+                }
 
-            try {
-                Set<Label> labels = workReport.getLabels();
-                updateLabel(labelDTO, labels);
-            } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
+                try {
+                    Set<Label> labels = workReport.getLabels();
+                    updateLabel(labelDTO, labels);
+                } catch (InstanceNotFoundException e) {
+                    throw new ValidationException(
                         _("work report has not this label type assigned"));
+                }
             }
         }
 
         /*
          * 3: Update the existing description values
          */
-        for (DescriptionValueDTO valueDTO : workReportDTO.descriptionValues) {
+        if (workReportDTO.descriptionValues != null) {
+            for (DescriptionValueDTO valueDTO : workReportDTO.descriptionValues) {
 
-            /* Step 3.1: requires each description value DTO to have a code. */
-            if (StringUtils.isBlank(valueDTO.fieldName)) {
-                throw new ValidationException(
-                        _("missing field name in a description value"));
-            }
+                /* Step 3.1: requires each description value DTO to have a code. */
+                if (StringUtils.isBlank(valueDTO.fieldName)) {
+                    throw new ValidationException(
+                            _("missing field name in a description value"));
+                }
 
-            try {
-                DescriptionValue value = workReport
-                        .getDescriptionValueByFieldName(valueDTO.fieldName);
-                value.setValue(StringUtils.trim(valueDTO.value));
-            } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        _("work report has not any description value with this field name"));
+                try {
+                    DescriptionValue value = workReport
+                            .getDescriptionValueByFieldName(valueDTO.fieldName);
+                    value.setValue(StringUtils.trim(valueDTO.value));
+                } catch (InstanceNotFoundException e) {
+                    throw new ValidationException(
+                            _("work report has not any description value with this field name"));
+                }
             }
         }
 
@@ -404,7 +435,7 @@ public final class WorkReportConverter {
          */
 
         /* Step 4.1: Update the date. */
-        Date date = workReportDTO.date;
+        Date date = DateConverter.toDate(workReportDTO.date);
         workReport.setDate(date);
 
         /* Step 4.2: Update the resource. */
@@ -441,22 +472,24 @@ public final class WorkReportConverter {
         /*
          * 1: Update the existing labels
          */
-        for (LabelReferenceDTO labelDTO : workReportLineDTO.labels) {
+        if (workReportLineDTO.labels != null) {
+                for (LabelReferenceDTO labelDTO : workReportLineDTO.labels) {
 
-            /* Step 2.1: requires each label reference DTO to have a code. */
-            if (StringUtils.isBlank(labelDTO.code)) {
-                throw new ValidationException(_("missing code in a label"));
-            }
+                // * Step 2.1: requires each label reference DTO to have a code.
+                // */
+                if (StringUtils.isBlank(labelDTO.code)) {
+                    throw new ValidationException(_("missing code in a label"));
+                }
 
-            try {
-                Set<Label> labels = workReportLine.getLabels();
-                updateLabel(labelDTO, labels);
-            } catch (InstanceNotFoundException e) {
+                try {
+                    Set<Label> labels = workReportLine.getLabels();
+                    updateLabel(labelDTO, labels);
+                } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
                         _("a work report line has not this label type assigned"));
+                }
             }
         }
-
         /*
          * 2: Update the existing description values
          */
@@ -468,7 +501,7 @@ public final class WorkReportConverter {
          */
 
         /* Step 3.1: Update the date. */
-        Date date = workReportLineDTO.date;
+        Date date = DateConverter.toDate(workReportLineDTO.date);
         workReportLine.setDate(date);
 
         /* Step 3.2: Update the resource. */
@@ -509,10 +542,12 @@ public final class WorkReportConverter {
          * hours.
          */
         if (workReportLineDTO.clockStart != null) {
-            workReportLine.setClockStart(workReportLineDTO.clockStart);
+            workReportLine.setClockStart(DateConverter
+                    .toLocalTime(workReportLineDTO.clockStart));
         }
         if (workReportLineDTO.clockFinish != null) {
-            workReportLine.setClockFinish(workReportLineDTO.clockFinish);
+            workReportLine.setClockFinish(DateConverter
+                    .toLocalTime(workReportLineDTO.clockFinish));
         }
 
         if (workReportLineDTO.numHours != null) {
@@ -524,21 +559,23 @@ public final class WorkReportConverter {
     private static void updateDescriptionValues(
             Set<DescriptionValueDTO> descriptionValues,
             WorkReportLine workReportLine) {
-        for (DescriptionValueDTO valueDTO : descriptionValues) {
+        if (descriptionValues != null) {
+            for (DescriptionValueDTO valueDTO : descriptionValues) {
 
-            /* Step 3.1: requires each description value DTO to have a code. */
-            if (StringUtils.isBlank(valueDTO.fieldName)) {
-                throw new ValidationException(
-                        _("missing field name in a description value"));
-            }
+                    /* Step 3.1: requires each description value DTO to have a code. */
+                if (StringUtils.isBlank(valueDTO.fieldName)) {
+                    throw new ValidationException(
+                            _("missing field name in a description value"));
+                }
 
-            try {
-                DescriptionValue value = workReportLine
+                try {
+                    DescriptionValue value = workReportLine
                         .getDescriptionValueByFieldName(valueDTO.fieldName);
-                value.setValue(StringUtils.trim(valueDTO.value));
-            } catch (InstanceNotFoundException e) {
+                    value.setValue(StringUtils.trim(valueDTO.value));
+                } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
                         _("work report have not any description value with this field name"));
+                }
             }
         }
     }

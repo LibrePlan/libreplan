@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,7 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.api.LabelReferenceDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.workreports.api.DescriptionValueDTO;
 import org.navalplanner.ws.workreports.api.IWorkReportService;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
@@ -303,7 +305,8 @@ public class WorkReportServiceTest {
         workReportLineDTO.code = "work-report-line-code-" + UUID.randomUUID();
         workReportLineDTO.resource = resourceCode;
         workReportLineDTO.orderElement = orderElementCode;
-        workReportLineDTO.date = new Date();
+        workReportLineDTO.date = DateConverter
+                .toXMLGregorianCalendar(new Date());
         workReportLineDTO.typeOfWorkHours = typeOfWorkHoursCode;
         workReportLineDTO.numHours = 8;
 
@@ -473,8 +476,8 @@ public class WorkReportServiceTest {
         int previous = workReportDAO.getAll().size();
 
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode2);
-        Date date = new Date();
-        workReportDTO.date = date;
+        Date date = new LocalDate().toDateTimeAtStartOfDay().toDate();
+        workReportDTO.date = DateConverter.toXMLGregorianCalendar(date);
 
         WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
                 .asList(workReportDTO));
@@ -519,8 +522,10 @@ public class WorkReportServiceTest {
         int hours = 12;
         LocalTime start = new LocalTime(8, 0);
         LocalTime end = start.plusHours(hours);
-        workReportLineDTO.clockStart = start.toDateTimeToday().toDate();
-        workReportLineDTO.clockFinish = end.toDateTimeToday().toDate();
+        workReportLineDTO.clockStart = DateConverter
+                .toXMLGregorianCalendar(start);
+        workReportLineDTO.clockFinish = DateConverter
+                .toXMLGregorianCalendar(end);
 
         WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
                 .asList(workReportDTO));

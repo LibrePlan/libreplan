@@ -275,7 +275,7 @@ public class WorkReport extends IntegrationEntity {
             return true;
         }
 
-        if (this.workReportType.getHeadingFields().size() != this.descriptionValues
+        if (this.workReportType.getHeadingFields().size() > this.descriptionValues
                 .size()) {
             return false;
         }
@@ -286,6 +286,27 @@ public class WorkReport extends IntegrationEntity {
             }
             catch(InstanceNotFoundException e){
                 return false;
+            }
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "There are repeated description values in the work report ")
+    public boolean checkConstraintAssignedRepeatedDescriptionValues() {
+
+        Set<String> textFields = new HashSet<String>();
+
+        for (DescriptionValue v : this.descriptionValues) {
+
+            String name = v.getFieldName();
+
+            if (!StringUtils.isBlank(name)) {
+                if (textFields.contains(name.toLowerCase())) {
+                    return false;
+                } else {
+                    textFields.add(name.toLowerCase());
+                }
             }
         }
         return true;
@@ -402,4 +423,8 @@ public class WorkReport extends IntegrationEntity {
 
     }
 
+    @AssertTrue(message = "The work report line codes must be unique.")
+    public boolean checkConstraintNonRepeatedWorkReportLinesCodes() {
+        return getFirstRepeatedCode(this.workReportLines) == null;
+    }
 }
