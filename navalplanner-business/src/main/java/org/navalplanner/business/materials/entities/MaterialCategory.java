@@ -229,7 +229,7 @@ public class MaterialCategory extends IntegrationEntity {
         return true;
     }
 
-    @AssertTrue
+    @AssertTrue(message = "There are repeated material category codes")
     public boolean checkConstraintNonRepeatedMaterialCategoryCodes() {
         Set<MaterialCategory> allSubcategories = getAllSubcategories();
         allSubcategories.add(this);
@@ -244,7 +244,7 @@ public class MaterialCategory extends IntegrationEntity {
         return result;
     }
 
-    @AssertTrue
+    @AssertTrue(message = "There are repeated material codes")
     public boolean checkConstraintNonRepeatedMaterialCodes() {
         Set<Material> allMaterials = getAllMaterials();
         return getFirstRepeatedCode(allMaterials) == null;

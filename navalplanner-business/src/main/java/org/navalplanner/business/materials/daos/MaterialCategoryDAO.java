@@ -22,7 +22,7 @@ package org.navalplanner.business.materials.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
@@ -72,14 +72,22 @@ public class MaterialCategoryDAO extends IntegrationEntityDAO<MaterialCategory>
     @Transactional(readOnly = true)
     public MaterialCategory findUniqueByName(String name)
             throws InstanceNotFoundException {
-        Criteria criteria = getSession().createCriteria(MaterialCategory.class);
-        criteria.add(Restrictions.eq("name", name).ignoreCase());
 
-        List<MaterialCategory> list = criteria.list();
-        if (list.size() != 1) {
-            throw new InstanceNotFoundException(name, MaterialCategory.class.getName());
+        if (StringUtils.isBlank(name)) {
+            throw new InstanceNotFoundException(null, getEntityClass()
+                    .getName());
         }
-        return list.get(0);
+
+        MaterialCategory materialCategory = (MaterialCategory) getSession()
+                .createCriteria(MaterialCategory.class).add(
+                        Restrictions.eq("name", name.trim()).ignoreCase())
+                .uniqueResult();
+
+        if (materialCategory == null) {
+            throw new InstanceNotFoundException(name, getEntityClass().getName());
+        } else {
+            return materialCategory;
+        }
     }
 
     @Override
