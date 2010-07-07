@@ -1259,7 +1259,7 @@ public class ManageOrderElementAdvancesController extends
 
     private Button createAddMeasurementButton() {
         Button addButton = new Button();
-        addButton.setLabel("Add measure");
+        addButton.setLabel(_("Add measure"));
         addButton.setTooltiptext(_("Add new advance measurement"));
         return addButton;
     }

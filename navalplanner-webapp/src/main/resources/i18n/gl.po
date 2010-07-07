@@ -6059,6 +6059,9 @@ msgstr "Permitida edición de tódolos pedidos"
 msgid "Order creation allowed"
 msgstr "Permitida creación de pedidos"
 
+msgid "Add measure"
+msgstr "Engadir medida"
+
 #~ msgid "should select a advance type"
 #~ msgstr "debe seleccionar un tipo de avance"
 

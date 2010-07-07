@@ -5922,3 +5922,6 @@ msgstr ""
 #: navalplanner-business/src/main/java/org/navalplanner/business/users/entities/UserRole.java:37
 msgid "Order creation allowed"
 msgstr ""
+
+msgid "Add measure"
+msgstr ""
