@@ -56,6 +56,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -304,9 +305,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             Integer advanceHours = advancePercentage.multiply(
                     new BigDecimal(hours)).intValue();
 
-            LocalDate date = calculateLimitDate(advanceHours);
-            if (date == null) {
+            LocalDate date;
+            if(taskElement instanceof TaskGroup) {
                 date = calculateLimitDate(advancePercentage);
+            }
+            else {
+                date = calculateLimitDate(advanceHours);
+                if (date == null) {
+                    date = calculateLimitDate(advancePercentage);
+                }
             }
 
             return date.toDateTimeAtStartOfDay().toDate();
