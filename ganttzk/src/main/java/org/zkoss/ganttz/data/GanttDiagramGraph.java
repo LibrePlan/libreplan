@@ -691,18 +691,20 @@ public class GanttDiagramGraph<V, D> {
             for (V each : tasks) {
                 allRecalculations.addAll(getRecalculationsNeededFrom(each));
             }
-            enforceRestrictionsOn(allRecalculations);
+            enforceRestrictionsOn(allRecalculations, tasks);
         }
 
         void enforceRestrictionsOn(V task) {
-            enforceRestrictionsOn(getRecalculationsNeededFrom(task));
+            enforceRestrictionsOn(getRecalculationsNeededFrom(task),
+                    Collections.singleton(task));
         }
 
-        void enforceRestrictionsOn(final List<Recalculation> recalculations) {
+        void enforceRestrictionsOn(final List<Recalculation> recalculations,
+                final Collection<? extends V> initiallyModified) {
             executeWithPreAndPostActionsOnlyIfNewEntrance(new IAction() {
                 @Override
                 public void doAction() {
-                    doRecalculations(recalculations);
+                    doRecalculations(recalculations, initiallyModified);
                 }
             });
         }
@@ -777,13 +779,16 @@ public class GanttDiagramGraph<V, D> {
                 @Override
                 public void doAction() {
                     List<Recalculation> recalculationsNeededFrom = getRecalculationsNeededFrom(task);
-                    doRecalculations(recalculationsNeededFrom);
+                    doRecalculations(recalculationsNeededFrom,
+                            Collections.singletonList(task));
                 }
             });
         }
 
-        private void doRecalculations(List<Recalculation> recalculationsNeeded) {
+        private void doRecalculations(List<Recalculation> recalculationsNeeded,
+                Collection<? extends V> initiallyModified) {
             Set<V> allModified = new HashSet<V>();
+            allModified.addAll(initiallyModified);
             for (Recalculation each : recalculationsNeeded) {
                 boolean modified = each.doRecalculation();
                 if (modified) {
@@ -792,7 +797,8 @@ public class GanttDiagramGraph<V, D> {
             }
             List<V> shrunkContainers = shrunkContainersOfModified(allModified);
             for (V each : getTaskAffectedByShrinking(shrunkContainers)) {
-                doRecalculations(getRecalculationsNeededFrom(each));
+                doRecalculations(getRecalculationsNeededFrom(each),
+                        Collections.singletonList(each));
             }
         }
 
