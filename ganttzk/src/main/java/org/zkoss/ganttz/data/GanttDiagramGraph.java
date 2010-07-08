@@ -1026,8 +1026,8 @@ public class GanttDiagramGraph<V, D> {
             Set<D> incoming = graph.incomingEdgesOf(task);
             Date previousEndDate = adapter.getEndDateFor(task);
             boolean startDateChanged = enforceStartDate(task, incoming);
-            boolean endDateChanged = enforceEndDate(task, previousEndDate,
-                    incoming);
+            boolean endDateChanged = !parentRecalculation
+                    && enforceEndDate(task, previousEndDate, incoming);
             return startDateChanged || endDateChanged;
         }
 
