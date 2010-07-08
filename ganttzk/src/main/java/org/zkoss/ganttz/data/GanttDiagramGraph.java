@@ -962,7 +962,7 @@ public class GanttDiagramGraph<V, D> {
 
         private final TaskPoint<V, D> taskPoint;
 
-        private Set<Recalculation> parents = new HashSet<Recalculation>();
+        private Set<Recalculation> recalculationsCouldAffectThis = new HashSet<Recalculation>();
 
         private boolean recalculationCalled = false;
 
@@ -981,7 +981,7 @@ public class GanttDiagramGraph<V, D> {
         }
 
         public void fromParent(Recalculation parent) {
-            parents.add(parent);
+            recalculationsCouldAffectThis.add(parent);
         }
 
         boolean doRecalculation() {
@@ -992,7 +992,7 @@ public class GanttDiagramGraph<V, D> {
         }
 
         private boolean haveToDoCalculation() {
-            return (parents.isEmpty() || parentsHaveBeenModified());
+            return (recalculationsCouldAffectThis.isEmpty() || parentsHaveBeenModified());
         }
 
         private boolean taskChangesPosition() {
@@ -1009,7 +1009,7 @@ public class GanttDiagramGraph<V, D> {
         }
 
         private boolean parentsHaveBeenModified() {
-            for (Recalculation each : parents) {
+            for (Recalculation each : recalculationsCouldAffectThis) {
                 if (!each.recalculationCalled) {
                     throw new RuntimeException(
                             "the parent must be called first");
@@ -1100,7 +1100,8 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public String toString() {
             return String.format("%s, parentRecalculation: %s, parents: %s",
-                    taskPoint, parentRecalculation, asSimpleString(parents));
+                    taskPoint, parentRecalculation,
+                    asSimpleString(recalculationsCouldAffectThis));
         }
 
         private String asSimpleString(
