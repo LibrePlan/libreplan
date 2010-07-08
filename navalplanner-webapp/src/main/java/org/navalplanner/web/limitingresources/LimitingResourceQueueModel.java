@@ -124,6 +124,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private Set<LimitingResourceQueueElement> toBeSaved = new HashSet<LimitingResourceQueueElement>();
 
+    private Set<TaskElement> parentElementsToBeUpdated = new HashSet<TaskElement>();
+
     private Scenario master;
 
     @Override
@@ -692,8 +694,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 saveQueueElement(each);
             }
         }
+        updateEndDateForParentTasks();
         SaveCommand.dontPoseAsTransientAndChildrenObjects(getAllocations(toBeSaved));
         toBeSaved.clear();
+        parentElementsToBeUpdated.clear();
     }
 
     private List<ResourceAllocation<?>> getAllocations(
@@ -709,7 +713,21 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private void saveQueueElement(LimitingResourceQueueElement element) {
         limitingResourceQueueElementDAO.save(element);
-        taskDAO.save(getAssociatedTask(element));
+        Task task = getAssociatedTask(element);
+        taskDAO.save(task);
+        parentElementsToBeUpdated.add(task.getParent());
+    }
+
+    private void updateEndDateForParentTasks() {
+        for(TaskElement task : parentElementsToBeUpdated) {
+            TaskElement parent = task;
+            while(parent != null) {
+                parent.setEndDate(null);
+                parent.initializeEndDateIfDoesntExist();
+                taskDAO.save(parent);
+                parent = parent.getParent();
+            }
+        }
     }
 
     private Task getAssociatedTask(LimitingResourceQueueElement element) {
