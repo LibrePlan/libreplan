@@ -23,9 +23,11 @@ package org.navalplanner.business.costcategories.entities;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 
 /**
@@ -124,4 +126,26 @@ public class TypeOfWorkHours extends IntegrationEntity {
     protected ITypeOfWorkHoursDAO getIntegrationEntityDAO() {
         return Registry.getTypeOfWorkHoursDAO();
     }
+
+    @AssertTrue(message = "the type of work hours name has to be unique. It is already used")
+    public boolean checkConstraintUniqueName() {
+
+        if (StringUtils.isBlank(name)) {
+            return true;
+        }
+
+        try {
+        /* Check the constraint. */
+            TypeOfWorkHours type = Registry.getTypeOfWorkHoursDAO()
+                    .findUniqueByNameInAnotherTransaction(name);
+            if (isNewObject()) {
+                return false;
+            } else {
+                return type.getId().equals(getId());
+            }
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
+    }
+
 }

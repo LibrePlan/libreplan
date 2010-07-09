@@ -46,4 +46,10 @@ public interface ITypeOfWorkHoursDAO extends
 
     TypeOfWorkHours findUniqueByCodeInAnotherTransaction(String code)
             throws InstanceNotFoundException;
+
+    TypeOfWorkHours findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException;
+
+    TypeOfWorkHours findUniqueByName(String name)
+            throws InstanceNotFoundException;
 }

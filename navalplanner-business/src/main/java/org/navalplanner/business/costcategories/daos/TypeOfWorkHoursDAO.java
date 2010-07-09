@@ -102,4 +102,27 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
             throws InstanceNotFoundException {
         return findUniqueByCode(code);
     }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public TypeOfWorkHours findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findUniqueByName(name);
+    }
+
+    @Override
+    public TypeOfWorkHours findUniqueByName(String name)
+            throws InstanceNotFoundException {
+
+        Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
+        c.add(Restrictions.eq("name", name.trim()).ignoreCase());
+
+        TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
+        if (found == null) {
+            throw new InstanceNotFoundException(name, TypeOfWorkHours.class
+                    .getName());
+        }
+        return found;
+    }
+
 }
