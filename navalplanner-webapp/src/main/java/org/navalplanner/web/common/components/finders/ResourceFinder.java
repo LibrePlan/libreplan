@@ -40,7 +40,7 @@ public class ResourceFinder extends Finder implements IFinder {
 
     @Transactional(readOnly = true)
     public List<Resource> getAll() {
-        return resourceDAO.getRealResources();
+        return resourceDAO.getResources();
     }
 
     @Override
