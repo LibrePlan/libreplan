@@ -170,8 +170,7 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
         mapLabels.clear();
         List<LabelType> labelTypes = labelTypeDAO.getAll();
         for (LabelType labelType : labelTypes) {
-            List<Label> labels = new ArrayList<Label>(labelDAO
-                    .findByType(labelType));
+            List<Label> labels = new ArrayList<Label>(labelType.getLabels());
 
             mapLabels.put(labelType, labels);
         }
