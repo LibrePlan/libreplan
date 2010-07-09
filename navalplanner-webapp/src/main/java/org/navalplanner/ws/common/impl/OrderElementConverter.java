@@ -29,6 +29,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -85,8 +88,10 @@ public final class OrderElementConverter {
             ConfigurationOrderElementConverter configuration) {
         String name = orderElement.getName();
         String code = orderElement.getCode();
-        Date initDate = orderElement.getInitDate();
-        Date deadline = orderElement.getDeadline();
+        XMLGregorianCalendar initDate = DateConverter
+                .toXMLGregorianCalendar(orderElement.getInitDate());
+        XMLGregorianCalendar deadline = DateConverter
+                .toXMLGregorianCalendar(orderElement.getDeadline());
         String description = orderElement.getDescription();
 
         Set<LabelReferenceDTO> labels = new HashSet<LabelReferenceDTO>();
@@ -196,17 +201,21 @@ public final class OrderElementConverter {
             value = advanceMeasurement.getValue().divide(maxValue,
                     RoundingMode.DOWN);
         }
-        Date date = advanceMeasurement.getDate().toDateTimeAtStartOfDay()
-                .toDate();
-
+        XMLGregorianCalendar date = DateConverter
+                .toXMLGregorianCalendar(advanceMeasurement.getDate());
         return new AdvanceMeasurementDTO(date, value);
     }
 
     public final static MaterialAssignmentDTO toDTO(
             MaterialAssignment materialAssignment) {
+
+        XMLGregorianCalendar estimatedAvailability = DateConverter
+                .toXMLGregorianCalendar(materialAssignment
+                        .getEstimatedAvailability());
+
         return new MaterialAssignmentDTO(materialAssignment.getMaterial()
                 .getCode(), materialAssignment.getUnits(), materialAssignment
-                .getUnitPrice(), materialAssignment.getEstimatedAvailability());
+                .getUnitPrice(), estimatedAvailability);
     }
 
     public final static HoursGroupDTO toDTO(HoursGroup hoursGroup,
@@ -281,9 +290,13 @@ public final class OrderElementConverter {
                     DirectCriterionRequirement directCriterionRequirement = getDirectCriterionRequirementByCriterion(
                             criterionRequirable, criterion);
                     if (directCriterionRequirement == null) {
-                        criterionRequirable
+                        try {
+                            criterionRequirable
                                 .addCriterionRequirement(DirectCriterionRequirement
                                         .create(criterion));
+                        } catch (IllegalStateException e) {
+                            throw new ValidationException(e.getMessage());
+                        }
                     }
                 } else { // criterionRequirementDTO instanceof
                     // IndirectCriterionRequirementDTO
@@ -295,6 +308,16 @@ public final class OrderElementConverter {
                                     .setValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).valid);
                         }
                     }
+                }
+            } else {
+                if (criterionRequirementDTO.name == null
+                        || criterionRequirementDTO.type == null) {
+                    throw new ValidationException(
+                            "the criterion format is incorrect");
+                } else {
+                    throw new ValidationException("the criterion "
+                        + criterionRequirementDTO.name + " which type is "
+                        + criterionRequirementDTO.type + " not found");
                 }
             }
         }
@@ -339,7 +362,6 @@ public final class OrderElementConverter {
                     && (!((OrderLineDTO) orderElementDTO).hoursGroups.isEmpty())) {
                 orderElement = OrderLine
                         .createUnvalidated(orderElementDTO.code);
-
                 for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
                     HoursGroup hoursGroup = toEntity(hoursGroupDTO,
                             configuration);
@@ -349,6 +371,10 @@ public final class OrderElementConverter {
                 orderElement = OrderLine
                         .createUnvalidatedWithUnfixedPercentage(
                                 orderElementDTO.code, 0);
+                if (!orderElement.getHoursGroups().isEmpty()) {
+                    orderElement.getHoursGroups().get(0).setCode(
+                            UUID.randomUUID().toString());
+                }
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
 
@@ -387,8 +413,10 @@ public final class OrderElementConverter {
 
         orderElement.setName(orderElementDTO.name);
         orderElement.setCode(orderElementDTO.code);
-        orderElement.setInitDate(orderElementDTO.initDate);
-        orderElement.setDeadline(orderElementDTO.deadline);
+        orderElement
+                .setInitDate(DateConverter.toDate(orderElementDTO.initDate));
+        orderElement
+                .setDeadline(DateConverter.toDate(orderElementDTO.deadline));
         orderElement.setDescription(orderElementDTO.description);
 
         if (configuration.isLabels()) {
@@ -457,6 +485,7 @@ public final class OrderElementConverter {
              */
             material.validate();
             Registry.getMaterialDAO().save(material);
+            material.dontPoseAsTransientObjectAnymore();
         }
 
         MaterialAssignment materialAssignment = MaterialAssignment
@@ -465,8 +494,11 @@ public final class OrderElementConverter {
                 .setUnitsWithoutNullCheck(materialAssignmentDTO.units);
         materialAssignment
                 .setUnitPriceWithoutNullCheck(materialAssignmentDTO.unitPrice);
-        materialAssignment
-                .setEstimatedAvailability(materialAssignmentDTO.estimatedAvailability);
+
+        Date estimatedAvailability = DateConverter
+                .toDate(materialAssignmentDTO.estimatedAvailability);
+        materialAssignment.setEstimatedAvailability(estimatedAvailability);
+
         return materialAssignment;
     }
 
@@ -576,10 +608,13 @@ public final class OrderElementConverter {
             for (LabelReferenceDTO labelDTO : orderElementDTO.labels) {
                 if (!orderElement.containsLabel(labelDTO.code)) {
                     try {
-                    orderElement.addLabel(LabelReferenceConverter.toEntity(labelDTO));
+                        orderElement.addLabel(LabelReferenceConverter
+                                .toEntity(labelDTO));
                     } catch (InstanceNotFoundException e) {
                         throw new ValidationException("Label " + labelDTO.code
                                 + " not found");
+                    } catch (IllegalArgumentException e) {
+                        throw new ValidationException(e.getMessage());
                     }
                 }
             }
@@ -609,11 +644,13 @@ public final class OrderElementConverter {
         }
 
         if (orderElementDTO.initDate != null) {
-            orderElement.setInitDate(orderElementDTO.initDate);
+            orderElement.setInitDate(DateConverter
+                    .toDate(orderElementDTO.initDate));
         }
 
         if (orderElementDTO.deadline != null) {
-            orderElement.setDeadline(orderElementDTO.deadline);
+            orderElement.setDeadline(DateConverter
+                    .toDate(orderElementDTO.deadline));
         }
 
         if (orderElementDTO.description != null) {
@@ -655,8 +692,9 @@ public final class OrderElementConverter {
             materialAssignment.setUnitPrice(materialAssignmentDTO.unitPrice);
         }
         if (materialAssignmentDTO.estimatedAvailability != null) {
-            materialAssignment
-                    .setEstimatedAvailability(materialAssignmentDTO.estimatedAvailability);
+            Date estimatedAvailability = DateConverter
+                    .toDate(materialAssignmentDTO.estimatedAvailability);
+            materialAssignment.setEstimatedAvailability(estimatedAvailability);
         }
     }
 
@@ -669,7 +707,8 @@ public final class OrderElementConverter {
                 AdvanceMeasurement advanceMeasurement = null;
                 LocalDate date = null;
                 if (advanceMeasurementDTO.date != null) {
-                    date = new LocalDate(advanceMeasurementDTO.date);
+                    date = new LocalDate(DateConverter
+                            .toLocalDate(advanceMeasurementDTO.date));
                     advanceMeasurement = directAdvanceAssignment
                             .getAdvanceMeasurementAtExactDate(date);
                 }
@@ -709,17 +748,17 @@ public final class OrderElementConverter {
 
     public static AdvanceMeasurement toEntity(
             AdvanceMeasurementDTO advanceMeasurementDTO) {
-        AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(
-                LocalDate
-                        .fromDateFields(advanceMeasurementDTO.date),
+        LocalDate date = DateConverter.toLocalDate(advanceMeasurementDTO.date);
+        AdvanceMeasurement advanceMeasurement = AdvanceMeasurement.create(date,
                         advanceMeasurementDTO.value);
         return advanceMeasurement;
     }
 
     public static AdvanceMeasurementDTO toDTO(
             AdvanceMeasurement advanceMeasurement) {
-        return new AdvanceMeasurementDTO(advanceMeasurement.getDate()
-                .toDateTimeAtStartOfDay().toDate(), advanceMeasurement
+        XMLGregorianCalendar date = DateConverter
+                .toXMLGregorianCalendar(advanceMeasurement.getDate());
+        return new AdvanceMeasurementDTO(date, advanceMeasurement
                 .getValue());
     }
 

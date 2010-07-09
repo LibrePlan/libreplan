@@ -50,6 +50,7 @@ import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
 import org.navalplanner.ws.common.impl.ConfigurationOrderElementConverter;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.common.impl.OrderElementConverter;
 import org.navalplanner.ws.common.impl.Util;
 import org.navalplanner.ws.subcontract.api.SubcontractedTaskDataDTO;
@@ -211,8 +212,10 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
     private void overrideDateInformationForRootNode(
             OrderElementDTO orderElementDTO, Task task) {
-        orderElementDTO.initDate = task.getStartDate();
-        orderElementDTO.deadline = task.getEndDate();
+        orderElementDTO.initDate = DateConverter.toXMLGregorianCalendar(task
+                .getStartDate());
+        orderElementDTO.deadline = DateConverter.toXMLGregorianCalendar(task
+                .getEndDate());
     }
 
     private ConfigurationOrderElementConverter getConfiguration(

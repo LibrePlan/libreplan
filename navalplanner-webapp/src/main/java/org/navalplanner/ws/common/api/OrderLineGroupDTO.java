@@ -21,7 +21,6 @@
 package org.navalplanner.ws.common.api;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 
@@ -51,8 +51,9 @@ public class OrderLineGroupDTO extends OrderElementDTO {
         super();
     }
 
-    public OrderLineGroupDTO(String name, String code, Date initDate,
-            Date deadline, String description, Set<LabelReferenceDTO> labels,
+    public OrderLineGroupDTO(String name, String code,
+            XMLGregorianCalendar initDate, XMLGregorianCalendar deadline,
+            String description, Set<LabelReferenceDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
             Set<AdvanceMeasurementDTO> advanceMeasurements,
             Set<CriterionRequirementDTO> criterionRequirements,

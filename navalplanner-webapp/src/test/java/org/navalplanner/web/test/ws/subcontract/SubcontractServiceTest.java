@@ -52,6 +52,7 @@ import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
 import org.navalplanner.ws.common.api.OrderLineDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.subcontract.api.ISubcontractService;
 import org.navalplanner.ws.subcontract.api.SubcontractedTaskDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +106,8 @@ public class SubcontractServiceTest {
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Test";
         orderLineDTO.code = orderLineCode;
-        orderLineDTO.initDate = new Date();
+        orderLineDTO.initDate = DateConverter
+                .toXMLGregorianCalendar(new Date());
 
         return orderLineDTO;
     }

@@ -31,7 +31,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -47,6 +46,7 @@ import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.common.impl.OrderElementConverter;
 import org.navalplanner.ws.common.impl.Util;
 import org.navalplanner.ws.subcontract.api.IReportAdvancesService;
@@ -148,8 +148,8 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
                 for (AdvanceMeasurementDTO advanceMeasurementDTO : orderElementWithAdvanceMeasurementsDTO.advanceMeasurements) {
                     AdvanceMeasurement advanceMeasurement = advanceAssignmentSubcontractor
-                            .getAdvanceMeasurement(LocalDate
-                                    .fromDateFields(advanceMeasurementDTO.date));
+                            .getAdvanceMeasurement(DateConverter
+                                    .toLocalDate(advanceMeasurementDTO.date));
                     if (advanceMeasurement == null) {
                         advanceAssignmentSubcontractor
                                 .addAdvanceMeasurements(OrderElementConverter

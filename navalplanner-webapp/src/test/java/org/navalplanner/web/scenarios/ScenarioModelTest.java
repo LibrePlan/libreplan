@@ -138,7 +138,6 @@ public class ScenarioModelTest {
         order.add(orderLine);
         orderLine.setCode(UUID.randomUUID().toString());
         orderLine.setName("order-line-name");
-
         orderDAO.save(order);
         orderDAO.flush();
         sessionFactory.getCurrentSession().evict(order);

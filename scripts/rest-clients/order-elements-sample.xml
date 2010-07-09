@@ -62,6 +62,8 @@
     </material-assignments>
     <advance-measurements />
     <criterion-requirements />
-    <children />
+    <children>
+	 <order-line name="orderline B1" code="PREFIX-00022-00001" />
+    </children>
   </order>
 </order-list>

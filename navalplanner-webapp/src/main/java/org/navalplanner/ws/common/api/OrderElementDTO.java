@@ -20,7 +20,6 @@
 
 package org.navalplanner.ws.common.api;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 
@@ -45,10 +45,10 @@ public class OrderElementDTO extends IntegrationEntityDTO {
     public String name;
 
     @XmlAttribute(name = "init-date")
-    public Date initDate;
+    public XMLGregorianCalendar initDate;
 
     @XmlAttribute
-    public Date deadline;
+    public XMLGregorianCalendar deadline;
 
     @XmlAttribute
     public String description;
@@ -74,8 +74,9 @@ public class OrderElementDTO extends IntegrationEntityDTO {
     public OrderElementDTO() {
     }
 
-    public OrderElementDTO(String name, String code, Date initDate,
-            Date deadline, String description, Set<LabelReferenceDTO> labels,
+    public OrderElementDTO(String name, String code,
+            XMLGregorianCalendar initDate, XMLGregorianCalendar deadline,
+            String description, Set<LabelReferenceDTO> labels,
             Set<MaterialAssignmentDTO> materialAssignments,
             Set<AdvanceMeasurementDTO> advanceMeasurements,
             Set<CriterionRequirementDTO> criterionRequirements) {

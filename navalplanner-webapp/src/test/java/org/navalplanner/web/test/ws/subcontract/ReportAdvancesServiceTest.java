@@ -60,6 +60,7 @@ import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.web.orders.OrderModelTest;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.subcontract.api.IReportAdvancesService;
 import org.navalplanner.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
 import org.navalplanner.ws.subcontract.api.OrderElementWithAdvanceMeasurementsListDTO;
@@ -182,7 +183,8 @@ public class ReportAdvancesServiceTest {
         orderElementWithAdvanceMeasurementsDTO.code = orderElementCode;
 
         Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
-        advanceMeasurementDTOs.add(new AdvanceMeasurementDTO(date, value));
+        advanceMeasurementDTOs.add(new AdvanceMeasurementDTO(DateConverter
+                .toXMLGregorianCalendar(date), value));
         orderElementWithAdvanceMeasurementsDTO.advanceMeasurements = advanceMeasurementDTOs;
 
         ExternalCompany externalCompany = getSubcontractorExternalCompanySaved(

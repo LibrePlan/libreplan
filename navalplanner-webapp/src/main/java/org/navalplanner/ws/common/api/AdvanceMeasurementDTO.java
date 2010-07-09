@@ -21,9 +21,9 @@
 package org.navalplanner.ws.common.api;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 
@@ -35,7 +35,7 @@ import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 public class AdvanceMeasurementDTO {
 
     @XmlAttribute
-    public Date date;
+    public XMLGregorianCalendar date;
 
     @XmlAttribute
     public BigDecimal value;
@@ -43,7 +43,7 @@ public class AdvanceMeasurementDTO {
     public AdvanceMeasurementDTO() {
     }
 
-    public AdvanceMeasurementDTO(Date date, BigDecimal value) {
+    public AdvanceMeasurementDTO(XMLGregorianCalendar date, BigDecimal value) {
         this.date = date;
         this.value = value;
     }

@@ -85,6 +85,7 @@ import org.navalplanner.ws.common.api.OrderDTO;
 import org.navalplanner.ws.common.api.OrderLineDTO;
 import org.navalplanner.ws.common.api.OrderLineGroupDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
+import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.orders.api.IOrderElementService;
 import org.navalplanner.ws.orders.api.OrderListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -252,7 +253,7 @@ public class OrderElementServiceTest {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
@@ -278,7 +279,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
@@ -296,7 +297,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderDTO.children.add(orderLineDTO);
@@ -308,9 +309,8 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: code,infoComponent.code, infoComponent.name, hours
-        // group code.
-        assertThat(constraintViolations.size(), equalTo(4));
+        // Mandatory fields: code,infoComponent.code, infoComponent.name.
+        assertThat(constraintViolations.size(), equalTo(3));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
@@ -322,7 +322,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
@@ -356,7 +356,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
@@ -387,7 +387,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
         orderDTO.children.add(orderLineGroupDTO);
@@ -414,7 +414,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
         orderLineGroupDTO.name = "Order line group "
@@ -444,7 +444,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
         orderLineGroupDTO.name = "Order line group "
@@ -484,7 +484,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
         orderDTO.materialAssignments.add(materialAssignmentDTO);
@@ -510,7 +510,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
         materialAssignmentDTO.materialCode = "material-code "
@@ -541,7 +541,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO();
         materialAssignmentDTO.materialCode = "material-code "
@@ -571,7 +571,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
         orderDTO.labels.add(labelReferenceDTO);
@@ -595,7 +595,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
         labelReferenceDTO.code = labelCode;
@@ -621,7 +621,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
         labelReferenceDTO.code = labelCode;
@@ -660,7 +660,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO(labelCode);
         orderDTO.labels.add(labelReferenceDTO);
@@ -710,7 +710,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO(
                 materialcode1, 100.0, BigDecimal.TEN, null);
@@ -769,7 +769,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderLineDTO.name = "Order line " + UUID.randomUUID().toString();
@@ -842,7 +842,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO();
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
@@ -884,10 +884,11 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO(
-                new Date(), BigDecimal.TEN);
+                DateConverter.toXMLGregorianCalendar(new Date()),
+                BigDecimal.TEN);
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -919,11 +920,12 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         LocalDate date = new LocalDate();
         AdvanceMeasurementDTO advanceMeasurementDTO = new AdvanceMeasurementDTO(
-                date.toDateTimeAtStartOfDay().toDate(), new BigDecimal(15));
+                DateConverter.toXMLGregorianCalendar(date), new BigDecimal(15));
+
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -943,7 +945,7 @@ public class OrderElementServiceTest {
         sessionFactory.getCurrentSession().evict(orderElement);
 
         AdvanceMeasurementDTO advanceMeasurementDTO2 = new AdvanceMeasurementDTO(
-                date.plusWeeks(1).toDateTimeAtStartOfDay().toDate(),
+                DateConverter.toXMLGregorianCalendar(date.plusWeeks(1)),
                 new BigDecimal(20));
         orderDTO.advanceMeasurements.add(advanceMeasurementDTO2);
 
@@ -984,7 +986,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO();
         orderDTO.criterionRequirements.add(criterionRequirementDTO);
@@ -992,11 +994,16 @@ public class OrderElementServiceTest {
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
-        assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
-        assertNotNull(orderElement);
-        assertThat(orderElement.getCriterionRequirements().size(), equalTo(0));
+        // the criterion format is incorrect because its name and type is empty.
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        try {
+            OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+            fail("Order shouldn't be stored");
+        } catch (InstanceNotFoundException e) {
+            // It should throw an exception
+        }
     }
 
     @Test
@@ -1014,7 +1021,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LEAVE.getName();
@@ -1048,7 +1055,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LEAVE.getName();
@@ -1099,7 +1106,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LEAVE.getName();
@@ -1160,7 +1167,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LEAVE.getName();
@@ -1231,7 +1238,7 @@ public class OrderElementServiceTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name";
         orderDTO.code = code;
-        orderDTO.initDate = new Date();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
         String type = PredefinedCriterionTypes.LEAVE.getName();
