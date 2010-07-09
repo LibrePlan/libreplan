@@ -5,6 +5,7 @@
 
     <!-- BaseCalendar -->
     <class name="BaseCalendar">
+        <cache usage="read-write"/>
         <id name="id" access="property" type="long">
             <generator class="hilo">
                 <param name="max_lo">100</param>

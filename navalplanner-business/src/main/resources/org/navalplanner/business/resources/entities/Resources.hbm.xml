@@ -3,6 +3,7 @@
 <hibernate-mapping default-access="field" package="org.navalplanner.business.resources.entities">
 
   <class name="Resource">
+    <cache usage="read-write"/>
     <id name="id" access="property" type="long">
       <generator class="hilo">
         <param name="max_lo">100</param>
@@ -22,6 +23,7 @@
 
     <!-- It is appropiate the index by the foreign key in the many-to-one side -->
     <set access="field" cascade="all-delete-orphan" inverse="true" name="criterionSatisfactions">
+      <cache usage="read-write"/>
       <key column="resource" not-null="true"/>
       <one-to-many class="CriterionSatisfaction"/>
     </set>
@@ -94,6 +96,7 @@
 
   <!-- Criterion -->
   <class name="Criterion">
+    <cache usage="nonstrict-read-write"/>
     <id name="id" access="property" type="long">
       <generator class="hilo">
         <param name="max_lo">100</param>
@@ -132,6 +135,7 @@
 
   <!-- CriterionSatisfaction -->
   <class name="CriterionSatisfaction">
+    <cache usage="read-write"/>
     <id name="id" access="property" type="long">
       <generator class="hilo">
         <param name="max_lo">100</param>
@@ -152,6 +156,7 @@
 
   <!-- CriterionType -->
   <class name="CriterionType">
+    <cache usage="nonstrict-read-write"/>
     <id name="id" access="property" type="long">
       <generator class="hilo"/>
     </id>
@@ -171,6 +176,7 @@
 
     <!-- Indexed the other side-->
     <set name="criterions" cascade="all,delete-orphan" inverse="true">
+        <cache usage="nonstrict-read-write"/>
         <key column="id_criterion_type" />
         <one-to-many class="Criterion" />
     </set>

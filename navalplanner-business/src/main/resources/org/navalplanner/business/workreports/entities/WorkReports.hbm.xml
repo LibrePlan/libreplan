@@ -4,6 +4,7 @@
 
 <!-- WorkReportType -->
 <class name="WorkReportType" table="WORK_REPORT_TYPE">
+    <cache usage="nonstrict-read-write"/>
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>

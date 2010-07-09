@@ -4,6 +4,7 @@
 
 <!-- Label -->
 <class name="Label" table="LABEL">
+    <cache usage="nonstrict-read-write"/>
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -29,6 +30,7 @@
 
 <!-- LabelType -->
 <class name="LabelType" table="LABEL_TYPE">
+    <cache usage="nonstrict-read-write"/>
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -42,6 +44,7 @@
 
     <!-- Indexed the other side -->
     <set name="labels" inverse="false" cascade="all">
+        <cache usage="nonstrict-read-write"/>
         <key column="LABEL_TYPE_ID"/>
         <one-to-many class="Label"/>
     </set>

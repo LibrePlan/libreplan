@@ -51,6 +51,7 @@
 
 <!-- TypeOfWorkHours -->
 <class name="TypeOfWorkHours" table="TYPE_OF_WORK_HOURS">
+    <cache usage="nonstrict-read-write"/>
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
