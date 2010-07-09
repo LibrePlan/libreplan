@@ -384,6 +384,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
+    protected void setResourcesPerDayToAmount(int amount) {
+        this.resourcesPerDay = ResourcesPerDay.amount(amount);
+    }
+
     public ResourceAllocation(Task task) {
         this(task, null);
     }

@@ -132,7 +132,7 @@ public class GenericResourceAllocation extends
             Collection<? extends Criterion> criterions) {
         GenericResourceAllocation result = new GenericResourceAllocation(task);
         result.criterions = new HashSet<Criterion>(criterions);
-        result.updateResourcesPerDay();
+        result.setResourcesPerDayToAmount(1);
         return create(result);
     }
 
