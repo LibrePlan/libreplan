@@ -52,6 +52,8 @@ public class OrderCostsPerResourceDTO implements
 
     private String hoursType;
 
+    private String hoursTypeCode;
+
     // Attached outside the DTO
     private BigDecimal cost;
 
@@ -75,7 +77,8 @@ public class OrderCostsPerResourceDTO implements
         this.numHours = workReportLine.getNumHours();
         this.descriptionValues = descriptionValuesAsString(workReportLine.getDescriptionValues());
         this.labels = labelsAsString(workReportLine.getLabels());
-        this.hoursType = workReportLine.getTypeOfWorkHours().getCode();
+        this.hoursType = workReportLine.getTypeOfWorkHours().getName();
+        this.hoursTypeCode = workReportLine.getTypeOfWorkHours().getCode();
         this.orderElement = workReportLine.getOrderElement();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.worker = worker;
@@ -213,6 +216,14 @@ public class OrderCostsPerResourceDTO implements
         String comparator = this.orderName + this.orderElementCode;
         return comparator.compareToIgnoreCase(o.orderName
                 + o.getOrderElementCode());
+    }
+
+    public void setHoursTypeCode(String hoursTypeCode) {
+        this.hoursTypeCode = hoursTypeCode;
+    }
+
+    public String getHoursTypeCode() {
+        return hoursTypeCode;
     }
 
 }

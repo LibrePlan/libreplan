@@ -140,16 +140,16 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
                 // Attach ordername value
                 each.setOrderName(order.getName());
-
                 // Attach calculated pricePerHour
                 BigDecimal pricePerHour = CostCategoryDAO
                         .getPriceByResourceDateAndHourType(each.getWorker(),
                                 new LocalDate(each.getDate()), each
-                                        .getHoursType());
+                                        .getHoursTypeCode());
                 if (pricePerHour == null) {
                     for (TypeOfWorkHours defaultprice : typeOfWorkHoursDAO
                             .list(TypeOfWorkHours.class)) {
-                        if (defaultprice.getCode().equals(each.getHoursType())) {
+                        if (defaultprice.getCode().equals(
+                                each.getHoursTypeCode())) {
                             pricePerHour = defaultprice.getDefaultPrice();
                         }
                     }
