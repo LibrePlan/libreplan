@@ -129,6 +129,9 @@ public class DateConverter {
     }
 
     public static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
+        if(date == null) {
+            return null;
+        }
         return toXMLGregorianCalendar(LocalDate.fromDateFields(date));
     }
 
