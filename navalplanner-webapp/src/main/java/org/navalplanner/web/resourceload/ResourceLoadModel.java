@@ -457,6 +457,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
             Map<Order, List<ResourceAllocation<?>>> byOrder) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for (Order order : byOrder.keySet()) {
+            if (byOrder.get(order) == null) {
+                // no allocations found for order
+                continue;
+            }
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(order);
             result.add(new LoadTimeLine(buildTimeLine(criterion, order
                     .getName(), "global-generic", byOrder.get(order), role),
@@ -585,9 +589,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
         Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(sortedByStartDate);
 
         if (filter()) {
-            // build time lines for current order
-            result.addAll(buildTimeLinesForOrder(resource, byOrder
+            if (byOrder.get(filterBy) != null) {
+                // build time lines for current order
+                result.addAll(buildTimeLinesForOrder(resource, byOrder
                     .get(filterBy)));
+            }
             byOrder.remove(filterBy);
             // build time lines for other orders
             LoadTimeLine lineOthersOrders = buildTimeLinesForOtherOrders(
