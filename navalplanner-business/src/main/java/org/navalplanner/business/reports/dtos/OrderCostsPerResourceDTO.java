@@ -44,6 +44,8 @@ public class OrderCostsPerResourceDTO implements
 
     private Integer numHours;
 
+    private String orderElementName;
+
     private String orderElementCode;
 
     private String descriptionValues;
@@ -81,6 +83,7 @@ public class OrderCostsPerResourceDTO implements
         this.hoursTypeCode = workReportLine.getTypeOfWorkHours().getCode();
         this.orderElement = workReportLine.getOrderElement();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
+        this.orderElementName = workReportLine.getOrderElement().getName();
         this.worker = worker;
     }
 
@@ -224,6 +227,14 @@ public class OrderCostsPerResourceDTO implements
 
     public String getHoursTypeCode() {
         return hoursTypeCode;
+    }
+
+    public void setOrderElementName(String orderElementName) {
+        this.orderElementName = orderElementName;
+    }
+
+    public String getOrderElementName() {
+        return orderElementName;
     }
 
 }
