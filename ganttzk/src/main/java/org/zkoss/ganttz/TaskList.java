@@ -151,7 +151,7 @@ public class TaskList extends XulElement implements AfterCompose {
         reload(true);
     }
 
-    TaskComponent find(Task task) {
+    public TaskComponent find(Task task) {
         List<TaskComponent> taskComponents = getTaskComponents();
         for (TaskComponent taskComponent : taskComponents) {
             if (taskComponent.getTask().equals(task)) {
@@ -311,31 +311,8 @@ public class TaskList extends XulElement implements AfterCompose {
             }
             for (CommandOnTaskContextualized<?> command : commandsOnTasksContextualized) {
                 if (command.accepts(taskComponent)) {
-                    if (command.getName().equals("Advance assignment")) {
-                        final CommandOnTaskContextualized<?> commandAdvances = command;
-                        menuBuilder.item(command.getName(), command.getIcon(),
-                            new ItemAction<TaskComponent>() {
-                                @Override
-                                public void onEvent(TaskComponent choosen,
-                                        Event event) {
-                                    commandAdvances.doAction(choosen);
-                                    if (commandAdvances.getMapper() != null) {
-                                            List<Task> listTaskComponents = new ArrayList<Task>(
-                                                    commandAdvances
-                                                            .getMapper()
-                                                            .getParents(
-                                                                    choosen
-                                                                            .getTask()));
-                                            listTaskComponents.add(choosen
-                                                    .getTask());
-                                            updateTaskAndItsParents(listTaskComponents);
-                                    }
-                                }
-                            });
-                    } else {
                         menuBuilder.item(command.getName(), command.getIcon(),
                             command.toItemAction());
-                    }
                 }
             }
             Menupopup result = menuBuilder.createWithoutSettingContext();
@@ -343,14 +320,6 @@ public class TaskList extends XulElement implements AfterCompose {
             return result;
         }
         return contextMenus.get(taskComponent);
-    }
-
-    private void updateTaskAndItsParents(List<Task> taskList) {
-        for (Task task : taskList) {
-            TaskComponent choosen = this.find(task);
-            choosen.updateCompletionIfPossible();
-            choosen.updateTooltipText();
-        }
     }
 
     GanttPanel getGanttPanel() {

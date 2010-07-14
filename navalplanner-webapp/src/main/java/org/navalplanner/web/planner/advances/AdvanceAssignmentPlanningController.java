@@ -20,6 +20,9 @@
 
 package org.navalplanner.web.planner.advances;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -29,6 +32,9 @@ import org.navalplanner.web.orders.ManageOrderElementAdvancesController;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.TaskComponent;
+import org.zkoss.ganttz.TaskList;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -52,6 +58,8 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
 
     private Window window;
 
+    private IContextWithPlannerTask<TaskElement> context;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -63,6 +71,7 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
             TaskElement task,
             PlanningState planningState) {
 
+        this.context = context;
         advanceAssignmentPlanningModel.initAdvancesFor(task, context,
                 planningState);
         showAdvanceWindow(advanceAssignmentPlanningModel.getOrderElement());
@@ -98,8 +107,32 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
         boolean result = manageOrderElementAdvancesController.close();
         if (result) {
             advanceAssignmentPlanningModel.accept();
+            updateTaskComponents();
             close();
         }
+    }
+
+    private void updateTaskComponents() {
+        if (context.getRelativeTo() instanceof TaskComponent) {
+            // update the current taskComponent
+            TaskComponent taskComponent = (TaskComponent) context
+                    .getRelativeTo();
+            updateTaskComponent(taskComponent);
+
+            // update the current taskComponent's parents
+            List<Task> parents = new ArrayList<Task>(context.getMapper()
+                    .getParents(taskComponent.getTask()));
+            TaskList taskList = taskComponent.getTaskList();
+            for (Task task : parents) {
+                TaskComponent parentComponent = taskList.find(task);
+                updateTaskComponent(parentComponent);
+            }
+        }
+    }
+
+    private void updateTaskComponent(TaskComponent taskComponent) {
+        taskComponent.updateCompletionIfPossible();
+        taskComponent.updateTooltipText();
     }
 
     private void close() {
