@@ -21,10 +21,12 @@
 package org.navalplanner.business.resources.daos;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
@@ -121,5 +123,13 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      * @return
      */
     List<Resource> getAllNonLimitingResources();
+
+    /**
+     * Returns all {@link HoursWorkedPerResourceDTO} per {@link Resource} between
+     * the specified dates.
+     * @return
+     */
+    public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
+            List<Resource> resources, Date startingDate, Date endingDate);
 
 }

@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.reports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,16 +31,28 @@ import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class HoursWorkedPerWorkerController extends NavalplannerReportController {
 
@@ -46,11 +60,15 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private IHoursWorkedPerWorkerModel hoursWorkedPerWorkerModel;
 
-    private Listbox lbWorkers;
+    private Listbox lbResources;
 
     private Datebox startingDate;
 
     private Datebox endingDate;
+
+    private Autocomplete filterResource;
+
+    private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -58,8 +76,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
         comp.setVariable("controller", this, true);
     }
 
-    public List<Worker> getWorkers() {
-        return hoursWorkedPerWorkerModel.getWorkers();
+    public Set<Resource> getResources() {
+        return hoursWorkedPerWorkerModel.getResources();
     }
 
     @Override
@@ -69,16 +87,17 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     @Override
     protected JRDataSource getDataSource() {
-        return hoursWorkedPerWorkerModel.getHoursWorkedPerWorkerReport(getSelectedWorkers(),
+        return hoursWorkedPerWorkerModel.getHoursWorkedPerWorkerReport(
+                getSelectedResources(),
                 getStartingDate(), getEndingDate());
- }
+    }
 
-    private List<Worker> getSelectedWorkers() {
-        List<Worker> result = new ArrayList<Worker>();
+    private List<Resource> getSelectedResources() {
+        List<Resource> result = new ArrayList<Resource>();
 
-        final Set<Listitem> listItems = lbWorkers.getSelectedItems();
-        for (Listitem each: listItems) {
-            result.add((Worker) each.getValue());
+        final List<Listitem> listItems = lbResources.getItems();
+        for (Listitem each : listItems) {
+            result.add((Resource) each.getValue());
         }
         return result;
     }
@@ -97,8 +116,132 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
-
+        result.put("showNote", hoursWorkedPerWorkerModel.isShowReportMessage());
         return result;
+    }
+
+    public void onAddResource() {
+        Resource resource = getSelectedCurrentResource();
+        if (resource != null) {
+            boolean result = hoursWorkedPerWorkerModel
+                    .addSelectedResource(resource);
+            if (!result) {
+                throw new WrongValueException(filterResource,
+                        _("This resource has already been added."));
+            } else {
+                Util.reloadBindings(lbResources);
+            }
+        }
+    }
+
+    public void onRemoveResource(Resource resource) {
+        hoursWorkedPerWorkerModel.removeSelectedResource(resource);
+        Util.reloadBindings(lbResources);
+    }
+
+    private Resource getSelectedCurrentResource() {
+        Comboitem itemSelected = filterResource.getSelectedItem();
+        if ((itemSelected != null)
+                && (((Resource) itemSelected.getValue()) != null)) {
+            return (Resource) itemSelected.getValue();
+        }
+        return null;
+    }
+
+    public ResourceListRenderer getRenderer() {
+        return resourceListRenderer;
+    }
+
+    /**
+     * ListitemRenderer for a @{Resource} element
+     * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+     */
+    public class ResourceListRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            final Resource resource = (Resource) data;
+            item.setValue(resource);
+
+            appendType(item);
+            appendLimiting(item);
+            appendName(item);
+            appendCode(item);
+            appendDeleteButton(item);
+        }
+    }
+
+    private void appendType(final Listitem item) {
+        Resource resource = (Resource) item.getValue();
+        Label typeLabel = new Label(getType(resource));
+
+        Listcell typeResourceCell = new Listcell();
+        typeResourceCell.appendChild(typeLabel);
+        item.appendChild(typeResourceCell);
+    }
+
+    private void appendLimiting(final Listitem item) {
+        final Resource resource = (Resource) item.getValue();
+        final Checkbox limitingCheckbox = new Checkbox();
+        limitingCheckbox.setChecked(resource.isLimitingResource());
+        limitingCheckbox.setDisabled(true);
+
+        Listcell limitingResourceCell = new Listcell();
+        limitingResourceCell.appendChild(limitingCheckbox);
+        item.appendChild(limitingResourceCell);
+    }
+
+    private void appendName(final Listitem item) {
+        Resource resource = (Resource) item.getValue();
+        Label nameLabel = new Label(getName(resource));
+
+        Listcell nameResourceCell = new Listcell();
+        nameResourceCell.appendChild(nameLabel);
+        item.appendChild(nameResourceCell);
+    }
+
+    private void appendCode(Listitem item) {
+        Resource resource = (Resource) item.getValue();
+        Label codeLabel = new Label(resource.getCode());
+
+        Listcell codeResourceCell = new Listcell();
+        codeResourceCell.appendChild(codeLabel);
+        item.appendChild(codeResourceCell);
+    }
+
+    private void appendDeleteButton(final Listitem item) {
+        Button delete = new Button("", "/common/img/ico_borrar1.png");
+        delete.setHoverImage("/common/img/ico_borrar.png");
+        delete.setSclass("icono");
+        delete.setTooltiptext(_("Delete"));
+        delete.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                onRemoveResource((Resource) item.getValue());
+            }
+        });
+
+        Listcell deleteResourceCell = new Listcell();
+        deleteResourceCell.appendChild(delete);
+        item.appendChild(deleteResourceCell);
+    }
+
+    private String getName(Resource resource) {
+        if ((resource instanceof Worker) && (((Worker) resource).isReal())) {
+            return ((Worker) resource).getShortDescription();
+        }
+        return resource.getName();
+    }
+
+    private String getType(Resource resource) {
+        if (resource instanceof Worker) {
+            if (((Worker) resource).isReal()) {
+                return _("Worker");
+            } else {
+                return _("Virtual worker");
+            }
+        }
+        return "Machine";
     }
 
 }

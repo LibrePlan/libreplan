@@ -25,11 +25,11 @@ import java.util.Set;
 
 import org.joda.time.LocalTime;
 import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
-public class HoursWorkedPerWorkerDTO {
+public class HoursWorkedPerResourceDTO {
 
     private String workerName;
 
@@ -47,11 +47,11 @@ public class HoursWorkedPerWorkerDTO {
 
     private String labels;
 
-    public HoursWorkedPerWorkerDTO(
-            Worker worker,
+    public HoursWorkedPerResourceDTO(
+Resource resource,
             WorkReportLine workReportLine) {
 
-        this.workerName = worker.getName();
+        this.workerName = resource.getName();
         this.date = workReportLine.getDate();
         this.clockStart = workReportLine.getClockStart();
         this.clockFinish = workReportLine.getClockFinish();

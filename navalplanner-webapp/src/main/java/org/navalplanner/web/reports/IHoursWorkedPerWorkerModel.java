@@ -22,10 +22,11 @@ package org.navalplanner.web.reports;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.resources.entities.Resource;
 
 /**
  *
@@ -34,8 +35,16 @@ import org.navalplanner.business.resources.entities.Worker;
  */
 public interface IHoursWorkedPerWorkerModel {
 
-    JRDataSource getHoursWorkedPerWorkerReport(List<Worker> workers, Date startingDate, Date endingDate);
+    JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
+            Date startingDate, Date endingDate);
 
-    List<Worker> getWorkers();
+    void init();
 
+    Set<Resource> getResources();
+
+    void removeSelectedResource(Resource resource);
+
+    boolean addSelectedResource(Resource resource);
+
+    boolean isShowReportMessage();
 }

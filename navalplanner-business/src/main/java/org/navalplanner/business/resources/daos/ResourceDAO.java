@@ -22,6 +22,7 @@ package org.navalplanner.business.resources.daos;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Machine;
@@ -215,6 +217,50 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
             }
         }
         super.save(resource);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
+            List<Resource> resources, Date startingDate, Date endingDate) {
+        String strQuery = "SELECT new org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO(resource, wrl) "
+                + "FROM Resource resource, WorkReportLine wrl "
+                + "LEFT OUTER JOIN wrl.resource wrlresource "
+                + "WHERE wrlresource.id = resource.id ";
+
+        // Set date range
+        if (startingDate != null && endingDate != null) {
+            strQuery += "AND wrl.date BETWEEN :startingDate AND :endingDate ";
+        }
+        if (startingDate != null && endingDate == null) {
+            strQuery += "AND wrl.date >= :startingDate ";
+        }
+        if (startingDate == null && endingDate != null) {
+            strQuery += "AND wrl.date <= :endingDate ";
+        }
+
+        // Set workers
+        if (resources != null && !resources.isEmpty()) {
+            strQuery += "AND resource IN (:resources) ";
+        }
+
+        // Order by
+        strQuery += "ORDER BY resource.id, wrl.date";
+
+        // Set parameters
+        Query query = getSession().createQuery(strQuery);
+        if (startingDate != null) {
+            query.setParameter("startingDate", startingDate);
+        }
+        if (endingDate != null) {
+            query.setParameter("endingDate", endingDate);
+        }
+        if (resources != null && !resources.isEmpty()) {
+            query.setParameterList("resources", resources);
+        }
+
+        // Get result
+        return query.list();
     }
 
 }

@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerDTO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,11 +74,6 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
      */
     @Transactional(readOnly = true)
     List<Worker> getWorkers();
-
-    /**
-     *
-     */
-    List<HoursWorkedPerWorkerDTO> getWorkingHoursPerWorker(List<Worker> workers, Date startingDate, Date endingDate);
 
     /**
      * Return list of workers with a particular firstName

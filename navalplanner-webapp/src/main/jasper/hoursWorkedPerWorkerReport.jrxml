@@ -6,6 +6,7 @@
 	<style name="Detail" isDefault="false" fontName="Arial" fontSize="12"/>
 	<parameter name="startingDate" class="java.util.Date"/>
 	<parameter name="endingDate" class="java.util.Date"/>
+	<parameter name="showNote" class="java.lang.Boolean"/>
 	<field name="workerName" class="java.lang.String"/>
 	<field name="date" class="java.util.Date"/>
 	<field name="clockStart" class="java.util.Date"/>
@@ -228,6 +229,22 @@
 				<textElement/>
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{endingDate}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="13" y="102" width="540" height="15">
+					<printWhenExpression><![CDATA[$P{showNote}.equals( java.lang.Boolean.TRUE )]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="none">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{note1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="102" width="8" height="15">
+					<printWhenExpression><![CDATA[$P{showNote}.equals( java.lang.Boolean.TRUE )]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<text><![CDATA[*]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
