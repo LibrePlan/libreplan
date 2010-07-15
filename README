@@ -48,16 +48,23 @@ Availability
 ------------
 
 The cutting-edge version of this project is always available from the Git
-repository at http://git.igalia.com/xestion-producion.git.
+repository at http://navalplan.git.sourceforge.net/.
 
-There is not any released versions yet.
+Released versions are available at
+http://sourceforge.net/projects/navalplan/files.
 
 
 Webpage
 -------
 
 You can find more information about *NavalPlan* at
-http://navalplan.sourceforge.net/.
+http://www.navalplan.org/en/.
+
+
+Reporting bugs
+--------------
+
+Please use the bug tracker to report bugs at http://www.navalplan.org/bugtracker/.
 
 
 License
