@@ -369,38 +369,98 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         private void focusGoUp(Treerow treerow, int position) {
-            List treeItems = treerow.getParent().getParent().getChildren();
-            int myPosition = treeItems.indexOf(treerow.getParent());
+            Treeitem parent = (Treeitem) treerow.getParent();
+            List treeItems = parent.getParent().getChildren();
+            int myPosition = parent.indexOf();
 
             if(myPosition > 0) {
-                Treerow upTreerow = (Treerow)
-                    ((Component)treeItems.get(myPosition - 1)).getChildren().get(0);
-                List<InputElement> boxes = getBoxes(upTreerow);
+                // the current node is not the first brother
+                if(((Treeitem)treeItems.get(myPosition - 1)).getTreechildren() == null) {
+                    //the previous brother doesn't have children, or we don't care
+                    Treerow upTreerow =
+                        ((Treeitem)treeItems.get(myPosition - 1)).getTreerow();
 
-                if(boxes.get(position).isDisabled()) {
-                    moveFocusTo(boxes.get(position), Navigation.LEFT, upTreerow);
+                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
                 }
                 else {
-                    boxes.get(position).focus();
+                    //we have to move to the last child of the previous brother
+                    Treerow upTreerow = findLastTreerow((Treeitem)treeItems.get(myPosition - 1));
+
+                    while(!upTreerow.isVisible()) {
+                        upTreerow = (Treerow)
+                            ((Treeitem)upTreerow.getParent().getParent().getParent()).getTreerow();
+                    }
+
+                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
+                }
+            }
+            else {
+                // the node is the first brother
+                if(parent.getParent().getParent() instanceof Treeitem) {
+                    // the node has a parent, so we move up to it
+                    Treerow upTreerow = ((Treeitem)parent.getParent().getParent()).getTreerow();
+
+                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
                 }
             }
         }
 
+        private Treerow findLastTreerow(Treeitem item) {
+            if(item.getTreechildren() == null) {
+                return item.getTreerow();
+            }
+            List children = item.getTreechildren().getChildren();
+            Treeitem lastchild = (Treeitem) children.get(children.size()-1);
+
+            return findLastTreerow(lastchild);
+        }
+
         private void focusGoDown(Treerow treerow, int position) {
-            List treeItems = treerow.getParent().getParent().getChildren();
-            int myPosition = treeItems.indexOf(treerow.getParent());
+            Treeitem parent = (Treeitem) treerow.getParent();
+            focusGoDown(parent, position, false);
+        }
 
-            if(myPosition < treeItems.size() - 1) {
-                Treerow downTreerow = (Treerow)
-                    ((Component)treeItems.get(myPosition + 1)).getChildren().get(0);
-                List<InputElement> boxes = getBoxes(downTreerow);
+        private void focusGoDown(Treeitem parent, int position, boolean skipChildren) {
+            if(parent.getTreechildren() == null || skipChildren) {
+                // Moving from a node to its brother
+                List treeItems = parent.getParent().getChildren();
+                int myPosition = parent.indexOf();
 
-                if(boxes.get(position).isDisabled()) {
-                    moveFocusTo(boxes.get(position), Navigation.RIGHT, downTreerow);
+                if(myPosition < treeItems.size() - 1) {
+                    // the current node is not the last one
+                    Treerow downTreerow =
+                        ((Treeitem)treeItems.get(myPosition + 1)).getTreerow();
+
+                    focusCorrectBox(downTreerow, position, Navigation.RIGHT);
                 }
                 else {
-                    boxes.get(position).focus();
+                    // the node is the last brother
+                    if(parent.getParent().getParent() instanceof Treeitem) {
+                        focusGoDown((Treeitem)parent.getParent().getParent(), position, true);
+                    }
                 }
+            }
+            else {
+                // Moving from a parent node to its children
+                Treerow downTreerow =
+                    ((Treeitem)parent.getTreechildren().getChildren().get(0)).getTreerow();
+
+                if(!downTreerow.isVisible()) {
+                    focusGoDown(parent, position, true);
+                }
+
+                focusCorrectBox(downTreerow, position, Navigation.RIGHT);
+            }
+        }
+
+        private void focusCorrectBox(Treerow treerow, int position, Navigation whereIfDisabled) {
+            List<InputElement> boxes = getBoxes(treerow);
+
+            if(boxes.get(position).isDisabled()) {
+                moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
+            }
+            else {
+                boxes.get(position).focus();
             }
         }
 
