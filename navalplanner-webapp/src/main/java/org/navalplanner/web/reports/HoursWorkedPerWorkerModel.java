@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.reports;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,8 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
@@ -49,16 +52,23 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     @Autowired
     private IResourceDAO resourceDAO;
 
+    @Autowired
+    private ILabelDAO labelDAO;
+
     private Set<Resource> selectedResources = new HashSet<Resource>();
+
+    private List<Label> selectedLabels = new ArrayList<Label>();
 
     private boolean showReportMessage = false;
 
     @Transactional(readOnly = true)
     public JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
+            List<Label> labels,
             Date startingDate, Date endingDate) {
 
         final List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO
-                .getWorkingHoursPerWorker(resources, startingDate, endingDate);
+                .getWorkingHoursPerWorker(resources, labels, startingDate,
+                        endingDate);
 
         if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
             setShowReportMessage(false);
@@ -102,4 +112,33 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
         return showReportMessage;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Label> getAllLabels(){
+        List<Label> allLabels = labelDAO.getAll();
+        // initialize the labels
+        for (Label label : allLabels) {
+            label.getType().getName();
+        }
+        return allLabels;
+    }
+
+    @Override
+    public void removeSelectedLabel(Label label) {
+        this.selectedLabels.remove(label);
+    }
+
+    @Override
+    public boolean addSelectedLabel(Label label) {
+        if (this.selectedLabels.contains(label)) {
+            return false;
+        }
+        this.selectedLabels.add(label);
+        return true;
+    }
+
+    @Override
+    public List<Label> getSelectedLabels() {
+        return selectedLabels;
+    }
 }

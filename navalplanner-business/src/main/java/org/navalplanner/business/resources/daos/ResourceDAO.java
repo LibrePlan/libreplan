@@ -32,6 +32,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -222,7 +223,9 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     @Override
     @Transactional(readOnly = true)
     public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
-            List<Resource> resources, Date startingDate, Date endingDate) {
+            List<Resource> resources, List<Label> labels, Date startingDate,
+            Date endingDate) {
+
         String strQuery = "SELECT new org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO(resource, wrl) "
                 + "FROM Resource resource, WorkReportLine wrl "
                 + "LEFT OUTER JOIN wrl.resource wrlresource "
@@ -244,6 +247,12 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
             strQuery += "AND resource IN (:resources) ";
         }
 
+        // Set labels
+        if (labels != null && !labels.isEmpty()) {
+            strQuery += " AND ( EXISTS (FROM wrl.labels as etq WHERE etq IN (:labels)) "
+                    + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels))) ";
+        }
+
         // Order by
         strQuery += "ORDER BY resource.id, wrl.date";
 
@@ -257,6 +266,9 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
         }
         if (resources != null && !resources.isEmpty()) {
             query.setParameterList("resources", resources);
+        }
+        if (labels != null && !labels.isEmpty()) {
+            query.setParameterList("labels", labels);
         }
 
         // Get result

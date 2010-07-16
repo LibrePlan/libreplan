@@ -26,6 +26,7 @@ import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -36,15 +37,25 @@ import org.navalplanner.business.resources.entities.Resource;
 public interface IHoursWorkedPerWorkerModel {
 
     JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
+            List<Label> labels,
             Date startingDate, Date endingDate);
 
     void init();
 
     Set<Resource> getResources();
 
+    List<Label> getSelectedLabels();
+
     void removeSelectedResource(Resource resource);
 
     boolean addSelectedResource(Resource resource);
 
+    void removeSelectedLabel(Label label);
+
+    boolean addSelectedLabel(Label label);
+
     boolean isShowReportMessage();
+
+    List<Label> getAllLabels();
+
 }

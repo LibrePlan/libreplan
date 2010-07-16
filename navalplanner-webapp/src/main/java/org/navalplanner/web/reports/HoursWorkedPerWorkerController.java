@@ -31,10 +31,12 @@ import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -44,12 +46,10 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -62,11 +62,15 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private Listbox lbResources;
 
+    private Listbox lbLabels;
+
     private Datebox startingDate;
 
     private Datebox endingDate;
 
     private Autocomplete filterResource;
+
+    private BandboxSearch bdLabels;
 
     private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
 
@@ -88,7 +92,7 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     @Override
     protected JRDataSource getDataSource() {
         return hoursWorkedPerWorkerModel.getHoursWorkedPerWorkerReport(
-                getSelectedResources(),
+                getSelectedResources(), getSelectedLabels(),
                 getStartingDate(), getEndingDate());
     }
 
@@ -173,7 +177,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private void appendType(final Listitem item) {
         Resource resource = (Resource) item.getValue();
-        Label typeLabel = new Label(getType(resource));
+        org.zkoss.zul.Label typeLabel = new org.zkoss.zul.Label(
+                getType(resource));
 
         Listcell typeResourceCell = new Listcell();
         typeResourceCell.appendChild(typeLabel);
@@ -193,7 +198,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private void appendName(final Listitem item) {
         Resource resource = (Resource) item.getValue();
-        Label nameLabel = new Label(getName(resource));
+        org.zkoss.zul.Label nameLabel = new org.zkoss.zul.Label(
+                getName(resource));
 
         Listcell nameResourceCell = new Listcell();
         nameResourceCell.appendChild(nameLabel);
@@ -202,7 +208,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private void appendCode(Listitem item) {
         Resource resource = (Resource) item.getValue();
-        Label codeLabel = new Label(resource.getCode());
+        org.zkoss.zul.Label codeLabel = new org.zkoss.zul.Label(resource
+                .getCode());
 
         Listcell codeResourceCell = new Listcell();
         codeResourceCell.appendChild(codeLabel);
@@ -244,4 +251,31 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
         return "Machine";
     }
 
+    public List<Label> getAllLabels() {
+        return hoursWorkedPerWorkerModel.getAllLabels();
+    }
+
+    public void onSelectLabel() {
+        Label label = (Label) bdLabels.getSelectedElement();
+        if (label == null) {
+            throw new WrongValueException(bdLabels, _("please, select a label"));
+        }
+        boolean result = hoursWorkedPerWorkerModel.addSelectedLabel(label);
+        if (!result) {
+            throw new WrongValueException(bdLabels,
+                    _("This label has already been added."));
+        } else {
+            Util.reloadBindings(lbLabels);
+        }
+        bdLabels.clear();
+    }
+
+    public void onRemoveLabel(Label label) {
+        hoursWorkedPerWorkerModel.removeSelectedLabel(label);
+        Util.reloadBindings(lbLabels);
+    }
+
+    public List<Label> getSelectedLabels() {
+        return hoursWorkedPerWorkerModel.getSelectedLabels();
+    }
 }

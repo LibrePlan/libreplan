@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -130,6 +131,7 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      * @return
      */
     public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
-            List<Resource> resources, Date startingDate, Date endingDate);
+            List<Resource> resources, List<Label> labels, Date startingDate,
+            Date endingDate);
 
 }
