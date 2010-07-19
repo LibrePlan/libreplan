@@ -2,7 +2,7 @@
  * This file is part of NavalPlan
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                    Desenvolvemento Tecnolóxico de Galic
+ *                         Desenvolvemento Tecnolóxico de Galic
  *                    ia
  *
  * This program is free software: you can redistribute it and/or modify

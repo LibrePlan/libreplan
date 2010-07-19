@@ -2,7 +2,7 @@
   This file is part of NavalPlan
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
-                     Desenvolvemento Tecnolóxico de Galicia
+                          Desenvolvemento Tecnolóxico de Galicia
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
