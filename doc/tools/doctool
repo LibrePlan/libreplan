@@ -124,6 +124,9 @@ HTML_SETTINGS = {
 #
 class LaTeXStandaloneTranslator(latex2e.LaTeXTranslator):
     def __init__(self, document):
+        self._class = document.settings.documentclass
+        self._typearea = ""
+
         latex2e.LaTeXTranslator.__init__(self, document)
 
         # XXX We rely on DocumentClass having a document_class attribute and
@@ -131,10 +134,25 @@ class LaTeXStandaloneTranslator(latex2e.LaTeXTranslator):
         #
         if self.d_class.document_class == "igaliabk":
             self.d_class.document_class = "book"
+
 	try:
 		del self.head_prefix[self.head_prefix.index(self.typearea)]
-	except ValueError:
+	except AttributeError:
 		pass
+
+    def __get_typearea(self):
+        if self._class == "igaliabk" or self._class.startswith("scr"):
+            value = ""
+        else:
+            value = self._typearea
+        return value
+
+    def __set_typearea(self, value):
+        self._typearea = value
+
+    typarea = property(__get_typearea, __set_typearea)
+
+
 
 class LaTeXInsertTranslator(LaTeXStandaloneTranslator):
     def astext(self):
