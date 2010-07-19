@@ -426,6 +426,17 @@ public class QueuesState {
             List<LimitingResourceQueueElement> elements) {
         LimitingResourceQueueElement previous = first;
         for (LimitingResourceQueueElement each : elements) {
+
+            // FIXME: Fixs bug #553, "No such vertex in graph". It seems that
+            // , for some reason, some of the vertexs (queue elements) are not in graph
+            // at this point
+            if (!result.containsVertex(previous)) {
+                result.addVertex(previous);
+            }
+            if (!result.containsVertex(each)) {
+                result.addVertex(each);
+            }
+
             result.addEdge(previous, each, Edge.insertionOrder(previous, each));
             previous = each;
         }
