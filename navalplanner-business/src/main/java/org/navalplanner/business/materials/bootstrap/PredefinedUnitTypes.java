@@ -3,7 +3,7 @@
 /*
  * This file is part of NavalPlan
  *
- * Copyright (C) 2009 Fundación para o Fomento da Calidade Industrial e
+ * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                    Desenvolvemento Tecnolóxico de Galicia
  *
  * This program is free software: you can redistribute it and/or modify
