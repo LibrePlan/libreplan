@@ -51,9 +51,6 @@ import org.zkoss.zul.Label;
  */
 public class PlanningTabCreator {
 
-    public static final String ENTERPRISE_VIEW = _("Company Scheduling");
-
-    public static final String ORDER_ENTERPRISE_VIEW = _("Order Scheduling");
     public static final int MAX_ORDERNAME_LENGHT = 90;
 
     private final Mode mode;
@@ -153,7 +150,7 @@ public class PlanningTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(ENTERPRISE_VIEW, "company-scheduling",
+        return new CreatedOnDemandTab(_("Company Scheduling"), "company-scheduling",
                 componentCreator) {
             @Override
             protected void afterShowAction() {
@@ -162,7 +159,7 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ENTERPRISE_VIEW));
+                breadcrumbs.appendChild(new Label(_("Company Scheduling")));
             }
         };
     }
@@ -185,7 +182,7 @@ public class PlanningTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(ORDER_ENTERPRISE_VIEW,
+        return new CreatedOnDemandTab(_("Order Scheduling"),
                 "order-scheduling", componentCreator) {
             @Override
             protected void afterShowAction() {
@@ -203,7 +200,7 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ORDER_ENTERPRISE_VIEW));
+                breadcrumbs.appendChild(new Label(_("Order Scheduling")));
                 if (mode.isOf(ModeType.ORDER)) {
 
                     Label nameLabel = new Label(order.getName());

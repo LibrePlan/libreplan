@@ -41,10 +41,6 @@ import org.zkoss.zul.Label;
  */
 public class OrdersTabCreator {
 
-    private static final String ORDERS_VIEW = _("Orders List");
-
-    private static final String ORDER_ORDERS_VIEW = _("Order Details");
-
     private final Map<String, String[]> parameters;
 
     public static ITab create(Mode mode,
@@ -102,7 +98,7 @@ public class OrdersTabCreator {
     }
 
     private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(ORDERS_VIEW, "orders", ordersTabCreator) {
+        return new CreatedOnDemandTab(_("Orders List"), "orders", ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 orderCRUDController.goToList();
@@ -110,9 +106,9 @@ public class OrdersTabCreator {
                     breadcrumbs.getChildren().clear();
                 }
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PlanningTabCreator.ENTERPRISE_VIEW));
+                breadcrumbs.appendChild(new Label(_("Company Scheduling")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
+                breadcrumbs.appendChild(new Label(_("Order List")));
             }
         };
     }
@@ -129,13 +125,13 @@ public class OrdersTabCreator {
     }
 
     private ITab createOrderOrdersTab() {
-        return new CreatedOnDemandTab(ORDER_ORDERS_VIEW, "order-data",
+        return new CreatedOnDemandTab(_("Order Details"), "order-data",
                 ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ORDER_ORDERS_VIEW));
+                breadcrumbs.appendChild(new Label(_("Order Details")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 if (mode.isOf(ModeType.ORDER)) {
                     orderCRUDController.showOrderElementFilter();

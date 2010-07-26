@@ -41,10 +41,8 @@ import org.zkoss.zul.Label;
  */
 public class LimitingResourcesTabCreator {
 
-    private static final String LIMITING_RESOURCES_VIEW = _("Limiting resources");
-
     /* Unnecesary */
-    private static final String ORDER_LIMITING_RESOURCES_VIEW = _("Limiting resources (order)");
+    private static String ORDER_LIMITING_RESOURCES_VIEW = _("Limiting resources (order)");
 
     public static ITab create(Mode mode,
             LimitingResourcesController LimitingResourcesController,
@@ -136,7 +134,7 @@ public class LimitingResourcesTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(LIMITING_RESOURCES_VIEW,
+        return new CreatedOnDemandTab(_("Limiting resources"),
                 "limiting-resources",
                 componentCreator) {
             @Override
@@ -149,7 +147,7 @@ public class LimitingResourcesTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(LIMITING_RESOURCES_VIEW));
+                breadcrumbs.appendChild(new Label(_("Limiting resources")));
             }
         };
     }

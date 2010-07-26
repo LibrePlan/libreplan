@@ -43,10 +43,6 @@ import org.zkoss.zul.Label;
  */
 public class ResourcesLoadTabCreator {
 
-    private static final String RESOURCE_LOAD_VIEW = _("Overall Resources Load");
-
-    private static final String ORDER_RESOURCE_LOAD_VIEW = _("Resources Load");
-
     private final IOrderPlanningGate orderPlanningGate;
 
     public static ITab create(Mode mode,
@@ -105,7 +101,7 @@ public class ResourcesLoadTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(ORDER_RESOURCE_LOAD_VIEW, "order-load",
+        return new CreatedOnDemandTab(_("Resources Load"), "order-load",
                 componentCreator) {
 
             @Override
@@ -114,7 +110,7 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(ORDER_RESOURCE_LOAD_VIEW));
+                breadcrumbs.appendChild(new Label(_("Resources Load")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 Order currentOrder = mode.getOrder();
                 resourceLoadController
@@ -141,7 +137,7 @@ public class ResourcesLoadTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(RESOURCE_LOAD_VIEW, "company-load",
+        return new CreatedOnDemandTab(_("Overall Resources Load"), "company-load",
                 componentCreator) {
             @Override
             protected void afterShowAction() {
@@ -155,7 +151,7 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(RESOURCE_LOAD_VIEW));
+                breadcrumbs.appendChild(new Label(_("Overall Resources Load")));
             }
         };
     }
