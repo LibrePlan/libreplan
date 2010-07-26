@@ -138,4 +138,8 @@ public interface ILimitingResourceQueueModel {
 
     boolean userCanRead(Order order, String loginName);
 
+    void replaceLimitingResourceQueueElement(
+            LimitingResourceQueueElement oldElement,
+            LimitingResourceQueueElement newElement);
+
 }

@@ -113,7 +113,9 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         }
 
         if (resources.size() >= 1) {
-            planningState.reassociateResourcesWithSession();
+            if (planningState != null) {
+                planningState.reassociateResourcesWithSession();
+            }
             addGenericResourceAllocation(criteria, reloadResources(resources));
         }
     }
@@ -169,7 +171,9 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
         if (resources.size() >= 1) {
-            planningState.reassociateResourcesWithSession();
+            if (planningState != null) {
+                planningState.reassociateResourcesWithSession();
+            }
             List<Resource> reloaded = reloadResources(
                     Collections.singleton(getFirstChild(resources)));
             addSpecificResourceAllocation(getFirstChild(reloaded));
@@ -292,7 +296,6 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         taskDAO.reattach(task);
         ResourceAllocation<?> resourceAllocation = getAssociatedResourceAllocation();
         if (resourceAllocation != null && resourceAllocation.isNewObject()) {
-            task.removeAllResourceAllocations();
             addAssociatedLimitingResourceQueueElement(task, resourceAllocation);
         }
         taskDAO.save(task);
@@ -301,7 +304,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     private void addAssociatedLimitingResourceQueueElement(Task task, ResourceAllocation<?> resourceAllocation) {
         LimitingResourceQueueElement element = LimitingResourceQueueElement.create();
         resourceAllocation.setLimitingResourceQueueElement(element);
-        task.addResourceAllocation(resourceAllocation, false);
+        task.setResourceAllocation(resourceAllocation);
     }
 
     @Override

@@ -21,20 +21,8 @@
 <?page title="${i18n:_('NavalPlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
-<?component name="tabPanelTaskProperties"
-    macroURI="/planner/_tabPanelTaskProperties.zul"
-    inline="true" ?>
-
-<?component name="tabPanelNonLimitingResourceAllocation"
-    macroURI="/planner/_tabPanelNonLimitingResourceAllocation.zul"
-    inline="true" ?>
-
-<?component name="tabPanelLimitingResourceAllocation"
-    macroURI="/planner/_tabPanelLimitingResourceAllocation.zul"
-    inline="true" ?>
-
-<?component name="tabPanelSubcontract"
-    macroURI="/planner/_tabPanelSubcontract.zul"
+<?component name="editTaskWindow"
+    macroURI="/planner/editTask.zul"
     inline="true" ?>
 
 <?component name="listOrderElementAdvances"
@@ -45,13 +33,10 @@
     <zscript><![CDATA[
         planningController = arg.get("orderPlanningController");
         switcher = planningController.viewSwitcher;
-        calendarController = planningController.calendarAllocationController;
+
         editController = planningController.editTaskController;
-        propertiesController = editController.taskPropertiesController;
-        allocationController = editController.resourceAllocationController;
-        limitingAllocationController = editController.limitingResourceAllocationController;
-        allocationController.switcher = switcher;
-        subController = editController.subcontractController;
+        editController.switcher = switcher;
+        calendarController = planningController.calendarAllocationController;
         advanceController = planningController.advanceConsolidationController;
         advanceAssignmentController = planningController.advanceAssignmentPlanningController;
     ]]>
@@ -62,32 +47,7 @@
         </planner>
     </div>
 
-    <window id="editTaskWindow" apply="${editController}" border="normal"
-        width="870px" visible="false" >
-
-        <vbox id="messagesContainer" />
-
-        <tabbox id="editTaskTabbox">
-            <tabs>
-                <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}" />
-                <tab id="resourceAllocationTab" label="${i18n:_('Non limiting resource allocation')}" />
-                <tab id="limitingResourceAllocationTab" label="${i18n:_('Limiting resource allocation')}" />
-                <tab id="subcontractTab" label="${i18n:_('Subcontract')}" />
-            </tabs>
-            <tabpanels>
-                <tabPanelTaskProperties id="taskPropertiesTabpanel" />
-                <tabPanelNonLimitingResourceAllocation id="resourceAllocationTabpanel" />
-                <tabPanelLimitingResourceAllocation id="limitingResourceAllocationTabpanel" />
-                <tabPanelSubcontract id="subcontractTabpanel" />
-            </tabpanels>
-        </tabbox>
-        <hbox sclass="tooltip-actions">
-            <button id="ok" label="${i18n:_('Accept')}" sclass="save-button global-action"
-                onClick="editController.accept();" />
-            <button id="cancel" label="${i18n:_('Cancel')}" sclass="cancel-button global-action"
-                            onClick="editController.cancel();" />
-        </hbox>
-    </window>
+    <editTaskWindow id="editTaskWindow" editController="${editController}" />
 
     <window id="advanceAssignmentPlanningWindow"
         apply="${advanceAssignmentController}"

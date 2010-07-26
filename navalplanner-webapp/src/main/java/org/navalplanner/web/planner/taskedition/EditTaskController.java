@@ -34,6 +34,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.FormBinder;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
@@ -49,6 +50,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Tab;
@@ -81,6 +83,7 @@ public class EditTaskController extends GenericForwardComposer {
 
     private Tabbox editTaskTabbox;
 
+    private Tab taskPropertiesTab;
     private Tab resourceAllocationTab;
     private Tab limitingResourceAllocationTab;
     private Tab subcontractTab;
@@ -99,6 +102,8 @@ public class EditTaskController extends GenericForwardComposer {
     private IContextWithPlannerTask<TaskElement> context;
 
     private PlanningState planningState;
+
+    private ViewSwitcher switcher;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -147,9 +152,9 @@ public class EditTaskController extends GenericForwardComposer {
 
         try {
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
-            window.setMode("modal");
             showSelectedTabPanel();
             Util.reloadBindings(window);
+            window.doModal();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -202,6 +207,12 @@ public class EditTaskController extends GenericForwardComposer {
             TaskElement taskElement, PlanningState planningState) {
         editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
         showEditForm(context, taskElement, planningState);
+    }
+
+    public void showEditFormResourceAllocation(TaskElement taskElement) {
+        limitingResourceAllocationController.setDisableHours(false);
+        taskPropertiesTab.setVisible(false);
+        showEditFormResourceAllocation(null, taskElement, null);
     }
 
     public void showEditFormResourceAllocation(
@@ -264,6 +275,7 @@ public class EditTaskController extends GenericForwardComposer {
             context = null;
 
             window.setVisible(false);
+            setStatus(Messagebox.OK);
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         }
@@ -299,6 +311,7 @@ public class EditTaskController extends GenericForwardComposer {
         context = null;
 
         window.setVisible(false);
+        setStatus(Messagebox.CANCEL);
     }
 
     public boolean isSubcontractedAndIsTask() {
@@ -329,9 +342,17 @@ public class EditTaskController extends GenericForwardComposer {
             formBinder.doApply();
             allocationResult = formBinder.getLastAllocation();
         }
-        resourceAllocationController.getSwitcher().goToAdvancedAllocation(
+        getSwitcher().goToAdvancedAllocation(
                 allocationResult, createResultReceiver(allocationResult));
         window.setVisible(false);
+    }
+
+    public ViewSwitcher getSwitcher() {
+        return switcher;
+    }
+
+    public void setSwitcher(ViewSwitcher switcher) {
+        this.switcher = switcher;
     }
 
     private IAdvanceAllocationResultReceiver createResultReceiver(
@@ -418,6 +439,20 @@ public class EditTaskController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             messagesForUser.showMessage(Level.INFO, message);
         }
+    }
+
+    public void close(Event event) {
+        event.stopPropagation();
+        self.setVisible(false);
+        setStatus(Messagebox.CANCEL);
+    }
+
+    public void setStatus(Integer status) {
+        self.setVariable("status", status, true);
+    }
+
+    public Integer getStatus() {
+        return (Integer) self.getVariable("status", true);
     }
 
 }

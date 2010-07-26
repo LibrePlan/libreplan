@@ -162,6 +162,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         queueListComponent.appendQueueElement(element);
     }
 
+    public void removeQueueElementFromQueue(LimitingResourceQueueElement element) {
+        queueListComponent.removeQueueElement(element);
+    }
+
     private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
         MutableTreeModel<LimitingResourceQueue> result = MutableTreeModel
                 .create(LimitingResourceQueue.class);
@@ -433,6 +437,11 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
     }
 
+    public void editResourceAllocation(QueueTask queueTask) {
+        limitingResourcesController.editResourceAllocation(queueTask
+                .getLimitingResourceQueueElement());
+    }
+
     public void refreshQueue(LimitingResourceQueue queue) {
         queueListComponent.refreshQueue(queue);
     }
@@ -604,4 +613,5 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                     || horizontalPagination.isDisabled();
         }
     }
+
 }

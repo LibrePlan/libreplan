@@ -525,4 +525,36 @@ public class QueuesState {
         }
     }
 
+    public void replaceLimitingResourceQueueElement(
+            LimitingResourceQueueElement oldElement,
+            LimitingResourceQueueElement newElement) {
+
+        LimitingResourceQueueElement element = getEquivalent(oldElement);
+
+        if (oldElement.hasDayAssignments()) {
+            unassingFromQueue(element);
+        }
+
+        unassignedElements.remove(element);
+        elementsById.remove(element.getId());
+        graph.removeVertex(element);
+
+        unassignedElements.add(newElement);
+        elementsById.put(newElement.getId(), newElement);
+        graph.addVertex(newElement);
+        for (LimitingResourceQueueDependency each: newElement.getDependenciesAsOrigin()) {
+            graph.addEdge(each.getHasAsOrigin(), each.getHasAsDestiny(), each);
+        }
+        for (LimitingResourceQueueDependency each: newElement.getDependenciesAsDestiny()) {
+            graph.addEdge(each.getHasAsOrigin(), each.getHasAsDestiny(), each);
+        }
+
+    }
+
+    public void idChangedFor(Long previousId,
+            LimitingResourceQueueElement element) {
+        elementsById.remove(previousId);
+        elementsById.put(element.getId(), element);
+    }
+
 }

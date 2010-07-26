@@ -178,8 +178,16 @@ public class LimitingResourceQueueDependency extends BaseEntity {
         return hasAsOrigin;
     }
 
+    public void setOrigin(LimitingResourceQueueElement origin) {
+        this.hasAsOrigin = origin;
+    }
+
     public LimitingResourceQueueElement getHasAsDestiny() {
         return hasAsDestiny;
+    }
+
+    public void setDestiny(LimitingResourceQueueElement destiny) {
+        this.hasAsDestiny = destiny;
     }
 
     public QueueDependencyType getType() {

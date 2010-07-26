@@ -38,6 +38,7 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.LimitingResourceQueueElementComparator;
@@ -92,6 +93,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public void setResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         this.resourceAllocation = resourceAllocation;
+    }
+
+    public void setEarlierStartDateBecauseOfGantt(Date date) {
+        earlierStartDateBecauseOfGantt = date;
     }
 
     public LimitingResourceQueue getLimitingResourceQueue() {
@@ -301,6 +306,10 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     public BigDecimal getAdvancePercentage() {
         return resourceAllocation.getTask().getAdvancePercentage();
+    }
+
+    public Task getTask() {
+        return resourceAllocation.getTask();
     }
 
 }

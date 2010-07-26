@@ -39,7 +39,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -85,8 +84,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private static final Log LOG = LogFactory
             .getLog(ResourceAllocationController.class);
-
-    private ViewSwitcher switcher;
 
     private IResourceAllocationModel resourceAllocationModel;
 
@@ -678,14 +675,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             row.appendChild(component);
             return component;
         }
-    }
-
-    public ViewSwitcher getSwitcher() {
-        return switcher;
-    }
-
-    public void setSwitcher(ViewSwitcher switcher) {
-        this.switcher = switcher;
     }
 
     public FormBinder getFormBinder() {

@@ -132,7 +132,6 @@ public class LimitingResourcesTabCreator {
                         LimitingResourcesControllerGlobal);
                 return Executions.createComponents(
                         "/limitingresources/_limitingresources.zul", parent,
-                        // "/resourceload/_resourceload.zul", parent,
                         arguments);
             }
 

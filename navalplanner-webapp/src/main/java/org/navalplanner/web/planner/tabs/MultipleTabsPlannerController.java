@@ -207,7 +207,6 @@ public class MultipleTabsPlannerController implements Composer,
 
                 }, breadcrumbs);
 
-        /* FIX */
         limitingResourcesTab = LimitingResourcesTabCreator.create(mode,
                 limitingResourcesController, upCommand(),
                 limitingResourcesControllerGlobal, breadcrumbs);
@@ -234,15 +233,16 @@ public class MultipleTabsPlannerController implements Composer,
                     }
 
                 }, parameters);
+
         final State<Void> typeChanged = typeChangedState();
         ITab advancedAllocation = doFeedbackOn(AdvancedAllocationTabCreator.create(mode,
                 transactionService, orderDAO, taskElementDAO, resourceDAO,
                 scenarioManager.getCurrent(), returnToPlanningTab()));
+
         return TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
-.add(
-                tabWithNameReloading(limitingResourcesTab, typeChanged))
+            .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
             .add(tabWithNameReloading(ordersTab, typeChanged))
             .add(visibleOnlyAtOrderMode(advancedAllocation));
     }

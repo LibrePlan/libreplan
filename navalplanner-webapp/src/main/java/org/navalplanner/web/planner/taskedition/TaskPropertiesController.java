@@ -207,7 +207,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
                     }
                 });
 
-        taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
+        if (context != null) {
+            taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
+        }
         updateComponentValuesForTask();
     }
 
@@ -240,8 +242,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
             showDurationRow(task);
             showStartConstraintRow(task);
             showResourceAllocationTypeRow(task);
-        }
-        else {
+        } else {
             hideDurationRow();
             hideStartConstraintRow();
             hideResourceAllocationTypeRow();
@@ -298,7 +299,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 .getValue() : null;
         if (taskConstraint.isValid(type.getType(), inputDate)) {
             taskConstraint.update(type.getType(), inputDate);
-            currentContext.recalculatePosition(currentTaskElement);
+            if (currentContext != null) {
+                currentContext.recalculatePosition(currentTaskElement);
+            }
             return true;
         } else {
             return false;

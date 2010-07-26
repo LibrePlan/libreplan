@@ -35,6 +35,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     }
 
     private Task currentTask;
+
     private TaskDTO taskDTO;
 
     private Textbox name;
@@ -68,7 +69,9 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     }
 
     public void accept() {
-        copyFromDTO(taskDTO, currentTask);
+        if (currentTask != null) {
+            copyFromDTO(taskDTO, currentTask);
+        }
     }
 
     public void cancel() {

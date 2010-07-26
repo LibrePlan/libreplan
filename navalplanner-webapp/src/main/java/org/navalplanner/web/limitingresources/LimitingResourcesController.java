@@ -36,6 +36,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -43,6 +44,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
+import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -51,16 +53,17 @@ import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -94,6 +97,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
     private Checkbox cbSelectAll;
 
     private Window manualAllocationWindow;
+
+    private Window editTaskWindow;
 
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
@@ -133,6 +138,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
             initGridUnassignedLimitingResourceQueueElements();
             initManualAllocationWindow();
+            initEditTaskWindow();
 
             addCommands(limitingResourcesPanel);
         } catch (IllegalArgumentException e) {
@@ -148,6 +154,12 @@ public class LimitingResourcesController extends GenericForwardComposer {
                         getUnassignedLimitingResourceQueueElements()));
         gridUnassignedLimitingResourceQueueElements
                 .setRowRenderer(getLimitingResourceQueueElementsRenderer());
+        getEarlierStartingDateColumn().sort(true, true);
+    }
+
+    private Column getEarlierStartingDateColumn() {
+        return (Column) gridUnassignedLimitingResourceQueueElements
+                .getColumns().getChildren().get(4);
     }
 
     private void initManualAllocationWindow() {
@@ -160,6 +172,10 @@ public class LimitingResourcesController extends GenericForwardComposer {
     private ManualAllocationController getManualAllocationController() {
         return (ManualAllocationController) manualAllocationWindow.getVariable(
                 "manualAllocationController", true);
+    }
+
+    private void initEditTaskWindow() {
+        editTaskWindow = (Window) limitingResourcesPanel.getFellowIfAny("editTaskWindow");
     }
 
     public ILimitingResourceQueueModel getLimitingResourceQueueModel() {
@@ -229,7 +245,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
      * @author Diego Pino Garcia <dpino@igalia.com>
      *
      */
-    public class LimitingResourceQueueElementDTO {
+    public class LimitingResourceQueueElementDTO implements Comparable<LimitingResourceQueueElementDTO> {
 
         private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -281,6 +297,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
             return resourceOrCriteria;
         }
 
+        @Override
+        public int compareTo(LimitingResourceQueueElementDTO dto) {
+            return getOriginal().getId().compareTo(dto.getOriginal().getId());
+        }
+
     }
 
     public void filterBy(Order order) {
@@ -299,6 +320,52 @@ public class LimitingResourcesController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void editResourceAllocation(
+            LimitingResourceQueueElement oldElement) {
+        try {
+            Task task = oldElement.getTask();
+
+            EditTaskController editTaskController = getEditController(editTaskWindow);
+            editTaskController.showEditFormResourceAllocation(task);
+
+            Set<LimitingResourceQueueDependency> outgoingDependencies = oldElement.getDependenciesAsOrigin();
+            Set<LimitingResourceQueueDependency> incomingDependencies = oldElement.getDependenciesAsDestiny();
+
+            // New resource allocation or resource allocation modified ?
+            if (editTaskController.getStatus() == Messagebox.OK) {
+                // Update resource allocation for element
+                LimitingResourceQueueElement newElement = task.getResourceAllocation().getLimitingResourceQueueElement();
+
+                newElement.setEarlierStartDateBecauseOfGantt(oldElement.getEarlierStartDateBecauseOfGantt());
+                newElement.setResourceAllocation(task.getResourceAllocation());
+
+                // Update dependencies
+                for (LimitingResourceQueueDependency each: outgoingDependencies) {
+                    each.setOrigin(newElement);
+                    newElement.add(each);
+                }
+                for (LimitingResourceQueueDependency each: incomingDependencies) {
+                    each.setDestiny(newElement);
+                    newElement.add(each);
+                }
+
+                limitingResourceQueueModel.replaceLimitingResourceQueueElement(oldElement, newElement);
+                if (newElement.getLimitingResourceQueue() != null) {
+                    limitingResourcesPanel.removeQueueElementFromQueue(oldElement);
+                    limitingResourcesPanel.appendQueueElementToQueue(newElement);
+                }
+                Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+            }
+        } catch (SuspendNotAllowedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private EditTaskController getEditController(Window window) {
+        return (EditTaskController) editTaskWindow.getVariable("editController", true);
     }
 
     public LimitingResourceQueueElementsRenderer getLimitingResourceQueueElementsRenderer() {
@@ -322,10 +389,31 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
         private Hbox operations(LimitingResourceQueueElementDTO element) {
             Hbox hbox = new Hbox();
+            hbox.appendChild(editResourceAllocationButton(element));
             hbox.appendChild(automaticButton(element));
             hbox.appendChild(manualButton(element));
             hbox.appendChild(removeButton(element));
             return hbox;
+        }
+
+        private Button editResourceAllocationButton(final LimitingResourceQueueElementDTO element) {
+            Button result = new Button("", "/common/img/ico_editar1.png");
+            result.setHoverImage("/common/img/ico_editar.png");
+            result.setSclass("icono");
+            result.setTooltiptext(_("Edit limiting resource element"));
+            result.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    LimitingResourceQueueElement queueElement = element.getOriginal();
+
+                    editResourceAllocation(queueElement);
+                    if (queueElement.getLimitingResourceQueue() == null) {
+                        reloadUnassignedLimitingResourceQueueElements();
+                    }
+                }
+            });
+            return result;
         }
 
         private Button manualButton(final LimitingResourceQueueElementDTO element) {

@@ -175,6 +175,11 @@ msgstr "Actualizar"
 msgid "Show critical path"
 msgstr "Mostrar camino crítico"
 
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/TabsRegistry.java:108
+msgid "Limiting resources"
+msgstr "Recursos limitantes"
+
 #~ msgid "Worker"
 #~ msgstr "Trabajador"
 

@@ -154,6 +154,11 @@ public class QueueComponent extends XulElement implements
         appendChild(queueTask);
     }
 
+    private void removeQueueTask(QueueTask queueTask) {
+        queueTasks.remove(queueTask);
+        removeChild(queueTask);
+    }
+
     private List<QueueTask> createQueueTasks(IDatesMapper datesMapper,
             Set<LimitingResourceQueueElement> list) {
 
@@ -425,6 +430,22 @@ public class QueueComponent extends XulElement implements
         addDependenciesInPanel(element);
     }
 
+    public void removeQueueElement(LimitingResourceQueueElement element) {
+        QueueTask queueTask = findQueueTaskByElement(element);
+        if (queueTask != null) {
+            removeQueueTask(queueTask);
+        }
+    }
+
+    private QueueTask findQueueTaskByElement(LimitingResourceQueueElement element) {
+        for (QueueTask each: queueTasks) {
+            if (each.getLimitingResourceQueueElement().getId().equals(element.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
     private QueueTask createQueueTask(LimitingResourceQueueElement element) {
         validateQueueElement(element);
         return createDivForElement(timeTracker.getMapper(), element);
@@ -458,6 +479,14 @@ public class QueueComponent extends XulElement implements
         if (divElement.getPage() != null) {
             MenuBuilder<QueueTask> menuBuilder = MenuBuilder.on(divElement
                     .getPage(), divElement);
+
+            menuBuilder.item(_("Edit"), "/common/img/ico_editar.png",
+                    new ItemAction<QueueTask>() {
+                        @Override
+                        public void onEvent(QueueTask choosen, Event event) {
+                            editResourceAllocation(choosen);
+                        }
+                    });
             menuBuilder.item(_("Unassign"), "/common/img/ico_borrar.png",
                     new ItemAction<QueueTask>() {
                         @Override
@@ -474,6 +503,10 @@ public class QueueComponent extends XulElement implements
                     });
             divElement.setContext(menuBuilder.createWithoutSettingContext());
         }
+    }
+
+    private void editResourceAllocation(QueueTask queueTask) {
+        getLimitingResourcesPanel().editResourceAllocation(queueTask);
     }
 
     private void moveQueueTask(QueueTask queueTask) {

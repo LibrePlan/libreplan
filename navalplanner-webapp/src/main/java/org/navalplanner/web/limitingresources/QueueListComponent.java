@@ -97,6 +97,12 @@ public class QueueListComponent extends HtmlMacroComponent implements
         queueComponent.appendQueueElement(element);
     }
 
+    public void removeQueueElement(LimitingResourceQueueElement element) {
+        QueueComponent queueComponent = fromQueueToComponent.get(element
+                .getLimitingResourceQueue());
+        queueComponent.removeQueueElement(element);
+    }
+
     public void refreshQueue(LimitingResourceQueue queue) {
         QueueComponent queueComponent = fromQueueToComponent.get(queue);
         queueComponent.setLimitingResourceQueue(queue);

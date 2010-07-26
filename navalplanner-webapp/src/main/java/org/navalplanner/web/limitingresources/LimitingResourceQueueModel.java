@@ -44,8 +44,10 @@ import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.IDependencyDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -127,6 +129,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private Set<TaskElement> parentElementsToBeUpdated = new HashSet<TaskElement>();
 
     private Scenario master;
+
+    private Map<LimitingResourceQueueElement, HashSet<LimitingResourceQueueDependency>> toBeSavedDependencies =
+        new HashMap<LimitingResourceQueueElement, HashSet<LimitingResourceQueueDependency>>();
 
     @Override
     @Transactional(readOnly = true)
@@ -219,6 +224,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private void initializeTask(Task task) {
+        if (hasResourceAllocation(task)) {
+            ResourceAllocation<?> resourceAllocation = initializeResourceAllocationIfNecessary(getResourceAllocation(task));
+            task.setResourceAllocation(resourceAllocation);
+        }
+
         Hibernate.initialize(task);
         for (ResourceAllocation<?> each: task.getAllResourceAllocations()) {
             Hibernate.initialize(each);
@@ -229,7 +239,23 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         for (Dependency each: task.getDependenciesWithThisDestination()) {
             Hibernate.initialize(each);
         }
+        initializeTaskSource(task.getTaskSource());
         initializeRootOrder(task);
+    }
+
+    private boolean hasResourceAllocation(Task task) {
+        return !task.getLimitingResourceAllocations().isEmpty();
+    }
+
+    private ResourceAllocation<?> getResourceAllocation(Task task) {
+        return task.getLimitingResourceAllocations().iterator().next();
+    }
+
+    private void initializeTaskSource(TaskSource taskSource) {
+        Hibernate.initialize(taskSource);
+        for (HoursGroup each: taskSource.getHoursGroups()) {
+            Hibernate.initialize(each);
+        }
     }
 
     // FIXME: Needed to fetch order.name in QueueComponent.composeTooltiptext.
@@ -712,10 +738,22 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private void saveQueueElement(LimitingResourceQueueElement element) {
+        Long previousId = element.getId();
         limitingResourceQueueElementDAO.save(element);
-        Task task = getAssociatedTask(element);
-        taskDAO.save(task);
-        parentElementsToBeUpdated.add(task.getParent());
+        limitingResourceQueueDAO.flush();
+        if (element.isNewObject()) {
+            queuesState.idChangedFor(previousId, element);
+        }
+        element.dontPoseAsTransientObjectAnymore();
+        element.getResourceAllocation().dontPoseAsTransientObjectAnymore();
+        for (DayAssignment each: element.getDayAssignments()) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+        if (toBeSavedDependencies.get(element) != null) {
+            saveDependencies(toBeSavedDependencies.get(element));
+            toBeSavedDependencies.remove(element);
+        }
+        taskDAO.save(getAssociatedTask(element));
     }
 
     private void updateEndDateForParentTasks() {
@@ -727,6 +765,13 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 taskDAO.save(parent);
                 parent = parent.getParent();
             }
+        }
+    }
+
+    private void saveDependencies(HashSet<LimitingResourceQueueDependency> dependencies) {
+        for (LimitingResourceQueueDependency each: dependencies) {
+            limitingResourceQueueDependencyDAO.save(each);
+            each.dontPoseAsTransientObjectAnymore();
         }
     }
 
@@ -930,4 +975,27 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return (element.getStartTime().isBefore(time) || element.getStartTime().isEquals(time))
                     && (element.getEndTime().isAfter(time) || element.getEndTime().isEquals(time));
     }
+
+    @Override
+    @Transactional(readOnly=true)
+    public void replaceLimitingResourceQueueElement(
+            LimitingResourceQueueElement oldElement,
+            LimitingResourceQueueElement newElement) {
+
+        boolean needToReassign = oldElement.hasDayAssignments();
+
+        limitingResourceQueueElementDAO.save(newElement);
+        queuesState.replaceLimitingResourceQueueElement(oldElement, newElement);
+
+        if (needToReassign) {
+            assignLimitingResourceQueueElement(newElement);
+        }
+        HashSet<LimitingResourceQueueDependency> dependencies = new HashSet<LimitingResourceQueueDependency>();
+        dependencies.addAll(newElement.getDependenciesAsOrigin());
+        dependencies.addAll(newElement.getDependenciesAsDestiny());
+        toBeSavedDependencies.put(newElement, dependencies);
+
+        markAsModified(newElement);
+    }
+
 }

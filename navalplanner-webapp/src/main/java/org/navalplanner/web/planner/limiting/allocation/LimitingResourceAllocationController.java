@@ -80,6 +80,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
     private Label totalEstimatedHours;
 
+    private boolean disableHours = true;
+
     private NewAllocationSelector limitingNewAllocationSelector;
 
     private GridLimitingAllocationRenderer gridLimitingAllocationRenderer = new GridLimitingAllocationRenderer();
@@ -89,6 +91,10 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
         super.doAfterCompose(comp);
         limitingNewAllocationSelector.setLimitingResourceFilter(true);
         limitingNewAllocationSelector.allowSelectMultipleResources(false);
+    }
+
+    public void setDisableHours(boolean disable) {
+        this.disableHours = disable;
     }
 
     /**
@@ -186,7 +192,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
         private Intbox intboxHours(final LimitingAllocationRow resourceAllocation) {
             Intbox result = bindToHours(new Intbox(), resourceAllocation);
-            result.setDisabled(resourceAllocation.hasDayAssignments());
+            result.setDisabled(resourceAllocation.hasDayAssignments() && disableHours);
             return result;
         }
 

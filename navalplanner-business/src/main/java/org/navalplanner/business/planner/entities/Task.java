@@ -228,6 +228,17 @@ public class Task extends TaskElement {
         }
     }
 
+    public ResourceAllocation<?> getResourceAllocation() {
+        Validate.isTrue(isLimiting());
+        return resourceAllocations.isEmpty() ? null : resourceAllocations.iterator().next();
+    }
+
+    public void setResourceAllocation(ResourceAllocation<?> resourceAllocation) {
+        Validate.isTrue(resourceAllocation.isLimiting());
+        removeAllResourceAllocations();
+        resourceAllocations.add(resourceAllocation);
+    }
+
     public void removeResourceAllocation(
             ResourceAllocation<?> resourceAllocation) {
         resourceAllocation.detach();
