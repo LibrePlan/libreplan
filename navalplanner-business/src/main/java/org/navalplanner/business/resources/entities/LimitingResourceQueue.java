@@ -134,4 +134,21 @@ public class LimitingResourceQueue extends BaseEntity {
         invalidCachedGaps();
     }
 
+    /**
+     * limitingResourceQueueElements is a SortedSet of
+     * {@link LimitingResourceQueueElement} ordered by startDate
+     *
+     * When an element if shifted visually in a list of queue elements, it might
+     * be necessary to rearrange the SortedSet so the new element occupies its
+     * real position. Instead of rearranging the SortedSet again, the element is
+     * removed from the set and inserted again. Insert operation guarantees that
+     * an element is inserted at the right position
+     *
+     */
+    public void reloadLimitingResourceQueueElement(
+            LimitingResourceQueueElement element) {
+        limitingResourceQueueElements.remove(element);
+        limitingResourceQueueElements.add(element);
+    }
+
 }

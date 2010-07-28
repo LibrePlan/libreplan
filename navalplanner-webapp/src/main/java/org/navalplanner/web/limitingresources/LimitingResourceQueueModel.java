@@ -431,6 +431,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 .getPotentiallyAffectedByInsertion(externalQueueElement),
                 requirements.getElement(),
                 allocationDone);
+
         result.addAll(moved);
         return result;
     }
@@ -446,17 +447,26 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
             LimitingResourceQueueElement elementInserted,
             AllocationSpec allocationAlreadyDone) {
+
         List<AllocationSpec> allocationsToBeDone = getAllocationsToBeDone(
                         potentiallyAffectedByInsertion, elementInserted,
                         allocationAlreadyDone);
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
         for (AllocationSpec each : allocationsToBeDone) {
             applyAllocation(each);
-            result.add(each.getElement());
+
+            LimitingResourceQueueElement element = each.getElement();
+            reloadElementInQueue(element);
+            result.add(element);
         }
+
         return result;
     }
 
+    private void reloadElementInQueue(LimitingResourceQueueElement element) {
+        final LimitingResourceQueue queue = element.getLimitingResourceQueue();
+        queue.reloadLimitingResourceQueueElement(element);
+    }
 
     private List<AllocationSpec> getAllocationsToBeDone(
             DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
@@ -688,7 +698,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private void updateStartingAndEndingDate(Task task, LocalDate startDate,
             LocalDate endDate) {
         task.setStartDate(toDate(startDate));
-        task.setEndDate(endDate.toDateTimeAtStartOfDay().toDate());
+        task.setEndDate(toDate(endDate));
         task.explicityMoved(toDate(startDate));
     }
 
