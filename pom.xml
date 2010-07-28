@@ -174,10 +174,10 @@
 		 <id>thirdparty</id>
 		 <url>http://nexus.naval.igalia.com/content/repositories/thirdparty</url>
 	 </repository>
-     <repository>
-        <id>zk repository</id>
-        <url>http://mavensync.zkoss.org/maven2</url>
-     </repository>
+        <repository>
+            <id>ZK EE Evaluation</id>
+            <url>http://mavensync.zkoss.org/zk/ee-eval</url>
+        </repository>
     </repositories>
 
      <pluginRepositories>
@@ -414,22 +414,22 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.3</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.3</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.3</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkex</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.3</version>
             </dependency>
             <!-- JGraphT -->
             <dependency>
