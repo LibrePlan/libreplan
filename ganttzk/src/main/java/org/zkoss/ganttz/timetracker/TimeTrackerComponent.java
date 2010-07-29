@@ -27,8 +27,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
-import org.zkoss.zk.au.ComponentCommand;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -64,6 +63,27 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         };
         this.timeTracker.addZoomListener(zoomListener);
         timeTrackerElementId = timetrackerId;
+
+        setAuService(new AuService() {
+            public boolean service(AuRequest request, boolean everError){
+                String command = request.getCommand();
+                if (command.equals("onIncrease")){
+                    onIncrease(retrievePixelsOffset(request));
+                    return true;
+                }
+                if (command.equals("onDecrease")){
+                    onDecrease(retrievePixelsOffset(request));
+                    return true;
+                }
+
+                return false;
+            }
+
+            private int retrievePixelsOffset(AuRequest request){
+                String[] requestData = (String[])request.getData().get("");
+                return Integer.parseInt(requestData[0]);
+            }
+        });
     }
 
     private boolean isInPage() {
@@ -106,37 +126,6 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     private TimeTrackerState getTimeTrackerState() {
         return getTimeTracker().getTimeTrackerState();
-    }
-
-    private Command _onincreasecmd = new ComponentCommand("onIncrease", 0) {
-
-        protected void process(AuRequest request) {
-            String[] requestData = request.getData();
-            int pixelsOffset = Integer.parseInt(requestData[0]);
-            onIncrease(pixelsOffset);
-        }
-
-    };
-
-    private Command _ondecreasecmd = new ComponentCommand("onDecrease", 0) {
-
-        protected void process(AuRequest request) {
-            String[] requestData = request.getData();
-            int pixelsOffset = Integer.parseInt(requestData[0]);
-            onDecrease(pixelsOffset);
-        }
-
-    };
-
-    private Command[] commands = { _onincreasecmd, _ondecreasecmd };
-
-    public Command getCommand(String cmdId) {
-        for (Command command : commands) {
-            if (command.getId().equals(cmdId)) {
-                return command;
-            }
-        }
-        return super.getCommand(cmdId);
     }
 
     public void onIncrease(int offset) {
