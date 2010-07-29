@@ -994,6 +994,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         boolean needToReassign = oldElement.hasDayAssignments();
 
+        limitingResourceQueueElementDAO.save(oldElement);
         limitingResourceQueueElementDAO.save(newElement);
         queuesState.replaceLimitingResourceQueueElement(oldElement, newElement);
 

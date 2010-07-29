@@ -529,9 +529,13 @@ public class QueuesState {
             LimitingResourceQueueElement oldElement,
             LimitingResourceQueueElement newElement) {
 
+        if (oldElement.isNewObject()) {
+            elementsById.put(oldElement.getId(), oldElement);
+        }
+
         LimitingResourceQueueElement element = getEquivalent(oldElement);
 
-        if (oldElement.hasDayAssignments()) {
+        if (element.hasDayAssignments()) {
             unassingFromQueue(element);
         }
 
