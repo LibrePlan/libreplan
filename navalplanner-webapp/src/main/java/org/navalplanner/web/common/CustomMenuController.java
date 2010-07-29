@@ -202,19 +202,16 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Subcontracted tasks list"), "/subcontract/subcontractedTasks.zul", ""),
             subItem(_("Report advances"), "/subcontract/reportAdvances.zul", ""),
             subItem(_("Transfer orders between scenarios"), "/scenarios/transferOrders.zul", ""));
+
         topItem(_("Resources"), "/resources/worker/worker.zul", "",
             subItem(_("Workers List"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"),
             subItem(_("Machines List"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"),
             subItem(_("Virtual worker groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
 
         topItem(_("Work reports"), "/workreports/workReportTypes.zul", "",
-                subItem(_("Work report types"),
-                        "/workreports/workReportTypes.zul",
-                        "09-partes.html#id2"), subItem(_("Work report list"),
-                        "/workreports/workReport.zul", "09-partes.html#id3"),
-                subItem(_("Work report query"),
-                        "/workreports/workReportQuery.zul",
-                        "09-partes.html#id4"));
+            subItem(_("Work report types"),"/workreports/workReportTypes.zul","09-partes.html#id2"),
+            subItem(_("Work report list"), "/workreports/workReport.zul", "09-partes.html#id3"),
+            subItem(_("Work report query"), "/workreports/workReportQuery.zul", "09-partes.html#id4"));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration"), "/advance/advanceTypes.zul", "",
@@ -234,7 +231,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Manage scenarios"), "/scenarios/scenarios.zul",""));
             }
 
-        topItem(_("Reports"), "", "",
+        topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
             subItem(_("Hours worked per worker"),"/reports/hoursWorkedPerWorkerReport.zul","15-informes.html"),
             subItem(_("Completed estimated hours"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
             subItem(_("Working progress per task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
