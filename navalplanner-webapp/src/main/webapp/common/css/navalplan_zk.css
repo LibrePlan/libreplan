@@ -872,10 +872,8 @@ div.z-listbox-pgi-b {
 .orderTree .not-scheduled span.scheduling-state,
 .orderTree .partially-scheduled span.scheduling-state,
 .orderTree .completely-scheduled span.scheduling-state {
-    -moz-border-radius-bottomleft: 6px;
-    -moz-border-radius-bottomright: 1px;
-    -moz-border-radius-topleft: 1px;
-    -moz-border-radius-topright: 6px;
+    -moz-border-radius: 1px 6px 1px 6px;
+    -webkit-border-radius: 1px 6px 1px 6px;
     border: 1px solid #888888;
     color: #888888;
     font-weight: bold;
@@ -1209,14 +1207,8 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 }
 
 .migas_linea .scheduling-state {
-    -moz-border-radius-bottomleft: 6px;
-    -moz-border-radius-bottomright: 1px;
-    -moz-border-radius-topleft: 1px;
-    -moz-border-radius-topright: 6px;
-    -webkit-borderbottom-left-radius: 3px;
-    -webkit-border-bottomright-radius: 1px;
-    -webkit-border-radius-top-left-radius: 1px;
-    -webkit-border-topright-radius: 6px;
+    -moz-border-radius: 0 6px 0 6px;
+    -webkit-border-radius: 0 6px 0 6px;
     border: 1px solid #888888;
     color: #888888;
     font-weight: bold;

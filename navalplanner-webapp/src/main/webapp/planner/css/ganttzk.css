@@ -214,11 +214,13 @@
 div.box.limiting-assigned {
     background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
     -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
 }
 
 div.box.limiting-unassigned {
     background-color: #c1d9d1; /* LIMITING_RESOURCES_GREEN */
     -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
 }
 
 .toggled {
@@ -704,6 +706,7 @@ div.limitingresourcesleftpane  {
 .queue-element {
     background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
     -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
     border: solid 1px;
     float:left;
     height:10px;
@@ -712,6 +715,7 @@ div.limitingresourcesleftpane  {
 
 .queue-element.truncated-end {
     -moz-border-radius: 12px 0 0 12px;
+    -webkit-border-radius: 12px 0 0 12px;
 }
 
 .queue-element.unmet-deadline {
@@ -752,7 +756,6 @@ div.z-tree {
     height:550px;
 }
 
-
 .task_tooltip {
     display:none;
     font-size: 11px;
@@ -764,6 +767,7 @@ div.z-tree {
     border: solid 1px #CCCCCC;
     z-index: 100 !important;
     -moz-box-shadow: 1px 1px 10px #666666;
+    -webkit-box-shadow: 1px 1px 10px #666666;
 }
 
 /* Avoid current box tooltip being overlapped */
@@ -1144,6 +1148,8 @@ body .perspectives-column {
     margin-top: 2px;
     -moz-border-radius-bottomleft: 2px;
     -moz-border-radius-topleft: 2px;
+    -webkit-bottom-left-radius: 2px;
+    -webkit-top-left-radius: 2px;
 }
 
 .limiting-assigned .completion2, .limiting-unassigned .completion2 {
