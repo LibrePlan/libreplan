@@ -34,15 +34,14 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
 import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
-import org.zkoss.zk.au.ComponentCommand;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
@@ -77,81 +76,6 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         return Integer.valueOf(matcher.group(1));
     }
-
-    private static Command _updatecmd = new ComponentCommand(
-            "onUpdatePosition", 0) {
-
-        protected void process(AuRequest request) {
-
-            final TaskComponent ta = (TaskComponent) request.getComponent();
-
-            if (ta == null) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
-                        this);
-            }
-
-            String[] requestData = request.getData();
-
-            if (requestData == null || requestData.length != 2) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                        new Object[] { Objects.toString(requestData), this });
-            } else {
-
-                ta.doUpdatePosition(requestData[0], requestData[1]);
-                Events.postEvent(new Event(getId(), ta, request.getData()));
-            }
-        }
-
-    };
-
-    private static Command _updatewidthcmd = new ComponentCommand(
-            "onUpdateWidth", 0) {
-
-        protected void process(AuRequest request) {
-
-            final TaskComponent ta = (TaskComponent) request.getComponent();
-
-            if (ta == null) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
-                        this);
-            }
-
-            String[] requestData = request.getData();
-
-            if (requestData == null || requestData.length != 1) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                        new Object[] { Objects.toString(requestData), this });
-            } else {
-
-                ta.doUpdateSize(requestData[0]);
-                Events.postEvent(new Event(getId(), ta, request.getData()));
-            }
-        }
-    };
-
-    private static Command _adddependencycmd = new ComponentCommand(
-            "onAddDependency", 0) {
-
-        protected void process(AuRequest request) {
-
-            final TaskComponent taskComponent = (TaskComponent) request.getComponent();
-
-            if (taskComponent == null) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
-                        this);
-            }
-
-            String[] requestData = request.getData();
-
-            if (requestData == null || requestData.length != 1) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                        new Object[] { Objects.toString(requestData), this });
-            } else {
-                taskComponent.doAddDependency(requestData[0]);
-                Events.postEvent(new Event(getId(), taskComponent, request.getData()));
-            }
-        }
-    };
 
     protected final IDisabilityConfiguration disabilityConfiguration;
 
@@ -216,6 +140,64 @@ public class TaskComponent extends Div implements AfterCompose {
 
         };
         this.task.addReloadListener(reloadResourcesTextRequested);
+        setAuService(new AuService(){
+            public boolean service(AuRequest request, boolean everError){
+                String command = request.getCommand();
+                final TaskComponent ta;
+                String[] requestData;
+
+                if (command.equals("onUpdatePosition")){
+                    ta = retrieveTaskComponent(request);
+                    requestData = retrieveData(request, 2);
+
+                    ta.doUpdatePosition(requestData[0], requestData[1]);
+                    Events.postEvent(new Event(getId(), ta, request.getData()));
+
+                    return true;
+                }
+                if (command.equals("onUpdateWidth")){
+                    ta = retrieveTaskComponent(request);
+                    requestData = retrieveData(request, 1);
+
+                    ta.doUpdateSize(requestData[0]);
+                    Events.postEvent(new Event(getId(), ta, request.getData()));
+
+                    return true;
+                }
+                if (command.equals("onAddDependency")){
+                    ta = retrieveTaskComponent(request);
+                    requestData = retrieveData(request, 1);
+
+                    ta.doAddDependency(requestData[0]);
+                    Events.postEvent(new Event(getId(), ta, request.getData()));
+
+                    return true;
+                }
+                return false;
+            }
+
+            private TaskComponent retrieveTaskComponent(AuRequest request){
+                final TaskComponent ta = (TaskComponent) request.getComponent();
+
+                if (ta == null) {
+                    throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
+                            this);
+                }
+
+                return ta;
+            }
+
+            private String[] retrieveData(AuRequest request, int requestLength){
+                String[] requestData = (String [])request.getData().get("");
+
+                if (requestData == null || requestData.length != requestLength) {
+                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
+                            new Object[] { Objects.toString(requestData), this });
+                }
+
+                return requestData;
+           }
+        });
     }
 
     /* Generate CSS class attribute depending on task properties */
@@ -308,20 +290,6 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public String getLength() {
         return null;
-    }
-
-    public Command getCommand(String cmdId) {
-        Command result = null;
-        if ("updatePosition".equals(cmdId)
-                && isMovingTasksEnabled()) {
-            result = _updatecmd;
-        } else if ("updateSize".equals(cmdId)
-                && isResizingTasksEnabled()) {
-            result = _updatewidthcmd;
-        } else if ("addDependency".equals(cmdId)) {
-            result = _adddependencycmd;
-        }
-        return result;
     }
 
     public boolean isResizingTasksEnabled() {
