@@ -262,7 +262,8 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         }
     }
 
-    public void goToEditNewWorkReportForm(WorkReportType workReportType) {
+    public void goToEditNewWorkReportForm(WorkReportType workReportType)
+    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         workReportCRUD.goToCreateForm(workReportType);
     }
 
