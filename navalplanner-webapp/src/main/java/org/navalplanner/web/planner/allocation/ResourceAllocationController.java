@@ -37,6 +37,7 @@ import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector;
@@ -488,24 +489,31 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public enum DerivedAllocationColumn implements IConvertibleToColumn {
-        NAME("Name") {
+        NAME(_("Name")) {
             @Override
             public Component cellFor(DerivedAllocation data) {
                 return new Label(data.getName());
             }
         },
-        ALPHA("Alpha") {
+        ALPHA(_("Alpha")) {
             @Override
             public Component cellFor(DerivedAllocation data) {
                 return new Label(String.format("%3.2f", data.getAlpha()));
             }
         },
-        HOURS("Total Hours") {
+        HOURS(_("Total Hours")) {
             @Override
             public Component cellFor(DerivedAllocation data) {
                 return new Label(data.getHours() + "");
             }
         };
+
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
 
         private final String name;
 
@@ -513,9 +521,13 @@ public class ResourceAllocationController extends GenericForwardComposer {
             this.name = name;
         }
 
+        public String getName() {
+            return I18nHelper._(name);
+        }
+
         @Override
         public org.zkoss.zul.api.Column toColumn() {
-            return new Column(_(name));
+            return new Column(getName());
         }
 
         public static void appendColumnsTo(Grid grid) {

@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.orders.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import org.navalplanner.business.i18n.I18nHelper;
 
 
 /**
@@ -33,6 +33,13 @@ public enum OrderStatusEnum {
             _("FINISHED")), CANCELLED(_("CANCELLED")), SUBCONTRACTED_PENDING_ORDER(
             _("SUBCONTRACTED PENDING ORDER")), STORED(_("STORED"));
 
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
+
     private String description;
 
     private OrderStatusEnum(String description) {
@@ -40,7 +47,7 @@ public enum OrderStatusEnum {
     }
 
     public String toString() {
-        return this.description;
+        return I18nHelper._(this.description);
     }
 
     public static OrderStatusEnum getDefault() {

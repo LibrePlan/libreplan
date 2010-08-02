@@ -20,10 +20,9 @@
 
 package org.zkoss.ganttz.timetracker.zoom;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.zkoss.ganttz.i18n.I18nHelper;
 /**
  * @author Francisco Javier Moran Rúa
  */
@@ -108,6 +107,13 @@ public enum ZoomLevel {
         }
     };
 
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
+
     private String name;
 
     private ZoomLevel(String name) {
@@ -143,7 +149,7 @@ public enum ZoomLevel {
 
     @Override
     public String toString() {
-        return name;
+        return I18nHelper._(name);
     }
 
     public static ZoomLevel getFromString(String zoomLevelParameter) {

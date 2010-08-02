@@ -23,7 +23,7 @@
  */
 package org.navalplanner.business.workreports.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import org.navalplanner.business.i18n.I18nHelper;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -31,6 +31,13 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 public enum PositionInWorkReportEnum {
 
     HEADING(_("heading")), LINE(_("line"));
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     private String displayName;
 
@@ -43,7 +50,7 @@ public enum PositionInWorkReportEnum {
     }
 
     public String toString() {
-        return displayName;
+        return I18nHelper._(displayName);
     }
 
 }

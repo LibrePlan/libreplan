@@ -34,6 +34,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.common.ConstraintChecker;
@@ -648,6 +649,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         LIMITING_RESOURCE(_("LIMITING RESOURCE")),
         NON_LIMITING_RESOURCE(_("NON LIMITING RESOURCE"));
 
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
+
         private String option;
 
         private LimitingResourceEnum(String option) {
@@ -655,7 +663,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         }
 
         public String toString() {
-            return option;
+            return I18nHelper._(option);
         }
 
         public static LimitingResourceEnum valueOf(Boolean isLimitingResource) {

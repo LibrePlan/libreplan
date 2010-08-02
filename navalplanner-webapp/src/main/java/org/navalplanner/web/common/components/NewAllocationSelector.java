@@ -20,12 +20,11 @@
 
 package org.navalplanner.web.common.components;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.HashSet;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -41,14 +40,14 @@ import org.zkoss.zul.api.Radiogroup;
 public class NewAllocationSelector extends HtmlMacroComponent {
 
     public enum AllocationType {
-        SPECIFIC("specific allocation") {
+        SPECIFIC(_("specific allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller,
                     INewAllocationsAdder allocationsAdder) {
                 allocationsAdder.addSpecific(controller.getSelectedWorkers());
             }
         },
-        GENERIC("generic allocation") {
+        GENERIC(_("generic allocation")) {
             @Override
             public void addTo(
                     NewAllocationSelectorController controller,
@@ -59,6 +58,13 @@ public class NewAllocationSelector extends HtmlMacroComponent {
             }
         };
 
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
+
         private final String name;
 
         private AllocationType(String name) {
@@ -66,7 +72,7 @@ public class NewAllocationSelector extends HtmlMacroComponent {
         }
 
         public String getName() {
-            return _(name);
+            return I18nHelper._(name);
         }
 
         public static AllocationType getSelected(Radiogroup radioGroup) {

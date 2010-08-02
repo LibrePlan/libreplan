@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.planner.chart;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -34,6 +32,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.web.I18nHelper;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.geometry.TimeGeometry;
@@ -63,6 +62,13 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
                 _("Schedule Performance Index"), "#008888")
         ;
 
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
+
         private String acronym;
         private String name;
         private String color;
@@ -74,11 +80,11 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         }
 
         public String getAcronym() {
-            return acronym;
+            return I18nHelper._(acronym);
         }
 
         public String getName() {
-            return name;
+            return I18nHelper._(name);
         }
 
         public String getColor() {

@@ -23,13 +23,20 @@
  */
 package org.navalplanner.business.workreports.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import org.navalplanner.business.i18n.I18nHelper;
 
 public enum HoursManagementEnum {
 
     NUMBER_OF_HOURS(_("Number of assigned hours.")),
     HOURS_CALCULATED_BY_CLOCK(_("Number of hours calculated by clock.")),
     NUMBER_OF_HOURS_AND_CLOCK(_("Number of assigned hours and the time."));
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     private String description;
 
@@ -38,7 +45,7 @@ public enum HoursManagementEnum {
     }
 
     public String toString() {
-        return this.description;
+        return I18nHelper._(this.description);
     }
 
     public static HoursManagementEnum getDefault() {

@@ -20,15 +20,35 @@
 
 package org.navalplanner.business.materials.entities;
 
+import org.navalplanner.business.i18n.I18nHelper;
+
 /**
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
 public enum MaterialStatusEnum {
-    RECEIVED,
-    PENDING,
-    ORDERED,
-    PROCESSING,
-    CANCELED
+    RECEIVED(_("RECEIVED")),
+    PENDING(_("PENDING")),
+    ORDERED(_("ORDERED")),
+    PROCESSING(_("PROCESSING")),
+    CANCELED(_("CANCELED"));
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
+
+    private String description;
+
+    private MaterialStatusEnum(String description) {
+        this.description = description;
+    }
+
+    public String toString() {
+        return I18nHelper._(this.description);
+    }
+
 }

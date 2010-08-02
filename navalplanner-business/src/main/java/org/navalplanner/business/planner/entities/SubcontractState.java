@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import org.navalplanner.business.i18n.I18nHelper;
 
 /**
  * Possible states of a {@link SubcontractedTaskData}.
@@ -30,6 +30,13 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 public enum SubcontractState {
     PENDING(_("Pending"), true), FAILED_SENT(_("Failed sent"), true), SUCCESS_SENT(
             _("Success sent"), false);
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     private String name;
     private boolean sendable;
@@ -41,7 +48,7 @@ public enum SubcontractState {
 
     @Override
     public String toString() {
-        return name;
+        return I18nHelper._(name);
     }
 
     public boolean isSendable() {

@@ -23,8 +23,7 @@
  */
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
+import org.navalplanner.business.i18n.I18nHelper;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -36,6 +35,13 @@ public enum OrderElementFilterEnum implements IFilterEnum {
 
     None("..."), Criterion(_("Criterion")), Label(_("Label"));
 
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
+
     private String description;
 
     private OrderElementFilterEnum(String description) {
@@ -43,7 +49,7 @@ public enum OrderElementFilterEnum implements IFilterEnum {
     }
 
     public String toString() {
-        return this.description;
+        return I18nHelper._(this.description);
     }
 
 }

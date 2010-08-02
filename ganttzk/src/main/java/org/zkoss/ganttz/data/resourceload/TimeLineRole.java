@@ -20,6 +20,7 @@
 
 package org.zkoss.ganttz.data.resourceload;
 
+import org.zkoss.ganttz.i18n.I18nHelper;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -53,13 +54,20 @@ public class TimeLineRole<T> {
      */
     public enum TimeLineRoleEnum {
 
-        NONE("None"), WORKER("Worker"), ORDER("Order"), TASK("Task") {
+        NONE(_("None")), WORKER(_("Worker")), ORDER(_("Order")), TASK(_("Task")) {
             @Override
             public boolean isVisibleScheduled() {
                 return true;
             }
         },
-        CRITERION("Criterion");
+        CRITERION(_("Criterion"));
+
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
 
         private String name;
 
@@ -80,7 +88,7 @@ public class TimeLineRole<T> {
         }
 
         public String toString() {
-            return this.name;
+            return I18nHelper._(this.name);
         }
 
         public boolean isVisibleScheduled() {
