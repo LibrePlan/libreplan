@@ -847,6 +847,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             showOrderElementFilter();
             showCreateButtons(false);
             orderModel.prepareForCreate();
+            updateDisabilitiesOnInterface();
             showEditWindow(_("Create order"));
             checkCreationPermissions();
         } catch (ConcurrentModificationException e) {
@@ -1218,6 +1219,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OrderStatusEnum initialStatus;
 
     public void onStatusChange() {
+        updateDisabilitiesOnInterface();
+    }
+
+    private void updateDisabilitiesOnInterface() {
         Order order = (Order)orderModel.getOrder();
         if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())
                 && order.getState() != OrderStatusEnum.STORED) {
