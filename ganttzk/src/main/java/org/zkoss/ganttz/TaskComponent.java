@@ -22,6 +22,7 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +40,6 @@ import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
-import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -49,6 +49,7 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
 
 /**
@@ -341,20 +342,16 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     /*
-     * We override the method of getRealStyle to put the color property as part
+     * We override the method of renderProperties to put the color property as part
      * of the style
      */
+    protected void renderProperties(ContentRenderer renderer) throws IOException{
+        if(getColor() != null)
+            setWidgetAttribute("background-color", getColor());
 
-    protected String getRealStyle() {
+        setWidgetAttribute("position", "absolute");
 
-        final StringBuffer sb = new StringBuffer(super.getRealStyle());
-
-        if (getColor() != null) {
-            HTMLs.appendStyle(sb, "background-color", getColor());
-        }
-        HTMLs.appendStyle(sb, "position", "absolute");
-
-        return sb.toString();
+        super.renderProperties(renderer);
     }
 
     /*
