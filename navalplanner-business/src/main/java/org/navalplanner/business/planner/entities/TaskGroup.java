@@ -61,6 +61,8 @@ public class TaskGroup extends TaskElement {
     }
 
     public void addTaskElement(TaskElement task) {
+        Validate.notNull(task);
+        task.setParent(this);
         addTaskElement(taskElements.size(), task);
         Date newPossibleEndDate = task.getEndDate();
         if (getEndDate() == null
@@ -118,6 +120,7 @@ public class TaskGroup extends TaskElement {
         int positionOnTaskElements = 0;
         for (int i = 0; i < children.size(); i++) {
             TaskElement element = children.get(i);
+            element.setParent(this);
             if (positionOnTaskElements >= taskElements.size()) {
                 taskElements.add(element);
             } else {
