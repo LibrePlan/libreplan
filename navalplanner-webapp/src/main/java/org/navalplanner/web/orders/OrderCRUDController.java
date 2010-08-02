@@ -268,7 +268,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         listOrderStatus.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                onStatusChange();
+                updateDisabilitiesOnInterface();
             }
         });
     }
@@ -502,13 +502,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (couldSave) {
             if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
                 orderModel.initEdit(order);
-                checkWritePermissions(order);
-                if(order.getState() == OrderStatusEnum.STORED) {
-                    //disable save buttons if state == STORED
-                    readOnly = true;
-                    setEditionDisabled(true);
-                }
                 initialStatus = order.getState();
+                updateDisabilitiesOnInterface();
                 initializeTabs();
                 showWindow(editWindow);
 
@@ -767,13 +762,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             orderModel.initEdit(order);
             addEditWindowIfNeeded();
-            checkWritePermissions(order);
-            if(order.getState() == OrderStatusEnum.STORED) {
-                //disable save buttons if state == STORED
-                readOnly = true;
-                setEditionDisabled(true);
-            }
             initialStatus = order.getState();
+            updateDisabilitiesOnInterface();
             showEditWindow(_("Edit order"));
         }
         else {
@@ -1200,44 +1190,23 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private boolean readOnly = true;
 
-    /**
-     * Checks the write permissions of the current user on this Order and enables/disables
-     * the save buttons accordingly.
-     */
-    private void checkWritePermissions(Order order) {
-        readOnly = !orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName());
-        setEditionDisabled(readOnly);
-    }
-
-    private void setEditionDisabled(boolean disabled) {
-        if(orderElementTreeController != null) {
-            orderElementTreeController.setReadOnly(disabled);
-        }
-        saveOrderAndContinueButton.setDisabled(disabled);
-    }
-
     private OrderStatusEnum initialStatus;
 
-    public void onStatusChange() {
-        updateDisabilitiesOnInterface();
-    }
-
     private void updateDisabilitiesOnInterface() {
-        Order order = (Order)orderModel.getOrder();
-        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())
-                && order.getState() != OrderStatusEnum.STORED) {
-            //Enable the save buttons if the status changes from STORE to
-            //any other one
-            readOnly = false;
-            setEditionDisabled(false);
+        Order order = (Order) orderModel.getOrder();
+
+        boolean permissionForWriting = orderModel.userCanWrite(order,
+                SecurityUtils.getSessionUserLoginName());
+        boolean isInStoredState = order.getState() == OrderStatusEnum.STORED;
+        boolean isInitiallyStored = initialStatus == OrderStatusEnum.STORED;
+
+        readOnly = !permissionForWriting || isInStoredState;
+
+        if(orderElementTreeController != null) {
+            orderElementTreeController.setReadOnly(readOnly);
         }
-        if(initialStatus == OrderStatusEnum.STORED &&
-                order.getState() == OrderStatusEnum.STORED) {
-            //Status was STORED, it was changed to a different one and then
-            //changed back to STORED, so we have to disable the save buttons
-            readOnly = true;
-            setEditionDisabled(true);
-        }
+        saveOrderAndContinueButton.setDisabled(!permissionForWriting
+                || (isInitiallyStored && isInStoredState));
     }
 
     public void sortOrders() {
