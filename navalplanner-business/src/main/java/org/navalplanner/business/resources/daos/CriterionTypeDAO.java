@@ -28,7 +28,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.stereotype.Component;
@@ -46,39 +45,42 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     implements ICriterionTypeDAO {
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<CriterionType> findByName(CriterionType criterionType) {
-        Criteria c = getSession().createCriteria(CriterionType.class);
+        Criteria criteria = searchByNameCriteria(criterionType.getName());
+        return (List<CriterionType>) criteria.list();
+    }
 
-        c.add(Restrictions.eq("name", criterionType.getName()).ignoreCase());
-
-        return (List<CriterionType>) c.list();
+    private Criteria searchByNameCriteria(String name) {
+        Criteria result = getSession().createCriteria(CriterionType.class);
+        result.add(Restrictions.eq("name", name).ignoreCase());
+        return result;
     }
 
     @Override
     public CriterionType findUniqueByName(CriterionType criterionType)
                 throws InstanceNotFoundException {
         Validate.notNull(criterionType);
-
         return findUniqueByName(criterionType.getName());
     }
 
     @Override
     public CriterionType findUniqueByName(String name)
             throws InstanceNotFoundException {
-
-          Criteria c = getSession().createCriteria(CriterionType.class);
-
-          c.add(Restrictions.eq("name", name).ignoreCase());
-
-          CriterionType criterionType = (CriterionType) c.uniqueResult();
-
-          if (criterionType == null) {
+        CriterionType result = uniqueByName(name);
+        if (result == null) {
               throw new InstanceNotFoundException(name,
                   CriterionType.class.getName());
-          } else {
-              return criterionType;
           }
+        return result;
+    }
 
+    /**
+     * @return the single result of null
+     */
+    private CriterionType uniqueByName(String name) {
+        Criteria criteria = searchByNameCriteria(name);
+        return (CriterionType) criteria.uniqueResult();
     }
 
     @Override
@@ -92,12 +94,9 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
 
     @Override
     public boolean existsOtherCriterionTypeByName(CriterionType criterionType) {
-        try {
-            CriterionType t = findUniqueByName(criterionType);
-            return t != null && t != criterionType;
-        } catch (InstanceNotFoundException e) {
-            return false;
-        }
+        Validate.notNull(criterionType);
+        CriterionType found = uniqueByName(criterionType.getName());
+        return found != null && criterionType != found;
     }
 
     @Override
