@@ -40,15 +40,15 @@ public enum ResourceEnum {
         return string;
     }
 
-    private Class<?> klass;
+    private Class<? extends Resource> klass;
     private final String displayName;
 
-    private ResourceEnum(Class<?> clase, String displayName) {
-        this.klass = clase;
+    private ResourceEnum(Class<? extends Resource> klass, String displayName) {
+        this.klass = klass;
         this.displayName = displayName;
     }
 
-    public Class<?> asClass() {
+    public Class<? extends Resource> asClass() {
         return klass;
     }
 

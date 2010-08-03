@@ -167,7 +167,7 @@ public class CriterionType extends IntegrationEntity implements
         this.resource = resource;
     }
 
-    public static CriterionType asCriterionType(ICriterionType criterionType) {
+    public static CriterionType asCriterionType(ICriterionType<?> criterionType) {
         return create(criterionType.getName(),criterionType.getDescription(),
                 criterionType.allowHierarchy(), criterionType
         .isAllowSimultaneousCriterionsPerResource(),
@@ -175,7 +175,7 @@ public class CriterionType extends IntegrationEntity implements
                 CriterionType.getResource(criterionType));
     }
 
-    private static ResourceEnum getResource(ICriterionType criterionType) {
+    private static ResourceEnum getResource(ICriterionType<?> criterionType) {
         for (ResourceEnum resource : ResourceEnum.values()) {
             if (criterionType.criterionCanBeRelatedTo(resource.asClass())) {
                 return resource;
