@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -48,6 +49,7 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.servlets.CallbackServlet;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Executions;
 
 public class CutyPrint {
@@ -234,11 +236,13 @@ public class CutyPrint {
             final IServletRequestHandler original) {
         final SecurityContext originalContext = SecurityContextHolder
                 .getContext();
+        final Locale current = Locales.getCurrent();
         return new IServletRequestHandler() {
             @Override
             public void handle(HttpServletRequest request,
                     HttpServletResponse response) throws ServletException,
                     IOException {
+                Locales.setThreadLocal(current);
                 SecurityContextHolder.setContext(originalContext);
                 original.handle(request, response);
             }
