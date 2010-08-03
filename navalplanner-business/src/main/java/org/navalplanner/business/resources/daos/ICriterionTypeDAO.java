@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
@@ -57,5 +58,25 @@ public interface ICriterionTypeDAO
 
     List<CriterionType> getCriterionTypesByResources(
             Collection<ResourceEnum> resources);
+
+    /**
+     * Checks if exists the equivalent {@link CriterionType} on the DB for a
+     * {@link CriterionType} created from a {@link PredefinedCriterionTypes}
+     *
+     * @param criterionType
+     * @return
+     */
+    boolean existsPredefinedType(CriterionType criterionType);
+
+    /**
+     * Searches for the equivalent {@link CriterionType} on the DB for a
+     * CriterionType created from a {@link PredefinedCriterionTypes}
+     *
+     * @param predefinedCriterionType
+     * @return <code>null</code> if there is no {@link CriterionType} for the
+     *         predefinedCriterionType. Otherwise the equivalent
+     *         {@link CriterionType} on DB
+     */
+    CriterionType findPredefined(CriterionType predefinedCriterionType);
 
 }

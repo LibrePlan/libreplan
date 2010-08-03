@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -87,21 +86,11 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     }
 
     private CriterionType retrieveOrCreate(CriterionType criterionType) {
-        if (!criterionTypeDAO.exists(criterionType.getId())
-                && !criterionTypeDAO
-                        .existsOtherCriterionTypeByName(criterionType)) {
+        if (!criterionTypeDAO.existsPredefinedType(criterionType)) {
             criterionTypeDAO.save(criterionType);
             return criterionType;
-        } else {
-            try {
-                CriterionType result = criterionTypeDAO
-                        .findUniqueByName(criterionType
-                        .getName());
-                return result;
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            }
         }
+        return criterionTypeDAO.findPredefined(criterionType);
     }
 
     private Map<CriterionType, List<String>> getTypesWithCriterions() {

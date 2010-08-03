@@ -100,6 +100,40 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     }
 
     @Override
+    public boolean existsPredefinedType(CriterionType criterionType) {
+        Validate.notNull(criterionType);
+        Validate.notNull(criterionType.getPredefinedTypeInternalName());
+        if (existsOtherCriterionTypeByName(criterionType)) {
+            return true;
+        }
+        return uniqueByInternalName(criterionType) != null;
+    }
+
+    @Override
+    public CriterionType findPredefined(CriterionType criterionType) {
+        Validate.notNull(criterionType);
+        Validate.notNull(criterionType.getPredefinedTypeInternalName());
+        CriterionType result = uniqueByName(criterionType.getName());
+        if (result != null) {
+            return result;
+        }
+        return uniqueByInternalName(criterionType);
+    }
+
+    private Criteria byInternalName(String predefinedTypeInternalName) {
+        Criteria result = getSession().createCriteria(CriterionType.class);
+        result.add(Restrictions.eq("predefinedTypeInternalName",
+                predefinedTypeInternalName).ignoreCase());
+        return result;
+    }
+
+    private CriterionType uniqueByInternalName(CriterionType criterionType) {
+        Criteria c = byInternalName(criterionType
+                .getPredefinedTypeInternalName());
+        return (CriterionType) c.uniqueResult();
+    }
+
+    @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsByNameAnotherTransaction(CriterionType criterionType) {
         return existsOtherCriterionTypeByName(criterionType);
