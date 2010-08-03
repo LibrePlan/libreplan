@@ -141,7 +141,15 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         return create(new Criterion(name, type));
     }
 
+    public static Criterion createPredefined(String name, CriterionType type) {
+        Criterion result = create(name, type);
+        result.predefinedCriterionInternalName = name;
+        return result;
+    }
+
     private String name;
+
+    private String predefinedCriterionInternalName;
 
     private CriterionType type;
 
@@ -206,6 +214,10 @@ public class Criterion extends IntegrationEntity implements ICriterion {
     @NotEmpty(message="criterion name not specified")
     public String getName() {
         return name;
+    }
+
+    public String getPredefinedCriterionInternalName() {
+        return predefinedCriterionInternalName;
     }
 
     public void setName(String name) {

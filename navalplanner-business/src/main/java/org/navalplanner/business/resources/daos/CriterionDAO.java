@@ -23,6 +23,7 @@ package org.navalplanner.business.resources.daos;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
@@ -108,6 +109,21 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion>
         } catch (InstanceNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    public boolean existsPredefinedCriterion(Criterion predefinedCriterion) {
+        Validate.notNull(predefinedCriterion
+                .getPredefinedCriterionInternalName());
+        return existsByNameAndType(predefinedCriterion)
+                || existsByInternalCode(predefinedCriterion);
+    }
+
+    private boolean existsByInternalCode(Criterion criterion) {
+        Criteria c = getSession().createCriteria(Criterion.class);
+        c.add(Restrictions.eq("predefinedCriterionInternalName",
+                criterion.getPredefinedCriterionInternalName()).ignoreCase());
+        return c.list().size() > 0;
     }
 
     @Override

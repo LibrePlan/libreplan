@@ -105,6 +105,7 @@
     <version name="version" access="property" type="long" />
     <property name="code" access="property" not-null="true" unique="true"/>
     <property access="field" name="name"/>
+    <property access="field" name="predefinedCriterionInternalName" not-null="false"/>
     <property access="field" name="active"/>
     <many-to-one access="field" name="type" column="id_criterion_type" not-null="true" />
 

@@ -56,4 +56,6 @@ public interface ICriterionDAO extends IIntegrationEntityDAO<Criterion> {
 
     List<Criterion> findByNameAndType(String name, String type);
 
+    public boolean existsPredefinedCriterion(Criterion criterion);
+
 }
