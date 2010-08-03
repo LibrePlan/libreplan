@@ -46,7 +46,7 @@ public class PredefinedCriterionTypesProvider implements ICriterionTypeProvider 
     public Map<CriterionType, List<String>> getRequiredCriterions() {
         Map<CriterionType, List<String>> result = new HashMap<CriterionType, List<String>>();
         for (PredefinedCriterionTypes type : PredefinedCriterionTypes.values()) {
-            result.put(CriterionType.asCriterionType(type), type.getPredefined());
+            result.put(CriterionType.fromPredefined(type), type.getPredefined());
         }
         return result;
     }

@@ -163,6 +163,7 @@
     <version name="version" access="property" type="long" />
     <property name="code" access="property" not-null="true" unique="true"/>
     <property name="name" unique="true"/>
+    <property name="predefinedTypeInternalName" not-null="false" />
     <property name="description"/>
     <property name="allowSimultaneousCriterionsPerResource"/>
     <property name="allowHierarchy"/>

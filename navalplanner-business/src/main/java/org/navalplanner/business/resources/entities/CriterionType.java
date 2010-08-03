@@ -129,6 +129,14 @@ public class CriterionType extends IntegrationEntity implements
 
     private String name;
 
+    /**
+     * The original name of the criterion type. It only exists for
+     * CriterionTypes created from {@link PredefinedCriterionTypes}. Important:
+     * This value must <strong>not</strong> be editable and should only be set
+     * at creation time
+     */
+    private String predefinedTypeInternalName;
+
     private String description;
 
     private Boolean allowHierarchy = true;
@@ -167,6 +175,13 @@ public class CriterionType extends IntegrationEntity implements
         this.resource = resource;
     }
 
+    public static CriterionType fromPredefined(
+            PredefinedCriterionTypes predefinedType) {
+        CriterionType result = asCriterionType(predefinedType);
+        result.predefinedTypeInternalName = predefinedType.getName();
+        return result;
+    }
+
     public static CriterionType asCriterionType(ICriterionType<?> criterionType) {
         return create(criterionType.getName(),criterionType.getDescription(),
                 criterionType.allowHierarchy(), criterionType
@@ -189,6 +204,10 @@ public class CriterionType extends IntegrationEntity implements
     @NotEmpty(message="criterion type name not specified")
     public String getName() {
         return name;
+    }
+
+    public String getPredefinedTypeInternalName() {
+        return predefinedTypeInternalName;
     }
 
     public void setName(String name) {
@@ -239,7 +258,7 @@ public class CriterionType extends IntegrationEntity implements
             PredefinedCriterionTypes predefinedCriterionType, String name) {
 
         CriterionType criterionType = CriterionType
-                .asCriterionType(predefinedCriterionType);
+                .fromPredefined(predefinedCriterionType);
 
         return Criterion.withNameAndType(name, criterionType);
     }
