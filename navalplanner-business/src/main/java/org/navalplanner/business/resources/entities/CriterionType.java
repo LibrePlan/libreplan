@@ -141,8 +141,6 @@ public class CriterionType extends IntegrationEntity implements
 
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
-    private int numCriterions;
-
     private Boolean generateCode = false;
 
     /**
