@@ -114,10 +114,14 @@ public enum ZoomLevel {
         return string;
     }
 
-    private String name;
+    private String internalName;
+
+    public String getInternalName() {
+        return internalName;
+    }
 
     private ZoomLevel(String name) {
-        this.name = name;
+        this.internalName = name;
     }
 
     /**
@@ -149,14 +153,14 @@ public enum ZoomLevel {
 
     @Override
     public String toString() {
-        return I18nHelper._(name);
+        return I18nHelper._(internalName);
     }
 
     public static ZoomLevel getFromString(String zoomLevelParameter) {
         ZoomLevel requiredZoomLevel = ZoomLevel.DETAIL_ONE;
         if (zoomLevelParameter != null) {
             for (ZoomLevel z : ZoomLevel.values()) {
-                if (zoomLevelParameter.equals(z.name)) {
+                if (zoomLevelParameter.equals(z.internalName)) {
                     requiredZoomLevel = z;
                 }
             }
