@@ -35,25 +35,13 @@
                         profileWriteAuthCheckbox.checked);"/>
             </hbox>
             <grid id="profilesAuthListing"
-                model="@{orderAuthorizationController.profileOrderAuthorizations}">
+                model="@{orderAuthorizationController.profileOrderAuthorizations}"
+                rowRenderer="@{orderAuthorizationController.orderAuthorizationRenderer}" >
                 <columns sizable="true">
                     <column label="${i18n:_('Profile name')}" />
                     <column label="${i18n:_('Permissions')}" />
                     <column label="${i18n:_('Actions')}" />
                 </columns>
-                <rows>
-                    <row self="@{each='authorization'}" value="@{authorization}">
-                        <label value="@{authorization.profile.profileName}" />
-                        <label value="@{authorization.authorizationType.displayName}" />
-                        <hbox>
-                            <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                hoverImage="/common/img/ico_borrar.png"
-                                onClick="orderAuthorizationController.
-                                    removeOrderAuthorization(self.parent.parent.value);"
-                                tooltiptext="${i18n:_('Delete')}" />
-                        </hbox>
-                    </row>
-                </rows>
             </grid>
         </panelchildren>
     </panel>

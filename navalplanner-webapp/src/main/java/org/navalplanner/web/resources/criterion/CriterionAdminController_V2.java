@@ -309,7 +309,7 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
 
     private void setupResourceCombobox(Combobox combo) {
         for(ResourceEnum resource : ResourceEnum.values()) {
-            Comboitem item = combo.appendItem(resource.getDisplayName());
+            Comboitem item = combo.appendItem(_(resource.getDisplayName()));
             item.setValue(resource);
         }
     }

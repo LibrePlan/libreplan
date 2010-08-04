@@ -32,15 +32,17 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
-import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.security.SecurityUtils;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.api.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 /**
  * Controller for CRUD actions over an {@link OrderAuthorization}
@@ -134,6 +136,27 @@ public class OrderAuthorizationController extends GenericForwardComposer{
 
     public void setMessagesForUserComponent(IMessagesForUser component) {
         messagesForUser = component;
+    }
+
+    public RowRenderer getOrderAuthorizationRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final ProfileOrderAuthorization profileOrderAuthorization = (ProfileOrderAuthorization) data;
+
+                row.appendChild(new Label(profileOrderAuthorization.getProfile().getProfileName()));
+                row.appendChild(new Label(_(profileOrderAuthorization.getAuthorizationType().getDisplayName())));
+
+                row.appendChild(Util.createRemoveButton(new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        removeOrderAuthorization(profileOrderAuthorization);
+                    }
+                }));
+            }
+        };
     }
 
 }

@@ -235,4 +235,9 @@ public class WorkingArrangementPerOrderDTO {
         }
         return false;
     }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

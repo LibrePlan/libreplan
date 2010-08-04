@@ -151,7 +151,8 @@
                             <label value="${i18n:_('State')}" />
                             <listbox id="listOrderStatus" mold="select" rows="1" width="220px"
                                 model="@{controller.orderStatus}"
-                                selectedItem="@{controller.order.state}"/>
+                                selectedItem="@{controller.order.state}"
+                                itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer" />
                         </row>
                     </rows>
                 </grid>

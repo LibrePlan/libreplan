@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.materials.entities;
 
-import org.navalplanner.business.i18n.I18nHelper;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 /**
  *
@@ -34,13 +34,6 @@ public enum MaterialStatusEnum {
     PROCESSING(_("PROCESSING")),
     CANCELED(_("CANCELED"));
 
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
-
     private String description;
 
     private MaterialStatusEnum(String description) {
@@ -48,7 +41,7 @@ public enum MaterialStatusEnum {
     }
 
     public String toString() {
-        return I18nHelper._(this.description);
+        return this.description;
     }
 
 }

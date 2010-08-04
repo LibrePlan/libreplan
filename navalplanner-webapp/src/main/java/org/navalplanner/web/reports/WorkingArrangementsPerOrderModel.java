@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.reports;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -181,8 +183,12 @@ public class WorkingArrangementsPerOrderModel implements
         // Add current task
         final Set<Dependency> dependencies = task
                 .getDependenciesWithThisDestination();
-        result.add(new WorkingArrangementPerOrderDTO(deadLineOrder, task,
-                taskStatus, showDependencies && !dependencies.isEmpty()));
+        WorkingArrangementPerOrderDTO workingArrangementPerOrderDTO = new WorkingArrangementPerOrderDTO(
+                deadLineOrder, task, taskStatus, showDependencies
+                        && !dependencies.isEmpty());
+        workingArrangementPerOrderDTO.setStatus(_(workingArrangementPerOrderDTO
+                .getStatus()));
+        result.add(workingArrangementPerOrderDTO);
 
         // Add dependencies
         if (showDependencies) {
@@ -194,8 +200,10 @@ public class WorkingArrangementsPerOrderModel implements
                         orderElement.getName(), orderElement.getCode(), each
                                 .getType().toString(), orderElement
                                 .getAdvancePercentage());
-                result.add(new WorkingArrangementPerOrderDTO(task, taskStatus,
-                        dependencyDTO));
+                WorkingArrangementPerOrderDTO dto = new WorkingArrangementPerOrderDTO(
+                        task, taskStatus, dependencyDTO);
+                dto.setStatus(_(dto.getStatus()));
+                result.add(dto);
             }
         }
         return result;

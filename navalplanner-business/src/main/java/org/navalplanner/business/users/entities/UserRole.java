@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.users.entities;
 
-import org.navalplanner.business.i18n.I18nHelper;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 /**
  * Available user roles.
@@ -36,13 +36,6 @@ public enum UserRole {
     ROLE_EDIT_ALL_ORDERS(_("All orders edition allowed")),
     ROLE_CREATE_ORDER(_("Order creation allowed"));
 
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
-
     private final String displayName;
 
     private UserRole(String displayName) {
@@ -50,7 +43,7 @@ public enum UserRole {
     }
 
     public String getDisplayName() {
-        return I18nHelper._(displayName);
+        return displayName;
     }
 
 }

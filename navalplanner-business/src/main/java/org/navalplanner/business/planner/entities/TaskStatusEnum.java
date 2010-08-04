@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
-import org.navalplanner.business.i18n.I18nHelper;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 public enum TaskStatusEnum {
     ALL(_("All")),
@@ -29,13 +29,6 @@ public enum TaskStatusEnum {
     PENDING(_("Pending")),
     BLOCKED(_("Blocked"));
 
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
-
     private String value;
 
     private TaskStatusEnum(String value) {
@@ -43,6 +36,6 @@ public enum TaskStatusEnum {
     }
 
     public String toString() {
-        return I18nHelper._(value);
+        return value;
     }
 }

@@ -283,11 +283,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private static String asString(ResourceEnum resourceType) {
             switch (resourceType) {
             case RESOURCE:
-                return _("Resource");
             case MACHINE:
-                return _("Machine");
             case WORKER:
-                return _("Worker");
+                return _(resourceType.getDisplayName());
             default:
                 LOG.warn("no i18n for " + resourceType.name());
                 return resourceType.name();

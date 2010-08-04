@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.resources.entities;
 
-import org.navalplanner.business.i18n.I18nHelper;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 
 /**
@@ -32,13 +32,6 @@ public enum ResourceEnum {
     RESOURCE(Resource.class, _("RESOURCE")),
     WORKER(Worker.class, _("WORKER")),
     MACHINE(Machine.class, _("MACHINE"));
-
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
 
     private Class<? extends Resource> klass;
     private final String displayName;
@@ -53,7 +46,7 @@ public enum ResourceEnum {
     }
 
     public String getDisplayName() {
-        return I18nHelper._(displayName);
+        return displayName;
     }
 
     public static ResourceEnum getDefault() {

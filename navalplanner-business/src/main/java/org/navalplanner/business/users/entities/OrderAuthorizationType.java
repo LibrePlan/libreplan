@@ -20,7 +20,7 @@
 
 package org.navalplanner.business.users.entities;
 
-import org.navalplanner.business.i18n.I18nHelper;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 /**
  * Available types of {@link OrderAuthorization}.
@@ -32,13 +32,6 @@ public enum OrderAuthorizationType {
     READ_AUTHORIZATION(_("Read authorization")),
     WRITE_AUTHORIZATION(_("Write authorization"));
 
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
-
     private final String displayName;
 
     private OrderAuthorizationType(String displayName) {
@@ -46,6 +39,6 @@ public enum OrderAuthorizationType {
     }
 
     public String getDisplayName() {
-        return I18nHelper._(displayName);
+        return displayName;
     }
 }

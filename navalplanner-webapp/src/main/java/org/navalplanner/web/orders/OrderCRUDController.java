@@ -942,7 +942,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             appendLabel(row, order.getCustomerReference());
             appendObject(row, order.getTotalBudget());
             appendObject(row, order.getTotalHours());
-            appendObject(row, order.getState());
+            appendObject(row, _(order.getState().toString()));
             appendOperations(row, order);
 
             row.setTooltiptext(getTooltipText(order));
@@ -1222,4 +1222,5 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         }
     }
+
 }

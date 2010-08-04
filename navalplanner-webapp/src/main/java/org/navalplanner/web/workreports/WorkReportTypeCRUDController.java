@@ -34,6 +34,7 @@ import org.navalplanner.business.workreports.entities.PositionInWorkReportEnum;
 import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
+import org.navalplanner.web.common.EnumsListitemRenderer;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -325,9 +326,10 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         if (workReportTypeModel
                 .isHeadingDescriptionField((DescriptionField) row.getValue())) {
-            labelPosition.setValue(PositionInWorkReportEnum.HEADING.name());
+            labelPosition.setValue(_(PositionInWorkReportEnum.HEADING
+                    .toString()));
         } else {
-            labelPosition.setValue(PositionInWorkReportEnum.LINE.name());
+            labelPosition.setValue(_(PositionInWorkReportEnum.LINE.toString()));
         }
     }
 
@@ -414,6 +416,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         listPosition.setModel(new SimpleListModel(
                 getPositionInWorkReportEnums()));
+        listPosition.setItemRenderer(new EnumsListitemRenderer());
         return listPosition;
     }
 
@@ -497,8 +500,8 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     private void appendLabelPosition(Row row) {
         org.zkoss.zul.Label labelPosition = new org.zkoss.zul.Label();
         labelPosition.setParent(row);
-        labelPosition.setValue(workReportTypeModel.getLabelAssigmentPosition(
-                (WorkReportLabelTypeAssigment) row.getValue()).name());
+        labelPosition.setValue(_(workReportTypeModel.getLabelAssigmentPosition(
+                (WorkReportLabelTypeAssigment) row.getValue()).toString()));
     }
 
     private void appendLabel(Row row) {

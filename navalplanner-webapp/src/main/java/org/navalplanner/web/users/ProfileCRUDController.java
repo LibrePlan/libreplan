@@ -83,7 +83,7 @@ public class ProfileCRUDController extends GenericForwardComposer implements
      */
     private void appendAllUserRoles(Combobox combo) {
         for(UserRole role : getAllRoles()) {
-            Comboitem item = combo.appendItem(role.getDisplayName());
+            Comboitem item = combo.appendItem(_(role.getDisplayName()));
             item.setValue(role);
         }
     }

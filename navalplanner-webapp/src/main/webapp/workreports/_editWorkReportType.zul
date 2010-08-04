@@ -62,7 +62,8 @@
                                     <listbox visible = "@{controller.editable}"
                                         id="listDatePosition" mold="select" rows="1"
                                         model="@{controller.positionInWorkReportEnums}"
-                                        selectedItem="@{controller.datePosition}"/>
+                                        selectedItem="@{controller.datePosition}"
+                                        itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer" />
                                     <label visible = "@{controller.readOnly}"
                                         value="@{controller.datePosition}" width="300px"/>
                                 </hbox>
@@ -73,7 +74,8 @@
                                 <listbox visible = "@{controller.editable}"
                                     id="listResourcePosition" mold="select"
                                     model="@{controller.positionInWorkReportEnums}"
-                                    selectedItem="@{controller.resourcePosition}"/>
+                                    selectedItem="@{controller.resourcePosition}"
+                                    itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer" />
                                 <label visible = "@{controller.readOnly}"
                                     value="@{controller.resourcePosition}" width="300px"/>
                             </hbox>
@@ -84,7 +86,8 @@
                                     <listbox visible = "@{controller.editable}"
                                         id="listOrderElementPosition" mold="select"
                                         model="@{controller.positionInWorkReportEnums}"
-                                        selectedItem="@{controller.orderElementPosition}"/>
+                                        selectedItem="@{controller.orderElementPosition}"
+                                        itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer" />
                                     <label visible = "@{controller.readOnly}"
                                         value="@{controller.orderElementPosition}" width="300px"/>
                                 </hbox>
@@ -95,7 +98,8 @@
                                     <listbox visible = "@{controller.editable}"
                                         id="listHoursManagement" mold="select"
                                         model="@{controller.hoursManagementEnums}"
-                                        selectedItem="@{controller.workReportType.hoursManagement}"/>
+                                        selectedItem="@{controller.workReportType.hoursManagement}"
+                                        itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer" />
                                     <label visible = "@{controller.readOnly}"
                                         value="@{controller.workReportType.hoursManagement}" width="300px"/>
                                 </hbox>

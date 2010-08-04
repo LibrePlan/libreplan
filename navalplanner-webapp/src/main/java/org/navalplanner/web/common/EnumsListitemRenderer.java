@@ -18,32 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.navalplanner.web.common;
+
+import static org.navalplanner.web.I18nHelper._;
+
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
+
 /**
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * {@link Enum} types needs to be translated in the webapp module, because of it
+ * is not possible to known the user language in the business layer.
+ *
+ * This class provides a basic renderer that just call to the translation method
+ * and could be useful to translate {@link Enum} that are showed into
+ * {@link Listbox}.
+ *
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-package org.navalplanner.business.workreports.entities;
+public class EnumsListitemRenderer implements ListitemRenderer {
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
-/**
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- */
-public enum PositionInWorkReportEnum {
-
-    HEADING(_("heading")), LINE(_("line"));
-
-    private String displayName;
-
-    private PositionInWorkReportEnum(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public static PositionInWorkReportEnum getDefault() {
-        return LINE;
-    }
-
-    public String toString() {
-        return displayName;
+    @Override
+    public void render(Listitem item, Object data) throws Exception {
+        item.setValue(data);
+        item.appendChild(new Listcell(_(data.toString())));
     }
 
 }

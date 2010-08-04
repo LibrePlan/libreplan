@@ -68,7 +68,8 @@
             <panelchildren>
                 <listbox id="lbTaskStatus"
                         model="@{controller.tasksStatus}"
-                        mold="select" />
+                        mold="select"
+                        itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer" />
             </panelchildren>
         </panel>
 
