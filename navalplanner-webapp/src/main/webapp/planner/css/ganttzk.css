@@ -115,6 +115,10 @@
     height: 23px;
 }
 
+.resourceload-leftpanel-row {
+    height: 21px;
+}
+
 #listdetails_container .z-textbox-readonly,
 #listdetails_container .z-textbox-text-disd {
     background-color: #f0f0f0;

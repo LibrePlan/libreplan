@@ -90,6 +90,8 @@ MutableTreeModel<LoadTimeLine> modelForTree,
 
                 collapse(line);
                 addExpandedListener(item, line);
+
+                row.setSclass("resourceload-leftpanel-row");
             }
 
             private void appendOperations(final Treecell cell,
