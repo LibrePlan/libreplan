@@ -47,6 +47,11 @@ import org.zkoss.ganttz.util.Interval;
  */
 public abstract class EarnedValueChartFiller extends ChartFiller {
 
+    public static boolean includes(Interval interval, LocalDate date) {
+        LocalDate start = LocalDate.fromDateFields(interval.getStart());
+        LocalDate end = LocalDate.fromDateFields(interval.getFinish());
+        return start.compareTo(date) <= 0 && date.compareTo(end) < 0;
+    }
     public enum EarnedValueType {
 
         BCWS(_("BCWS"), _("Budgeted Cost Work Scheduled"), "#0000FF"), ACWP(
@@ -322,6 +327,18 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     public Interval getIndicatorsDefinitionInterval() {
         return indicatorsInterval;
+    }
+
+    /**
+     * Will try to use today if possible
+     * @return Today if there are values defined for that date. The last day in
+     *         the interval otherwise
+     */
+    public LocalDate initialDateForIndicatorValues() {
+        Interval chartInterval = getIndicatorsDefinitionInterval();
+        LocalDate today = new LocalDate();
+        return includes(chartInterval, today) ? today
+                : LocalDate.fromDateFields(chartInterval.getFinish());
     }
     protected void addZeroBeforeTheFirstValue(
             SortedMap<LocalDate, BigDecimal> map) {

@@ -92,8 +92,8 @@ import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
@@ -517,7 +517,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date:")));
 
-        LocalDate initialDateForIndicatorValues = calculateInitialDateForIndicatorValues(earnedValueChartFiller);
+        LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
         Datebox datebox = new Datebox(initialDateForIndicatorValues
                 .toDateTimeAtStartOfDay().toDate());
         datebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
@@ -544,20 +544,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         earnedValueChartPannel.appendChild(hbox);
     }
 
-    private LocalDate calculateInitialDateForIndicatorValues(
-            OrderEarnedValueChartFiller earnedValueChartFiller) {
-        Interval chartInterval = earnedValueChartFiller.getIndicatorsDefinitionInterval();
-        LocalDate today = new LocalDate();
-        return includes(chartInterval, today) ? today : LocalDate
-                .fromDateFields(chartInterval.getFinish());
-    }
-
-    private boolean includes(Interval interval, LocalDate date) {
-        LocalDate start = LocalDate.fromDateFields(interval.getStart());
-        LocalDate end = LocalDate.fromDateFields(interval.getFinish());
-        return start.compareTo(date) <= 0 && date.compareTo(end) < 0;
-    }
-
     private Constraint dateMustBeInsideVisualizationArea(
             final OrderEarnedValueChartFiller earnedValueChartFiller) {
         return new Constraint() {
@@ -568,7 +554,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     throws WrongValueException {
                 Date value = (Date) valueObject;
                 if (value != null
-                        && !includes(earnedValueChartFiller
+                        && !EarnedValueChartFiller.includes(
+                                earnedValueChartFiller
                         .getIndicatorsDefinitionInterval(), LocalDate
                         .fromDateFields(value))) {
                     throw new WrongValueException(comp,
@@ -1335,7 +1322,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private class OrderEarnedValueChartFiller extends EarnedValueChartFiller {
+    class OrderEarnedValueChartFiller extends EarnedValueChartFiller {
 
         private Order order;
 
