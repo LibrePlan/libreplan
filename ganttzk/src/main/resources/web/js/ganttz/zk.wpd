@@ -1,0 +1,7 @@
+<package name="ganttz" language="xul/html">
+    <widget name="GanttPanel"/>
+    <widget name="TaskRow"/>
+    <widget name="TaskComponent"/>
+    <widget name="TaskList"/>
+    <widget name="DependencyList"/>
+</package>

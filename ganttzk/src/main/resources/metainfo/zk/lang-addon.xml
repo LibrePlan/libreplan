@@ -64,9 +64,11 @@
 	<component>
 		<component-name>ganttpanel</component-name>
 		<component-class>org.zkoss.ganttz.GanttPanel</component-class>
+        <widget-class>ganttz.GanttPanel</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/ganttpanel.dsp</mold-uri>
+			<!-- <mold-uri>~./ganttz/ganttpanel.dsp</mold-uri> -->
+            <mold-uri>mold/gantt-panel.js</mold-uri>
 		</mold>
 	</component>
 
@@ -84,18 +86,22 @@
 	<component>
         <component-name>taskRow</component-name>
         <component-class>org.zkoss.ganttz.TaskRow</component-class>
+        <widget-class>ganttz.TaskRow</widget-class>
         <mold>
             <mold-name>default</mold-name>
-            <mold-uri>~./ganttz/row.dsp</mold-uri>
+            <!-- <mold-uri>~./ganttz/row.dsp</mold-uri> -->
+            <mold-uri>mold/task-row.js</mold-uri>
         </mold>
     </component>
 
 	<component>
 		<component-name>task</component-name>
 		<component-class>org.zkoss.ganttz.TaskComponent</component-class>
+        <widget-class>ganttz.TaskComponent</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/task.dsp</mold-uri>
+			<!-- <mold-uri>~./ganttz/task.dsp</mold-uri> -->
+            <mold-uri>mold/task-component.js</mold-uri>
 		</mold>
 	</component>
 
@@ -122,18 +128,22 @@
 	<component>
 		<component-name>tasklist</component-name>
 		<component-class>org.zkoss.ganttz.TaskList</component-class>
+        <widget-class>ganttz.TaskList</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/tasklist.dsp</mold-uri>
+			<!-- <mold-uri>~./ganttz/tasklist.dsp</mold-uri> -->
+            <mold-uri>mold/task-list.js</mold-uri>
 		</mold>
 	</component>
 
 	<component>
 		<component-name>dependencylist</component-name>
 		<component-class>org.zkoss.ganttz.DependencyList</component-class>
+        <widget-class>ganttz.DependencyList</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/dependencylist.dsp</mold-uri>
+			<!-- <mold-uri>~./ganttz/dependencylist.dsp</mold-uri> -->
+            <mold-uri>mold/dependency-list.js</mold-uri>
 		</mold>
 	</component>
 
