@@ -60,6 +60,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
@@ -285,6 +286,25 @@ public class OrderModel implements IOrderModel {
         forceLoadLabels(this.order);
         currentScenario = scenarioManager.getCurrent();
         this.order.useSchedulingDataFor(currentScenario);
+        loadTasks(this.order);
+    }
+
+    private void loadTasks(Order order) {
+        TaskSource taskSource = order.getTaskSource();
+        if (taskSource == null) {
+            return;
+        }
+        loadTask(taskSource.getTask());
+    }
+
+    private void loadTask(TaskElement task) {
+        task.getDependenciesWithThisDestination().size();
+        task.getDependenciesWithThisOrigin().size();
+        if (!task.isLeaf()) {
+            for (TaskElement each : task.getChildren()) {
+                loadTask(each);
+            }
+        }
     }
 
     private void forceLoadLabels(OrderElement orderElement) {

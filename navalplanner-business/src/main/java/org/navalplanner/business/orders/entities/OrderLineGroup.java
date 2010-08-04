@@ -47,6 +47,8 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
@@ -82,6 +84,22 @@ public class OrderLineGroup extends OrderElement implements
                         .getOriginOrderVersion());
             }
             return node.getSchedulingState();
+        }
+
+        @Override
+        protected void onChildRemovedAdditionalActions(OrderElement removedChild) {
+            if (removedChild.isScheduled()) {
+                removeChildTask(removedChild);
+            }
+        }
+
+        private void removeChildTask(OrderElement removedChild) {
+            TaskSource taskSource = removedChild.getTaskSource();
+            TaskElement childTask = taskSource.getTask();
+            TaskGroup group = (TaskGroup) getThis().getTaskSource()
+                    .getTask();
+            group.remove(childTask);
+            childTask.detachFromDependencies();
         }
 
         @Override
