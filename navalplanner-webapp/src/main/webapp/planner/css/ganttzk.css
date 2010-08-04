@@ -86,6 +86,8 @@
 }
 
 .listdetails .depth_1 input.task_title {
+    /*on change org.navalplanner.web.print.CutyPrint.BASE_TASK_NAME_PIXEL must
+     be changed too */
     width: 121px;
 }
 

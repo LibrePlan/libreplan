@@ -61,9 +61,18 @@ public class CutyPrint {
     private static final int CUTYCAPT_TIMEOUT = 60000;
 
     // Taskdetails left padding
-    private static int TASKDETAILS_WIDTH = 310;
+    private static int TASKDETAILS_BASE_WIDTH = 310;
+
+    /**
+     * Default width in pixels of the task name text field for depth level 1.
+     * <p />
+     * Got from .listdetails .depth_1 input.task_title { width: 121px; } at
+     * src/main/webapp/planner/css/ganttzk.css
+     */
+    private static final int BASE_TASK_NAME_PIXELS = 121;
     private static int TASK_HEIGHT = 25;
     private static int PRINT_VERTICAL_PADDING = 50;
+
 
     public static void print(Order order) {
         print("/planner/index.zul", entryPointForShowingOrder(order),
@@ -129,13 +138,6 @@ public class CutyPrint {
                 + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
                 + extension;
 
-        int plannerWidth = 0;
-
-        if ((planner != null) && (planner.getTimeTracker() != null)) {
-            plannerWidth = planner.getTimeTracker().getHorizontalSize()
-                    + TASKDETAILS_WIDTH;
-        }
-
         // Generate capture string
         String captureString = CUTYCAPT_COMMAND;
         String url = CallbackServlet.registerAndCreateURLFor(request,
@@ -167,14 +169,17 @@ public class CutyPrint {
             captureString = captureString.substring(0,
                     (captureString.length() - 1));
         }
-
+        boolean expanded = Planner
+                .guessContainersExpandedByDefaultGivenPrintParameters(parameters);
+        int minWidthForTaskNameColumn = planner
+                .calculateMinimumWidthForTaskNameColumn(expanded);
+        int plannerWidth = calculatePlannerWidthForPrintingScreen(planner,
+                minWidthForTaskNameColumn);
         captureString += " --min-width=" + plannerWidth;
 
         // Static width and time delay parameters (FIX)
         captureString += " --delay=3000 ";
 
-        boolean expanded = Planner.
-                guessContainersExpandedByDefaultGivenPrintParameters(parameters);
 
         String generatedCSSFile = createCSSFile(
                 absolutePath + "/planner/css/print.css",
@@ -183,7 +188,7 @@ public class CutyPrint {
                 parameters.get("labels"),
                 parameters.get("resources"),
                 expanded,
-                planner.calculateMinimumWidthForTaskNameColumn(expanded));
+                minWidthForTaskNameColumn);
 
         // Relative user styles
         captureString += "--user-styles=" + generatedCSSFile;
@@ -230,6 +235,20 @@ public class CutyPrint {
         } catch (IOException e) {
             LOG.error(_("Could not execute print command"), e);
         }
+    }
+
+    private static int calculatePlannerWidthForPrintingScreen(Planner planner,
+            int minWidthForTaskNameColumn) {
+        if (planner != null && planner.getTimeTracker() != null) {
+            return planner.getTimeTracker().getHorizontalSize()
+                    + calculateTaskDetailsWidth(minWidthForTaskNameColumn);
+        }
+        return 0;
+    }
+
+    private static int calculateTaskDetailsWidth(int minWidthForTaskNameColumn) {
+        return TASKDETAILS_BASE_WIDTH
+                + Math.max(0, minWidthForTaskNameColumn - BASE_TASK_NAME_PIXELS);
     }
 
     private static IServletRequestHandler executeOnOriginalContext(
