@@ -32,6 +32,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -410,6 +411,13 @@ public class TaskPropertiesController extends GenericForwardComposer {
         LIMITING_RESOURCES(_("Limiting resource assignation")),
         SUBCONTRACT(_("Subcontract"));
 
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
+
         private String option;
 
         private static final List<ResourceAllocationTypeEnum> nonMasterOptionList = new ArrayList<ResourceAllocationTypeEnum>() {
@@ -424,7 +432,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         }
 
         public String toString() {
-            return option;
+            return I18nHelper._(option);
         }
 
         public static List<ResourceAllocationTypeEnum> getOptionList() {
