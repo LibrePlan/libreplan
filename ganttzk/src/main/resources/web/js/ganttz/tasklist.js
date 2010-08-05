@@ -57,7 +57,7 @@ zkTasklist.showTooltip = function(elem) {
 		component = document.getElementById(elem);
 		if (component!=null) {
 			component.style['display'] = 'block';
-			offset = zkTask.xMouse - component.parentNode.offsetLeft - leftpanelcontainer().offsetWidth - PERSPECTIVES_WIDTH + rightpanellayout().scrollLeft;
+			offset = zkTask.xMouse - component.parentNode.offsetLeft - taskdetailsContainer().offsetWidth - PERSPECTIVES_WIDTH + rightpanellayout().scrollLeft;
 			component.style['left'] = offset + 'px';
 		}
 	}, zkTasklist.DELAY);
@@ -151,8 +151,8 @@ function rightpanellayout() {
 	return YAHOO.util.Selector.query('.rightpanellayout div')[0];
 }
 
-function leftpanelcontainer() {
-	return YAHOO.util.Selector.query('.leftpanelcontainer')[0];
+function taskdetailsContainer() {
+	return YAHOO.util.Selector.query('.taskdetailsContainer')[0];
 }
 
 function timeplotcontainer_load() {
