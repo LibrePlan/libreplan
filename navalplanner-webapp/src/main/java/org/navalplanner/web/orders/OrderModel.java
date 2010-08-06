@@ -331,17 +331,6 @@ public class OrderModel implements IOrderModel {
         getLabelsOnConversation().initializeLabels();
     }
 
-    private void initializeLabels(Collection<Label> labels) {
-        for (Label label : labels) {
-            initializeLabel(label);
-        }
-    }
-
-    private void initializeLabel(Label label) {
-        label.getName();
-        label.getType().getName();
-    }
-
     private static void forceLoadCriterionRequirements(OrderElement orderElement) {
         orderElement.getHoursGroups().size();
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
