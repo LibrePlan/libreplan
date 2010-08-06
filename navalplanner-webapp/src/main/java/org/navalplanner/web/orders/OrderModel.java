@@ -109,7 +109,7 @@ public class OrderModel implements IOrderModel {
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
-    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
+    private final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
     private List<ExternalCompany> externalCompanies = new ArrayList<ExternalCompany>();
 
