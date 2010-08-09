@@ -416,12 +416,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         } else {
             BigDecimal lastConslidation = task.getConsolidation()
                     .getConsolidatedValues().last().getValue();
-            originalTotalAssignment = new BigDecimal(getNonConsolidatedHours())
-                    .divide(
-                            BigDecimal.ONE.subtract(lastConslidation
-                                    .setScale(2).divide(new BigDecimal(100),
-                                            RoundingMode.DOWN)),
-                            RoundingMode.DOWN).intValue();
+            BigDecimal unconsolitedPercentage = BigDecimal.ONE
+                    .subtract(lastConslidation.setScale(2).divide(
+                            new BigDecimal(100), RoundingMode.DOWN));
+            if (unconsolitedPercentage.setScale(2).equals(
+                    BigDecimal.ZERO.setScale(2))) {
+                originalTotalAssignment = getConsolidatedHours();
+            } else {
+                originalTotalAssignment = new BigDecimal(
+                        getNonConsolidatedHours()).divide(
+                        unconsolitedPercentage, RoundingMode.DOWN).intValue();
+            }
         }
     }
 
