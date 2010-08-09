@@ -74,6 +74,13 @@
                 column="SCHEDULING_STATE_FOR_VERSION_ID" />
         </map>
 
+       <many-to-one name="sumChargedHours"
+           class="SumChargedHours"
+           column="SUM_CHARGED_HOURS_ID"
+           cascade="save-update, delete"
+           unique="true"
+           lazy="false" />
+
         <joined-subclass name="OrderLineGroup">
             <key column="ORDERELEMENTID"></key>
 
@@ -217,6 +224,18 @@
             <key column="TASK_SOURCE_ID"></key>
             <many-to-many class="HoursGroup" column="HOURS_GROUP_ID"/>
         </set>
+    </class>
+
+    <class name="SumChargedHours">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="directChargedHours" access="field" />
+        <property name="indirectChargedHours" access="field" />
     </class>
 
 </hibernate-mapping>

@@ -22,6 +22,7 @@ package org.navalplanner.business.test.orders.daos;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -414,4 +415,20 @@ public class OrderElementDAOTest {
         }
     }
 
+    @Test
+    public void testSumChargedHoursRelation() throws InstanceNotFoundException {
+        OrderLine orderLine = createValidOrderLine();
+
+        orderLine.getSumChargedHours().setDirectChargedHours(8);
+        orderLine.getSumChargedHours().setIndirectChargedHours(10);
+
+        orderElementDAO.save(orderLine);
+
+        OrderElement orderLineCopy = orderElementDAO.find(orderLine.getId());
+
+        assertEquals(orderLine.getSumChargedHours().getId(),
+                orderLineCopy.getSumChargedHours().getId());
+
+        assertTrue(orderLineCopy.getSumChargedHours().getTotalChargedHours().equals(18));
+    }
 }
