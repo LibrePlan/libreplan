@@ -996,6 +996,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         limitingResourceQueueElementDAO.save(oldElement);
         limitingResourceQueueElementDAO.save(newElement);
+        toBeSaved.remove(oldElement);
         queuesState.replaceLimitingResourceQueueElement(oldElement, newElement);
 
         if (needToReassign) {
