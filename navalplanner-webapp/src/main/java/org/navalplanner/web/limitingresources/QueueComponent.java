@@ -307,9 +307,11 @@ public class QueueComponent extends XulElement implements
 
         result.setClass(cssClass);
         result.appendChild(generateCompletionShade(datesMapper, queueElement));
-        result.appendChild(generateProgressBar(datesMapper, queueElement, task,
-                startPixels));
-
+        Component progressBar = generateProgressBar(datesMapper, queueElement,
+                task, startPixels);
+        if (progressBar != null) {
+            result.appendChild(progressBar);
+        }
         return result;
     }
 
@@ -317,6 +319,9 @@ public class QueueComponent extends XulElement implements
             LimitingResourceQueueElement queueElement, Task task,
             int startPixels) {
         DateAndHour advancementEndDate = getAdvanceEndDate(queueElement);
+        if (advancementEndDate == null) {
+            return null;
+        }
         long millis = (advancementEndDate.toDateTime().getMillis() - queueElement
                 .getStartTime().toDateTime().getMillis());
         Div progressBar = new Div();
