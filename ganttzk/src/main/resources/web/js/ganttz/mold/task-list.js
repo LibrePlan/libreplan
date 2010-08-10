@@ -5,7 +5,7 @@ function(out){
 
     out.push('<div id="scroll_container">');
         out.push('<div z.type="gantt.tasklist.TaskList" z.autoz="true" ' + this.domAttrs_() + '>');
-            out.push('<div id="listtasks"');
+            out.push('<div id="listtasks">');
                 for(var w = this.firstChild; w; w = w.nextSibling)
                     w.redraw(out);
             out.push('</div');

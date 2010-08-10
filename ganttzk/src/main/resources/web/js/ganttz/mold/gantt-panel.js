@@ -4,12 +4,14 @@ function(out){
               this.domAttrs_(),
               '>');
 
-        out.push('<div id="ganttpanel"');
+        out.push('<div id="ganttpanel">');
         for (var w = this.firstChild; w; w = w.nextSibling)
             w.redraw(out);
         out.push('</div>');
 
     out.push('</div>');
+
+    out.push('<br>');
 
     out.push('<div id="ganttpanel_scroller_x">',
                 '<div id="ganttpanel_inner_scroller_x"></div>',
