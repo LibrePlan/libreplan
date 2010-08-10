@@ -536,8 +536,18 @@ public class TaskComponent extends Div implements AfterCompose {
         return task.getLabelsText();
     }
 
+    public String getLabelsDisplay() {
+        Planner planner = getTaskList().getGanttPanel().getPlanner();
+        return planner.isShowingLabels() ? "inline" : "none";
+    }
+
     public String getResourcesText() {
         return task.getResourcesText();
+    }
+
+    public String getResourcesDisplay() {
+        Planner planner = getTaskList().getGanttPanel().getPlanner();
+        return planner.isShowingResources() ? "inline" : "none";
     }
 
     public boolean isSubcontracted() {

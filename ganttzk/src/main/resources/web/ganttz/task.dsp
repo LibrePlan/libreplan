@@ -9,8 +9,8 @@
     resizingTasksEnabled="${self.resizingTasksEnabled}"
     onMouseover="zkTasklist.showTooltip('tasktooltip${self.uuid}');"
     onMouseOut="zkTasklist.hideTooltip('tasktooltip${self.uuid}');">
-	<div class="task-labels">${self.labelsText}</div>
-	<div class="task-resources">
+	<div class="task-labels" style="display:${self.labelsDisplay}">${self.labelsText}</div>
+	<div class="task-resources" style="display:${self.resourcesDisplay}">
 		<div class="task-resources-inner">${self.resourcesText}</div>
 	</div>
     <div class="completion"></div>

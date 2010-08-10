@@ -41,12 +41,17 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     private final GanttDiagramGraph diagramGraph;
 
+    private final Planner planner;
+
     public GanttPanel(
-            FunctionalityExposedForExtensions<?> context,
+            Planner planner,
             List<? extends CommandOnTaskContextualized<?>> commandsOnTasksContextualized,
             CommandOnTaskContextualized<?> doubleClickCommand,
             IDisabilityConfiguration disabilityConfiguration,
             FilterAndParentExpandedPredicates predicate) {
+        this.planner = planner;
+        FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner
+                .getContext();
         this.diagramGraph = context.getDiagramGraph();
         timeTrackerComponent = timeTrackerForGanttPanel(context
                 .getTimeTracker());
@@ -109,6 +114,10 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     public void setZoomLevel(ZoomLevel zoomLevel) {
         getTimeTracker().setZoomLevel(zoomLevel);
+    }
+
+    public Planner getPlanner() {
+        return planner;
     }
 
 }
