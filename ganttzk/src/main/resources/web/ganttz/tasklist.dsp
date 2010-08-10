@@ -6,17 +6,12 @@
 </script>
 
 <div id="scroll_container">
-
-<c:set var="self" value="${requestScope.arg.self}"/>
-
-<div id="${self.uuid}" z.type="ganttz.tasklist.Tasklist" z.autoz="true"${self.outerAttrs}">
-
-
-<div id="listtasks">
-    <c:forEach var="child" items="${self.children}">
-        ${z:redraw(child, null)}
-    </c:forEach>
-</div>
-
-</div>
+    <c:set var="self" value="${requestScope.arg.self}"/>
+    <div id="${self.uuid}" z.type="ganttz.tasklist.Tasklist" z.autoz="true"${self.outerAttrs}">
+        <div id="listtasks">
+            <c:forEach var="child" items="${self.children}">
+                ${z:redraw(child, null)}
+            </c:forEach>
+        </div>
+    </div>
 </div>
