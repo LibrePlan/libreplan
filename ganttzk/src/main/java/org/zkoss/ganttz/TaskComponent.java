@@ -350,6 +350,12 @@ public class TaskComponent extends Div implements AfterCompose {
             setWidgetAttribute("background-color", getColor());
 
         setWidgetAttribute("position", "absolute");
+        setWidgetAttribute("movingTasksEnabled",((Boolean)isMovingTasksEnabled()).toString());
+        setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
+
+        render(renderer, "_labelsText", getLabelsText());
+        render(renderer, "_resourcesText", getResourcesText());
+        render(renderer, "_tooltipText", getTooltipText());
 
         super.renderProperties(renderer);
     }
