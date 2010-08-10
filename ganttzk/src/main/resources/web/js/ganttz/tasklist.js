@@ -401,14 +401,6 @@ zkTask.setAttr = function(cmp, name, val) {
             resourcesTextElement.innerHTML = val;
             return true;
         }
-        default: {
-            return false;
-        }
-	}
-};
-
-zkTask.setAttr = function(cmp, name, val) {
-	switch (name) {
         case "taskTooltipText":{
             var taskTooltipTextElement = YAHOO.util.Selector.query(
                     '.task_tooltip', cmp, true);
