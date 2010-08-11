@@ -438,22 +438,22 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private String buildLabelsText() {
-            StringBuilder result = new StringBuilder();
+            List<String> result = new ArrayList<String>();
 
             if (taskElement.getOrderElement() != null) {
                 Set<Label> labels = getLabelsFromElementAndPredecesors(taskElement
                         .getOrderElement());
 
-                if (!labels.isEmpty()) {
-                    for (Label label : labels) {
-                        result.append(label.getName()).append(",");
+                for (Label label : labels) {
+                    String representation = label.getName();
+                    if (!result.contains(representation)) {
+                        result.add(representation);
                     }
-                    result.delete(result.length() - 1, result
-                            .length());
                 }
             }
 
-            return result.toString();
+            Collections.sort(result);
+            return StringUtils.join(result, ", ");
         }
 
         private String buildResourcesText() {
