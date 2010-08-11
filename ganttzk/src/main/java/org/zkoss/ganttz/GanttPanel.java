@@ -52,6 +52,9 @@ public class GanttPanel extends XulElement implements AfterCompose {
         this.planner = planner;
         FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner
                 .getContext();
+        if (planner.isShowingCriticalPath()) {
+            context.showCriticalPath();
+        }
         this.diagramGraph = context.getDiagramGraph();
         timeTrackerComponent = timeTrackerForGanttPanel(context
                 .getTimeTracker());

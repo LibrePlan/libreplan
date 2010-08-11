@@ -665,6 +665,10 @@ public class Planner extends HtmlMacroComponent  {
                 .getPostChangeListeners());
     }
 
+    public boolean isShowingCriticalPath() {
+        return isShowingCriticalPath;
+    }
+
     public boolean isShowingLabels() {
         return isShowingLabels;
     }
