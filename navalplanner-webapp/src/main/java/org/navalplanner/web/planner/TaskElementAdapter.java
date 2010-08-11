@@ -475,6 +475,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     }
                 }
             }
+            Collections.sort(result);
             return StringUtils.join(result, ", ");
         }
 
