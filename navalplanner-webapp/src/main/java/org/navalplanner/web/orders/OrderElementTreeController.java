@@ -812,7 +812,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
         if ((elem.getLabels() != null) && (!elem.getLabels().isEmpty())) {
             tooltipText.append(" " + _("Labels") + ":");
-            tooltipText.append(StringUtils.join(getLabels(), ","));
+            tooltipText.append(StringUtils.join(elem.getLabels(), ","));
             tooltipText.append(".");
         }
         if ((elem.getCriterionRequirements() != null)
