@@ -139,6 +139,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isShowingResources = false;
 
+    private boolean isFlattenTree = false;
+
     private ZoomLevel initialZoomLevel = null;
 
     private Listbox listZoomLevels = null;
@@ -621,15 +623,16 @@ public class Planner extends HtmlMacroComponent  {
     public void flattenTree() {
         Button flattenTreeButton = (Button) getFellow("flattenTree");
         if (disabilityConfiguration.isFlattenTreeEnabled()) {
-            if (flattenTreeButton.getSclass().equals("planner-command")) {
-                predicate.setFilterContainers(true);
-                flattenTreeButton.setSclass("planner-command clicked");
-            } else {
+            if (isFlattenTree) {
                 predicate.setFilterContainers(false);
                 flattenTreeButton.setSclass("planner-command");
+            } else {
+                predicate.setFilterContainers(true);
+                flattenTreeButton.setSclass("planner-command clicked");
             }
             setTaskListPredicate(predicate);
         }
+        isFlattenTree = !isFlattenTree;
     }
 
     public FilterAndParentExpandedPredicates getPredicate() {
@@ -675,6 +678,10 @@ public class Planner extends HtmlMacroComponent  {
 
     public boolean isShowingResources() {
         return isShowingResources;
+    }
+
+    public boolean isFlattenTree() {
+        return isFlattenTree;
     }
 
 }
