@@ -86,6 +86,12 @@ public class GanttPanel extends XulElement implements AfterCompose {
         timeTrackerComponent.afterCompose();
         dependencyList.afterCompose();
 
+        if (planner.isExpandAll()) {
+            FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner
+                    .getContext();
+            context.expandAll();
+        }
+
         if (planner.isFlattenTree()) {
             planner.getPredicate().setFilterContainers(true);
             planner.setTaskListPredicate(planner.getPredicate());

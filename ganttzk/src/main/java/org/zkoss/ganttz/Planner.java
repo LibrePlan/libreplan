@@ -139,6 +139,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isShowingResources = false;
 
+    private boolean isExpandAll = false;
+
     private boolean isFlattenTree = false;
 
     private ZoomLevel initialZoomLevel = null;
@@ -574,14 +576,15 @@ public class Planner extends HtmlMacroComponent  {
     public void expandAll() {
         Button expandAllButton = (Button) getFellow("expandAll");
         if (disabilityConfiguration.isExpandAllEnabled()) {
-            if (expandAllButton.getSclass().equals("planner-command")) {
-                context.expandAll();
-                expandAllButton.setSclass("planner-command clicked");
-            } else {
+            if (isExpandAll) {
                 context.collapseAll();
                 expandAllButton.setSclass("planner-command");
+            } else {
+                context.expandAll();
+                expandAllButton.setSclass("planner-command clicked");
             }
         }
+        isExpandAll = !isExpandAll;
     }
 
     public void expandAllAlways() {
@@ -678,6 +681,10 @@ public class Planner extends HtmlMacroComponent  {
 
     public boolean isShowingResources() {
         return isShowingResources;
+    }
+
+    public boolean isExpandAll() {
+        return isExpandAll;
     }
 
     public boolean isFlattenTree() {
