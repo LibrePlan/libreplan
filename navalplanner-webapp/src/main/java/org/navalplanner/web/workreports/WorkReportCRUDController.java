@@ -236,7 +236,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         } catch (ValidationException e) {
             showInvalidValues(e);
         } catch (Exception e) {
-            showInvalidProperty();
+            if(!showInvalidProperty()) {
+                throw new RuntimeException(e);
+            }
         }
         return false;
     }
@@ -258,16 +260,17 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    private void showInvalidProperty() {
+    private boolean showInvalidProperty() {
         if (getWorkReport() != null) {
             if (!validateWorkReport())
-                return;
+                return true;
             for (WorkReportLine workReportLine : getWorkReport()
                     .getWorkReportLines()) {
                 if (!validateWorkReportLine(workReportLine))
-                    return;
+                    return true;
             }
         }
+        return false;
     }
 
     /**
