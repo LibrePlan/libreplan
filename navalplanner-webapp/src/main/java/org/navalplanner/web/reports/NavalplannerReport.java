@@ -54,9 +54,8 @@ public class NavalplannerReport implements INavalplannerReport {
     @Override
     public String show(String type) {
         this.report.setType(type);
-
         String URI = report.getEncodedSrc();
-        return URI.replace("navalplanner-webapp/", "");
+        return URI.substring(URI.indexOf("/", 2));
     }
 
     public void setParameters(Map parameters) {
