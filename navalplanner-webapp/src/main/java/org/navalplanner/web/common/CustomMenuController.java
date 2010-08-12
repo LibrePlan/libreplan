@@ -193,51 +193,52 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public void initializeMenu() {
-        topItem(_("Scheduling"), "/planner/index.zul", "",
-            subItem(_("Company view"), "/planner/index.zul;company_scheduling","01-introducion.html"),
-            subItem(_("General resource allocation"),"/planner/index.zul;company_load","01-introducion.html#id1"),
-            subItem(_("Orders list"), "/planner/index.zul;orders_list","01-introducion.html#id2"),
-            subItem(_("Limiting resources"),"/planner/index.zul;limiting_resources","01-introducion.html"),
-            subItem(_("Templates list"), "/templates/templates.zul", ""),
-            subItem(_("Subcontracted tasks list"), "/subcontract/subcontractedTasks.zul", ""),
-            subItem(_("Report advances"), "/subcontract/reportAdvances.zul", ""),
+        topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
+            subItem(_("Scenarios management"), "/scenarios/scenarios.zul",""),
             subItem(_("Transfer orders between scenarios"), "/scenarios/transferOrders.zul", ""));
 
-        topItem(_("Resources"), "/resources/worker/worker.zul", "",
-            subItem(_("Workers List"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"),
-            subItem(_("Machines List"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"),
-            subItem(_("Virtual worker groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
+        topItem(_("Scheduling"), "/planner/index.zul", "",
+            subItem(_("Projects planning"), "/planner/index.zul;company_scheduling","01-introducion.html"),
+            subItem(_("Resource usage"),"/planner/index.zul;company_load","01-introducion.html#id1"),
+            subItem(_("Projects"), "/planner/index.zul;orders_list","01-introducion.html#id2"),
+            subItem(_("Limiting resources planning"),"/planner/index.zul;limiting_resources","01-introducion.html"),
+            subItem(_("Project templates"), "/templates/templates.zul", ""));
 
-        topItem(_("Work reports"), "/workreports/workReportTypes.zul", "",
-            subItem(_("Work report types"),"/workreports/workReportTypes.zul","09-partes.html#id2"),
-            subItem(_("Work report list"), "/workreports/workReport.zul", "09-partes.html#id3"),
-            subItem(_("Work report query"), "/workreports/workReportQuery.zul", "09-partes.html#id4"));
+        topItem(_("Resources"), "/resources/worker/worker.zul", "",
+            subItem(_("Workers"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"),
+            subItem(_("Machines"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"),
+            subItem(_("Virtual workers groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"),
+            subItem(_("Work reports"), "/workreports/workReport.zul", "09-partes.html#id3"),
+            subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""),
+            subItem(_("Subcontracted tasks"), "/subcontract/subcontractedTasks.zul", ""),
+            subItem(_("Advance report"), "/subcontract/reportAdvances.zul", ""));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
-            topItem(_("Administration"), "/advance/advanceTypes.zul", "",
-                subItem(_("Manage advance types"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
-                subItem(_("Manage criteria"),"/resources/criterions/criterions-V2.zul","02-criterios.html#id1"),
+            topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
+                subItem(_("NavalPlan configuration"), "/common/configuration.zul","03-calendarios.html#calendario-por-defecto"),
+                subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
+                subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles"),
                 subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
-                subItem(_("Label types"), "/labels/labelTypes.zul","10-etiquetas.html"),
                 subItem(_("Materials"), "/materials/materials.zul", "11-materiales.html#administraci-n-de-materiais"),
-                subItem(_("Unit types"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
-                subItem(_("Manage cost categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
-                subItem(_("Manage types of work hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
-                subItem(_("Configuration"), "/common/configuration.zul","03-calendarios.html#calendario-por-defecto"),
                 subItem(_("Quality forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
-                subItem(_("Manage user profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles"),
-                subItem(_("Manage user accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
-                subItem(_("Manage external companies"), "/externalcompanies/externalcompanies.zul",""),
-                subItem(_("Manage scenarios"), "/scenarios/scenarios.zul",""));
+                subItem(_("Cost categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
+                subItem(_("Advances"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
+                subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
+                subItem(_("Criteria"),"/resources/criterions/criterions-V2.zul","02-criterios.html#id1"),
+                subItem(_("Work reports"),"/workreports/workReportTypes.zul","09-partes.html#id2"),
+                subItem(_("Units"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
+                subItem(_("Work hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas")
+                );
             }
 
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
-            subItem(_("Hours worked per worker"),"/reports/hoursWorkedPerWorkerReport.zul","15-informes.html"),
-            subItem(_("Completed estimated hours"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
-            subItem(_("Working progress per task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
-            subItem(_("Order costs per resource"),"/reports/orderCostsPerResource.zul", "15-informes.html"),
-            subItem(_("Scheduling progress per order"),"/reports/schedulingProgressPerOrderReport.zul", "15-informes.html"),
-            subItem(_("Task scheduling status for an order"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
+            subItem(_("Work reports"), "/workreports/workReportQuery.zul", "09-partes.html#id4"),
+            subItem(_("Hours worked per resource"),"/reports/hoursWorkedPerWorkerReport.zul","15-informes.html"),
+            subItem(_("Work and progress per project"),"/reports/schedulingProgressPerOrderReport.zul", "15-informes.html"),
+            subItem(_("Work and progress per task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
+            subItem(_("Estimated/planned hours per task"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
+            subItem(_("Project costs per resource"),"/reports/orderCostsPerResource.zul", "15-informes.html"),
+            subItem(_("Task scheduling status in project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
             subItem(_("Materials needs at date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
     }
 
