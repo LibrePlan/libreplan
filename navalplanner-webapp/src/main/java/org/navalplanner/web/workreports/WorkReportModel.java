@@ -24,8 +24,10 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -100,6 +102,8 @@ public class WorkReportModel implements IWorkReportModel {
     private List<WorkReportDTO> listWorkReportDTOs = new ArrayList<WorkReportDTO>();
 
     private List<WorkReportLine> listWorkReportLine = new ArrayList<WorkReportLine>();
+
+    private Set<WorkReportLine> deletedWorkReportLinesSet = new HashSet<WorkReportLine>();
 
     @Override
     public WorkReport getWorkReport() {
@@ -237,6 +241,14 @@ public class WorkReportModel implements IWorkReportModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        try {
+            orderElementDAO.updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
+                    deletedWorkReportLinesSet);
+            orderElementDAO.updateRelatedSumChargedHoursWithWorkReportLineSet(
+                    workReport.getWorkReportLines());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         workReportDAO.save(workReport);
     }
 
@@ -353,7 +365,10 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Transactional
     public void remove(WorkReport workReport) {
+        //before deleting the report, update OrderElement.SumChargedHours
         try {
+            orderElementDAO.updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
+                    workReport.getWorkReportLines());
             workReportDAO.remove(workReport.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
@@ -362,6 +377,7 @@ public class WorkReportModel implements IWorkReportModel {
 
     @Override
     public void removeWorkReportLine(WorkReportLine workReportLine) {
+        deletedWorkReportLinesSet.add(workReportLine);
         workReport.removeWorkReportLine(workReportLine);
     }
 

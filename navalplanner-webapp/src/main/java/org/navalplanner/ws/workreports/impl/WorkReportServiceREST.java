@@ -26,15 +26,19 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.GenericRESTService;
+import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.navalplanner.ws.workreports.api.IWorkReportService;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
+import org.navalplanner.ws.workreports.api.WorkReportLineDTO;
 import org.navalplanner.ws.workreports.api.WorkReportListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +58,9 @@ public class WorkReportServiceREST extends
 
     @Autowired
     private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
 
     @Override
     @GET
@@ -97,4 +104,60 @@ public class WorkReportServiceREST extends
 
     }
 
+    /**
+     * It saves (inserts or updates) an entity DTO by using a new transaction.
+     *
+     * @throws ValidationException if validations are not passed
+     * @throws RecoverableErrorException if a recoverable error occurs
+     * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
+     *
+     */
+    protected void insertOrUpdate(final WorkReportDTO entityDTO)
+        throws ValidationException, RecoverableErrorException {
+        /*
+         * NOTE: ValidationException and RecoverableErrorException are runtime
+         * exceptions. In consequence, if any of them occurs, transaction is
+         * automatically rolled back.
+         */
+
+        IOnTransaction<Void> save = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+
+                WorkReport entity = null;
+                IIntegrationEntityDAO<WorkReport> entityDAO =
+                    getIntegrationEntityDAO();
+
+                /* Insert or update? */
+                try {
+                    entity = entityDAO.findByCode(entityDTO.code);
+                    updateEntity(entity, entityDTO);
+                } catch (InstanceNotFoundException e) {
+                    entity = toEntity(entityDTO);
+                }
+
+                /*
+                 * Validate and save (insert or update) the entity.
+                 */
+                entity.validate();
+                try {
+                    orderElementDAO.updateRelatedSumChargedHoursWithWorkReportLineSet(
+                            entity.getWorkReportLines());
+                } catch (InstanceNotFoundException e) {
+                    //should never happen, because the entity has been
+                    //validated before, so we are sure the lines refer
+                    //to existing order elements
+                }
+                entityDAO.saveWithoutValidating(entity);
+
+                return null;
+
+            }
+
+        };
+
+        transactionService.runOnAnotherTransaction(save);
+
+    }
 }

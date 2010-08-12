@@ -44,7 +44,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
     DTO extends IntegrationEntityDTO> {
 
     @Autowired
-    private IAdHocTransactionService transactionService;
+    protected IAdHocTransactionService transactionService;
 
     /**
      * It retrieves all entities.
