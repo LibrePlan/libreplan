@@ -1,4 +1,16 @@
 <package name="ganttz" language="xul/html">
+    <script src="../yui/2.7.0/yahoo/yahoo-min.js"/>
+    <script src="../yui/2.7.0/yahoo-dom-event/yahoo-dom-event.js"/>
+    <script src="../yui/2.7.0/selector/selector-min.js"/>
+    <script src="../yui/2.7.0/yahoo-dom-event/yahoo-dom-event.js"/>
+    <script src="../yui/2.7.0/dragdrop/dragdrop-min.js"/>
+    <script src="../yui/2.7.0/element/element-min.js"/>
+    <script src="../yui/2.7.0/resize/resize-min.js"/>
+    <script src="../yui/2.7.0/logger/logger-min.js"/>
+    <script src="dependencylist.js"/>
+    <script src="dependency.js"/>
+    <script src="scrollSync.js"/>
+
     <widget name="GanttPanel"/>
     <widget name="TaskRow"/>
     <widget name="TaskComponent"/>
