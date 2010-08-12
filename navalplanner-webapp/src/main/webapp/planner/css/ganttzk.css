@@ -740,7 +740,7 @@ div.limitingresourcesleftpane  {
 }
 
 .tree-text {
-    width: 150px;
+    width: 100%;
 }
 
 .listdetails div.z-tree-cell-cnt {
