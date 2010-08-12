@@ -131,7 +131,8 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      * @return
      */
     public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
-            List<Resource> resources, List<Label> labels, Date startingDate,
+            List<Resource> resources, List<Label> labels,
+            List<Criterion> criterions, Date startingDate,
             Date endingDate);
 
 }

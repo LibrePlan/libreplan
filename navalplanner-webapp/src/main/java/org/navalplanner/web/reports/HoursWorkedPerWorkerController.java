@@ -32,6 +32,7 @@ import java.util.Set;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.Util;
@@ -64,6 +65,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private Listbox lbLabels;
 
+    private Listbox lbCriterions;
+
     private Datebox startingDate;
 
     private Datebox endingDate;
@@ -72,12 +75,15 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private BandboxSearch bdLabels;
 
+    private BandboxSearch bdCriterions;
+
     private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        hoursWorkedPerWorkerModel.init();
     }
 
     public Set<Resource> getResources() {
@@ -93,6 +99,7 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     protected JRDataSource getDataSource() {
         return hoursWorkedPerWorkerModel.getHoursWorkedPerWorkerReport(
                 getSelectedResources(), getSelectedLabels(),
+                getSelectedCriterions(),
                 getStartingDate(), getEndingDate());
     }
 
@@ -278,4 +285,34 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     public List<Label> getSelectedLabels() {
         return hoursWorkedPerWorkerModel.getSelectedLabels();
     }
+
+    public List<Criterion> getAllCriterions() {
+        return hoursWorkedPerWorkerModel.getCriterions();
+    }
+
+    public void onSelectCriterion() {
+        Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
+        if (criterion == null) {
+            throw new WrongValueException(bdCriterions,
+                    _("please, select a Criterion"));
+        }
+        boolean result = hoursWorkedPerWorkerModel
+                .addSelectedCriterion(criterion);
+        if (!result) {
+            throw new WrongValueException(bdCriterions,
+                    _("This Criterion has already been added."));
+        } else {
+            Util.reloadBindings(lbCriterions);
+        }
+    }
+
+    public void onRemoveCriterion(Criterion criterion) {
+        hoursWorkedPerWorkerModel.removeSelectedCriterion(criterion);
+        Util.reloadBindings(lbCriterions);
+    }
+
+    public List<Criterion> getSelectedCriterions() {
+        return hoursWorkedPerWorkerModel.getSelectedCriterions();
+    }
+
 }

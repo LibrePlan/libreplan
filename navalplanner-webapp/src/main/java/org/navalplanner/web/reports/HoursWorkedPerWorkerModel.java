@@ -33,8 +33,12 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -55,19 +59,33 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     @Autowired
     private ILabelDAO labelDAO;
 
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     private Set<Resource> selectedResources = new HashSet<Resource>();
 
     private List<Label> selectedLabels = new ArrayList<Label>();
+
+    private List<Criterion> selectedCriterions = new ArrayList<Criterion>();
+
+    private List<Criterion> allCriterions = new ArrayList<Criterion>();
+
+    private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
+
+    static {
+        applicableResources.add(ResourceEnum.RESOURCE);
+        applicableResources.add(ResourceEnum.WORKER);
+    }
 
     private boolean showReportMessage = false;
 
     @Transactional(readOnly = true)
     public JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
-            List<Label> labels,
-            Date startingDate, Date endingDate) {
+            List<Label> labels, List<Criterion> criterions, Date startingDate,
+            Date endingDate) {
 
         final List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO
-                .getWorkingHoursPerWorker(resources, labels, startingDate,
+                .getWorkingHoursPerWorker(resources, labels,  criterions, startingDate,
                         endingDate);
 
         if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
@@ -80,8 +98,14 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void init() {
         this.selectedResources.clear();
+        this.selectedLabels.clear();
+        this.selectedCriterions.clear();
+
+        allCriterions.clear();
+        loadAllCriterions();
     }
 
     @Override
@@ -141,4 +165,65 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     public List<Label> getSelectedLabels() {
         return selectedLabels;
     }
+
+    @Override
+    public List<Criterion> getCriterions() {
+        return this.allCriterions;
+    }
+
+    private void loadAllCriterions() {
+        List<CriterionType> listTypes = getCriterionTypes();
+        for (CriterionType criterionType : listTypes) {
+            if (criterionType.isEnabled()) {
+                Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+                addCriterionWithItsType(listCriterion);
+            }
+        }
+    }
+
+    private static Set<Criterion> getDirectCriterions(
+            CriterionType criterionType) {
+        Set<Criterion> criterions = new HashSet<Criterion>();
+        for (Criterion criterion : criterionType.getCriterions()) {
+            if (criterion.getParent() == null) {
+                criterions.add(criterion);
+            }
+        }
+        return criterions;
+    }
+
+    private void addCriterionWithItsType(Set<Criterion> children) {
+        for (Criterion criterion : children) {
+            if (criterion.isActive()) {
+                // Add to the list
+                allCriterions.add(criterion);
+                addCriterionWithItsType(criterion.getChildren());
+            }
+        }
+    }
+
+    private List<CriterionType> getCriterionTypes() {
+        return criterionTypeDAO
+                .getCriterionTypesByResources(applicableResources);
+    }
+
+    @Override
+    public void removeSelectedCriterion(Criterion criterion) {
+        this.selectedCriterions.remove(criterion);
+    }
+
+    @Override
+    public boolean addSelectedCriterion(Criterion criterion) {
+        if (this.selectedCriterions.contains(criterion)) {
+            return false;
+        }
+        this.selectedCriterions.add(criterion);
+        return true;
+    }
+
+    @Override
+    public List<Criterion> getSelectedCriterions() {
+        return selectedCriterions;
+    }
+
 }

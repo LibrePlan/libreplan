@@ -223,7 +223,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     @Override
     @Transactional(readOnly = true)
     public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
-            List<Resource> resources, List<Label> labels, Date startingDate,
+            List<Resource> resources, List<Label> labels,
+            List<Criterion> criterions, Date startingDate,
             Date endingDate) {
 
         String strQuery = "SELECT new org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO(resource, wrl) "
@@ -253,6 +254,12 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
                     + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels))) ";
         }
 
+        // Set Criterions
+        if (criterions != null && !criterions.isEmpty()) {
+            strQuery += "AND EXISTS (FROM resource.criterionSatisfactions as satisfaction "
+                    + " WHERE satisfaction.criterion IN (:criterions))";
+        }
+
         // Order by
         strQuery += "ORDER BY resource.id, wrl.date";
 
@@ -269,6 +276,9 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
         }
         if (labels != null && !labels.isEmpty()) {
             query.setParameterList("labels", labels);
+        }
+        if (criterions != null && !criterions.isEmpty()) {
+            query.setParameterList("criterions", criterions);
         }
 
         // Get result
