@@ -30,10 +30,16 @@
     <menubar id="menubar" top="0px" left="0px"
             ctrlKeys="^k#f2" onCtrlKey="doCtrlKey()" sclass="mainmenu" autodrop="true">
 
-                <menu forEach="${menuContainer.customMenuItems}" label="${i18n:_(each.name)}" class="${each.activeParent?'current-section':''}" >
+            <menu forEach="${menuContainer.customMenuItems}" label="${i18n:_(each.name)}" class="${each.activeParent?'current-section':''}" >
                 <menupopup sclass="submenu">
                     <menuitem forEach="${each.children}" label="${i18n:_(each.name)}"
-                        href='${each.url}' />
+                        href='${each.url}' visible="${each.hasNotChildren}" />
+                    <menu forEach="${each.children}" label="${i18n:_(each.name)}" visible="${each.hasChildren}" >
+                        <menupopup>
+                            <menuitem forEach="${forEachStatus.each.children}"
+                                label="${i18n:_(each.name)}" href='${each.url}' />
+                        </menupopup>
+                    </menu>
                 </menupopup>
             </menu>
 

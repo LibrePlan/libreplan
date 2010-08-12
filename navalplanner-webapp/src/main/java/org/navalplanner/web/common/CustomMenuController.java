@@ -76,6 +76,14 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             return children;
         }
 
+        public boolean getHasChildren() {
+            return !children.isEmpty();
+        }
+
+        public boolean getHasNotChildren() {
+            return children.isEmpty();
+        }
+
         public CustomMenuItem(String name, String url) {
             this(name, url, new ArrayList<CustomMenuItem>());
         }
@@ -192,6 +200,15 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return new CustomMenuItem(name, url, helpLink);
     }
 
+    private CustomMenuItem subItem(String name, String url, String helpLink,
+            CustomMenuItem... children) {
+        CustomMenuItem parent = subItem(name, url, helpLink);
+        for (CustomMenuItem child : children) {
+            parent.appendChildren(child);
+        }
+        return parent;
+    }
+
     public void initializeMenu() {
         topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
             subItem(_("Scenarios management"), "/scenarios/scenarios.zul",""),
@@ -210,25 +227,27 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Virtual workers groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"),
             subItem(_("Work reports"), "/workreports/workReport.zul", "09-partes.html#id3"),
             subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""),
-            subItem(_("Subcontracted tasks"), "/subcontract/subcontractedTasks.zul", ""),
-            subItem(_("Advance report"), "/subcontract/reportAdvances.zul", ""));
+            subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
+                subItem(_("Subcontracted tasks"), "/subcontract/subcontractedTasks.zul", ""),
+                subItem(_("Advance report"), "/subcontract/reportAdvances.zul", "")));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
                 subItem(_("NavalPlan configuration"), "/common/configuration.zul","03-calendarios.html#calendario-por-defecto"),
-                subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
-                subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles"),
+                subItem(_("Users"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios",
+                    subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
+                    subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles")),
                 subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
                 subItem(_("Materials"), "/materials/materials.zul", "11-materiales.html#administraci-n-de-materiais"),
                 subItem(_("Quality forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
                 subItem(_("Cost categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
-                subItem(_("Advances"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
-                subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
-                subItem(_("Criteria"),"/resources/criterions/criterions-V2.zul","02-criterios.html#id1"),
-                subItem(_("Work reports"),"/workreports/workReportTypes.zul","09-partes.html#id2"),
-                subItem(_("Units"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
-                subItem(_("Work hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas")
-                );
+                subItem(_("Data types"),"/advance/advanceTypes.zul", "04-avances.html#id1",
+                    subItem(_("Advances"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
+                    subItem(_("Criteria"),"/resources/criterions/criterions-V2.zul","02-criterios.html#id1"),
+                    subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
+                    subItem(_("Units"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
+                    subItem(_("Work hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
+                    subItem(_("Work reports"),"/workreports/workReportTypes.zul","09-partes.html#id2")));
             }
 
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
