@@ -88,19 +88,19 @@
 .listdetails .depth_1 input.task_title {
     /*on change org.navalplanner.web.print.CutyPrint.BASE_TASK_NAME_PIXEL must
      be changed too */
-    width: 121px;
+    width: 82%;
 }
 
 .listdetails .depth_2 input.task_title {
-    width: 104px;
+    width: 69.5%;
 }
 
 .listdetails .depth_3 .task_title {
-    width: 85px;
+    width: 57.5%;
 }
 
 .listdetails .depth_4 .task_title {
-    width: 64px;
+    width: 45%;
 }
 
 .listdetails {
