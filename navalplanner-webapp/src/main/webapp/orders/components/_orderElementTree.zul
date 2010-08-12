@@ -45,7 +45,7 @@
         </hbox>
     </vbox>
     <vbox>
-        <tree id="tree" width="1050" multiple="false" droppable="true"
+        <tree id="tree" height="440px" multiple="false" droppable="true"
             onDrop="treeController.move(self, event.dragged)"
             onSelect="treeController.updateControlButtons(event)"
             model="@{treeController.treeModel}"
