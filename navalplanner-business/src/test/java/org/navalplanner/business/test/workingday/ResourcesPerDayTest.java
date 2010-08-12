@@ -113,7 +113,7 @@ public class ResourcesPerDayTest {
     }
 
     @Test
-    public void ifTheAmountIsDecimalTheRoundingIs() {
+    public void ifTheAmountIsDecimalTheRoundingIsHalfUp() {
         ResourcesPerDay units = ResourcesPerDay.amount(new BigDecimal(2.4));
         assertThat(units.asHoursGivenResourceWorkingDayOf(8), equalTo(19));
         assertThat(units.asHoursGivenResourceWorkingDayOf(10), equalTo(24));
