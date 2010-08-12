@@ -571,7 +571,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(uri);
+        pds.setDataSourceUri(adaptCallbackForTimePlot(uri));
         pds.setSeparator(" ");
 
         Plotinfo plotinfo = new Plotinfo();
@@ -579,6 +579,18 @@ public abstract class ChartFiller implements IChartFiller {
         return plotinfo;
     }
 
+    /*
+     * Get rid of the initial-slash of the callback uri:
+     *
+     * before: /callback/<callbackid>
+     * after: callback/<callbackid>
+     *
+     *This is needed because how the Javascript component of Timeplot handles
+     *the application webpath
+     * */
+    private String adaptCallbackForTimePlot(String uri){
+        return uri.substring(1);
+    }
     @Override
     public void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
             ValueGeometry valueGeometry, TimeGeometry timeGeometry) {
