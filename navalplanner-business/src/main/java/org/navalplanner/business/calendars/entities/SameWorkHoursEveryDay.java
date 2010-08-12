@@ -22,7 +22,7 @@ package org.navalplanner.business.calendars.entities;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class SameWorkHoursEveryDay implements IWorkHours {
 

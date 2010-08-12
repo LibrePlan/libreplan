@@ -46,6 +46,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Represents the relation between {@link Task} and a generic {@link Resource}.

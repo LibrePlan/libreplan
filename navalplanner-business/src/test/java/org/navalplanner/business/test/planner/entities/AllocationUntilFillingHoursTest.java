@@ -36,13 +36,13 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class AllocationUntilFillingHoursTest {
 

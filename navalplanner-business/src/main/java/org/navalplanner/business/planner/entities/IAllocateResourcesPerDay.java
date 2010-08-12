@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import org.navalplanner.business.workingday.ResourcesPerDay;
+
 /**
  * Represents an object in which can be allocated some {@link ResourcesPerDay} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>

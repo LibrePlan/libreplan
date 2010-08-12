@@ -49,13 +49,13 @@ import org.junit.Test;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.ResourceAllocation.IOnDayAssignmentRemoval;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class SpecificResourceAllocationTest {
 

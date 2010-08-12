@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class CombinedWorkHours implements IWorkHours {
 

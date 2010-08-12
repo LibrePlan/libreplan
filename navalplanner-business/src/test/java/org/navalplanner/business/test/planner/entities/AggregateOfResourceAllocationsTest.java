@@ -37,7 +37,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class AggregateOfResourceAllocationsTest {
 

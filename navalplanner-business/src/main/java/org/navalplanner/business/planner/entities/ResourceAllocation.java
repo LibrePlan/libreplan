@@ -60,6 +60,7 @@ import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Resources are allocated to planner tasks.

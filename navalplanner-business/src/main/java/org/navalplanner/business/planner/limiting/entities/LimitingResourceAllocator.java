@@ -33,12 +33,12 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Handles all the logic related to allocation of

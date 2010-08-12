@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.test.planner.entities;
+package org.navalplanner.business.test.workingday;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -32,8 +32,8 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
-import org.navalplanner.business.planner.entities.ResourcesPerDay.ResourcesPerDayDistributor;
+import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay.ResourcesPerDayDistributor;
 
 public class ResourcesPerDayTest {
 

@@ -37,7 +37,7 @@ import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the

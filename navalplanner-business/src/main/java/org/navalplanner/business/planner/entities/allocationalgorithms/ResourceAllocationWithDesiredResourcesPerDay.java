@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class ResourceAllocationWithDesiredResourcesPerDay {
 

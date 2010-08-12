@@ -26,7 +26,7 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTi
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>

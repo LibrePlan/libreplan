@@ -21,7 +21,7 @@
 package org.navalplanner.business.calendars.entities;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public interface IWorkHours {
 

@@ -26,12 +26,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * The information required for creating a {@link SpecificResourceAllocation}

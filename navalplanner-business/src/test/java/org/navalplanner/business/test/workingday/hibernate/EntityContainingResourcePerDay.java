@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.test.planner.entities.hibernate;
+package org.navalplanner.business.test.workingday.hibernate;
 
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class EntityContainingResourcePerDay {
 

@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Computes aggregate values on a set{@link ResourceAllocation}.

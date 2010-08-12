@@ -36,11 +36,11 @@ import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class ResourcesPerDayModification extends
         AllocationModification {

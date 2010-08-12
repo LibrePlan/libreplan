@@ -30,6 +30,7 @@ import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>

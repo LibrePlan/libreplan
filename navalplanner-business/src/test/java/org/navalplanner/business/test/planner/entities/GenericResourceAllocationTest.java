@@ -52,7 +52,6 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -61,6 +60,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class GenericResourceAllocationTest {
 

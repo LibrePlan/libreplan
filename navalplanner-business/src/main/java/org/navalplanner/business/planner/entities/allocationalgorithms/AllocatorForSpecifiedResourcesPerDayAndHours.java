@@ -34,8 +34,8 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 

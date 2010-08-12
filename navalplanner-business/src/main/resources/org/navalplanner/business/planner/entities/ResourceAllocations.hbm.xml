@@ -12,7 +12,7 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="resourcesPerDay" type="org.navalplanner.business.planner.entities.hibernate.ResourcesPerDayType" />
+        <property name="resourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType" />
 
         <property name="intendedTotalHours" column="intended_total_hours" />
 

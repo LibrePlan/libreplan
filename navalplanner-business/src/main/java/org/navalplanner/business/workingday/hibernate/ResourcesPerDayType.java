@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities.hibernate;
+package org.navalplanner.business.workingday.hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ import java.sql.Types;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
-import org.navalplanner.business.planner.entities.ResourcesPerDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Persists a {@link ResourcesPerDay} through hibernate

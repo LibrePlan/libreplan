@@ -43,6 +43,7 @@ import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
