@@ -30,10 +30,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -328,7 +328,7 @@ public abstract class ChartFiller implements IChartFiller {
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         String uri = CallbackServlet.registerAndCreateURLFor(request,
-                graphicSpecificationCreator);
+                graphicSpecificationCreator, false);
         return uri;
     }
 
