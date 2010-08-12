@@ -22,12 +22,14 @@ package org.navalplanner.business.orders.daos;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
 
 /**
  * Contract for {@link OrderElementDAO}
@@ -112,5 +114,17 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     BigDecimal calculateMinWorkedHours(final List<OrderElement> list);
 
     boolean isAlreadyInUseThisOrAnyOfItsChildren(OrderElement orderElement);
+
+    void updateRelatedSumChargedHoursWithWorkReportLine(
+            WorkReportLine workReportLine) throws InstanceNotFoundException;
+
+    void updateRelatedSumChargedHoursWithDeletedWorkReportLine(
+            WorkReportLine workReportLine) throws InstanceNotFoundException;
+
+    void updateRelatedSumChargedHoursWithWorkReportLineSet(
+            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException;
+
+    void updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
+            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException;
 
 }

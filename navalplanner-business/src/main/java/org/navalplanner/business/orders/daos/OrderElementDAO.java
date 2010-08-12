@@ -59,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  **/
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -454,6 +455,83 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         }
 
         return false;
+    }
+
+    @Override
+    @Transactional
+    public void updateRelatedSumChargedHoursWithWorkReportLine(
+            final WorkReportLine workReportLine) throws InstanceNotFoundException {
+        OrderElement orderElement = find(workReportLine.getOrderElement().getId());
+        Integer hours = workReportLine.getNumHours();
+
+        if(workReportLine.isNewObject()) {
+            orderElement.getSumChargedHours().addDirectChargedHours(hours);
+            save(orderElement);
+            updateIndirectChargedHoursRecursively(orderElement.getParent(), hours);
+        }
+        else {
+            //the line already exists, we have to get the old value for numHours
+            Integer oldNumHours = transactionService
+                    .runOnAnotherTransaction(new IOnTransaction<Integer>() {
+
+                @Override
+                public Integer execute() {
+                    try {
+                        return workReportLineDAO.find(workReportLine.getId()).getNumHours();
+                    } catch (InstanceNotFoundException e) {
+                        // this shouldn't happen, as workReportLine.isNewObject()
+                        // returns false, indicating this object already exists
+                        return workReportLine.getNumHours();
+                    }
+                }
+            });
+            Integer differenceOfHours = hours - oldNumHours;
+            orderElement.getSumChargedHours().addDirectChargedHours(differenceOfHours);
+            save(orderElement);
+            updateIndirectChargedHoursRecursively(orderElement.getParent(),differenceOfHours);
+        }
+        workReportLineDAO.save(workReportLine);
+    }
+
+    @Override
+    @Transactional
+    public void updateRelatedSumChargedHoursWithDeletedWorkReportLine(
+            final WorkReportLine workReportLine) throws InstanceNotFoundException {
+        if(workReportLine.isNewObject()) {
+            //if the line hadn't been saved, we have nothing to update
+            return;
+        }
+        OrderElement orderElement = find(workReportLine.getOrderElement().getId());
+        Integer hours = workReportLine.getNumHours() * -1;
+
+        orderElement.getSumChargedHours().addDirectChargedHours(hours);
+        save(orderElement);
+        updateIndirectChargedHoursRecursively(orderElement.getParent(), hours);
+    }
+
+    private void updateIndirectChargedHoursRecursively(
+            OrderElement orderElement, Integer numberOfHoursDelta) {
+        if(orderElement != null) {
+            orderElement.getSumChargedHours().addIndirectChargedHours(numberOfHoursDelta);
+            updateIndirectChargedHoursRecursively(orderElement.getParent(), numberOfHoursDelta);
+            save(orderElement);
+        }
+    }
+
+    @Override
+    public void updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
+            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
+        for(WorkReportLine line : workReportLineSet) {
+            updateRelatedSumChargedHoursWithDeletedWorkReportLine(line);
+        }
+    }
+
+    @Override
+    public void updateRelatedSumChargedHoursWithWorkReportLineSet(
+            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
+        for(WorkReportLine line : workReportLineSet) {
+            updateRelatedSumChargedHoursWithWorkReportLine(line);
+        }
     }
 
 }
