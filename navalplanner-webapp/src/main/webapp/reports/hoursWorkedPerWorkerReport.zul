@@ -138,6 +138,7 @@
                         </listcell>
                     </listitem>
                 </listbox>
+                </vbox>
             </panelchildren>
         </panel>
 

@@ -31,16 +31,15 @@ import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class CompletedEstimatedHoursPerTaskController extends NavalplannerReportController {
 
@@ -51,6 +50,8 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
     private Listbox lbOrders;
 
     private Datebox referenceDate;
+
+    private BandboxSearch bandboxSelectOrder;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -75,8 +76,7 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
     }
 
     private Order getSelectedOrder() {
-        final Listitem item = lbOrders.getSelectedItem();
-        return (item != null) ? (Order) item.getValue() : null;
+        return (Order) bandboxSelectOrder.getSelectedElement();
     }
 
     private Date getDeadlineDate() {

@@ -274,6 +274,7 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
         if (resources != null && !resources.isEmpty()) {
             query.setParameterList("resources", resources);
         }
+
         if (labels != null && !labels.isEmpty()) {
             query.setParameterList("labels", labels);
         }

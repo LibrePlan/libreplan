@@ -44,8 +44,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Diego Pino Garcia <dpino@igalia.com>
- *
+ *@author Diego Pino Garcia <dpino@igalia.com>
+ *@author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)

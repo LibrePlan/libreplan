@@ -65,19 +65,12 @@
             border="normal"
             style="overflow:auto">
             <panelchildren>
-                <listbox id="lbOrders"
-                        width="600px"
-                        multiple="false"
-                        model="@{controller.orders}">
-                    <listhead>
-                        <listheader label="${i18n:_('Name')}" sort="auto(name)" />
-                        <listheader label="${i18n:_('Code')}" sort="auto(code)" />
-                    </listhead>
-                    <listitem self="@{each='order'}" value="@{order}">
-                        <listcell label="@{order.name}" />
-                        <listcell label="@{order.code}" />
-                    </listitem>
-                </listbox>
+                <label value="${i18n:_('OrderElement Code')}:" />
+                <bandboxSearch id="bandboxSelectOrder"
+                    finder="OrderBandboxFinder"
+                    model="@{controller.orders}"
+                    widthListbox="480px"
+                    widthBandbox="450px"/>
             </panelchildren>
         </panel>
 
