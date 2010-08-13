@@ -94,10 +94,11 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <map name="hoursPerDay">
+        <map name="effortPerDay">
             <key column="BASE_CALENDAR_ID"/>
             <index column="DAY_ID" type="integer" />
-            <element column="HOURS" type="integer" />
+            <element column="EFFORT"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType" />
         </map>
 
         <!-- Not indexed -->

@@ -23,11 +23,14 @@ package org.navalplanner.business.calendars.entities;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 /**
  * Represents the information about the calendar that can change through time.
@@ -69,7 +72,7 @@ public class CalendarData extends IntegrationEntity {
         }
     }
 
-    private Map<Integer, Integer> hoursPerDay;
+    private Map<Integer, EffortDuration> effortPerDay;
 
     private LocalDate expiringDate;
 
@@ -83,14 +86,23 @@ public class CalendarData extends IntegrationEntity {
      * Constructor for hibernate. Do not use!
      */
     public CalendarData() {
-        hoursPerDay = new HashMap<Integer, Integer>();
+        effortPerDay = new HashMap<Integer, EffortDuration>();
         for (Days each : Days.values()) {
             setHoursForDay(each, null);
         }
     }
 
     public Map<Integer, Integer> getHoursPerDay() {
-        return hoursPerDay;
+        return asHours(effortPerDay);
+    }
+
+    private Map<Integer, Integer> asHours(Map<Integer, EffortDuration> efforts) {
+        Map<Integer, Integer> result = new HashMap<Integer, Integer>();
+        for (Entry<Integer, EffortDuration> each : efforts.entrySet()) {
+            EffortDuration value = each.getValue();
+            result.put(each.getKey(), value == null ? null : value.getHours());
+        }
+        return result;
     }
 
     public Integer getHours(Days day) {
@@ -108,11 +120,15 @@ public class CalendarData extends IntegrationEntity {
             throw new IllegalArgumentException(
                     "The number of hours for a day can not be negative");
         }
-        hoursPerDay.put(day.ordinal(), hours);
+        effortPerDay.put(
+                day.ordinal(),
+                hours == null ? null :
+                EffortDuration.elapsing(hours, Granularity.HOURS));
     }
 
     private Integer getHoursForDay(Days day) {
-        return hoursPerDay.get(day.ordinal());
+        EffortDuration effort = effortPerDay.get(day.ordinal());
+        return effort == null ? null : effort.getHours();
     }
 
     public boolean isDefault(Days day) {
@@ -140,8 +156,8 @@ public class CalendarData extends IntegrationEntity {
 
     public CalendarData copy() {
         CalendarData copy = create();
-
-        copy.hoursPerDay = new HashMap<Integer, Integer>(this.hoursPerDay);
+        copy.effortPerDay = new HashMap<Integer, EffortDuration>(
+                this.effortPerDay);
         copy.expiringDate = this.expiringDate;
         copy.parent = this.parent;
 
