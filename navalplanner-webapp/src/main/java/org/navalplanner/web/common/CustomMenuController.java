@@ -133,6 +133,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             List<CustomMenuItem> items = new ArrayList<CustomMenuItem>();
             items.add(this);
             items.addAll(children);
+            for (CustomMenuItem child : children) {
+                items.addAll(child.children);
+            }
             return items;
         }
 
@@ -166,6 +169,13 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 for (CustomMenuItem child : ci.children) {
                     if (child.contains(requestPath)) {
                         child.setActive(true);
+                        List<CustomMenuItem> test = child.children;
+                        for (CustomMenuItem c : child.children) {
+                            if (c.contains(requestPath)) {
+                                c.setActive(true);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
@@ -278,6 +288,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     for (CustomMenuItem child : ci.children) {
                         if (child.isActiveParent()) {
                             breadcrumbsPath.add(child);
+                            for (CustomMenuItem c : child.children) {
+                                if (c.isActiveParent()) {
+                                    breadcrumbsPath.add(c);
+                                }
+                            }
                         }
                     }
                 }
