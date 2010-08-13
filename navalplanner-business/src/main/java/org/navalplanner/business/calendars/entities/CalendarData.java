@@ -84,13 +84,9 @@ public class CalendarData extends IntegrationEntity {
      */
     public CalendarData() {
         hoursPerDay = new HashMap<Integer, Integer>();
-        setHoursForDay(Days.MONDAY, null);
-        setHoursForDay(Days.TUESDAY, null);
-        setHoursForDay(Days.WEDNESDAY, null);
-        setHoursForDay(Days.THURSDAY, null);
-        setHoursForDay(Days.FRIDAY, null);
-        setHoursForDay(Days.SATURDAY, null);
-        setHoursForDay(Days.SUNDAY, null);
+        for (Days each : Days.values()) {
+            setHoursForDay(each, null);
+        }
     }
 
     public Map<Integer, Integer> getHoursPerDay() {
