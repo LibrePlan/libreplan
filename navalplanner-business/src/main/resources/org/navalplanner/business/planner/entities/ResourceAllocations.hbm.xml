@@ -222,7 +222,8 @@
 
         <version name="version" access="property" type="long" />
 
-        <property name="hours" not-null="true"/>
+        <property name="duration" not-null="true"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
 
         <property name="consolidated" access="field"/>
 

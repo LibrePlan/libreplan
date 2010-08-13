@@ -29,12 +29,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
-import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
@@ -43,6 +42,8 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.AfterCopy;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 public abstract class DayAssignment extends BaseEntity {
 
@@ -158,8 +159,7 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
-    @Min(0)
-    private int hours;
+    private EffortDuration duration;
 
     @NotNull
     private LocalDate day;
@@ -179,12 +179,12 @@ public abstract class DayAssignment extends BaseEntity {
         Validate.isTrue(hours >= 0);
         Validate.notNull(resource);
         this.day = day;
-        this.hours = hours;
+        this.duration = EffortDuration.elapsing(hours, Granularity.HOURS);
         this.resource = resource;
     }
 
     public int getHours() {
-        return hours;
+        return duration.getHours();
     }
 
     public Resource getResource() {
