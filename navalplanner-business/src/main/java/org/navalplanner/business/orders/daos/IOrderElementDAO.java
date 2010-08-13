@@ -115,12 +115,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     boolean isAlreadyInUseThisOrAnyOfItsChildren(OrderElement orderElement);
 
-    void updateRelatedSumChargedHoursWithWorkReportLine(
-            WorkReportLine workReportLine) throws InstanceNotFoundException;
-
-    void updateRelatedSumChargedHoursWithDeletedWorkReportLine(
-            WorkReportLine workReportLine) throws InstanceNotFoundException;
-
     void updateRelatedSumChargedHoursWithWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException;
 

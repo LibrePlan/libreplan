@@ -24,8 +24,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -457,17 +459,17 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return false;
     }
 
-    @Override
-    @Transactional
-    public void updateRelatedSumChargedHoursWithWorkReportLine(
-            final WorkReportLine workReportLine) throws InstanceNotFoundException {
+    private void updateRelatedSumChargedHoursWithWorkReportLine(
+            final WorkReportLine workReportLine,
+            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours)
+            throws InstanceNotFoundException {
+
         OrderElement orderElement = find(workReportLine.getOrderElement().getId());
         Integer hours = workReportLine.getNumHours();
+        Integer differenceOfHours;
 
         if(workReportLine.isNewObject()) {
-            orderElement.getSumChargedHours().addDirectChargedHours(hours);
-            save(orderElement);
-            updateIndirectChargedHoursRecursively(orderElement.getParent(), hours);
+            differenceOfHours = hours;
         }
         else {
             //the line already exists, we have to get the old value for numHours
@@ -485,18 +487,20 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
                     }
                 }
             });
-            Integer differenceOfHours = hours - oldNumHours;
-            orderElement.getSumChargedHours().addDirectChargedHours(differenceOfHours);
-            save(orderElement);
-            updateIndirectChargedHoursRecursively(orderElement.getParent(),differenceOfHours);
+            differenceOfHours = hours - oldNumHours;
         }
+        orderElement.getSumChargedHours().addDirectChargedHours(differenceOfHours);
+        save(orderElement);
+        updateIndirectChargedHoursRecursively(orderElement.getParent(),differenceOfHours,
+                relationOrderElementIdAndIndirectChargedHours);
         workReportLineDAO.save(workReportLine);
     }
 
-    @Override
-    @Transactional
-    public void updateRelatedSumChargedHoursWithDeletedWorkReportLine(
-            final WorkReportLine workReportLine) throws InstanceNotFoundException {
+    private void updateRelatedSumChargedHoursWithDeletedWorkReportLine(
+            final WorkReportLine workReportLine,
+            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours)
+            throws InstanceNotFoundException {
+
         if(workReportLine.isNewObject()) {
             //if the line hadn't been saved, we have nothing to update
             return;
@@ -506,32 +510,63 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
         orderElement.getSumChargedHours().addDirectChargedHours(hours);
         save(orderElement);
-        updateIndirectChargedHoursRecursively(orderElement.getParent(), hours);
+        updateIndirectChargedHoursRecursively(orderElement.getParent(), hours,
+                relationOrderElementIdAndIndirectChargedHours);
     }
 
     private void updateIndirectChargedHoursRecursively(
-            OrderElement orderElement, Integer numberOfHoursDelta) {
+            OrderElement orderElement, Integer numberOfHoursDelta,
+            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours) {
         if(orderElement != null) {
-            orderElement.getSumChargedHours().addIndirectChargedHours(numberOfHoursDelta);
-            updateIndirectChargedHoursRecursively(orderElement.getParent(), numberOfHoursDelta);
+            Long id = orderElement.getId();
+            if(relationOrderElementIdAndIndirectChargedHours.containsKey(id)) {
+                Integer previous = relationOrderElementIdAndIndirectChargedHours.get(id);
+                relationOrderElementIdAndIndirectChargedHours.put(id, previous + numberOfHoursDelta);
+            }
+            else {
+                relationOrderElementIdAndIndirectChargedHours.put(id, numberOfHoursDelta);
+            }
+            updateIndirectChargedHoursRecursively(orderElement.getParent(), numberOfHoursDelta,
+                    relationOrderElementIdAndIndirectChargedHours);
+        }
+    }
+
+    private void updateIndirectChargedHoursWithMap(
+            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours)
+            throws InstanceNotFoundException {
+
+        for(Long id : relationOrderElementIdAndIndirectChargedHours.keySet()) {
+            OrderElement orderElement = find(id);
+            orderElement.getSumChargedHours().addIndirectChargedHours(
+                    relationOrderElementIdAndIndirectChargedHours.get(id));
             save(orderElement);
         }
     }
 
     @Override
+    @Transactional
     public void updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
+        Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours =
+                new Hashtable<Long, Integer>();
         for(WorkReportLine line : workReportLineSet) {
-            updateRelatedSumChargedHoursWithDeletedWorkReportLine(line);
+            updateRelatedSumChargedHoursWithDeletedWorkReportLine(line,
+                    relationOrderElementIdAndIndirectChargedHours);
         }
+        updateIndirectChargedHoursWithMap(relationOrderElementIdAndIndirectChargedHours);
     }
 
     @Override
+    @Transactional
     public void updateRelatedSumChargedHoursWithWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
+        Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours =
+            new Hashtable<Long, Integer>();
         for(WorkReportLine line : workReportLineSet) {
-            updateRelatedSumChargedHoursWithWorkReportLine(line);
+            updateRelatedSumChargedHoursWithWorkReportLine(line,
+                    relationOrderElementIdAndIndirectChargedHours);
         }
+        updateIndirectChargedHoursWithMap(relationOrderElementIdAndIndirectChargedHours);
     }
 
 }
