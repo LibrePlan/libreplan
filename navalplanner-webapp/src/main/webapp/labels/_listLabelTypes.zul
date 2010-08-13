@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.id}" title="${i18n:_('List label types')}">
+<window id="${arg.id}" title="${i18n:_('Label Types List')}">
     <newdatasortablegrid id="labelTypes" model="@{controller.labelTypes}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>

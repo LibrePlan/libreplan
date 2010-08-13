@@ -134,7 +134,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      */
     public void goToCreateForm() {
         labelTypeModel.initCreate();
-        editWindow.setTitle(_("Create label type"));
+        editWindow.setTitle(_("Create Label Type"));
         showEditWindow();
         Util.reloadBindings(editWindow);
     }
@@ -150,7 +150,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      */
     public void goToEditForm(LabelType labelType) {
         labelTypeModel.initEdit(labelType);
-        editWindow.setTitle(_("Edit label type"));
+        editWindow.setTitle(_("Edit Label Type"));
         showEditWindow();
         Util.reloadBindings(editWindow);
     }

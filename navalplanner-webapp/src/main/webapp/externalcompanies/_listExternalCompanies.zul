@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('External companies listing')}">
+<window id="${arg.top_id}" title="${i18n:_('Companies List')}">
     <newdatasortablegrid id="listing" model="@{controller.companies}" mold="paging"
         pageSize="10">
         <columns sizable="true">

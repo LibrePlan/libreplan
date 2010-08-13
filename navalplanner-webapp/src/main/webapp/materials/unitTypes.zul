@@ -17,7 +17,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<?page title="${i18n:_('NavalPlan: Unit types')}" id="unitTypes"?>
+<?page title="${i18n:_('NavalPlan: Units')}" id="unitTypes"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -35,7 +35,6 @@
         <vbox id="messagesContainer"/>
         <list top_id="listWindow"/>
         <edition top_id="editWindow"
-            title="${i18n:_('Edit unit type data')}"
             save_button_label="${i18n:_('Save')}"
             save_and_continue_button_label="${i18n:_('Save &amp; Continue')}"
             cancel_button_label="${i18n:_('Cancel')}"

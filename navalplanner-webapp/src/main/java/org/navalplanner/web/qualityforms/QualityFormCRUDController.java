@@ -145,7 +145,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
      */
     public void goToCreateForm() {
         qualityFormModel.initCreate();
-        editWindow.setTitle(_("Create quality form"));
+        editWindow.setTitle(_("Create Quality Form"));
         showEditWindow();
         Util.reloadBindings(editWindow);
     }
@@ -160,7 +160,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
      */
     public void goToEditForm(QualityForm qualityForm) {
         qualityFormModel.initEdit(qualityForm);
-        editWindow.setTitle(_("Edit quality form"));
+        editWindow.setTitle(_("Edit Quality Form"));
         showEditWindow();
         Util.reloadBindings(editWindow);
     }

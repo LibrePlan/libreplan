@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Work Report types')}">
+<window id="${arg.top_id}" title="${i18n:_('Work Report Types')}">
     <grid id="listing" mold="paging" pageSize="10"
         model="@{controller.workReportTypes}"
         onInitRender ="controller.sortWorkReportTypes();">

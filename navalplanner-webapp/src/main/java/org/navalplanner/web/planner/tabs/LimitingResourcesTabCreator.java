@@ -134,7 +134,7 @@ public class LimitingResourcesTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Limiting resources"),
+        return new CreatedOnDemandTab(_("Limiting Resources Planning"),
                 "limiting-resources",
                 componentCreator) {
             @Override
@@ -147,7 +147,8 @@ public class LimitingResourcesTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Limiting resources")));
+                breadcrumbs.appendChild(new Label(
+                        _("Limiting Resources Planning")));
             }
         };
     }

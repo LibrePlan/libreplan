@@ -91,6 +91,7 @@ public class ProfileCRUDController extends GenericForwardComposer implements
     @Override
     public void goToCreateForm() {
         profileModel.initCreate();
+        createWindow.setTitle(_("Create Profile"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -98,6 +99,7 @@ public class ProfileCRUDController extends GenericForwardComposer implements
     @Override
     public void goToEditForm(Profile profile) {
         profileModel.initEdit(profile);
+        createWindow.setTitle(_("Edit Profile"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }

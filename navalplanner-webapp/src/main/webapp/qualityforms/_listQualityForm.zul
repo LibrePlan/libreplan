@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.id}" title="${i18n:_('List quality forms')}">
+<window id="${arg.id}" title="${i18n:_('Quality Forms List')}">
     <separator bar="false" spacing="20px" orient="vertical"/>
     <div align="right">
         <hbox align="end">

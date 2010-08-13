@@ -81,6 +81,7 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
     @Override
     public void goToCreateForm() {
         externalCompanyModel.initCreate();
+        createWindow.setTitle(_("Create Company"));
         getVisibility().showOnly(createWindow);
         setInteractionFieldsActivation(getCompany().getInteractsWithApplications());
         clearAutocompleteUser();
@@ -97,6 +98,7 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
     @Override
     public void goToEditForm(ExternalCompany company) {
         externalCompanyModel.initEdit(company);
+        createWindow.setTitle(_("Edit Company"));
         getVisibility().showOnly(createWindow);
         setInteractionFieldsActivation(company.getInteractsWithApplications());
         clearAutocompleteUser();

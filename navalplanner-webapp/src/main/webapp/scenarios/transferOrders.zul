@@ -19,7 +19,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page id="work_report_admin"?>
+<?page id="work_report_admin" title="${i18n:_('NavalPlan: Transfer Projects Between Scenarios')}" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
@@ -28,7 +28,7 @@
 <zk>
 
 <window self="@{define(content)}" id="transferOrdersWindow"
-    title="${i18n:_('Transfer orders between scenarios')}"
+    title="${i18n:_('Transfer Projects Between Scenarios')}"
     apply="org.navalplanner.web.scenarios.TransferOrdersController">
 
     <vbox id="messagesContainer"></vbox>

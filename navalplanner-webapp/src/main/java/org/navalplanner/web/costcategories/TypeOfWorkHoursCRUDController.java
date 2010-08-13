@@ -71,6 +71,7 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
     @Override
     public void goToCreateForm() {
         typeOfWorkHoursModel.initCreate();
+        createWindow.setTitle(_("Create Work Hours Type"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -78,6 +79,7 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
     @Override
     public void goToEditForm(TypeOfWorkHours typeOfWorkHours) {
         typeOfWorkHoursModel.initEdit(typeOfWorkHours);
+        createWindow.setTitle(_("Edit Work Hours Type"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }

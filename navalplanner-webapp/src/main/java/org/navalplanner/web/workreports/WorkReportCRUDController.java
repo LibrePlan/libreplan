@@ -581,6 +581,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         cameBackList = false;
         workReportModel.initCreate(workReportType);
         prepareWorkReportList();
+        createWindow.setTitle(_("Create Work Report"));
         getVisibility().showOnly(createWindow);
         loadComponents(createWindow);
         Util.reloadBindings(createWindow);
@@ -593,6 +594,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     public void goToEditForm(WorkReport workReport) {
         workReportModel.initEdit(workReport);
+        createWindow.setTitle(_("Edit Work Report"));
         loadComponents(createWindow);
         prepareWorkReportList();
         getVisibility().showOnly(createWindow);

@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page  id="reports"?>
+<?page  id="reports" title="${i18n:_('NavalPlan: Estimated/Planned Hours Per Task')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -38,7 +38,7 @@
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.reports.CompletedEstimatedHoursPerTaskController"
-        title="${i18n:_('Completed estimated hours per task')}"
+        title="${i18n:_('Estimated/Planned Hours Per Task')}"
         border="normal" >
 
          <!-- Select deadline date -->

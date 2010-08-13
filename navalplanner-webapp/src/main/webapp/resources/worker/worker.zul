@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('NavalPlan: Resources')}"?>
+<?page title="${i18n:_('NavalPlan: Workers')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?page  id="Create"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
@@ -36,7 +36,7 @@
 
         <list top_id="listWindow" />
 
-        <edition top_id="editWindow" title="${i18n:_('Edit worker')}"
+        <edition top_id="editWindow" title="${i18n:_('Edit Worker')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
 
     </window>

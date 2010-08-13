@@ -191,7 +191,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         configurationController.initConfigurationController(machineModel);
         resourcesCostCategoryAssignmentController.setResource(machineModel.getMachine());
         selectMachineDataTab();
-        showEditWindow(_("Create machine"));
+        showEditWindow(_("Create Machine"));
         resourceCalendarModel.cancel();
     }
 
@@ -216,7 +216,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         prepareCriterionsForEdit();
         prepareCalendarForEdit();
         selectMachineDataTab();
-        showEditWindow(_("Edit machine"));
+        showEditWindow(_("Edit Machine"));
         configurationController.initConfigurationController(machineModel);
         resourcesCostCategoryAssignmentController.setResource(machineModel.getMachine());
     }

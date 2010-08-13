@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('NavalPlan: Timeline material report')}" id="reports"?>
+<?page title="${i18n:_('NavalPlan: Materials Needs At Date')}" id="reports"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -38,7 +38,7 @@
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.reports.TimeLineRequiredMaterialController"
-        title="${i18n:_('Materials needs at date')}"
+        title="${i18n:_('Materials Needs At Date')}"
         border="normal" >
 
 <hbox>

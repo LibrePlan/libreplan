@@ -17,7 +17,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<?page title="${i18n:_('NavalPlan: Label types')}" id="labelTypesList"?>
+<?page title="${i18n:_('NavalPlan: Labels')}" id="labelTypesList"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 

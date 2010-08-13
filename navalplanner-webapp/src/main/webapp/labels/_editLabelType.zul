@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.id}" title="${arg.title}" visible="false">
+<window id="${arg.id}" visible="false">
     <!--  Messages for user -->
     <vbox id="messagesContainer"/>
 

@@ -32,7 +32,6 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.zkoss.util.logging.Log;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -46,6 +45,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Window;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -65,7 +65,7 @@ public class UnitTypeController extends GenericForwardComposer {
     private OnlyOneVisible visibility;
 
     private Component listWindow;
-    private Component editWindow;
+    private Window editWindow;
 
     private IUnitTypeModel unitTypeModel;
 
@@ -155,12 +155,14 @@ public class UnitTypeController extends GenericForwardComposer {
 
     public void goToEditFormInCreationMode() {
         unitTypeModel.initCreate();
+        editWindow.setTitle(_("Create Unit Type"));
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
 
     private void goToEditFormInEditionMode(UnitType unitType) {
         unitTypeModel.initEdit(unitType);
+        editWindow.setTitle(_("Edit Unit Type"));
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }

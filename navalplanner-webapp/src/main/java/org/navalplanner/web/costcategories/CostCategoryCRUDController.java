@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -53,10 +52,10 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.api.Hbox;
 import org.zkoss.zul.api.Window;
@@ -124,6 +123,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     @Override
     public void goToCreateForm() {
         costCategoryModel.initCreate();
+        createWindow.setTitle(_("Create Cost Category"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
@@ -131,6 +131,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     @Override
     public void goToEditForm(CostCategory costCategory) {
         costCategoryModel.initEdit(costCategory);
+        createWindow.setTitle(_("Edit Cost Category"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }

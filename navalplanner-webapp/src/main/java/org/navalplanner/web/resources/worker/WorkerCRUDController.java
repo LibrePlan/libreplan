@@ -249,7 +249,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editCalendar();
         }
         editAsignedCriterions();
-        editWindow.setTitle(_("Edit virtual worker groups"));
+        editWindow.setTitle(_("Edit Virtual Workers Group"));
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
@@ -500,7 +500,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
-        editWindow.setTitle(_("Create virtual resource"));
+        editWindow.setTitle(_("Create Virtual Workers Group"));
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
         resourceCalendarModel.cancel();

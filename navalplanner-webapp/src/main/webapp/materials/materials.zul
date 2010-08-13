@@ -29,94 +29,87 @@
 
 <zk>
     <window self="@{define(content)}"
-        apply="org.navalplanner.web.materials.MaterialsController">
+        apply="org.navalplanner.web.materials.MaterialsController"
+        title="${i18n:_('Materials')}">
         <vbox id="messagesContainer" />
-        <tabbox>
-            <tabs>
-                <tab label="${i18n:_('Materials')}"></tab>
-            </tabs>
-            <tabpanels>
-                <tabpanel>
-                        <!-- Categories  -->
-                        <hbox>
-                            <panel title="${i18n:_('Categories')}"
-                                border="normal">
-                                <panelchildren>
-                                    <hbox>
-                                        <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
-                                            style="padding-bottom: 4px" />
-                                        <button label="${i18n:_('Add')}"
-                                            onClick="materialsController.addMaterialCategory()" />
-                                        <separator spacing="20px" orient="vertical" />
-                                        <button label="${i18n:_('Unselect')}" onClick="materialsController.clearSelectionCategoriesTree()" />
-                                    </hbox>
 
-                                    <separator spacing="5px" orient="horizontal" />
+        <!-- Categories  -->
+        <hbox>
+            <panel title="${i18n:_('Categories')}"
+                border="normal">
+                <panelchildren>
+                    <hbox>
+                        <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
+                            style="padding-bottom: 4px" />
+                        <button label="${i18n:_('Add')}"
+                            onClick="materialsController.addMaterialCategory()" />
+                        <separator spacing="20px" orient="vertical" />
+                        <button label="${i18n:_('Unselect')}" onClick="materialsController.clearSelectionCategoriesTree()" />
+                    </hbox>
 
-                                    <tree id="categoriesTree" zclass="z-dottree"
-                                        rows="5" vflex="true" multiple="false"
-                                        model="@{materialsController.materialCategories}"
-                                        treeitemRenderer="@{materialsController.materialCategoryRenderer}"
-                                        onSelect="materialsController.refreshMaterials()">
-                                        <treecols>
-                                            <treecol label="${i18n:_('Name')}" />
-                                            <treecol label="${i18n:_('Code')}" />
-                                            <treecol label="${i18n:_('Generate code')}" width="100px" />
-                                            <treecol label="${i18n:_('Operations')}" width="80px" />
-                                        </treecols>
-                                    </tree>
-                                </panelchildren>
-                            </panel>
-                        </hbox>
+                    <separator spacing="5px" orient="horizontal" />
 
-                        <!-- Materials -->
-                        <hbox>
-                            <panel title="${i18n:_('List of materials for all categories (select one to filter)')}"
-                                id="materialsPanel" border="normal">
-                                <panelchildren>
-                                    <button id="btnAddMaterial"
-                                        label="${i18n:_('Add')}"
-                                        onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
-                                    <separator spacing="15px" orient="horizontal" />
-                                    <newdatasortablegrid id="gridMaterials"
-                                        fixedLayout="true" mold="paging" pageSize="5"
-                                        model="@{materialsController.materials}">
-                                        <columns>
-                                            <newdatasortablecolumn label="${i18n:_('Code')}" />
-                                            <newdatasortablecolumn label="${i18n:_('Description')}" />
-                                            <newdatasortablecolumn label="${i18n:_('Unit price')}" />
-                                            <newdatasortablecolumn label="${i18n:_('Unit type')}" />
-                                            <newdatasortablecolumn label="${i18n:_('Category')}" />
-                                            <newdatasortablecolumn label="${i18n:_('Disabled')}" width="80px" />
-                                            <newdatasortablecolumn label="${i18n:_('Operations')}" width="80px" />
-                                        </columns>
-                                        <rows>
-                                            <row self="@{each='material'}" value="@{material}" >
-                                                <textbox id="code" value="@{material.code}" width="95%"
-                                                    constraint="no empty:${i18n:_('cannot be null or empty')}" />
-                                                <textbox value="@{material.description}" width="95%" />
-                                                <doublebox value="@{material.defaultUnitPrice}" />
-                                                <listbox mold="select"  model="@{materialsController.unitTypes}"
-                                                    onSelect = "materialsController.selectUnitType(self)"
-                                                    itemRenderer="@{materialsController.renderer}"/>
-                                                <label value="@{material.category.name}" />
-                                                <checkbox checked="@{material.disabled}" />
-                                                <button sclass="icono"
-                                                    image="/common/img/ico_borrar1.png"
-                                                    hoverImage="/common/img/ico_borrar.png"
-                                                    tooltiptext="${i18n:_('Delete')}"
-                                                    onClick="materialsController.remove(self.parent.value)">
-                                                </button>
-                                            </row>
-                                        </rows>
-                                    </newdatasortablegrid>
+                    <tree id="categoriesTree" zclass="z-dottree"
+                        rows="5" vflex="true" multiple="false"
+                        model="@{materialsController.materialCategories}"
+                        treeitemRenderer="@{materialsController.materialCategoryRenderer}"
+                        onSelect="materialsController.refreshMaterials()">
+                        <treecols>
+                            <treecol label="${i18n:_('Name')}" />
+                            <treecol label="${i18n:_('Code')}" />
+                            <treecol label="${i18n:_('Generate code')}" width="100px" />
+                            <treecol label="${i18n:_('Operations')}" width="80px" />
+                        </treecols>
+                    </tree>
+                </panelchildren>
+            </panel>
+        </hbox>
 
-                                </panelchildren>
-                            </panel>
-                        </hbox>
-                </tabpanel>
-            </tabpanels>
-        </tabbox>
+        <!-- Materials -->
+        <hbox>
+            <panel title="${i18n:_('List of materials for all categories (select one to filter)')}"
+                id="materialsPanel" border="normal">
+                <panelchildren>
+                    <button id="btnAddMaterial"
+                        label="${i18n:_('Add')}"
+                        onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
+                    <separator spacing="15px" orient="horizontal" />
+                    <newdatasortablegrid id="gridMaterials"
+                        fixedLayout="true" mold="paging" pageSize="5"
+                        model="@{materialsController.materials}">
+                        <columns>
+                            <newdatasortablecolumn label="${i18n:_('Code')}" />
+                            <newdatasortablecolumn label="${i18n:_('Description')}" />
+                            <newdatasortablecolumn label="${i18n:_('Unit price')}" />
+                            <newdatasortablecolumn label="${i18n:_('Unit type')}" />
+                            <newdatasortablecolumn label="${i18n:_('Category')}" />
+                            <newdatasortablecolumn label="${i18n:_('Disabled')}" width="80px" />
+                            <newdatasortablecolumn label="${i18n:_('Operations')}" width="80px" />
+                        </columns>
+                        <rows>
+                            <row self="@{each='material'}" value="@{material}" >
+                                <textbox id="code" value="@{material.code}" width="95%"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                <textbox value="@{material.description}" width="95%" />
+                                <doublebox value="@{material.defaultUnitPrice}" />
+                                <listbox mold="select"  model="@{materialsController.unitTypes}"
+                                    onSelect = "materialsController.selectUnitType(self)"
+                                    itemRenderer="@{materialsController.renderer}"/>
+                                <label value="@{material.category.name}" />
+                                <checkbox checked="@{material.disabled}" />
+                                <button sclass="icono"
+                                    image="/common/img/ico_borrar1.png"
+                                    hoverImage="/common/img/ico_borrar.png"
+                                    tooltiptext="${i18n:_('Delete')}"
+                                    onClick="materialsController.remove(self.parent.value)">
+                                </button>
+                            </row>
+                        </rows>
+                    </newdatasortablegrid>
+
+                </panelchildren>
+            </panel>
+        </hbox>
 
         <!-- Save button -->
         <button onClick="materialsController.saveAndContinue()"

@@ -20,7 +20,7 @@
 
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
-<window id="${arg.top_id}" title="${i18n:_('Edit type of work hour')}">
+<window id="${arg.top_id}">
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Type data')}"></tab>

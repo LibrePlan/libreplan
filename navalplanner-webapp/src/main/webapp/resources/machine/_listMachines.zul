@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <?component name="filter" inline="true" macroURI="../search/_resourceFilter.zul"?>
-<window id="listWindow" title="${i18n:_('Machines list')}">
+<window id="listWindow" title="${i18n:_('Machines List')}">
     <separator bar="false" spacing="5px" orient="horizontal"/>
 
     <div align="right">

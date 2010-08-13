@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('NavalPlan: Subcontracted tasks')}"?>
+<?page title="${i18n:_('NavalPlan: Advance Report')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
@@ -30,7 +30,7 @@
 <div self="@{define(content)}">
 
 <window apply="${reportAdvancesController}"
-    title="${i18n:_('Report advances')}">
+    title="${i18n:_('Advance Report')}">
 
     <vbox id="messagesContainer" />
 

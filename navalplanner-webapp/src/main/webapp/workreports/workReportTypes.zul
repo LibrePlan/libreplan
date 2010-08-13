@@ -19,7 +19,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page title="${i18n:_('NavalPlan: Work report types')}" id="List"?>
+<?page title="${i18n:_('NavalPlan: Work Reports')}" id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
@@ -32,11 +32,11 @@
         apply="org.navalplanner.web.workreports.WorkReportTypeCRUDController">
         <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="${i18n:_('Create new Work Report Type')}"
+        <edition top_id="createWindow" title="${i18n:_('Create Work Report Type')}"
             save_button_label="${i18n:_('Save')}"
             saveAndContinue_button_label="${i18n:_('Save &amp; Continue')}"
             cancel_button_label="${i18n:_('Cancel')}" />
-        <edition top_id="editWindow" title="${i18n:_('Edit')}"
+        <edition top_id="editWindow" title="${i18n:_('Edit Work Report Type')}"
             save_button_label="${i18n:_('Save')}"
             saveAndContinue_button_label="${i18n:_('Save &amp; Continue')}"
             cancel_button_label="${i18n:_('Cancel')}" />

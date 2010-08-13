@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Type of work hours listing')}">
+<window id="${arg.top_id}" title="${i18n:_('Work Hours Types List')}">
     <newdatasortablegrid id="listing" model="@{controller.typesOfWorkHours}" mold="paging"
         pageSize="10" fixedLayout="true">
         <columns sizable="true">

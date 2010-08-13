@@ -113,6 +113,7 @@ public class UserCRUDController extends GenericForwardComposer implements
         //password is compulsory when creating
         passwordBox.setConstraint("no empty:" +
                 _("The password for a new user cannot be empty"));
+        createWindow.setTitle(_("Create User"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
         //clean the password boxes, they are not cleared automatically
@@ -127,6 +128,7 @@ public class UserCRUDController extends GenericForwardComposer implements
         //password is not compulsory when editing, so we remove
         //the constraint
         passwordBox.setConstraint((Constraint)null);
+        createWindow.setTitle(_("Edit User"));
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
         //cleans the box and forces the check of the new Constraint (null)

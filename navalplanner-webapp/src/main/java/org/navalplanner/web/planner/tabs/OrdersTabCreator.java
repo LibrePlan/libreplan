@@ -98,7 +98,7 @@ public class OrdersTabCreator {
     }
 
     private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(_("Orders List"), "orders", ordersTabCreator) {
+        return new CreatedOnDemandTab(_("Projects"), "orders", ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 orderCRUDController.goToList();
@@ -106,9 +106,9 @@ public class OrdersTabCreator {
                     breadcrumbs.getChildren().clear();
                 }
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Company Scheduling")));
+                breadcrumbs.appendChild(new Label(_("Scheduling")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Order List")));
+                breadcrumbs.appendChild(new Label(_("Projects")));
             }
         };
     }
@@ -125,7 +125,7 @@ public class OrdersTabCreator {
     }
 
     private ITab createOrderOrdersTab() {
-        return new CreatedOnDemandTab(_("Order Details"), "order-data",
+        return new CreatedOnDemandTab(_("Project Details"), "order-data",
                 ordersTabCreator) {
             @Override
             protected void afterShowAction() {

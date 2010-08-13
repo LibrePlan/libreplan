@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Users listing')}">
+<window id="${arg.top_id}" title="${i18n:_('Users List')}">
     <newdatasortablegrid id="listing" model="@{controller.users}" mold="paging"
         pageSize="10">
         <columns sizable="true">

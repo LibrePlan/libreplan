@@ -150,7 +150,8 @@ public class PlanningTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Company Scheduling"), "company-scheduling",
+        return new CreatedOnDemandTab(_("Projects Planning"),
+                "company-scheduling",
                 componentCreator) {
             @Override
             protected void afterShowAction() {
@@ -159,7 +160,7 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Company Scheduling")));
+                breadcrumbs.appendChild(new Label(_("Projects Planning")));
             }
         };
     }
