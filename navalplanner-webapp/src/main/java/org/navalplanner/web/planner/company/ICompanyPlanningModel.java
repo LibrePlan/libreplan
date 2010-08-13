@@ -53,11 +53,7 @@ public interface ICompanyPlanningModel {
 
     List<Order> getOrdersToShow();
 
-    void setFilterStartDate(Date filterStartDate);
-
     Date getFilterStartDate();
-
-    void setFilterFinishDate(Date filterFinishDate);
 
     Date getFilterFinishDate();
 

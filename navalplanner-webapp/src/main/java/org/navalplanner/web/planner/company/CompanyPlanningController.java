@@ -23,15 +23,12 @@ package org.navalplanner.web.planner.company;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
-import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
@@ -127,32 +124,12 @@ public class CompanyPlanningController implements Composer{
 
     }
 
-    private void setDefaultFilterValues() {
-        List<Order> list = model.getOrdersToShow();
-        Date startDate = new Date();
-        for(Order order : list) {
-            //get the init date of the first open project
-            //the list is ordered by init date
-            if(Arrays.asList(OrderStatusEnum.ACCEPTED,
-                    OrderStatusEnum.OFFERED,OrderStatusEnum.STARTED,
-                    OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER)
-                    .contains(order.getState())) {
-                startDate = order.getInitDate();
-                break;
-            }
-        }
-        filterStartDate.setValue(startDate);
-        model.setFilterStartDate(startDate);
-    }
-
     public void setConfigurationForPlanner() {
         // Added predicate
         model
                 .setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, createPredicate());
         model.setTabsController(tabsController);
-        setDefaultFilterValues();
-        onApplyFilter();
         planner.updateSelectedZoomLevel();
         planner.invalidate();
     }
@@ -229,9 +206,6 @@ public class CompanyPlanningController implements Composer{
     }
 
     private void filterByPredicate(IPredicate predicate) {
-        model.setFilterStartDate(filterStartDate.getValue());
-        model.setFilterFinishDate(filterFinishDate.getValue());
-
         // Recalculate predicate
         model.setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, predicate);

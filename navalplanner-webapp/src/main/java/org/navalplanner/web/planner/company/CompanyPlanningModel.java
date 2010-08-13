@@ -25,7 +25,9 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +47,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -168,6 +171,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private Date filterStartDate;
     private Date filterFinishDate;
+    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = EnumSet
+            .of(OrderStatusEnum.ACCEPTED, OrderStatusEnum.OFFERED,
+                    OrderStatusEnum.STARTED,
+                    OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER);
 
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
@@ -634,7 +641,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             //anyway, if it happenned we return an empty list
             return result;
         }
-
         currentScenario = scenarioManager.getCurrent();
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
                 user, currentScenario);
@@ -642,11 +648,35 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             order.useSchedulingDataFor(currentScenario);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
-            if (associatedTaskElement != null) {
-                if (predicate == null || predicate.accepts(order)) {
-                    result.add(associatedTaskElement);
-                    ordersToShow.add(order);
-                }
+            if (associatedTaskElement != null
+                    && STATUS_VISUALIZED.contains(order.getState())
+                    && (predicate == null || predicate.accepts(order))) {
+                result.add(associatedTaskElement);
+                ordersToShow.add(order);
+            }
+        }
+        setDefaultFilterValues(ordersToShow);
+        return result;
+    }
+
+    private void setDefaultFilterValues(List<? extends Order> list) {
+        Date startDate = null;
+        Date endDate = null;
+        for (Order each : list) {
+            TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
+            startDate = Collections.min(notNull(startDate, each.getInitDate()));
+            endDate = Collections.max(notNull(endDate, each.getDeadline(),
+                    associatedTaskElement.getEndDate()));
+        }
+        filterStartDate = startDate;
+        filterFinishDate = endDate;
+    }
+
+    private static <T> List<T> notNull(T... values) {
+        List<T> result = new ArrayList<T>();
+        for (T each : values) {
+            if (each != null) {
+                result.add(each);
             }
         }
         return result;
@@ -697,11 +727,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     @Override
-    public void setFilterStartDate(Date filterStartDate) {
-        this.filterStartDate = filterStartDate;
-    }
-
-    @Override
     public Date getFilterStartDate() {
         return filterStartDate;
     }
@@ -709,11 +734,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private LocalDate getFilterStartLocalDate() {
         return filterStartDate != null ?
                 LocalDate.fromDateFields(filterStartDate) : null;
-    }
-
-    @Override
-    public void setFilterFinishDate(Date filterFinishDate) {
-        this.filterFinishDate = filterFinishDate;
     }
 
     @Override
