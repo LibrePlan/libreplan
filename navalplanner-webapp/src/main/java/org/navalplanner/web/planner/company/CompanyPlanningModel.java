@@ -25,8 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -622,22 +620,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private List<Order> sortByStartDate(List<Order> list) {
-        List<Order> result = new ArrayList<Order>(list);
-        Collections.sort(result, new Comparator<Order>() {
-            @Override
-            public int compare(Order o1, Order o2) {
-                if (o1.getInitDate() == null) {
-                    return -1;
-                }
-                if (o2.getInitDate() == null) {
-                    return 1;
-                }
-                return o1.getInitDate().compareTo(o2.getInitDate());
-            }
-        });
-        return result;
-    }
 
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
