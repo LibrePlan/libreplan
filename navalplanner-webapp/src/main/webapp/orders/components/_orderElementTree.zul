@@ -48,8 +48,6 @@
         <tree id="tree" height="440px" multiple="false" droppable="true"
             onDrop="treeController.move(self, event.dragged)"
             onSelect="treeController.updateControlButtons(event)"
-            model="@{treeController.treeModel}"
-            treeitemRenderer="@{treeController.renderer}" pageSize="10"
             sclass="orderTree"
             zclass="z-dottree">
             <treecols sizable="true">

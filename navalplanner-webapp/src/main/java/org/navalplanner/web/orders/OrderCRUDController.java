@@ -93,6 +93,7 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Listbox;
@@ -177,6 +178,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
+    private Window editOrderElementWindow;
+
     private Window listWindow;
 
     private Tab selectedTab;
@@ -237,29 +240,36 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("checkIncludeOrderElements");
     }
 
-    private void addEditWindowIfNeeded() {
+    private void initEditOrderElementWindow() {
+        final Component parent = listWindow.getParent();
+
+        Map<String, Object> editOrderElementArgs = new HashMap<String, Object>();
+        editOrderElementArgs.put("top_id", "editOrderElement");
+        editOrderElementWindow = (Window) Executions.createComponents(
+                "/orders/_editOrderElement.zul", parent, editOrderElementArgs);
+
+        Util.createBindingsFor(editOrderElementWindow);
+        Util.reloadBindings(editOrderElementWindow);
+    }
+
+    private void addEditWindow() {
         if (editWindow != null) {
             return;
         }
+
+        listWindow.setVisible(false);
+        cachedOnlyOneVisible = null;
+
         Map<String, Object> editWindowArgs = new HashMap<String, Object>();
         editWindowArgs.put("top_id", editWindowArgs);
         Component parent = listWindow.getParent();
-        listWindow.setVisible(false);
-        cachedOnlyOneVisible = null;
         editWindow = (Window) Executions.createComponents(
-                "/orders/_edition.zul",
-                parent, editWindowArgs);
+                "/orders/_edition.zul", parent, editWindowArgs);
+
         bindListOrderStatusSelectToOnStatusChange();
-        Map<String, Object> editOrderElementArgs = new HashMap<String, Object>();
-        editOrderElementArgs.put("top_id", "editOrderElement");
-        Component editOrderElement = Executions.createComponents(
-                "/orders/_editOrderElement.zul",
-                parent, editOrderElementArgs);
 
         Util.createBindingsFor(editWindow);
         Util.reloadBindings(editWindow);
-        Util.createBindingsFor(editOrderElement);
-        Util.reloadBindings(editOrderElement);
     }
 
     private void bindListOrderStatusSelectToOnStatusChange() {
@@ -274,26 +284,44 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void setupOrderElementTreeController() throws Exception {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         if (orderElementTreeController == null) {
+            // Create order element edit window
             OrderElementController orderElementController = new OrderElementController();
+            if (editOrderElementWindow == null) {
+                initEditOrderElementWindow();
+            }
             orderElementController.doAfterCompose(self
                     .getFellow("editOrderElement"));
+
+            // Prepare tree, attach edit window to tree
             orderElementTreeController = new OrderElementTreeController(
                     orderModel, orderElementController, messagesForUser);
-
             TreeComponent orderElementsTree = (TreeComponent) editWindow
                     .getFellow("orderElementTree");
             orderElementTreeController.setTreeComponent(orderElementsTree);
             orderElementsTree.useController(orderElementTreeController);
             orderElementTreeController.setReadOnly(readOnly);
-            redraw(orderElementsTree);
+            
+            setTreeRenderer(orderElementsTree);
+            reloadTree(orderElementsTree);
         }
     }
 
+    private void reloadTree(TreeComponent orderElementsTree) {
+        final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
+        tree.setModel(orderElementTreeController.getTreeModel()); 
+    }
+    
+    private void setTreeRenderer(TreeComponent orderElementsTree) {
+        final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
+        tree.setTreeitemRenderer(orderElementTreeController.getRenderer());
+    }
+    
     /*
      * Operations to do before to change the selected tab
      */
@@ -309,11 +337,6 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         }
         return true;
-    }
-
-    private void redraw(Component comp) {
-        Util.createBindingsFor(comp);
-        Util.reloadBindings(comp);
     }
 
     private IOrderElementModel getOrderElementModel() {
@@ -493,7 +516,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         return (Order) orderModel.getOrder();
     }
 
-    public void saveAndContinue() {
+    public void saveAndContinue() {        
         Order order = (Order) orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
@@ -527,7 +550,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     throw new RuntimeException(e);
                 }
             }
-        }
+        }        
     }
 
     public void saveAndExit() {
@@ -538,7 +561,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    private boolean save() {
+    private boolean save() {        
         if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
             if (!manageOrderElementAdvancesController.save()) {
@@ -759,25 +782,29 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void initEdit(Order order) {
-        if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-            orderModel.initEdit(order);
-            addEditWindowIfNeeded();
-            initialStatus = order.getState();
-            updateDisabilitiesOnInterface();
-            showEditWindow(_("Edit order"));
-        }
-        else {
+        if (!orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             try {
-                Messagebox.show(_("You don't have read access to this order"),
+                Messagebox.show(_("Sorry, you do not have permissions to access this order"),
                         _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+
+        if (editWindow != null) {
+            return;
+        }
+
+        orderModel.initEdit(order);
+        addEditWindow();
+        initialStatus = order.getState();
+        updateDisabilitiesOnInterface();
+        showEditWindow(_("Edit order"));
     }
 
+
     private void showEditWindow(String title) {
-        addEditWindowIfNeeded();
+        addEditWindow();
         initializeTabs();
         editWindow.setTitle(title);
         showWindow(editWindow);
@@ -798,14 +825,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.createBindingsFor(tabPanel);
         Util.reloadBindings(tabPanel);
     }
-
+    
     private void initializeTabs() {
         final IOrderElementModel orderElementModel = getOrderElementModel();
 
-        if(orderElementTreeController != null){
+        if (orderElementTreeController != null){
             TreeComponent orderElementsTree = (TreeComponent) editWindow
-            .getFellow("orderElementTree");
-            redraw(orderElementsTree);
+                    .getFellow("orderElementTree");
+            reloadTree(orderElementsTree);
         }
         if (assignedHoursController != null) {
             assignedHoursController.openWindow(orderElementModel);
