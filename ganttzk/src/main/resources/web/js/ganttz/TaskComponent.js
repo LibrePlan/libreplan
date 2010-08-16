@@ -39,7 +39,9 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     moveDeadline : function(width){
         jq('#deadline' + this.parent.uuid).css('left', width);
     },
-    moveConsolidatedline : function(){},
+    moveConsolidatedline : function(width){
+        jq('#consolidatedline' + this.parent.uuid).css('left', width);
+    },
     resizeCompletionAdvance : function(){},
     resizeCompletion2Advance : function(){},
     setClass : function(){}
