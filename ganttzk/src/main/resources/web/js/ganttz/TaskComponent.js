@@ -42,8 +42,12 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     moveConsolidatedline : function(width){
         jq('#consolidatedline' + this.parent.uuid).css('left', width);
     },
-    resizeCompletionAdvance : function(){},
-    resizeCompletion2Advance : function(){},
+    resizeCompletionAdvance : function(width){
+        jq('#' + this.uuid + ' > .completion:first').css('width', width);
+    },
+    resizeCompletion2Advance : function(width){
+        jq('#' + this.uuid + ' > .completion2:first').css('width', width);
+    },
     setClass : function(){}
 },{
     //"Class" methods and properties
