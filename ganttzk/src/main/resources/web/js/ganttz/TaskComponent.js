@@ -35,8 +35,14 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
             clearTimeout(this._tooltipTimeout);
         }
         jq('#tasktooltip' + this.uuid).hide();
-    }
-
+    },
+    moveDeadline : function(width){
+        jq('#deadline' + this.parent.uuid).css('left', width);
+    },
+    moveConsolidatedline : function(){},
+    resizeCompletionAdvance : function(){},
+    resizeCompletion2Advance : function(){},
+    setClass : function(){}
 },{
     //"Class" methods and properties
     _TOOLTIP_DELAY : 10, // 10 milliseconds
