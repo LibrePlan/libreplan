@@ -112,6 +112,8 @@ public class PlanningTabCreator {
                 commands.add(scheduleCommand);
                 ICommandOnTask<TaskElement> orderDetailsCommand = buildOrderDetailsCommand();
                 commands.add(orderDetailsCommand);
+                ICommandOnTask<TaskElement> resourcesLoadCommand = buildResourcesLoadCommand();
+                commands.add(resourcesLoadCommand);
 
                 companyPlanningController.setAdditional(commands);
                 companyPlanningController.setTabsController(tabsController);
@@ -175,6 +177,38 @@ public class PlanningTabCreator {
                     @Override
                     public String getName() {
                         return _("Project Details");
+                    }
+
+                    @Override
+                    public String getIcon() {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isApplicableTo(TaskElement task) {
+                        return true;
+                    }
+                };
+            }
+
+            private ICommandOnTask<TaskElement> buildResourcesLoadCommand() {
+                return new ICommandOnTask<TaskElement>() {
+
+                    @Override
+                    public void doAction(
+                            IContextWithPlannerTask<TaskElement> context,
+                            TaskElement task) {
+                        OrderElement orderElement = task.getOrderElement();
+                        if (orderElement instanceof Order) {
+                            Order order = (Order) orderElement;
+                            mode.goToOrderMode(order);
+                            tabsController.goToResourcesLoad(order);
+                        }
+                    }
+
+                    @Override
+                    public String getName() {
+                        return _("Resources Load");
                     }
 
                     @Override

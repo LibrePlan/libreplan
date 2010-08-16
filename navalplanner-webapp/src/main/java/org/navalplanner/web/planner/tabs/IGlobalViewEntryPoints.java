@@ -53,4 +53,6 @@ public interface IGlobalViewEntryPoints {
 
     void goToOrderDetails(Order order);
 
+    void goToResourcesLoad(Order order);
+
 }
