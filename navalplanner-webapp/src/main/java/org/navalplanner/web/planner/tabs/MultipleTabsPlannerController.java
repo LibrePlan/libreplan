@@ -137,6 +137,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     private ITab ordersTab;
 
+    private ITab advancedAllocationTab;
+
     private TabSwitcher tabsSwitcher;
 
     @Autowired
@@ -235,7 +237,8 @@ public class MultipleTabsPlannerController implements Composer,
                 }, parameters);
 
         final State<Void> typeChanged = typeChangedState();
-        ITab advancedAllocation = doFeedbackOn(AdvancedAllocationTabCreator.create(mode,
+        advancedAllocationTab = doFeedbackOn(AdvancedAllocationTabCreator
+                .create(mode,
                 transactionService, orderDAO, taskElementDAO, resourceDAO,
                 scenarioManager.getCurrent(), returnToPlanningTab()));
 
@@ -244,7 +247,8 @@ public class MultipleTabsPlannerController implements Composer,
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
             .add(tabWithNameReloading(ordersTab, typeChanged))
-            .add(visibleOnlyAtOrderMode(advancedAllocation));
+.add(
+                visibleOnlyAtOrderMode(advancedAllocationTab));
     }
 
     @SuppressWarnings("unchecked")
@@ -412,6 +416,12 @@ public class MultipleTabsPlannerController implements Composer,
     public void goToResourcesLoad(Order order) {
         mode.goToOrderMode(order);
         getTabsRegistry().show(resourceLoadTab);
+    }
+
+    @Override
+    public void goToAdvancedAllocation(Order order) {
+        mode.goToOrderMode(order);
+        getTabsRegistry().show(advancedAllocationTab);
     }
 
 }

@@ -114,6 +114,8 @@ public class PlanningTabCreator {
                 commands.add(orderDetailsCommand);
                 ICommandOnTask<TaskElement> resourcesLoadCommand = buildResourcesLoadCommand();
                 commands.add(resourcesLoadCommand);
+                ICommandOnTask<TaskElement> advancedAllocationCommand = buildAdvancedAllocationCommand();
+                commands.add(advancedAllocationCommand);
 
                 companyPlanningController.setAdditional(commands);
                 companyPlanningController.setTabsController(tabsController);
@@ -209,6 +211,38 @@ public class PlanningTabCreator {
                     @Override
                     public String getName() {
                         return _("Resources Load");
+                    }
+
+                    @Override
+                    public String getIcon() {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isApplicableTo(TaskElement task) {
+                        return true;
+                    }
+                };
+            }
+
+            private ICommandOnTask<TaskElement> buildAdvancedAllocationCommand() {
+                return new ICommandOnTask<TaskElement>() {
+
+                    @Override
+                    public void doAction(
+                            IContextWithPlannerTask<TaskElement> context,
+                            TaskElement task) {
+                        OrderElement orderElement = task.getOrderElement();
+                        if (orderElement instanceof Order) {
+                            Order order = (Order) orderElement;
+                            mode.goToOrderMode(order);
+                            tabsController.goToAdvancedAllocation(order);
+                        }
+                    }
+
+                    @Override
+                    public String getName() {
+                        return _("Advanced Allocation");
                     }
 
                     @Override

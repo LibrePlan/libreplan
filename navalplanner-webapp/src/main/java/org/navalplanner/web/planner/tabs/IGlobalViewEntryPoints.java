@@ -55,4 +55,6 @@ public interface IGlobalViewEntryPoints {
 
     void goToResourcesLoad(Order order);
 
+    void goToAdvancedAllocation(Order order);
+
 }
