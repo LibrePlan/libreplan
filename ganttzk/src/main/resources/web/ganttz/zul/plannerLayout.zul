@@ -19,6 +19,7 @@
 -->
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+<?component name="button" extends="button" mold="trendy"?>
 <zscript><![CDATA[
 planner = self;
 ]]>
