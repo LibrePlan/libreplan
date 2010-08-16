@@ -347,9 +347,9 @@ public class TaskComponent extends Div implements AfterCompose {
      */
     protected void renderProperties(ContentRenderer renderer) throws IOException{
         if(getColor() != null)
-            setWidgetAttribute("background-color", getColor());
+            setStyle("background-color : " +  getColor());
 
-        setWidgetAttribute("position", "absolute");
+        setStyle("position : absolute");
         setWidgetAttribute("movingTasksEnabled",((Boolean)isMovingTasksEnabled()).toString());
         setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
 
