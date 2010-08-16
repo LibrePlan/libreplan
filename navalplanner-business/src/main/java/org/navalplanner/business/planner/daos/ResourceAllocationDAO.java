@@ -85,15 +85,8 @@ public class ResourceAllocationDAO extends
                 "dayAssignments").add(
                 Restrictions.in("resource", resources));
 
-        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
-            Criteria dateCriteria = criteria.createCriteria("task");
-            if(intervalFilterEndDate != null) {
-                dateCriteria.add(Restrictions.le("startDate", intervalFilterEndDate));
-            }
-            if(intervalFilterStartDate != null) {
-                dateCriteria.add(Restrictions.ge("endDate", intervalFilterStartDate));
-            }
-        }
+        filterByDatesIfApplyable(criteria, intervalFilterStartDate,
+                intervalFilterEndDate);
         return (List<GenericResourceAllocation>) criteria.list();
     }
 
@@ -107,6 +100,13 @@ public class ResourceAllocationDAO extends
                 SpecificResourceAllocation.class);
         criteria.add(Restrictions.in("resource", resources));
 
+        filterByDatesIfApplyable(criteria, intervalFilterStartDate,
+                intervalFilterEndDate);
+        return (List<SpecificResourceAllocation>) criteria.list();
+    }
+
+    private void filterByDatesIfApplyable(Criteria criteria,
+            Date intervalFilterStartDate, Date intervalFilterEndDate) {
         if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
             Criteria dateCriteria = criteria.createCriteria("task");
             if(intervalFilterEndDate != null) {
@@ -116,7 +116,6 @@ public class ResourceAllocationDAO extends
                 dateCriteria.add(Restrictions.ge("endDate", intervalFilterStartDate));
             }
         }
-        return (List<SpecificResourceAllocation>) criteria.list();
     }
 
     @Override
