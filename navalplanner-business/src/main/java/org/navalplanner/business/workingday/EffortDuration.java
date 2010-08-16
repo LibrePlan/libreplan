@@ -43,6 +43,10 @@ public class EffortDuration {
         }
     }
 
+    public static EffortDuration zero() {
+        return elapsing(0, Granularity.SECONDS);
+    }
+
     public static EffortDuration elapsing(int amount, Granularity granularity) {
         return new EffortDuration(granularity.toSeconds(amount));
     }
