@@ -27,6 +27,8 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 /**
  * Represents an exceptional day that has a different number of hours. For
@@ -53,6 +55,11 @@ public class CalendarException extends IntegrationEntity {
         return create(new CalendarException(date, hours, type), code);
     }
 
+    private static EffortDuration fromHours(Integer hours) {
+        return hours == null ? null : EffortDuration.elapsing(hours,
+                Granularity.HOURS);
+    }
+
     public void updateUnvalidated(LocalDate date, Integer hours,
             CalendarExceptionType type) {
         if (date != null) {
@@ -60,7 +67,7 @@ public class CalendarException extends IntegrationEntity {
         }
 
         if (hours != null) {
-            this.hours = hours;
+            this.duration = fromHours(hours);
         }
 
         if (type != null) {
@@ -70,7 +77,7 @@ public class CalendarException extends IntegrationEntity {
 
     private LocalDate date;
 
-    private Integer hours;
+    private EffortDuration duration;
 
     private CalendarExceptionType type;
 
@@ -84,7 +91,7 @@ public class CalendarException extends IntegrationEntity {
     private CalendarException(LocalDate date, Integer hours,
             CalendarExceptionType type) {
         this.date = date;
-        this.hours = hours;
+        this.duration = fromHours(hours);
         this.type = type;
     }
 
@@ -95,7 +102,7 @@ public class CalendarException extends IntegrationEntity {
 
     @NotNull
     public Integer getHours() {
-        return hours != null ? hours : 0;
+        return duration != null ? duration.getHours() : 0;
     }
 
     @NotNull

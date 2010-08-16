@@ -59,7 +59,8 @@
 
         <property name="date" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-        <property name="hours" access="field"/>
+        <property name="duration" access="field"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         <!-- Not indexed -->
         <many-to-one name="type" cascade="none"
             column="CALENDAR_EXCEPTION_ID" />
