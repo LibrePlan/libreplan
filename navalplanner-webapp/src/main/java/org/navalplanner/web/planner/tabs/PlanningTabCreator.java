@@ -107,7 +107,27 @@ public class PlanningTabCreator {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 List<ICommandOnTask<TaskElement>> commands = new ArrayList<ICommandOnTask<TaskElement>>();
-                ICommandOnTask<TaskElement> scheduleCommand = new ICommandOnTask<TaskElement>() {
+
+                ICommandOnTask<TaskElement> scheduleCommand = buildScheduleCommand();
+                commands.add(scheduleCommand);
+                ICommandOnTask<TaskElement> orderDetailsCommand = buildOrderDetailsCommand();
+                commands.add(orderDetailsCommand);
+
+                companyPlanningController.setAdditional(commands);
+                companyPlanningController.setTabsController(tabsController);
+                companyPlanningController
+                        .setDoubleClickCommand(scheduleCommand);
+                HashMap<String, Object> args = new HashMap<String, Object>();
+                args
+                        .put("companyPlanningController",
+                                companyPlanningController);
+                companyPlanningController.setURLParameters(parameters);
+                return Executions.createComponents("/planner/_company.zul",
+                        parent, args);
+            }
+
+            private ICommandOnTask<TaskElement> buildScheduleCommand() {
+                return new ICommandOnTask<TaskElement>() {
 
                     @Override
                     public void doAction(
@@ -135,18 +155,38 @@ public class PlanningTabCreator {
                         return true;
                     }
                 };
-                commands.add(scheduleCommand);
-                companyPlanningController.setAdditional(commands);
-                companyPlanningController.setTabsController(tabsController);
-                companyPlanningController
-                        .setDoubleClickCommand(scheduleCommand);
-                HashMap<String, Object> args = new HashMap<String, Object>();
-                args
-                        .put("companyPlanningController",
-                                companyPlanningController);
-                companyPlanningController.setURLParameters(parameters);
-                return Executions.createComponents("/planner/_company.zul",
-                        parent, args);
+            }
+
+            private ICommandOnTask<TaskElement> buildOrderDetailsCommand() {
+                return new ICommandOnTask<TaskElement>() {
+
+                    @Override
+                    public void doAction(
+                            IContextWithPlannerTask<TaskElement> context,
+                            TaskElement task) {
+                        OrderElement orderElement = task.getOrderElement();
+                        if (orderElement instanceof Order) {
+                            Order order = (Order) orderElement;
+                            mode.goToOrderMode(order);
+                            tabsController.goToOrderDetails(order);
+                        }
+                    }
+
+                    @Override
+                    public String getName() {
+                        return _("Project Details");
+                    }
+
+                    @Override
+                    public String getIcon() {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isApplicableTo(TaskElement task) {
+                        return true;
+                    }
+                };
             }
 
         };

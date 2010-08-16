@@ -51,4 +51,6 @@ public interface IGlobalViewEntryPoints {
 
     void goToCompanyLimitingResources();
 
+    void goToOrderDetails(Order order);
+
 }
