@@ -83,8 +83,6 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     private CriterionTreeController editionTree;
 
-    private CriterionWorkersController workers;
-
     public CriterionAdminController() {
 
     }
@@ -289,10 +287,6 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     public Criterion getCriterion() {
         return criterionsModel_V2.getCriterion();
-    }
-
-    public CriterionWorkersController getWorkers() {
-        return workers;
     }
 
     @Override
