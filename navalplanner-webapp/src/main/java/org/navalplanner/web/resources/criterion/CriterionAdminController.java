@@ -55,7 +55,7 @@ public class CriterionAdminController extends GenericForwardComposer {
     private static final Log log = LogFactory
             .getLog(CriterionAdminController.class);
 
-    private ICriterionsModel_V2 criterionsModel_V2;
+    private ICriterionsModel criterionsModel_V2;
 
     private Component messagesContainer;
 

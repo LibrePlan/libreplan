@@ -62,7 +62,7 @@ public class CriterionTreeController extends GenericForwardComposer {
 
     private IMessagesForUser messagesForUser;
 
-    private final ICriterionsModel_V2 criterionsModel;
+    private final ICriterionsModel criterionsModel;
 
     private Textbox criterionName;
 
@@ -72,7 +72,7 @@ public class CriterionTreeController extends GenericForwardComposer {
         return renderer;
     }
 
-    public CriterionTreeController(ICriterionsModel_V2 _criterionsModel) {
+    public CriterionTreeController(ICriterionsModel _criterionsModel) {
         Validate.notNull(_criterionsModel);
         this.criterionsModel = _criterionsModel;
     }

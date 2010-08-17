@@ -34,7 +34,7 @@ import org.navalplanner.business.resources.entities.Worker;
  * CriterionsModel contract <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface ICriterionsModel_V2 {
+public interface ICriterionsModel {
 
     boolean getAllowHierarchy();
 
