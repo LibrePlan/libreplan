@@ -83,8 +83,14 @@ public class LeftTasksTree extends HtmlMacroComponent {
             if (task.isContainer()) {
                 expandWhenOpened((TaskContainer) task, item);
             }
-            Component row = Executions.getCurrent().createComponents(
-                    "~./ganttz/zul/leftTasksTreeRow.zul", item, null);
+            Component row;
+            if (disabilityConfiguration.isTreeEditable()) {
+                row = Executions.getCurrent().createComponents(
+                        "~./ganttz/zul/leftTasksTreeRow.zul", item, null);
+            } else {
+                row = Executions.getCurrent().createComponents(
+                        "~./ganttz/zul/leftTasksTreeRowLabels.zul", item, null);
+            }
             leftTasksTreeRow.doAfterCompose(row);
             List<Object> rowChildren = row.getChildren();
             List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(

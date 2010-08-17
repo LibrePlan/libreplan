@@ -137,6 +137,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean renamingTasksEnabled = true;
 
+    private boolean treeEditable = true;
+
     // private String identifier = null;
 
     private IDetailItemModificator firstLevelModificators = SeveralModificators
@@ -412,6 +414,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public List<IGraphChangeListener> getPostChangeListeners() {
         return Collections.unmodifiableList(postGraphChangeListeners);
+    }
+
+    public void setTreeEditable(boolean treeEditable) {
+        this.treeEditable = treeEditable;
+    }
+
+    @Override
+    public boolean isTreeEditable() {
+        return treeEditable;
     }
 
 }

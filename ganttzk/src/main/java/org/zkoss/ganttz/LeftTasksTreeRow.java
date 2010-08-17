@@ -41,6 +41,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treecell;
+import org.zkoss.zul.api.Label;
 import org.zkoss.zul.api.Treerow;
 
 public class LeftTasksTreeRow extends GenericForwardComposer {
@@ -55,9 +56,15 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private final Task task;
 
+    private Label nameLabel;
+
     private Textbox nameBox;
 
+    private Label startDateLabel;
+
     private Textbox startDateTextBox;
+
+    private Label endDateLabel;
 
     private Textbox endDateTextBox;
 
@@ -254,22 +261,24 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void registerListeners() {
-        registerKeyboardListener(nameBox);
-        registerKeyboardListener(startDateTextBox);
-        registerKeyboardListener(endDateTextBox);
+        if (disabilityConfiguration.isTreeEditable()) {
+            registerKeyboardListener(nameBox);
+            registerKeyboardListener(startDateTextBox);
+            registerKeyboardListener(endDateTextBox);
 
-        registerOnEnterListener(startDateTextBox);
-        registerOnEnterListener(endDateTextBox);
+            registerOnEnterListener(startDateTextBox);
+            registerOnEnterListener(endDateTextBox);
 
-        registerOnEnterOpenDateBox(startDateBox);
-        registerOnEnterOpenDateBox(endDateBox);
+            registerOnEnterOpenDateBox(startDateBox);
+            registerOnEnterOpenDateBox(endDateBox);
 
-        registerBlurListener(startDateBox);
-        registerBlurListener(endDateBox);
+            registerBlurListener(startDateBox);
+            registerBlurListener(endDateBox);
 
-        registerOnChange(nameBox);
-        registerOnChange(startDateBox);
-        registerOnChange(endDateBox);
+            registerOnChange(nameBox);
+            registerOnChange(startDateBox);
+            registerOnChange(endDateBox);
+        }
     }
 
     private void findComponents(Treerow row) {
@@ -293,7 +302,11 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void findComponentsForNameCell(Treecell treecell) {
-        nameBox = (Textbox) treecell.getChildren().get(0);
+        if (disabilityConfiguration.isTreeEditable()) {
+            nameBox = (Textbox) treecell.getChildren().get(0);
+        } else {
+            nameLabel = (Label) treecell.getChildren().get(0);
+        }
     }
 
     private void registerKeyboardListener(final Textbox textBox) {
@@ -337,14 +350,22 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void findComponentsForStartDateCell(Treecell treecell) {
-        startDateTextBox = findTextBoxOfCell(treecell);
-        startDateBox = findDateBoxOfCell(treecell);
+        if (disabilityConfiguration.isTreeEditable()) {
+            startDateTextBox = findTextBoxOfCell(treecell);
+            startDateBox = findDateBoxOfCell(treecell);
+        } else {
+            startDateLabel = (Label) treecell.getChildren().get(0);
+        }
     }
 
     private void findComponentsForEndDateCell(Treecell treecell) {
-        endDateBox = findDateBoxOfCell(treecell);
-        endDateBox.setDisabled(true);
-        endDateTextBox = findTextBoxOfCell(treecell);
+        if (disabilityConfiguration.isTreeEditable()) {
+            endDateBox = findDateBoxOfCell(treecell);
+            endDateBox.setDisabled(true);
+            endDateTextBox = findTextBoxOfCell(treecell);
+        } else {
+            endDateLabel = (Label) treecell.getChildren().get(0);
+        }
     }
 
     private void registerBlurListener(final Datebox datebox) {
@@ -371,20 +392,26 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     }
 
     private void updateComponents() {
-        getNameBox().setValue(task.getName());
-        getNameBox().setDisabled(!canRenameTask());
-        getNameBox().setTooltiptext(task.getName());
+        if (disabilityConfiguration.isTreeEditable()) {
+            getNameBox().setValue(task.getName());
+            getNameBox().setDisabled(!canRenameTask());
+            getNameBox().setTooltiptext(task.getName());
 
-        getStartDateBox().setValue(task.getBeginDate());
-        getStartDateBox().setDisabled(!canChangeStartDate());
-        getStartDateTextBox().setDisabled(!canChangeStartDate());
+            getStartDateBox().setValue(task.getBeginDate());
+            getStartDateBox().setDisabled(!canChangeStartDate());
+            getStartDateTextBox().setDisabled(!canChangeStartDate());
 
-        getEndDateBox().setValue(task.getEndDate());
-        getEndDateBox().setDisabled(!canChangeEndDate());
-        getEndDateTextBox().setDisabled(!canChangeEndDate());
+            getEndDateBox().setValue(task.getEndDate());
+            getEndDateBox().setDisabled(!canChangeEndDate());
+            getEndDateTextBox().setDisabled(!canChangeEndDate());
 
-        getStartDateTextBox().setValue(asString(task.getBeginDate()));
-        getEndDateTextBox().setValue(asString(task.getEndDate()));
+            getStartDateTextBox().setValue(asString(task.getBeginDate()));
+            getEndDateTextBox().setValue(asString(task.getEndDate()));
+        } else {
+            nameLabel.setValue(task.getName());
+            startDateLabel.setValue(asString(task.getBeginDate()));
+            endDateLabel.setValue(asString(task.getEndDate()));
+        }
     }
 
     private boolean canChangeStartDate() {

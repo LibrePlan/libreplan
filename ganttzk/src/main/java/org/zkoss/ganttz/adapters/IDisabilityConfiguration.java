@@ -43,4 +43,6 @@ public interface IDisabilityConfiguration {
 
     public boolean isExpandPlanningViewCharts();
 
+    public boolean isTreeEditable();
+
 }
