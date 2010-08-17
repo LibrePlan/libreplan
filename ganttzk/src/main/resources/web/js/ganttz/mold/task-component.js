@@ -1,8 +1,4 @@
 function(out){
-    /*TODO: Add following EventListeners:
-     *  onMouseover="zkTasklist.showTooltip('tasktooltip${self.uuid}');"
-     *  onMouseOut="zkTasklist.hideTooltip('tasktooltip${self.uuid}');">
-     * */
     out.push('<div ',this.domAttrs_(),
             ' z.type="ganttz.task.Task" idTask="', this.id,'"',
             ' class="box" >');

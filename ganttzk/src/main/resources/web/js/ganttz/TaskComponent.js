@@ -17,7 +17,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         this.$supers('unbind_', arguments);
     },
     _showToolTip : function(){
-        this._tooltipTimeout = setTimeout(jQuery.proxy(function(offset) {
+        this._tooltipTimeout = setTimeout(jq.proxy(function(offset) {
             var element = jq("#tasktooltip" + this.uuid);
             if (element!=null) {
                 element.show();
