@@ -20,6 +20,7 @@
 package org.navalplanner.web.templates;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
 import java.util.List;
 
@@ -50,6 +51,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -253,6 +256,19 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
         handler.registerListener(this, page);
+
+        setBreadcrumbs(comp);
+    }
+
+    private void setBreadcrumbs(Component comp) {
+        Component breadcrumbs = comp.getPage().getFellow("breadcrumbs");
+        if (breadcrumbs.getChildren() != null) {
+            breadcrumbs.getChildren().clear();
+        }
+        breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+        breadcrumbs.appendChild(new Label(_("Scheduling")));
+        breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+        breadcrumbs.appendChild(new Label(_("Project Templates")));
     }
 
     public Constraint validateTemplateName() {
