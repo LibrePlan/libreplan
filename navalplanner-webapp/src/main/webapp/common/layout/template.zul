@@ -25,7 +25,7 @@
 <?component name="customMenu" inline="true" macroURI="_customMenu.zul"?>
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-
+<?component name="button" extends="button" mold="trendy"?>
 
 <zk>
 
