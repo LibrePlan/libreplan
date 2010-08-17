@@ -29,18 +29,20 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class WorkingProgressPerTaskController extends NavalplannerReportController {
 
@@ -48,14 +50,23 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
 
     private IWorkingProgressPerTaskModel workingProgressPerTaskModel;
 
-    private Listbox lbOrders;
-
     private Datebox referenceDate;
+
+    private Listbox lbCriterions;
+
+    private BandboxSearch bandboxSelectOrder;
+
+    private BandboxSearch bdLabels;
+
+    private Listbox lbLabels;
+
+    private BandboxSearch bdCriterions;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        workingProgressPerTaskModel.init();
     }
 
     public List<Order> getOrders() {
@@ -68,12 +79,12 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
 
     protected JRDataSource getDataSource() {
         return workingProgressPerTaskModel.getWorkingProgressPerTaskReport(
-                getSelectedOrder(), getDeadlineDate());
-   }
+                getSelectedOrder(), getDeadlineDate(), getSelectedLabels(),
+                getSelectedCriterions());
+    }
 
     private Order getSelectedOrder() {
-        final Listitem item = lbOrders.getSelectedItem();
-        return (item != null) ? (Order) item.getValue() : null;
+        return (Order) bandboxSelectOrder.getSelectedElement();
     }
 
     private Date getDeadlineDate() {
@@ -96,9 +107,67 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
     public void showReport(ExtendedJasperreport jasperreport) {
         final Order order = getSelectedOrder();
         if (order == null) {
-            throw new WrongValueException(lbOrders, _("Please, select an order"));
+            throw new WrongValueException(bandboxSelectOrder,
+                    _("Please, select an order"));
         }
         super.showReport(jasperreport);
     }
 
+    public List<Label> getAllLabels() {
+        return workingProgressPerTaskModel.getAllLabels();
+    }
+
+    public void onSelectLabel() {
+        Label label = (Label) bdLabels.getSelectedElement();
+        if (label == null) {
+            throw new WrongValueException(bdLabels, _("please, select a label"));
+        }
+        boolean result = workingProgressPerTaskModel
+                .addSelectedLabel(label);
+        if (!result) {
+            throw new WrongValueException(bdLabels,
+                    _("This label has already been added."));
+        } else {
+            Util.reloadBindings(lbLabels);
+        }
+        bdLabels.clear();
+    }
+
+    public void onRemoveLabel(Label label) {
+        workingProgressPerTaskModel.removeSelectedLabel(label);
+        Util.reloadBindings(lbLabels);
+    }
+
+    public List<Label> getSelectedLabels() {
+        return workingProgressPerTaskModel.getSelectedLabels();
+    }
+
+    public List<Criterion> getSelectedCriterions() {
+        return workingProgressPerTaskModel.getSelectedCriterions();
+    }
+
+    public List<Criterion> getAllCriterions() {
+        return workingProgressPerTaskModel.getCriterions();
+    }
+
+    public void onSelectCriterion() {
+        Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
+        if (criterion == null) {
+            throw new WrongValueException(bdCriterions,
+                    _("please, select a Criterion"));
+        }
+        boolean result = workingProgressPerTaskModel
+                .addSelectedCriterion(criterion);
+        if (!result) {
+            throw new WrongValueException(bdCriterions,
+                    _("This Criterion has already been added."));
+        } else {
+            Util.reloadBindings(lbCriterions);
+        }
+    }
+
+    public void onRemoveCriterion(Criterion criterion) {
+        workingProgressPerTaskModel.removeSelectedCriterion(criterion);
+        Util.reloadBindings(lbCriterions);
+    }
 }

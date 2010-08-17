@@ -25,17 +25,37 @@ import java.util.List;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.Criterion;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IWorkingProgressPerTaskModel {
 
-    JRDataSource getWorkingProgressPerTaskReport(Order order, Date referenceDate);
+    JRDataSource getWorkingProgressPerTaskReport(Order order,
+            Date referenceDate, List<Label> labels, List<Criterion> criterions);
+
+    void init();
 
     List<Order> getOrders();
+
+    List<Label> getAllLabels();
+
+    void removeSelectedLabel(Label label);
+
+    boolean addSelectedLabel(Label label);
+
+    List<Label> getSelectedLabels();
+
+    List<Criterion> getCriterions();
+
+    void removeSelectedCriterion(Criterion criterion);
+
+    boolean addSelectedCriterion(Criterion criterion);
+
+    List<Criterion> getSelectedCriterions();
 
 }
