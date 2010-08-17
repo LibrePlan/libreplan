@@ -26,7 +26,10 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.entities.User;
 
@@ -85,4 +88,6 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
 
     List<Order> getOrdersByScenario(Scenario scenario);
 
+    List<Task> getFilteredTask(List<OrderElement> orderElements,
+            List<Criterion> criterions);
 }

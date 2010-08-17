@@ -29,7 +29,10 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
@@ -47,16 +50,23 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
 
     private ICompletedEstimatedHoursPerTaskModel completedEstimatedHoursPerTaskModel;
 
-    private Listbox lbOrders;
+    private Listbox lbCriterions;
 
     private Datebox referenceDate;
 
     private BandboxSearch bandboxSelectOrder;
 
+    private BandboxSearch bdLabels;
+
+    private Listbox lbLabels;
+
+    private BandboxSearch bdCriterions;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        completedEstimatedHoursPerTaskModel.init();
     }
 
     public List<Order> getOrders() {
@@ -72,7 +82,8 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
     protected JRDataSource getDataSource() {
         return completedEstimatedHoursPerTaskModel
                 .getCompletedEstimatedHoursReportPerTask(getSelectedOrder(),
-                        getDeadlineDate());
+                        getDeadlineDate(), getSelectedLabels(),
+                        getSelectedCriterions());
     }
 
     private Order getSelectedOrder() {
@@ -100,9 +111,68 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
     public void showReport(ExtendedJasperreport jasperreport) {
         final Order order = getSelectedOrder();
         if (order == null) {
-            throw new WrongValueException(lbOrders, _("Please, select an order"));
+            throw new WrongValueException(bandboxSelectOrder,
+                    _("Please, select an order"));
         }
         super.showReport(jasperreport);
+    }
+
+    public List<Label> getAllLabels() {
+        return completedEstimatedHoursPerTaskModel.getAllLabels();
+    }
+
+    public void onSelectLabel() {
+        Label label = (Label) bdLabels.getSelectedElement();
+        if (label == null) {
+            throw new WrongValueException(bdLabels, _("please, select a label"));
+        }
+        boolean result = completedEstimatedHoursPerTaskModel
+                .addSelectedLabel(label);
+        if (!result) {
+            throw new WrongValueException(bdLabels,
+                    _("This label has already been added."));
+        } else {
+            Util.reloadBindings(lbLabels);
+        }
+        bdLabels.clear();
+    }
+
+    public void onRemoveLabel(Label label) {
+        completedEstimatedHoursPerTaskModel.removeSelectedLabel(label);
+        Util.reloadBindings(lbLabels);
+    }
+
+    public List<Label> getSelectedLabels() {
+        return completedEstimatedHoursPerTaskModel.getSelectedLabels();
+    }
+
+    public List<Criterion> getSelectedCriterions() {
+        return completedEstimatedHoursPerTaskModel.getSelectedCriterions();
+    }
+
+    public List<Criterion> getAllCriterions() {
+        return completedEstimatedHoursPerTaskModel.getCriterions();
+    }
+
+    public void onSelectCriterion() {
+        Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
+        if (criterion == null) {
+            throw new WrongValueException(bdCriterions,
+                    _("please, select a Criterion"));
+        }
+        boolean result = completedEstimatedHoursPerTaskModel
+                .addSelectedCriterion(criterion);
+        if (!result) {
+            throw new WrongValueException(bdCriterions,
+                    _("This Criterion has already been added."));
+        } else {
+            Util.reloadBindings(lbCriterions);
+        }
+    }
+
+    public void onRemoveCriterion(Criterion criterion) {
+        completedEstimatedHoursPerTaskModel.removeSelectedCriterion(criterion);
+        Util.reloadBindings(lbCriterions);
     }
 
 }

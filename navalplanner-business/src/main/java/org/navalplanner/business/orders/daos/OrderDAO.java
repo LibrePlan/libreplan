@@ -36,8 +36,11 @@ import org.navalplanner.business.costcategories.daos.CostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -288,5 +291,48 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
     @Override
     public List<Order> getOrdersByScenario(Scenario scenario) {
         return existsInScenario(getOrders(), scenario);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> getFilteredTask(List<OrderElement> orderElements,
+            List<Criterion> criterions) {
+
+
+        String strQuery = "SELECT taskSource.task "
+                + "FROM OrderElement orderElement, TaskSource taskSource, Task task "
+                + "LEFT OUTER JOIN taskSource.schedulingData.orderElement taskSourceOrderElement "
+                + "LEFT OUTER JOIN taskSource.task taskElement "
+                + "WHERE taskSourceOrderElement.id = orderElement.id "
+                + "AND taskElement.id = task.id ";
+
+        if (orderElements != null && !orderElements.isEmpty()) {
+            strQuery += " AND orderElement IN (:orderElements) ";
+        } else {
+            return new ArrayList<Task>();
+        }
+
+        // Set Criterions
+        if (criterions != null && !criterions.isEmpty()) {
+            strQuery += " AND (EXISTS (FROM task.resourceAllocations as allocation, GenericResourceAllocation as generic "
+                    + " WHERE generic.id = allocation.id "
+                    + " AND EXISTS( FROM generic.criterions criterion WHERE criterion IN (:criterions))))";
+        }
+
+        // Order by
+        strQuery += "ORDER BY task.name";
+
+        // Set parameters
+        Query query = getSession().createQuery(strQuery);
+        if (orderElements != null && !orderElements.isEmpty()) {
+            query.setParameterList("orderElements", orderElements);
+        }
+
+        if (criterions != null && !criterions.isEmpty()) {
+            query.setParameterList("criterions", criterions);
+        }
+
+        // Get result
+        return query.list();
     }
 }

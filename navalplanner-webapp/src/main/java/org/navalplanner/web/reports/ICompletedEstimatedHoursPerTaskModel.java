@@ -25,7 +25,9 @@ import java.util.List;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.Criterion;
 
 /**
  *
@@ -34,8 +36,26 @@ import org.navalplanner.business.orders.entities.Order;
  */
 public interface ICompletedEstimatedHoursPerTaskModel {
 
-    JRDataSource getCompletedEstimatedHoursReportPerTask(Order order, Date referenceDate);
+    JRDataSource getCompletedEstimatedHoursReportPerTask(Order order,
+            Date referenceDate, List<Label> labels, List<Criterion> criterions);
+
+    void init();
 
     List<Order> getOrders();
 
+    List<Label> getAllLabels();
+
+    void removeSelectedLabel(Label label);
+
+    boolean addSelectedLabel(Label label);
+
+    List<Label> getSelectedLabels();
+
+    List<Criterion> getCriterions();
+
+    void removeSelectedCriterion(Criterion criterion);
+
+    boolean addSelectedCriterion(Criterion criterion);
+
+    List<Criterion> getSelectedCriterions();
 }

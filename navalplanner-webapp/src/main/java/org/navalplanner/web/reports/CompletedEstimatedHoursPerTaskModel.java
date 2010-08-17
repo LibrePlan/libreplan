@@ -22,13 +22,17 @@ package org.navalplanner.web.reports;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -36,6 +40,10 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.reports.dtos.CompletedEstimatedHoursPerTaskDTO;
+import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -55,10 +63,43 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
     IOrderDAO orderDAO;
 
     @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
     ITaskElementDAO taskDAO;
 
     @Autowired
     private IScenarioManager scenarioManager;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
+    private List<Label> selectedLabels = new ArrayList<Label>();
+
+    private List<Criterion> selectedCriterions = new ArrayList<Criterion>();
+
+    private List<Criterion> allCriterions = new ArrayList<Criterion>();
+
+    private List<Label> allLabels = new ArrayList<Label>();
+
+    private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
+
+    static {
+        applicableResources.add(ResourceEnum.RESOURCE);
+        applicableResources.add(ResourceEnum.WORKER);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void init() {
+        selectedCriterions.clear();
+        selectedLabels.clear();
+
+        allLabels.clear();
+        allCriterions.clear();
+        loadAllLabels();
+        loadAllCriterions();
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -84,25 +125,173 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
     @Override
     @Transactional(readOnly = true)
     public JRDataSource getCompletedEstimatedHoursReportPerTask(
-            Order order, Date deadline) {
+Order order,
+            Date deadline, List<Label> labels, List<Criterion> criterions) {
         reattachmentOrder(order);
         order.useSchedulingDataFor(scenarioManager.getCurrent());
         LocalDate deadlineLocalDate = new LocalDate(deadline);
 
-        final List<TaskElement> tasks = order.getAllChildrenAssociatedTaskElements();
+        final List<Task> tasks = filteredTaskElements(order, labels, criterions);// order.getAllChildrenAssociatedTaskElements();
         final List<CompletedEstimatedHoursPerTaskDTO> completedEstimatedHoursPerTaskList =
             new ArrayList<CompletedEstimatedHoursPerTaskDTO>();
         for (TaskElement task: tasks) {
-            if(task instanceof Task) {
                 completedEstimatedHoursPerTaskList.add(
                         new CompletedEstimatedHoursPerTaskDTO((Task)task, deadlineLocalDate));
-            }
         }
         if (!completedEstimatedHoursPerTaskList.isEmpty()) {
             return new JRBeanCollectionDataSource(completedEstimatedHoursPerTaskList);
         } else {
             return new JREmptyDataSource();
         }
+    }
+
+    @Transactional(readOnly = true)
+    private List<Task> filteredTaskElements(Order order,
+            List<Label> labels, List<Criterion> criterions) {
+        List<OrderElement> orderElements = order.getAllChildren();
+        // Filter by labels
+        List<OrderElement> filteredOrderElements = filteredOrderElementsByLabels(
+                orderElements, labels);
+        return orderDAO.getFilteredTask(filteredOrderElements, criterions);
+    }
+
+    private List<OrderElement> filteredOrderElementsByLabels(
+            List<OrderElement> orderElements, List<Label> labels) {
+        if (labels != null && !labels.isEmpty()) {
+            List<OrderElement> filteredOrderElements = new ArrayList<OrderElement>();
+            for (OrderElement orderElement : orderElements) {
+                List<Label> inheritedLabels = getInheritedLabels(orderElement);
+                if (containsAny(labels, inheritedLabels)) {
+                    filteredOrderElements.add(orderElement);
+                }
+            }
+            return filteredOrderElements;
+        } else {
+            return orderElements;
+        }
+    }
+
+    private boolean containsAny(List<Label> labelsA, List<Label> labelsB) {
+        for (Label label : labelsB) {
+            if (labelsA.contains(label)) {
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Label> getInheritedLabels(OrderElement orderElement) {
+        List<Label> result = new ArrayList<Label>();
+        if (orderElement != null) {
+            reattachLabels();
+            result.addAll(orderElement.getLabels());
+            OrderElement parent = orderElement.getParent();
+            while (parent != null) {
+                result.addAll(parent.getLabels());
+                parent = parent.getParent();
+            }
+        }
+        return result;
+    }
+
+    private void reattachLabels() {
+        for (Label label : getAllLabels()) {
+            labelDAO.reattach(label);
+        }
+    }
+
+    @Override
+    public List<Label> getAllLabels() {
+        return allLabels;
+    }
+
+    @Transactional(readOnly = true)
+    private void loadAllLabels() {
+        allLabels = labelDAO.getAll();
+        // initialize the labels
+        for (Label label : allLabels) {
+            label.getType().getName();
+        }
+    }
+
+    @Override
+    public void removeSelectedLabel(Label label) {
+        this.selectedLabels.remove(label);
+    }
+
+    @Override
+    public boolean addSelectedLabel(Label label) {
+        if (this.selectedLabels.contains(label)) {
+            return false;
+        }
+        this.selectedLabels.add(label);
+        return true;
+    }
+
+    @Override
+    public List<Label> getSelectedLabels() {
+        return selectedLabels;
+    }
+
+    @Override
+    public List<Criterion> getCriterions() {
+        return this.allCriterions;
+    }
+
+    private void loadAllCriterions() {
+        List<CriterionType> listTypes = getCriterionTypes();
+        for (CriterionType criterionType : listTypes) {
+            if (criterionType.isEnabled()) {
+                Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+                addCriterionWithItsType(listCriterion);
+            }
+        }
+    }
+
+    private static Set<Criterion> getDirectCriterions(
+            CriterionType criterionType) {
+        Set<Criterion> criterions = new HashSet<Criterion>();
+        for (Criterion criterion : criterionType.getCriterions()) {
+            if (criterion.getParent() == null) {
+                criterions.add(criterion);
+            }
+        }
+        return criterions;
+    }
+
+    private void addCriterionWithItsType(Set<Criterion> children) {
+        for (Criterion criterion : children) {
+            if (criterion.isActive()) {
+                // Add to the list
+                allCriterions.add(criterion);
+                addCriterionWithItsType(criterion.getChildren());
+            }
+        }
+    }
+
+    private List<CriterionType> getCriterionTypes() {
+        return criterionTypeDAO
+                .getCriterionTypesByResources(applicableResources);
+    }
+
+    @Override
+    public void removeSelectedCriterion(Criterion criterion) {
+        this.selectedCriterions.remove(criterion);
+    }
+
+    @Override
+    public boolean addSelectedCriterion(Criterion criterion) {
+        if (this.selectedCriterions.contains(criterion)) {
+            return false;
+        }
+        this.selectedCriterions.add(criterion);
+        return true;
+    }
+
+    @Override
+    public List<Criterion> getSelectedCriterions() {
+        return selectedCriterions;
     }
 
 }
