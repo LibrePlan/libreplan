@@ -32,8 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
@@ -574,13 +574,27 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine buildGroup(Resource resource) {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
-                        .findAllocationsRelatedTo(resource, initDateFilter, endDateFilter));
+                        .findAllocationsRelatedTo(resource,
+                                asLocalDate(initDateFilter),
+                                asLocalDate(endDateFilter)));
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
                 .getName(), sortedByStartDate, "resource", role),
                 buildSecondLevel(resource, sortedByStartDate));
         return result;
 
+    }
+
+    /**
+     * @param date
+     *            the date to extract the {@link LocalDate} from
+     * @return <code>null</code> if date is null
+     */
+    private static LocalDate asLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(date);
     }
 
     private List<LoadTimeLine> buildSecondLevel(Resource resource,

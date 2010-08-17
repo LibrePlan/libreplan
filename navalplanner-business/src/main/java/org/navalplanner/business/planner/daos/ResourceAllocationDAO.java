@@ -66,7 +66,8 @@ public class ResourceAllocationDAO extends
 
     @Override
     public List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
-            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+            List<Resource> resources, LocalDate intervalFilterStartDate,
+            LocalDate intervalFilterEndDate) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
         result.addAll(findSpecificAllocationsRelatedTo(resources, intervalFilterStartDate, intervalFilterEndDate));
         result.addAll(findGenericAllocationsFor(resources, intervalFilterStartDate, intervalFilterEndDate));
@@ -74,7 +75,9 @@ public class ResourceAllocationDAO extends
     }
 
     @SuppressWarnings("unchecked")
-    private List<GenericResourceAllocation> findGenericAllocationsFor(List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+    private List<GenericResourceAllocation> findGenericAllocationsFor(
+            List<Resource> resources, LocalDate intervalFilterStartDate,
+            LocalDate intervalFilterEndDate) {
         if(resources.isEmpty()) {
             return new ArrayList<GenericResourceAllocation>();
         }
@@ -92,7 +95,8 @@ public class ResourceAllocationDAO extends
 
     @SuppressWarnings("unchecked")
     private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
-            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+            List<Resource> resources, LocalDate intervalFilterStartDate,
+            LocalDate intervalFilterEndDate) {
         if(resources.isEmpty()) {
             return new ArrayList<SpecificResourceAllocation>();
         }
@@ -106,14 +110,16 @@ public class ResourceAllocationDAO extends
     }
 
     private void filterByDatesIfApplyable(Criteria criteria,
-            Date intervalFilterStartDate, Date intervalFilterEndDate) {
+            LocalDate intervalFilterStartDate, LocalDate intervalFilterEndDate) {
         if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
             Criteria dateCriteria = criteria.createCriteria("task");
             if(intervalFilterEndDate != null) {
-                dateCriteria.add(Restrictions.le("startDate", intervalFilterEndDate));
+                dateCriteria.add(Restrictions.le("startDate.date",
+                        intervalFilterEndDate));
             }
             if(intervalFilterStartDate != null) {
-                dateCriteria.add(Restrictions.ge("endDate", intervalFilterStartDate));
+                dateCriteria.add(Restrictions.ge("endDate.date",
+                        intervalFilterStartDate));
             }
         }
     }
@@ -127,7 +133,8 @@ public class ResourceAllocationDAO extends
 
     @Override
     public List<ResourceAllocation<?>> findAllocationsRelatedTo(
-            Resource resource, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+            Resource resource, LocalDate intervalFilterStartDate,
+            LocalDate intervalFilterEndDate) {
         return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
                 .asList(resource), intervalFilterStartDate, intervalFilterEndDate));
     }

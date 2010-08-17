@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -265,19 +266,21 @@ public class ResourceAllocationDAOTest {
         ResourceAllocation<?> resourceAllocation1 = createValidSpecificResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation1);
 
-        Date intervalInitDate = resourceAllocation1.getTask().getStartDate();
-        Date intervalEndDate = resourceAllocation1.getTask().getEndDate();
+        LocalDate intervalInitDate = resourceAllocation1.getTask()
+                .getStartAsLocalDate();
+        LocalDate intervalEndDate = resourceAllocation1.getTask()
+                .getEndAsLocalDate();
         List<Resource> resources = resourceAllocation1.getAssociatedResources();
 
         assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
                 intervalInitDate, intervalEndDate).contains(resourceAllocation1));
 
-        intervalEndDate.setDate(intervalInitDate.getDate());
-        intervalInitDate.setMonth(intervalInitDate.getMonth()-1);
+        intervalEndDate = intervalInitDate;
+        intervalInitDate = intervalInitDate.minusMonths(1);
         assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
                 intervalInitDate, intervalEndDate).contains(resourceAllocation1));
 
-        intervalEndDate.setMonth(intervalEndDate.getMonth()-1);
+        intervalEndDate = intervalEndDate.minusMonths(1);
         assertFalse(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
                 intervalInitDate, intervalEndDate).contains(resourceAllocation1));
 

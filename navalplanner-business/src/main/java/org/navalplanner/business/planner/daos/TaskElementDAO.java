@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
@@ -66,10 +67,12 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     public List<TaskElement> listFilteredByDate(Date start, Date end) {
         Criteria criteria  = getSession().createCriteria(TaskElement.class);
         if(start != null) {
-            criteria.add(Restrictions.ge("endDate", start));
+            criteria.add(Restrictions.ge("endDate.date",
+                    LocalDate.fromDateFields(start)));
         }
         if(end != null) {
-            criteria.add(Restrictions.le("startDate", end));
+            criteria.add(Restrictions.le("startDate.date",
+                    LocalDate.fromDateFields(end)));
         }
         return criteria.list();
     }

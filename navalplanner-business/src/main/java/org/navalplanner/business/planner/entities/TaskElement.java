@@ -34,6 +34,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
@@ -43,7 +44,9 @@ import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.TaskDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -112,9 +115,9 @@ public abstract class TaskElement extends BaseEntity {
     @OnCopy(Strategy.SHARE)
     private IDatesInterceptor datesInterceptor = EMPTY_INTERCEPTOR;
 
-    private Date startDate;
+    private TaskDate startDate;
 
-    private Date endDate;
+    private TaskDate endDate;
 
     private LocalDate deadline;
 
@@ -163,7 +166,7 @@ public abstract class TaskElement extends BaseEntity {
     protected void copyPropertiesFrom(TaskElement task) {
         this.name = task.getName();
         this.notes = task.getNotes();
-        this.startDate = task.getStartDate();
+        this.startDate = task.startDate;
         this.taskSource = task.getTaskSource();
     }
 
@@ -226,16 +229,26 @@ public abstract class TaskElement extends BaseEntity {
 
     @NotNull
     public Date getStartDate() {
-        return startDate != null ? new Date(startDate.getTime()) : null;
+        return startDate != null ? startDate.getDate().toDateTimeAtStartOfDay()
+                .toDate() : null;
+    }
+
+    public LocalDate getStartAsLocalDate() {
+        return startDate == null ? null : startDate.getDate();
+    }
+
+    public LocalDate getEndAsLocalDate() {
+        return endDate == null ? null : endDate.getDate();
     }
 
     public void setStartDate(Date startDate) {
-        Date previousDate = this.startDate;
+        Date previousDate = getStartDate();
         long previousLenghtMilliseconds = getLengthMilliseconds();
-        this.startDate = startDate != null ? new Date(startDate.getTime())
+        this.startDate = startDate != null ? TaskDate.create(
+                LocalDate.fromDateFields(startDate), EffortDuration.zero())
                 : null;
         datesInterceptor.setStartDate(previousDate, previousLenghtMilliseconds,
-                this.startDate);
+                getStartDate());
     }
 
     /**
@@ -246,29 +259,31 @@ public abstract class TaskElement extends BaseEntity {
         if (newStartDate == null) {
             return;
         }
-        final boolean sameDay = areSameDay(newStartDate, startDate);
+        final boolean sameDay = this.startDate.areSameDay(newStartDate);
         long durationMilliseconds = getLengthMilliseconds();
         setStartDate(newStartDate);
-        this.endDate = new Date(this.startDate.getTime() + durationMilliseconds);
+        DateTime newEnd = this.startDate.toDateTimeAtStartOfDay().plus(
+                durationMilliseconds);
+        this.endDate = TaskDate.create(newEnd.toLocalDate(),
+                EffortDuration.zero());
         if (!sameDay) {
             moveAllocations(scenario);
         }
-    }
-
-    private boolean areSameDay(Date one, Date other) {
-        return new LocalDate(one).equals(new LocalDate(other));
     }
 
     protected abstract void moveAllocations(Scenario scenario);
 
     @NotNull
     public Date getEndDate() {
-        return endDate != null ? new Date(endDate.getTime()) : endDate;
+        return endDate != null ? endDate.toDateTimeAtStartOfDay().toDate()
+                : null;
     }
 
     public void setEndDate(Date endDate) {
         long previousLength = getLengthMilliseconds();
-        this.endDate = endDate != null ? new Date(endDate.getTime()) : null;
+        this.endDate = endDate != null ? TaskDate.create(
+                LocalDate.fromDateFields(endDate), EffortDuration.zero())
+                : null;
         datesInterceptor.setLengthMilliseconds(previousLength,
                 getLengthMilliseconds());
     }
@@ -277,7 +292,7 @@ public abstract class TaskElement extends BaseEntity {
         if (!canBeResized()) {
             return;
         }
-        boolean sameDay = areSameDay(this.endDate, endDate);
+        boolean sameDay = this.endDate.areSameDay(endDate);
         setEndDate(endDate);
         if (!sameDay) {
             moveAllocations(scenario);

@@ -46,12 +46,13 @@ public interface IResourceAllocationDAO extends
             List<Resource> resources);
 
     List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
-            List<Resource> resources, Date intervalFilterStartDate, Date intervalFilterEndDate);
+            List<Resource> resources, LocalDate intervalFilterStartDate,
+            LocalDate intervalFilterEndDate);
 
     List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource);
 
     List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource,
-            Date intervalFilterStartDate, Date intervalFilterEndDate);
+            LocalDate intervalFilterStartDate, LocalDate intervalFilterEndDate);
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion();
 

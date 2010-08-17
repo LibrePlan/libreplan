@@ -53,13 +53,13 @@ import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,12 +107,17 @@ public class TaskElementTest {
     }
 
     @Test
-    public void taskElementHasStartDateProperty() {
+    public void taskElementHasStartDatePropertyAndItIsRoundedToTheStartOfTheDay() {
         Date now = new Date();
         task.setStartDate(now);
-        assertThat(task.getStartDate(), equalTo(now));
+        assertThat(task.getStartDate(), equalTo(toStartOfDay(now)));
         task.setEndDate(now);
-        assertThat(task.getEndDate(), equalTo(now));
+        assertThat(task.getEndDate(), equalTo(toStartOfDay(now)));
+    }
+
+    private static Date toStartOfDay(Date date) {
+        return LocalDate.fromDateFields(date)
+                .toDateTimeAtStartOfDay().toDate();
     }
 
     @Test
