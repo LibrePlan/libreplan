@@ -53,7 +53,7 @@ import org.zkoss.zul.Window;
 public class CriterionAdminController_V2 extends GenericForwardComposer {
 
     private static final Log log = LogFactory
-            .getLog(CriterionAdminController.class);
+            .getLog(CriterionAdminController_V2.class);
 
     private ICriterionsModel_V2 criterionsModel_V2;
 
