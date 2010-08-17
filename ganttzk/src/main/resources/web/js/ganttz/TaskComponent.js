@@ -13,7 +13,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     },
     unbind_ : function(event){
         this.domUnlisten_(this.$n(), "onMouseout", '_hideToolTip');
-        this.domUnListen_(this.$n(), "onMouseover", '_showToolTip');
+        this.domUnlisten_(this.$n(), "onMouseover", '_showToolTip');
         this.$supers('unbind_', arguments);
     },
     _showToolTip : function(){

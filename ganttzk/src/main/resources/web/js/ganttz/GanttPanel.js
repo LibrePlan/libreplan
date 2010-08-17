@@ -23,7 +23,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
     },
     unbind_ : function(evt){
         this.domUnlisten_(this._rightpannellayout, 'onScroll', '_listenToScroll');
-        this.domUnListen_(this.$n(), 'onMousemove', '_calcXY');
+        this.domUnlisten_(this.$n(), 'onMousemove', '_calcXY');
         this.$supers('unbind_', arguments);
     },
     timeplotContainerRescroll : function(){
