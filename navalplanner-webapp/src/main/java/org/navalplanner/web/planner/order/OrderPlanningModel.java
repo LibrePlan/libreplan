@@ -1155,7 +1155,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             chart.getChildren().clear();
             chart.invalidate();
 
-            String javascript = "zkTasklist.timeplotcontainer_rescroll();";
+            String javascript = "ganttz.GanttPanel.getInstance().timeplotContainerRescroll()";
             Clients.evalJavaScript(javascript);
 
             resetMinimumAndMaximumValueForChart();

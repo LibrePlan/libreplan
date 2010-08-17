@@ -32,10 +32,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -71,8 +71,8 @@ import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -792,7 +792,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             chart.getChildren().clear();
             chart.invalidate();
 
-            String javascript = "zkTasklist.timeplotcontainer_rescroll();";
+            String javascript = "ganttz.GanttPanel.getInstance().timeplotContainerRescroll()";
             Clients.evalJavaScript(javascript);
 
             resetMinimumAndMaximumValueForChart();
