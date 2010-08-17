@@ -29,7 +29,7 @@
 <?component name="edition" inline="true" macroURI="_edition.zul"?>
 <zk>
  <window self="@{define(content)}"
-  apply="org.navalplanner.web.resources.criterion.CriterionAdminController_V2">
+  apply="org.navalplanner.web.resources.criterion.CriterionAdminController">
   <vbox id="messagesContainer"></vbox>
   <list top_id="listWindow" />
   <edition top_id="createComponent" title="${i18n:_('Create Criterion Type')}"

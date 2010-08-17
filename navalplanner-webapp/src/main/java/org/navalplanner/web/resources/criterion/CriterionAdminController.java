@@ -50,10 +50,10 @@ import org.zkoss.zul.Window;
 /**
  * Controller for Criterions <br />
  */
-public class CriterionAdminController_V2 extends GenericForwardComposer {
+public class CriterionAdminController extends GenericForwardComposer {
 
     private static final Log log = LogFactory
-            .getLog(CriterionAdminController_V2.class);
+            .getLog(CriterionAdminController.class);
 
     private ICriterionsModel_V2 criterionsModel_V2;
 
@@ -85,7 +85,7 @@ public class CriterionAdminController_V2 extends GenericForwardComposer {
 
     private CriterionWorkersController workers;
 
-    public CriterionAdminController_V2() {
+    public CriterionAdminController() {
 
     }
 
