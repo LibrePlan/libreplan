@@ -56,7 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 @OnConcurrentModification(goToPage = "/resources/criterions/criterions-V2.zul")
 public class CriterionsModel_V2 implements ICriterionsModel_V2 {
 
-    private static final Log log = LogFactory.getLog(CriterionsModel.class);
+    private static final Log log = LogFactory.getLog(CriterionsModel_V2.class);
 
     @Autowired
     private ICriterionDAO criterionDAO;

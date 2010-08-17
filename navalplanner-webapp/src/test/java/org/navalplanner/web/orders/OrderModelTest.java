@@ -63,6 +63,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -70,7 +71,6 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.web.resources.criterion.ICriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.annotation.Rollback;
@@ -144,7 +144,7 @@ public class OrderModelTest {
     private IAdHocTransactionService adHocTransaction;
 
     @Autowired
-    private ICriterionsModel criterionModel;
+    private ICriterionDAO criterionDAO;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -510,8 +510,9 @@ public class OrderModelTest {
                         criterionTypeDAO.save(criterionType);
                         Criterion criterion = Criterion.create("Test"
                                 + UUID.randomUUID(), criterionType);
+
                         try {
-                            criterionModel.save(criterion);
+                            criterionDAO.save(criterion);
                         } catch (ValidationException e) {
                             throw new RuntimeException(e);
                         }

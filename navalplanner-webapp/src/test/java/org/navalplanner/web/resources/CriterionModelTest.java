@@ -32,7 +32,6 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -44,8 +43,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
-import org.navalplanner.web.resources.criterion.CriterionsModel;
-import org.navalplanner.web.resources.criterion.ICriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -66,12 +63,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CriterionModelTest {
 
     @Autowired
-    private ICriterionsModel criterionModel;
-
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    @Autowired
     private IAdHocTransactionService adHocTransactionService;
 
     @Autowired
@@ -89,7 +80,7 @@ public class CriterionModelTest {
     public void cantSaveCriterionWithoutName() {
         givenValidCriterion();
         criterion.setName("");
-        criterionModel.save(criterion);
+        criterionDAO.save(criterion);
     }
 
     private Criterion givenValidCriterion() {
@@ -122,7 +113,7 @@ public class CriterionModelTest {
             throws Exception {
         givenValidCriterionFor(PredefinedCriterionTypes.WORK_RELATIONSHIP);
         int initial = getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP);
-        criterionModel.save(criterion);
+        criterionDAO.save(criterion);
         criterionDAO.flush();
         assertThat(
                 getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP),
@@ -186,7 +177,7 @@ public class CriterionModelTest {
         int initial = getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP);
         String newName = UUID.randomUUID().toString() + "random";
         criterion.setName(newName);
-        criterionModel.save(criterion);
+        criterionDAO.save(criterion);
         assertThat(
                 getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP),
                 equalTo(initial));
@@ -195,7 +186,7 @@ public class CriterionModelTest {
     private void givenCreatedCriterionFor(PredefinedCriterionTypes type) {
         givenValidCriterionFor(type);
         try {
-            criterionModel.save(criterion);
+            criterionDAO.save(criterion);
         } catch (ValidationException e) {
             throw new RuntimeException(e);
         }
@@ -215,8 +206,8 @@ public class CriterionModelTest {
     @Test
     public void theSameCriterionCanBeSavedTwice() throws ValidationException {
         givenValidCriterion();
-        criterionModel.save(criterion);
-        criterionModel.save(criterion);
+        criterionDAO.save(criterion);
+        criterionDAO.save(criterion);
     }
 
     @NotTransactional
@@ -230,7 +221,7 @@ public class CriterionModelTest {
                 Criterion criterion = givenValidCriterionFor(
                         PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
                 try {
-                    criterionModel.save(criterion);
+                    criterionDAO.save(criterion);
                 } catch (ValidationException e) {
                     throw new RuntimeException(e);
                 }
@@ -244,7 +235,7 @@ public class CriterionModelTest {
                 try {
                     Criterion criterion2 = givenValidCriterionFor(
                             PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
-                    criterionModel.save(criterion2);
+                    criterionDAO.save(criterion2);
                     fail("must send "
                             + ValidationException.class.getSimpleName());
                 } catch (ValidationException e) {
