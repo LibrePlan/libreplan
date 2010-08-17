@@ -151,7 +151,7 @@ public class PlanningTabCreator {
 
                     @Override
                     public String getIcon() {
-                        return "/common/img/ico_planificador.png";
+                        return "/common/img/ico_menu_scheduling.png";
                     }
 
                     @Override
@@ -183,7 +183,7 @@ public class PlanningTabCreator {
 
                     @Override
                     public String getIcon() {
-                        return null;
+                        return "/common/img/ico_menu_order-details.png";
                     }
 
                     @Override
@@ -215,7 +215,7 @@ public class PlanningTabCreator {
 
                     @Override
                     public String getIcon() {
-                        return null;
+                        return "/common/img/ico_menu_order-load.png";
                     }
 
                     @Override
@@ -247,7 +247,7 @@ public class PlanningTabCreator {
 
                     @Override
                     public String getIcon() {
-                        return null;
+                        return "/common/img/ico_menu_advanced-assignment.png";
                     }
 
                     @Override
