@@ -26,6 +26,8 @@ import static org.junit.Assert.fail;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.minutes;
 
+import java.util.EnumMap;
+
 import org.junit.Test;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
@@ -91,6 +93,24 @@ public class EffortDurationTest {
     public void twoEqualDurationsHaveTheSameHashCode() {
         assertThat(oneHourAndAHalf.hashCode(),
                 equalTo(ninetyMinutes.hashCode()));
+    }
+
+    @Test
+    public void anEffortDurationCanBeDecomposedIntoElements() {
+        EffortDuration duration = hours(1).and(90, Granularity.MINUTES);
+        EnumMap<Granularity, Integer> values = duration.decompose();
+        assertThat(values.get(Granularity.HOURS), equalTo(2));
+        assertThat(values.get(Granularity.MINUTES), equalTo(30));
+        assertThat(values.get(Granularity.SECONDS), equalTo(0));
+    }
+
+    @Test
+    public void anEmptyDurationHasZeroElements(){
+        EffortDuration duration = EffortDuration.zero();
+        EnumMap<Granularity, Integer> values = duration.decompose();
+        assertThat(values.get(Granularity.HOURS), equalTo(0));
+        assertThat(values.get(Granularity.MINUTES), equalTo(0));
+        assertThat(values.get(Granularity.SECONDS), equalTo(0));
     }
 
 }

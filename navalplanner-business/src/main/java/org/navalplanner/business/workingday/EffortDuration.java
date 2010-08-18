@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.workingday;
 
+import java.util.EnumMap;
+
 import org.apache.commons.lang.Validate;
 
 public class EffortDuration {
@@ -27,6 +29,10 @@ public class EffortDuration {
 
     public enum Granularity {
         HOURS(3600), MINUTES(60), SECONDS(1);
+
+        static Granularity[] fromMoreCoarseToLessCoarse() {
+            return Granularity.values();
+        }
 
         private final int secondsPerUnit;
 
@@ -102,6 +108,19 @@ public class EffortDuration {
     @Override
     public int hashCode() {
         return getSeconds();
+    }
+
+    public EnumMap<Granularity, Integer> decompose() {
+        EnumMap<Granularity, Integer> result = new EnumMap<EffortDuration.Granularity, Integer>(
+                Granularity.class);
+        int remainder = seconds;
+        for (Granularity each : Granularity.fromMoreCoarseToLessCoarse()) {
+            int value = each.convertFromSeconds(remainder);
+            remainder -= value * each.toSeconds(1);
+            result.put(each, value);
+        }
+        assert remainder == 0;
+        return result;
     }
 
 }
