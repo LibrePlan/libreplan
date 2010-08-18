@@ -69,7 +69,8 @@
                 <button onClick="templateCtrl.changeScenario();"
                     label="${templateCtrl.scenario.name}" />
                 <window id="changeScenarioWindow" visible="false"
-                    title="${i18n:_('Change scenario')}">
+                    title="${i18n:_('Change scenario')}"
+                    style="width : 240px;">
                     <div id="messagesContainer" />
                     <grid>
                         <rows>
