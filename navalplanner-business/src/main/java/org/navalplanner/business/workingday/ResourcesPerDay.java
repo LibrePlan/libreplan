@@ -25,6 +25,7 @@ import java.math.RoundingMode;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.ProportionalDistributor;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 public class ResourcesPerDay {
 
@@ -99,15 +100,16 @@ public class ResourcesPerDay {
         return amount;
     }
 
-    public int asHoursGivenResourceWorkingDayOf(
-            Integer resourceWorkingDayHours) {
+    public EffortDuration asDurationGivenWorkingDayOf(
+            EffortDuration resourceWorkingDayDuration) {
         BigDecimal multiply = getAmount().multiply(
-                new BigDecimal(resourceWorkingDayHours));
-        if(multiply.compareTo(BigDecimal.ZERO)>0){
-            return Math.max(1, multiply.setScale(0, RoundingMode.HALF_UP)
-                    .intValue());
+                new BigDecimal(resourceWorkingDayDuration.getSeconds()));
+        if (multiply.compareTo(BigDecimal.ZERO) > 0) {
+            return EffortDuration.elapsing(Math.max(1,
+                    multiply.setScale(0, RoundingMode.HALF_UP).intValue()),
+                    Granularity.SECONDS);
         } else {
-            return 0;
+            return EffortDuration.zero();
         }
     }
 

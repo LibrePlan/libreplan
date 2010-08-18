@@ -22,6 +22,7 @@ package org.navalplanner.business.calendars.entities;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class SameWorkHoursEveryDay implements IWorkHours {
@@ -47,7 +48,9 @@ public class SameWorkHoursEveryDay implements IWorkHours {
 
     @Override
     public Integer toHours(LocalDate day, ResourcesPerDay amount) {
-        return amount.asHoursGivenResourceWorkingDayOf(getCapacityAt(day));
+        return BaseCalendar.roundToHours(amount
+                .asDurationGivenWorkingDayOf(EffortDuration
+                        .hours(getCapacityAt(day))));
     }
 
     @Override

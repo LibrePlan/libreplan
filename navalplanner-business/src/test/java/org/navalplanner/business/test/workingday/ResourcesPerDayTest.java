@@ -25,6 +25,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
 
@@ -32,6 +35,8 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.business.workingday.ResourcesPerDay.ResourcesPerDayDistributor;
 
@@ -107,17 +112,43 @@ public class ResourcesPerDayTest {
     }
 
     @Test
-    public void canBeConvertedToHoursGivenTheWorkingDayHours() {
+    public void canBeConvertedToDurationsGivenTheWorkingDayInDifferentGranularities() {
         ResourcesPerDay units = ResourcesPerDay.amount(2);
-        assertThat(units.asHoursGivenResourceWorkingDayOf(8), equalTo(16));
+        for (Granularity each : Granularity.values()) {
+            assertThat(units.asDurationGivenWorkingDayOf(EffortDuration
+                    .elapsing(8, each)), equalTo(EffortDuration.elapsing(16,
+                    each)));
+        }
     }
 
     @Test
-    public void ifTheAmountIsDecimalTheRoundingIsHalfUp() {
-        ResourcesPerDay units = ResourcesPerDay.amount(new BigDecimal(2.4));
-        assertThat(units.asHoursGivenResourceWorkingDayOf(8), equalTo(19));
-        assertThat(units.asHoursGivenResourceWorkingDayOf(10), equalTo(24));
-        assertThat(units.asHoursGivenResourceWorkingDayOf(2), equalTo(5));
+    public void ifTheAmountIsDecimalTheSecondsAreMultiplied() {
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay
+                .amount(new BigDecimal(2.4));
+        assertThat(resourcesPerDay.asDurationGivenWorkingDayOf(hours(8)),
+                equalTo(hours(19).and(12, Granularity.MINUTES)));
+        assertThat(resourcesPerDay.asDurationGivenWorkingDayOf(hours(10)),
+                equalTo(hours(24)));
+        assertThat(resourcesPerDay.asDurationGivenWorkingDayOf(hours(2)),
+                equalTo(hours(4).and(48, Granularity.MINUTES)));
+    }
+
+    @Test
+    public void theSecondsAreRoundedHalfUpUnlessItIsMinusThanOneSecond() {
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay
+                .amount(new BigDecimal(2.4));
+        assertThat(resourcesPerDay.asDurationGivenWorkingDayOf(seconds(1)),
+                equalTo(seconds(2)));
+        assertThat(resourcesPerDay.asDurationGivenWorkingDayOf(seconds(2)),
+                equalTo(seconds(5)));
+    }
+
+    @Test
+    public void asSecondsMustReturnOneIfResultingAmountFromMultiplicationIsGreaterThanZero() {
+        ResourcesPerDay resourcesPerDay = ResourcesPerDay
+                .amount(new BigDecimal(0.1));
+        assertThat(resourcesPerDay.asDurationGivenWorkingDayOf(seconds(1)),
+                equalTo(seconds(1)));
     }
 
     @Test
@@ -129,18 +160,10 @@ public class ResourcesPerDayTest {
     }
 
     @Test
-    public void asHoursMustReturnOneIfAmountIsGreaterThanZero() {
-        ResourcesPerDay amount = ResourcesPerDay.amount(new BigDecimal(0.05));
-        int hours = amount
-                .asHoursGivenResourceWorkingDayOf(8);
-        assertThat(hours, equalTo(1));
-    }
-
-    @Test
     public void ifTheAmountIsZeroMustReturnZero() {
         ResourcesPerDay amount = ResourcesPerDay.amount(BigDecimal.ZERO);
-        int hours = amount.asHoursGivenResourceWorkingDayOf(8);
-        assertThat(hours, equalTo(0));
+        EffortDuration result = amount.asDurationGivenWorkingDayOf(hours(8));
+        assertThat(result, equalTo(zero()));
     }
 
     @Test

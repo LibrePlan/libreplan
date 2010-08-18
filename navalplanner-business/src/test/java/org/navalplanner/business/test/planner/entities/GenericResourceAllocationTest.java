@@ -60,6 +60,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class GenericResourceAllocationTest {
@@ -232,8 +233,9 @@ public class GenericResourceAllocationTest {
                     @Override
                     public Integer answer() throws Throwable {
                         ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
-                        return resourcesPerDay
-                                .asHoursGivenResourceWorkingDayOf(hoursPerDay);
+                        return BaseCalendar.roundToHours(resourcesPerDay
+                                .asDurationGivenWorkingDayOf(EffortDuration
+                                        .hours(hoursPerDay)));
                     }
                 }).anyTimes();
         expect(baseCalendar.canWork(isA(LocalDate.class))).andReturn(true)
@@ -325,7 +327,8 @@ public class GenericResourceAllocationTest {
 
         List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker1);
-        int hoursPerDay = resourcesPerDay.asHoursGivenResourceWorkingDayOf(8);
+        int hoursPerDay = resourcesPerDay.asDurationGivenWorkingDayOf(
+                EffortDuration.hours(8)).getHours();
         assertThat(orderedAssignmentsFor, haveHours(hoursPerDay, hoursPerDay));
     }
 
@@ -347,7 +350,8 @@ public class GenericResourceAllocationTest {
 
         List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker1);
-        int hoursPerDay = resourcesPerDay.asHoursGivenResourceWorkingDayOf(8);
+        int hoursPerDay = resourcesPerDay.asDurationGivenWorkingDayOf(
+                EffortDuration.hours(8)).getHours();
         assertThat(orderedAssignmentsFor, haveHours(hoursPerDay, hoursPerDay));
     }
 
