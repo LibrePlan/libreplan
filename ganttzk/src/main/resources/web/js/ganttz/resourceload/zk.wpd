@@ -1,2 +1,3 @@
 <package name="ganttz.resourceload" language="xul/html">
+    <widget name="ResourceLoadComponent"/>
 </package>

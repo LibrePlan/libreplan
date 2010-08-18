@@ -76,9 +76,11 @@
 		<component-name>resourceload</component-name>
 		<component-class>org.zkoss.ganttz.resourceload.ResourceLoadComponent
 		</component-class>
+        <widget-class>ganttz.resourceload.ResourceLoadComponent</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/resourceload/resourceload.dsp</mold-uri>
+            <mold-uri>mold/resource-load-component.js</mold-uri>
+			<!-- <mold-uri>~./ganttz/resourceload/resourceload.dsp</mold-uri> -->
 		</mold>
 	</component>
 
