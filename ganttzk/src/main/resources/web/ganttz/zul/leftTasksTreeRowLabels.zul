@@ -26,9 +26,9 @@
         <label class="task_title"/>
     </treecell>
     <treecell>
-        <label />
+        <label class="order-startdate" />
     </treecell>
     <treecell>
-        <label />
+        <label class="order-enddate" />
     </treecell>
 </treerow>

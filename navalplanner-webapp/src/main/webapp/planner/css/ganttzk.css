@@ -131,6 +131,22 @@
     width: 285px; /* Ganntz.ListdetailsWidth */
 }
 
+.task_title {
+    vertical-align: bottom;
+    white-space: nowrap;
+    padding-left: 4px;
+}
+
+.taskdetail_grid .z-tree-ico  {
+    display:none;
+
+}
+
+.order-startdate, .order-enddate  {
+    border-left: 1px dotted;
+    padding-left: 3px;
+}
+
 #listtasks {
     position: relative;
     width: 100%;
