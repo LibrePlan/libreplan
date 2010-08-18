@@ -310,7 +310,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderElementTreeController.setTreeComponent(orderElementsTree);
             orderElementsTree.useController(orderElementTreeController);
             orderElementTreeController.setReadOnly(readOnly);
-            
+
             setTreeRenderer(orderElementsTree);
             reloadTree(orderElementsTree);
         }
@@ -318,14 +318,14 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void reloadTree(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
-        tree.setModel(orderElementTreeController.getTreeModel()); 
+        tree.setModel(orderElementTreeController.getTreeModel());
     }
-    
+
     private void setTreeRenderer(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
         tree.setTreeitemRenderer(orderElementTreeController.getRenderer());
     }
-    
+
     /*
      * Operations to do before to change the selected tab
      */
@@ -526,10 +526,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         setCurrentTab();
         Tab previousTab = getCurrentTab();
         final boolean couldSave = save();
+
         if (couldSave) {
             if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-                orderModel.initEdit(order);
-                initialStatus = order.getState();
                 updateDisabilitiesOnInterface();
                 initializeTabs();
                 showWindow(editWindow);
@@ -801,7 +800,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         orderModel.initEdit(order);
         addEditWindow();
-        initialStatus = order.getState();
         updateDisabilitiesOnInterface();
         showEditWindow(_("Edit order"));
     }
@@ -829,7 +827,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.createBindingsFor(tabPanel);
         Util.reloadBindings(tabPanel);
     }
-    
+
     private void initializeTabs() {
         final IOrderElementModel orderElementModel = getOrderElementModel();
 
@@ -1226,6 +1224,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void updateDisabilitiesOnInterface() {
         Order order = (Order) orderModel.getOrder();
 
+        initialStatus = order.getState();
+
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
         boolean isInStoredState = order.getState() == OrderStatusEnum.STORED;
@@ -1233,7 +1233,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         readOnly = !permissionForWriting || isInStoredState;
 
-        if(orderElementTreeController != null) {
+        if (orderElementTreeController != null) {
             orderElementTreeController.setReadOnly(readOnly);
         }
         saveOrderAndContinueButton.setDisabled(!permissionForWriting
