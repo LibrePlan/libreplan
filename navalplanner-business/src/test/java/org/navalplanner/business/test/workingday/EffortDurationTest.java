@@ -23,7 +23,8 @@ package org.navalplanner.business.test.workingday;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.navalplanner.business.workingday.EffortDuration.elapsing;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.minutes;
 
 import org.junit.Test;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -33,7 +34,7 @@ public class EffortDurationTest {
 
     @Test
     public void itCanExpressTheDurationAsHoursMinutesAndSeconds() {
-        EffortDuration duration = EffortDuration.elapsing(4, Granularity.HOURS);
+        EffortDuration duration = EffortDuration.hours(4);
         assertThat(duration.getHours(), equalTo(4));
         assertThat(duration.getMinutes(), equalTo(240));
         assertThat(duration.getSeconds(), equalTo(240 * 60));
@@ -54,34 +55,32 @@ public class EffortDurationTest {
 
     @Test
     public void hoursCanBeZero() {
-        EffortDuration.elapsing(0, Granularity.HOURS);
+        EffortDuration.hours(0);
     }
 
     @Test
     public void minutesAreTranslatedToHours() {
-        assertThat(elapsing(120, Granularity.MINUTES).getHours(),
-                equalTo(2));
-        assertThat(elapsing(119, Granularity.MINUTES).getHours(), equalTo(1));
-        assertThat(elapsing(121, Granularity.MINUTES).getHours(), equalTo(2));
+        assertThat(EffortDuration.minutes(120).getHours(), equalTo(2));
+        assertThat(minutes(119).getHours(), equalTo(1));
+        assertThat(minutes(121).getHours(), equalTo(2));
     }
 
     @Test
     public void canBeTranslatedToAnyGranularity(){
-        assertThat(elapsing(3, Granularity.HOURS)
-                .convertTo(Granularity.MINUTES),
-                equalTo(180));
+        assertThat(hours(3).convertTo(Granularity.MINUTES), equalTo(180));
     }
 
     @Test
     public void canSpecifyADurationWithSeveralUnits() {
-        assertThat(elapsing(2, Granularity.HOURS).and(30, Granularity.MINUTES)
+        assertThat(
+                hours(2).and(30, Granularity.MINUTES)
                 .convertTo(Granularity.MINUTES), equalTo(150));
     }
 
-    private static final EffortDuration oneHourAndAHalf = elapsing(1,
-            Granularity.HOURS).and(30, Granularity.MINUTES);
-    private static final EffortDuration ninetyMinutes = elapsing(90,
+    private static final EffortDuration oneHourAndAHalf = hours(1).and(30,
             Granularity.MINUTES);
+
+    private static final EffortDuration ninetyMinutes = minutes(90);
 
     @Test
     public void twoDurationWithTheSameSecondsAreEqual(){

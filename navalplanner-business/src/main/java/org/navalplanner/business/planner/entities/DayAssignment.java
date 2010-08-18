@@ -43,7 +43,6 @@ import org.navalplanner.business.util.deepcopy.AfterCopy;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 public abstract class DayAssignment extends BaseEntity {
 
@@ -179,7 +178,7 @@ public abstract class DayAssignment extends BaseEntity {
         Validate.isTrue(hours >= 0);
         Validate.notNull(resource);
         this.day = day;
-        this.duration = EffortDuration.elapsing(hours, Granularity.HOURS);
+        this.duration = EffortDuration.hours(hours);
         this.resource = resource;
     }
 

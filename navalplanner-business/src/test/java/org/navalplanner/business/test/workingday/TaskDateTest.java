@@ -41,10 +41,8 @@ public class TaskDateTest {
 
     private LocalDate today = new LocalDate();
     private LocalDate tomorrow = today.plusDays(1);
-    private EffortDuration oneHour = EffortDuration.elapsing(1,
-            Granularity.HOURS);
-    private EffortDuration halfHour = EffortDuration.elapsing(30,
-            Granularity.MINUTES);
+    private EffortDuration oneHour = EffortDuration.hours(1);
+    private EffortDuration halfHour = EffortDuration.minutes(30);
 
     @Test(expected = IllegalArgumentException.class)
     public void needsANotNullDuration() {
@@ -60,9 +58,8 @@ public class TaskDateTest {
     public void equalsAndHashCodeWorkOk() {
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plusDays(1);
-        EffortDuration oneHour = EffortDuration.elapsing(1, Granularity.HOURS);
-        EffortDuration halfHour = EffortDuration.elapsing(30,
-                Granularity.MINUTES);
+        EffortDuration oneHour = EffortDuration.hours(1);
+        EffortDuration halfHour = EffortDuration.minutes(30);
         assertEquals(TaskDate.create(today, halfHour),
                 TaskDate.create(tomorrow.minusDays(1), halfHour));
         assertEquals(TaskDate.create(today, halfHour).hashCode(), TaskDate

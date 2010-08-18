@@ -28,7 +28,6 @@ import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 /**
  * Represents an exceptional day that has a different number of hours. For
@@ -56,8 +55,7 @@ public class CalendarException extends IntegrationEntity {
     }
 
     private static EffortDuration fromHours(Integer hours) {
-        return hours == null ? null : EffortDuration.elapsing(hours,
-                Granularity.HOURS);
+        return hours == null ? null : EffortDuration.hours(hours);
     }
 
     public void updateUnvalidated(LocalDate date, Integer hours,

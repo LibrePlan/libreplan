@@ -51,6 +51,18 @@ public class EffortDuration {
         return new EffortDuration(granularity.toSeconds(amount));
     }
 
+    public static EffortDuration hours(int amount) {
+        return elapsing(amount, Granularity.HOURS);
+    }
+
+    public static EffortDuration minutes(int amount) {
+        return elapsing(amount, Granularity.MINUTES);
+    }
+
+    public static EffortDuration seconds(int amount) {
+        return elapsing(amount, Granularity.SECONDS);
+    }
+
     private final int seconds;
 
     private EffortDuration(int seconds) {

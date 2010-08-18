@@ -93,7 +93,7 @@ public class EffortDurationType implements UserType {
     @Override
     public Object assemble(Serializable cached, Object owner)
             throws HibernateException {
-        return EffortDuration.elapsing((Integer) cached, Granularity.SECONDS);
+        return EffortDuration.seconds((Integer) cached);
     }
 
     @Override

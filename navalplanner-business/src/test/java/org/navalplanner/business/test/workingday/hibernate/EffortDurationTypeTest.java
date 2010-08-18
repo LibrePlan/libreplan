@@ -20,12 +20,12 @@
 
 package org.navalplanner.business.test.workingday.hibernate;
 
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -60,8 +60,7 @@ public class EffortDurationTypeTest {
 
     @Test
     public void canBeSavedAndRetrieved() {
-        EffortDuration duration = EffortDuration.elapsing(2, Granularity.HOURS)
-                .and(30, Granularity.MINUTES);
+        EffortDuration duration = hours(2).and(30, Granularity.MINUTES);
         givenEntity(duration);
         getSession().save(entity);
         getSession().flush();
