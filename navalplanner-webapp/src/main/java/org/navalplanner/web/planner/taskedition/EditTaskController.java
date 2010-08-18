@@ -152,9 +152,9 @@ public class EditTaskController extends GenericForwardComposer {
 
         try {
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
+            window.setMode("modal");
             showSelectedTabPanel();
             Util.reloadBindings(window);
-            window.doModal();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
