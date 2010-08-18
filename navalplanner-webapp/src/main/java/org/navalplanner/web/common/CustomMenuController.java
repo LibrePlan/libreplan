@@ -220,10 +220,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public void initializeMenu() {
-        topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
-            subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
-            subItem(_("Transfer Projects Between Scenarios"), "/scenarios/transferOrders.zul", ""));
-
         topItem(_("Scheduling"), "/planner/index.zul", "",
             subItem(_("Projects Planning"), "/planner/index.zul;company_scheduling","01-introducion.html"),
             subItem(_("Resource Usage"),"/planner/index.zul;company_load","01-introducion.html#id1"),
@@ -240,6 +236,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
                 subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
                 subItem(_("Advance Report"), "/subcontract/reportAdvances.zul", "")));
+
+        topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
+                subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
+                subItem(_("Transfer Projects Between Scenarios"), "/scenarios/transferOrders.zul", ""));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
