@@ -57,7 +57,7 @@ public class LongOperationFeedback {
             final ILongOperation longOperation) {
         Validate.notNull(component);
         Validate.notNull(longOperation);
-        Clients.showBusy(longOperation.getName(), true);
+        Clients.showBusy(longOperation.getName());
         final String eventName = generateEventName();
         component.addEventListener(eventName, new EventListener() {
 
@@ -66,7 +66,7 @@ public class LongOperationFeedback {
                 try {
                     longOperation.doAction();
                 } finally {
-                    Clients.showBusy(null, false);
+                    Clients.clearBusy();
                     component.removeEventListener(eventName, this);
                 }
             }
