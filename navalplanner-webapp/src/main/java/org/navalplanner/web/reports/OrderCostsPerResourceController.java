@@ -22,17 +22,20 @@ package org.navalplanner.web.reports;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -41,19 +44,17 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class OrderCostsPerResourceController extends GenericForwardComposer {
 
     private IOrderCostsPerResourceModel orderCostsPerResourceModel;
 
     private OrderCostsPerResourceReport orderCostsPerResourceReport;
-
-    private Listbox lbOrders;
 
     private Datebox startingDate;
 
@@ -67,14 +68,23 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
 
     private static final String HTML = "html";
 
+    private Listbox lbOrders;
+
+    private Listbox lbLabels;
+
+    private Listbox lbCriterions;
+
+    private BandboxSearch bdOrders;
+
+    private BandboxSearch bdLabels;
+
+    private BandboxSearch bdCriterions;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
-    }
-
-    public List<Order> getOrders() {
-        return orderCostsPerResourceModel.getOrders();
+        orderCostsPerResourceModel.init();
     }
 
     public void showReport(ExtendedJasperreport report) {
@@ -97,7 +107,8 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
 
     private JRDataSource getDataSource() {
         return orderCostsPerResourceModel.getOrderReport(getSelectedOrders(),
-                getStartingDate(), getEndingDate());
+                getStartingDate(), getEndingDate(), getSelectedLabels(),
+                getSelectedCriterions());
     }
 
     private Map<String, Object> getParameters() {
@@ -109,14 +120,33 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
         return result;
     }
 
-    private List<Order> getSelectedOrders() {
-        List<Order> result = new ArrayList<Order>();
+    public List<Order> getAllOrders() {
+        return orderCostsPerResourceModel.getOrders();
+    }
 
-        final Set<Listitem> listItems = lbOrders.getSelectedItems();
-        for (Listitem each: listItems) {
-            result.add((Order) each.getValue());
+    public List<Order> getSelectedOrders() {
+        return Collections.unmodifiableList(orderCostsPerResourceModel
+                .getSelectedOrders());
+    }
+
+    public void onSelectOrder() {
+        Order order = (Order) bdOrders.getSelectedElement();
+        if (order == null) {
+            throw new WrongValueException(bdOrders, _("please, select a order"));
         }
-        return result;
+        boolean result = orderCostsPerResourceModel.addSelectedOrder(order);
+        if (!result) {
+            throw new WrongValueException(bdOrders,
+                    _("This order has already been added."));
+        } else {
+            Util.reloadBindings(lbOrders);
+        }
+        bdOrders.clear();
+    }
+
+    public void onRemoveOrder(Order order) {
+        orderCostsPerResourceModel.removeSelectedOrder(order);
+        Util.reloadBindings(lbOrders);
     }
 
     private Date getStartingDate() {
@@ -155,6 +185,64 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
                 }
             }
         };
+    }
+
+    public List<Label> getAllLabels() {
+        return orderCostsPerResourceModel.getAllLabels();
+    }
+
+    public void onSelectLabel() {
+        Label label = (Label) bdLabels.getSelectedElement();
+        if (label == null) {
+            throw new WrongValueException(bdLabels, _("please, select a label"));
+        }
+        boolean result = orderCostsPerResourceModel.addSelectedLabel(label);
+        if (!result) {
+            throw new WrongValueException(bdLabels,
+                    _("This label has already been added."));
+        } else {
+            Util.reloadBindings(lbLabels);
+        }
+        bdLabels.clear();
+    }
+
+    public void onRemoveLabel(Label label) {
+        orderCostsPerResourceModel.removeSelectedLabel(label);
+        Util.reloadBindings(lbLabels);
+    }
+
+    public List<Label> getSelectedLabels() {
+        return orderCostsPerResourceModel.getSelectedLabels();
+    }
+
+    public List<Criterion> getSelectedCriterions() {
+        return orderCostsPerResourceModel.getSelectedCriterions();
+    }
+
+    public List<Criterion> getAllCriterions() {
+        return orderCostsPerResourceModel.getCriterions();
+    }
+
+    public void onSelectCriterion() {
+        Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
+        if (criterion == null) {
+            throw new WrongValueException(bdCriterions,
+                    _("please, select a Criterion"));
+        }
+        boolean result = orderCostsPerResourceModel
+                .addSelectedCriterion(criterion);
+        if (!result) {
+            throw new WrongValueException(bdCriterions,
+                    _("This Criterion has already been added."));
+        } else {
+            Util.reloadBindings(lbCriterions);
+        }
+        bdCriterions.clear();
+    }
+
+    public void onRemoveCriterion(Criterion criterion) {
+        orderCostsPerResourceModel.removeSelectedCriterion(criterion);
+        Util.reloadBindings(lbCriterions);
     }
 
 }

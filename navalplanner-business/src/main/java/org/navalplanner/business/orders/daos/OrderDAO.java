@@ -88,20 +88,33 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     private boolean isOrderNameContained(String code, List<Order> orders) {
         for (Order each : orders) {
-            if (each.getCode().equals(code)) {
-                return true;
-            }
+                if (each.getCode().equals(code)) {
+                    return true;
+                }
         }
         return false;
     }
 
+    private boolean matchFilterCriterion(OrderElement orderElement,
+            List<Criterion> criterions) {
+        if ((criterions != null) && (!criterions.isEmpty())) {
+            List<OrderElement> orderElements = new ArrayList<OrderElement>();
+            orderElements.add(orderElement);
+            List<Task> tasks = this.getFilteredTask(orderElements, criterions);
+            return (!tasks.isEmpty());
+        }
+        return true;
+    }
+
     @Transactional(readOnly = true)
     public List<OrderCostsPerResourceDTO> getOrderCostsPerResource(
-            List<Order> orders, Date startingDate, Date endingDate) {
+            List<Order> orders, Date startingDate, Date endingDate,
+            List<Criterion> criterions) {
 
         String orderStrQuery = "FROM Order order ";
         Query orderQuery = getSession().createQuery(orderStrQuery);
         List<Order> orderList = orderQuery.list();
+
         String strQuery = "SELECT new org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO(worker, wrl) "
                 + "FROM Worker worker, WorkReportLine wrl "
                 + "LEFT OUTER JOIN wrl.resource resource "
@@ -138,8 +151,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             Order order = each.getOrderElement().getOrder();
 
             // Apply filtering
-            if (orders.isEmpty()
-                    || isOrderNameContained(order.getCode(), orders)) {
+            if (matchFilterCriterion(each.getOrderElement(), criterions)
+                    && (orders.isEmpty() || isOrderNameContained(order
+                            .getCode(), orders))) {
 
                 // Attach ordername value
                 each.setOrderName(order.getName());

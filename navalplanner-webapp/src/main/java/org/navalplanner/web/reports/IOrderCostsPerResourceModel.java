@@ -25,18 +25,42 @@ import java.util.List;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.Criterion;
 
 /**
- *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
- *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IOrderCostsPerResourceModel {
 
-    JRDataSource getOrderReport(List<Order> orders, Date startingDate,
-            Date endingDate);
+    JRDataSource getOrderReport(final List<Order> orders, Date startingDate,
+            Date endingDate, List<Label> labels, List<Criterion> criterions);
+
+    void init();
 
     List<Order> getOrders();
 
+    void removeSelectedOrder(Order order);
+
+    boolean addSelectedOrder(Order order);
+
+    List<Order> getSelectedOrders();
+
+    List<Label> getAllLabels();
+
+    void removeSelectedLabel(Label label);
+
+    boolean addSelectedLabel(Label label);
+
+    List<Label> getSelectedLabels();
+
+    List<Criterion> getCriterions();
+
+    void removeSelectedCriterion(Criterion criterion);
+
+    boolean addSelectedCriterion(Criterion criterion);
+
+    List<Criterion> getSelectedCriterions();
 }

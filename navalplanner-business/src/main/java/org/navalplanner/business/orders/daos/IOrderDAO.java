@@ -54,7 +54,8 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
      * reporting
      */
     List<OrderCostsPerResourceDTO> getOrderCostsPerResource(List<Order> orders,
-            Date startingDate, Date endingDate);
+            Date startingDate, Date endingDate,
+            List<Criterion> criterions);
 
     /**
      * Returns a list of orders filtered by the read authorizations of the indicated
