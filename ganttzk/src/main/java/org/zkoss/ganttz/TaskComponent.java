@@ -349,9 +349,13 @@ public class TaskComponent extends Div implements AfterCompose {
         if(getColor() != null)
             setStyle("background-color : " +  getColor());
 
-        setStyle("position : absolute");
         setWidgetAttribute("movingTasksEnabled",((Boolean)isMovingTasksEnabled()).toString());
         setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
+
+        /*We can't use setStyle because of restrictions
+         * involved with UiVisualizer#getResponses and the
+         * smartUpdate method (when the request is asynchronous) */
+        render(renderer, "style", "position : absolute");
 
         render(renderer, "_labelsText", getLabelsText());
         render(renderer, "_resourcesText", getResourcesText());
