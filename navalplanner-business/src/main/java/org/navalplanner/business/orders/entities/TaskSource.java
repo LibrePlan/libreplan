@@ -317,8 +317,8 @@ public class TaskSource extends BaseEntity {
         return AggregatedHoursGroup.aggregate(hoursGroups);
     }
 
-    public void reloadTask(ITaskElementDAO taskElementDAO) {
-        taskElementDAO.save(task);
+    public void reattachTask(ITaskElementDAO taskElementDAO) {
+        taskElementDAO.reattach(task);
     }
 
     public int getTotalHours() {

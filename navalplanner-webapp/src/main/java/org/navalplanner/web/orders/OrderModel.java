@@ -615,7 +615,7 @@ public class OrderModel implements IOrderModel {
 
     private void reattachTasksForTasksSources() {
         for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
-            each.reloadTask(taskElementDAO);
+            each.reattachTask(taskElementDAO);
         }
     }
 
@@ -749,7 +749,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void reattachOrderElement(OrderElement orderElement) {
-        orderElementDAO.save(orderElement);
+        orderElementDAO.reattach(orderElement);
     }
 
     @Override
