@@ -22,6 +22,7 @@ package org.zkoss.ganttz.resourceload;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +36,12 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
@@ -213,6 +215,13 @@ public class ResourceLoadComponent extends XulElement {
             LoadPeriod loadPeriod) {
         return datesMapper.toPixels(loadPeriod.getStart().toDateMidnight()
                 .toDate());
+    }
+
+    protected void renderProperties(ContentRenderer renderer) throws IOException{
+        render(renderer, "_resourceLoadName", getResourceLoadName());
+        render(renderer, "_resourceLoadType", getResourceLoadType());
+
+        super.renderProperties(renderer);
     }
 
 }
