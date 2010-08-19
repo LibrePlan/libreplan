@@ -20,11 +20,15 @@
 
 package org.navalplanner.business.test.workingday;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.min;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.minutes;
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
 
 import java.util.EnumMap;
 
@@ -111,6 +115,17 @@ public class EffortDurationTest {
         assertThat(values.get(Granularity.HOURS), equalTo(0));
         assertThat(values.get(Granularity.MINUTES), equalTo(0));
         assertThat(values.get(Granularity.SECONDS), equalTo(0));
+    }
+
+    @Test
+    public void effortDurationImplementsComparable() {
+        assertTrue(hours(3).compareTo(minutes(180)) == 0);
+        assertTrue(hours(3).compareTo(minutes(178)) > 0);
+        assertTrue(hours(3).compareTo(minutes(181)) < 0);
+        assertTrue(hours(3).compareTo(minutes(190)) < 0);
+        EffortDuration min = min(asList(hours(2), hours(3), seconds(10),
+                seconds(5).and(1, Granularity.HOURS)));
+        assertThat(min, equalTo(seconds(10)));
     }
 
 }

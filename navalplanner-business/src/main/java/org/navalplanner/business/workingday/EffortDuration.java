@@ -24,7 +24,7 @@ import java.util.EnumMap;
 
 import org.apache.commons.lang.Validate;
 
-public class EffortDuration {
+public class EffortDuration implements Comparable<EffortDuration> {
 
 
     public enum Granularity {
@@ -121,6 +121,12 @@ public class EffortDuration {
         }
         assert remainder == 0;
         return result;
+    }
+
+    @Override
+    public int compareTo(EffortDuration other) {
+        Validate.notNull(other);
+        return seconds - other.seconds;
     }
 
 }
