@@ -40,8 +40,16 @@ public interface ISchedulingProgressPerOrderModel {
             AdvanceType advanceType, Date startingDate, Date endingDate,
             LocalDate referenceDate);
 
+    void init();
+
     List<Order> getOrders();
 
     List<AdvanceType> getAdvanceTypes();
+
+    void removeSelectedOrder(Order order);
+
+    boolean addSelectedOrder(Order order);
+
+    List<Order> getSelectedOrders();
 
 }

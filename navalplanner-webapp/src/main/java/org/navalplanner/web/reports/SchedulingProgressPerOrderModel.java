@@ -53,8 +53,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -72,13 +72,23 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     @Autowired
     private IScenarioManager scenarioManager;
 
+    private List<Order> selectedOrders = new ArrayList<Order>();
+
+    private List<Order> allOrders = new ArrayList<Order>();
+
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getOrders() {
-        List<Order> orders = orderDAO.getOrdersByScenario(scenarioManager
+    public void init() {
+        selectedOrders.clear();
+        allOrders.clear();
+        loadAllOrders();
+    }
+
+    private void loadAllOrders() {
+        allOrders = orderDAO.getOrdersByScenario(scenarioManager
                 .getCurrent());
 
-        for (Order each: orders) {
+        for (Order each : allOrders) {
             each.useSchedulingDataFor(scenarioManager.getCurrent());
             initializeTasks(each.getTaskElements());
             initializeOrderElements(each.getAllOrderElements());
@@ -87,7 +97,6 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
             initializeDirectAdvanceAssignments(each.getDirectAdvanceAssignments());
             initializeIndirectAdvanceAssignments(each.getIndirectAdvanceAssignments());
         }
-        return orders;
     }
 
     private void initializeOrderElements(List<OrderElement> orderElements) {
@@ -212,4 +221,29 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
         }
         return result;
     }
+
+    @Override
+    public List<Order> getOrders() {
+        return allOrders;
+    }
+
+    @Override
+    public void removeSelectedOrder(Order order) {
+        this.selectedOrders.remove(order);
+    }
+
+    @Override
+    public boolean addSelectedOrder(Order order) {
+        if (this.selectedOrders.contains(order)) {
+            return false;
+        }
+        this.selectedOrders.add(order);
+        return true;
+    }
+
+    @Override
+    public List<Order> getSelectedOrders() {
+        return selectedOrders;
+    }
+
 }

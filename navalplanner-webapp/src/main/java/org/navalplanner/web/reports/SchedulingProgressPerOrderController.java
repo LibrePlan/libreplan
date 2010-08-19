@@ -23,6 +23,7 @@ package org.navalplanner.web.reports;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,9 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Datebox;
@@ -43,9 +46,8 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class SchedulingProgressPerOrderController extends NavalplannerReportController {
 
@@ -63,15 +65,54 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
 
     private Datebox endingDate;
 
+    private BandboxSearch bdOrders;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         lbAdvanceType.setSelectedIndex(0);
+        schedulingProgressPerOrderModel.init();
     }
 
-    public List<Order> getOrders() {
+    public List<Order> getAllOrders() {
         return schedulingProgressPerOrderModel.getOrders();
+    }
+
+    public List<Order> getSelectedOrdersToFilter() {
+        return (getSelectedOrders().isEmpty()) ? Collections
+                .unmodifiableList(getAllOrders())
+                : getSelectedOrders();
+    }
+
+    /**
+     * Return selected orders, if none are selected return all orders in listbox
+     * @return
+     */
+    public List<Order> getSelectedOrders() {
+        return Collections.unmodifiableList(schedulingProgressPerOrderModel
+                .getSelectedOrders());
+    }
+
+    public void onSelectOrder() {
+        Order order = (Order) bdOrders.getSelectedElement();
+        if (order == null) {
+            throw new WrongValueException(bdOrders, _("please, select a order"));
+        }
+        boolean result = schedulingProgressPerOrderModel
+                .addSelectedOrder(order);
+        if (!result) {
+            throw new WrongValueException(bdOrders,
+                    _("This order has already been added."));
+        } else {
+            Util.reloadBindings(lbOrders);
+        }
+        bdOrders.clear();
+    }
+
+    public void onRemoveOrder(Order order) {
+        schedulingProgressPerOrderModel.removeSelectedOrder(order);
+        Util.reloadBindings(lbOrders);
     }
 
     protected String getReportName() {
@@ -79,28 +120,13 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
     }
 
     protected JRDataSource getDataSource() {
-        List<Order> orders = getSelectedOrders();
+        List<Order> orders = getSelectedOrdersToFilter();
 
         return schedulingProgressPerOrderModel
                 .getSchedulingProgressPerOrderReport(orders, getAdvanceType(),
                         startingDate.getValue(), endingDate.getValue(),
                         new LocalDate(getReferenceDate()));
    }
-
-    /**
-     * Return selected orders, if none are selected return all orders in listbox
-     *
-     * @return
-     */
-    private List<Order> getSelectedOrders() {
-        List<Order> result = new ArrayList<Order>();
-
-        final Set<Listitem> listItems = lbOrders.getSelectedItems();
-        for (Listitem each: listItems) {
-            result.add((Order) each.getValue());
-        }
-        return (!result.isEmpty()) ? result : getOrders();
-    }
 
     private Date getReferenceDate() {
         Date result = referenceDate.getValue();
