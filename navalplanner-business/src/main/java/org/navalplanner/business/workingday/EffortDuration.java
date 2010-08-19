@@ -129,4 +129,8 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return seconds - other.seconds;
     }
 
+    public EffortDuration multiplyBy(int integer) {
+        return EffortDuration.seconds(this.seconds * integer);
+    }
+
 }

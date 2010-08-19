@@ -109,6 +109,10 @@ public class CalendarData extends IntegrationEntity {
         return getHoursForDay(day);
     }
 
+    public EffortDuration getDurationAt(Days day) {
+        return effortPerDay.get(day.ordinal());
+    }
+
     public void setHours(Days day, Integer hours)
             throws IllegalArgumentException {
         setHoursForDay(day, hours);

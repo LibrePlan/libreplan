@@ -33,13 +33,13 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -275,8 +275,8 @@ public class BaseCalendarModel implements IBaseCalendarModel {
         if (getBaseCalendar() == null) {
             return null;
         }
-
-        return getBaseCalendar().getHours(selectedDate, day);
+        return BaseCalendar.roundToHours(getBaseCalendar().getDurationAt(
+                selectedDate, day));
     }
 
     @Override

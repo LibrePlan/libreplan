@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
@@ -76,7 +77,8 @@ public class BaseCalendarModelTest {
             assertThat(baseCalendarModel.getBaseCalendars().get(previous)
                     .getId(), equalTo(baseCalendar.getId()));
             assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                    .getHours(new Date(), Days.MONDAY), equalTo(8));
+                    .getDurationAt(new Date(), Days.MONDAY),
+ equalTo(hours(8)));
         } catch (ValidationException e) {
             fail("It should not throw an exception");
         }
@@ -108,8 +110,8 @@ public class BaseCalendarModelTest {
                 equalTo(previous + 1));
         assertThat(baseCalendarModel.getBaseCalendars().get(previous).getId(),
                 equalTo(baseCalendar.getId()));
-        assertThat(baseCalendarModel.getBaseCalendars().get(previous).getHours(
-                new Date(), Days.MONDAY), equalTo(4));
+        assertThat(baseCalendarModel.getBaseCalendars().get(previous)
+                .getDurationAt(new Date(), Days.MONDAY), equalTo(hours(4)));
     }
 
     @Test
@@ -130,8 +132,7 @@ public class BaseCalendarModelTest {
             assertThat(baseCalendarModel.getBaseCalendars().size(),
                     equalTo(previous + 1));
             assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                    .getHours(
-                    date, Days.MONDAY), equalTo(4));
+                    .getDurationAt(date, Days.MONDAY), equalTo(hours(4)));
             assertThat(baseCalendarModel.getBaseCalendars().get(previous)
                     .getCalendarDataVersions().size(), equalTo(2));
         } catch (ValidationException e) {

@@ -103,6 +103,10 @@ public class CalendarException extends IntegrationEntity {
         return duration != null ? duration.getHours() : 0;
     }
 
+    public EffortDuration getDuration() {
+        return duration;
+    }
+
     @NotNull
     public CalendarExceptionType getType() {
         return type;

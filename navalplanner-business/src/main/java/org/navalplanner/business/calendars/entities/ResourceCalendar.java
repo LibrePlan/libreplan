@@ -24,6 +24,7 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * Calendar for a {@link Resource}.
@@ -81,14 +82,24 @@ public class ResourceCalendar extends BaseCalendar {
         return multiplyByCapacity(super.getCapacityAt(date));
     }
 
-    protected int multiplyByCapacity(Integer workableHours) {
-        if (workableHours == null) {
+    protected Integer multiplyByCapacity(Integer duration) {
+        if (duration == null) {
             return 0;
         }
         if (capacity == null) {
-            return workableHours;
+            return duration;
         }
-        return capacity * workableHours;
+        return duration * capacity;
+    }
+
+    protected EffortDuration multiplyByCapacity(EffortDuration duration) {
+        if (duration == null) {
+            return EffortDuration.zero();
+        }
+        if (capacity == null) {
+            return duration;
+        }
+        return duration.multiplyBy(capacity);
     }
 
     @AssertTrue(message = "Capacity must be a positive integer number")

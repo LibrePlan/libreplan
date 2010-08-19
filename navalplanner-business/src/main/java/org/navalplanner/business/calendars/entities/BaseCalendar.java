@@ -21,6 +21,7 @@
 package org.navalplanner.business.calendars.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
@@ -51,7 +52,7 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  */
 public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
-    private static final Integer DEFAULT_VALUE = 0;
+    private static final EffortDuration DEFAULT_VALUE = EffortDuration.zero();
 
     public static BaseCalendar create() {
         return create(new BaseCalendar(CalendarData.create()));
@@ -299,39 +300,39 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * calendar restrictions.
      */
     public Integer getCapacityAt(LocalDate date) {
-        return getWorkableHours(date);
+        return roundToHours(getWorkableHours(date));
     }
 
-    private Integer getWorkableHours(LocalDate date) {
+    private EffortDuration getWorkableHours(LocalDate date) {
         if (!isActive(date)) {
-            return 0;
+            return EffortDuration.zero();
         }
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
-            return exceptionDay.getHours();
+            return exceptionDay.getDuration();
         }
 
         switch (date.getDayOfWeek()) {
         case DateTimeConstants.MONDAY:
-            return getHours(date, Days.MONDAY);
+            return getDurationAt(date, Days.MONDAY);
 
         case DateTimeConstants.TUESDAY:
-            return getHours(date, Days.TUESDAY);
+            return getDurationAt(date, Days.TUESDAY);
 
         case DateTimeConstants.WEDNESDAY:
-            return getHours(date, Days.WEDNESDAY);
+            return getDurationAt(date, Days.WEDNESDAY);
 
         case DateTimeConstants.THURSDAY:
-            return getHours(date, Days.THURSDAY);
+            return getDurationAt(date, Days.THURSDAY);
 
         case DateTimeConstants.FRIDAY:
-            return getHours(date, Days.FRIDAY);
+            return getDurationAt(date, Days.FRIDAY);
 
         case DateTimeConstants.SATURDAY:
-            return getHours(date, Days.SATURDAY);
+            return getDurationAt(date, Days.SATURDAY);
 
         case DateTimeConstants.SUNDAY:
-            return getHours(date, Days.SUNDAY);
+            return getDurationAt(date, Days.SUNDAY);
 
         default:
             throw new RuntimeException("Day of week out of range!");
@@ -346,27 +347,27 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         return true;
     }
 
-    public Integer getHours(Date date, Days day) {
-        return getHours(new LocalDate(date), day);
+    public EffortDuration getDurationAt(Date date, Days day) {
+        return getDurationAt(new LocalDate(date), day);
     }
 
-    public Integer getHours(LocalDate date, Days day) {
+    public EffortDuration getDurationAt(LocalDate date, Days day) {
         CalendarData calendarData = getCalendarData(date);
 
-        Integer hours = calendarData.getHours(day);
+        EffortDuration duration = calendarData.getDurationAt(day);
         BaseCalendar parent = getParent(date);
-        if ((hours == null) && (parent != null)) {
-            return parent.getHours(date, day);
+        if (duration == null && parent != null) {
+            return parent.getDurationAt(date, day);
         }
-
-        return valueIfNotNullElseDefaultValue(hours);
+        return valueIfNotNullElseDefaultValue(duration);
     }
 
-    private Integer valueIfNotNullElseDefaultValue(Integer hours) {
-        if (hours == null) {
+    private EffortDuration valueIfNotNullElseDefaultValue(
+            EffortDuration duration) {
+        if (duration == null) {
             return DEFAULT_VALUE;
         }
-        return hours;
+        return duration;
     }
 
     /**
@@ -907,30 +908,29 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
     @Override
     public Integer toHours(LocalDate day, ResourcesPerDay resourcesPerDay) {
-        final Integer workableHours = getWorkableHours(day);
-        return limitOverAssignability(day,
-                roundToHours(resourcesPerDay
-                        .asDurationGivenWorkingDayOf(EffortDuration
-                                .hours(workableHours))),
-                workableHours);
+        final EffortDuration workableHours = getWorkableHours(day);
+        return roundToHours(limitOverAssignability(day,
+                resourcesPerDay.asDurationGivenWorkingDayOf(workableHours),
+                workableHours));
     }
 
-    private Integer limitOverAssignability(LocalDate day,
-            int hoursInitiallyCalculated, int workableHoursAtDay) {
+    private EffortDuration limitOverAssignability(LocalDate day,
+            EffortDuration effortInitiallyCalculated,
+            EffortDuration workableHoursAtDay) {
         boolean overAssignable = isOverAssignable(day);
         if (overAssignable) {
-            return hoursInitiallyCalculated;
+            return effortInitiallyCalculated;
         } else {
-            return Math.min(hoursInitiallyCalculated,
-                    multiplyByCapacity(workableHoursAtDay));
+            return Collections.min(Arrays.asList(effortInitiallyCalculated,
+                    multiplyByCapacity(workableHoursAtDay)));
         }
     }
 
     /**
      * This method is intended to be overriden
      */
-    protected int multiplyByCapacity(Integer workableHours) {
-        return workableHours;
+    protected EffortDuration multiplyByCapacity(EffortDuration duration) {
+        return duration;
     }
 
     @Override
