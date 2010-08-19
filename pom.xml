@@ -165,6 +165,10 @@
     -->
 
     <repositories>
+        <repository>
+            <id>ZK EE Evaluation</id>
+            <url>http://mavensync.zkoss.org/zk/ee-eval</url>
+        </repository>
         <!-- Getttext commons -->
         <repository>
             <id>gettext-commons-site</id>
@@ -174,10 +178,6 @@
 		 <id>thirdparty</id>
 		 <url>http://nexus.naval.igalia.com/content/repositories/thirdparty</url>
 	 </repository>
-        <repository>
-            <id>ZK EE Evaluation</id>
-            <url>http://mavensync.zkoss.org/zk/ee-eval</url>
-        </repository>
     </repositories>
 
      <pluginRepositories>
@@ -265,10 +265,10 @@
             </dependency>
 
             <dependency>
-			    <groupId>org.easymock</groupId>
-			    <artifactId>easymockclassextension</artifactId>
-			    <version>2.4</version>
-			    <scope>test</scope>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>2.4</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Spring -->
@@ -549,14 +549,14 @@
             </dependency>
             <!-- ZK Timeplot -->
             <dependency>
-                <groupId>org.zkoss.zkforge.timeplot</groupId>
+                <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timeplotz</artifactId>
-                <version>1.0_5</version>
+                <version>1.1_50</version>
             </dependency>
             <dependency>
-                <groupId>org.zkoss.zkforge.timeline</groupId>
+                <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timelinez</artifactId>
-                <version>2.3.0_51</version>
+                <version>2.3.0_52</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>

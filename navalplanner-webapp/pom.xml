@@ -316,11 +316,11 @@
         </dependency>
         <!-- ZK Timeplot -->
         <dependency>
-            <groupId>org.zkoss.zkforge.timeline</groupId>
+            <groupId>org.zkoss.zkforge</groupId>
             <artifactId>timelinez</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.zkoss.zkforge.timeplot</groupId>
+            <groupId>org.zkoss.zkforge</groupId>
             <artifactId>timeplotz</artifactId>
         </dependency>
    </dependencies>
