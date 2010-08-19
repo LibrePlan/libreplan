@@ -7,11 +7,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
     },
     $init : function(){
         this.$super('$init');
-        if (!this.$class.getInstance()){
-            this.$class.setInstance(this);
-        }
-        else
-            throw "There's already one GanttPanel";
+        this.$class.setInstance(this);
     },
     bind_ : function(evt){
         this.$supers('bind_', arguments);
