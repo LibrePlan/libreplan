@@ -542,7 +542,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 if (isNewObject) {
                     this.planningControllerEntryPoints.goToOrderDetails(order);
                 }
-
             }
             else {
                 try {
@@ -553,7 +552,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     throw new RuntimeException(e);
                 }
             }
-        }        
+        }
     }
 
     private void refreshOrderWindow() {
@@ -570,7 +569,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    private boolean save() {        
+    private boolean save() {
         if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
             if (!manageOrderElementAdvancesController.save()) {
@@ -590,7 +589,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             if (!assignedTaskQualityFormController.confirm()) {
                 setCurrentTab();
                 return false;
-        }
+            }
         }
 
         createPercentageAdvances();
@@ -805,19 +804,35 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         orderModel.initEdit(order);
-        addEditWindow();
-        updateDisabilitiesOnInterface();
+        prepareEditWindow();
         showEditWindow(_("Edit order"));
     }
 
+    private void prepareEditWindow() {
+        addEditWindow();
+        updateDisabilitiesOnInterface();
+        initializeCustomerComponent();
+        selectDefaultTab();
+    }
 
     private void showEditWindow(String title) {
-        addEditWindow();
         initializeTabs();
         editWindow.setTitle(title);
         getVisibility().showOnly(editWindow);
-        selectDefaultTab();
-        loadCustomerComponent();
+    }
+
+    private void initializeCustomerComponent() {
+        bdExternalCompanies = (BandboxSearch) editWindow
+                .getFellow("bdExternalCompanies");
+        bdExternalCompanies.setListboxEventListener(
+                Events.ON_SELECT, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        final Object object = bdExternalCompanies
+                                .getSelectedElement();
+                        orderModel.setExternalCompany((ExternalCompany) object);
+                    }
+                });
     }
 
     public void setupOrderDetails() {
@@ -869,9 +884,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         try {
             showOrderElementFilter();
-            showCreateButtons(false);
+            hideCreateButtons();
             orderModel.prepareForCreate();
-            updateDisabilitiesOnInterface();
+            prepareEditWindow();
             showEditWindow(_("Create order"));
             checkCreationPermissions();
         } catch (ConcurrentModificationException e) {
@@ -879,18 +894,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    private void loadCustomerComponent() {
-        bdExternalCompanies = (BandboxSearch) editWindow
-                .getFellow("bdExternalCompanies");
-        bdExternalCompanies.setListboxEventListener(
-                Events.ON_SELECT, new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        final Object object = bdExternalCompanies
-                                .getSelectedElement();
-                        orderModel.setExternalCompany((ExternalCompany) object);
-                    }
-                });
+    private void hideCreateButtons() {
+        showCreateButtons(false);
     }
 
     public void setPlanningControllerEntryPoints(
