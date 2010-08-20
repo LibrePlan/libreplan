@@ -621,8 +621,9 @@ public class OrderModel implements IOrderModel {
 
     private void synchronizeWithSchedule(OrderElement orderElement,
             boolean preexistent) {
-        for (TaskSourceSynchronization each : orderElement
-                .calculateSynchronizationsNeeded()) {
+        List<TaskSourceSynchronization> synchronizationsNeeded = orderElement
+                .calculateSynchronizationsNeeded();
+        for (TaskSourceSynchronization each : synchronizationsNeeded) {
             each.apply(taskSourceDAO, preexistent);
         }
     }

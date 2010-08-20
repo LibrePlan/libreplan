@@ -87,7 +87,7 @@ public class TaskSource extends BaseEntity {
                 boolean preexistent) {
             Task result = Task.createTask(taskSource);
             taskSource.setTask(result);
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return result;
         }
     }
@@ -104,7 +104,7 @@ public class TaskSource extends BaseEntity {
         public TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 boolean preeexistent) {
             updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return taskSource.getTask();
         }
 
@@ -190,7 +190,7 @@ public class TaskSource extends BaseEntity {
                 result.addTaskElement(taskElement);
             }
             taskSource.setTask(result);
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return result;
         }
 
@@ -210,7 +210,7 @@ public class TaskSource extends BaseEntity {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
             taskGroup.setTaskChildrenTo(children);
             updateTaskWithOrderElement(taskGroup, taskSource.getOrderElement());
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return taskGroup;
         }
     }
