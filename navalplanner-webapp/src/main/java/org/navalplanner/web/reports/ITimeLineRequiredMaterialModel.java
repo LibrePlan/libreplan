@@ -42,6 +42,8 @@ public interface ITimeLineRequiredMaterialModel {
             List<Order> listOrders, List<MaterialCategory> categories,
             List<Material> materials);
 
+    void init();
+
     List<Order> getOrders();
 
     List<TimeLineRequiredMaterialDTO> filterConsult(Date startingDate,
@@ -53,4 +55,11 @@ public interface ITimeLineRequiredMaterialModel {
             List<TimeLineRequiredMaterialDTO> list);
 
     TreeModel getAllMaterialCategories();
+
+    void removeSelectedOrder(Order order);
+
+    boolean addSelectedOrder(Order order);
+
+    List<Order> getSelectedOrders();
+
 }

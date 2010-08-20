@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +37,15 @@ import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.MaterialStatusEnum;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -78,6 +81,8 @@ public class TimeLineRequiredMaterialController extends
 
     private Listbox lbOrders;
 
+    private BandboxSearch bdOrders;
+
     List<MaterialCategory> filterCategories = new ArrayList<MaterialCategory>();
 
     List<Material> filterMaterials = new ArrayList<Material>();
@@ -86,11 +91,38 @@ public class TimeLineRequiredMaterialController extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        timeLineRequiredMaterialModel.init();
         prepareAllCategoriesTree();
     }
 
-    public List<Order> getOrders() {
+    public List<Order> getAllOrders() {
         return timeLineRequiredMaterialModel.getOrders();
+    }
+
+    public List<Order> getSelectedOrders() {
+        return Collections.unmodifiableList(timeLineRequiredMaterialModel
+                .getSelectedOrders());
+    }
+
+    public void onSelectOrder() {
+        Order order = (Order) bdOrders.getSelectedElement();
+        if (order == null) {
+            throw new WrongValueException(bdOrders, _("please, select a order"));
+        }
+        boolean result = timeLineRequiredMaterialModel
+                .addSelectedOrder(order);
+        if (!result) {
+            throw new WrongValueException(bdOrders,
+                    _("This order has already been added."));
+        } else {
+            Util.reloadBindings(lbOrders);
+        }
+        bdOrders.clear();
+    }
+
+    public void onRemoveOrder(Order order) {
+        timeLineRequiredMaterialModel.removeSelectedOrder(order);
+        Util.reloadBindings(lbOrders);
     }
 
     @Override
@@ -148,15 +180,6 @@ public class TimeLineRequiredMaterialController extends
 
         calendar.set(year, month, date);
         return calendar.getTime();
-    }
-
-    private List<Order> getSelectedOrders() {
-        List<Order> result = new ArrayList<Order>();
-        final Set<Listitem> listItems = lbOrders.getSelectedItems();
-        for (Listitem each : listItems) {
-            result.add((Order) each.getValue());
-        }
-        return result;
     }
 
     @Override

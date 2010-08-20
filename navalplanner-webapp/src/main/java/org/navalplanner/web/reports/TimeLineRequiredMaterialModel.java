@@ -92,15 +92,28 @@ public class TimeLineRequiredMaterialModel implements
     @Autowired
     private IScenarioManager scenarioManager;
 
+    private List<Order> selectedOrders = new ArrayList<Order>();
+
+    private List<Order> allOrders = new ArrayList<Order>();
+
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getOrders() {
-        List<Order> result = orderDAO.getOrdersByScenario(scenarioManager
-                .getCurrent());
-        for (Order each: result) {
+    public void init() {
+        selectedOrders.clear();
+        allOrders.clear();
+        loadAllOrders();
+    }
+
+    private void loadAllOrders() {
+        allOrders = orderDAO.getOrdersByScenario(scenarioManager.getCurrent());
+        for (Order each : allOrders) {
             initializeOrderElements(each.getAllChildren());
         }
-        return result;
+    }
+
+    @Override
+    public List<Order> getOrders() {
+        return allOrders;
     }
 
     private void initializeOrderElements(List<OrderElement> orderElements) {
@@ -111,6 +124,25 @@ public class TimeLineRequiredMaterialModel implements
 
     private void initializeOrderElement(OrderElement orderElement) {
         orderElement.getName();
+    }
+
+    @Override
+    public void removeSelectedOrder(Order order) {
+        this.selectedOrders.remove(order);
+    }
+
+    @Override
+    public boolean addSelectedOrder(Order order) {
+        if (this.selectedOrders.contains(order)) {
+            return false;
+        }
+        this.selectedOrders.add(order);
+        return true;
+    }
+
+    @Override
+    public List<Order> getSelectedOrders() {
+        return selectedOrders;
     }
 
     @Override
