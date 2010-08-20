@@ -6,7 +6,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
         yMouse : null
     },
     $init : function(){
-        this.$super('$init');
+        this.$supers('$init', arguments);
         this.$class.setInstance(this);
     },
     bind_ : function(evt){

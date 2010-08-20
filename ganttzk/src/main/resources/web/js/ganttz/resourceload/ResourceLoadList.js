@@ -2,7 +2,7 @@ zk.$package("ganttz.resourceload");
 
 ganttz.resourceload.ResourceLoadList = zk.$extends(zk.Widget,{
     $init : function(){
-        this.$super('$init');
+        this.$supers('$init', arguments);
         this.$class.setInstance(this);
     },
     bind_ : function(evt){
