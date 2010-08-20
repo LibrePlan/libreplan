@@ -689,15 +689,15 @@ public class OrderCRUDController extends GenericForwardComposer {
         clearFilterDates();
     }
 
+    private void showWindow(Window window) {
+        getVisibility().showOnly(window);
+        Util.reloadBindings(window);
+    }
+
     public void reloadHoursGroupOrder() {
         if (getCurrentTab().getId().equals("tabRequirements")) {
             assignedCriterionRequirementController.reload();
         }
-    }
-
-    private void showWindow(Window window) {
-        getVisibility().showOnly(window);
-        Util.reloadBindings(window);
     }
 
     public void cancel() {
@@ -815,9 +815,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         addEditWindow();
         initializeTabs();
         editWindow.setTitle(title);
-        showWindow(editWindow);
+        getVisibility().showOnly(editWindow);
         selectDefaultTab();
-        reloadDefaultTab();
         loadCustomerComponent();
     }
 
