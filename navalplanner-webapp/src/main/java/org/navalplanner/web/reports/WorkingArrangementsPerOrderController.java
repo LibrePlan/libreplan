@@ -32,9 +32,13 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskStatusEnum;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Checkbox;
@@ -42,9 +46,8 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 
 /**
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
- *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class WorkingArrangementsPerOrderController extends NavalplannerReportController {
 
@@ -52,19 +55,28 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
 
     private IWorkingArrangementsPerOrderModel workingArrangementsPerOrderModel;
 
-    private Listbox lbOrders;
-
     private Listbox lbTaskStatus;
 
     private Checkbox cbShowDependencies;
+
+    private BandboxSearch bdOrder;
+
+    private BandboxSearch bdLabels;
+
+    private Listbox lbLabels;
+
+    private BandboxSearch bdCriterions;
+
+    private Listbox lbCriterions;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        workingArrangementsPerOrderModel.init();
     }
 
-    public List<Order> getOrders() {
+    public List<Order> getAllOrders() {
         return workingArrangementsPerOrderModel.getOrders();
     }
 
@@ -75,7 +87,8 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
     protected JRDataSource getDataSource() {
         return workingArrangementsPerOrderModel
                 .getWorkingArrangementsPerOrderReportReport(getSelectedOrder(),
-                        getSelectedTaskStatus(), showDependencies());
+                        getSelectedTaskStatus(), showDependencies(),
+                        getSelectedLabels(), getSelectedCriterions());
     }
 
     private boolean showDependencies() {
@@ -88,8 +101,7 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
     }
 
     private Order getSelectedOrder() {
-        final Listitem item = lbOrders.getSelectedItem();
-        return  (item != null) ? (Order) item.getValue() : null;
+        return (Order) bdOrder.getSelectedElement();
     }
 
     protected Map<String, Object> getParameters() {
@@ -106,7 +118,7 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
 
     public void showReport(ExtendedJasperreport jasperreport) {
         if (getSelectedOrder() == null) {
-            throw new WrongValueException(lbOrders, _("Please, select an order"));
+            throw new WrongValueException(bdOrder, _("Please, select an order"));
         }
         super.showReport(jasperreport);
     }
@@ -125,6 +137,64 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
             return arg0.toString().compareTo(arg1.toString());
         }
 
+    }
+
+    public List<Label> getAllLabels() {
+        return workingArrangementsPerOrderModel.getAllLabels();
+    }
+
+    public void onSelectLabel() {
+        Label label = (Label) bdLabels.getSelectedElement();
+        if (label == null) {
+            throw new WrongValueException(bdLabels, _("please, select a label"));
+        }
+        boolean result = workingArrangementsPerOrderModel
+                .addSelectedLabel(label);
+        if (!result) {
+            throw new WrongValueException(bdLabels,
+                    _("This label has already been added."));
+        } else {
+            Util.reloadBindings(lbLabels);
+        }
+        bdLabels.clear();
+    }
+
+    public void onRemoveLabel(Label label) {
+        workingArrangementsPerOrderModel.removeSelectedLabel(label);
+        Util.reloadBindings(lbLabels);
+    }
+
+    public List<Label> getSelectedLabels() {
+        return workingArrangementsPerOrderModel.getSelectedLabels();
+    }
+
+    public List<Criterion> getSelectedCriterions() {
+        return workingArrangementsPerOrderModel.getSelectedCriterions();
+    }
+
+    public List<Criterion> getAllCriterions() {
+        return workingArrangementsPerOrderModel.getCriterions();
+    }
+
+    public void onSelectCriterion() {
+        Criterion criterion = (Criterion) bdCriterions.getSelectedElement();
+        if (criterion == null) {
+            throw new WrongValueException(bdCriterions,
+                    _("please, select a Criterion"));
+        }
+        boolean result = workingArrangementsPerOrderModel
+                .addSelectedCriterion(criterion);
+        if (!result) {
+            throw new WrongValueException(bdCriterions,
+                    _("This Criterion has already been added."));
+        } else {
+            Util.reloadBindings(lbCriterions);
+        }
+    }
+
+    public void onRemoveCriterion(Criterion criterion) {
+        workingArrangementsPerOrderModel.removeSelectedCriterion(criterion);
+        Util.reloadBindings(lbCriterions);
     }
 
 }

@@ -391,6 +391,9 @@
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{intime}]]></textFieldExpression>
 				</textField>
+				<rectangle>
+					<reportElement mode="Transparent" x="495" y="56" width="60" height="15"/>
+				</rectangle>
 			</band>
 		</groupHeader>
 		<groupFooter>

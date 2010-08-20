@@ -131,7 +131,7 @@ Order order,
         order.useSchedulingDataFor(scenarioManager.getCurrent());
         LocalDate deadlineLocalDate = new LocalDate(deadline);
 
-        final List<Task> tasks = filteredTaskElements(order, labels, criterions);// order.getAllChildrenAssociatedTaskElements();
+        final List<Task> tasks = filteredTaskElements(order, labels, criterions);
         final List<CompletedEstimatedHoursPerTaskDTO> completedEstimatedHoursPerTaskList =
             new ArrayList<CompletedEstimatedHoursPerTaskDTO>();
         for (TaskElement task: tasks) {
