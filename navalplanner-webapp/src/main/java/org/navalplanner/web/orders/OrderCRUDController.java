@@ -520,7 +520,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         return (Order) orderModel.getOrder();
     }
 
-    public void saveAndContinue() {        
+    public void saveAndContinue() {
+
         Order order = (Order) orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
@@ -528,10 +529,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         final boolean couldSave = save();
 
         if (couldSave) {
-            if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-                updateDisabilitiesOnInterface();
-                initializeTabs();
-                showWindow(editWindow);
+
+            if (orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
+                refreshOrderWindow();
 
                 // come back to the current tab after initialize all tabs.
                 resetSelectedTab();
@@ -554,6 +554,12 @@ public class OrderCRUDController extends GenericForwardComposer {
                 }
             }
         }        
+    }
+
+    private void refreshOrderWindow() {
+        updateDisabilitiesOnInterface();
+        initializeTabs();
+        getVisibility().showOnly(editWindow);
     }
 
     public void saveAndExit() {
