@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -53,7 +53,6 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
-import org.navalplanner.business.orders.entities.SchedulingDataForVersion.Data;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
@@ -217,10 +216,8 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     protected void writeSchedulingDataChanges() {
-        Data currentSchedulingState = getCurrentSchedulingData();
-        currentSchedulingState.writeSchedulingDataChanges();
-        List<OrderElement> children = getChildren();
-        for (OrderElement each : children) {
+        getCurrentSchedulingData().writeSchedulingDataChanges();
+        for (OrderElement each : getChildren()) {
             each.writeSchedulingDataChanges();
         }
     }

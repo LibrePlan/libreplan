@@ -533,6 +533,10 @@ public class OrderModel implements IOrderModel {
             order.writeSchedulingDataChanges();
         }
         saveDerivedScenarios();
+        calculateAdvancePercentageIncludingChildren(order);
+    }
+
+    private void calculateAdvancePercentageIncludingChildren(OrderElement order) {
         calculateAdvancePercentage(order);
         for (OrderElement orderElement : order.getAllChildren()) {
             calculateAdvancePercentage(orderElement);
