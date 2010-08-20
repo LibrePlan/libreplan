@@ -409,6 +409,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             getEndDateTextBox().setValue(asString(task.getEndDate()));
         } else {
             nameLabel.setValue(task.getName());
+            nameLabel.setTooltiptext(task.getName());
             startDateLabel.setValue(asString(task.getBeginDate()));
             endDateLabel.setValue(asString(task.getEndDate()));
         }

@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<treerow sclass="taskdetail_grid">
+<treerow sclass="taskdetail_grid taskdetail-company-view">
     <zscript><![CDATA[
     ]]>
 </zscript>
