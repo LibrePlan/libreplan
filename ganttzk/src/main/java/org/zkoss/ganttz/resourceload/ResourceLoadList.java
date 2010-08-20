@@ -97,8 +97,8 @@ public class ResourceLoadList extends XulElement {
         for (LoadTimeLine l : line.getAllChildren()) {
             getComponentFor(l).detach();
         }
-        Clients
-                .evalJavaScript("zkResourcesLoadList.recalculateTimetrackerHeight();");
+
+        Clients.evalJavaScript(getWidgetClass() + ".getInstance().recalculateTimeTrackerHeight();");
     }
 
     private ResourceLoadComponent getComponentFor(LoadTimeLine l) {
@@ -119,8 +119,8 @@ public class ResourceLoadList extends XulElement {
             insertBefore(child, nextSibling);
             nextSibling = child;
         }
-        Clients
-                .evalJavaScript("zkResourcesLoadList.recalculateTimetrackerHeight();");
+
+        Clients.evalJavaScript(getWidgetClass() + ".getInstance().recalculateTimeTrackerHeight();");
     }
 
     private List<LoadTimeLine> getChildrenReverseOrderFor(LoadTimeLine line) {
