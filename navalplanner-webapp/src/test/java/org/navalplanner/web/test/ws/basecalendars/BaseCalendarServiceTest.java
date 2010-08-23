@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.test.ws.basecalendars;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
@@ -47,6 +48,7 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.IConfigurationBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 import org.navalplanner.ws.calendars.api.BaseCalendarListDTO;
 import org.navalplanner.ws.calendars.api.CalendarDataDTO;
@@ -214,8 +216,10 @@ public class BaseCalendarServiceTest {
         assertTrue(baseCalendar.getCalendarDataVersions().size() == 2);
 
         CalendarData data = baseCalendar.getCalendarDataByCode("codeData");
-        assertTrue(data.getHours(CalendarData.Days.FRIDAY) == 4);
-        assertTrue(data.getHours(CalendarData.Days.TUESDAY) == 4);
+        assertEquals(EffortDuration.hours(4),
+                data.getDurationAt(CalendarData.Days.FRIDAY));
+        assertEquals(EffortDuration.hours(4),
+                data.getDurationAt(CalendarData.Days.TUESDAY));
     }
 
     @Test

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,8 @@ import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.zkoss.zk.ui.Component;
@@ -606,15 +609,14 @@ public abstract class BaseCalendarEditionController extends
             Listcell summaryListcell = new Listcell();
             List<String> summary = new ArrayList<String>();
             for (Days day : Days.values()) {
-                Integer hours = calendarData.getHours(day);
-                if (hours == null) {
+                if (calendarData.isDefault(day)) {
                     if (parent == null) {
                         summary.add("0");
                     } else {
                         summary.add("D");
                     }
                 } else {
-                    summary.add(hours.toString());
+                    summary.add(asString(calendarData.getDurationAt(day)));
                 }
             }
             summaryListcell.appendChild(new Label(StringUtils.join(summary,
@@ -624,6 +626,19 @@ public abstract class BaseCalendarEditionController extends
             appendOperationsListcell(item, calendarData);
             markAsSelected(item, calendarData);
             addEventListener(item);
+        }
+
+        private String asString(EffortDuration duration) {
+            EnumMap<Granularity, Integer> decomposed = duration.decompose();
+
+            String result = _("{0}h", decomposed.get(Granularity.HOURS));
+            if (decomposed.get(Granularity.MINUTES) > 0) {
+                result += _(" {0}m", decomposed.get(Granularity.MINUTES));
+            }
+            if (decomposed.get(Granularity.SECONDS) > 0) {
+                result += _(" {0}s", decomposed.get(Granularity.SECONDS));
+            }
+            return result;
         }
 
         private void markAsSelected(Listitem item,

@@ -109,12 +109,18 @@ public class EffortDurationTest {
     }
 
     @Test
-    public void anEmptyDurationHasZeroElements(){
+    public void anZeroDurationHasZeroElements() {
         EffortDuration duration = EffortDuration.zero();
         EnumMap<Granularity, Integer> values = duration.decompose();
         assertThat(values.get(Granularity.HOURS), equalTo(0));
         assertThat(values.get(Granularity.MINUTES), equalTo(0));
         assertThat(values.get(Granularity.SECONDS), equalTo(0));
+    }
+
+    @Test
+    public void aZeroDurationIsZero() {
+        EffortDuration duration = EffortDuration.zero();
+        assertTrue(duration.isZero());
     }
 
     @Test

@@ -133,4 +133,8 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return EffortDuration.seconds(this.seconds * integer);
     }
 
+    public boolean isZero() {
+        return seconds == 0;
+    }
+
 }

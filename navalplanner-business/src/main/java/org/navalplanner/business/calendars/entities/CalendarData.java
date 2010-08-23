@@ -30,7 +30,6 @@ import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 /**
  * Represents the information about the calendar that can change through time.
@@ -66,7 +65,7 @@ public class CalendarData extends IntegrationEntity {
             for (Days day : Days.values()) {
                 Integer hours = hoursPerDay.get(day.ordinal());
                 if (hours != null) {
-                    setHours(day, hours);
+                    setDurationAt(day, EffortDuration.hours(hours));
                 }
             }
         }
@@ -88,7 +87,7 @@ public class CalendarData extends IntegrationEntity {
     public CalendarData() {
         effortPerDay = new HashMap<Integer, EffortDuration>();
         for (Days each : Days.values()) {
-            setHoursForDay(each, null);
+            setDurationAt(each, null);
         }
     }
 
@@ -105,42 +104,20 @@ public class CalendarData extends IntegrationEntity {
         return result;
     }
 
-    public Integer getHours(Days day) {
-        return getHoursForDay(day);
-    }
-
     public EffortDuration getDurationAt(Days day) {
         return effortPerDay.get(day.ordinal());
     }
 
-    public void setHours(Days day, Integer hours)
-            throws IllegalArgumentException {
-        setHoursForDay(day, hours);
-    }
-
-    private void setHoursForDay(Days day, Integer hours)
-            throws IllegalArgumentException {
-        if ((hours != null) && (hours < 0)) {
-            throw new IllegalArgumentException(
-                    "The number of hours for a day can not be negative");
-        }
-        effortPerDay.put(
-                day.ordinal(),
-                hours == null ? null :
-                EffortDuration.elapsing(hours, Granularity.HOURS));
-    }
-
-    private Integer getHoursForDay(Days day) {
-        EffortDuration effort = effortPerDay.get(day.ordinal());
-        return effort == null ? null : effort.getHours();
+    public void setDurationAt(Days day, EffortDuration duration) {
+        effortPerDay.put(day.ordinal(), duration);
     }
 
     public boolean isDefault(Days day) {
-        return (getHoursForDay(day) == null);
+        return getDurationAt(day) == null;
     }
 
     public void setDefault(Days day) {
-        setHoursForDay(day, null);
+        setDurationAt(day, null);
     }
 
     /**
@@ -194,14 +171,12 @@ public class CalendarData extends IntegrationEntity {
     }
 
     boolean isEmptyFor(Days day) {
-        Integer hours = getHours(day);
-        if (!isDefault(day) && hours > 0) {
-            return false;
-        } else if (isDefault(day) && getParent() != null
-                && !parent.onlyGivesZeroHours(day)) {
-            return false;
-        }
-        return true;
+        return !isDefault(day) && getDurationAt(day).isZero() || isDefault(day)
+                && hasParent() && getParent().onlyGivesZeroHours(day);
+    }
+
+    private boolean hasParent() {
+        return getParent() != null;
     }
 
     @Override
