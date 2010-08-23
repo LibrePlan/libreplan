@@ -29,6 +29,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
     },
     adjust_height : function(){
         jq(this.$n()).height(jq('#scroll_container').height());
+        ganttz.Planner.getInstance().adjustScrollableDimensions();
     },
     _calcXY : function(event){
         var arrPos = YAHOO.util.Event.getXY(event);
@@ -53,6 +54,12 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
         this._rightpannellayout    = jq('.rightpanellayout div:first');
         this._taskdetails        = jq('.listdetails .z-tree-body');
         this._plannergraph        = jq('.plannergraph:first');
+    },
+    reScrollY : function(px){
+        jq('#ganttpanel_inner_scroller_y').height(px);
+    },
+    reScrollX : function(px){
+        jq('#ganttpanel_inner_scroller_x').width(px);
     }
 },{
     getInstance : function(){
