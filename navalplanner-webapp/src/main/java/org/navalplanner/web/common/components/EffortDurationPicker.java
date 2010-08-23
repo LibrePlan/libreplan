@@ -50,9 +50,9 @@ public class EffortDurationPicker extends Hbox {
         hours = new Spinner();
         setMinFor(hours, 0);
         minutes = new Spinner();
-        setRangeFor(minutes, 0, 59);
+        setRangeFor(minutes, 0, 60);
         seconds = new Spinner();
-        setRangeFor(seconds, 0, 59);
+        setRangeFor(seconds, 0, 60);
         appendWithLabel(hours, _("Hours"));
         appendWithLabel(minutes, _("Minutes"));
         appendWithLabel(seconds, _("Seconds"));
@@ -85,7 +85,11 @@ public class EffortDurationPicker extends Hbox {
     }
 
     public void bind(Getter<EffortDuration> getter) {
-        EnumMap<Granularity, Integer> values = getter.get().decompose();
+        updateUIWithValuesFrom(getter.get());
+    }
+
+    private void updateUIWithValuesFrom(EffortDuration duration) {
+        EnumMap<Granularity, Integer> values = duration.decompose();
         hours.setValue(values.get(Granularity.HOURS));
         minutes.setValue(values.get(Granularity.MINUTES));
         seconds.setValue(values.get(Granularity.SECONDS));
@@ -115,8 +119,10 @@ public class EffortDurationPicker extends Hbox {
         Integer hoursValue = hours.getValue();
         Integer minutesValue = minutes.getValue();
         Integer secondsValue = seconds.getValue();
-        setter.set(EffortDuration.hours(hoursValue)
+        EffortDuration newValue = EffortDuration.hours(hoursValue)
                 .and(minutesValue, Granularity.MINUTES)
-                .and(secondsValue, Granularity.SECONDS));
+                .and(secondsValue, Granularity.SECONDS);
+        setter.set(newValue);
+        updateUIWithValuesFrom(newValue);
     }
 }
