@@ -26,6 +26,7 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -42,6 +43,8 @@ public class GanttPanel extends XulElement implements AfterCompose {
     private final GanttDiagramGraph diagramGraph;
 
     private final Planner planner;
+
+    private transient IZoomLevelChangedListener zoomLevelChangedListener;
 
     public GanttPanel(
             Planner planner,
@@ -85,7 +88,6 @@ public class GanttPanel extends XulElement implements AfterCompose {
                 .asDependencyComponents(diagramGraph.getVisibleDependencies()));
         timeTrackerComponent.afterCompose();
         dependencyList.afterCompose();
-
         if (planner.isExpandAll()) {
             FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner
                     .getContext();
@@ -96,6 +98,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
             planner.getPredicate().setFilterContainers(true);
             planner.setTaskListPredicate(planner.getPredicate());
         }
+        registerZoomLevelChangedListener();
     }
 
     public TimeTrackerComponent getTimeTrackerComponent() {
@@ -132,6 +135,22 @@ public class GanttPanel extends XulElement implements AfterCompose {
 
     public Planner getPlanner() {
         return planner;
+    }
+
+    private void registerZoomLevelChangedListener() {
+        if (zoomLevelChangedListener == null) {
+            zoomLevelChangedListener = new IZoomLevelChangedListener() {
+                @Override
+                public void zoomLevelChanged(ZoomLevel detailLevel) {
+                    adjustZoomColumnsHeight();
+                }
+            };
+            getTimeTracker().addZoomListener(zoomLevelChangedListener);
+        }
+    }
+
+    public void adjustZoomColumnsHeight() {
+      response("adjust_height", new AuInvoke(this, "adjust_height"));
     }
 
 }

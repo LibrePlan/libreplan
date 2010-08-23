@@ -441,7 +441,7 @@ public class Planner extends HtmlMacroComponent  {
         getDependencyList().taskRemoved(task);
         leftPane.taskRemoved(task);
         setHeight(getHeight());// forcing smart update
-        taskList.adjustZoomColumnsHeight();
+        ganttPanel.adjustZoomColumnsHeight();
         getDependencyList().redrawDependencies();
     }
 
@@ -686,4 +686,8 @@ public class Planner extends HtmlMacroComponent  {
         }
         return null;
     }
+    public String getWidgetClass(){
+        return getDefinition().getDefaultWidgetClass();
+    }
+
 }

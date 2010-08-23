@@ -45,7 +45,6 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -133,7 +132,7 @@ public class TaskList extends XulElement implements AfterCompose {
         taskComponent.afterCompose();
         if (relocate) {
             setHeight(getHeight());// forcing smart update
-            adjustZoomColumnsHeight();
+            getGanttPanel().adjustZoomColumnsHeight();
             getGanttPanel().getDependencyList().redrawDependencies();
         }
     }
@@ -284,7 +283,6 @@ public class TaskList extends XulElement implements AfterCompose {
                     for (TaskComponent taskComponent : getTaskComponents()) {
                         taskComponent.zoomChanged();
                     }
-                    adjustZoomColumnsHeight();
                 }
             };
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
@@ -324,10 +322,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
     GanttPanel getGanttPanel() {
         return (GanttPanel) getParent();
-    }
-
-    public void adjustZoomColumnsHeight() {
-        response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
     }
 
     public void redrawDependencies() {

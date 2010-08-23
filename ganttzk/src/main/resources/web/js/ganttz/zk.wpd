@@ -16,4 +16,5 @@
     <widget name="TaskComponent"/>
     <widget name="TaskList"/>
     <widget name="DependencyList"/>
+    <widget name="Planner"/>
 </package>
