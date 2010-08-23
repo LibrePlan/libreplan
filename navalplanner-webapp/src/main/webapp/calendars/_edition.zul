@@ -120,7 +120,7 @@
                         <listhead>
                             <listheader label="${i18n:_('Day')}" />
                             <listheader label="${i18n:_('Exception Type')}" />
-                            <listheader label="${i18n:_('Hours')}" />
+                            <listheader label="${i18n:_('Duration')}" />
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
                     </listbox>

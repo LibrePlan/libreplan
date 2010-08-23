@@ -76,6 +76,19 @@ import org.zkoss.zul.api.Window;
 public abstract class BaseCalendarEditionController extends
         GenericForwardComposer {
 
+    private static String asString(EffortDuration duration) {
+        EnumMap<Granularity, Integer> decomposed = duration.decompose();
+
+        String result = _("{0}h", decomposed.get(Granularity.HOURS));
+        if (decomposed.get(Granularity.MINUTES) > 0) {
+            result += _(" {0}m", decomposed.get(Granularity.MINUTES));
+        }
+        if (decomposed.get(Granularity.SECONDS) > 0) {
+            result += _(" {0}s", decomposed.get(Granularity.SECONDS));
+        }
+        return result;
+    }
+
     private IBaseCalendarModel baseCalendarModel;
 
     private Window window;
@@ -613,19 +626,6 @@ public abstract class BaseCalendarEditionController extends
             addEventListener(item);
         }
 
-        private String asString(EffortDuration duration) {
-            EnumMap<Granularity, Integer> decomposed = duration.decompose();
-
-            String result = _("{0}h", decomposed.get(Granularity.HOURS));
-            if (decomposed.get(Granularity.MINUTES) > 0) {
-                result += _(" {0}m", decomposed.get(Granularity.MINUTES));
-            }
-            if (decomposed.get(Granularity.SECONDS) > 0) {
-                result += _(" {0}s", decomposed.get(Granularity.SECONDS));
-            }
-            return result;
-        }
-
         private void markAsSelected(Listitem item,
                 CalendarData calendarData) {
             CalendarData selected = baseCalendarModel.getCalendarData();
@@ -787,7 +787,7 @@ public abstract class BaseCalendarEditionController extends
 
             appendDayListcell(item, calendarException);
             appendExceptionTypeListcell(item, calendarException);
-            appendHoursListcell(item, calendarException);
+            appendDurationListcell(item, calendarException);
             appendOperationsListcell(item, calendarException);
 
             markAsSelected(item, calendarException);
@@ -828,11 +828,11 @@ public abstract class BaseCalendarEditionController extends
             item.appendChild(listcell);
         }
 
-        private void appendHoursListcell(Listitem item,
+        private void appendDurationListcell(Listitem item,
                 CalendarException calendarException) {
             Listcell listcell = new Listcell();
-            listcell.appendChild(new Label(calendarException.getHours()
-                    .toString()));
+            listcell.appendChild(new Label(asString(calendarException
+                    .getDuration())));
             item.appendChild(listcell);
         }
 
