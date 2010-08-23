@@ -28,7 +28,7 @@
 <?component name="schedulingStateToggler" class="org.navalplanner.web.orders.SchedulingStateToggler" macroURI="/common/components/schedulingStateToggler.zul"?>
 <?component name="list" inline="true" macroURI="_list.zul"?>
 <?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
-	class="org.navalplanner.web.templates.TemplatesTreeComponent"?>
+    class="org.navalplanner.web.templates.TemplatesTreeComponent"?>
 <?component name="listOrderElementCriterionRequirements"
     class="org.navalplanner.web.templates.criterionrequirements.CriterionRequirementTemplateComponent"
     macroURI="/orders/_listOrderElementCriterionRequirements.zul"?>
@@ -55,7 +55,9 @@
             <tabbox>
                 <tabs>
                     <tab id="tabGeneralData" label="${i18n:_('General data')}" />
-                    <tab label="${i18n:_('Template Tree')}" disabled="@{templatesForOrdersController.templateTreeDisabled}"/>
+                    <tab label="${i18n:_('Template Tree')}"
+                        disabled="@{templatesForOrdersController.templateTreeDisabled}"
+                        onSelect="templatesForOrdersController.openTemplateTree()" />
                     <tab label="${i18n:_('Advances')}" />
                     <tab label="${i18n:_('Labels')}" />
                     <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />

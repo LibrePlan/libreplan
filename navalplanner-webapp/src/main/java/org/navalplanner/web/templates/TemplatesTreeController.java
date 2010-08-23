@@ -46,6 +46,10 @@ import org.zkoss.zul.TreeitemRenderer;
 public class TemplatesTreeController extends
         TreeController<OrderElementTemplate> {
 
+    private final IOrderTemplatesModel model;
+
+    private final OrderTemplatesController orderTemplatesController;
+
     final class TemplatesTreeRenderer extends Renderer {
 
         private final ClassValidator<OrderElementTemplate> validator = new ClassValidator<OrderElementTemplate>(
@@ -167,9 +171,6 @@ public class TemplatesTreeController extends
         }
 
     }
-
-    private final IOrderTemplatesModel model;
-    private final OrderTemplatesController orderTemplatesController;
 
     public TemplatesTreeController(IOrderTemplatesModel model,
             OrderTemplatesController orderTemplatesController) {

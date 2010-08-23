@@ -55,6 +55,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 
 /**
@@ -80,6 +81,8 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private IMessagesForUser messagesForUser;
 
     private Component messagesContainer;
+
+    private TreeComponent treeComponent;
 
     @Resource
     private IGlobalViewEntryPoints globalView;
@@ -248,11 +251,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
-        TreeComponent treeComponent = (TreeComponent) editWindow.getFellow("orderElementTree");
-        TemplatesTreeController treeController = new TemplatesTreeController(
-                model, this);
-        treeComponent.useController(treeController);
-        treeController.setReadOnly(false);
+
         final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
         handler.registerListener(this, page);
@@ -269,6 +268,32 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         breadcrumbs.appendChild(new Label(_("Scheduling")));
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
         breadcrumbs.appendChild(new Label(_("Project Templates")));
+    }
+
+    public void openTemplateTree() {
+        if (treeComponent == null) {
+            final TemplatesTreeController treeController = new TemplatesTreeController(
+                    model, this);
+            treeComponent = (TreeComponent) editWindow.getFellow("orderElementTree");
+            treeComponent.useController(treeController);
+            treeController.setReadOnly(false);
+        }
+
+        final Tree tree = (Tree) treeComponent.getFellowIfAny("tree");
+        if (tree.getModel() == null) {
+            setTreeRenderer(treeComponent);
+            reloadTree(treeComponent);
+        }
+    }
+
+    private void reloadTree(TreeComponent orderElementsTree) {
+        final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
+        tree.setModel(orderElementsTree.getController().getTreeModel());
+    }
+
+    private void setTreeRenderer(TreeComponent orderElementsTree) {
+        final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
+        tree.setTreeitemRenderer(orderElementsTree.getController().getRenderer());
     }
 
     public Constraint validateTemplateName() {

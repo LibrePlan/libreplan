@@ -133,6 +133,10 @@ public abstract class TreeComponent extends HtmlMacroComponent {
         this.setVariable(CONTROLLER_NAME, controller, true);
     }
 
+    public TreeController<?> getController() {
+        return (TreeController<?>) getVariable(CONTROLLER_NAME, true);
+    }
+
     private void doAfterComposeOnController(Composer controller) {
         try {
             controller.doAfterCompose(this);
