@@ -22,7 +22,6 @@ package org.navalplanner.web.calendars;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
@@ -70,19 +69,13 @@ public class BaseCalendarModelTest {
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendar();
         baseCalendar.setName("Test");
         setHours(baseCalendar, 8);
-        try {
-            baseCalendarModel.confirmSave();
-
-            assertThat(baseCalendarModel.getBaseCalendars().size(),
-                    equalTo(previous + 1));
-            assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                    .getId(), equalTo(baseCalendar.getId()));
-            assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                    .getDurationAt(new Date(), Days.MONDAY),
- equalTo(hours(8)));
-        } catch (ValidationException e) {
-            fail("It should not throw an exception");
-        }
+        baseCalendarModel.confirmSave();
+        assertThat(baseCalendarModel.getBaseCalendars().size(),
+                equalTo(previous + 1));
+        assertThat(baseCalendarModel.getBaseCalendars().get(previous).getId(),
+                equalTo(baseCalendar.getId()));
+        assertThat(baseCalendarModel.getBaseCalendars().get(previous)
+                .getDurationAt(new Date(), Days.MONDAY), equalTo(hours(8)));
     }
 
     private void setHours(BaseCalendar baseCalendar, Integer hours) {
@@ -124,29 +117,21 @@ public class BaseCalendarModelTest {
                 .toDateTimeAtStartOfDay().toDate();
         baseCalendarModel.createNewVersion(date);
         setHours(baseCalendarModel.getBaseCalendar(), 4);
-        try {
-            baseCalendarModel.confirmSave();
+        baseCalendarModel.confirmSave();
 
-            assertThat(baseCalendarModel.getBaseCalendars().size(),
-                    equalTo(previous + 1));
-            assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                    .getDurationAt(date, Days.MONDAY), equalTo(hours(4)));
-            assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                    .getCalendarDataVersions().size(), equalTo(2));
-        } catch (ValidationException e) {
-            fail("It should not throw an exception");
-        }
+        assertThat(baseCalendarModel.getBaseCalendars().size(),
+                equalTo(previous + 1));
+        assertThat(baseCalendarModel.getBaseCalendars().get(previous)
+                .getDurationAt(date, Days.MONDAY), equalTo(hours(4)));
+        assertThat(baseCalendarModel.getBaseCalendars().get(previous)
+                .getCalendarDataVersions().size(), equalTo(2));
     }
 
     private void saveOneCalendar() {
         baseCalendarModel.initCreate();
         baseCalendarModel.getBaseCalendar().setName("Test");
         setHours(baseCalendarModel.getBaseCalendar(), 8);
-        try {
-            baseCalendarModel.confirmSave();
-        } catch (ValidationException e) {
-            fail("It should not throw an exception");
-        }
+        baseCalendarModel.confirmSave();
     }
 
     @Test
