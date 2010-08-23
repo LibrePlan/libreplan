@@ -21,7 +21,6 @@
 package org.navalplanner.web.test.ws.basecalendars;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
@@ -39,8 +38,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
-import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
-import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
@@ -50,7 +47,6 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.IConfigurationBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.ws.calendarexceptiontypes.api.ICalendarExceptionTypeService;
 import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 import org.navalplanner.ws.calendars.api.BaseCalendarListDTO;
 import org.navalplanner.ws.calendars.api.CalendarDataDTO;
@@ -83,19 +79,10 @@ public class BaseCalendarServiceTest {
     private IBaseCalendarDAO baseCalendarDAO;
 
     @Autowired
-    private ICalendarExceptionDAO calendarExceptionDAO;
-
-    @Autowired
-    private ICalendarExceptionTypeService calendarExceptionTypeService;
-
-    @Autowired
     private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
-
-    @Autowired
-    private ICalendarDataDAO calendarDataDAO;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -142,11 +129,11 @@ public class BaseCalendarServiceTest {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
 
-        calendar.add(calendar.MONTH, 1);
-        calendar.add(calendar.DAY_OF_MONTH, day);
+        calendar.add(Calendar.MONTH, 1);
+        calendar.add(Calendar.DAY_OF_MONTH, day);
 
         int date = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
 
         calendar.set(year, month, date);
@@ -158,7 +145,7 @@ public class BaseCalendarServiceTest {
         calendar.setTime(new Date());
 
         int date = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(calendar.MONTH) - 1;
+        int month = calendar.get(Calendar.MONTH) - 1;
         int year = calendar.get(Calendar.YEAR);
 
         calendar.set(year, month, date);
@@ -170,7 +157,7 @@ public class BaseCalendarServiceTest {
     }
 
     @Test
-    public void testAddValidBaseCalendar() {
+    public void testAddValidBaseCalendar() throws InstanceNotFoundException {
 
         /* Build valid base calendar "bc1" (5 constraint violations). */
         /* Build a calendar exception */
@@ -221,20 +208,14 @@ public class BaseCalendarServiceTest {
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
 
-        try{
-            BaseCalendar baseCalendar = baseCalendarDAO
-                    .findByCode(codeBaseCalendar);
-            assertTrue(baseCalendar.getExceptions().isEmpty());
-            assertTrue(baseCalendar.getCalendarDataVersions().size() == 2);
+        BaseCalendar baseCalendar = baseCalendarDAO
+                .findByCode(codeBaseCalendar);
+        assertTrue(baseCalendar.getExceptions().isEmpty());
+        assertTrue(baseCalendar.getCalendarDataVersions().size() == 2);
 
-            CalendarData data = baseCalendar.getCalendarDataByCode("codeData");
-            assertTrue(data.getHours(CalendarData.Days.FRIDAY) == 4);
-            assertTrue(data.getHours(CalendarData.Days.TUESDAY) == 4);
-        }catch(InstanceNotFoundException e){
-            fail();
-        } catch (NullPointerException o) {
-            fail();
-        }
+        CalendarData data = baseCalendar.getCalendarDataByCode("codeData");
+        assertTrue(data.getHours(CalendarData.Days.FRIDAY) == 4);
+        assertTrue(data.getHours(CalendarData.Days.TUESDAY) == 4);
     }
 
     @Test
