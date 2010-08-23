@@ -31,8 +31,9 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * Tests for {@link ResourceCalendar}.
@@ -43,17 +44,10 @@ public class ResourceCalendarTest {
 
     public static ResourceCalendar createBasicResourceCalendar() {
         ResourceCalendar calendar = ResourceCalendar.create();
-
         calendar.setName("Test");
-
-        calendar.setHours(Days.MONDAY, 8);
-        calendar.setHours(Days.TUESDAY, 8);
-        calendar.setHours(Days.WEDNESDAY, 8);
-        calendar.setHours(Days.THURSDAY, 8);
-        calendar.setHours(Days.FRIDAY, 8);
-        calendar.setHours(Days.SATURDAY, 8);
-        calendar.setHours(Days.SUNDAY, 8);
-
+        for (Days each : Days.values()) {
+            calendar.setDurationAt(each, EffortDuration.hours(8));
+        }
         return calendar;
     }
 

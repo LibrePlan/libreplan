@@ -291,7 +291,8 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     public void unsetDefault(Days day) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setHours(day, 0, selectedDate);
+            getBaseCalendar().setDurationAt(day, EffortDuration.zero(),
+                    selectedDate);
         }
     }
 

@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -85,13 +86,10 @@ public class BaseCalendarModelTest {
     }
 
     private void setHours(BaseCalendar baseCalendar, Integer hours) {
-        baseCalendar.setHours(Days.MONDAY, hours);
-        baseCalendar.setHours(Days.TUESDAY, hours);
-        baseCalendar.setHours(Days.WEDNESDAY, hours);
-        baseCalendar.setHours(Days.THURSDAY, hours);
-        baseCalendar.setHours(Days.FRIDAY, hours);
-        baseCalendar.setHours(Days.SATURDAY, hours);
-        baseCalendar.setHours(Days.SUNDAY, hours);
+        EffortDuration hoursDuration = EffortDuration.hours(hours);
+        for (Days each : Days.values()) {
+            baseCalendar.setDurationAt(each, hoursDuration);
+        }
     }
 
     @Test

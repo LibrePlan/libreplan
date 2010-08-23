@@ -32,10 +32,11 @@ import java.util.Set;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.CalendarException;
-import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.calendars.entities.CalendarException;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * Tests for {@link BaseCalendar}.
@@ -75,13 +76,14 @@ public class BaseCalendarTest {
 
         calendar.setName("Test");
 
-        calendar.setHours(Days.MONDAY, 8);
-        calendar.setHours(Days.TUESDAY, 8);
-        calendar.setHours(Days.WEDNESDAY, 8);
-        calendar.setHours(Days.THURSDAY, 8);
-        calendar.setHours(Days.FRIDAY, 8);
-        calendar.setHours(Days.SATURDAY, 0);
-        calendar.setHours(Days.SUNDAY, 0);
+        EffortDuration eightHours = EffortDuration.hours(8);
+        calendar.setDurationAt(Days.MONDAY, eightHours);
+        calendar.setDurationAt(Days.TUESDAY, eightHours);
+        calendar.setDurationAt(Days.WEDNESDAY, eightHours);
+        calendar.setDurationAt(Days.THURSDAY, eightHours);
+        calendar.setDurationAt(Days.FRIDAY, eightHours);
+        calendar.setDurationAt(Days.SATURDAY, EffortDuration.zero());
+        calendar.setDurationAt(Days.SUNDAY, EffortDuration.zero());
 
         return calendar;
     }
@@ -115,7 +117,7 @@ public class BaseCalendarTest {
 
     private void initializeAllToZeroHours(BaseCalendar calendar) {
         for (Days each : Days.values()) {
-            calendar.setHours(each, 0);
+            calendar.setDurationAt(each, EffortDuration.zero());
         }
     }
 
@@ -289,8 +291,8 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        calendar.setHours(Days.WEDNESDAY, 4);
-        calendar.setHours(Days.SUNDAY, 4);
+        calendar.setDurationAt(Days.WEDNESDAY, EffortDuration.hours(4));
+        calendar.setDurationAt(Days.SUNDAY, EffortDuration.hours(4));
 
         assertThat(calendar.getCapacityAt(WEDNESDAY_LOCAL_DATE), equalTo(4));
 
@@ -309,8 +311,8 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        calendar.setHours(Days.MONDAY, 1);
-        calendar.setHours(Days.SUNDAY, 2);
+        calendar.setDurationAt(Days.MONDAY, EffortDuration.hours(1));
+        calendar.setDurationAt(Days.SUNDAY, EffortDuration.hours(2));
 
         assertThat(calendar.getCapacityAt(MONDAY_LOCAL_DATE), equalTo(1));
 
@@ -371,13 +373,10 @@ public class BaseCalendarTest {
     }
 
     public static void setHoursForAllDays(BaseCalendar calendar, Integer hours) {
-        calendar.setHours(Days.MONDAY, hours);
-        calendar.setHours(Days.TUESDAY, hours);
-        calendar.setHours(Days.WEDNESDAY, hours);
-        calendar.setHours(Days.THURSDAY, hours);
-        calendar.setHours(Days.FRIDAY, hours);
-        calendar.setHours(Days.SATURDAY, hours);
-        calendar.setHours(Days.SUNDAY, hours);
+        EffortDuration duration = EffortDuration.hours(hours);
+        for (Days each : Days.values()) {
+            calendar.setDurationAt(each, duration);
+        }
     }
 
     @Test
@@ -561,8 +560,7 @@ public class BaseCalendarTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetHoursInvalid() {
         BaseCalendar calendar = createBasicCalendar();
-
-        calendar.setHours(Days.MONDAY, -5);
+        calendar.setDurationAt(Days.MONDAY, EffortDuration.hours(-5));
     }
 
     @Test

@@ -562,23 +562,6 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         return calendarDataVersions.get(calendarDataVersions.size() - 1);
     }
 
-    public void setHours(Days day, Integer hours) {
-        CalendarData calendarData = getLastCalendarData();
-        calendarData.setDurationAt(day, fromHours(hours));
-    }
-
-    public void setHours(Days day, Integer hours, Date date) {
-        setDurationAt(day, fromHours(hours), date);
-    }
-
-    public void setHours(Days day, Integer hours, LocalDate date) {
-        setDurationAt(day, fromHours(hours), date);
-    }
-
-    private static EffortDuration fromHours(Integer hours) {
-        return hours != null ? EffortDuration.hours(hours) : null;
-    }
-
     public void setDurationAt(Days day, EffortDuration duration) {
         CalendarData calendarData = getLastCalendarData();
         calendarData.setDurationAt(day, duration);

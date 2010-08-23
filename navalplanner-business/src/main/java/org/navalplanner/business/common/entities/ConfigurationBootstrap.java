@@ -27,6 +27,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IOrderSequenceDAO;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -84,13 +85,14 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
 
         calendar.setName("Default");
 
-        calendar.setHours(Days.MONDAY, 8);
-        calendar.setHours(Days.TUESDAY, 8);
-        calendar.setHours(Days.WEDNESDAY, 8);
-        calendar.setHours(Days.THURSDAY, 8);
-        calendar.setHours(Days.FRIDAY, 8);
-        calendar.setHours(Days.SATURDAY, 0);
-        calendar.setHours(Days.SUNDAY, 0);
+        EffortDuration eightHours = EffortDuration.hours(8);
+        calendar.setDurationAt(Days.MONDAY, eightHours);
+        calendar.setDurationAt(Days.TUESDAY, eightHours);
+        calendar.setDurationAt(Days.WEDNESDAY, eightHours);
+        calendar.setDurationAt(Days.THURSDAY, eightHours);
+        calendar.setDurationAt(Days.FRIDAY, eightHours);
+        calendar.setDurationAt(Days.SATURDAY, EffortDuration.zero());
+        calendar.setDurationAt(Days.SUNDAY, EffortDuration.zero());
 
         baseCalendarDAO.save(calendar);
 
