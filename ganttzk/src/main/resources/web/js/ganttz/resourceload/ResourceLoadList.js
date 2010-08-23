@@ -39,7 +39,13 @@ ganttz.resourceload.ResourceLoadList = zk.$extends(zk.Widget,{
         jq('#watermark').height(jq(this.$n()).innerHeight());
         jq('#timetracker').width(jq(this.$n()).innerWidth());
 
-        jq('.resourceloadlist').width(jq('.second_level_ :first'));
+        /*this.$n() is <div class="resourceloadlist" ...>*/
+        jq(this.$n()).width(jq('.second_level_ :first'));
+    },
+    adjustResourceLoadRows : function(){
+        jq('.row_resourceload').each(jq.proxy(function(index, element){
+            jq(element).width( jq(this.$n()).innerWidth() );
+        }, this));
     },
     _listenToScroll : function(){
         var scrolledPannelScrollLeft = jq('.rightpanellayout div:first').scrollLeft();
