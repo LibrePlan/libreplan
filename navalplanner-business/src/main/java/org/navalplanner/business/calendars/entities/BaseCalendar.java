@@ -300,10 +300,10 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * calendar restrictions.
      */
     public Integer getCapacityAt(LocalDate date) {
-        return roundToHours(getWorkableHours(date));
+        return roundToHours(getWorkableTimeAt(date));
     }
 
-    private EffortDuration getWorkableHours(LocalDate date) {
+    public EffortDuration getWorkableTimeAt(LocalDate date) {
         if (!isActive(date)) {
             return EffortDuration.zero();
         }
@@ -908,7 +908,7 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
 
     @Override
     public Integer toHours(LocalDate day, ResourcesPerDay resourcesPerDay) {
-        final EffortDuration workableHours = getWorkableHours(day);
+        final EffortDuration workableHours = getWorkableTimeAt(day);
         return roundToHours(limitOverAssignability(day,
                 resourcesPerDay.asDurationGivenWorkingDayOf(workableHours),
                 workableHours));

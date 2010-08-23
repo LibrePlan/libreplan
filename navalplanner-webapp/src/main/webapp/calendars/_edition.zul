@@ -64,8 +64,8 @@
             </hbox>
 
             <hbox>
-                <label value="${i18n:_('Hours of day')}" />
-                <label value="@{calendarController.editionController.hoursOfDay}" />
+                <label value="${i18n:_('Workable time')}" />
+                <label value="@{calendarController.editionController.workableTime}" />
             </hbox>
 
         </vbox>

@@ -238,6 +238,15 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
+    public EffortDuration getWorkableTime() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        return getBaseCalendar().getWorkableTimeAt(
+                LocalDate.fromDateFields(selectedDate));
+    }
+
+    @Override
     public DayType getTypeOfDay() {
         if (getBaseCalendar() == null) {
             return null;

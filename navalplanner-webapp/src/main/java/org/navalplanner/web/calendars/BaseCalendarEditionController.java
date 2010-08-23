@@ -452,8 +452,8 @@ public abstract class BaseCalendarEditionController extends
         }
     }
 
-    public Integer getHoursOfDay() {
-        return baseCalendarModel.getHoursOfDay();
+    public String getWorkableTime() {
+        return asString(baseCalendarModel.getWorkableTime());
     }
 
     public void createException() {
