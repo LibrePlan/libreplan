@@ -44,6 +44,7 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -271,12 +272,11 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    public Integer getHours(Days day) {
+    public EffortDuration getDurationAt(Days day) {
         if (getBaseCalendar() == null) {
-            return null;
+            return EffortDuration.zero();
         }
-        return BaseCalendar.roundToHours(getBaseCalendar().getDurationAt(
-                selectedDate, day));
+        return getBaseCalendar().getDurationAt(selectedDate, day);
     }
 
     @Override
@@ -303,9 +303,9 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    public void setHours(Days day, Integer hours) {
+    public void setDurationAt(Days day, EffortDuration value) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setHours(day, hours, selectedDate);
+            getBaseCalendar().setDurationAt(day, value, selectedDate);
         }
     }
 

@@ -35,17 +35,18 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
+import org.navalplanner.web.common.components.EffortDurationPicker;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -223,42 +224,26 @@ public abstract class BaseCalendarEditionController extends
             labelListcell.appendChild(new Label(day.toString()));
             item.appendChild(labelListcell);
 
-            Listcell hoursListcell = new Listcell();
-            final Intbox intBox = new Intbox();
-            Intbox hoursIntbox = Util.bind(intBox, new Util.Getter<Integer>() {
+            Listcell durationCell = new Listcell();
+            EffortDurationPicker durationPicker = new EffortDurationPicker();
+            durationCell.appendChild(durationPicker);
+            durationPicker.bind(new Util.Getter<EffortDuration>() {
 
                 @Override
-                public Integer get() {
-                    return baseCalendarModel.getHours(day);
+                public EffortDuration get() {
+                    return baseCalendarModel.getDurationAt(day);
                 }
-            }, new Util.Setter<Integer>() {
+            }, new Util.Setter<EffortDuration>() {
 
                 @Override
-                public void set(Integer value) {
-                    try {
-                        baseCalendarModel.setHours(day, value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(intBox, e.getMessage());
-                    }
-                }
-            });
-
-            hoursIntbox.addEventListener(Events.ON_CHANGE, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
+                public void set(EffortDuration value) {
+                    baseCalendarModel.setDurationAt(day, value);
                     reloadDayInformation();
                 }
-
             });
-
-            if (baseCalendarModel.isDerived()
-                    && baseCalendarModel.isDefault(day)) {
-                hoursIntbox.setDisabled(true);
-            }
-
-            hoursListcell.appendChild(hoursIntbox);
-            item.appendChild(hoursListcell);
+            durationPicker.setDisabled(baseCalendarModel.isDerived()
+                    && baseCalendarModel.isDefault(day));
+            item.appendChild(durationCell);
 
             if (baseCalendarModel.isDerived()) {
                 Listcell defaultListcell = new Listcell();

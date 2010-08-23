@@ -149,7 +149,7 @@
                         itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
                         <listhead>
                             <listheader label="${i18n:_('Day of week')}" />
-                            <listheader label="${i18n:_('Hours')}" />
+                            <listheader label="${i18n:_('Duration')}" />
                             <listheader label="${i18n:_('By default')}" />
                         </listhead>
                     </listbox>

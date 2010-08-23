@@ -26,13 +26,14 @@ import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * This interface contains the operations to create/edit a {@link BaseCalendar}.
@@ -111,10 +112,6 @@ public interface IBaseCalendarModel {
 
     void createException(CalendarExceptionType type, Date startDate,
             Date endDate, Integer hours);
-
-    Integer getHours(Days day);
-
-    void setHours(Days day, Integer hours);
 
     Boolean isDefault(Days day);
 
@@ -196,5 +193,9 @@ public interface IBaseCalendarModel {
     void confirmRemove();
 
     void cancel();
+
+    EffortDuration getDurationAt(Days day);
+
+    void setDurationAt(Days day, EffortDuration value);
 
 }
