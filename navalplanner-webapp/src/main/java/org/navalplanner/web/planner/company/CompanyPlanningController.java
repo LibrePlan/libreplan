@@ -121,7 +121,6 @@ public class CompanyPlanningController implements Composer{
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
-
     }
 
     public void setConfigurationForPlanner() {

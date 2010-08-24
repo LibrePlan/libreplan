@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
@@ -38,7 +39,7 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface ICompanyPlanningModel {
 
-    void setConfigurationToPlanner(Planner planner,
+    void setConfigurationToPlanner(final Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional);
 
     public void setConfigurationToPlanner(Planner planner,
@@ -57,4 +58,5 @@ public interface ICompanyPlanningModel {
 
     Date getFilterFinishDate();
 
+    void goToCreateOtherOrderFromTemplate(OrderTemplate template);
 }

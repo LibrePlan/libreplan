@@ -39,6 +39,8 @@ class CommandContextualized<T> {
 
     private final IContext<T> context;
 
+    private Button button;
+
     private CommandContextualized(ICommand<T> command, IContext<T> context) {
         this.command = command;
         this.context = context;
@@ -49,6 +51,9 @@ class CommandContextualized<T> {
     }
 
     Button toButton() {
+        if (button != null) {
+            return button;
+        }
         Button result = new Button();
         if (StringUtils.isEmpty(command.getImage())) {
             result.setLabel(command.getName());
@@ -63,7 +68,11 @@ class CommandContextualized<T> {
                 doAction();
             }
         });
+        button = result;
         return result;
     }
 
+    public ICommand<T> getCommand() {
+        return command;
+    }
 }

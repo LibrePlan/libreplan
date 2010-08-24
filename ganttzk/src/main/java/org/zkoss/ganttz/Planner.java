@@ -691,4 +691,12 @@ public class Planner extends HtmlMacroComponent  {
         return isFlattenTree;
     }
 
+    public Button findCommandComponent(String name) {
+        for (CommandContextualized<?> c : contextualizedGlobalCommands) {
+            if (c.getCommand().getName().equals(name)) {
+                return c.toButton();
+            }
+        }
+        return null;
+    }
 }

@@ -60,10 +60,13 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
+import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
@@ -102,6 +105,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
@@ -216,7 +220,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setConfigurationToPlanner(Planner planner,
+    public void setConfigurationToPlanner(final Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
             IPredicate predicate) {
@@ -255,6 +259,39 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         };
 
         configuration.addGlobalCommand(createNewOrderCommand);
+
+        ICommand<TaskElement> createNewOrderFromTemplateCommand = new ICommand<TaskElement>() {
+
+            @Override
+            public String getName() {
+                return _("Create new order from template");
+            }
+
+            @Override
+            public String getImage() {
+                return "/common/img/ico_copy.png";
+            }
+
+            @Override
+            public void doAction(IContext<TaskElement> context) {
+                TemplateFinderPopup templateFinderPopup = (TemplateFinderPopup) planner.getFellowIfAny("templateFinderPopup");
+                Button createOrderFromTemplateButton = planner.findCommandComponent(getName());
+                if(templateFinderPopup != null){
+                    templateFinderPopup.openForOrderCreation(
+                            createOrderFromTemplateButton, "after_start",
+                            new IOnResult<OrderTemplate>() {
+                             @Override
+                             public void found(OrderTemplate template) {
+                                    goToCreateOtherOrderFromTemplate(template);
+                                }
+                            });
+                }
+            }
+
+        };
+
+        configuration.addGlobalCommand(createNewOrderFromTemplateCommand);
+
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
@@ -279,6 +316,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 earnedValueChartFiller, planner);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
+
 
     private Timeplot createEmptyTimeplot() {
         Timeplot timeplot = new Timeplot();
@@ -1002,4 +1040,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
+    public void goToCreateOtherOrderFromTemplate(OrderTemplate template) {
+        tabs.goToCreateotherOrderFromTemplate(template);
+    }
 }

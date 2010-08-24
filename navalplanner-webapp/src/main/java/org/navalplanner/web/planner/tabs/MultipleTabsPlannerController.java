@@ -32,6 +32,7 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
 import org.navalplanner.web.limitingresources.LimitingResourcesController;
@@ -424,4 +425,9 @@ public class MultipleTabsPlannerController implements Composer,
         getTabsRegistry().show(advancedAllocationTab);
     }
 
+    @Override
+    public void goToCreateotherOrderFromTemplate(OrderTemplate template) {
+        getTabsRegistry().show(ordersTab);
+        orderCRUDController.showCreateFormFromTemplate(template);
+    }
 }
