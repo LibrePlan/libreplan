@@ -124,9 +124,11 @@
 		<component-name>taskcontainer</component-name>
 		<component-class>org.zkoss.ganttz.TaskContainerComponent
 		</component-class>
+        <widget-class>ganttz.TaskContainerComponent</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/taskcontainer.dsp</mold-uri>
+            <mold-uri>mold/task-container.js</mold-uri>
+			<!-- <mold-uri>~./ganttz/taskcontainer.dsp</mold-uri> -->
 		</mold>
 	</component>
 
