@@ -1,3 +1,3 @@
 zk.$package("ganttz");
 
-ganttz.TaskContainerComponent = zk.$extends(zk.Widget,{})
+ganttz.TaskContainerComponent = zk.$extends(ganttz.TaskComponent,{})
