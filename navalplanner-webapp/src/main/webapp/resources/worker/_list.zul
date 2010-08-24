@@ -29,8 +29,8 @@
     <newdatasortablegrid id="listing" model="@{controller.realWorkers}" mold="paging"
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
-            <newdatasortablecolumn label="${i18n:_('First name')}" sort="auto(firstName)"/>
-            <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(surname)" />
+            <newdatasortablecolumn label="${i18n:_('First name')}" sort="auto(lower(firstName))"/>
+            <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(lower(surname))" />
             <newdatasortablecolumn label="${i18n:_('NIF')}" sort="auto(nif)" />
             <newdatasortablecolumn label="${i18n:_('Code')}"/>
             <newdatasortablecolumn label="${i18n:_('Limiting resource')}" sort="auto(limitingResource)" />
@@ -58,6 +58,7 @@
             </row>
         </rows>
     </newdatasortablegrid>
+
     <button id="show_create_form" onClick="controller.goToCreateForm();"
         label="${i18n:_('Create')}" sclass="create-button global-action">
     </button>

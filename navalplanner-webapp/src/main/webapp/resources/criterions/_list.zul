@@ -21,7 +21,7 @@
 <window id="listing" title="${i18n:_('Criterion Type List')}">
 <newdatasortablegrid model="@{controller.criterionTypes}" fixedLayout="true">
    <columns>
-        <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(name)"/>
+        <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))"/>
         <newdatasortablecolumn label="${i18n:_('Code')}"/>
         <newdatasortablecolumn width="60px" label="${i18n:_('Enabled')}"/>
         <newdatasortablecolumn width="200px" label="${i18n:_('Operations')}"/>

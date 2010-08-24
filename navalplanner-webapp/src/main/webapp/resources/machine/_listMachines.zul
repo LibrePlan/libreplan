@@ -30,9 +30,9 @@
     <grid id="listing" model="@{controller.machines}" mold="paging"
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
-            <column label="${i18n:_('Code')}" sort="auto(code)" />
-            <column label="${i18n:_('Name')}" sort="auto(name)" />
-            <column label="${i18n:_('Description')}" sort="auto(description)" />
+            <column label="${i18n:_('Code')}" sort="auto(lower(code))" />
+            <column label="${i18n:_('Name')}" sort="auto(lower(name))" />
+            <column label="${i18n:_('Description')}" sort="auto(lower(description))" />
             <column label="${i18n:_('Limiting resource')}" sort="auto(limitingResource)" />
             <column label="${i18n:_('Operations')}" />
         </columns>

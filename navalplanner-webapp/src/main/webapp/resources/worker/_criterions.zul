@@ -34,7 +34,7 @@
         <newdatasortablegrid id="listingCriterions" mold="paging" pageSize="10" fixedLayout="true"
             model="@{assignedCriterionsController.criterionSatisfactionDTOs}">
             <columns>
-                <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending"/>
+                <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(lower(criterionAndType))" sortDirection="ascending"/>
                 <newdatasortablecolumn label="${i18n:_('Starting date')}" sort="auto(startDate)" width="200px" align="center"/>
                 <newdatasortablecolumn label="${i18n:_('Ending date')}" sort="auto(endDate)" width="200px" align="center"/>
                 <newdatasortablecolumn label="${i18n:_('State')}" sort="auto(state)" width="70px" align="center"/>
