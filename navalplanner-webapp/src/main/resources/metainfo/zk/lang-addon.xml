@@ -94,7 +94,7 @@
         <widget-class>limitingresources.QueueListComponent</widget-class>
         <mold>
             <mold-name>default</mold-name>
-            <mold-name>mold/queue-list-component.js</mold-name>
+            <mold-uri>mold/queue-list-component.js</mold-uri>
             <!-- <mold-uri>/limitingresources/queuelistcomponent.dsp</mold-uri> -->
         </mold>
     </component>

@@ -1,6 +1,6 @@
 function(out){
 	out.push('<div ', this.domAttrs_(),
-			'z.type="limitingresources.limitingdependencylist.LimitingDependencyList',
+			'z.type="limitingresources.limitingdependencylist.LimitingDependencylist"',
 			'z.autoz="true"',
 			'>');
 		out.push('<div id="listlimitingdependencies">');
