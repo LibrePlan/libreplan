@@ -1,4 +1,5 @@
 <package name="limitingresources" language="xul/html">
+    <widget name="QueueListComponent"/>
     <widget name="QueueComponent"/>
     <widget name="LimitingDependencyList"/>
     <widget name="LimitingDependencyComponent"/>

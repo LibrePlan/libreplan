@@ -91,9 +91,11 @@
     <component>
         <component-name>queueListComponent</component-name>
         <component-class>org.navalplanner.web.limitingresources.QueueListComponent</component-class>
+        <widget-class>limitingresources.QueueListComponent</widget-class>
         <mold>
             <mold-name>default</mold-name>
-            <mold-uri>/limitingresources/queuelistcomponent.dsp</mold-uri>
+            <mold-name>mold/queue-list-component.js</mold-name>
+            <!-- <mold-uri>/limitingresources/queuelistcomponent.dsp</mold-uri> -->
         </mold>
     </component>
 
