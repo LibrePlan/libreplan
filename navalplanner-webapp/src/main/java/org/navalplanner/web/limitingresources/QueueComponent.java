@@ -22,6 +22,7 @@ package org.navalplanner.web.limitingresources;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +54,7 @@ import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
@@ -530,6 +532,12 @@ public class QueueComponent extends XulElement implements
     @Override
     public void afterCompose() {
         appendContextMenus();
+    }
+
+    public void renderProperties(ContentRenderer renderer) throws IOException{
+        super.renderProperties(renderer);
+
+        render(renderer, "_resourceName", getResourceName());
     }
 
 }
