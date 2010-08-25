@@ -502,10 +502,10 @@ public class Planner extends HtmlMacroComponent  {
     public void showAllLabels() {
         Button showAllLabelsButton = (Button) getFellow("showAllLabels");
         if (isShowingLabels) {
-            Clients.evalJavaScript("zkTasklist.hideAllTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideAllTaskLabels()");
             showAllLabelsButton.setSclass("planner-command show-labels");
         } else {
-            Clients.evalJavaScript("zkTasklist.showAllTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showAllTaskLabels()");
             showAllLabelsButton
                     .setSclass("planner-command show-labels clicked");
         }

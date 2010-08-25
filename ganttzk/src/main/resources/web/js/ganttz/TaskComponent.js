@@ -48,7 +48,13 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     resizeCompletion2Advance : function(width){
         jq('#' + this.uuid + ' > .completion2:first').css('width', width);
     },
-    setClass : function(){}
+    setClass : function(){},
+    showTaskLabel : function(){
+        jq('#'+ this.uuid + ' .task-labels').show();
+    },
+    hideTaskLabel : function(){
+        jq('#'+ this.uuid + ' .task-labels').hide();
+    }
 },{
     //"Class" methods and properties
     _TOOLTIP_DELAY : 10, // 10 milliseconds
