@@ -29,6 +29,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * Tests for {@link CalendarException}.
@@ -43,10 +44,11 @@ public class CalendarExceptionTest {
         CalendarExceptionType type = BaseCalendarTest
                 .createCalendarExceptionType();
 
-        CalendarException day = CalendarException.create(date, 8, type);
+        CalendarException day = CalendarException.create(date,
+                EffortDuration.hours(8), type);
 
         assertThat(day.getDate(), equalTo(new LocalDate(date)));
-        assertThat(day.getHours(), equalTo(8));
+        assertThat(day.getDuration(), equalTo(EffortDuration.hours(8)));
         assertThat(day.getType(), equalTo(type));
     }
 

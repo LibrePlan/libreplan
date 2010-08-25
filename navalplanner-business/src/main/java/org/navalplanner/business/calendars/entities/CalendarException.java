@@ -22,6 +22,7 @@ package org.navalplanner.business.calendars.entities;
 
 import java.util.Date;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
@@ -39,19 +40,20 @@ import org.navalplanner.business.workingday.EffortDuration;
  */
 public class CalendarException extends IntegrationEntity {
 
-    public static CalendarException create(Date date, Integer hours,
+    public static CalendarException create(Date date, EffortDuration duration,
             CalendarExceptionType type) {
-        return create(new CalendarException(new LocalDate(date), hours, type));
+        return create(new CalendarException(new LocalDate(date), duration, type));
     }
 
-    public static CalendarException create(LocalDate date, Integer hours,
+    public static CalendarException create(LocalDate date,
+            EffortDuration duration,
             CalendarExceptionType type) {
-        return create(new CalendarException(date, hours, type));
+        return create(new CalendarException(date, duration, type));
     }
 
     public static CalendarException create(String code, LocalDate date,
-            Integer hours, CalendarExceptionType type) {
-        return create(new CalendarException(date, hours, type), code);
+            EffortDuration duration, CalendarExceptionType type) {
+        return create(new CalendarException(date, duration, type), code);
     }
 
     private static EffortDuration fromHours(Integer hours) {
@@ -86,10 +88,11 @@ public class CalendarException extends IntegrationEntity {
 
     }
 
-    private CalendarException(LocalDate date, Integer hours,
+    private CalendarException(LocalDate date, EffortDuration duration,
             CalendarExceptionType type) {
+        Validate.notNull(duration);
         this.date = date;
-        this.duration = fromHours(hours);
+        this.duration = duration;
         this.type = type;
     }
 
@@ -99,10 +102,6 @@ public class CalendarException extends IntegrationEntity {
     }
 
     @NotNull
-    public Integer getHours() {
-        return duration != null ? duration.getHours() : 0;
-    }
-
     public EffortDuration getDuration() {
         return duration;
     }

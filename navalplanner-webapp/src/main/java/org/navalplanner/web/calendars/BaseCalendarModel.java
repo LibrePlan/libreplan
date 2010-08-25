@@ -267,13 +267,15 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     public void createException(CalendarExceptionType type, Date startDate,
             Date endDate, Integer hours) {
+        EffortDuration duration = EffortDuration.hours(hours);
         for (LocalDate date = new LocalDate(startDate); date
                 .compareTo(new LocalDate(endDate)) <= 0; date = date
                 .plusDays(1)) {
             if (getTypeOfDay(date).equals(DayType.OWN_EXCEPTION)) {
-                getBaseCalendar().updateExceptionDay(date, hours, type);
+                getBaseCalendar().updateExceptionDay(date, duration, type);
             } else {
-                CalendarException day = CalendarException.create(date, hours,
+                CalendarException day = CalendarException.create(date,
+                        duration,
                         type);
                 getBaseCalendar().addExceptionDay(day);
             }
@@ -570,6 +572,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     @Override
     public void updateException(CalendarExceptionType type, Date startDate,
             Date endDate, Integer hours) {
+        EffortDuration duration = EffortDuration.hours(hours);
         for (LocalDate date = new LocalDate(startDate); date
                 .compareTo(new LocalDate(endDate)) <= 0; date = date
                 .plusDays(1)) {
@@ -577,12 +580,12 @@ public class BaseCalendarModel implements IBaseCalendarModel {
                 if (type == null) {
                     getBaseCalendar().removeExceptionDay(date);
                 } else {
-                    getBaseCalendar().updateExceptionDay(date, hours, type);
+                    getBaseCalendar().updateExceptionDay(date, duration, type);
                 }
             } else {
                 if (type != null) {
                     CalendarException day = CalendarException.create(date,
-                            hours, type);
+                            duration, type);
                     getBaseCalendar().addExceptionDay(day);
                 }
             }

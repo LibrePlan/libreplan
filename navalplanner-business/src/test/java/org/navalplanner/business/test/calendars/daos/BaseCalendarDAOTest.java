@@ -51,6 +51,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.test.calendars.entities.BaseCalendarTest;
 import org.navalplanner.business.test.resources.daos.ResourceDAOTest;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -115,7 +116,8 @@ public class BaseCalendarDAOTest {
         CalendarExceptionType type = calendarExceptionTypeDAO.list(
                 CalendarExceptionType.class).get(0);
         CalendarException christmasDay = CalendarException.create(
-                BaseCalendarTest.CHRISTMAS_DAY_LOCAL_DATE, 0, type);
+                BaseCalendarTest.CHRISTMAS_DAY_LOCAL_DATE,
+                EffortDuration.zero(), type);
         calendar.addExceptionDay(christmasDay);
     }
 

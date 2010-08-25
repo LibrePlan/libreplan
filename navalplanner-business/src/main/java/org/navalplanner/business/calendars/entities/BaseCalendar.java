@@ -247,15 +247,15 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         exceptions.remove(day);
     }
 
-    public void updateExceptionDay(Date date, Integer hours,
+    public void updateExceptionDay(Date date, EffortDuration duration,
             CalendarExceptionType type) throws IllegalArgumentException {
-        updateExceptionDay(new LocalDate(date), hours, type);
+        updateExceptionDay(new LocalDate(date), duration, type);
     }
 
-    public void updateExceptionDay(LocalDate date, Integer hours,
+    public void updateExceptionDay(LocalDate date, EffortDuration duration,
             CalendarExceptionType type) throws IllegalArgumentException {
         removeExceptionDay(date);
-        CalendarException day = CalendarException.create(date, hours, type);
+        CalendarException day = CalendarException.create(date, duration, type);
         addExceptionDay(day);
     }
 
@@ -1030,7 +1030,8 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
     }
 
     private boolean canWorkAt(CalendarException each) {
-        return each.getHours() != 0 || each.getType().isOverAssignable();
+        return !each.getDuration().isZero()
+                || each.getType().isOverAssignable();
     }
 
     @Override

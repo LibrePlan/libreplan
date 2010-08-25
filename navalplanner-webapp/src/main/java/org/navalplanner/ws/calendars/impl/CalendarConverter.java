@@ -37,12 +37,13 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 import org.navalplanner.ws.calendars.api.CalendarDataDTO;
 import org.navalplanner.ws.calendars.api.CalendarExceptionDTO;
@@ -83,9 +84,10 @@ public final class CalendarConverter {
             CalendarException calendarException) {
         XMLGregorianCalendar date = DateConverter
                 .toXMLGregorianCalendar(calendarException.getDate());
+        int hours = calendarException.getDuration().getHours();
+        String code = calendarException.getType().getCode();
         return new CalendarExceptionDTO(calendarException.getCode(), date,
-                calendarException.getHours(), calendarException.getType()
-                        .getCode());
+                hours, code);
     }
 
     private final static CalendarDataDTO toDTO(CalendarData calendarData) {
@@ -147,7 +149,7 @@ public final class CalendarConverter {
         CalendarExceptionType type = findCalendarExceptionType(calendarExceptionDTO.calendarExceptionTypeCode);
 
         return CalendarException.create(calendarExceptionDTO.code, date,
-                calendarExceptionDTO.hours, type);
+                EffortDuration.hours(calendarExceptionDTO.hours), type);
     }
 
     public final static CalendarData toEntity(CalendarDataDTO calendarDataDTO) {
