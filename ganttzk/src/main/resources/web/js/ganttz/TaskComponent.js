@@ -8,15 +8,15 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     },
     bind_ : function(event){
         this.$supers('bind_', arguments);
-        this.domListen_(this.$n(), "onMouseover", '_showToolTip');
-        this.domListen_(this.$n(), "onMouseout", '_hideToolTip');
+        this.domListen_(this.$n(), "onMouseover", '_showTooltip');
+        this.domListen_(this.$n(), "onMouseout", '_hideTooltip');
     },
     unbind_ : function(event){
-        this.domUnlisten_(this.$n(), "onMouseout", '_hideToolTip');
-        this.domUnlisten_(this.$n(), "onMouseover", '_showToolTip');
+        this.domUnlisten_(this.$n(), "onMouseout", '_hideTooltip');
+        this.domUnlisten_(this.$n(), "onMouseover", '_showTooltip');
         this.$supers('unbind_', arguments);
     },
-    _showToolTip : function(){
+    _showTooltip : function(){
         this._tooltipTimeout = setTimeout(jq.proxy(function(offset) {
             var element = jq("#tasktooltip" + this.uuid);
             if (element!=null) {
@@ -30,7 +30,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
             }
         }, this), this.$class._TOOLTIP_DELAY);
     },
-    _hideToolTip : function(){
+    _hideTooltip : function(){
         if (this._tooltipTimeout) {
             clearTimeout(this._tooltipTimeout);
         }
