@@ -54,6 +54,12 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     },
     hideTaskLabel : function(){
         jq('#'+ this.uuid + ' .task-labels').hide();
+    },
+    showResourceTooltip : function(){
+        jq('#'+ this.uuid + ' .task-resources').show();
+    },
+    hideResourceTooltip : function(){
+        jq('#'+ this.uuid + ' .task-resources').hide();
     }
 },{
     //"Class" methods and properties

@@ -6,5 +6,11 @@ ganttz.TaskRow = zk.$extends(zk.Widget, {
 	},
 	showTaskLabel : function(){
 		this.firstChild.showTaskLabel();
+	},
+	hideResourceTooltip : function(){
+		this.firstChild.hideResourceTooltip();
+	},
+	showResourceTooltip : function(){
+		this.firstChild.showResourceTooltip();
 	}
 });

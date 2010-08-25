@@ -515,10 +515,10 @@ public class Planner extends HtmlMacroComponent  {
     public void showAllResources() {
         Button showAllLabelsButton = (Button) getFellow("showAllResources");
         if (isShowingResources) {
-            Clients.evalJavaScript("zkTasklist.hideResourceTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideResourceTooltips()");
             showAllLabelsButton.setSclass("planner-command show-resources");
         } else {
-            Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showResourceTooltips()");
             showAllLabelsButton
             .setSclass("planner-command show-resources clicked");
         }
