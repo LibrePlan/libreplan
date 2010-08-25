@@ -116,13 +116,26 @@ public class EffortDurationPicker extends Hbox {
     }
 
     private void notifySetterOfChange(Setter<EffortDuration> setter) {
+        EffortDuration newValue = createDurationFromUIValues();
+        setter.set(newValue);
+        updateUIWithValuesFrom(newValue);
+    }
+
+    private EffortDuration createDurationFromUIValues() {
         Integer hoursValue = hours.getValue();
         Integer minutesValue = minutes.getValue();
         Integer secondsValue = seconds.getValue();
         EffortDuration newValue = EffortDuration.hours(hoursValue)
                 .and(minutesValue, Granularity.MINUTES)
                 .and(secondsValue, Granularity.SECONDS);
-        setter.set(newValue);
-        updateUIWithValuesFrom(newValue);
+        return newValue;
+    }
+
+    public void setValue(EffortDuration effortDuration) {
+        updateUIWithValuesFrom(effortDuration);
+    }
+
+    public EffortDuration getValue() {
+        return createDurationFromUIValues();
     }
 }

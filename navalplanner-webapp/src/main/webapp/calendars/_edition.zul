@@ -83,10 +83,10 @@
 
             <vbox id="exceptionInformation">
                 <hbox>
-                    <grid>
+                    <grid width="500px">
                     <columns>
                         <column/>
-                        <column/>
+                        <column />
                     </columns>
                     <rows>
                         <row>
@@ -106,9 +106,8 @@
                             <label value="${i18n:_('End Date')}" />
                             <datebox id="exceptionEndDate" />
                         </row>
-                        <row>
-                            <label value="${i18n:_('Hours')}" />
-                            <intbox id="exceptionHours" />
+                        <row id="exceptionDayDurationRow">
+                            <label value="${i18n:_('Duration')}" />
                         </row>
                     </rows>
                     </grid>

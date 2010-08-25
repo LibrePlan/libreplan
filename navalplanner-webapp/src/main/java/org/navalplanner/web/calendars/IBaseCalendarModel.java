@@ -113,7 +113,7 @@ public interface IBaseCalendarModel {
     EffortDuration getWorkableTime();
 
     void createException(CalendarExceptionType type, Date startDate,
-            Date endDate, Integer hours);
+            Date endDate, EffortDuration duration);
 
     Boolean isDefault(Days day);
 
@@ -164,7 +164,7 @@ public interface IBaseCalendarModel {
     CalendarExceptionType getCalendarExceptionType(LocalDate date);
 
     void updateException(CalendarExceptionType type, Date startDate,
-            Date endDate, Integer hours);
+            Date endDate, EffortDuration duration);
 
     void removeCalendarData(CalendarData calendarData);
 

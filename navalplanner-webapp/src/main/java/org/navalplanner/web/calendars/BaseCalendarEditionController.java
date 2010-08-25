@@ -59,7 +59,6 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -105,6 +104,8 @@ public abstract class BaseCalendarEditionController extends
 
     private boolean creatingNewVersion = false;
 
+    private EffortDurationPicker exceptionDurationPicker;
+
     public BaseCalendarEditionController(IBaseCalendarModel baseCalendarModel,
             Window window, Window createNewVersionWindow) {
         this.baseCalendarModel = baseCalendarModel;
@@ -125,6 +126,16 @@ public abstract class BaseCalendarEditionController extends
             prepareParentCombo();
         }
         prepareExceptionTypeCombo();
+        exceptionDurationPicker = addEffortDurationPickerAtDurationRow(comp);
+    }
+
+    private EffortDurationPicker addEffortDurationPickerAtDurationRow(
+            Component comp) {
+        Component container = comp.getFellow("exceptionDayDurationRow");
+        EffortDurationPicker result = new EffortDurationPicker();
+        result.setValue(EffortDuration.zero());
+        container.appendChild(result);
+        return result;
     }
 
     private void prepareExceptionTypeCombo() {
@@ -304,7 +315,7 @@ public abstract class BaseCalendarEditionController extends
         Util.reloadBindings(window.getFellow("dayInformation"));
         Util.reloadBindings(window.getFellow("exceptionInformation"));
         Util.reloadBindings(window.getFellow("historyInformation"));
-        reloadTypeDatesAndHours();
+        reloadTypeDatesAndDuration();
         reloadParentCombo();
         highlightDaysOnCalendar();
     }
@@ -325,7 +336,7 @@ public abstract class BaseCalendarEditionController extends
         }
     }
 
-    private void reloadTypeDatesAndHours() {
+    private void reloadTypeDatesAndDuration() {
         Date selectedDay = baseCalendarModel.getSelectedDay();
 
         CalendarExceptionType type = baseCalendarModel
@@ -351,9 +362,9 @@ public abstract class BaseCalendarEditionController extends
         dateboxStartDate.setValue(selectedDay);
         Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
         dateboxEndDate.setValue(selectedDay);
-
-        Intbox intboxHours = (Intbox) window.getFellow("exceptionHours");
-        intboxHours.setValue(baseCalendarModel.getHoursOfDay());
+        exceptionDurationPicker
+                .setValue(baseCalendarModel.isExceptional() ? baseCalendarModel
+                        .getWorkableTime() : EffortDuration.zero());
     }
 
     private void highlightDaysOnCalendar() {
@@ -492,19 +503,9 @@ public abstract class BaseCalendarEditionController extends
             Clients.closeErrorBox(dateboxEndDate);
         }
 
-        Intbox exceptionHoursIntbox = (Intbox) window
-                .getFellow("exceptionHours");
-        Integer hours = exceptionHoursIntbox.getValue();
-
-        if (hours < 0) {
-            throw new WrongValueException(
-                    exceptionHoursIntbox,
-                    _("Hours for an exception day should be greater or equal than zero"));
-        } else {
-            Clients.closeErrorBox(exceptionHoursIntbox);
-            baseCalendarModel.createException(type, startDate, endDate, hours);
-            reloadDayInformation();
-        }
+        EffortDuration duration = exceptionDurationPicker.getValue();
+        baseCalendarModel.createException(type, startDate, endDate, duration);
+        reloadDayInformation();
     }
 
     public boolean isNotExceptional() {
@@ -924,19 +925,9 @@ public abstract class BaseCalendarEditionController extends
             Clients.closeErrorBox(dateboxEndDate);
         }
 
-        Intbox exceptionHoursIntbox = (Intbox) window
-                .getFellow("exceptionHours");
-        Integer hours = exceptionHoursIntbox.getValue();
-
-        if (hours < 0) {
-            throw new WrongValueException(
-                    exceptionHoursIntbox,
-                    _("Hours for an exception day should be greater or equal than zero"));
-        } else {
-            Clients.closeErrorBox(exceptionHoursIntbox);
-            baseCalendarModel.updateException(type, startDate, endDate, hours);
-            reloadDayInformation();
-        }
+        EffortDuration duration = exceptionDurationPicker.getValue();
+        baseCalendarModel.updateException(type, startDate, endDate, duration);
+        reloadDayInformation();
     }
 
     public String getNameParentCalendar() {

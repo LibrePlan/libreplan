@@ -266,8 +266,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     public void createException(CalendarExceptionType type, Date startDate,
-            Date endDate, Integer hours) {
-        EffortDuration duration = EffortDuration.hours(hours);
+            Date endDate, EffortDuration duration) {
         for (LocalDate date = new LocalDate(startDate); date
                 .compareTo(new LocalDate(endDate)) <= 0; date = date
                 .plusDays(1)) {
@@ -571,8 +570,7 @@ public class BaseCalendarModel implements IBaseCalendarModel {
 
     @Override
     public void updateException(CalendarExceptionType type, Date startDate,
-            Date endDate, Integer hours) {
-        EffortDuration duration = EffortDuration.hours(hours);
+            Date endDate, EffortDuration duration) {
         for (LocalDate date = new LocalDate(startDate); date
                 .compareTo(new LocalDate(endDate)) <= 0; date = date
                 .plusDays(1)) {
