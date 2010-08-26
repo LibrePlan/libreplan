@@ -308,8 +308,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
         earnedValueChartFiller.calculateValues(planner.getTimeTracker()
                 .getRealInterval());
-        appendTabpanels(chartComponent, chartLoadTimeplot,
-                chartEarnedValueTimeplot, earnedValueChartFiller);
+        // avoid adding Timeplot since it has some pending issues
+        // appendTabpanels(chartComponent, chartLoadTimeplot,
+        // chartEarnedValueTimeplot, earnedValueChartFiller);
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
         Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
