@@ -408,11 +408,8 @@ public abstract class ChartFiller implements IChartFiller {
             finish = getThursdayOfThisWeek(finish);
         }
 
-        String min = start.toString("yyyyMMdd");
-        String max = finish.toString("yyyyMMdd");
-
-        timeGeometry.setMin(Integer.valueOf(min));
-        timeGeometry.setMax(Integer.valueOf(max));
+        timeGeometry.setMin(start.toDateTimeAtStartOfDay().toDate());
+        timeGeometry.setMax(finish.toDateTimeAtStartOfDay().toDate());
         timeGeometry.setAxisLabelsPlacement("bottom");
         // Remove year separators
         timeGeometry.setGridColor("#FFFFFF");
