@@ -121,7 +121,7 @@
                 <!-- Order sequences -->
                 <panel title="${i18n:_('Order sequences')}" border="normal">
                     <panelchildren>
-                        <hbox valign="center">
+                        <hbox align="center">
                             <button label="${i18n:_('New order sequence')}"
                                 onClick="configurationController.addOrderSequence()" />
                         </hbox>
