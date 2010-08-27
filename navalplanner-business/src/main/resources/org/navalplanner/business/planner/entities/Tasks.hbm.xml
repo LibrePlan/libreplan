@@ -96,6 +96,15 @@
 
         <joined-subclass name="TaskMilestone">
             <key column="TASK_ELEMENT_ID"></key>
+
+            <component name="startConstraint">
+                <property name="startConstraintType">
+                    <type name="org.hibernate.type.EnumType">
+                        <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
+                    </type>
+                </property>
+                <property name="constraintDate" />
+            </component>
         </joined-subclass>
 
     </class>

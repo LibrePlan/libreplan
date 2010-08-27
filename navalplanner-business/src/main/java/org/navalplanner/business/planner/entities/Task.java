@@ -56,7 +56,7 @@ import org.navalplanner.business.util.deepcopy.AfterCopy;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Task extends TaskElement {
+public class Task extends TaskElement implements ITaskLeafConstraint {
 
     private static final Log LOG = LogFactory.getLog(Task.class);
 

@@ -35,7 +35,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-public class TaskMilestone extends TaskElement {
+public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
 
     public static TaskMilestone create(Date initialDate) {
         Validate.notNull(initialDate);
@@ -46,6 +46,8 @@ public class TaskMilestone extends TaskElement {
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
+
+    private TaskStartConstraint startConstraint = new TaskStartConstraint();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -140,6 +142,17 @@ public class TaskMilestone extends TaskElement {
     @Override
     public boolean hasLimitedResourceAllocation() {
         return false;
+    }
+
+    public void explicityMoved(Date date) {
+        getStartConstraint().explicityMovedTo(date);
+    }
+
+    public TaskStartConstraint getStartConstraint() {
+        if (startConstraint == null) {
+            startConstraint = new TaskStartConstraint();
+        }
+        return startConstraint;
     }
 
 }

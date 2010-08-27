@@ -28,6 +28,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -418,11 +419,16 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     public Date getStartConstraintDate() {
-        if ((taskElement == null) || (!isTask())) {
+        if ((taskElement == null) || (!isTaskLeafConstraint())) {
             return null;
         }
 
-        return ((Task) taskElement).getStartConstraint().getConstraintDate();
+        return ((ITaskLeafConstraint) taskElement).getStartConstraint()
+                .getConstraintDate();
+    }
+
+    private boolean isTaskLeafConstraint() {
+        return (taskElement != null && taskElement instanceof ITaskLeafConstraint);
     }
 
     public void setStartConstraintDate(Date date) {

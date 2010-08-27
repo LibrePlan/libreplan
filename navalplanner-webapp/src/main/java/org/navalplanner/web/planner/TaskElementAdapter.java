@@ -51,6 +51,7 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
@@ -89,8 +90,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     public static List<Constraint<Date>> getStartConstraintsFor(
             TaskElement taskElement) {
-        if (taskElement instanceof Task) {
-            Task task = (Task) taskElement;
+        if (taskElement instanceof ITaskLeafConstraint) {
+            ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
             TaskStartConstraint startConstraint = task.getStartConstraint();
             final StartConstraintType constraintType = startConstraint
                     .getStartConstraintType();
@@ -108,9 +109,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             default:
                 throw new RuntimeException("can't handle " + constraintType);
             }
-        } else if (taskElement.isMilestone()) {
-            return Collections.singletonList(DateConstraint
-                    .biggerOrEqualThan(taskElement.getStartDate()));
         } else {
             return Collections.emptyList();
         }

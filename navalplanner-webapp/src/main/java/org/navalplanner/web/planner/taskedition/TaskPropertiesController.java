@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -245,7 +246,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
             showResourceAllocationTypeRow(task);
         } else {
             hideDurationRow();
-            hideStartConstraintRow();
+            if (currentTaskElement instanceof ITaskLeafConstraint) {
+                showStartConstraintRow((ITaskLeafConstraint) currentTaskElement);
+            } else {
+                hideStartConstraintRow();
+            }
             hideResourceAllocationTypeRow();
         }
         hours.setValue(currentTaskElement.getWorkHours());
@@ -264,7 +269,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraint.setVisible(false);
     }
 
-    private void showStartConstraintRow(Task task) {
+    private void showStartConstraintRow(ITaskLeafConstraint task) {
         startConstraint.setVisible(true);
         StartConstraintType type = task.getStartConstraint()
                 .getStartConstraintType();
@@ -286,13 +291,13 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private void constraintTypeChoosen(WebStartConstraintType constraint) {
         startConstraintDate.setVisible(constraint.isAssociatedDateRequired());
-        TaskStartConstraint taskStartConstraint = currentTaskElementAsTask()
+        TaskStartConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
                 .getStartConstraint();
         startConstraintDate.setValue(taskStartConstraint.getConstraintDate());
     }
 
     private boolean saveConstraintChanges() {
-        TaskStartConstraint taskConstraint = currentTaskElementAsTask()
+        TaskStartConstraint taskConstraint = currentTaskElementAsTaskLeafConstraint()
                 .getStartConstraint();
         WebStartConstraintType type = (WebStartConstraintType) startConstraintTypes
                 .getSelectedItemApi().getValue();
@@ -307,6 +312,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
         } else {
             return false;
         }
+    }
+
+    private ITaskLeafConstraint currentTaskElementAsTaskLeafConstraint() {
+        return (ITaskLeafConstraint) currentTaskElement;
     }
 
     private Task currentTaskElementAsTask() {
@@ -388,7 +397,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     public void accept() {
         boolean ok = true;
-        if (currentTaskElement instanceof Task) {
+        if (currentTaskElement instanceof ITaskLeafConstraint) {
             ok = saveConstraintChanges();
         }
         if (ok) {
