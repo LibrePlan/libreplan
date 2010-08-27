@@ -158,9 +158,11 @@
 		<component-name>dependency</component-name>
 		<component-class>org.zkoss.ganttz.DependencyComponent
 		</component-class>
+        <widget-class>ganttz.DependencyComponent</widget-class>
 		<mold>
 			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/dependency.dsp</mold-uri>
+            <mold-uri>mold/dependency-component.js</mold-uri>
+			<!-- <mold-uri>~./ganttz/dependency.dsp</mold-uri> -->
 		</mold>
 	</component>
 
