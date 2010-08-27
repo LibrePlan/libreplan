@@ -22,6 +22,7 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
@@ -32,6 +33,7 @@ import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -148,6 +150,14 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         Task destinationTask = destination.getTask();
         return sourceTask.equals(dependency.getSource())
                 && destinationTask.equals(dependency.getDestination());
+    }
+
+    protected void renderProperties(ContentRenderer renderer) throws IOException{
+        super.renderProperties(renderer);
+
+        render(renderer, "_idTaskOrig", getIdTaskOrig());
+        render(renderer, "_idTaskEnd", getIdTaskEnd());
+        render(renderer, "_dependencyType", getDependencyType());
     }
 
 }
