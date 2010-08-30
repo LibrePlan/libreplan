@@ -149,4 +149,16 @@ public class EffortDurationTest {
         assertThat(hours(3).divideBy(4), equalTo(minutes(45)));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void effortDurationCannotBeSubstractedIfMinuedIsSmallerThanSubtrahend() {
+        EffortDuration threeHours = hours(3);
+        threeHours.minus(threeHours.and(1, Granularity.SECONDS));
+    }
+
+    @Test
+    public void effortDurationCanBeSubstracted() {
+        assertThat(hours(2).minus(minutes(120)), equalTo(EffortDuration.zero()));
+        assertThat(hours(2).minus(minutes(60)), equalTo(hours(1)));
+    }
+
 }

@@ -168,4 +168,20 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return seconds == 0;
     }
 
+    /**
+     * Substracts two {@link EffortDuration}. Because {@link EffortDuration
+     * durations} cannot be negative <code>this</code> must be bigger than the
+     * parameter or the same
+     *
+     * @param duration
+     * @return the result of substracting the two durations
+     * @throws IllegalArgumentException
+     *             if the parameter is bigger than <code>this</code>
+     */
+    public EffortDuration minus(EffortDuration duration) {
+        Validate.isTrue(this.compareTo(duration) >= 0,
+                "minued must not be smaller than subtrahend");
+        return new EffortDuration(seconds - duration.seconds);
+    }
+
 }
