@@ -13,6 +13,7 @@ function(out){
 		out.push('<div class="task-resources">',
 					'<div class="task-resources-inner">',
 						this.getResourcesText(),
+					'</div>',
 				'</div>');
 
 		out.push('<div class="taskcontainer_completion">',
