@@ -186,6 +186,11 @@ public abstract class DayAssignment extends BaseEntity {
         return duration.getHours();
     }
 
+    @NotNull
+    public EffortDuration getDuration() {
+        return duration;
+    }
+
     public Resource getResource() {
         return resource;
     }
