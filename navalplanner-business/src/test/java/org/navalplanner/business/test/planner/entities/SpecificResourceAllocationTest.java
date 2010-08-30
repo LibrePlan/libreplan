@@ -80,6 +80,8 @@ public class SpecificResourceAllocationTest {
         this.calendar = createNiceMock(ResourceCalendar.class);
         expect(this.calendar.getCapacityAt(isA(LocalDate.class))).andReturn(
                 hours).anyTimes();
+        expect(this.calendar.getCapacityDurationAt(isA(LocalDate.class)))
+                .andReturn(EffortDuration.hours(hours)).anyTimes();
         expect(this.calendar.getWorkableHours(isA(Date.class)))
                 .andReturn(hours).anyTimes();
         expect(this.calendar.toHours(isA(LocalDate.class),
@@ -106,15 +108,28 @@ public class SpecificResourceAllocationTest {
 
     private void givenResourceCalendar(final int defaultAnswer, final Map<LocalDate, Integer> answersForDates){
         this.calendar = createNiceMock(ResourceCalendar.class);
+        expect(this.calendar.getCapacityDurationAt(isA(LocalDate.class)))
+                .andAnswer(new IAnswer<EffortDuration>() {
+
+                    @Override
+                    public EffortDuration answer() throws Throwable {
+                        LocalDate date = (LocalDate) EasyMock
+                                .getCurrentArguments()[0];
+                        if (answersForDates.containsKey(date)) {
+                            return EffortDuration.hours(answersForDates
+                                    .get(date));
+                        }
+                        return EffortDuration.hours(defaultAnswer);
+                    }
+                }).anyTimes();
         expect(this.calendar.getCapacityAt(isA(LocalDate.class))).andAnswer(new IAnswer<Integer>() {
 
             @Override
             public Integer answer() throws Throwable {
-                LocalDate date = (LocalDate) EasyMock.getCurrentArguments()[0];
-                if(answersForDates.containsKey(date)){
-                    return answersForDates.get(date);
-                }
-                return defaultAnswer;
+                        LocalDate date = (LocalDate) EasyMock
+                                .getCurrentArguments()[0];
+                        return BaseCalendar.roundToHours(calendar
+                                .getCapacityDurationAt(date));
             }
         }).anyTimes();
         expect(

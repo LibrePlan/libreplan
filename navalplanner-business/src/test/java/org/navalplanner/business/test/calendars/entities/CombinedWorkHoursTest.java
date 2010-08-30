@@ -32,6 +32,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.workingday.EffortDuration;
 
 public class CombinedWorkHoursTest {
 
@@ -57,13 +58,16 @@ public class CombinedWorkHoursTest {
     public void returnsTheMinOfCalendars() {
         IWorkHours minOf = CombinedWorkHours
                 .minOf(hours(4), hours(2), hours(7));
-        Integer hours = minOf.getCapacityAt(new LocalDate(2000, 3, 3));
-        assertThat(hours, equalTo(2));
+        EffortDuration duration = minOf.getCapacityDurationAt(new LocalDate(
+                2000, 3, 3));
+        assertThat(duration, equalTo(EffortDuration.hours(2)));
     }
 
     private IWorkHours hours(int hours) {
         IWorkHours result = createNiceMock(IWorkHours.class);
         expect(result.getCapacityAt(isA(LocalDate.class))).andReturn(hours);
+        expect(result.getCapacityDurationAt(isA(LocalDate.class))).andReturn(
+                EffortDuration.hours(hours));
         replay(result);
         return result;
     }

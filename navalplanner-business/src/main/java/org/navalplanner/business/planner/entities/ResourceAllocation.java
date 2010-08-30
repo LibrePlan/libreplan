@@ -31,8 +31,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Min;
@@ -60,6 +60,7 @@ import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -746,6 +747,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             @Override
             public Integer getCapacityAt(LocalDate day) {
                 return getSubyacent().getCapacityAt(day);
+            }
+
+            @Override
+            public EffortDuration getCapacityDurationAt(LocalDate date) {
+                return getSubyacent().getCapacityDurationAt(date);
             }
 
             private IWorkHours getSubyacent() {

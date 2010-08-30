@@ -24,10 +24,12 @@ import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class CombinedWorkHours implements IWorkHours {
@@ -69,10 +71,16 @@ public abstract class CombinedWorkHours implements IWorkHours {
 
     @Override
     public Integer getCapacityAt(LocalDate date) {
-        Integer current = null;
+        return BaseCalendar.roundToHours(getCapacityDurationAt(date));
+    }
+
+    @Override
+    public EffortDuration getCapacityDurationAt(LocalDate date) {
+        EffortDuration current = null;
         for (IWorkHours workHour : workHours) {
-            current = current == null ? workHour.getCapacityAt(date)
-                    : updateCapacity(current, workHour.getCapacityAt(date));
+            current = current == null ? workHour.getCapacityDurationAt(date)
+                    : updateCapacity(current,
+                            workHour.getCapacityDurationAt(date));
         }
         return current;
     }
@@ -101,7 +109,8 @@ public abstract class CombinedWorkHours implements IWorkHours {
 
     protected abstract Integer updateHours(Integer current, Integer each);
 
-    protected abstract Integer updateCapacity(Integer current, Integer each);
+    protected abstract EffortDuration updateCapacity(EffortDuration current,
+            EffortDuration each);
 
     @Override
     public boolean thereAreHoursOn(AvailabilityTimeLine availability,
@@ -118,8 +127,9 @@ class Min extends CombinedWorkHours {
     }
 
     @Override
-    protected Integer updateCapacity(Integer current, Integer each) {
-        return Math.min(current, each);
+    protected EffortDuration updateCapacity(EffortDuration current,
+            EffortDuration each) {
+        return Collections.min(asList(current, each));
     }
 
     @Override
@@ -142,8 +152,9 @@ class Max extends CombinedWorkHours {
     }
 
     @Override
-    protected Integer updateCapacity(Integer current, Integer each) {
-        return Math.max(current, each);
+    protected EffortDuration updateCapacity(EffortDuration current,
+            EffortDuration each) {
+        return Collections.max(asList(current, each));
     }
 
     @Override

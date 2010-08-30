@@ -75,11 +75,11 @@ public class ResourceCalendar extends BaseCalendar {
     }
 
     @Override
-    public Integer getCapacityAt(LocalDate date) {
+    public EffortDuration getCapacityDurationAt(LocalDate date) {
         if (!isActive(date)) {
-            return 0;
+            return EffortDuration.zero();
         }
-        return multiplyByCapacity(super.getCapacityAt(date));
+        return multiplyByCapacity(super.getCapacityDurationAt(date));
     }
 
     protected Integer multiplyByCapacity(Integer duration) {
