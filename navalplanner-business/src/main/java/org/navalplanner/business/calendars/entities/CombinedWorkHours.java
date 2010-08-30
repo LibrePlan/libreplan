@@ -20,8 +20,9 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,11 +55,11 @@ public abstract class CombinedWorkHours implements IWorkHours {
 
     public static CombinedWorkHours minOf(IWorkHours... workHours) {
         Validate.notNull(workHours);
-        return new Min(Arrays.asList(workHours));
+        return new Min(asList(workHours));
     }
 
     public static CombinedWorkHours maxOf(IWorkHours... workHours) {
-        return maxOf(Arrays.asList(workHours));
+        return maxOf(asList(workHours));
     }
 
     public static CombinedWorkHours maxOf(
