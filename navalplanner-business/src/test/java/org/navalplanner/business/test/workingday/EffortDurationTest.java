@@ -134,4 +134,11 @@ public class EffortDurationTest {
         assertThat(min, equalTo(seconds(10)));
     }
 
+    @Test
+    public void effortDurationsCanBePlused() {
+        EffortDuration a = EffortDuration.hours(1).and(30, Granularity.MINUTES);
+        EffortDuration b = EffortDuration.minutes(30);
+        assertThat(a.plus(b), equalTo(EffortDuration.hours(2)));
+    }
+
 }

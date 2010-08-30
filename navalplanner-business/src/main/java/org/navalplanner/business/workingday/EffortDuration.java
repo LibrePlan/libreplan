@@ -133,6 +133,18 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return EffortDuration.seconds(this.seconds * integer);
     }
 
+    /**
+     * Pluses two {@link EffortDuration}. <br />
+     * <b>Warning:<b /> This method can cause an integer overflow and the result
+     * would be incorrect.
+     * @param other
+     * @return a duration that is the sum of <code>this</code>
+     *         {@link EffortDuration} and the other duration
+     */
+    public EffortDuration plus(EffortDuration other) {
+        return new EffortDuration(seconds + other.seconds);
+    }
+
     public boolean isZero() {
         return seconds == 0;
     }
