@@ -129,8 +129,15 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return seconds - other.seconds;
     }
 
-    public EffortDuration multiplyBy(int integer) {
-        return EffortDuration.seconds(this.seconds * integer);
+    /**
+     * Multiplies this duration by a scalar <br />
+     * <b>Warning:<b /> This method can cause an integer overflow and the result
+     * would be incorrect.
+     * @param n
+     * @return a duration that is the multiply of n and <code>this</code>
+     */
+    public EffortDuration multiplyBy(int n) {
+        return EffortDuration.seconds(this.seconds * n);
     }
 
     /**
