@@ -66,12 +66,12 @@ public class ResourceCalendar extends BaseCalendar {
     }
 
     public Integer getCapacity(LocalDate from, LocalDate to) {
-        Integer result = getCapacityAt(to);
+        EffortDuration result = getCapacityDurationAt(to);
         for (LocalDate date = from; date.isBefore(to);) {
-            result += getCapacityAt(date);
+            result = result.plus(getCapacityDurationAt(date));
             date = date.plusDays(1);
         }
-        return result;
+        return roundToHours(result);
     }
 
     @Override
