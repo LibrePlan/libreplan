@@ -121,4 +121,12 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     void updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException;
 
+    /**
+     * Returns codes in DB searching in all order elements but excluding orderElements
+     *
+     * @param orderElements
+     * @return
+     */
+    List<String> getAllCodesExcluding(List<OrderElement> orderElements);
+
 }

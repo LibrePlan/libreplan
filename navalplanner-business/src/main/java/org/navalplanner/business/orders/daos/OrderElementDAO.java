@@ -23,6 +23,7 @@ package org.navalplanner.business.orders.daos;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -567,6 +568,36 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
                     relationOrderElementIdAndIndirectChargedHours);
         }
         updateIndirectChargedHoursWithMap(relationOrderElementIdAndIndirectChargedHours);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getAllCodesExcluding(List<OrderElement> orderElements) {
+
+        String strQuery = "SELECT order.infoComponent.code FROM OrderElement order ";
+
+        final List<Long> ids = getNoEmptyIds(orderElements);
+        if (!ids.isEmpty()) {
+            strQuery += "WHERE order.id NOT IN (:ids)";
+        }
+
+        Query query = getSession().createQuery(strQuery);
+        if (!ids.isEmpty()) {
+            query.setParameterList("ids", ids);
+        }
+        return query.list();
+    }
+
+    private List<Long> getNoEmptyIds(List<OrderElement> orderElements) {
+        List<Long> result = new ArrayList<Long>();
+        for (OrderElement each: orderElements) {
+            final Long id = each.getId();
+            if (id != null) {
+                result.add(id);
+            }
+        }
+        return result;
     }
 
 }

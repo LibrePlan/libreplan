@@ -1051,23 +1051,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
-    @AssertTrue(message = "code is already being used")
-    public boolean checkConstraintUniqueCode() {
-        IOrderElementDAO orderElementDAO = Registry.getOrderElementDAO();
-
-        if (isNewObject()) {
-            return !orderElementDAO.existsByCodeAnotherTransaction(this);
-        } else {
-            try {
-                OrderElement orderElement = orderElementDAO
-                        .findUniqueByCodeAnotherTransaction(getInfoComponent().getCode());
-                return orderElement.getId().equals(getId());
-            } catch (InstanceNotFoundException e) {
-                return true;
-            }
-        }
-    }
-
     public boolean containsOrderElement(String code) {
         for (OrderElement child : getChildren()) {
             if (child.getCode().equals(code)) {
