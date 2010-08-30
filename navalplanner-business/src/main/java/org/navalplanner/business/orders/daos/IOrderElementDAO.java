@@ -69,7 +69,11 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     public Order loadOrderAvoidingProxyFor(OrderElement orderElement);
 
     /**
-     * Returns the number of assigned hours for an {@link OrderElement}
+     * Returns the number of assigned hours for an {@link OrderElement}.
+     *
+     * It is recommended to use {@link OrderElement}.getSumChargedHours().
+     * getTotalChargedHours() instead, because getAssignedHours calculates
+     * that number iterating on the element's children.
      *
      * @param orderElement
      *            must be attached
@@ -77,6 +81,18 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      */
     int getAssignedHours(OrderElement orderElement);
 
+    /**
+     * Returns the number of directly assigned hours for an {@link OrderElement}.
+     * It means that the hours assigned to its children aren't included.
+     *
+     * It is recommended to use {@link OrderElement}.getSumChargedHours().
+     * getDirectChargedHours() instead, because getAssignedHours calculates
+     * that number iterating on the element's WorkReporLines.
+     *
+     * @param orderElement
+     *            must be attached
+     * @return The direct number of hours
+     */
     int getAssignedDirectHours(OrderElement orderElement);
 
     /**

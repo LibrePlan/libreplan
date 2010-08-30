@@ -93,12 +93,11 @@ public class AssignedHoursToOrderElementModel implements
     }
 
     @Override
-    @Transactional(readOnly = true)
     public int getTotalAssignedHours() {
         if (orderElement == null) {
             return 0;
         }
-        return orderElementDAO.getAssignedHours(this.orderElement);
+        return this.orderElement.getSumChargedHours().getTotalChargedHours();
     }
 
     @Override

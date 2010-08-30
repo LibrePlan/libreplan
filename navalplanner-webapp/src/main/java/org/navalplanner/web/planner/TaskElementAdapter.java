@@ -253,8 +253,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public Date getHoursAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
-            Integer assignedHours = orderElementDAO
-                    .getAssignedHours(orderElement);
+            Integer assignedHours =
+                orderElement.getSumChargedHours().getTotalChargedHours();
 
             LocalDate date = calculateLimitDate(assignedHours);
             if (date == null) {
