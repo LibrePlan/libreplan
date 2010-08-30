@@ -141,6 +141,18 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     /**
+     * Divides this duration by a scalar
+     * @param n
+     *            a number greater than zero
+     * @return a new duration that is the result of dividing <code>this</code>
+     *         by n
+     */
+    public EffortDuration divideBy(int n) {
+        Validate.isTrue(n > 0);
+        return new EffortDuration(seconds / n);
+    }
+
+    /**
      * Pluses two {@link EffortDuration}. <br />
      * <b>Warning:<b /> This method can cause an integer overflow and the result
      * would be incorrect.

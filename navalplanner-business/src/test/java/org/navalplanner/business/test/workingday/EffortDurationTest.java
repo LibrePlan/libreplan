@@ -141,4 +141,12 @@ public class EffortDurationTest {
         assertThat(a.plus(b), equalTo(EffortDuration.hours(2)));
     }
 
+    @Test
+    public void effortDurationCanBeDivided() {
+        assertThat(hours(4).divideBy(4), equalTo(hours(1)));
+        assertThat(hours(3).divideBy(2),
+                equalTo(hours(1).and(30, Granularity.MINUTES)));
+        assertThat(hours(3).divideBy(4), equalTo(minutes(45)));
+    }
+
 }
