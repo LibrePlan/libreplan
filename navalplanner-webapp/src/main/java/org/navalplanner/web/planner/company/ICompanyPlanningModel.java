@@ -52,8 +52,6 @@ public interface ICompanyPlanningModel {
 
     public void setTabsController(MultipleTabsPlannerController tabsController);
 
-    List<Order> getOrdersToShow();
-
     Date getFilterStartDate();
 
     Date getFilterFinishDate();

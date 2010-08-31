@@ -48,7 +48,6 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
@@ -173,8 +172,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private IScenarioManager scenarioManager;
 
     private Scenario currentScenario;
-
-    private List<Order> ordersToShow;
 
     private Date filterStartDate;
     private Date filterFinishDate;
@@ -655,25 +652,14 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         List<TaskElement> toShow;
         toShow = retainOnlyTopLevel(predicate);
 
-        forceLoadOfDataAssociatedTo(toShow);
-        forceLoadOfDependenciesCollections(toShow);
-        forceLoadOfWorkingHours(toShow);
-        forceLoadOfLabels(toShow);
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
                 new TaskElementNavigator(), toShow);
     }
 
-    private void forceLoadOfDataAssociatedTo(List<TaskElement> toShow) {
-        for (TaskElement each : toShow) {
-            OrderPlanningModel.forceLoadOfDataAssociatedTo(each);
-        }
-    }
-
-
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
-        ordersToShow = new ArrayList<Order>();
+        List<Order> ordersToShow = new ArrayList<Order>();
 
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
@@ -724,49 +710,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return result;
     }
 
-    private void forceLoadOfWorkingHours(List<TaskElement> initial) {
-        for (TaskElement taskElement : initial) {
-            OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
-                orderElement.getWorkHours();
-            }
-            if (!taskElement.isLeaf()) {
-                forceLoadOfWorkingHours(taskElement.getChildren());
-            }
-        }
-    }
-
-    private void forceLoadOfDependenciesCollections(
-            Collection<? extends TaskElement> elements) {
-        for (TaskElement task : elements) {
-            forceLoadOfDepedenciesCollections(task);
-            if (!task.isLeaf()) {
-                forceLoadOfDependenciesCollections(task.getChildren());
-            }
-        }
-    }
-
-    private void forceLoadOfDepedenciesCollections(TaskElement task) {
-        task.getDependenciesWithThisOrigin().size();
-        task.getDependenciesWithThisDestination().size();
-    }
-
-    private void forceLoadOfLabels(List<TaskElement> initial) {
-        for (TaskElement taskElement : initial) {
-            OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
-                orderElement.getLabels().size();
-            }
-        }
-    }
-
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
-
-    @Override
-    public List<Order> getOrdersToShow() {
-        return ordersToShow;
-    }
 
     @Override
     public Date getFilterStartDate() {
