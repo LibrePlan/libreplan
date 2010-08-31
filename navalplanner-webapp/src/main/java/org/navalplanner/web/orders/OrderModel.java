@@ -50,6 +50,7 @@ import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -172,6 +173,9 @@ public class OrderModel implements IOrderModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IHoursGroupDAO hoursGroupDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -507,6 +511,7 @@ public class OrderModel implements IOrderModel {
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
         checkConstraintOrderUniqueCode();
+        checkConstraintHoursGroupUniqueCode();
 
         reattachCriterions();
         reattachTasksForTasksSources();
@@ -536,6 +541,26 @@ public class OrderModel implements IOrderModel {
         }
         saveDerivedScenarios();
         calculateAdvancePercentageIncludingChildren(order);
+    }
+
+    private void checkConstraintHoursGroupUniqueCode() {
+        HoursGroup repeatedHoursGroup;
+
+        repeatedHoursGroup = order.findRepeatedHoursGroupCode();
+        if (repeatedHoursGroup != null) {
+            throw new ValidationException(_(
+                    "Repeated Hours Group code {0} in Order {1}",
+                    repeatedHoursGroup.getCode(), repeatedHoursGroup
+                            .getParentOrderLine().getName()));
+        }
+
+        repeatedHoursGroup = hoursGroupDAO.findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
+        if (repeatedHoursGroup != null) {
+            throw new ValidationException(_(
+                    "Repeated Hours Group code {0} in Order {1}",
+                    repeatedHoursGroup.getCode(), repeatedHoursGroup
+                            .getParentOrderLine().getName()));
+        }
     }
 
     private void checkConstraintOrderUniqueCode() {

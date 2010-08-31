@@ -451,19 +451,20 @@ public class Order extends OrderLineGroup {
         }
     }
 
-    @AssertTrue(message = "some code is repeated between hours group codes")
-    public boolean checkConstraintHoursGroupCodeNotRepeated() {
+    public HoursGroup findRepeatedHoursGroupCode() {
         Set<String> codes = new HashSet<String>();
 
         for (HoursGroup hoursGroup : getHoursGroups()) {
             String code = hoursGroup.getCode();
-            if (codes.contains(code)) {
-                return false;
+            if (code != null) {
+                if (codes.contains(code)) {
+                    return hoursGroup;
+                }
+                codes.add(code);
             }
-            codes.add(code);
         }
 
-        return true;
+        return null;
     }
 
     @Override

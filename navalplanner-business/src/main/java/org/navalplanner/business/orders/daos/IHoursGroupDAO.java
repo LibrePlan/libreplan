@@ -21,6 +21,9 @@
 package org.navalplanner.business.orders.daos;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import java.util.List;
+
+import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 
@@ -28,6 +31,7 @@ import org.navalplanner.business.orders.entities.HoursGroup;
  * Contract for {@link HoursGroupDAO}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IHoursGroupDAO extends IIntegrationEntityDAO<HoursGroup> {
 
@@ -36,4 +40,12 @@ public interface IHoursGroupDAO extends IIntegrationEntityDAO<HoursGroup> {
     HoursGroup findUniqueByCodeAnotherTransaction(HoursGroup hoursGroup)
             throws InstanceNotFoundException;
 
+    /**
+     * Checks if there's another {@link HoursGroup} in DB which code is the same as
+     * some of the ones in order.hoursGroups
+     *
+     * @param order
+     * @return
+     */
+    HoursGroup findRepeatedHoursGroupCodeInDB(List<HoursGroup> hoursGroupList);
 }

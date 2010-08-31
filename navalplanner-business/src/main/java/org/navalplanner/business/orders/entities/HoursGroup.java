@@ -33,7 +33,6 @@ import java.util.UUID;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
@@ -42,6 +41,7 @@ import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
@@ -394,27 +394,6 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
             }
         }
         return false;
-    }
-
-    @AssertTrue(message = "hours group code is already being used")
-    public boolean checkConstraintUniqueCode() {
-        if (code == null) {
-            LOG.warn("Hours group code is null. "
-                    + "Not checking unique code since it would fail");
-            return true;
-        }
-        IHoursGroupDAO hoursGroupDAO = Registry.getHoursGroupDAO();
-        if (isNewObject()) {
-            return !hoursGroupDAO.existsByCodeAnotherTransaction(this);
-        } else {
-            try {
-                HoursGroup hoursGroup = hoursGroupDAO
-                        .findUniqueByCodeAnotherTransaction(this);
-                return hoursGroup.getId().equals(getId());
-            } catch (InstanceNotFoundException e) {
-                return true;
-            }
-        }
     }
 
     public OrderLineTemplate getOrderLineTemplate() {
