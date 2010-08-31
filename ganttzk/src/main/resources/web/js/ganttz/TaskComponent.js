@@ -64,5 +64,8 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
 },{
     //"Class" methods and properties
     _TOOLTIP_DELAY : 10, // 10 milliseconds
-    _PERSPECTIVES_WIDTH : 80
+    _PERSPECTIVES_WIDTH : 80,
+    CORNER_WIDTH : 20,
+    HEIGHT : 10,
+    HALF_HEIGHT : 5
 });
