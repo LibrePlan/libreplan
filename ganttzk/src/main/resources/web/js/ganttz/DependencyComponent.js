@@ -12,8 +12,8 @@ ganttz.DependencyComponent = zk.$extends(zk.Widget,{
         this._setupArrow();
         YAHOO.util.Event.onDOMReady(this.proxy(function() {
             this.draw();
-//            zkTask.addRelatedDependency(origin, dependency);
-//            zkTask.addRelatedDependency(destination, dependency);
+            ganttz.TaskComponent.$(this.getIdTaskOrig()).addRelatedDependency(this);
+            ganttz.TaskComponent.$(this.getIdTaskEnd()).addRelatedDependency(this);
         }));
     },
     draw : function(){

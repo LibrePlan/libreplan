@@ -16,6 +16,10 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         this.domUnlisten_(this.$n(), "onMouseover", '_showTooltip');
         this.$supers('unbind_', arguments);
     },
+    addRelatedDependency : function(dependency){
+        if(this._dependencies == undefined) this._dependencies = [];
+        this._dependencies.push(dependency);
+    },
     _showTooltip : function(){
         this._tooltipTimeout = setTimeout(jq.proxy(function(offset) {
             var element = jq("#tasktooltip" + this.uuid);
