@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
@@ -39,6 +38,7 @@ import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.json.JSONArray;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
@@ -67,16 +67,6 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private static Pattern pixelsSpecificationPattern = Pattern
             .compile("\\s*(\\d+)px\\s*;?\\s*");
-
-    private static int stripPx(String pixels) {
-        Matcher matcher = pixelsSpecificationPattern.matcher(pixels);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("pixels " + pixels
-                    + " is not valid. It must be "
-                    + pixelsSpecificationPattern.pattern());
-        }
-        return Integer.valueOf(matcher.group(1));
-    }
 
     protected final IDisabilityConfiguration disabilityConfiguration;
 
@@ -189,7 +179,7 @@ public class TaskComponent extends Div implements AfterCompose {
             }
 
             private String[] retrieveData(AuRequest request, int requestLength){
-                String[] requestData = (String [])request.getData().get("");
+                String [] requestData =  (String[]) ((JSONArray)request.getData().get("")).toArray(new String[requestLength]);
 
                 if (requestData == null || requestData.length != requestLength) {
                     throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
@@ -307,7 +297,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdatePosition(String leftX, String topY) {
         Date startBeforeMoving = this.task.getBeginDate();
-        this.task.moveTo(getMapper().toDate(stripPx(leftX)));
+        this.task.moveTo(getMapper().toDate(Integer.parseInt(leftX)));
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -316,8 +306,7 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     void doUpdateSize(String size) {
-        int pixels = stripPx(size);
-        this.task.setLengthMilliseconds(getMapper().toMilliseconds(pixels));
+        this.task.setLengthMilliseconds(getMapper().toMilliseconds(Integer.parseInt(size)));
         updateWidth();
     }
 
