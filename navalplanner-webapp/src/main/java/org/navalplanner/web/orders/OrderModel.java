@@ -539,67 +539,45 @@ public class OrderModel implements IOrderModel {
         calculateAdvancePercentageIncludingChildren(order);
     }
 
-    private String checkConstraintOrderUniqueCode() {
-        String existingCode = "";
+    private void checkConstraintOrderUniqueCode() {
+        OrderElement repeatedOrder;
 
         // Check no code is repeated in this order
-        existingCode = findDuplicatedCodeInOrder(order);
-
-        // Check no code within this order is repeated on other orders
-        if (existingCode.isEmpty()) {
-            existingCode = findCodeInAnotherOrder(order);
+        repeatedOrder = order.findRepeatedOrderCode();
+        if (repeatedOrder != null) {
+            throw new ValidationException(_(
+                    "Repeated Order code {0} in Order {1}",
+                    repeatedOrder.getCode(), repeatedOrder.getName()));
         }
 
-        if (!existingCode.isEmpty()) {
-            throw new ValidationException(_("Code {0} is already being used", existingCode));
+        repeatedOrder = findRepeatedOrderCodeInAnotherOrder(order);
+        if (repeatedOrder != null) {
+            throw new ValidationException(_(
+                    "Repeated Order code {0} in Order {1}",
+                    repeatedOrder.getCode(), repeatedOrder.getName()));
         }
-        return existingCode;
     }
 
-    private String findDuplicatedCodeInOrder(OrderElement order) {
-        return findDuplicatedCodeInOrder(order, new HashSet());
-    }
+    private OrderElement findRepeatedOrderCodeInAnotherOrder(Order order) {
+        final List<OrderElement> orderElements = getOrderAndAllChildren(order);
 
-    private String findDuplicatedCodeInOrder(OrderElement order, Set<String> codes) {
-        String code = order.getCode();
-
-        if (codes.contains(code)) {
-            return code;
-        } else {
-            codes.add(code);
-            for (OrderElement each: order.getChildren()) {
-                code = findDuplicatedCodeInOrder(each, codes);
-                if (!code.isEmpty()) {
-                    return code;
-                }
-            }
-        }
-        return "";
-    }
-
-    private String findCodeInAnotherOrder(Order order) {
         // Codes in other orders but not in this one
-        List<OrderElement> toBeExcluded = order.getAllChildren();
-        toBeExcluded.add(order);
-        List<String> otherCodes = orderElementDAO
-                .getAllCodesExcluding(toBeExcluded);
+        Set<String> otherCodes = orderElementDAO
+                .getAllCodesExcluding(orderElements);
 
-        // Codes in this order
-        List<String> orderCodes = getAllOrderElementCodes(this.order);
-        for (String code : orderCodes) {
-            if (otherCodes.contains(code)) {
-                return code;
+        // Find codes in this order that are in codes of other order elements
+        for (OrderElement each : orderElements) {
+            if (otherCodes.contains(each.getCode())) {
+                return each;
             }
         }
-        return "";
+        return null;
     }
 
-    private List<String> getAllOrderElementCodes(Order order) {
-        List<String> result = new ArrayList<String>();
-        result.add(order.getCode());
-        for (OrderElement each: order.getChildren()) {
-            result.add(each.getCode());
-        }
+    private List<OrderElement> getOrderAndAllChildren(Order order) {
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        result.add(order);
+        result.addAll(order.getAllChildren());
         return result;
     }
 

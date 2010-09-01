@@ -23,7 +23,6 @@ package org.navalplanner.business.orders.daos;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -573,7 +572,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     @SuppressWarnings("unchecked")
     @Override
     @Transactional(readOnly = true)
-    public List<String> getAllCodesExcluding(List<OrderElement> orderElements) {
+    public Set<String> getAllCodesExcluding(List<OrderElement> orderElements) {
 
         String strQuery = "SELECT order.infoComponent.code FROM OrderElement order ";
 
@@ -586,7 +585,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         if (!ids.isEmpty()) {
             query.setParameterList("ids", ids);
         }
-        return query.list();
+        return new HashSet<String>(query.list());
     }
 
     private List<Long> getNoEmptyIds(List<OrderElement> orderElements) {

@@ -127,6 +127,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      * @param orderElements
      * @return
      */
-    List<String> getAllCodesExcluding(List<OrderElement> orderElements);
+    Set<String> getAllCodesExcluding(List<OrderElement> orderElements);
 
 }

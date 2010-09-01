@@ -387,20 +387,19 @@ public class Order extends OrderLineGroup {
         return lastOrderElementSequenceCode;
     }
 
-    @AssertTrue(message = "some code is repeated between order code and order element codes")
-    public boolean checkConstraintCodeNotRepeated() {
+    public OrderElement findRepeatedOrderCode() {
         Set<String> codes = new HashSet<String>();
         codes.add(getCode());
 
-        for (OrderElement orderElement : getAllOrderElements()) {
-            String code = orderElement.getCode();
+        for (OrderElement each : getAllOrderElements()) {
+            String code = each.getCode();
             if (codes.contains(code)) {
-                return false;
+                return each;
             }
             codes.add(code);
         }
 
-        return true;
+        return null;
     }
 
     @Override
