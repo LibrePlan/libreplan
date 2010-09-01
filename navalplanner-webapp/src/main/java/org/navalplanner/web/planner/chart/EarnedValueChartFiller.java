@@ -49,6 +49,68 @@ import org.zkoss.ganttz.util.Interval;
  */
 public abstract class EarnedValueChartFiller extends ChartFiller {
 
+    public static <K, V> void forValuesAtSameKey(Map<K, V> a, Map<K, V> b,
+            IOperation<K, V> onSameKey) {
+        for (Entry<K, V> each : a.entrySet()) {
+            V aValue = each.getValue();
+            V bValue = b.get(each.getKey());
+            onSameKey.operate(each.getKey(), aValue, bValue);
+        }
+    }
+    public interface IOperation<K, V> {
+
+        public void operate(K key, V a, V b);
+
+        public void undefinedFor(K key);
+    }
+
+    protected static abstract class PreconditionChecker<K, V> implements
+            IOperation<K, V> {
+
+        private final IOperation<K, V> decorated;
+
+        protected PreconditionChecker(IOperation<K, V> decorated) {
+            this.decorated = decorated;
+        }
+
+        @Override
+        public void operate(K key, V a, V b) {
+            if (isOperationDefinedFor(key, a, b)) {
+                decorated.operate(key, a, b);
+            } else {
+                decorated.undefinedFor(key);
+            }
+        }
+
+        protected abstract boolean isOperationDefinedFor(K key, V a, V b);
+
+        @Override
+        public void undefinedFor(K key) {
+            decorated.undefinedFor(key);
+        }
+
+    }
+
+    public static <K, V> IOperation<K, V> notNullOperands(
+            final IOperation<K, V> operation) {
+        return new PreconditionChecker<K, V>(operation) {
+            @Override
+            protected boolean isOperationDefinedFor(K key, V a, V b) {
+                return a != null && b != null;
+            }
+        };
+    }
+
+    public static <K> IOperation<K, BigDecimal> secondOperandNotZero(
+            final IOperation<K, BigDecimal> operation) {
+        return new PreconditionChecker<K, BigDecimal>(operation) {
+            @Override
+            protected boolean isOperationDefinedFor(K key, BigDecimal a, BigDecimal b) {
+                return b.signum() != 0;
+            }
+        };
+    }
+
     public static boolean includes(Interval interval, LocalDate date) {
         LocalDate start = LocalDate.fromDateFields(interval.getStart());
         LocalDate end = LocalDate.fromDateFields(interval.getFinish());
@@ -208,15 +270,26 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     private static SortedMap<LocalDate, BigDecimal> substract(
             Map<LocalDate, BigDecimal> minuend,
             Map<LocalDate, BigDecimal> subtrahend) {
-        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-        for (Entry<LocalDate, BigDecimal> each : minuend.entrySet()) {
-            BigDecimal minuedValue = each.getValue();
-            BigDecimal subtrahendValue = subtrahend.get(each.getKey());
-            if (minuedValue != null && subtrahendValue != null) {
-                result.put(each.getKey(), minuedValue.subtract(subtrahendValue));
-            }
-        }
+        final SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        forValuesAtSameKey(minuend, subtrahend, substractionOperation(result));
         return result;
+    }
+
+    private static IOperation<LocalDate, BigDecimal> substractionOperation(
+            final SortedMap<LocalDate, BigDecimal> result) {
+        return notNullOperands(new IOperation<LocalDate, BigDecimal>() {
+
+            @Override
+            public void operate(LocalDate key, BigDecimal minuedValue,
+                    BigDecimal subtrahendValue) {
+                result.put(key,
+                        minuedValue.subtract(subtrahendValue));
+            }
+
+            @Override
+            public void undefinedFor(LocalDate key) {
+            }
+        });
     }
 
     private void calculateCostPerformanceIndex() {
@@ -245,19 +318,29 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
             Map<LocalDate, BigDecimal> dividend,
             Map<LocalDate, BigDecimal> divisor,
             final BigDecimal defaultIfNotComputable) {
-        TreeMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-        for (Entry<LocalDate, BigDecimal> each : dividend.entrySet()) {
-            BigDecimal dividendValue = each.getValue();
-            BigDecimal divisorValue = divisor.get(each.getKey());
-            BigDecimal resultForThisKey = defaultIfNotComputable;
-            if (dividendValue != null && divisorValue != null
-                    && !divisorValue.equals(BigDecimal.ZERO)) {
-                resultForThisKey = dividendValue.divide(divisorValue,
-                        RoundingMode.DOWN);
-            }
-            result.put(each.getKey(), resultForThisKey);
-        }
+        final TreeMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        forValuesAtSameKey(dividend, divisor,
+                divisionOperation(result, defaultIfNotComputable));
         return result;
+    }
+
+    private static IOperation<LocalDate, BigDecimal> divisionOperation(
+            final TreeMap<LocalDate, BigDecimal> result,
+            final BigDecimal defaultIfNotComputable) {
+        return notNullOperands(secondOperandNotZero(new IOperation<LocalDate, BigDecimal>() {
+
+            @Override
+            public void operate(LocalDate key, BigDecimal dividendValue,
+                    BigDecimal divisorValue) {
+                result.put(key, dividendValue.divide(divisorValue,
+                        RoundingMode.DOWN));
+            }
+
+            @Override
+            public void undefinedFor(LocalDate key) {
+                result.put(key, defaultIfNotComputable);
+            }
+      }));
     }
 
     protected abstract Set<EarnedValueType> getSelectedIndicators();
