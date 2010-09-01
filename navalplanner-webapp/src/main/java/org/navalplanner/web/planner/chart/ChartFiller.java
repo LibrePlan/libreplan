@@ -303,35 +303,6 @@ public abstract class ChartFiller implements IChartFiller {
     public abstract void fillChart(Timeplot chart, Interval interval,
             Integer size);
 
-    protected String getServletUri(
-            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
-            final Date start, final Date finish) {
-        GraphicSpecificationCreator graphicSpecificationCreator = new DefaultGraphicSpecificationCreator(
-                finish, mapDayAssignments, start);
-        return getServletUri(mapDayAssignments, start, finish,
-                graphicSpecificationCreator);
-    }
-
-    protected String getServletUri(
-            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
-            final Date start, final Date finish,
-            final GraphicSpecificationCreator graphicSpecificationCreator) {
-        if (mapDayAssignments.isEmpty()) {
-            return "";
-        }
-
-        setMinimumValueForChartIfLess(Collections.min(mapDayAssignments
-                .values()));
-        setMaximumValueForChartIfGreater(Collections.max(mapDayAssignments
-                .values()));
-
-        HttpServletRequest request = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
-        String uri = CallbackServlet.registerAndCreateURLFor(request,
-                graphicSpecificationCreator);
-        return uri;
-    }
-
     private void setMinimumValueForChartIfLess(BigDecimal min) {
         if (minimumValueForChart.compareTo(min) > 0) {
             minimumValueForChart = min;
@@ -552,18 +523,55 @@ public abstract class ChartFiller implements IChartFiller {
 
     protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, boolean justDaysWithInformation) {
-        String uri;
+        return createPlotInfoFrom(createDataSourceUri(map, interval,
+                justDaysWithInformation));
+    }
+
+    private String createDataSourceUri(SortedMap<LocalDate, BigDecimal> map,
+            Interval interval, boolean justDaysWithInformation) {
+        return getServletUri(
+                map,
+                interval.getStart(),
+                interval.getFinish(),
+                createGraphicSpecification(map, interval,
+                        justDaysWithInformation));
+    }
+
+    private GraphicSpecificationCreator createGraphicSpecification(
+            SortedMap<LocalDate, BigDecimal> map, Interval interval,
+            boolean justDaysWithInformation) {
         if (justDaysWithInformation) {
-            uri = getServletUri(map, interval.getStart(), interval
-                .getFinish(),
-                new JustDaysWithInformationGraphicSpecificationCreator(interval
-                        .getFinish(), map, interval.getStart()));
+            return new JustDaysWithInformationGraphicSpecificationCreator(
+                    interval.getFinish(), map, interval.getStart());
         } else {
-            uri = getServletUri(map, interval.getStart(), interval.getFinish());
+            return new DefaultGraphicSpecificationCreator(interval.getFinish(),
+                    map, interval.getStart());
+        }
+    }
+
+    private String getServletUri(
+            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
+            final Date start, final Date finish,
+            final GraphicSpecificationCreator graphicSpecificationCreator) {
+        if (mapDayAssignments.isEmpty()) {
+            return "";
         }
 
+        setMinimumValueForChartIfLess(Collections.min(mapDayAssignments
+                .values()));
+        setMaximumValueForChartIfGreater(Collections.max(mapDayAssignments
+                .values()));
+
+        HttpServletRequest request = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+        String uri = CallbackServlet.registerAndCreateURLFor(request,
+                graphicSpecificationCreator);
+        return uri;
+    }
+
+    private Plotinfo createPlotInfoFrom(String dataSourceUri) {
         PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(uri);
+        pds.setDataSourceUri(dataSourceUri);
         pds.setSeparator(" ");
 
         Plotinfo plotinfo = new Plotinfo();
