@@ -146,36 +146,15 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     private void calculateCostVariance() {
         // CV = BCWP - ACWP
-        SortedMap<LocalDate, BigDecimal> cv = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
-
-        for (LocalDate day : bcwp.keySet()) {
-            if ((bcwp.get(day) != null) && (acwp.get(day) != null)) {
-                cv.put(day, bcwp.get(day).subtract(acwp.get(day)));
-            }
-        }
-
-        indicators.put(EarnedValueType.CV, cv);
+        indicators.put(EarnedValueType.CV,
+                substract(EarnedValueType.BCWP, EarnedValueType.ACWP));
     }
 
     private void calculateScheduleVariance() {
         // SV = BCWP - BCWS
-        SortedMap<LocalDate, BigDecimal> sv = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> bcws = indicators
-                .get(EarnedValueType.BCWS);
 
-        for (LocalDate day : bcwp.keySet()) {
-            if ((bcwp.get(day) != null) && (bcws.get(day) != null)) {
-                sv.put(day, bcwp.get(day).subtract(bcws.get(day)));
-            }
-        }
-
-        indicators.put(EarnedValueType.SV, sv);
+        indicators.put(EarnedValueType.SV,
+                substract(EarnedValueType.BCWP, EarnedValueType.BCWS));
     }
 
     private void calculateBudgetAtCompletion() {
@@ -211,37 +190,33 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     }
 
     private void calculateVarianceAtCompletion() {
-        // VAC = BAC - EAC
-        SortedMap<LocalDate, BigDecimal> vac = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bac = indicators
-                .get(EarnedValueType.BAC);
-        SortedMap<LocalDate, BigDecimal> eac = indicators
-                .get(EarnedValueType.EAC);
-
-        for (LocalDate day : bac.keySet()) {
-            if ((eac.get(day) != null) && (bac.get(day) != null)) {
-                vac.put(day, bac.get(day).subtract(eac.get(day)));
-            }
-        }
-
-        indicators.put(EarnedValueType.VAC, vac);
+        indicators.put(EarnedValueType.VAC,
+                substract(EarnedValueType.BAC, EarnedValueType.EAC));
     }
 
     private void calculateEstimatedToComplete() {
         // ETC = EAC - ACWP
-        SortedMap<LocalDate, BigDecimal> etc = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> eac = indicators
-                .get(EarnedValueType.EAC);
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
+        indicators.put(EarnedValueType.ETC,
+                substract(EarnedValueType.EAC, EarnedValueType.ACWP));
+    }
 
-        for (LocalDate day : eac.keySet()) {
-            if ((eac.get(day) != null) && (acwp.get(day) != null)) {
-                etc.put(day, eac.get(day).subtract(acwp.get(day)));
+    private SortedMap<LocalDate, BigDecimal> substract(EarnedValueType minuend,
+            EarnedValueType subtrahend) {
+        return substract(indicators.get(minuend), indicators.get(subtrahend));
+    }
+
+    private static SortedMap<LocalDate, BigDecimal> substract(
+            Map<LocalDate, BigDecimal> minuend,
+            Map<LocalDate, BigDecimal> subtrahend) {
+        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        for (Entry<LocalDate, BigDecimal> each : minuend.entrySet()) {
+            BigDecimal minuedValue = each.getValue();
+            BigDecimal subtrahendValue = subtrahend.get(each.getKey());
+            if (minuedValue != null && subtrahendValue != null) {
+                result.put(each.getKey(), minuedValue.subtract(subtrahendValue));
             }
         }
-
-        indicators.put(EarnedValueType.ETC, etc);
+        return result;
     }
 
     private void calculateCostPerformanceIndex() {
