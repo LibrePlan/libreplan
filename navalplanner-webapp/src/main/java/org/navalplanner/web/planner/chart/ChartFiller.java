@@ -586,7 +586,7 @@ public abstract class ChartFiller implements IChartFiller {
      *the application webpath
      * */
     private String adaptCallbackForTimePlot(String uri){
-        return uri.substring(1);
+        return ! uri.equals("") ? uri.substring(1) : uri;
     }
     @Override
     public void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
