@@ -27,10 +27,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.web.I18nHelper;
 import org.zkforge.timeplot.Plotinfo;
@@ -193,20 +195,14 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     private void calculateEstimateAtCompletion() {
         // EAC = (ACWP/BCWP) * BAC
         SortedMap<LocalDate, BigDecimal> eac = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
+        SortedMap<LocalDate, BigDecimal> ACWPDividedByBCWP = divide(
+                EarnedValueType.ACWP, EarnedValueType.BCWP, BigDecimal.ZERO);
         SortedMap<LocalDate, BigDecimal> bac = indicators
                 .get(EarnedValueType.BAC);
-
-        for (LocalDate day : acwp.keySet()) {
+        for (LocalDate day : ACWPDividedByBCWP.keySet()) {
             BigDecimal value = BigDecimal.ZERO;
-            if ((bcwp.get(day) != null) && (acwp.get(day) != null)
-                    && (bac.get(day) != null)
-                    && (bcwp.get(day).compareTo(BigDecimal.ZERO) != 0)) {
-                value = acwp.get(day).divide(bcwp.get(day), RoundingMode.DOWN)
-                        .multiply(bac.get(day));
+            if (ACWPDividedByBCWP.get(day) != null && bac.get(day) != null) {
+                value = ACWPDividedByBCWP.get(day).multiply(bac.get(day));
             }
             eac.put(day, value);
         }
@@ -250,45 +246,43 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     private void calculateCostPerformanceIndex() {
         // CPI = BCWP / ACWP
-        SortedMap<LocalDate, BigDecimal> cpi = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
-
-        for (LocalDate day : bcwp.keySet()) {
-            BigDecimal value = BigDecimal.ZERO;
-            if ((acwp.get(day) != null)
-                    && (acwp.get(day).compareTo(BigDecimal.ZERO) != 0)) {
-                if ((bcwp.get(day) != null) && (acwp.get(day) != null)) {
-                    value = bcwp.get(day).divide(acwp.get(day),
-                            RoundingMode.DOWN);
-                }
-            }
-            cpi.put(day, value);
-        }
-
-        indicators.put(EarnedValueType.CPI, cpi);
+        indicators.put(EarnedValueType.CPI,
+                divide(EarnedValueType.BCWP, EarnedValueType.ACWP,
+                        BigDecimal.ZERO));
     }
 
     private void calculateSchedulePerformanceIndex() {
         // SPI = BCWP / BCWS
-        SortedMap<LocalDate, BigDecimal> spi = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> bcws = indicators
-                .get(EarnedValueType.BCWS);
+        indicators.put(EarnedValueType.SPI,
+                divide(EarnedValueType.BCWP, EarnedValueType.BCWS,
+                        BigDecimal.ZERO));
+    }
 
-        for (LocalDate day : bcwp.keySet()) {
-            BigDecimal value = BigDecimal.ZERO;
-            if ((bcws.get(day) != null) && (bcwp.get(day) != null)
-                    && (bcws.get(day).compareTo(BigDecimal.ZERO) != 0)) {
-                value = bcwp.get(day).divide(bcws.get(day), RoundingMode.DOWN);
+    private SortedMap<LocalDate, BigDecimal> divide(EarnedValueType dividend,
+            EarnedValueType divisor, BigDecimal defaultIfNotComputable) {
+        Validate.notNull(indicators.get(dividend));
+        Validate.notNull(indicators.get(divisor));
+        return divide(indicators.get(dividend), indicators.get(divisor),
+                defaultIfNotComputable);
+    }
+
+    private static SortedMap<LocalDate, BigDecimal> divide(
+            Map<LocalDate, BigDecimal> dividend,
+            Map<LocalDate, BigDecimal> divisor,
+            final BigDecimal defaultIfNotComputable) {
+        TreeMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        for (Entry<LocalDate, BigDecimal> each : dividend.entrySet()) {
+            BigDecimal dividendValue = each.getValue();
+            BigDecimal divisorValue = divisor.get(each.getKey());
+            BigDecimal resultForThisKey = defaultIfNotComputable;
+            if (dividendValue != null && divisorValue != null
+                    && !divisorValue.equals(BigDecimal.ZERO)) {
+                resultForThisKey = dividendValue.divide(divisorValue,
+                        RoundingMode.DOWN);
             }
-            spi.put(day, value);
+            result.put(each.getKey(), resultForThisKey);
         }
-
-        indicators.put(EarnedValueType.SPI, spi);
+        return result;
     }
 
     protected abstract Set<EarnedValueType> getSelectedIndicators();
