@@ -30,10 +30,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -396,8 +396,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    @Override
-    public TimeGeometry getTimeGeometry(Interval interval) {
+    protected TimeGeometry getTimeGeometry(Interval interval) {
         LocalDate start = new LocalDate(interval.getStart());
         LocalDate finish = new LocalDate(interval.getFinish());
 
@@ -420,8 +419,7 @@ public abstract class ChartFiller implements IChartFiller {
         return timeGeometry;
     }
 
-    @Override
-    public ValueGeometry getValueGeometry() {
+    protected ValueGeometry getValueGeometry() {
         DefaultValueGeometry valueGeometry = new DefaultValueGeometry();
         valueGeometry.setMin(getMinimumValueForChart().intValue());
         valueGeometry.setMax(getMaximumValueForChart().intValue());
@@ -431,8 +429,7 @@ public abstract class ChartFiller implements IChartFiller {
         return valueGeometry;
     }
 
-    @Override
-    public SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
+    protected SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
             List<DayAssignment> dayAssignments) {
         SortedMap<LocalDate, Map<Resource, Integer>> map = new TreeMap<LocalDate, Map<Resource, Integer>>();
 
@@ -459,8 +456,7 @@ public abstract class ChartFiller implements IChartFiller {
         return map;
     }
 
-    @Override
-    public void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
+    protected void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
             SortedMap<LocalDate, BigDecimal> additionalCost) {
         for (LocalDate day : additionalCost.keySet()) {
             if (!currentCost.containsKey(day)) {
@@ -471,8 +467,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    @Override
-    public SortedMap<LocalDate, BigDecimal> accumulateResult(
+    protected SortedMap<LocalDate, BigDecimal> accumulateResult(
             SortedMap<LocalDate, BigDecimal> map) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
         if (map.isEmpty()) {
@@ -489,8 +484,7 @@ public abstract class ChartFiller implements IChartFiller {
         return result;
     }
 
-    @Override
-    public SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
+    protected SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
             SortedMap<LocalDate, Integer> map) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
@@ -551,14 +545,12 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    @Override
-    public Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+    protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval) {
         return createPlotinfo(map, interval, false);
     }
 
-    @Override
-    public Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+    protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, boolean justDaysWithInformation) {
         String uri;
         if (justDaysWithInformation) {
@@ -579,8 +571,7 @@ public abstract class ChartFiller implements IChartFiller {
         return plotinfo;
     }
 
-    @Override
-    public void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
+    protected void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
             ValueGeometry valueGeometry, TimeGeometry timeGeometry) {
         plotinfo.setValueGeometry(valueGeometry);
         plotinfo.setTimeGeometry(timeGeometry);
