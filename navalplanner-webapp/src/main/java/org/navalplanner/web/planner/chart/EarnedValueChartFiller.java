@@ -235,20 +235,38 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     private void calculateEstimateAtCompletion() {
         // EAC = (ACWP/BCWP) * BAC
-        SortedMap<LocalDate, BigDecimal> eac = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> ACWPDividedByBCWP = divide(
-                EarnedValueType.ACWP, EarnedValueType.BCWP, BigDecimal.ZERO);
+        SortedMap<LocalDate, BigDecimal> dividend = divide(
+                EarnedValueType.ACWP, EarnedValueType.BCWP,
+                BigDecimal.ZERO);
         SortedMap<LocalDate, BigDecimal> bac = indicators
                 .get(EarnedValueType.BAC);
-        for (LocalDate day : ACWPDividedByBCWP.keySet()) {
-            BigDecimal value = BigDecimal.ZERO;
-            if (ACWPDividedByBCWP.get(day) != null && bac.get(day) != null) {
-                value = ACWPDividedByBCWP.get(day).multiply(bac.get(day));
-            }
-            eac.put(day, value);
-        }
+        indicators.put(EarnedValueType.EAC, multiply(dividend, bac));
+    }
 
-        indicators.put(EarnedValueType.EAC, eac);
+    private static SortedMap<LocalDate, BigDecimal> multiply(
+            Map<LocalDate, BigDecimal> firstFactor,
+            Map<LocalDate, BigDecimal> secondFactor) {
+        final SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        forValuesAtSameKey(firstFactor, secondFactor,
+                multiplicationOperation(result));
+        return result;
+    }
+
+    private static IOperation<LocalDate, BigDecimal> multiplicationOperation(
+            final SortedMap<LocalDate, BigDecimal> result) {
+        return notNullOperands(new IOperation<LocalDate, BigDecimal>() {
+
+            @Override
+            public void operate(LocalDate key, BigDecimal a,
+                    BigDecimal b) {
+                result.put(key, a.multiply(b));
+            }
+
+            @Override
+            public void undefinedFor(LocalDate key) {
+                result.put(key, BigDecimal.ZERO);
+            }
+        });
     }
 
     private void calculateVarianceAtCompletion() {
