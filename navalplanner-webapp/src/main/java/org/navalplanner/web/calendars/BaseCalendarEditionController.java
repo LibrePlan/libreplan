@@ -76,6 +76,9 @@ public abstract class BaseCalendarEditionController extends
         GenericForwardComposer {
 
     private static String asString(EffortDuration duration) {
+        if (duration == null) {
+            return "";
+        }
         EnumMap<Granularity, Integer> decomposed = duration.decompose();
 
         String result = _("{0}h", decomposed.get(Granularity.HOURS));
