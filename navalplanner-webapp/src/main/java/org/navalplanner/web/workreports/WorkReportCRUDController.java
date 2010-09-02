@@ -1293,6 +1293,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         Integer length = workReportModel.getLength(descriptionValue);
         textbox.setCols(length);
         textbox.setParent(row);
+        textbox.setTooltiptext(descriptionValue.getValue());
 
         Util.bind(textbox, new Util.Getter<String>() {
 
