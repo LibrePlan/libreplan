@@ -865,15 +865,16 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end) {
-        return getTotalWorkHoursFor(calendarOrDefault(), start, end, null);
+        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end, null);
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end,
             ICriterion criterion) {
-        return getTotalWorkHoursFor(calendarOrDefault(), start, end, criterion);
+        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end,
+                criterion);
     }
 
-    private IWorkHours calendarOrDefault() {
+    public IWorkHours getCalendarOrDefault() {
         return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay
                 .getDefaultWorkingDay();
     }
