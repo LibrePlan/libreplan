@@ -25,11 +25,9 @@ package org.navalplanner.web.common.components.finders;
 
 import org.navalplanner.business.i18n.I18nHelper;
 
-public enum OrderFilterEnum implements IFilterEnum {
+public enum FilterEnumNone implements IFilterEnum {
 
-    Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(
-            _("Customer")), State(_("State")), Code(_("Code")), CustomerReference(
-            _("Customer Reference"));
+    None("...");
 
     /**
      * Forces to mark the string as needing translation
@@ -40,7 +38,7 @@ public enum OrderFilterEnum implements IFilterEnum {
 
     private String description;
 
-    private OrderFilterEnum(String description) {
+    private FilterEnumNone(String description) {
         this.description = description;
     }
 

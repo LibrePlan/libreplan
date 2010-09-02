@@ -159,9 +159,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         fillWithFirstTenFiltersState();
         fillWihtFirstTenFiltersCodes();
         fillWihtFirstTenFiltersCustomerReferences();
-        getListMatching().add(
-                new FilterPair(OrderFilterEnum.None,
-                OrderFilterEnum.None.toString(), null));
+        addNoneFilter();
         return getListMatching();
     }
 
@@ -415,12 +413,6 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().add(
                 new FilterPair(OrderFilterEnum.CustomerReference,
                 reference, reference));
-    }
-
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(OrderFilterEnum.None,
-                OrderFilterEnum.None.toString(), null));
     }
 
 }

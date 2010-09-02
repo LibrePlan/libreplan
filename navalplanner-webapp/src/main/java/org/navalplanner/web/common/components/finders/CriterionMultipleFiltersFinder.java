@@ -73,6 +73,7 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
             getListMatching().add(new FilterPair(
                     criterionFilterEnum, criterion.getName(), criterion));
         }
+        addNoneFilter();
         return getListMatching();
     }
 
@@ -98,9 +99,4 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     }
 
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
-    }
 }

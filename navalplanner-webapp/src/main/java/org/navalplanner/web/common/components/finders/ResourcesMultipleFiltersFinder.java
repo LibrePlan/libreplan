@@ -99,9 +99,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().clear();
         fillWithFirstTenFiltersCriterions();
         fillWithFirstTenFiltersCostCategories();
-        getListMatching().add(
-                new FilterPair(OrderFilterEnum.None,
-                OrderFilterEnum.None.toString(), null));
+        addNoneFilter();
         return getListMatching();
     }
 
@@ -201,12 +199,6 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().add(
                 new FilterPair(ResourceFilterEnum.CostCategory,
                 pattern, costCategory));
-    }
-
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(ResourceFilterEnum.None,
-                ResourceFilterEnum.None.toString(), null));
     }
 
 }

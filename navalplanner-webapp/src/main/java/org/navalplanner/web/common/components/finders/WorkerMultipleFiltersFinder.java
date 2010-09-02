@@ -73,6 +73,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
             getListMatching().add(new FilterPair(
                     workerFilterEnum, worker.getShortDescription(), worker));
         }
+        addNoneFilter();
         return getListMatching();
     }
 
@@ -99,9 +100,4 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     }
 
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
-    }
 }

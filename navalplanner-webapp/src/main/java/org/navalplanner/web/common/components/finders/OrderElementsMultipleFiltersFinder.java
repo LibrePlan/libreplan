@@ -110,9 +110,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().clear();
         fillWithFirstTenFiltersLabels();
         fillWithFirstTenFiltersCriterions();
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
+        addNoneFilter();
         return getListMatching();
     }
 
@@ -242,12 +240,6 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         String pattern = type.getName() + " :: " + label.getName();
         getListMatching().add(
                 new FilterPair(OrderElementFilterEnum.Label, pattern, label));
-    }
-
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
     }
 
 }

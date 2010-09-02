@@ -65,6 +65,12 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         return filterPairRenderer;
     }
 
+    protected void addNoneFilter() {
+        getListMatching().add(
+                new FilterPair(FilterEnumNone.None, FilterEnumNone.None
+                        .toString(), null));
+    }
+
     public String objectToString(Object obj) {
         FilterPair filterPair = (FilterPair) obj;
         String text = filterPair.getType() + "(" + filterPair.getPattern()
@@ -89,7 +95,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     public boolean isValidNewFilter(Object obj) {
         FilterPair filter = (FilterPair) obj;
-        if (filter.getType().equals(OrderFilterEnum.None)) {
+        if (filter.getType().equals(FilterEnumNone.None)) {
             return false;
         }
         return true;
