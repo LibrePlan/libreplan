@@ -406,25 +406,17 @@ public abstract class ChartFiller implements IChartFiller {
         SortedMap<LocalDate, Map<Resource, Integer>> map = new TreeMap<LocalDate, Map<Resource, Integer>>();
 
         for (DayAssignment dayAssignment : dayAssignments) {
-            LocalDate day = dayAssignment.getDay();
+            final LocalDate day = dayAssignment.getDay();
+            final int dayAssignmentHours = dayAssignment.getHours();
+            Resource resource = dayAssignment.getResource();
             if (map.get(day) == null) {
-                HashMap<Resource, Integer> resourcesMap = new HashMap<Resource, Integer>();
-                resourcesMap.put(dayAssignment.getResource(), dayAssignment
-                        .getHours());
-                map.put(day, resourcesMap);
-            } else {
-                if (map.get(day).get(dayAssignment.getResource()) == null) {
-                    map.get(day).put(dayAssignment.getResource(),
-                            dayAssignment.getHours());
-                } else {
-                    Integer hours = map.get(day).get(
-                            dayAssignment.getResource());
-                    hours += dayAssignment.getHours();
-                    map.get(day).put(dayAssignment.getResource(), hours);
-                }
+                map.put(day, new HashMap<Resource, Integer>());
             }
+            Map<Resource, Integer> forDay = map.get(day);
+            Integer previousHours = forDay.get(resource);
+            previousHours = previousHours != null ? previousHours : 0;
+            forDay.put(dayAssignment.getResource(), previousHours + dayAssignmentHours);
         }
-
         return map;
     }
 
