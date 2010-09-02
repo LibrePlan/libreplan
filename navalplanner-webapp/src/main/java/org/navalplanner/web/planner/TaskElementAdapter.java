@@ -198,20 +198,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return runOnReadOnlyTransaction;
         }
 
-        private void reattachAllResourcesForTask() {
-            Set<Resource> resources = resourcesForTask();
-            for (Resource each : resources) {
-                resourceDAO.reattach(each);
-            }
-            for (Machine machine : Resource.machines(resources)) {
-                Set<MachineWorkersConfigurationUnit> configurationUnits = machine
-                        .getConfigurationUnits();
-                for (MachineWorkersConfigurationUnit eachUnit : configurationUnits) {
-                    Hibernate.initialize(eachUnit);
-                }
-            }
-        }
-
         private Set<Resource> resourcesForTask() {
             Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
             Set<Resource> resources = new HashSet<Resource>();
@@ -611,7 +597,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         private void stepsBeforePossibleReallocation() {
             taskDAO.reattach(taskElement);
-            reattachAllResourcesForTask();
         }
 
         @Override
