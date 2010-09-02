@@ -247,3 +247,13 @@ ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
         this._destination = jq('#' + this.getIdTaskEnd());
     }
 },{});
+
+ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
+    bind_ : function(){
+        this.$supers('bind_', arguments);
+    }
+})
+
+zk.afterLoad('ganttz',function(){
+    ganttz.UnlinkedDependencyComponent.molds = ganttz.DependencyComponent.molds;
+})
