@@ -30,6 +30,7 @@ import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.minutes;
 import static org.navalplanner.business.workingday.EffortDuration.seconds;
 
+import java.math.BigDecimal;
 import java.util.EnumMap;
 
 import org.junit.Test;
@@ -159,6 +160,32 @@ public class EffortDurationTest {
     public void effortDurationCanBeSubstracted() {
         assertThat(hours(2).minus(minutes(120)), equalTo(EffortDuration.zero()));
         assertThat(hours(2).minus(minutes(60)), equalTo(hours(1)));
+    }
+
+    @Test
+    public void canConvertToDecimalHours() {
+        EffortDuration duration = hours(1).and(30, Granularity.MINUTES);
+        assertThat(duration.toHoursAsDecimalWithScale(1), equalTo(new BigDecimal("1.5")));
+    }
+
+    @Test
+    public void theScaleIsTheOneProvided() {
+        EffortDuration duration = hours(1).and(30, Granularity.MINUTES);
+        assertThat(duration.toHoursAsDecimalWithScale(1).scale(), equalTo(1));
+        assertThat(duration.toHoursAsDecimalWithScale(2).scale(), equalTo(2));
+        assertThat(duration.toHoursAsDecimalWithScale(3).scale(), equalTo(3));
+    }
+
+    @Test
+    public void anHalfUpRoundIsDone() {
+        // 3601/3600 = 1.000277778
+        EffortDuration duration = hours(1).and(1, Granularity.SECONDS);
+        assertThat(duration.toHoursAsDecimalWithScale(6), equalTo(new BigDecimal(
+                "1.000278")));
+        assertThat(duration.toHoursAsDecimalWithScale(5),
+                equalTo(new BigDecimal("1.00028")));
+        assertThat(duration.toHoursAsDecimalWithScale(4),
+                equalTo(new BigDecimal("1.0003")));
     }
 
 }

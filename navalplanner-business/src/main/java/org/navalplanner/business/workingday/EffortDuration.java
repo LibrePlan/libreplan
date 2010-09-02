@@ -20,7 +20,9 @@
 
 package org.navalplanner.business.workingday;
 
+import java.math.BigDecimal;
 import java.util.EnumMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 
@@ -182,6 +184,18 @@ public class EffortDuration implements Comparable<EffortDuration> {
         Validate.isTrue(this.compareTo(duration) >= 0,
                 "minued must not be smaller than subtrahend");
         return new EffortDuration(seconds - duration.seconds);
+    }
+
+    public BigDecimal toHoursAsDecimalWithScale(int scale) {
+        BigDecimal result = BigDecimal.ZERO;
+        final BigDecimal secondsPerHour = new BigDecimal(3600);
+        for (Entry<Granularity, Integer> each : decompose().entrySet()) {
+            BigDecimal seconds = new BigDecimal(each.getKey().toSeconds(
+                    each.getValue()));
+            result = result.add(seconds.divide(secondsPerHour, scale,
+                    BigDecimal.ROUND_HALF_UP));
+        }
+        return result;
     }
 
 }
