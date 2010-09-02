@@ -813,7 +813,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
 
-            Plotinfo plotInfoMax = createPlotinfo(
+            Plotinfo plotInfoMax = createPlotinfoFromDurations(
                     getCalendarMaximumAvailability(start, finish), interval);
             plotInfoMax.setLineColor(COLOR_CAPABILITY_LINE);
             plotInfoMax.setFillColor("#FFFFFF");
@@ -849,8 +849,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
-            SortedMap<LocalDate, BigDecimal> mapMaxAvailability = calculateHoursAdditionByDay(
-                    resourceDAO.list(Resource.class), start, finish);
+            SortedMap<LocalDate, BigDecimal> mapMaxAvailability = toHoursDecimal(calculateHoursAdditionByDay(
+                    resourceDAO.list(Resource.class), start, finish));
 
             for (LocalDate day : mapDayAssignments.keySet()) {
                 if ((day.compareTo(new LocalDate(start)) >= 0)
@@ -920,17 +920,15 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return convertAsNeededByZoom(convertToBigDecimal(map));
         }
 
-        private SortedMap<LocalDate, BigDecimal> getCalendarMaximumAvailability(
+        private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
                 Date start, Date finish) {
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDay(
+            return calculateHoursAdditionByDay(
                     resourceDAO.list(Resource.class), start, finish);
-
-            return mapDayAssignments;
         }
 
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDay(
+        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDay(
                 List<Resource> resources, Date start, Date finish) {
-            return new HoursByDayCalculator<Entry<LocalDate, List<Resource>>>() {
+            return new EffortByDayCalculator<Entry<LocalDate, List<Resource>>>() {
 
                 @Override
                 protected LocalDate getDayFor(
@@ -939,15 +937,14 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 }
 
                 @Override
-                protected int getHoursFor(
+                protected EffortDuration getDurationFor(
                         Entry<LocalDate, List<Resource>> element) {
                     LocalDate day = element.getKey();
                     List<Resource> resources = element.getValue();
-                    return sumHoursForDay(resources, day);
+                    return sumDurationsForDay(resources, day);
                 }
 
-            }.calculate(getResourcesByDateBetween(
-                    resources, start, finish));
+            }.calculate(getResourcesByDateBetween(resources, start, finish));
         }
 
         private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
