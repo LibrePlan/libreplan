@@ -1,50 +1,13 @@
 zk.$package("ganttz");
 
-ganttz.DependencyComponent = zk.$extends(zk.Widget,{
+ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
     $define : {
         idTaskOrig : null,
         idTaskEnd : null,
         dependencyType : null
     },
-    bind_ : function(){
-        this.$supers('bind_', arguments);
-        this._initializeProperties();
-        this._setupArrow();
-        YAHOO.util.Event.onDOMReady(this.proxy(function() {
-            this.draw();
-            ganttz.TaskComponent.$(this.getIdTaskOrig()).addRelatedDependency(this);
-            ganttz.TaskComponent.$(this.getIdTaskEnd()).addRelatedDependency(this);
-        }));
-    },
-    draw : function(){
-        var orig = this._findPos(this._origin);
-        var dest = this._findPos(this._destination);
-
-        // This corner case may depend on dependence type
-        var offsetX = this._origin.outerWidth() - ganttz.TaskComponent.CORNER_WIDTH;
-        var separation = orig.left + this._origin.outerWidth() - dest.left;
-
-        if (separation > 0) {
-            offsetX = offsetX - separation;
-        }
-        if (this.getDependencyType() == this.$class.END_START
-                || this.getDependencyType() == null) {
-            orig.left = orig.left + Math.max(0, offsetX);
-        } else if (this.getDependencyType() == this.$class.END_END) {
-            orig.left = orig.left + this._origin.outerWidth();
-            dest.left = dest.left + this._destination.outerWidth();
-        }
-
-        orig.top = orig.top + ganttz.TaskComponent.HEIGHT;
-        dest.top = dest.top + ganttz.TaskComponent.HALF_HEIGHT;
-
-        if (orig.top > dest.top) {
-            orig.top = orig.top - ganttz.TaskComponent.HEIGHT;
-        }
-
-        this._drawArrow(orig, dest);
-    },
-    _drawArrow : function(coordOrig, coordDest){
+    draw : function(){throw "draw method must be overwriten by extending classes"},
+    drawArrow_ : function(coordOrig, coordDest){
         switch(this.getDependencyType)
         {
             case this.$class.START_START:
@@ -199,7 +162,7 @@ ganttz.DependencyComponent = zk.$extends(zk.Widget,{
         deparrow.attr('src', deparrowsrc);
         deparrow.css(deparrowcss);
     },
-    _findPos : function(element){
+    findPos_ : function(element){
         var pos1 = jq('#listdependencies').offset();
         var pos2 = element.offset();
         return {left : (pos2.left - pos1.left), top : (pos2.top - pos1.top)};
@@ -208,11 +171,7 @@ ganttz.DependencyComponent = zk.$extends(zk.Widget,{
         var img = jq('#' + this.uuid + ' > img[class*=' + name + ']');
         return img;
     },
-    _initializeProperties : function(){
-        this._origin = jq('#' + this.getIdTaskOrig());
-        this._destination = jq('#' + this.getIdTaskEnd());
-    },
-    _setupArrow : function(){
+    setupArrow_ : function(){
         var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
                             [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ];
         var img;
@@ -237,3 +196,54 @@ ganttz.DependencyComponent = zk.$extends(zk.Widget,{
         return "/" + common.Common.webAppContextPath() + "/zkau/web/ganttz/img/";
     }
 })
+
+ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
+    $define : {
+        idTaskOrig : null,
+        idTaskEnd : null,
+        dependencyType : null
+    },
+    bind_ : function(){
+        this.$supers('bind_', arguments);
+        this._initializeProperties();
+        this.setupArrow_();
+        /*maybe move this listener to the $init method*/
+        YAHOO.util.Event.onDOMReady(this.proxy(function() {
+            this.draw();
+            ganttz.TaskComponent.$(this.getIdTaskOrig()).addRelatedDependency(this);
+            ganttz.TaskComponent.$(this.getIdTaskEnd()).addRelatedDependency(this);
+        }));
+    },
+    draw : function(){
+        var orig = this.findPos_(this._origin);
+        var dest = this.findPos_(this._destination);
+
+        // This corner case may depend on dependence type
+        var offsetX = this._origin.outerWidth() - ganttz.TaskComponent.CORNER_WIDTH;
+        var separation = orig.left + this._origin.outerWidth() - dest.left;
+
+        if (separation > 0) {
+            offsetX = offsetX - separation;
+        }
+        if (this.getDependencyType() == this.$class.END_START
+                || this.getDependencyType() == null) {
+            orig.left = orig.left + Math.max(0, offsetX);
+        } else if (this.getDependencyType() == this.$class.END_END) {
+            orig.left = orig.left + this._origin.outerWidth();
+            dest.left = dest.left + this._destination.outerWidth();
+        }
+
+        orig.top = orig.top + ganttz.TaskComponent.HEIGHT;
+        dest.top = dest.top + ganttz.TaskComponent.HALF_HEIGHT;
+
+        if (orig.top > dest.top) {
+            orig.top = orig.top - ganttz.TaskComponent.HEIGHT;
+        }
+
+        this.drawArrow_(orig, dest);
+    },
+    _initializeProperties : function(){
+        this._origin = jq('#' + this.getIdTaskOrig());
+        this._destination = jq('#' + this.getIdTaskEnd());
+    }
+},{});
