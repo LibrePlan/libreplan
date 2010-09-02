@@ -393,10 +393,12 @@ public class Order extends OrderLineGroup {
 
         for (OrderElement each : getAllOrderElements()) {
             String code = each.getCode();
-            if (codes.contains(code)) {
-                return each;
+            if (code != null) {
+                if (codes.contains(code)) {
+                    return each;
+                }
+                codes.add(code);
             }
-            codes.add(code);
         }
 
         return null;
