@@ -45,6 +45,7 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.data.PlotDataSource;
@@ -514,6 +515,21 @@ public abstract class ChartFiller implements IChartFiller {
                 value = value.add(ammountPerDay);
             }
         }
+    }
+
+    protected Plotinfo createPlotinfoFromDurations(SortedMap<LocalDate, EffortDuration> map,
+            Interval interval) {
+        return createPlotinfo(toHoursDecimal(map), interval);
+    }
+
+    public static <K> SortedMap<K, BigDecimal> toHoursDecimal(
+            Map<K, EffortDuration> map) {
+        SortedMap<K, BigDecimal> result = new TreeMap<K, BigDecimal>();
+        for (Entry<K, EffortDuration> each : map.entrySet()) {
+            result.put(each.getKey(), each.getValue()
+                    .toHoursAsDecimalWithScale(2));
+        }
+        return result;
     }
 
     protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
