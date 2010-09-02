@@ -106,8 +106,8 @@
                             <label value="${i18n:_('End Date')}" />
                             <datebox id="exceptionEndDate" />
                         </row>
-                        <row id="exceptionDayDurationRow">
-                            <label value="${i18n:_('Duration')}" />
+                        <row id="exceptionDayWorkableTimeRow">
+                            <label value="${i18n:_('Workable Time')}" />
                         </row>
                     </rows>
                     </grid>
@@ -119,7 +119,7 @@
                         <listhead>
                             <listheader label="${i18n:_('Day')}" />
                             <listheader label="${i18n:_('Exception Type')}" />
-                            <listheader label="${i18n:_('Duration')}" />
+                            <listheader label="${i18n:_('Workable Time')}" />
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
                     </listbox>
@@ -148,7 +148,7 @@
                         itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
                         <listhead>
                             <listheader label="${i18n:_('Day of week')}" />
-                            <listheader label="${i18n:_('Duration')}" />
+                            <listheader label="${i18n:_('Workable Time')}" />
                             <listheader label="${i18n:_('By default')}" />
                         </listhead>
                     </listbox>

@@ -126,12 +126,12 @@ public abstract class BaseCalendarEditionController extends
             prepareParentCombo();
         }
         prepareExceptionTypeCombo();
-        exceptionDurationPicker = addEffortDurationPickerAtDurationRow(comp);
+        exceptionDurationPicker = addEffortDurationPickerAtWorkableTimeRow(comp);
     }
 
-    private EffortDurationPicker addEffortDurationPickerAtDurationRow(
+    private EffortDurationPicker addEffortDurationPickerAtWorkableTimeRow(
             Component comp) {
-        Component container = comp.getFellow("exceptionDayDurationRow");
+        Component container = comp.getFellow("exceptionDayWorkableTimeRow");
         EffortDurationPicker result = new EffortDurationPicker();
         result.setValue(EffortDuration.zero());
         container.appendChild(result);
