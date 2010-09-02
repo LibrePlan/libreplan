@@ -20,10 +20,12 @@
 
 package org.navalplanner.web.planner.company;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -32,10 +34,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -63,6 +65,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
@@ -71,8 +74,8 @@ import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -130,6 +133,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
     public static final String COLOR_CAPABILITY_LINE = "#000000"; // black
     public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13";
+
+    private static EffortDuration min(EffortDuration... durations) {
+        return Collections.min(Arrays.asList(durations));
+    }
 
     @Autowired
     private IOrderDAO orderDAO;
@@ -801,7 +808,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Date finish = filterFinishDate != null ? filterFinishDate
                     : interval.getFinish();
 
-            Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish), interval);
+            Plotinfo plotInfoLoad = createPlotinfoFromDurations(
+                    getLoad(start, finish), interval);
             plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
 
@@ -826,14 +834,13 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             chart.setHeight("150px");
         }
 
-        private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
+        private SortedMap<LocalDate, EffortDuration> getLoad(Date start,
+                Date finish) {
             List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
                     currentScenario, LocalDate.fromDateFields(start), LocalDate
                             .fromDateFields(finish));
-            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
-
-            return mapDayAssignments;
+            SortedMap<LocalDate, Map<Resource, EffortDuration>> durationsGrouped = groupDurationsByDayAndResource(dayAssignments);
+            return calculateHoursAdditionByDayWithoutOverload(durationsGrouped);
         }
 
         private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
@@ -857,36 +864,30 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return mapDayAssignments;
         }
 
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(
-                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDayWithoutOverload(
+                SortedMap<LocalDate, Map<Resource, EffortDuration>> durationsGrouped) {
+            SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
 
-            for (LocalDate day : dayAssignmentGrouped.keySet()) {
-                int result = 0;
+            for (LocalDate day : durationsGrouped.keySet()) {
+                EffortDuration result = zero();
 
-                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
+                for (Resource resource : durationsGrouped.get(day).keySet()) {
                     BaseCalendar calendar = resource.getCalendar();
 
-                    int workableHours = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getCapacityAt(day);
+                    EffortDuration workableTime = SameWorkHoursEveryDay
+                            .getDefaultWorkingDay().getCapacityDurationAt(day);
                     if (calendar != null) {
-                        workableHours = calendar.getCapacityAt(day);
+                        workableTime = calendar.getCapacityDurationAt(day);
                     }
 
-                    int assignedHours = dayAssignmentGrouped.get(day).get(
-                            resource);
-
-                    if (assignedHours <= workableHours) {
-                        result += assignedHours;
-                    } else {
-                        result += workableHours;
-                    }
+                    EffortDuration assignedDuration = durationsGrouped.get(day)
+                            .get(resource);
+                    result = result.plus(min(assignedDuration, workableTime));
                 }
 
                 map.put(day, result);
             }
-
-            return convertAsNeededByZoom(convertToBigDecimal(map));
+            return groupAsNeededByZoom(map);
         }
 
         private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayJustOverload(
