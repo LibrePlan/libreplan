@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.chart;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -41,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -65,6 +68,7 @@ import org.zkoss.zk.ui.Executions;
  */
 public abstract class ChartFiller implements IChartFiller {
 
+    @Deprecated
     protected abstract class HoursByDayCalculator<T> {
         public SortedMap<LocalDate, BigDecimal> calculate(
                 Collection<? extends T> elements) {
@@ -94,6 +98,34 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
+    protected abstract class EffortByDayCalculator<T> {
+        public SortedMap<LocalDate, EffortDuration> calculate(
+                Collection<? extends T> elements) {
+            SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
+            if (elements.isEmpty()) {
+                return result;
+            }
+            for (T element : elements) {
+                if (included(element)) {
+                    EffortDuration duration = getDurationFor(element);
+                    LocalDate day = getDayFor(element);
+                    EffortDuration previous = result.get(day);
+                    previous = previous == null ? zero() : previous;
+                    result.put(day, previous.plus(duration));
+                }
+            }
+            return groupAsNeededByZoom(result);
+        }
+
+        protected abstract LocalDate getDayFor(T element);
+
+        protected abstract EffortDuration getDurationFor(T element);
+
+        protected boolean included(T each) {
+            return true;
+        }
+    }
+
     protected class DefaultDayAssignmentCalculator extends
             HoursByDayCalculator<DayAssignment> {
         public DefaultDayAssignmentCalculator() {
@@ -110,6 +142,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
+    @Deprecated
     protected final int sumHoursForDay(
             Collection<? extends Resource> resources,
             LocalDate day) {
@@ -118,6 +151,19 @@ public abstract class ChartFiller implements IChartFiller {
             sum += hoursFor(resource, day);
         }
         return sum;
+    }
+
+    protected static EffortDuration sumDurationsForDay(
+            Collection<? extends Resource> resources, LocalDate day) {
+        EffortDuration sum = zero();
+        for (Resource resource : resources) {
+            sum = sum.plus(durationFor(resource, day));
+        }
+        return sum;
+    }
+
+    private static EffortDuration durationFor(Resource resource, LocalDate day) {
+        return resource.getCalendarOrDefault().getCapacityDurationAt(day);
     }
 
     private int hoursFor(Resource resource, LocalDate day) {
@@ -316,7 +362,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    private LocalDate getThursdayOfThisWeek(LocalDate date) {
+    private static LocalDate getThursdayOfThisWeek(LocalDate date) {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
@@ -359,6 +405,7 @@ public abstract class ChartFiller implements IChartFiller {
         return result;
     }
 
+    @Deprecated
     protected SortedMap<LocalDate, BigDecimal> convertAsNeededByZoom(
             SortedMap<LocalDate, BigDecimal> map) {
         if (isZoomByDay()) {
@@ -366,6 +413,41 @@ public abstract class ChartFiller implements IChartFiller {
         } else {
             return groupByWeek(map);
         }
+    }
+
+    protected SortedMap<LocalDate, EffortDuration> groupAsNeededByZoom(
+            SortedMap<LocalDate, EffortDuration> map) {
+        if (isZoomByDay()) {
+            return map;
+        }
+        return groupByWeekDurations(map);
+    }
+
+    protected SortedMap<LocalDate, EffortDuration> groupByWeekDurations(
+            SortedMap<LocalDate, EffortDuration> map) {
+        return average(accumulatePerWeek(map));
+    }
+
+    private static SortedMap<LocalDate, EffortDuration> accumulatePerWeek(
+            SortedMap<LocalDate, EffortDuration> map) {
+        SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
+        for (Entry<LocalDate, EffortDuration> each : map.entrySet()) {
+            LocalDate centerOfWeek = getThursdayOfThisWeek(each.getKey());
+            EffortDuration accumulated = result.get(centerOfWeek);
+            accumulated = accumulated == null ? zero() : accumulated;
+            result.put(centerOfWeek, accumulated.plus(each.getValue()));
+        }
+        return result;
+    }
+
+    private static SortedMap<LocalDate, EffortDuration> average(
+            SortedMap<LocalDate, EffortDuration> accumulatedPerWeek) {
+        SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
+        for (Entry<LocalDate, EffortDuration> each : accumulatedPerWeek
+                .entrySet()) {
+            result.put(each.getKey(), each.getValue().divideBy(7));
+        }
+        return result;
     }
 
     protected TimeGeometry getTimeGeometry(Interval interval) {
@@ -401,21 +483,46 @@ public abstract class ChartFiller implements IChartFiller {
         return valueGeometry;
     }
 
+    @Deprecated
     protected SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
             List<DayAssignment> dayAssignments) {
-        SortedMap<LocalDate, Map<Resource, Integer>> map = new TreeMap<LocalDate, Map<Resource, Integer>>();
+        SortedMap<LocalDate, Map<Resource, EffortDuration>> original = groupDurationsByDayAndResource(dayAssignments);
+        SortedMap<LocalDate, Map<Resource, Integer>> result = new TreeMap<LocalDate, Map<Resource, Integer>>();
+        for (Entry<LocalDate, Map<Resource, EffortDuration>> each : original
+                .entrySet()) {
+            result.put(each.getKey(), toHoursInteger(each.getValue()));
+        }
+        return result;
+    }
+
+    private Map<Resource, Integer> toHoursInteger(
+            Map<Resource, EffortDuration> value) {
+        Map<Resource, Integer> result = new HashMap<Resource, Integer>();
+        for (Entry<Resource, EffortDuration> each : value.entrySet()) {
+            result.put(each.getKey(),
+                    BaseCalendar.roundToHours(each.getValue()));
+        }
+        return result;
+    }
+
+    protected SortedMap<LocalDate, Map<Resource, EffortDuration>> groupDurationsByDayAndResource(
+            List<DayAssignment> dayAssignments) {
+        SortedMap<LocalDate, Map<Resource, EffortDuration>> map = new TreeMap<LocalDate, Map<Resource, EffortDuration>>();
 
         for (DayAssignment dayAssignment : dayAssignments) {
             final LocalDate day = dayAssignment.getDay();
-            final int dayAssignmentHours = dayAssignment.getHours();
+            final EffortDuration dayAssignmentDuration = dayAssignment
+                    .getDuration();
             Resource resource = dayAssignment.getResource();
             if (map.get(day) == null) {
-                map.put(day, new HashMap<Resource, Integer>());
+                map.put(day, new HashMap<Resource, EffortDuration>());
             }
-            Map<Resource, Integer> forDay = map.get(day);
-            Integer previousHours = forDay.get(resource);
-            previousHours = previousHours != null ? previousHours : 0;
-            forDay.put(dayAssignment.getResource(), previousHours + dayAssignmentHours);
+            Map<Resource, EffortDuration> forDay = map.get(day);
+            EffortDuration previousDuration = forDay.get(resource);
+            previousDuration = previousDuration != null ? previousDuration
+                    : EffortDuration.zero();
+            forDay.put(dayAssignment.getResource(),
+                    previousDuration.plus(dayAssignmentDuration));
         }
         return map;
     }
