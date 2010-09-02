@@ -28,7 +28,7 @@
 
     <!-- Personal details -->
     <label value="${i18n:_('Personal details')}"/>
-    <textbox id="txtfilter" width="200px"/>
+    <textbox id="txtfilter" width="200px" onOK="controller.onApplyFilter()"/>
 
     <!-- Limiting resource -->
     <label value="${i18n:_('Limiting resource')}"/>
@@ -43,6 +43,6 @@
     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
 
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to machines satisfying required criteria')}"
+        tooltiptext="${i18n:_('Apply filtering to resources satisfying required criteria')}"
         onClick="controller.onApplyFilter()"/>
 </hbox>
