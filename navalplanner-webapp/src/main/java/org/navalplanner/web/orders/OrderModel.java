@@ -89,6 +89,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.zul.Messagebox;
@@ -550,35 +551,12 @@ public class OrderModel implements IOrderModel {
                     repeatedOrder.getCode(), repeatedOrder.getName()));
         }
 
-        repeatedOrder = findRepeatedOrderCodeInAnotherOrder(order);
+        repeatedOrder = orderElementDAO.findRepeatedOrderCodeInDB(order);
         if (repeatedOrder != null) {
             throw new ValidationException(_(
                     "Repeated Order code {0} in Order {1}",
                     repeatedOrder.getCode(), repeatedOrder.getName()));
         }
-    }
-
-    private OrderElement findRepeatedOrderCodeInAnotherOrder(Order order) {
-        final List<OrderElement> orderElements = getOrderAndAllChildren(order);
-
-        // Codes in other orders but not in this one
-        Set<String> otherCodes = orderElementDAO
-                .getAllCodesExcluding(orderElements);
-
-        // Find codes in this order that are in codes of other order elements
-        for (OrderElement each : orderElements) {
-            if (otherCodes.contains(each.getCode())) {
-                return each;
-            }
-        }
-        return null;
-    }
-
-    private List<OrderElement> getOrderAndAllChildren(Order order) {
-        List<OrderElement> result = new ArrayList<OrderElement>();
-        result.add(order);
-        result.addAll(order.getAllChildren());
-        return result;
     }
 
     private void calculateAdvancePercentageIncludingChildren(OrderElement order) {

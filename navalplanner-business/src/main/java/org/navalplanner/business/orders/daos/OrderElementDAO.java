@@ -23,6 +23,7 @@ package org.navalplanner.business.orders.daos;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -595,6 +596,42 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             if (id != null) {
                 result.add(id);
             }
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public OrderElement findRepeatedOrderCodeInDB(Order order) {
+        final Map<String, OrderElement> orderElements = createMapByCode(getOrderAndAllChildren(order));
+        final Map<String, OrderElement> orderElementsInDB = createMapByCode(getAll());
+
+        for (String code : orderElements.keySet()) {
+            OrderElement orderElement = orderElements.get(code);
+            OrderElement orderElementInDB = orderElementsInDB.get(code);
+
+            // There's an element in the DB with the same code and it's a
+            // different element
+            if (orderElementInDB != null
+                    && !orderElementInDB.getId().equals(orderElement.getId())) {
+                return orderElement;
+            }
+        }
+        return null;
+    }
+
+    private List<OrderElement> getOrderAndAllChildren(Order order) {
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        result.add(order);
+        result.addAll(order.getAllChildren());
+        return result;
+    }
+
+    private Map<String, OrderElement> createMapByCode(List<OrderElement> orderElements) {
+        Map<String, OrderElement> result = new HashMap<String, OrderElement>();
+        for (OrderElement each: orderElements) {
+            final String code = each.getCode();
+            result.put(code, each);
         }
         return result;
     }

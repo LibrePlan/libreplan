@@ -129,4 +129,13 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      */
     Set<String> getAllCodesExcluding(List<OrderElement> orderElements);
 
+    /**
+     * Checks if there's another {@link OrderElement} in DB which code is the same as
+     * some of the ones in order (and its children)
+     *
+     * @param order
+     * @return
+     */
+    OrderElement findRepeatedOrderCodeInDB(Order order);
+
 }
