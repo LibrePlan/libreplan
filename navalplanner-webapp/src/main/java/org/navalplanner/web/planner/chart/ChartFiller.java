@@ -153,16 +153,17 @@ public abstract class ChartFiller implements IChartFiller {
         return sum;
     }
 
-    protected static EffortDuration sumDurationsForDay(
+    protected static EffortDuration sumAvailabilitiesForDay(
             Collection<? extends Resource> resources, LocalDate day) {
         EffortDuration sum = zero();
         for (Resource resource : resources) {
-            sum = sum.plus(durationFor(resource, day));
+            sum = sum.plus(availabilityFor(resource, day));
         }
         return sum;
     }
 
-    private static EffortDuration durationFor(Resource resource, LocalDate day) {
+    private static EffortDuration availabilityFor(Resource resource,
+            LocalDate day) {
         return resource.getCalendarOrDefault().getCapacityDurationAt(day);
     }
 
