@@ -551,6 +551,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setFlattenTreeEnabled(false);
         configuration.setRenamingTasksEnabled(false);
         configuration.setTreeEditable(false);
+        configuration.setShowAllResourcesEnabled(false);
     }
 
     private void addAdditionalCommands(

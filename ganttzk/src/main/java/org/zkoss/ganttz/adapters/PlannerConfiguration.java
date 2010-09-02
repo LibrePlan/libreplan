@@ -135,6 +135,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean flattenTreeEnabled = true;
 
+    private boolean showAllResourcesEnabled = true;
+
     private boolean renamingTasksEnabled = true;
 
     private boolean treeEditable = true;
@@ -307,6 +309,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public void setFlattenTreeEnabled(boolean flattenTreeEnabled) {
         this.flattenTreeEnabled = flattenTreeEnabled;
+    }
+
+    @Override
+    public boolean isShowAllResourcesEnabled() {
+        return showAllResourcesEnabled;
+    }
+
+    public void setShowAllResourcesEnabled(boolean showAllResourcesEnabled) {
+        this.showAllResourcesEnabled = showAllResourcesEnabled;
     }
 
     @Override
