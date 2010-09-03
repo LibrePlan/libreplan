@@ -128,45 +128,66 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
 
         // First segment not used
         var depstart = this._findImageElement('start');
-        depstart.hide();
+        //depstart.hide();
 
         // Second segment not used
         var depmid = this._findImageElement('mid');
         var depmidcss;
-        if (yend > yorig)
-            depmidcss = {top : yorig, height : yend - yorig};
-        else
-            depmidcss = {top : yend, height : (yorig - yend)};
+        depmid.style.left = xorig + "px";
+        if (yend > yorig){
+            depmid.style.top = yorig + "px";
+            depmid.style.height = yend - yorig + "px";
+            //depmidcss = {top : yorig, height : yend - yorig};
+        }
+        else{
+            depmid.style.top = yend + "px" ;
+            depmid.style.height = yorig - yend + "px";
+            //depmidcss = {top : yend, height : (yorig - yend)};
+        }
 
-        depmidcss.left = xorig;
-        depmid.css(depmidcss);
+//        depmidcss.left = xorig;
+//        depmid.css(depmidcss);
 
         var depend = this._findImageElement('end');
-        var dependcss = {top : yend, left : xorig};
-        if(width < 0) dependcss.width = Math.abs(width);
-        depend.css(dependcss);
-
-        if (width < 0) depend.css({left : xend, width : width});
+        depend.style.top = yend + "px";
+        depend.style.left = xorig + "px";
+        depend.style.width = (width) + "px";
+//      var dependcss = {top : yend, left : xorig};
+        if(width < 0) {
+            //dependcss.left = xend;
+            //dependcss.width = Math.abs(width);
+            depend.style.width = Math.abs(width) + "px";
+            depend.style.left = xend + "px";
+        }
+        //depend.css(dependcss);
 
         var deparrow = this._findImageElement('arrow');
         var deparrowsrc, deparrowcss;
         if ( width == 0 ) {
-            deparrowcss = {top : (yend - 10) , left : (xend - 5)};
+//            deparrowcss = {top : (yend - 10) , left : (xend - 5)};
+            deparrow.style.top = (yend - 10) + "px" ;
+            deparrow.style.left = (xend - 5) + "px";
             deparrowsrc = this.$class.getImagesDir() + "arrow2.png";
             if ( yorig > yend ) {
-                deparrowcss = {top : yend};
+                deparrow.style.top = yend + "px";
+                //deparrowcss = {top : yend};
                 deparrowsrc = this.$class.getImagesDir() + "arrow4.png";
             }
         } else {
-            deparrowcss = {top : (yend -5), left : (xend - 10)};
+            deparrow.style.top = (yend - 5) + "px";
+            deparrow.style.left = (xend - 10) + "px";
+            //deparrowcss = {top : (yend -5), left : (xend - 10)};
             deparrowsrc = this.$class.getImagesDir() + "arrow.png";
             if (width < 0) {
-                deparrowcss = {top : (yend - 5), left : xend}
+                deparrow.style.top = (yend - 5) + "px";
+                deparrow.style.left = xend + "px";
+                //deparrowcss = {top : (yend - 5), left : xend}
                 deparrowsrc = this.$class.getImagesDir() + "arrow3.png";
             }
         }
-        deparrow.attr('src', deparrowsrc);
-        deparrow.css(deparrowcss);
+        deparrow.setAttribute('src', deparrowsrc);
+        //deparrow.attr('src', deparrowsrc);
+        //deparrow.css(deparrowcss);
     },
     findPos_ : function(element){
         var pos1 = jq('#listdependencies').offset();
@@ -174,7 +195,7 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
         return {left : (pos2.left - pos1.left), top : (pos2.top - pos1.top)};
     },
     _findImageElement : function(name) {
-        var img = jq('#' + this.uuid + ' > img[class*=' + name + ']');
+        var img = jq('.' + name + '', this.$n())[0];
         return img;
     },
     setupArrow_ : function(){
@@ -342,19 +363,26 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
         }
         return false;
     },
-    _updateArrow : function(){
-        var coordDest, coordOrigin = this.findPos_(this._DOMorigin);
-
+    updateCoordOrigin : function(){
+        var coordOrigin = this.findPos_(this._DOMorigin);
         coordOrigin.left =    coordOrigin.left
-                            + Math.max(0,    this._DOMorigin.outerWidth() -
-                                            ganttz.TaskComponent.CORNER_WIDTH);
+        + Math.max(0,    this._DOMorigin.outerWidth() -
+                        ganttz.TaskComponent.CORNER_WIDTH);
 
-        coordOrigin.top =    coordOrigin.top - this._DOMlisttasks.position().top +
-                            this._DOMlistdependencies.position().top +
-                            ganttz.TaskComponent.HEIGHT;
+coordOrigin.top =    coordOrigin.top - this._DOMlisttasks.position().top +
+        this._DOMlistdependencies.position().top +
+        ganttz.TaskComponent.HEIGHT;
+
+        this._coordOrigin = coordOrigin;
+
+        return this._coordOrigin;
+    },
+    _updateArrow : function(event){
+        if (! this._coordOrigin ) this.updateCoordOrigin();
+        var coordDest;
 
         coordDest = this._findCoordsForMouse();
-        this.drawArrow_(coordOrigin, coordDest);
+        this.drawArrow_(this._coordOrigin, coordDest);
     },
     _findCoordsForMouse : function(){
         var pos1 = YAHOO.util.Dom.getXY('listtasks');
