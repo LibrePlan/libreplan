@@ -6,6 +6,10 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
         idTaskEnd : null,
         dependencyType : null
     },
+    bind_ : function(){
+        this.$supers('bind_', arguments);
+        this.setupArrow_();
+    },
     draw : function(){throw "draw method must be overwriten by extending classes"},
     drawArrow_ : function(coordOrig, coordDest){
         switch(this.getDependencyType)
@@ -206,7 +210,7 @@ ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
     bind_ : function(){
         this.$supers('bind_', arguments);
         this._initializeProperties();
-        this.setupArrow_();
+        //this.setupArrow_();
         /*maybe move this listener to the $init method*/
         YAHOO.util.Event.onDOMReady(this.proxy(function() {
             this.draw();
