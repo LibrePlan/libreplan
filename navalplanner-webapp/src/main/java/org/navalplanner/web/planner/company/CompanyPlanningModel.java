@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -134,10 +133,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
     public static final String COLOR_CAPABILITY_LINE = "#000000"; // black
     public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13";
-
-    private static EffortDuration min(EffortDuration... durations) {
-        return Collections.min(Arrays.asList(durations));
-    }
 
     @Autowired
     private IOrderDAO orderDAO;
