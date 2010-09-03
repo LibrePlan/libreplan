@@ -88,6 +88,16 @@
 
                 <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
                     <caption label="${i18n:_('Allocations')}" />
+
+                    <!-- Multiple allocation selector -->
+                    <separator spacing="10px"/>
+                    <hbox>
+                    <label value="${i18n:_('Select criteria or resources')}" tooltiptext="${i18n:_('Select criteria set or a resource to add')}"/>
+                    <bandboxMultipleSearch id="bdAllocationSelector" widthBandbox="285px" widthListbox="300px"
+                        finder="ResourceAllocationMultipleFiltersFinder"/>
+                    <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(event)"/>
+                    </hbox>
+                    <separator spacing="10px"/>
                     <grid id="allocationsGrid"
                         model="@{allocationController.resourceAllocations}"
                         rowRenderer="@{allocationController.resourceAllocationRenderer}"

@@ -54,11 +54,15 @@
     <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton"
         init-method="init" />
 
+    <bean id="resourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourceAllocationMultipleFiltersFinder" scope="singleton"
+        init-method="init" />
+
     <bean id="workerMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.WorkerMultipleFiltersFinder" scope="singleton"
         init-method="init" />
 
     <bean id="criterionMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"
         init-method="init" />
+
     <bean id="scenarioManager"
         class="org.navalplanner.web.scenarios.CurrentUserScenarioAwareManager"
         scope="singleton"/>

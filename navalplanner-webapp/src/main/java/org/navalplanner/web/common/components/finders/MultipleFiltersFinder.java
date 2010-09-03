@@ -74,12 +74,12 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     public String objectToString(Object obj) {
         FilterPair filterPair = (FilterPair) obj;
         String text = filterPair.getType() + "(" + filterPair.getPattern()
-                + "), ";
+                + "); ";
         return text;
     }
 
     public String getNewFilterText(String inputText) {
-        String[] filtersText = inputText.split(",");
+        String[] filtersText = inputText.split(";");
         String newFilterText = getLastText(filtersText);
         return newFilterText;
     }
@@ -93,7 +93,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         }
     }
 
-    public boolean isValidNewFilter(Object obj) {
+    public boolean isValidNewFilter(List filterValues, Object obj) {
         FilterPair filter = (FilterPair) obj;
         if (filter.getType().equals(FilterEnumNone.None)) {
             return false;
@@ -106,9 +106,9 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
             return true;
         }
 
-        filterValues = updateDeletedFilters(filterValues, value);
+        updateDeletedFilters(filterValues, value);
         value = StringUtils.deleteWhitespace(value);
-        String[] values = value.split(",");
+        String[] values = value.split(";");
         if (values.length != filterValues.size()) {
             return false;
         }
@@ -125,34 +125,39 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
         return true;
     }
 
-    public List<FilterPair> updateDeletedFilters(List filterValues, String value) {
-        String[] values = value.split(",");
-        List<FilterPair> listFilters = (List<FilterPair>) filterValues;
+    public boolean updateDeletedFilters(List filterValues, String value) {
+        String[] values = value.split(";");
         List<FilterPair> list = new ArrayList<FilterPair>();
-        list.addAll(listFilters);
+        list.addAll(filterValues);
 
+        boolean someRemoved = false;
         if (values.length < filterValues.size() + 1) {
             for (FilterPair filterPair : list) {
                 String filter = filterPair.getType() + "("
                         + filterPair.getPattern() + ")";
                 if (!isFilterAdded(values, filter)) {
-                    listFilters.remove(filterPair);
+                    filterValues.remove(filterPair);
+                    someRemoved = true;
                 }
             }
         }
-        return listFilters;
+        return someRemoved;
     }
 
-    private boolean isFilterAdded(String[] values, String filter) {
+    protected boolean isFilterAdded(String[] values, String filter) {
         for (int i = 0; i < values.length; i++) {
-            String value = values[i].replace(" ", "");
-            filter = StringUtils.deleteWhitespace(filter);
-
-            if (filter.equals(value)) {
+            String value = values[i];
+            if (isFilterEquals(value, filter)) {
                 return true;
             }
         }
         return false;
+    }
+
+    protected boolean isFilterEquals(String value, String filter) {
+        value = value.replace(" ", "");
+        filter = StringUtils.deleteWhitespace(filter);
+        return (filter.equals(value));
     }
 
     public String[] getHeaders() {

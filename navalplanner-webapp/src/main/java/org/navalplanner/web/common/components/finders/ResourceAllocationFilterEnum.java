@@ -18,47 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.common.components.finders;
-
-import java.util.List;
-
-import org.zkoss.zul.ListitemRenderer;
-
 /**
- * Contract for {@link MultipleFilterFinder}<br />
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
+package org.navalplanner.web.common.components.finders;
 
-public interface IMultipleFiltersFinder {
+public enum ResourceAllocationFilterEnum implements IFilterEnum {
 
-    void init();
-
-    /**
-     * Return the FilterPair list match with filter.
-     * @param filter
-     * @return List<FilterPair>
-     */
-    List<FilterPair> getMatching(String filter);
-
-    List<FilterPair> getFirstTenFilters();
-
-    String objectToString(Object obj);
+    None("..."), Criterion(_("Criterion")), Resource(_("Resource"));
 
     /**
-     * Return the new filter that is lower case and without white spaces.
-     * @param inputText
-     * @return
+     * Forces to mark the string as needing translation
      */
-    String getNewFilterText(String inputText);
+    private static String _(String string) {
+        return string;
+    }
 
-    boolean isValidNewFilter(List filterValues, Object obj);
+    private String description;
 
-    boolean isValidFormatText(List filterValues, String value);
+    private ResourceAllocationFilterEnum(String description) {
+        this.description = description;
+    }
 
-    boolean updateDeletedFilters(List filterValues, String value);
-
-    String[] getHeaders();
-
-    ListitemRenderer getItemRenderer();
+    @Override
+    public String toString() {
+        return description;
+    }
 
 }

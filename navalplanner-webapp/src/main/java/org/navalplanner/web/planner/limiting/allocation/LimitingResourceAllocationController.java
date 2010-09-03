@@ -145,6 +145,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     }
 
     public void onSelectWorkers(Event event) {
+        System.out.println("onSelectWorkers");
         try {
             addSelectedResources();
         } finally {

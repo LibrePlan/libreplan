@@ -70,6 +70,12 @@
                 <!-- Allocations -->
                 <panel style="margin-top: 5px" sclass="assignedresources" closable="false" title="${i18n:_('Allocations')}">
                     <panelchildren>
+
+                    <!-- Multiple allocation selector -->
+                    <separator spacing="10px"/>
+                    <newAllocationSelector id="limitingNewAllocationSelector" />
+                    <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(event)"/>
+                    <separator spacing="10px"/>
                     <grid id="gridLimitingAllocations"
                         model="@{limitingAllocationController.resourceAllocationRows}"
                         rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
