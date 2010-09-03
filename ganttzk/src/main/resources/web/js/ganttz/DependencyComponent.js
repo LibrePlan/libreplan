@@ -142,9 +142,11 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
         depmid.css(depmidcss);
 
         var depend = this._findImageElement('end');
-        depend.css({top : yend, left : xorig, width : width});
+        var dependcss = {top : yend, left : xorig};
+        if(width < 0) dependcss.width = Math.abs(width);
+        depend.css(dependcss);
 
-        if (width < 0) depend.css({left : xend + 'px', width : width + 'px'});
+        if (width < 0) depend.css({left : xend, width : width});
 
         var deparrow = this._findImageElement('arrow');
         var deparrowsrc, deparrowcss;
