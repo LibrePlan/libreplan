@@ -20,6 +20,16 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         if(this._dependencies == undefined) this._dependencies = [];
         this._dependencies.push(dependency);
     },
+    _createArrow : function(){
+        var dependencylist = ganttz.DependencyList.$(jq('#ganttpanel > div[z\\.type="ganttz.dependencylist.Dependencylist"]').attr('id'));
+        var unlinkedDependency = new ganttz.UnlinkedDependencyComponent();
+        unlinkedDependency.setOrigin(this.$n());
+
+        dependencylist.appendChild(unlinkedDependency);
+        dependencylist.rerender();
+
+        unlinkedDependency.draw();
+    },
     _showTooltip : function(){
         this._tooltipTimeout = setTimeout(jq.proxy(function(offset) {
             var element = jq("#tasktooltip" + this.uuid);
