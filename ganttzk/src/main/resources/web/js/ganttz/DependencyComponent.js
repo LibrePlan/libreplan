@@ -196,6 +196,7 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
     START_START    : "START_START",
     HALF_DEPENDENCY_PADDING : 2,
     DEPENDENCY_PADDING : 4,
+    DRAGABLE_PADDING : 20, // Drag padding for dependency creation
     getImagesDir : function(){
         return "/" + common.Common.webAppContextPath() + "/zkau/web/ganttz/img/";
     }
