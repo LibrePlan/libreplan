@@ -948,7 +948,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                         Entry<LocalDate, List<Resource>> element) {
                     LocalDate day = element.getKey();
                     List<Resource> resources = element.getValue();
-                    return sumAvailabilitiesForDay(resources, day);
+                    return sumCalendarCapacitiesForDay(resources, day);
                 }
 
             }.calculate(getResourcesByDateBetween(resources, start, finish));

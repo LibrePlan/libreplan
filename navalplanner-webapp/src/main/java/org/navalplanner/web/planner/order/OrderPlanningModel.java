@@ -1250,7 +1250,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
                 for (Resource resource : orderDayAssignmentsGrouped.get(day)
                         .keySet()) {
-                    final EffortDuration resourceCapacityHours = availabilityFor(
+                    final EffortDuration resourceCapacityHours = calendarCapacityFor(
                             resource, day);
 
                     final EffortDuration durationAtOrder = orderDayAssignmentsGrouped
@@ -1303,7 +1303,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             EffortDuration result = zero();
             for (Resource resource : orderDayAssignmentsGrouped.get(day)
                     .keySet()) {
-                result = result.plus(availabilityFor(resource, day));
+                result = result.plus(calendarCapacityFor(resource, day));
             }
             return result;
         }
