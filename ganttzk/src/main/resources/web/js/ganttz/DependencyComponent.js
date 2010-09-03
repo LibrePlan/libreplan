@@ -258,6 +258,108 @@ ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
 ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
     bind_ : function(){
         this.$supers('bind_', arguments);
+        this._DOMlisttasks = jq('#listtasks');
+        this._DOMlistdependencies = jq('#listdependencies');
+        this._WGTganttpanel = ganttz.GanttPanel.getInstance();
+
+        this._updateArrow();
+    },
+    draw : function(){
+        this.domListen_(this._WGTganttpanel.$n(), 'onMousemove', '_updateArrow');
+        this.domListen_(this._WGTganttpanel.$n(), 'onClick', '_consolidateDependency');
+    },
+    setOrigin : function(origin){
+        this._DOMorigin = jq(origin);
+    },
+    _consolidateDependency : function(){
+        if ((task = this._isOverTask())) {
+            console.log("Dependency OVER task");
+        }
+    },
+    _isOverTask : function() {
+        var DOMscrollcontainer = jq('#scroll_container');
+        var DOMinnerlayout = jq('.rightpanellayout div :first');
+        var tasksArray;
+
+        tasksArray = jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.task.Task"]');
+        tasksArray.contact(jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.taskcontainer.TaskContainer"]'))
+
+        function findPosX(obj)
+        {
+            var curleft = 0;
+            if(obj.offsetParent)
+                while(1)
+                {
+                    curleft += obj.offsetLeft;
+                    if(!obj.offsetParent)
+                        break;
+                    obj = obj.offsetParent;
+                }
+            else if(obj.x)
+                curleft += obj.x;
+            return curleft;
+        }
+
+        function findPosY(obj)
+        {
+            var curtop = 0;
+            if(obj.offsetParent)
+                while(1)
+                {
+                    curtop += obj.offsetTop;
+                    if(!obj.offsetParent)
+                        break;
+                    obj = obj.offsetParent;
+                }
+            else if(obj.y)
+                curtop += obj.y;
+            return curtop;
+        }
+
+
+        a = findPosX(DOMinnerlayout);
+        b = findPosY(DOMinnerlayout);
+
+        var xpos =    this._WGTganttpanel.getXMouse() -
+                    findPosX(DOMinnerlayout)+
+                    DOMinnerlayout.scrollLeft();
+        var ypos =    this._WGTganttpanel.getYMouse() -
+                    findPosY(DOMinnerlayout) +
+                    innerLayout.scrollTop() -
+                    this._DOMlisttasks.position().top;
+
+        var task, coordTask;
+        for ( var i = 0; i < tasksArray.length; i++) {
+            task = jq(tasksArray[i]);
+            coordTask = task.position();
+            /* Added margins to pointing errors */
+            if (((xpos) > (coordTask.left - this.$class.DRAGABLE_PADDING))
+                    && ((xpos) < (coordTask.left + task.outerWidth() + this.$class.DRAGABLE_PADDING))
+                    && (ypos > (coordTask.top))
+                    && (ypos < (coordTask.top + task.outerHeight()))) {
+                return task;
+            }
+        }
+        return false;
+    },
+    _updateArrow : function(){
+        var coordDest, coordOrigin = this.findPos_(this._DOMorigin);
+
+        coordOrigin.left =    coordOrigin.left
+                            + Math.max(0,    this._DOMorigin.outerWidth() -
+                                            ganttz.TaskComponent.CORNER_WIDTH);
+
+        coordOrigin.top =    coordOrigin.top - this._DOMlisttasks.position().top +
+                            this._DOMlistdependencies.position().top +
+                            ganttz.TaskComponent.HEIGHT;
+
+        coordDest = this._findCoordsForMouse();
+        this.drawArrow_(coordOrigin, coordDest);
+    },
+    _findCoordsForMouse : function(){
+        var pos1 = YAHOO.util.Dom.getXY('listtasks');
+        return {    left : this._WGTganttpanel.getXMouse() -  pos1[0],
+                    top: this._WGTganttpanel.getYMouse() - pos1[1]};
     }
 })
 
