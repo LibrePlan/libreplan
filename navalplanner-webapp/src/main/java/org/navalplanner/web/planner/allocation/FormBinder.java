@@ -45,6 +45,7 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
@@ -163,6 +164,8 @@ public class FormBinder {
     };
 
     private boolean recommendedAllocation = false;
+
+    private NewAllocationSelectorCombo newAllocationSelectorCombo;
 
     private Tab workerSearchTab;
 
@@ -555,7 +558,7 @@ public class FormBinder {
         this.recommendedAllocationCheckbox = recommendedAllocation;
         this.recommendedAllocationCheckbox
                 .setChecked(this.recommendedAllocation);
-        disableIfNeededWorkerSearchTab();
+        disableIfNeededWorkerSearch();
         recommendedCheckboxListener = new EventListener() {
 
             @Override
@@ -579,7 +582,7 @@ public class FormBinder {
         resourcesPerDayDistributorForRecommendedAllocation = ResourcesPerDay
                 .distributor(hoursDistributorForRecommendedAllocation);
         this.recommendedAllocation = true;
-        disableIfNeededWorkerSearchTab();
+        disableIfNeededWorkerSearch();
         applyDisabledRules();
         allHoursInput.addEventListener(Events.ON_CHANGE,
                 allHoursInputChange);
@@ -619,15 +622,21 @@ public class FormBinder {
                 .removeEventListener(Events.ON_CHANGE,
                 allHoursInputChange);
         applyDisabledRules();
-        disableIfNeededWorkerSearchTab();
+        disableIfNeededWorkerSearch();
     }
 
-    private void disableIfNeededWorkerSearchTab() {
+    private void disableIfNeededWorkerSearch() {
         workerSearchTab.setDisabled(this.recommendedAllocation);
+        newAllocationSelectorCombo.setDisabled(this.recommendedAllocation);
     }
 
     public void setWorkerSearchTab(Tab workerSearchTab) {
         this.workerSearchTab = workerSearchTab;
+    }
+
+    public void setNewAllocationSelectorCombo(
+            NewAllocationSelectorCombo newAllocationSelectorCombo) {
+        this.newAllocationSelectorCombo = newAllocationSelectorCombo;
     }
 
     private void sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay() {

@@ -58,7 +58,9 @@ public class ResourceAllocationMultipleFiltersFinder extends
     @Autowired
     private IResourceDAO resourceDAO;
 
-    private IFilterEnum mode = ResourceAllocationFilterEnum.None;
+    private IFilterEnum mode = FilterEnumNone.None;
+
+    private boolean isLimitingResourceAllocation = false;
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
@@ -66,6 +68,11 @@ public class ResourceAllocationMultipleFiltersFinder extends
 
     protected ResourceAllocationMultipleFiltersFinder() {
 
+    }
+
+    protected ResourceAllocationMultipleFiltersFinder(
+            boolean isLimitingResourceAllocation) {
+        this.isLimitingResourceAllocation = isLimitingResourceAllocation;
     }
 
     @Transactional(readOnly = true)
@@ -111,6 +118,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         if (isModeNone()) {
             fillWithFirstTenFiltersResources();
         }
+        addNoneFilter();
         return getListMatching();
     }
 
@@ -121,6 +129,12 @@ public class ResourceAllocationMultipleFiltersFinder extends
             for (int i = 0; getListMatching().size() < 10
                     && i < mapResources.get(className).size(); i++) {
                 Resource resource = mapResources.get(className).get(i);
+
+                if (isLimitingResourceAllocation
+                        && !resource.isLimitingResource()) {
+                    continue;
+                }
+
                 String pattern = className.getSimpleName() + " :: "
                         + resource.getName();
                 getListMatching().add(
@@ -199,6 +213,12 @@ public class ResourceAllocationMultipleFiltersFinder extends
         boolean limited = (filter.length() < 3);
         for (Class className : mapResources.keySet()) {
             for (Resource resource : mapResources.get(className)) {
+
+                if (isLimitingResourceAllocation
+                        && !resource.isLimitingResource()) {
+                    continue;
+                }
+
                 String name = StringUtils.deleteWhitespace(resource.getName()
                         .toLowerCase());
                 if (name.contains(filter)) {
@@ -235,12 +255,6 @@ public class ResourceAllocationMultipleFiltersFinder extends
                         resource));
     }
 
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(ResourceAllocationFilterEnum.None,
-                        ResourceAllocationFilterEnum.None.toString(), null));
-    }
-
     public boolean isValidNewFilter(List filterValues, Object obj) {
         if (!super.isValidNewFilter(filterValues, obj)) {
             return false;
@@ -272,7 +286,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private boolean isModeNone() {
-        return mode.equals(ResourceAllocationFilterEnum.None);
+        return mode.equals(FilterEnumNone.None);
     }
 
     private void currentMode(List filterValues) {
@@ -283,7 +297,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
                 mode = ResourceAllocationFilterEnum.Criterion;
             }
         }
-        mode = ResourceAllocationFilterEnum.None;
+        mode = FilterEnumNone.None;
     }
 
     public String objectToString(Object obj) {
@@ -329,4 +343,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return super.updateDeletedFilters(filterValues, value);
     }
 
+    public void setLimintingResourceAllocation(boolean val) {
+        isLimitingResourceAllocation = val;
+    }
 }

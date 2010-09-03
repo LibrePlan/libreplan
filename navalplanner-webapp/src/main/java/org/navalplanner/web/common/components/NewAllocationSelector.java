@@ -27,7 +27,6 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.api.Radio;
 import org.zkoss.zul.api.Radiogroup;
 
@@ -37,7 +36,7 @@ import org.zkoss.zul.api.Radiogroup;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class NewAllocationSelector extends HtmlMacroComponent {
+public class NewAllocationSelector extends AllocationSelector {
 
     public enum AllocationType {
         SPECIFIC(_("specific allocation")) {
@@ -99,31 +98,9 @@ public class NewAllocationSelector extends HtmlMacroComponent {
                 INewAllocationsAdder allocationsAdder);
     }
 
-    private INewAllocationsAdder allocationsAdder;
-
-    public void clearAll() {
-        getController().clearAll();
-    }
-
-    private NewAllocationSelectorController getController() {
+    public NewAllocationSelectorController getController() {
         return (NewAllocationSelectorController) this
                 .getVariable("controller", true);
-    }
-
-    public void addChoosen() {
-        getController().addTo(allocationsAdder);
-    }
-
-    public void setAllocationsAdder(INewAllocationsAdder allocationsAdder) {
-        this.allocationsAdder = allocationsAdder;
-        if (getController() != null) {
-            getController().clearAll();
-        }
-
-    }
-
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        getController().setLimitingResourceFilter(limitingResource);
     }
 
     public void allowSelectMultipleResources(boolean multiple) {

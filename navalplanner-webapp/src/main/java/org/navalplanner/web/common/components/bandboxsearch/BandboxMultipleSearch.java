@@ -80,61 +80,76 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         listhead = (Listhead) listbox.getFellowIfAny("listhead");
         bandbox = (Bandbox) getFellowIfAny("bandbox");
 
-        if (multipleFiltersFinder != null) {
-            listbox.setModel(getSubModel());
-            listbox.setItemRenderer(multipleFiltersFinder.getItemRenderer());
-            addHeaders();
-
-            /**
-             * Search for matching elements while typing on bandbox
-             */
-            bandbox.addEventListener("onChanging", new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    final String inputText = ((InputEvent) event).getValue();
-                    if ((inputText == null) || (inputText.isEmpty())) {
-                        clear();
-                        searchMultipleFilters();
-                    } else {
-                        searchMultipleFilters(inputText);
-                    }
-                }
-            });
-
-            bandbox.setCtrlKeys("#down");
-            bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    int selectedItemIndex = listbox.getSelectedIndex();
-                    List<Listitem> items = listbox.getItems();
-                    if (!items.isEmpty()) {
-                        listbox.setSelectedIndex(0);
-                        items.get(0).setFocus(true);
-                    }
-                }
-            });
-
-            // Close bandbox for events onClick and onOK
-            listbox.addEventListener(Events.ON_CLICK, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    pickElementFromListAndCloseBandbox();
-                }
-            });
-            listbox.addEventListener(Events.ON_OK, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    pickElementFromListAndCloseBandbox();
-                }
-            });
-        }
+        initFinder();
 
         updateWidth();
         updateHeight();
+    }
+
+    private void initListbox() {
+        listbox.setModel(getSubModel());
+        listbox.setItemRenderer(multipleFiltersFinder.getItemRenderer());
+        addHeaders();
+
+            // Close bandbox for events onClick and onOK
+        listbox.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                pickElementFromListAndCloseBandbox();
+                }
+            });
+        listbox.addEventListener(Events.ON_OK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                pickElementFromListAndCloseBandbox();
+                }
+            });
+    }
+
+    private void initBandbox() {
+        /**
+         * Search for matching elements while typing on bandbox
+         */
+        bandbox.addEventListener("onChanging", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                final String inputText = ((InputEvent) event).getValue();
+                if ((inputText == null) || (inputText.isEmpty())) {
+                    clear();
+                    searchMultipleFilters();
+                } else {
+                    searchMultipleFilters(inputText);
+                }
+            }
+        });
+
+        bandbox.setCtrlKeys("#down");
+        bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                int selectedItemIndex = listbox.getSelectedIndex();
+                List<Listitem> items = listbox.getItems();
+                if (!items.isEmpty()) {
+                    listbox.setSelectedIndex(0);
+                    items.get(0).setFocus(true);
+                }
+            }
+        });
+    }
+
+    private void initFinder() {
+        if (multipleFiltersFinder != null) {
+            if (listbox != null) {
+                initListbox();
+            }
+            if (bandbox != null) {
+                initBandbox();
+            }
+        }
     }
 
     private void pickElementFromListAndCloseBandbox() {
@@ -280,6 +295,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     public void setFinder(String classname) {
         multipleFiltersFinder = (IMultipleFiltersFinder) getBean(StringUtils
                 .uncapitalize(classname));
+        initFinder();
     }
 
     /**
@@ -357,4 +373,5 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     public String getHeightBbox() {
         return heightBbox;
     }
+
 }

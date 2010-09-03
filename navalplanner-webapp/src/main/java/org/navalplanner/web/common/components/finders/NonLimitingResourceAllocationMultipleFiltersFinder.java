@@ -18,31 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- */
 package org.navalplanner.web.common.components.finders;
 
-public enum ResourceAllocationFilterEnum implements IFilterEnum {
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Resource;
 
-    Criterion(_("Criterion")), Resource(_("Resource"));
+/**
+ * Implements all the methods needed to search the criterion and resources to
+ * allocate to the tasks which are not limiting. Provides multiples searches to
+ * allocate several {@link Criterion} or an especific {@link Resource}.
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+public class NonLimitingResourceAllocationMultipleFiltersFinder extends
+        ResourceAllocationMultipleFiltersFinder {
 
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
-
-    private String description;
-
-    private ResourceAllocationFilterEnum(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return description;
+    protected NonLimitingResourceAllocationMultipleFiltersFinder() {
+        super(false);
     }
 
 }

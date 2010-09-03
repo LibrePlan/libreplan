@@ -33,14 +33,12 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -62,10 +60,8 @@ import org.zkoss.zul.Treerow;
  * Controller for searching for {@link Resource}
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class NewAllocationSelectorController extends GenericForwardComposer {
-
-    @Autowired
-    private IResourceSearchModel resourceSearchModel;
+public class NewAllocationSelectorController extends
+        AllocationSelectorController {
 
     private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
 
@@ -80,8 +76,6 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
     private CriterionRenderer criterionRenderer = new CriterionRenderer();
 
     private AllocationType currentAllocationType;
-
-    private boolean limitingResource = false;
 
     public NewAllocationSelectorController() {
 
@@ -425,10 +419,6 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     public void addTo(INewAllocationsAdder allocationsAdder) {
         currentAllocationType.addTo(this, allocationsAdder);
-    }
-
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        this.limitingResource = limitingResource;
     }
 
     public void allowSelectMultipleResources(boolean multiple) {

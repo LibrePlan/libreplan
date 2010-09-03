@@ -42,9 +42,9 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -103,7 +103,6 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Transactional(readOnly = true)
     public void addGeneric(Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
-
         if (resources.isEmpty()) {
             getMessagesForUser()
                     .showMessage(Level.ERROR,
@@ -170,6 +169,13 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Override
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
+
+        if (!areAllLimitingResources(resources)) {
+            getMessagesForUser().showMessage(Level.ERROR,
+                    _("All resources must be limiting. "));
+            return;
+        }
+
         if (resources.size() >= 1) {
             if (planningState != null) {
                 planningState.reassociateResourcesWithSession();
@@ -178,6 +184,16 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
                     Collections.singleton(getFirstChild(resources)));
             addSpecificResourceAllocation(getFirstChild(reloaded));
         }
+    }
+
+    private boolean areAllLimitingResources(
+            Collection<? extends Resource> resources) {
+        for (Resource resource : resources) {
+            if (!resource.isLimitingResource()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Resource getFirstChild(Collection<? extends Resource> collection) {

@@ -20,23 +20,16 @@
 
 <zk>
     <zscript><![CDATA[
-       selectorController = new org.navalplanner.web.resources.search.NewAllocationSelectorController();
+       selectorController = new org.navalplanner.web.resources.search.NewAllocationSelectorComboController();
     ]]>
     </zscript>
 
 
 <vbox apply="${selectorController}">
     <hbox>
-        <label value="${i18n:_('Assignment Type')}" />
-        <radiogroup id="allocationTypeSelector" orient="vertical">
-            <radio forEach="${selectorController.allocationTypes}"
-                label="${each.name}" value="${each}" />
-        </radiogroup>
-    </hbox>
-    <hbox>
         <label value="${i18n:_('Select criteria or resources')}" tooltiptext="${i18n:_('Select criteria set or a resource to add')}"/>
-        <bandboxMultipleSearch id="bdLimitingAllocationSelector" widthBandbox="285px" widthListbox="300px" heightBbox="300px"
-            finder="ResourceAllocationMultipleFiltersFinder"/>
+        <bandboxMultipleSearch id="bdLimitingAllocationSelector"
+            widthBandbox="385px" widthListbox="400px" heightBbox="15px"/>
     </hbox>
 </vbox>
 </zk>

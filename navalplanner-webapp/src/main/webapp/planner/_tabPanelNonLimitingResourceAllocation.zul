@@ -20,12 +20,16 @@
 
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
+<?component name="newAllocationSelectorCombo"
+    class="org.navalplanner.web.common.components.NewAllocationSelectorCombo"
+    macroURI="/resources/search/allocation_selector_combo.zul" ?>
+
 <?component name="newAllocationSelector"
-    class="org.navalplanner.web.common.components.NewAllocationSelector"
+ class="org.navalplanner.web.common.components.NewAllocationSelector"
     macroURI="/resources/search/allocation_selector.zul" ?>
 
 <tabpanel id="resourceAllocationTabpanel">
-    <tabbox mold="accordion">
+ <tabbox mold="accordion">
         <tabs>
             <tab id="tbResourceAllocation" label="${i18n:_('Non limiting resource allocation')}" image="common/img/collapse.gif" />
             <tab id="workerSearchTab" label="${i18n:_('Resources search')}" image="common/img/collapse.gif"/>
@@ -92,12 +96,10 @@
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
                     <hbox>
-                    <label value="${i18n:_('Select criteria or resources')}" tooltiptext="${i18n:_('Select criteria set or a resource to add')}"/>
-                    <bandboxMultipleSearch id="bdAllocationSelector" widthBandbox="285px" widthListbox="300px"
-                        finder="ResourceAllocationMultipleFiltersFinder"/>
-                    <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(event)"/>
+                        <newAllocationSelectorCombo id="newAllocationSelectorCombo" />
+                        <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
                     </hbox>
-                    <separator spacing="10px"/>
+                    <separator spacing="20px"/>
                     <grid id="allocationsGrid"
                         model="@{allocationController.resourceAllocations}"
                         rowRenderer="@{allocationController.resourceAllocationRenderer}"
@@ -123,14 +125,14 @@
                         </columns>
                     </grid>
                 </groupbox>
-            </tabpanel>
+        </tabpanel>
 
             <!-- Worker search -->
             <tabpanel>
                 <newAllocationSelector id="newAllocationSelector"/>
                 <!--  Select worker -->
                 <hbox>
-                    <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />
+                    <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(newAllocationSelector)" />
                     <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()" />
                 </hbox>
             </tabpanel>

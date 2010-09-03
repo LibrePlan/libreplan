@@ -18,31 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.navalplanner.web.common.components;
+
+import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.resources.search.NewAllocationSelectorComboController;
+
 /**
+ * ZK macro component for searching {@link Worker} entities
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-package org.navalplanner.web.common.components.finders;
-
-public enum ResourceAllocationFilterEnum implements IFilterEnum {
-
-    Criterion(_("Criterion")), Resource(_("Resource"));
-
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
-
-    private String description;
-
-    private ResourceAllocationFilterEnum(String description) {
-        this.description = description;
-    }
+@SuppressWarnings("serial")
+public class NewAllocationSelectorCombo extends AllocationSelector {
 
     @Override
-    public String toString() {
-        return description;
+    public NewAllocationSelectorComboController getController() {
+        return (NewAllocationSelectorComboController) this.getVariable(
+                "controller", true);
     }
 
+    public void setDisabled(boolean disabled) {
+        ((NewAllocationSelectorComboController) getController())
+                .setDisabled(disabled);
+    }
 }
