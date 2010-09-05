@@ -20,29 +20,28 @@
 
 package org.navalplanner.web.resourceload;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.planner.chart.Chart;
@@ -600,13 +599,13 @@ public class ResourceLoadController implements Composer {
                 finish = resourceLoadModel.getEndDateFilter();
             }
 
-            Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish),
-                    interval);
+            Plotinfo plotInfoLoad = createPlotinfoFromDurations(
+                    getLoad(start, finish), interval);
             plotInfoLoad
                     .setFillColor(CompanyPlanningModel.COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
 
-            Plotinfo plotInfoMax = createPlotinfo(
+            Plotinfo plotInfoMax = createPlotinfoFromDurations(
                     getCalendarMaximumAvailability(interval.getStart(),
                             interval.getFinish()), interval);
             plotInfoMax
@@ -614,7 +613,8 @@ public class ResourceLoadController implements Composer {
             plotInfoMax.setFillColor("#FFFFFF");
             plotInfoMax.setLineWidth(2);
 
-            Plotinfo plotInfoOverload = createPlotinfo(getOverload(start, finish), interval);
+            Plotinfo plotInfoOverload = createPlotinfoFromDurations(
+                    getOverload(start, finish), interval);
             plotInfoOverload
                     .setFillColor(CompanyPlanningModel.COLOR_OVERLOAD_GLOBAL);
             plotInfoOverload.setLineWidth(0);
@@ -630,127 +630,114 @@ public class ResourceLoadController implements Composer {
             chart.setHeight("150px");
         }
 
-        private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
-            List<DayAssignment> dayAssignments = resourceLoadModel
-                    .getDayAssignments();
-
-            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
-
-            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : mapDayAssignments.keySet()) {
-                if ((day.compareTo(new LocalDate(start)) >= 0)
-                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
-                    result.put(day, mapDayAssignments.get(day));
-                }
-            }
-
-            return result;
-        }
-
-        private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
+        private SortedMap<LocalDate, EffortDuration> getLoad(Date start,
                 Date finish) {
+            final LocalDate startDay = new LocalDate(start);
+            final LocalDate finishDay = new LocalDate(finish);
+
             List<DayAssignment> dayAssignments = resourceLoadModel
                     .getDayAssignments();
 
-            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
-            SortedMap<LocalDate, BigDecimal> mapMaxAvailability = calculateHoursAdditionByDay(
-                    resourceLoadModel.getResources(), start, finish);
-
-            for (LocalDate day : mapDayAssignments.keySet()) {
-                if ((day.compareTo(new LocalDate(start)) >= 0)
-                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
-                    BigDecimal overloadHours = mapDayAssignments.get(day);
-                    BigDecimal maxHours = mapMaxAvailability.get(day);
-                    mapDayAssignments.put(day, overloadHours.add(maxHours));
+            SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
+            SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped = groupDurationsByDayAndResource(dayAssignments);
+            SortedMap<LocalDate, EffortDuration> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
+            for (Entry<LocalDate, EffortDuration> each : mapDayAssignments
+                    .entrySet()) {
+                LocalDate day = each.getKey();
+                if (day.compareTo(startDay) >= 0
+                        && day.compareTo(finishDay) <= 0) {
+                    result.put(day, each.getValue());
                 }
             }
-
-            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-            for (LocalDate day : mapDayAssignments.keySet()) {
-                if ((day.compareTo(new LocalDate(start)) >= 0)
-                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
-                    result.put(day, mapDayAssignments.get(day));
-                }
-            }
-
             return result;
         }
 
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(
-                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
+        private SortedMap<LocalDate, EffortDuration> getOverload(Date start,
+                Date finish) {
+            final LocalDate startDay = new LocalDate(start);
+            final LocalDate finishDay = new LocalDate(finish);
+            List<DayAssignment> dayAssignments = resourceLoadModel
+                    .getDayAssignments();
 
-            for (LocalDate day : dayAssignmentGrouped.keySet()) {
-                int result = 0;
-
-                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
-                    BaseCalendar calendar = resource.getCalendar();
-
-                    int workableHours = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getCapacityAt(day);
-                    if (calendar != null) {
-                        workableHours = calendar.getCapacityAt(day);
-                    }
-
-                    int assignedHours = dayAssignmentGrouped.get(day).get(
-                            resource);
-
-                    if (assignedHours <= workableHours) {
-                        result += assignedHours;
-                    } else {
-                        result += workableHours;
-                    }
-                }
-
-                map.put(day, result);
-            }
-
-            return convertAsNeededByZoom(convertToBigDecimal(map));
-        }
-
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayJustOverload(
-                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
-
-            for (LocalDate day : dayAssignmentGrouped.keySet()) {
-                int result = 0;
-
-                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
-                    BaseCalendar calendar = resource.getCalendar();
-
-                    int workableHours = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getCapacityAt(day);
-                    if (calendar != null) {
-                        workableHours = calendar.getCapacityAt(day);
-                    }
-
-                    int assignedHours = dayAssignmentGrouped.get(day).get(
-                            resource);
-
-                    if (assignedHours > workableHours) {
-                        result += assignedHours - workableHours;
-                    }
-                }
-
-                map.put(day, result);
-            }
-
-            return convertAsNeededByZoom(convertToBigDecimal(map));
-        }
-
-        private SortedMap<LocalDate, BigDecimal> getCalendarMaximumAvailability(
-                Date start, Date finish) {
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDay(
+            SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped = groupDurationsByDayAndResource(dayAssignments);
+            SortedMap<LocalDate, EffortDuration> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
+            SortedMap<LocalDate, EffortDuration> mapMaxAvailability = calculateHoursAdditionByDay(
                     resourceLoadModel.getResources(), start, finish);
-
-            return mapDayAssignments;
+            for (Entry<LocalDate, EffortDuration> each : mapDayAssignments
+                    .entrySet()) {
+                LocalDate day = each.getKey();
+                EffortDuration overload = each.getValue();
+                if (day.compareTo(startDay) >= 0
+                        && day.compareTo(finishDay) <= 0) {
+                    EffortDuration maxAvailability = mapMaxAvailability
+                            .get(day);
+                    mapDayAssignments.put(day, overload.plus(maxAvailability));
+                }
+            }
+            SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
+            for (LocalDate day : mapDayAssignments.keySet()) {
+                if (day.compareTo(startDay) >= 0
+                        && day.compareTo(finishDay) <= 0) {
+                    result.put(day, mapDayAssignments.get(day));
+                }
+            }
+            return result;
         }
 
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDay(
+        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDayWithoutOverload(
+                SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped) {
+            SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
+            for (Entry<LocalDate, Map<Resource, EffortDuration>> each : dayAssignmentGrouped
+                    .entrySet()) {
+                LocalDate day = each.getKey();
+                EffortDuration result = zero();
+                for (Entry<Resource, EffortDuration> resourceWithDuration : each
+                        .getValue().entrySet()) {
+                    Resource resource = resourceWithDuration.getKey();
+                    EffortDuration assignedDuration = resourceWithDuration
+                            .getValue();
+                    EffortDuration resourceCapacity = resource
+                            .getCalendarOrDefault().getCapacityDurationAt(day);
+                    result = result
+                            .plus(min(assignedDuration, resourceCapacity));
+                }
+                map.put(day, result);
+            }
+            return groupAsNeededByZoom(map);
+        }
+
+        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDayJustOverload(
+                SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped) {
+            SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
+            for (Entry<LocalDate, Map<Resource, EffortDuration>> each : dayAssignmentGrouped
+                    .entrySet()) {
+                final LocalDate day = each.getKey();
+                EffortDuration result = zero();
+                for (Entry<Resource, EffortDuration> resourceWithDuration : each
+                        .getValue().entrySet()) {
+                    Resource resource = resourceWithDuration.getKey();
+                    EffortDuration assignedDuration = resourceWithDuration
+                            .getValue();
+                    EffortDuration resourceCapacity = resource
+                            .getCalendarOrDefault().getCapacityDurationAt(day);
+                    EffortDuration overloadIncrement = assignedDuration
+                            .minus(min(resourceCapacity, assignedDuration));
+                    result = result.plus(overloadIncrement);
+                }
+                map.put(day, result);
+            }
+            return groupAsNeededByZoom(map);
+        }
+
+        private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
+                Date start, Date finish) {
+            return calculateHoursAdditionByDay(
+                    resourceLoadModel.getResources(), start, finish);
+        }
+
+        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDay(
                 List<Resource> resources, Date start, Date finish) {
-            return new HoursByDayCalculator<Entry<LocalDate, List<Resource>>>() {
+            return new EffortByDayCalculator<Entry<LocalDate, List<Resource>>>() {
 
                 @Override
                 protected LocalDate getDayFor(
@@ -759,13 +746,11 @@ public class ResourceLoadController implements Composer {
                 }
 
                 @Override
-                protected int getHoursFor(
+                protected EffortDuration getDurationFor(
                         Entry<LocalDate, List<Resource>> element) {
-                    LocalDate day = element.getKey();
-                    List<Resource> resources = element.getValue();
-                    return sumHoursForDay(resources, day);
+                    return sumCalendarCapacitiesForDay(element.getValue(),
+                            element.getKey());
                 }
-
             }.calculate(getResourcesByDateBetween(resources, start, finish));
         }
 
