@@ -44,9 +44,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -68,36 +65,6 @@ import org.zkoss.zk.ui.Executions;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public abstract class ChartFiller implements IChartFiller {
-
-    @Deprecated
-    protected abstract class HoursByDayCalculator<T> {
-        public SortedMap<LocalDate, BigDecimal> calculate(
-                Collection<? extends T> elements) {
-            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-            if (elements.isEmpty()) {
-                return result;
-            }
-            for (T element : elements) {
-                if (included(element)) {
-                    int hours = getHoursFor(element);
-                    LocalDate day = getDayFor(element);
-                    if (!result.containsKey(day)) {
-                        result.put(day, BigDecimal.ZERO);
-                    }
-                    result.put(day, result.get(day).add(new BigDecimal(hours)));
-                }
-            }
-            return convertAsNeededByZoom(result);
-        }
-
-        protected abstract LocalDate getDayFor(T element);
-
-        protected abstract int getHoursFor(T element);
-
-        protected boolean included(T each) {
-            return true;
-        }
-    }
 
     protected abstract class EffortByDayCalculator<T> {
         public SortedMap<LocalDate, EffortDuration> calculate(
@@ -127,35 +94,8 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    protected class DefaultDayAssignmentCalculator extends
-            HoursByDayCalculator<DayAssignment> {
-        public DefaultDayAssignmentCalculator() {
-        }
-
-        @Override
-        protected LocalDate getDayFor(DayAssignment element) {
-            return element.getDay();
-        }
-
-        @Override
-        protected int getHoursFor(DayAssignment element) {
-            return element.getHours();
-        }
-    }
-
     protected static EffortDuration min(EffortDuration... durations) {
         return Collections.min(Arrays.asList(durations));
-    }
-
-    @Deprecated
-    protected final int sumHoursForDay(
-            Collection<? extends Resource> resources,
-            LocalDate day) {
-        int sum = 0;
-        for (Resource resource : resources) {
-            sum += hoursFor(resource, day);
-        }
-        return sum;
     }
 
     protected static EffortDuration sumCalendarCapacitiesForDay(
@@ -170,18 +110,6 @@ public abstract class ChartFiller implements IChartFiller {
     protected static EffortDuration calendarCapacityFor(Resource resource,
             LocalDate day) {
         return resource.getCalendarOrDefault().getCapacityDurationAt(day);
-    }
-
-    private int hoursFor(Resource resource, LocalDate day) {
-        int result = 0;
-        ResourceCalendar calendar = resource.getCalendar();
-        if (calendar != null) {
-            result += calendar.getCapacityAt(day);
-        } else {
-            result += SameWorkHoursEveryDay.getDefaultWorkingDay()
-                    .getCapacityAt(day);
-        }
-        return result;
     }
 
     protected abstract class GraphicSpecificationCreator implements
@@ -411,16 +339,6 @@ public abstract class ChartFiller implements IChartFiller {
         return result;
     }
 
-    @Deprecated
-    protected SortedMap<LocalDate, BigDecimal> convertAsNeededByZoom(
-            SortedMap<LocalDate, BigDecimal> map) {
-        if (isZoomByDay()) {
-            return map;
-        } else {
-            return groupByWeek(map);
-        }
-    }
-
     protected SortedMap<LocalDate, EffortDuration> groupAsNeededByZoom(
             SortedMap<LocalDate, EffortDuration> map) {
         if (isZoomByDay()) {
@@ -487,28 +405,6 @@ public abstract class ChartFiller implements IChartFiller {
         valueGeometry.setAxisLabelsPlacement("left");
 
         return valueGeometry;
-    }
-
-    @Deprecated
-    protected SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
-            List<DayAssignment> dayAssignments) {
-        SortedMap<LocalDate, Map<Resource, EffortDuration>> original = groupDurationsByDayAndResource(dayAssignments);
-        SortedMap<LocalDate, Map<Resource, Integer>> result = new TreeMap<LocalDate, Map<Resource, Integer>>();
-        for (Entry<LocalDate, Map<Resource, EffortDuration>> each : original
-                .entrySet()) {
-            result.put(each.getKey(), toHoursInteger(each.getValue()));
-        }
-        return result;
-    }
-
-    private Map<Resource, Integer> toHoursInteger(
-            Map<Resource, EffortDuration> value) {
-        Map<Resource, Integer> result = new HashMap<Resource, Integer>();
-        for (Entry<Resource, EffortDuration> each : value.entrySet()) {
-            result.put(each.getKey(),
-                    BaseCalendar.roundToHours(each.getValue()));
-        }
-        return result;
     }
 
     protected SortedMap<LocalDate, Map<Resource, EffortDuration>> groupDurationsByDayAndResource(
