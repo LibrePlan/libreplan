@@ -12,7 +12,7 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
     },
     draw : function(){throw "draw method must be overwriten by extending classes"},
     drawArrow_ : function(coordOrig, coordDest){
-        switch(this.getDependencyType)
+        switch(this.getDependencyType())
         {
             case this.$class.START_START:
                 this._drawArrowStartStart(coordOrig, coordDest);
