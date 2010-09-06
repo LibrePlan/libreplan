@@ -44,8 +44,9 @@ public class InstanceConstraintViolationsListDTO {
     }
 
     public InstanceConstraintViolationsListDTO(
-            List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList) {
-        this.instanceConstraintViolationsList = instanceConstraintViolationsList;
+            List<InstanceConstraintViolationsDTO> violations) {
+        this.instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>(
+                violations);
     }
 
     @Override
