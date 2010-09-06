@@ -22,6 +22,7 @@ package org.navalplanner.ws.common.api;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -39,12 +40,12 @@ public class InstanceConstraintViolationsListDTO {
     public List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList;
 
     public InstanceConstraintViolationsListDTO() {
+        instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
     }
 
     public InstanceConstraintViolationsListDTO(
             List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList) {
         this.instanceConstraintViolationsList = instanceConstraintViolationsList;
-
     }
 
     @Override
