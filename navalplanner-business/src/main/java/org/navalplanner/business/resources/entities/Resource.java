@@ -894,7 +894,7 @@ public abstract class Resource extends IntegrationEntity {
                 sum = sum.plus(capacityCurrent);
             }
         }
-        return BaseCalendar.roundToHours(sum);
+        return sum.roundToHours();
     }
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,

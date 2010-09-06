@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +39,6 @@ import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -301,7 +299,7 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      */
     @Deprecated
     public Integer getCapacityAt(LocalDate date) {
-        return roundToHours(getCapacityDurationAt(date));
+        return getCapacityDurationAt(date).roundToHours();
     }
 
     public EffortDuration getCapacityDurationAt(LocalDate date) {
@@ -893,28 +891,12 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         calendarAvailability.setEndDate(endDate);
     }
 
-    public static int roundToHours(EffortDuration effortDuration) {
-        if (effortDuration.equals(EffortDuration.zero())) {
-            return 0;
-        }
-        return Math.max(1, roundHalfUpToHours(effortDuration.decompose()));
-    }
-
-    private static int roundHalfUpToHours(
-            EnumMap<Granularity, Integer> components) {
-        int seconds = components.get(Granularity.SECONDS);
-        int minutes = components.get(Granularity.MINUTES)
-                + (seconds < 30 ? 0 : 1);
-        int hours = components.get(Granularity.HOURS) + (minutes < 30 ? 0 : 1);
-        return hours;
-    }
-
     @Override
     public Integer toHours(LocalDate day, ResourcesPerDay resourcesPerDay) {
         final EffortDuration workableHours = getWorkableTimeAt(day);
-        return roundToHours(limitOverAssignability(day,
+        return limitOverAssignability(day,
                 resourcesPerDay.asDurationGivenWorkingDayOf(workableHours),
-                workableHours));
+                workableHours).roundToHours();
     }
 
     private EffortDuration limitOverAssignability(LocalDate day,

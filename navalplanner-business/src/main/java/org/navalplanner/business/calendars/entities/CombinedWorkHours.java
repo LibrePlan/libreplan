@@ -71,7 +71,7 @@ public abstract class CombinedWorkHours implements IWorkHours {
 
     @Override
     public Integer getCapacityAt(LocalDate date) {
-        return BaseCalendar.roundToHours(getCapacityDurationAt(date));
+        return getCapacityDurationAt(date).roundToHours();
     }
 
     @Override

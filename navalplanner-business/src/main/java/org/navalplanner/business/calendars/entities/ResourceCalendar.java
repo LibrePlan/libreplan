@@ -71,7 +71,7 @@ public class ResourceCalendar extends BaseCalendar {
             result = result.plus(getCapacityDurationAt(date));
             date = date.plusDays(1);
         }
-        return roundToHours(result);
+        return result.roundToHours();
     }
 
     @Override

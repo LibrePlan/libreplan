@@ -99,9 +99,8 @@ public class SpecificResourceAllocationTest {
             public Integer answer() throws Throwable {
                 ResourcesPerDay perDay = (ResourcesPerDay) EasyMock
                         .getCurrentArguments()[1];
-                return BaseCalendar.roundToHours(perDay
-                        .asDurationGivenWorkingDayOf(EffortDuration
-                                .hours(hours)));
+                return perDay.asDurationGivenWorkingDayOf(
+                        EffortDuration.hours(hours)).roundToHours();
             }
         };
     }
@@ -128,8 +127,8 @@ public class SpecificResourceAllocationTest {
             public Integer answer() throws Throwable {
                         LocalDate date = (LocalDate) EasyMock
                                 .getCurrentArguments()[0];
-                        return BaseCalendar.roundToHours(calendar
-                                .getCapacityDurationAt(date));
+                        return calendar.getCapacityDurationAt(date)
+                                .roundToHours();
             }
         }).anyTimes();
         expect(

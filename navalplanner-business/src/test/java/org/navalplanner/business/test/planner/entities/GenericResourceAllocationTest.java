@@ -233,9 +233,9 @@ public class GenericResourceAllocationTest {
                     @Override
                     public Integer answer() throws Throwable {
                         ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
-                        return BaseCalendar.roundToHours(resourcesPerDay
-                                .asDurationGivenWorkingDayOf(EffortDuration
-                                        .hours(hoursPerDay)));
+                        return resourcesPerDay.asDurationGivenWorkingDayOf(
+                                EffortDuration.hours(hoursPerDay))
+                                .roundToHours();
                     }
                 }).anyTimes();
         expect(baseCalendar.canWork(isA(LocalDate.class))).andReturn(true)
