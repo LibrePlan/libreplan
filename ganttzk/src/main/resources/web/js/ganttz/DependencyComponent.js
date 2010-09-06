@@ -298,70 +298,14 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
         }
     },
     _isOverTask : function() {
-        var DOMscrollcontainer = jq('#scroll_container');
-        var DOMinnerlayout = jq('.rightpanellayout div :first');
-        var tasksArray;
+        var tasksArray = jq('div[z\\.type="ganttz.task.Task"]');
+        var overTask = null;
 
-        tasksArray = jq.makeArray(jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.task.Task"]'));
-        tasksArray.concat(jq.makeArray(jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.taskcontainer.TaskContainer"]')));
+        tasksArray.each(function(index, element){
+            if(ganttz.TaskComponent.$(element.id).mouseOverTask) overTask = ganttz.TaskComponent.$(element.id);
+        });
 
-        function findPosX(obj)
-        {
-            var curleft = 0;
-            if(obj.offsetParent)
-                while(1)
-                {
-                    curleft += obj.offsetLeft;
-                    if(!obj.offsetParent)
-                        break;
-                    obj = obj.offsetParent;
-                }
-            else if(obj.x)
-                curleft += obj.x;
-            return curleft;
-        }
-
-        function findPosY(obj)
-        {
-            var curtop = 0;
-            if(obj.offsetParent)
-                while(1)
-                {
-                    curtop += obj.offsetTop;
-                    if(!obj.offsetParent)
-                        break;
-                    obj = obj.offsetParent;
-                }
-            else if(obj.y)
-                curtop += obj.y;
-            return curtop;
-        }
-
-
-        a = findPosX(DOMinnerlayout);
-        b = findPosY(DOMinnerlayout);
-
-        var xpos =    this._WGTganttpanel.getXMouse() -
-                    findPosX(DOMinnerlayout)+
-                    DOMinnerlayout.scrollLeft();
-        var ypos =    this._WGTganttpanel.getYMouse() -
-                    findPosY(DOMinnerlayout) +
-                    DOMinnerlayout.scrollTop() -
-                    this._DOMlisttasks.position().top;
-
-        var task, coordTask;
-        for ( var i = 0; i < tasksArray.length; i++) {
-            task = jq(tasksArray[i]);
-            coordTask = task.position();
-            /* Added margins to pointing errors */
-            if (((xpos) > (coordTask.left - this.$class.DRAGABLE_PADDING))
-                    && ((xpos) < (coordTask.left + task.outerWidth() + this.$class.DRAGABLE_PADDING))
-                    && (ypos > (coordTask.top))
-                    && (ypos < (coordTask.top + task.outerHeight()))) {
-                return task;
-            }
-        }
-        return false;
+        return overTask;
     },
     updateCoordOrigin : function(){
         var coordOrigin = this.findPos_(this._DOMorigin);
