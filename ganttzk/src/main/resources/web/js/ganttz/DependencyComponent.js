@@ -291,11 +291,12 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
     },
     setOrigin : function(origin){
         this._DOMorigin = jq(origin);
+        this._WGTorigin = ganttz.TaskComponent.$(origin.id);
     },
     _consolidateDependency : function(){
-        if ((task = this._isOverTask())) {
-            console.log("Dependency OVER task");
-        }
+        var dependency =  null;
+        if ((dependency = this._isOverTask()) != null)
+            this._WGTorigin.consolidateNewDependency(dependency);
     },
     _isOverTask : function() {
         var tasksArray = jq('div[z\\.type="ganttz.task.Task"]');
