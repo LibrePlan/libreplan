@@ -21,6 +21,7 @@
 package org.navalplanner.business.resources.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +57,7 @@ import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAs
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * This class acts as the base class for all resources.
@@ -880,18 +882,19 @@ public abstract class Resource extends IntegrationEntity {
 
     private int getTotalWorkHoursFor(IWorkHours calendar, LocalDate start,
             LocalDate end, ICriterion criterionToSatisfy) {
-        int sum = 0;
+        EffortDuration sum = zero();
         final int days = Days.daysBetween(start, end).getDays();
         for (int i = 0; i < days; i++) {
             LocalDate current = start.plusDays(i);
-            Integer workableHours = calendar.getCapacityAt(current);
-            if (workableHours != null
+            EffortDuration capacityCurrent = calendar
+                    .getCapacityDurationAt(current);
+            if (capacityCurrent != null
                     && (criterionToSatisfy == null || satisfiesCriterionAt(
                             criterionToSatisfy, current))) {
-                sum += workableHours;
+                sum = sum.plus(capacityCurrent);
             }
         }
-        return sum;
+        return BaseCalendar.roundToHours(sum);
     }
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,

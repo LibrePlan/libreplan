@@ -55,8 +55,7 @@ public class SameWorkHoursEveryDay implements IWorkHours {
     @Override
     public Integer toHours(LocalDate day, ResourcesPerDay amount) {
         return BaseCalendar.roundToHours(amount
-                .asDurationGivenWorkingDayOf(EffortDuration
-                        .hours(getCapacityAt(day))));
+                .asDurationGivenWorkingDayOf(getCapacityDurationAt(day)));
     }
 
     @Override
