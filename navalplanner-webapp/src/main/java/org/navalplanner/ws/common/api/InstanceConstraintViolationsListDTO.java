@@ -36,39 +36,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class InstanceConstraintViolationsListDTO {
 
     @XmlElement(name="instance-constraint-violations")
-    public List<InstanceConstraintViolationsDTO>
-        instanceConstraintViolationsList;
+    public List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList;
 
-    public InstanceConstraintViolationsListDTO() {}
+    public InstanceConstraintViolationsListDTO() {
+    }
 
     public InstanceConstraintViolationsListDTO(
-        List<InstanceConstraintViolationsDTO>
-            instanceConstraintViolationsList) {
-
-        this.instanceConstraintViolationsList =
-            instanceConstraintViolationsList;
+            List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList) {
+        this.instanceConstraintViolationsList = instanceConstraintViolationsList;
 
     }
 
     @Override
     public String toString() {
-
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-
         printWriter.println("*** " + this.getClass().getName() + " ***");
-
-        for (InstanceConstraintViolationsDTO i :
-            instanceConstraintViolationsList) {
-
+        for (InstanceConstraintViolationsDTO i : instanceConstraintViolationsList) {
             printWriter.println(i);
-
         }
-
         printWriter.close();
-
         return stringWriter.toString();
-
     }
 
 }
