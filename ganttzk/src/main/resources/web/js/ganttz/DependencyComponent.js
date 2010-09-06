@@ -302,8 +302,8 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
         var DOMinnerlayout = jq('.rightpanellayout div :first');
         var tasksArray;
 
-        tasksArray = jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.task.Task"]');
-        tasksArray.contact(jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.taskcontainer.TaskContainer"]'))
+        tasksArray = jq.makeArray(jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.task.Task"]'));
+        tasksArray.concat(jq.makeArray(jq('#' + this._DOMlisttasks.attr('id') +' div[z\\.type="ganttz.taskcontainer.TaskContainer"]')));
 
         function findPosX(obj)
         {
