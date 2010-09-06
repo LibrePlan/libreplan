@@ -106,9 +106,6 @@ public class TimeLineRequiredMaterialModel implements
 
     private void loadAllOrders() {
         allOrders = orderDAO.getOrdersByScenario(scenarioManager.getCurrent());
-        for (Order each : allOrders) {
-            initializeOrderElements(each.getAllChildren());
-        }
     }
 
     @Override
@@ -145,11 +142,22 @@ public class TimeLineRequiredMaterialModel implements
         return selectedOrders;
     }
 
+    private void reattachmentOrder(Order order) {
+        orderDAO.reattachUnmodifiedEntity(order);
+        initializeOrderElements(order.getAllOrderElements());
+    }
+
     @Override
     @Transactional(readOnly = true)
     public JRDataSource getTimeLineRequiredMaterial(Date startingDate,
             Date endingDate, MaterialStatusEnum status, List<Order> listOrders,
             List<MaterialCategory> categories, List<Material> materials) {
+
+        for (Order order : listOrders) {
+            reattachmentOrder(order);
+            order.useSchedulingDataFor(scenarioManager.getCurrent());
+        }
+
         List<TimeLineRequiredMaterialDTO> result = filterConsult(startingDate,
                 endingDate, status, listOrders, categories, materials);
 
