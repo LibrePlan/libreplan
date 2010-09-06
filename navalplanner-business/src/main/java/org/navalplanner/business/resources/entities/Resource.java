@@ -188,10 +188,9 @@ public abstract class Resource extends IntegrationEntity {
         @Override
         List<DayAssignment> calculateAssignments() {
             List<DayAssignment> result = new ArrayList<DayAssignment>();
-            Scenario current = Registry.getScenarioManager().getCurrent();
             for (DayAssignment each : dayAssignments) {
                 if (isTransient(each)
-                        || each.getScenario().equals(current)) {
+                        || each.getScenario().equals(currentScenario)) {
                     result.add(each);
                 }
             }
