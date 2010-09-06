@@ -346,7 +346,7 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
                     DOMinnerlayout.scrollLeft();
         var ypos =    this._WGTganttpanel.getYMouse() -
                     findPosY(DOMinnerlayout) +
-                    innerLayout.scrollTop() -
+                    DOMinnerlayout.scrollTop() -
                     this._DOMlisttasks.position().top;
 
         var task, coordTask;
