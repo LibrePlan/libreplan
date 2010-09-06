@@ -44,6 +44,7 @@ import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.reports.dtos.TimeLineRequiredMaterialDTO;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -153,9 +154,10 @@ public class TimeLineRequiredMaterialModel implements
             Date endingDate, MaterialStatusEnum status, List<Order> listOrders,
             List<MaterialCategory> categories, List<Material> materials) {
 
+        Scenario currentScenario = scenarioManager.getCurrent();
         for (Order order : listOrders) {
             reattachmentOrder(order);
-            order.useSchedulingDataFor(scenarioManager.getCurrent());
+            order.useSchedulingDataFor(currentScenario);
         }
 
         List<TimeLineRequiredMaterialDTO> result = filterConsult(startingDate,
