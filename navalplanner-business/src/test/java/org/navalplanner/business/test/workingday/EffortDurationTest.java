@@ -188,4 +188,26 @@ public class EffortDurationTest {
                 equalTo(new BigDecimal("1.0003")));
     }
 
+    @Test
+    public void theDurationCanBeRoundedToIntegerHours() {
+        assertThat(hours(0).roundToHours(), equalTo(0));
+        assertThat(hours(1).roundToHours(), equalTo(1));
+        assertThat(hours(2).roundToHours(), equalTo(2));
+    }
+
+    @Test
+    public void theTypeOfRoundDoneIsHalfUpWhenTheHoursAreAtLeastOne() {
+        assertThat(hours(1).and(20, Granularity.MINUTES).roundToHours(),
+                equalTo(1));
+        assertThat(hours(1).and(30, Granularity.MINUTES).roundToHours(),
+                equalTo(2));
+    }
+
+    @Test
+    public void ifDurationNotZeroIsAlwaysRoundedToAtLeastOne() {
+        assertThat(seconds(1).roundToHours(), equalTo(1));
+        assertThat(minutes(29).roundToHours(), equalTo(1));
+        assertThat(minutes(30).roundToHours(), equalTo(1));
+    }
+
 }

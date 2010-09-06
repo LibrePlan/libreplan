@@ -198,4 +198,39 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return result;
     }
 
+    /**
+     * <p>
+     * Converts this duration in a number of hours. Uses a typical half up
+     * round, so for example one hour and half is converted to two hours. There
+     * is an exception though, when the duration is less than one hour and is
+     * not zero it's returned one. This is handy for avoiding infinite loops in
+     * some algorithms; when all code is converted to use {@link EffortDuration
+     * Effort Durations} this will no longer be necessary.
+     * </p>
+     * So there are three cases:
+     * <ul>
+     * <li>the duration is zero, 0 is returned</li>
+     * <li>if duration > 0 and duration < 1, 1 is returned</li>
+     * <li>if duration >= 1, typical half up round is done. For example 1 hour
+     * and 20 minutes returns 1 hour, 1 hour and 30 minutes 2 hours</li>
+     * </ul>
+     *
+     * @return an integer number of hours
+     */
+    public int roundToHours() {
+        if (this.isZero()) {
+            return 0;
+        }
+        return Math.max(1, roundHalfUpToHours(this.decompose()));
+    }
+
+    private static int roundHalfUpToHours(
+            EnumMap<Granularity, Integer> components) {
+        int seconds = components.get(Granularity.SECONDS);
+        int minutes = components.get(Granularity.MINUTES)
+                + (seconds < 30 ? 0 : 1);
+        int hours = components.get(Granularity.HOURS) + (minutes < 30 ? 0 : 1);
+        return hours;
+    }
+
 }
