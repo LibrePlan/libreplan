@@ -534,11 +534,9 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
             }
             return DayType.ANCESTOR_EXCEPTION;
         }
-
-        if (getCapacityAt(date) == 0) {
+        if (getCapacityDurationAt(date).isZero()) {
             return DayType.ZERO_HOURS;
         }
-
         return DayType.NORMAL;
     }
 
@@ -739,7 +737,7 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         Set<LocalDate> result = new HashSet<LocalDate>();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            if (getCapacityAt(current) == 0) {
+            if (getCapacityDurationAt(current).isZero()) {
                 result.add(current);
             }
         }
