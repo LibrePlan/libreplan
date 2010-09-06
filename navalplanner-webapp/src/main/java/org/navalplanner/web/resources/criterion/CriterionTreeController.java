@@ -40,7 +40,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -414,17 +413,19 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
 
         public static TreeViewStateSnapshot snapshotOpened(Tree tree) {
-            Iterator<Treeitem> itemsIterator = tree.getTreechildrenApi()
-                    .getItems().iterator();
             Set<Object> dataOpen = new HashSet<Object>();
             Set<Object> all = new HashSet<Object>();
-            while (itemsIterator.hasNext()) {
-                Treeitem treeitem = (Treeitem) itemsIterator.next();
-                Object value = getAssociatedValue(treeitem);
-                if (treeitem.isOpen()) {
-                    dataOpen.add(value);
+            if (tree != null && tree.getTreechildrenApi() != null) {
+                Iterator<Treeitem> itemsIterator = tree.getTreechildrenApi()
+                        .getItems().iterator();
+                while (itemsIterator.hasNext()) {
+                    Treeitem treeitem = (Treeitem) itemsIterator.next();
+                    Object value = getAssociatedValue(treeitem);
+                    if (treeitem.isOpen()) {
+                        dataOpen.add(value);
+                    }
+                    all.add(value);
                 }
-                all.add(value);
             }
             return new TreeViewStateSnapshot(dataOpen, all);
         }
