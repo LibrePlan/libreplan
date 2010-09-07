@@ -219,8 +219,6 @@ public class GenericResourceAllocationTest {
     private <T extends BaseCalendar> T createCalendar(Class<T> klass,
             final int hoursPerDay) {
         BaseCalendar baseCalendar = createNiceMock(klass);
-        expect(baseCalendar.getWorkableHours(isA(Date.class))).andReturn(
-                hoursPerDay).anyTimes();
         expect(baseCalendar.getCapacityAt(isA(LocalDate.class))).andReturn(
                 hoursPerDay).anyTimes();
         expect(baseCalendar.isActive(isA(LocalDate.class))).andReturn(true)

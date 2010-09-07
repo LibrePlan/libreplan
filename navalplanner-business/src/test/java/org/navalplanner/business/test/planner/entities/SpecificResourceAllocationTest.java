@@ -37,7 +37,6 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,8 +81,6 @@ public class SpecificResourceAllocationTest {
                 hours).anyTimes();
         expect(this.calendar.getCapacityDurationAt(isA(LocalDate.class)))
                 .andReturn(EffortDuration.hours(hours)).anyTimes();
-        expect(this.calendar.getWorkableHours(isA(Date.class)))
-                .andReturn(hours).anyTimes();
         expect(this.calendar.toHours(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andAnswer(
                 toHoursAnswer(hours)).anyTimes();

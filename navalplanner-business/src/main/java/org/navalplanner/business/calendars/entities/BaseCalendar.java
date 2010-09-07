@@ -291,14 +291,6 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * Returns the number of workable hours for a specific date depending on the
      * calendar restrictions.
      */
-    public Integer getWorkableHours(Date date) {
-        return getWorkableTimeAt(new LocalDate(date)).roundToHours();
-    }
-
-    /**
-     * Returns the number of workable hours for a specific date depending on the
-     * calendar restrictions.
-     */
     @Deprecated
     public Integer getCapacityAt(LocalDate date) {
         return getCapacityDurationAt(date).roundToHours();
