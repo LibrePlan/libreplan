@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<panel title="${i18n:_('Associated Criteria')}" border="normal">
+<panel title="${i18n:_('Criteria of selected type ')}" border="normal">
 <panelchildren>
 <vbox id="criterionsTree">
     <vbox>
