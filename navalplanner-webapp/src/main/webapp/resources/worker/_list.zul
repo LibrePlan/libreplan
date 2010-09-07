@@ -33,8 +33,8 @@
             <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(lower(surname))" />
             <newdatasortablecolumn label="${i18n:_('NIF')}" sort="auto(nif)" />
             <newdatasortablecolumn label="${i18n:_('Code')}"/>
-            <newdatasortablecolumn label="${i18n:_('Limiting resource')}" sort="auto(limitingResource)" />
-            <newdatasortablecolumn label="${i18n:_('Operations')}" />
+            <newdatasortablecolumn label="${i18n:_('Limiting')}" sort="auto(limitingResource)" width="90px"/>
+            <newdatasortablecolumn label="${i18n:_('Operations')}" width="90px"/>
         </columns>
         <rows>
             <row self="@{each='worker'}" value="@{worker}" onDoubleClick="controller.goToEditForm(self.value);">
