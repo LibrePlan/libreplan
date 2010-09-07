@@ -25,8 +25,8 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         var unlinkedDependency = new ganttz.UnlinkedDependencyComponent();
         unlinkedDependency.setOrigin(this.$n());
 
-        dependencylist.appendChild(unlinkedDependency);
-        dependencylist.rerender();
+        WGTdependencylist.appendChild(unlinkedDependency, true);
+        WGTdependencylist.rerender();
 
         unlinkedDependency.draw();
     },

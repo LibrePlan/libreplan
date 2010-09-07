@@ -277,13 +277,20 @@ ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
 },{});
 
 ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
-    bind_ : function(){
-        this.$supers('bind_', arguments);
+    $init : function(){
+        this.$supers('$init', arguments);
         this._DOMlisttasks = jq('#listtasks');
         this._DOMlistdependencies = jq('#listdependencies');
         this._WGTganttpanel = ganttz.GanttPanel.getInstance();
-
+    },
+    bind_ : function(){
+        this.$supers('bind_', arguments);
         this._updateArrow();
+    },
+    unbind_ : function(){
+        this.domUnlisten_(this._WGTganttpanel.$n(), 'onMousemove', '_updateArrow');
+        this.domUnlisten_(this._WGTganttpanel.$n(), 'onClick', '_consolidateDependency');
+        this.$supers('unbind_', arguments);
     },
     draw : function(){
         this.domListen_(this._WGTganttpanel.$n(), 'onMousemove', '_updateArrow');
@@ -314,7 +321,7 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
         + Math.max(0,    this._DOMorigin.outerWidth() -
                         ganttz.TaskComponent.CORNER_WIDTH);
 
-coordOrigin.top =    coordOrigin.top - this._DOMlisttasks.position().top +
+        coordOrigin.top =    coordOrigin.top - this._DOMlisttasks.position().top +
         this._DOMlistdependencies.position().top +
         ganttz.TaskComponent.HEIGHT;
 
