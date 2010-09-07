@@ -48,7 +48,6 @@ import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlob
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
@@ -981,6 +980,13 @@ public abstract class OrderElement extends IntegrationEntity implements
                         qualityForm));
             }
         }
+    }
+
+    @Override
+    public boolean checkConstraintUniqueCode() {
+        // the automatic checking of this constraint is avoided because it uses
+        // the wrong code property
+        return true;
     }
 
     @AssertTrue(message = "a label can not be assigned twice in the same branch")
