@@ -153,11 +153,12 @@ public class TimeLineRequiredMaterialModel implements
     public JRDataSource getTimeLineRequiredMaterial(Date startingDate,
             Date endingDate, MaterialStatusEnum status, List<Order> listOrders,
             List<MaterialCategory> categories, List<Material> materials) {
-
+        for (Order each : listOrders) {
+            reattachmentOrder(each);
+        }
         Scenario currentScenario = scenarioManager.getCurrent();
-        for (Order order : listOrders) {
-            reattachmentOrder(order);
-            order.useSchedulingDataFor(currentScenario);
+        for (Order each : listOrders) {
+            each.useSchedulingDataFor(currentScenario);
         }
 
         List<TimeLineRequiredMaterialDTO> result = filterConsult(startingDate,
