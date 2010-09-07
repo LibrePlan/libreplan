@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -290,7 +292,7 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * calendar restrictions.
      */
     public Integer getWorkableHours(Date date) {
-        return getCapacityAt(new LocalDate(date));
+        return getWorkableTimeAt(new LocalDate(date)).roundToHours();
     }
 
     /**
@@ -386,13 +388,21 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * the calendar restrictions.
      */
     public Integer getWorkableHours(LocalDate init, LocalDate end) {
-        int total = 0;
+        return getWorkableDuration(init, end).roundToHours();
+    }
+
+    /**
+     * Returns the workable duration for a specific period depending on the
+     * calendar restrictions.
+     */
+    public EffortDuration getWorkableDuration(LocalDate init, LocalDate end) {
+        EffortDuration result = zero();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            total += getCapacityAt(current);
+            result = result.plus(getCapacityDurationAt(current));
             init = init.plusDays(1);
         }
-        return total;
+        return result;
     }
 
     /**
