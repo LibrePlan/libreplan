@@ -72,7 +72,8 @@
                             <textbox value="@{controller.worker.nif}" constraint="no empty"/>
                         </row>
                         <row visible="@{controller.isRealWorker}">
-                            <label value="${i18n:_('Limiting resource')}" />
+                            <hbox><label value="${i18n:_('Limiting resource')}" /><image height="15px" src="/common/img/axuda.gif" tooltip="limiting-resources-popup" />
+                            </hbox>
                             <listbox mold="select" width="200px"
                                 model="@{controller.limitingResourceOptionList}"
                                 selectedItem="@{controller.limitingResource}"
@@ -112,4 +113,9 @@
         label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
     <button onClick="controller.cancel();"
         label="${arg.cancel_button_label}" sclass="cancel-button global-action"/>
+
+    <popup id="limiting-resources-popup" width="700px" >
+        <iframe id="iframe" src="/help/${i18n:_('en')}/05-recursos.html#recursos-limitantes" width="100%" />
+    </popup>
+
 </window>
