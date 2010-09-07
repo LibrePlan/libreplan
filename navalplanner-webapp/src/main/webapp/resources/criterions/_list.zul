@@ -28,7 +28,7 @@
     </columns>
     <rows>
         <row self="@{each='criterionType'}" value="@{criterionType}">
-            <label value="@{criterionType.name}"/>
+            <l10n value="@{criterionType.name}"/>
             <label value="@{criterionType.code}"/>
             <checkbox disabled="true" checked="@{criterionType.enabled}"/>
             <hbox>

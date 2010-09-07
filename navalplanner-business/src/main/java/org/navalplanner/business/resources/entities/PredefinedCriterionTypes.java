@@ -22,6 +22,8 @@ package org.navalplanner.business.resources.entities;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 /**
  * This class defines some criterion types known a priori<br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -29,37 +31,37 @@ import java.util.List;
  */
 public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
-   WORK_RELATIONSHIP("Relationship of the resource with the enterprise ",false, false,true, ResourceEnum.WORKER) {
+   WORK_RELATIONSHIP(_("WORK_RELATIONSHIP"), "Relationship of the resource with the enterprise ",false, false,true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return WorkingRelationship.getCriterionNames();
         }
     },
-    LOCATION_GROUP("Location where the resource work",false, true, true, ResourceEnum.RESOURCE) {
+    LOCATION_GROUP(_("LOCATION_GROUP"), "Location where the resource work",false, true, true, ResourceEnum.RESOURCE) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
         }
     },
-    LEAVE("Leave",false, false, true, ResourceEnum.WORKER) {
+    LEAVE(_("LEAVE"), "Leave",false, false, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return LeaveCriterions.getCriterionNames();
         }
     },
-    TRAINING("Training courses and labor training",true, true, true, ResourceEnum.WORKER) {
+    TRAINING(_("TRAINING"), "Training courses and labor training",true, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
         }
     },
-    JOB("Job",true, true, true, ResourceEnum.WORKER) {
+    JOB(_("JOB"),"Job",true, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
         }
     },
-    CATEGORY("Professional category",true, true, true, ResourceEnum.WORKER) {
+    CATEGORY(_("CATEGORY"),"Professional category",true, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
@@ -76,7 +78,7 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
     private final ResourceEnum resource;
 
-    private PredefinedCriterionTypes(String description, boolean allowHierarchy,
+    private PredefinedCriterionTypes(String name, String description, boolean allowHierarchy,
             boolean allowSimultaneousCriterionsPerResource,
             boolean enabled,
             ResourceEnum resource) {
