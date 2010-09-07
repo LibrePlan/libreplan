@@ -21,7 +21,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         this._dependencies.push(dependency);
     },
     _createArrow : function(){
-        var dependencylist = ganttz.DependencyList.$(jq('#ganttpanel > div[z\\.type="ganttz.dependencylist.Dependencylist"]').attr('id'));
+        var WGTdependencylist = ganttz.DependencyList.getInstance();
         var unlinkedDependency = new ganttz.UnlinkedDependencyComponent();
         unlinkedDependency.setOrigin(this.$n());
 
