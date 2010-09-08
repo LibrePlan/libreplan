@@ -107,6 +107,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zkex.zul.api.South;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
@@ -225,11 +226,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             ICommandOnTask<TaskElement> doubleClickCommand,
             IPredicate predicate) {
 
-        PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
-        configuration.setExpandPlanningViewCharts(configurationDAO
-                .getConfiguration().isExpandCompanyPlanningViewCharts());
+        final PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
+        boolean expandPlanningViewChart = configurationDAO.
+                getConfiguration().isExpandCompanyPlanningViewCharts();
+        configuration.setExpandPlanningViewCharts(expandPlanningViewChart);
 
-        Tabbox chartComponent = new Tabbox();
+        final Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
         appendTabs(chartComponent);
@@ -303,6 +305,34 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         configuration.setSecondLevelModificators(new BankHolidaysMarker());
         planner.setConfiguration(configuration);
+
+        if(expandPlanningViewChart) {
+            //if the chart is expanded, we load the data now
+            setupChartAndItsContent(planner, chartComponent);
+        }
+        else {
+            //if the chart is not expanded, we load the data later with a listener
+            ((South) planner.getFellow("graphics")).addEventListener("onOpen",
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                setupChartAndItsContent(planner, chartComponent);
+                                return null;
+                            }
+                        });
+                        //data is loaded only once, then we remove the listener
+                        event.getTarget().removeEventListener("onOpen", this);
+                    }
+                });
+        }
+    }
+
+    private void setupChartAndItsContent(Planner planner,
+            Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
         Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
         CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
