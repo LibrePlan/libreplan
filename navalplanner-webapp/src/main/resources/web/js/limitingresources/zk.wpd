@@ -3,4 +3,5 @@
     <widget name="QueueComponent"/>
     <widget name="LimitingDependencyList"/>
     <widget name="LimitingDependencyComponent"/>
+    <widget name="LimitingResourcesPanel"/>
 </package>

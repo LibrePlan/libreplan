@@ -86,6 +86,7 @@
         <component-name>LimitingResourcesPanel</component-name>
         <component-class>org.navalplanner.web.limitingresources.LimitingResourcesPanel</component-class>
             <macro-uri>/limitingresources/limitingResourcesLayout.zul</macro-uri>
+        <widget-class>limitingresources.LimitingResourcesPanel</widget-class>
     </component>
 
     <component>
