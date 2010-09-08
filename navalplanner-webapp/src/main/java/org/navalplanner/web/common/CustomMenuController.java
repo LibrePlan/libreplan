@@ -235,7 +235,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""),
             subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
                 subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Advance Report"), "/subcontract/reportAdvances.zul", "")));
+		subItem(_("Report Advances"), "/subcontract/reportAdvances.zul", "")));
 
         topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
                 subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
@@ -255,13 +255,13 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     subItem(_("Advances"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
                     subItem(_("Criteria"),"/resources/criterions/criterions.zul","02-criterios.html#id1"),
                     subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
-                    subItem(_("Units"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
+                    subItem(_("Unit Measures"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
                     subItem(_("Work Hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
-                    subItem(_("Work Reports"),"/workreports/workReportTypes.zul","09-partes.html#id2")));
+                    subItem(_("Work Report Types"),"/workreports/workReportTypes.zul","09-partes.html#id2")));
             }
 
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
-            subItem(_("Work Reports"), "/workreports/workReportQuery.zul", "09-partes.html#id4"),
+            subItem(_("Work Report Lines"), "/workreports/workReportQuery.zul", "09-partes.html#id4"),
             subItem(_("Hours Worked Per Resource"),"/reports/hoursWorkedPerWorkerReport.zul","15-informes.html"),
             subItem(_("Work And Progress Per Project"),"/reports/schedulingProgressPerOrderReport.zul", "15-informes.html"),
             subItem(_("Work And Progress Per Task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
