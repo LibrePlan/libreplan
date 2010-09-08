@@ -55,7 +55,7 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForUnitTypes = false;
 
-    private Boolean expandCompanyPlanningViewCharts = true;
+    private Boolean expandCompanyPlanningViewCharts = false;
 
     private Boolean expandOrderPlanningViewCharts = true;
 
