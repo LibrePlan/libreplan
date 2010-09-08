@@ -62,6 +62,40 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         labelsText    : null,
         tooltipText : null
     },
+    $init : function(){
+        this.$supers('$init', arguments);
+
+         /*
+         * We have to implement the setLeft method because if we use the one provided by ZK
+         * the tasks won't we moved back to its original position when they are dropped on an invalid position (i.e before the end
+         * of the main task) on a dependency relation
+         *
+         * This is the default boddy for a ZK set<AttributeName>
+         *
+         * function (v, opts) {
+                if (before) v = before.apply(this, arguments);
+                var o = this[nm];
+                this[nm] = v;
+                if (after && (o !== v || (opts && opts.force)))
+                    after.apply(this, arguments);
+                return this;
+            };
+         *
+         * The before and and after properties can be set to something different to  the default using the $define property.
+         *
+         *
+         * Our problem happens because if the dependent task is already aligned at the end of the main tasks
+         * and thats (for example) style. left = 800px, when we move it to an invalid position the server will try to set again
+         * the left property to 800px but when the default setter works it checks if we are trying to set a value equal to the previous
+         * one and in that case it doesn't apply the after function.
+         *
+         * Setting the force option to true does the trick
+         * */
+        var oldSetLeft = this.setLeft;
+        this.setLeft = this.proxy(function(left, options){
+            oldSetLeft.call(this, left, {force : true});
+        })
+    },
     bind_ : function(event){
         this.$supers('bind_', arguments);
         this.domListen_(this.$n(), "onMouseover", '_showTooltip');
