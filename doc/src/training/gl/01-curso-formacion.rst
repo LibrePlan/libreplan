@@ -39,7 +39,7 @@ Alta dun novo tipo de Criterio
 
 Para crear un novo tipo de criterio debese seguir a seguinte secuencia de pasos:
 
-* Ir ao Listado de Criterios, opción Administración > Xestionar Criterios
+* Ir ao Listado de Criterios, opción Administración > Tipos de datos > Xestionar Criterios
 * Premer o botón *Crear*
 * Cubrir o campo do Nome do tipo de Criterio, por exemplo (Profesión, Permiso, Localización)
 * Indicar o tipo de recurso ao que é aplicable:
@@ -94,7 +94,7 @@ Alta dun novo tipo de Etiqueta
 
 Para crear un novo tipo de criterio debese seguir a seguinte serie de pasos:
 
-* Ir ao Listado de Criterios, opción Administración > Tipos Etiquetas
+* Ir ao Listado de Criterios, opción Administración > Tipos de datos > Tipos Etiquetas
 * Premer o botón *Crear*
 * Cubrir o campo do Nome do tipo de Etiqueta, por exemplo Centro de Custe, Zona de Buque, Dificultade, etc...
 * Pódese premer o botón *Gardar e Continuar*  para almacenar o novo tipo creado, logo proceder a asociar etiquetas a un tipo de etiquetas.
@@ -111,15 +111,15 @@ No momento de creación dun tipo de etiqueta ou premendo na operación de edici�
 Administración de calendarios
 =============================
 
-Os calendarios son as entidades da aplicación que determinan as capacidade de carga dos distintos recursos. Un calendario está formado  por unha serie de días anuais, onde cada día dispón de horas dispoñibles  para traballar. Os calendarios di cantas horas pode traballar un recurso ao longo do tempo.
+Os calendarios son as entidades da aplicación que determinan as capacidade de carga dos distintos recursos. Un calendario está formado  por unha serie de días anuais, onde cada día dispón de horas dispoñibles  para traballar. Os calendarios din cantas horas pode traballar un recurso ao longo do tempo.
 
-Por exemplo, un festivo pode ter 0 horas dispoñibles e, se as horas  de traballo dentro dun día laboral son 8, é este número que se asigna  como tempo dispoñible para ese día.
+Por exemplo, un festivo pode ter 0 horas dispoñibles e, se as horas de traballo dentro dun día laboral son 8, é este número que se asigna  como tempo dispoñible para ese día.
 
-Existen dous modos de indicarlle ó sistema cantas horas de traballo  ten un día:
+Existen dous modos de indicarlle ó sistema cantas horas de traballo ten un día:
 
-    * Por día da semana. Por exemplo, os luns trabállanse 8 horas  xeralmente.
+    * Por día da semana. Por exemplo, os luns trabállanse 8 horas xeralmente.
     * Por excepcións. Por exemplo, o luns 30 de Xaneiro trabállanse 10  horas.
-    
+
 O sistema de calendarios permite que uns calendarios deriven doutros, de forma que un calendario desa forma pódense ter calendarios de distintas localizacións da empresa seguindo unha organización como a seguinte España > Galicia > Ferrol e España > Galicia > Vigo de forma que a modificación de festivos a nivel estatal modifique automaticamente os festivos a nivel dos calendarios de Galicia, Ferrol e Vigo.
 
 Para acceder a xestión dos calendarios da empresa e preciso situarse na sección de **Administración** > **Calendarios**
@@ -133,7 +133,7 @@ Para a creación dun novo calendario é necesario:
    * Premer no botón  "Crear" na sección de Administración de Calendarios.
    * Introducir o nome do calendario para poder identificalo.
    * O calendario creado será un calendario sen ningún dato. Veranse tódalas datas do calendario en vermello polo que ese días non teñen asignación de horas. E preciso introducir a información relativa a Semana Laboral e as Excepcións.
-   * Premer na pestana de *Semana de Traballo*. Asignar a xornada de traballo por defecto por cada día da semana. Por exemplo se marcar 8 horas laborais de luns a venres definindo unha xornada laboral de 40 horas. Na parte dereita da pantalla poderase ver o resultado diario da asignación de xornada. Ao longo do tempo pódese ir modificando a xornada por defecto dun calendario. Isto será posible na edición ao crear novas versións do calendario.
+   * Premer na pestana de *Semana de Traballo*. Asignar a xornada de traballo por defecto por cada día da semana. Por exemplo é posible elixir 8 horas laborais de luns a venres definindo unha xornada laboral de 40 horas. Na parte dereita da pantalla poderase ver o resultado diario da asignación de xornada. Ao longo do tempo pódese ir modificando a xornada por defecto dun calendario. Isto será posible na edición ao crear novas versións do calendario.
    * Situarse na pestana de Excepción e introducir aqueles días especiais que teñen unha influencia no calendario laboral da empresa o no calendario do grupo de traballadores que se estea creando. Por exemplo, deberíanse sinalar os días festivos.
    * Seleccionar unha data no calendario, por exemplo o 19 de Marzo. Sinalar o tipo de excepción como BANK_HOLIDAY (Día de Vacacións). Finalmente indicar o número de horas a traballar que nese caso será 0. E pulsar no botón *Crear Excepción*.
    * O listado de excepcións pódese ver a dereita do formulario de creación de excepcións.
@@ -188,15 +188,15 @@ Os pasos para a creación dun calendario derivado son os seguintes:
 
    * Para que as modificacións teñan efecto é preciso premer no botón *Gardar* do calendario, se se pulsa no botón *Cancelar* os cambios consolidados non se almacenarán.
    * Verase que o novo calendario derivado aparece nunha estrutura xerarquica por debaixo do calendario de orixe.
-   
+
 Configuración do calendario por defecto da empresa
 --------------------------------------------------
 
-Para facilitar o emprego e configuración dos calendarios na aplicación é posible configurar o calendario por defecto da empresa. Este calendario será o que apareza seleccionado inicialmente cando se cree un recurso ou se asocie un calendario a unha tarefa. 
+Para facilitar o emprego e configuración dos calendarios na aplicación é posible configurar o calendario por defecto da empresa. Este calendario será o que apareza seleccionado inicialmente cando se cree un recurso ou se asocie un calendario a unha tarefa.
 
 Para a súa selección séguense os seguintes pasos:
 
-   * Entrar na sección de **Administración > Configuración** do menú principal.
+   * Entrar na sección de **Administración > NavalPlan: Configuración** do menú principal.
    * Seleccionar no campo *Calendario por defecto* o calendario desexado.
    * Premer no botón *Gardar*
 
@@ -215,17 +215,17 @@ En NavalPlan existen tres tipos de recursos capaces de realizar traballo. Estes 
    * Traballadores. Os traballadores son os recursos humanos da empresa.
    * Máquinas. As máquinas son capaces tamén de desenvolver tarefas e teñen existencia en NavalPlan.
    * Recursos virtuais. Os recursos virtuais son como grupos de traballadores que non teñen existencia real na empresa, é dicir, non se corresponden con traballadores reais, con nome e apelidos, da empresa.
-   
+
 Utilidade dos recursos virtuais
 -------------------------------
 
-Os recursos virtuais son, como se explicou, como grupos de traballadores pero que non se corresponden con traballadores concretos con nome e apelidos. 
+Os recursos virtuais son, como se explicou, como grupos de traballadores pero que non se corresponden con traballadores concretos con nome e apelidos.
 
 Dotouse a NavalPlan a posibilidade de usar recursos virtuais debido a dous escenario de uso:
 
    * Usar recursos virtuais para simular contratacións futuras por necesidades de proxectos. Pode ocorrer que para satisfacer proxectos futuros as empresas necesiten contratar traballadores nun momento futuro do tempo. Para prever e simular cantos traballadores poden necesitar os usuarios da aplicación poden usar os recursos virtuais.
    * Pode existir empresas que desexen xestionar as aplicación sen ter que levar unha xestión dos recursos con respecto os datos dos traballadores reais da empresa. Para estes casos, os usuario poden usar tamén os recursos virtuais.
-   
+
 Alta de recursos
 ================
 
@@ -234,7 +234,7 @@ Alta de recursos traballador
 
 Para crear un traballador hai que realizar os seguintes pasos:
 
-   * Acceder a Lista de traballadores, opción Recursos > Lista de traballadores.
+   * Acceder a Lista de traballadores, opción Recursos > Traballadores.
    * Premer o botón Crear
    * Cubrir os campos do formulario: Nome, Apelidos.
    * Premer o botón "Gardar" ou ben "Gardar e continuar".
@@ -248,10 +248,10 @@ Alta de máquinas
 
 Para crear unha máquina dar os seguintes pasos:
 
-   * Accede a Lista de traballadores, opción Recursos > Lista de máquinas.
+   * Accede a Lista de traballadores, opción Recursos > Máquinas.
    * Premer o botón Crear.
    * Cubrir os datos na pestana de datos da máquina. Os datos a cubrir son:
-   
+
       * Nome. Nome da máquina
       * Código da máquina. O código da máquina ten que ser único e se xera aínda que se pode editar.
       * Descrición da máquina.
@@ -261,7 +261,7 @@ Alta de recursos virtuais
 
 Para crear un recurso virtual dar os seguintes pasos:
 
-   * Accede a Lista de traballares, opción Recursos > Grupo virtual de traballadores.
+   * Accede a Lista de traballares, opción Recursos > Grupos virtuais de traballadores.
    * Premer no botón Crear.
    * Cubrir os datos na pestana de Datos persoais. Os campos a cubrir son:
 
@@ -280,16 +280,16 @@ Os traballadores da empresa satisfacen criterios. O feito de que cumpra un crite
 Os criterios se satisfacen durante un determinado período de tempo ou ben a partir dunha determinada data e de forma indefinida.
 
 Para asignar un determinado criterio a un traballador hai que dar os seguintes pasos:
-  
-  * Acceder á opción Recursos > Lista de traballadores.
+
+  * Acceder á opción Recursos > Traballadores.
   * Premer sobre o botón de edición sobre a fila do listado correspondente a o recurso desexado.
   * Pulsar na pestana Criterios asignados.
   * Premer no botón Engadir criterio. Isto provoca que se engada unha fila con tres columnas de datos:
-     
+
      * Columna Nome do criterio. Seleccionar o criterio que se quere configurar como satisfeito polo traballador. O usuario ten que despregar ou buscar o criterio elixido.
      * Columna Data de inicio. Elixir a data dende a cal o traballador satisface o criterio. É obrigatoria e aparece por defecto cuberta coa data do día actual.
      * Columna Data de fin. Configura a data ata cal se satisface o criterio. Non é obrigatoria. Se non se enche o criterio é satisfeito sen data de caducidade.
-   
+
 Adicionalmente existe na pantalla un checkbox para seleccionar que criterios son visualizados, todos os satisfeitos durante toda a historia do traballador ou unicamente os vixentes na actualidade.
 
 A asignación de criterios ríxese polas regras ditadas polo tipo de criterio do criterio que se está asignando. Así por exemplo cabe mencionar dous aspectos:
@@ -304,7 +304,7 @@ Alta de criterios en máquina
 
 Para asignar un determinado criterio a unha máquina hai que dar os seguintes pasos:
 
-   * Acceder a opción Recursos > Lista de máquinas.
+   * Acceder a opción Recursos > Máquinas.
    * Premer sobre o botón de edición sobre a fila do listado correspondente a máquina que se desexa.
    * Pulsar na pestana Criterios asignados.
    * Premer no botón Engadir criterio. Isto provoca que se engada unha fila con tres columnas de datos:
@@ -320,7 +320,7 @@ Alta de criterios en grupo de traballadores virtuais
 
 A asignación de criterios para os traballadores virtuais é similar a asignación de criterios para os traballadores reais. Os pasos a dar son os seguintes:
 
-   * Acceder a opción Recursos > Grupo virtual de traballadores.
+   * Acceder a opción Recursos > Grupos virtuais de traballadores.
    * Premer sobre o botón de edición da fila do listado que se corresponda co grupo virtual de traballadores ao que se queira engadir criterios.
    * Seleccionar a pestana Criterios asignados.
    *  Premer no botón Engadir criterio. Isto provoca que se engada unha fila  con tres columnas de datos:
@@ -348,11 +348,11 @@ Asignación de calendario pai a traballadores en creación de traballador
 
 Na creación dun traballador se crea un calendario ao traballador que deriva, por defecto, do calendario configurado por defecto na aplicación.
 
-A configuración da aplicación pódese consultar en Administración > Configuración.
+A configuración da aplicación pódese consultar en Administración > NavalPlan: Configuración.
 
 Para cambiar o calendario do cal deriva un recurso no momento da creación hai que dar os seguintes pasos:
 
-   * Acceder a Lista de traballadores, opción Recursos > Lista de traballadores.
+   * Acceder a Lista de traballadores, opción Recursos > Traballadores.
    * Premer o botón Crear
    * Cubrir os campos do  formulario: Nome, Apelidos.
    * Premer na pestana Calendario
@@ -365,7 +365,7 @@ Asignación de calendario pai a máquinas en creación de máquinas
 
 As máquinas configuran o calendario do cal derivan no momento da creación de forma similar aos traballadores. Os pasos serían:
 
-   * Acceder a Lista de traballadores, opción Recursos > Lista de máquinas.
+   * Acceder a Lista de máquinas, opción Recursos > Máquinas.
    * Premer o botón Crear
    * Cubrir os campos do  formulario: Nome da máquina, código e descrición.
    * Premer na pestana Calendario
@@ -377,9 +377,9 @@ Asignación de calendario pai a grupos de traballadores virtuais
 
 Os grupos de traballadores virtuais tamén configuran o calendario pai do cal derivan de forma similar aos traballadores reais e as máquinas. Os pasos son:
 
-   * Accede a Lista de traballares, opción Recursos > Grupo virtual de traballadores.
+   * Accede a Lista de recursos virtuais, opción Recursos > Grupos virtuais de traballadores.
    * Premer no botón Crear.
-   * Cubrir os datos na pestana de Datos persoais. 
+   * Cubrir os datos na pestana de Datos persoais.
    * Premer na pestana Calendario
    * Nesa pestana  seleccionar o no selector que  aparece do cal se quere derivar.
    * Premer o botón "Gardar" ou ben "Gardar e continuar".
@@ -391,9 +391,9 @@ Cambio de calendario pai a traballadores, máquinas ou grupos de traballadores v
 
 Para elo hai que facer o seguinte:
 
-   * Ir a sección correspondente: Recursos > Lista de máquinas, Recursos > Lista de traballadores ou Recursos > Grupo virtual de traballadores.
+   * Ir a sección correspondente: Recursos > Máquinas, Recursos > Traballadores ou Recursos > Grupos virtuais de traballadores.
    * Acceder a pestana Calendario
-   * Premer no botón Borrar calendario. 
+   * Premer no botón Borrar calendario.
    * Seleccionar o novo calendario pai do cal se quere derivar.
    * Premer o botón "Gardar" ou ben "Gardar e continuar".
 
@@ -405,12 +405,12 @@ Os recursos traballador, máquina ou grupo de traballador virtual poden configur
    * A súa xornada semanal de traballo.
    * Excepcións de dedicación en períodos de tempo.
    * Períodos de activación.
-   
+
 Os dous primeiros conceptos, é dicir, a xornada semanal de traballo e as excepción de dedicación se explican na sección de **Administración de calendario xeral**
 
-Agora ben, os calendarios dos recursos teñen unha particularidade con respecto o calendario da empresa. Esta peculiaridade son os períodos de activación. 
+Agora ben, os calendarios dos recursos teñen unha particularidade con respecto o calendario da empresa. Esta peculiaridade son os períodos de activación.
 
-Os períodos de activación son intervalos nos cales os traballadores se encontran dispoñibles para a planificación. Conceptualmente se corresponden con aqueles períodos nos cales o traballador se atopa contratado pola empresa. Un traballador pode ser contratado por un tempo, despois abandonar a empresa e reincorporarse posteriormente. É o mesmo traballador e, como NavalPlan, garda a historia de planificación de todos os recursos, ten que impedir que se lle asigne traballo. 
+Os períodos de activación son intervalos nos cales os traballadores se encontran dispoñibles para a planificación. Conceptualmente se corresponden con aqueles períodos nos cales o traballador se atopa contratado pola empresa. Un traballador pode ser contratado por un tempo, despois abandonar a empresa e reincorporarse posteriormente. É o mesmo traballador e, como NavalPlan, garda a historia de planificación de todos os recursos, ten que impedir que se lle asigne traballo.
 
 No momento da creación dun traballador se configura con un período de activación que vai dende o momento da alta ata o infinito. Neste momento non é posible cambialo e esta operación ten que ser feita cunha edición posterior do recurso.
 
@@ -419,17 +419,17 @@ Configuración dos períodos de activación dun recurso
 
 Os períodos de activación dun determinado recurso teñen que satisfacer non ter puntos de solapamento no tempo. Os pasos para configuralos son:
 
-   * Ir a sección correspondente: Recursos > Lista de máquinas, Recursos >  Lista de traballadores ou Recursos > Grupo virtual de traballadores.
+   * Ir a sección correspondente: Recursos > Máquinas, Recursos >  Traballadores ou Recursos > Grupos virtuais de traballadores.
    * Seleccionar a fila do recurso que se quere editar e premer no botón da fila asociada para editar.
    * Acceder a pestana de Calendario.
    * Dentro da pestana de Calendario premer na pestana interior Períodos de activación.
    * No interior da pestana sairán a lista de períodos de activación. Pulsar no botón Crear período de activación
    * Neste momento se engade unha fila coas seguintes columnas:
-      
+
       * Data de inicio: A encher obrigatoriamente. Introducir a data na cal se quixera activar o recurso.
       * Data de fin: Opcional. Introducir a data no cal o traballador deixa de estar activo na empresa.
    * Premer no botón "Gardar" ou "Gardar e continuar".
-   
+
 
 -----------------
 Módulo de pedidos
@@ -458,20 +458,20 @@ Nela o que se pode ver son tódolos pedidos que existen na empresa e estes son r
    * Cal é o progreso na realización de cada pedido.
    * O número de horas que se levan feito de cada un deles.
    * Cal é a súa **data límite** en caso de que o teñan.
-   
+
 Ademais do anterior mostrase  na parte inferior da pantalla dúas gráficas:
 
    * Gráfica de carga de carga de recursos.
    * Gráfica de valor gañado.
 
 Para acceder á vista de empresa basta con entrar na aplicación dende a páxina de introdución de usuario e contrasinal.
-   
+
 Creación dun pedido
 ===================
 
 Para a creación dun pedido hai que acometer os seguintes pasos:
 
-   * Acceder ao opción Planificación > Lista de pedidos.
+   * Acceder ao opción Planificación > Proxectos.
    * Premer no botón situado na barra de botón co texto Crear pedido novo.
    * Aparecen unha serie de pestanas. A que aparece seleccionada por defecto, a primeira delas con título Datos xerais, é a que contén os datos necesarios. Cubrir os seguintes:
 
@@ -497,8 +497,8 @@ Para a creación dun pedido hai que acometer os seguintes pasos:
          * Cancelado
          * Subcontratado
          * Pasado a histórico.
-   * Pulsa no botón Gardar representado por un disco de ordenador na barra . 
-   
+   * Pulsa no botón Gardar representado por un disco de ordenador na barra.
+
 Se os datos introducidos son correctos o sistema proporciona nunha ventá emerxente o resultado da operación.
 
 Edición dun pedido
@@ -507,10 +507,10 @@ Edición dun pedido
 Para a edición dun pedido existen varios camiños posibles:
 
    * Opción 1:
-      * Ir a opción Planificación > Lista de pedidos.
+      * Ir a opción Planificación > Proxectos
       * Premer sobre o icono de edición, lapis sobre folla de papel, que se corresponda co pedido desexado.
    * Opción 2:
-      * Ir a Planificación > Vista da compañía.
+      * Ir a Planificación > Planificación de proxectos.
       * Facer dobre click co botón esquerdo do rato sobre a tarefa que representa o pedido na vista da empresa ou ben pulsar co botón dereito sobre a tarefa e despois escoller a opción Planificar.
       * Pulsar o icono da parte esquerda Detalles de pedido.
 
@@ -519,7 +519,7 @@ Introdución de elementos de pedido con horas e nome
 
 Para introducir os elementos de pedido, contedores ou elementos de pedido folla, hai que dar os seguintes pasos:
 
-   * Ir a opción Planificación > Lista de pedidos.
+   * Ir a opción Planificación > Proxectos.
    * Premer sobre o icono de edición, lapis  sobre folla de papel, que se corresponda co pedido desexado.
    * Seleccionar a pestana "Elementos de pedido"
    * Unha vez aquí, introducir na liña de edición situada encima da táboa de lista de elementos de pedido os seguinte valores:
@@ -532,10 +532,10 @@ Para introducir os elementos de pedido, contedores ou elementos de pedido folla,
 Ao pulsar no botón anterior se engade un elemento de pedido de tipo folla e se sitúa ao final dos elementos de pedido existentes na árbores de elementos de pedido.
 
 No caso de que se quería cambiar a posición do elemento de pedido e situalo en outro lugar da árbore deben premerse os iconos de cada fila de elemento de pedido seguintes:
-   
+
    * Icono frecha arriba. Premendoo faise que o elemento de pedido ascenda na árbore de elementos de pedido.
    * Icono frecha abaixo. Pulsando nel faise que o elemento de pedido descenda na árbore de elementos de pedido.
-   
+
 A través do explicado ata agora o que se engaden son elementos de pedido folla, pero tamén e posible engadir elementos de pedido contedores. Para engadir elementos de pedido contedores, o usuario pode realizar varios itinerarios:
 
 Creando elementos contedores mediante arrastrar e soltar
@@ -549,7 +549,7 @@ Os pasos a dar son os seguintes:
    * Pulsar o botón esquerdo do rato e sen soltar arrastrar o elemento E1. Mentres se manten pulsado aparecerá un texto sobre o fondo indicando que o elemento E1 está agarrado.
    * Desprazar o rato mantendo pulsado o botón esquerdo ata situarse encima do elemento E2. Nese momento liberar o botón do rato.
    * O que ocorre neste punto é que se creará un elemento de pedido contedor que terá o nome de E2 e posuirá dous fillos cos nomes E2 Copia e E1. O elemento E2 Copia terá a carga de traballo do anterior elemento E2 e, agora, o elemento E2 conterá a suma das horas de E1 e E2 Copia.
-   
+
 Creando elementos contedores mediante creación de elemento con elemento folla seleccionado
 ------------------------------------------------------------------------------------------
 
@@ -564,8 +564,8 @@ Creando elementos de pedido contedor mediante a pulsación do icono de indentaci
 ---------------------------------------------------------------------------------
 
 Para levar a cabo esta operación é necesario ter creados dos elementos de pedido, E1 e E2, situado E1 antes que E2. A partir de aquí levar a cabo os seguintes pasos:
-   
-   * Pulsar sobre o botón de identar cara a dereita, frecha apuntado a dereita, do elemento E2. 
+
+   * Pulsar sobre o botón de identar cara a dereita, frecha apuntado a dereita, do elemento E2.
    * O que ocorre neste punto é que se creará un  elemento de pedido contedor que terá o nome de E2 e posuirá dous fillos   cos nomes E2 Copia e E1. O elemento E2 Copia terá a carga de traballo  do  anterior elemento E2 e, agora, o elemento E2 conterá a suma das  horas  de E1 e E2 Copia.
 
 Desprazamento de elementos de pedido
@@ -579,7 +579,7 @@ Para realizar estas operación se dispón dos iconos situados na parte dereita d
    * Icono frecha abaixo. Permite o desprazamento cara abaixo dun elemento de pedido dentro de todos os seus elementos de pedido irmáns, é dicir, que posúan o mesmo pai.
    * Icono frecha esquerda. Permite desindentar un elemento de pedido. Isto supón subilo na xerarquía e poñelo ao mesmo nivel que o seu pai actual. Só está activado nos elementos de pedido que teñen un pai, é dicir, que non son raíz.
    * Icono frecha dereita. Permite indentar un elemento de pedido. Isto supón baixalo na xerarquía e poñelo ao mesmo nivel que os fillos dos seu irmán situado encima del. Só está permitida esta operación nos elementos de pedido que teñen un irmán por enriba del.
-   
+
 Puntos de planificación
 =======================
 
@@ -595,15 +595,15 @@ Os puntos de planificación son marcas que se realizan sobre as árbores de elem
 Un elemento de pedido pode estar en 3 estados de planificación tendo en conta os puntos de planificación:
 
    * **Totalmente planificado**. Significa que o traballo que él representa está totalmente incluído na planificación. Pode darse este estado en tres casos:
-   
-      * Que sexa punto de planificación. 
+
+      * Que sexa punto de planificación.
       * Que se atope por debaixo dun punto de planificación. Neste caso o seu traballo xa se atopa integrado polo punto de planificación pai del.
       * Que non haxa ningún punto de planificación por encima del pero que para todo o traballo que representa haxa un punto de planificación por debaixo del que o cubra.
-      
+
    * **Sen planificar**. Significa que para o traballo que él representa non hai ningún punto de planificación que recolla parte do seu traballo para ser planificado. Isto ocorre cando non é punto de planificación e non hai ningún punto de planificación por encima ou por debaixo del na xerarquía.
-   
+
    * **Parcialmente planificado**. Significa que parte do seu traballo está planificado e outra parte aínda non se incluíu na planificación. Este caso ocorre cando o elemento de pedido non é punto de planificación, non hai ningún elemento de pedido por encima del na xerarquía que sexa punto de planificación e, ademais, existen descendentes do mesmo que se son puntos de planificación pero hai outros descendentes que están en estado sen planificar.
-   
+
 Así mesmo un pedido terá un estado de planificación referido a tódolos seus elementos de pedido e será o seguinte:
 
    * Un pedido atópase en estado totalmente planificado se todos os seus elementos de pedido se atopan en estado totalmente planificado.
@@ -618,13 +618,13 @@ Para borrar elementos de pedidos existe un icono que representa unha papeleira s
    * Identificar a fila que se corresponde co elemento de pedido que se desexa eliminar.
    * Premer co botón de esquerdo do rato sobre o icono da papeleira. Neste momento o sistema procede a borrar tanto o elemento de pedido como tódolos seus descendentes.
    * Pulsar no icono de Gardar, disquete na barra superior, para confirmar o borrado.
-   
+
 Creación de puntos de planificación
 -----------------------------------
 
 Para a creación de puntos de planificación hai que realizar os seguintes pasos:
 
-   * Ir a opción Planificación > Lista de pedidos.
+   * Ir a opción Planificación > Proxectos.
    * Identificar a fila que se corresponde co pedido que se quere editar e que ten que ter elementos de pedido. Premer o botón Editar, lapis sobre folla de papel, e pulsalo.
    * Seleccionar a pestana Elementos de pedido.
    * Identificar sobre a árbore a que nivel se desexa planificar cada parte e, unha vez decidido, onde se desexa crear unha tarefa de planificación pulsar co rato sobre un icono que representa un diagrama de gantt de dúas tarefas. Isto converte o elemento de pedido en punto de planificación, pon en verde tódolos elementos totalmente planificados e se marcará a fila do punto de planificación e as súas descendentes cunha cunha N.
@@ -644,7 +644,7 @@ Conceptos teóricos
 
 Os elementos de pedido representa o traballo que hai que planificar e tamén poden esixir o cumprimento de criterios. O feito de que un elemento de pedido esixa un criterio significa que se determina que para a realización do traballo que ten asociado o elemento de pedido é apropiado que o recurso que se planifique satisfaga ese criterio.
 
-Os criterios cando se aplican a un determinado elemento de pedido se propagan realmente a todos os seus descendentes. Isto significa que se un criterio e esixido a un determinado nivel na árbore de elementos de pedido, pasa a ser a esixido tamén por tódolos elementos de pedido fillos. 
+Os criterios cando se aplican a un determinado elemento de pedido se propagan realmente a todos os seus descendentes. Isto significa que se un criterio e esixido a un determinado nivel na árbore de elementos de pedido, pasa a ser a esixido tamén por tódolos elementos de pedido fillos.
 
 Por tanto, un criterio pode ser esixido de dúas formas nun elemento de pedido:
 
@@ -658,7 +658,7 @@ Introdución de criterio nun elemento de pedido folla
 
 Para dar de alta un criterio nun elemento de pedido folla hai que dar os seguintes pasos:
 
-   * Ir a opción Planificación > Lista de pedidos
+   * Ir a opción Planificación > Proxectos
    * Identificar sobre a lista de pedidos o pedido co cal se quere traballar.
    * Pulsar no botón editar do pedido folla desexado.
    * Seleccionar a pestana **Elementos de pedido**
@@ -676,7 +676,7 @@ Introdución de criterio nun elemento de pedido contedor
 
 Para dar de alta un criterio nun elemento de pedido contedor hai que dar os seguintes pasos:
 
-   * Ir a opción Planificación > Lista de pedidos
+   * Ir a opción Planificación > Proxectos
    * Identificar sobre a lista de pedidos o pedido co cal se quere traballar.
    * Pulsar no botón editar do pedido desexado.
    * Seleccionar a pestana **Elementos de pedido**
@@ -710,13 +710,13 @@ Baixo esta premisa, para invalidar o criterio C1 no elemento E2 hai que efectuar
    * Premer no botón invalidar.
    * Pulsar en **Atrás**.
    * Premer sobre o icono de gardar representado por un disquete da barra de operacións situada na parte superior.
-   
+
 Borrar un requirimento de criterio nun elemento de pedido
 ---------------------------------------------------------
 
 Os requirimentos que se poden borrar son unicamente os criterios directos, xa que os criterios indirectos unicamente se poden invalidar. Os pasos que hai que dar para invalidar un criterio directos son os seguintes:
 
-   * Ir a opción Planificación > Lista de pedidos
+   * Ir a opción Planificación > Proxectos
    * Identificar sobre a lista de pedidos o pedido co cal se quere traballar.
    * Pulsar no botón editar do pedido desexado.
    * Seleccionar a pestana **Elementos de pedido**
@@ -737,7 +737,7 @@ Como se deduce tamén, un pedido non pode recibir criterios indirectos xa que é
 
 Os pasos para acceder a xestión dos criterios a nivel de pedido son os seguintes:
 
-   * Ir a opción Planificación > Lista de pedidos.
+   * Ir a opción Planificación > Proxectos.
    * Identificar sobre a lista de pedidos o pedido sobre o cal se quere traballar.
    * Premer no botón editar do pedido.
    * Seleccionar a pestana *Criterio requirido*
@@ -748,14 +748,14 @@ Os pasos para acceder a xestión dos criterios a nivel de pedido son os seguinte
 Módulo de planificación
 -----------------------
 
-Para comprender as principais funcionalidades de planificación da aplicación é preciso acceder a sección **Planificación > Vista da Compañía**. Navaplan permite consultar a informacións de planificación da empresa en dous niveis:
+Para comprender as principais funcionalidades de planificación da aplicación é preciso acceder a sección **Planificación > Planificación de proxectos**. Navaplan permite consultar a informacións de planificación da empresa en dous niveis:
 
    * Nivel Empresa: pódese consultar a información de tódolos pedidos en curso.
    * Nivel Pedido: pódese consultar a información de tódalas tarefas dun pedido.
 
 Dende a vista de empresa é posible navegar ao detalle dun pedido facendo dobre click na caixa do diagrama de gantt que representa o pedido ou pulsando co botón dereito para abrir o menú contextual seleccionando planificar.
 
-Para volver a vista de empresa tense que pulsar no menú principal en **Planificación > Vista da Compañía** ou en **INCIO** na ruta que mostra a información que se estea visualizando.
+Para volver a vista de empresa tense que pulsar no menú principal en **Planificación > Planificación de proxectos** ou en **INCIO** na ruta que mostra a información que se estea visualizando.
 
 A vista de empresa xa detallada previamente é a pantalla principal da aplicación para o seguimento da situación dos proxectos da empresa.
 
@@ -768,15 +768,15 @@ Dentro de cada nivel Empresa ou Pedido é posible cambiar dunha perspectiva puls
 
 Na **vista da empresa** existen tres perspectivas dispoñibles:
 
-   * Planificación da compañía: mostra a visión dos pedidos no tempo cunha representación dun diagrama de Gantt, nesta vista aparecen tódolos pedidos planificados coa súa date de inicio e fin. Graficamente se pode ver en cada caixa o grado de avance, o número de horas traballadas no pedido e as datas límites de entrega.
-   * Carga global de recursos: mostra a visión dos recursos da empresa no tempo, representando nun gráfico de liñas do tempo a carga de traballo dos recursos co detalle das tarefas as que están asignados.
-   * Lista de pedidos: mostra o listado dos pedidos existentes coa súa información de datas, presuposto, horas e estado e permite acceder a edición dos detalles do pedido.
+   * Planificación de proxectos: mostra a visión dos pedidos no tempo cunha representación dun diagrama de Gantt, nesta vista aparecen tódolos pedidos planificados coa súa date de inicio e fin. Graficamente se pode ver en cada caixa o grado de avance, o número de horas traballadas no pedido e as datas límites de entrega.
+   * Carga de recursos: mostra a visión dos recursos da empresa no tempo, representando nun gráfico de liñas do tempo a carga de traballo dos recursos co detalle das tarefas as que están asignados.
+   * Proxectos: mostra o listado dos pedidos existentes coa súa información de datas, presuposto, horas e estado e permite acceder a edición dos detalles do pedido.
 
 Na **vista de pedido** existen catro perspectivas dispoñibles:
 
-   * Planificación de pedidos: mostra a visión das tarefas do pedido no tempo cunha representación de diagrama de Gantt, nesta vista pode consultarse a información das datas de inicio e fin, a estrutura xerarquica das tarefas, os avances, as horas imputadas, as dependencias de tarefas, os fitos e as datas límite das tarefas.
+   * Planificación de proxectos: mostra a visión das tarefas do pedido no tempo cunha representación de diagrama de Gantt, nesta vista pode consultarse a información das datas de inicio e fin, a estrutura xerarquica das tarefas, os avances, as horas imputadas, as dependencias de tarefas, os fitos e as datas límite das tarefas.
    * Carga de recursos: mostra a visión dos recursos asignados ao pedido no tempo coa súa carga de traballo tanto en tarefas deste pedido coma as pertencentes a outros pedidos por asignacións xenéricas ou específicas.
-   * Detalles de pedido: permite acceder a toda a información do pedido, organización do traballo, asignación de criterios, materiais, etc. Xa foi tratada dentro da edición de pedidos.
+   * Detalles do proxecto: permite acceder a toda a información do pedido, organización do traballo, asignación de criterios, materiais, etc. Xa foi tratada dentro da edición de pedidos.
    * Asignación avanzada: mostra a asignación numérica con diversos niveles de granularidade (dia,semana,mes) dos recursos nas tarefas do proxecto. Permite modificar as asignacións de recursos no tempo as distintas tarefas do mesmo.
 
 Vista de planificación de empresa
@@ -804,13 +804,13 @@ Vista de planificación de pedido
 
 Para acceder a vista de planificación dun pedido é preciso facer dobre click na representación do do diagrama de Gantt nun pedido, ou cambiar a perspectiva de planificación dende a perspectiva de detalle de pedidos.
 
-Nesta vista poderase acceder as accións de definición de dependencias entre tarefas e asignación de recursos. 
+Nesta vista poderase acceder as accións de definición de dependencias entre tarefas e asignación de recursos.
 
 A vista de planificación de pedido dispón dunha barra de ferramentas na parte superior que permite realizar as seguintes operacións:
 
-   * gravar planificación: consolida na base de datos tódolos cambios realizados sobre a planificación e a asignación de recursos. **É importante gravar sempre os cambios unha vez terminada a elaboración da planificación**. Se se cambia de perspectiva ou se entra noutra sección perderanse os cambios.
+   * Gravar planificación: consolida na base de datos tódolos cambios realizados sobre a planificación e a asignación de recursos. **É importante gravar sempre os cambios unha vez terminada a elaboración da planificación**. Se se cambia de perspectiva ou se entra noutra sección perderanse os cambios.
    * Operación de reasignar: esta operación permite recalcular as asignacións de recursos nas tarefas do pedido.
-   *  Nivel de zoom: permite modificar a escala temporal na que se mostra a  información. Pódese seleccionar a granularidade a distintos niveis: día,  semana, mes, trimestre, ano.
+   * Nivel de zoom: permite modificar a escala temporal na que se mostra a  información. Pódese seleccionar a granularidade a distintos niveis: día,  semana, mes, trimestre, ano.
    * Resaltar camiño crítico: mostra o camiño crítico do pedido, realiza o calculo daquelas tarefas que a sua demora implicará unha entrega fora de tempo do pedido.
    * Mostrar/Ocultar  etiquetas: oculta ou mostra no diagrama de gantt as etiquetas asociadas a  cada un dos pedidos.
    * Mostrar/Ocultar asignacións: oculta ou mostra  no diagrama de gantt os recursos asignados a cada un dos pedidos.
@@ -820,11 +820,11 @@ A vista de planificación de pedido dispón dunha barra de ferramentas na parte 
    * Filtrado por nome: permite indicar o nome da tarefa
    * Acción de  Filtrado: executa a procura en base aos parámetros definidos  anteriormente.
 
-Xusto enriba da barra de tarefas atopase o nome do pedido que esta detrás do texto INICIO > Planificación > Planificación de pedidos > NOME DO PEDIDO. 
+Xusto enriba da barra de tarefas atopase o nome do pedido que esta detrás do texto INICIO > Planificación > Planificación de proxectos > NOME DO PEDIDO.
 
 Se o pedido se atopa totalmente planificado aparecera a dereita do nome unha letra C (Completamente Planificado), pero se non están marcados tódolos puntos de planificación do pedido mostrarse unha letra P (Parcialmente Planificado). Só se mostrará a letra C cando tódolos elementos de pedido na edición do pedido se atopen por debaixo dun punto de planificación.
 
-Na vista de planificación de pedido pódese observar que as tarefas organízanse de forma xerarquica, de forma que pódense expandir e comprimir as tarefas. 
+Na vista de planificación de pedido pódese observar que as tarefas organízanse de forma xerarquica, de forma que pódense expandir e comprimir as tarefas.
 
 Na parte inferior mostrase a información da carga dos recursos no tempo así como as gráficas referentes ao valor gañado que serán explicadas máis adiante.
 
@@ -837,7 +837,7 @@ Na vista de planificación dun pedido pódese facer as seguintes operacións de 
 Asignación de dependencias
 --------------------------
 
-Unha dependencia é una relación entre dúas tarefas pola cal unha tarefa A non pode comezar ou terminar ata que unha tarefa B comece ou remate. Navalplan implementa as seguintes relación de dependencias entre tarefas entre dúas tarefas chamadas A e B. 
+Unha dependencia é una relación entre dúas tarefas pola cal unha tarefa A non pode comezar ou terminar ata que unha tarefa B comece ou remate. Navalplan implementa as seguintes relación de dependencias entre tarefas entre dúas tarefas chamadas A e B.
 
    * Fin - Inicio: A tarefa B non pode comezar ata que a tarefa A remate. Esta e a relación de dependencia máis común.
    * Inicio - Inicio: A tarefa B non pode comezar ata que a tarefa A teña comezado.
@@ -845,7 +845,7 @@ Unha dependencia é una relación entre dúas tarefas pola cal unha tarefa A non
 
 Para engadir unha dependencia procedese da seguinte forma:
 
-   * Marcar a tarefa que se quere que xere a dependencia. A tarefa da que se depende para que a dependencia sexa cumprida. 
+   * Marcar a tarefa que se quere que xere a dependencia. A tarefa da que se depende para que a dependencia sexa cumprida.
    * Premer o botón dereito do rato sobre a tarefa e no menú contextual seleccionase a opción Engadir Dependencia.
    * Mostrarase unha frecha que seguirá o punteiro do rato.
    * Seleccionar facendo click co rato a tarefa dependente, a que recibe a dependencia. Unha vez seleccionada crearase unha dependencia Fin-Inicio entre as dúas tarefas.
@@ -856,7 +856,7 @@ Para engadir unha dependencia procedese da seguinte forma:
 Asignación de recursos
 ======================
 
-A asignación de recursos é unha das partes máis importantes da  aplicación. A asignación de recursos pode realizarse de dous xeitos  diferentes:
+A asignación de recursos é unha das partes máis importantes da aplicación. A asignación de recursos pode realizarse de dous xeitos  diferentes:
 
    * Asignacións específicas.
    * Asignacións xenéricas.
@@ -864,7 +864,7 @@ A asignación de recursos é unha das partes máis importantes da  aplicación. 
 Cada unha das asignacións é explicada nas seguintes seccións.
 
 Para realizar calquera das dúas asignacións de recursos é necesario  dar os seguintes pasos:
-  
+
    * Acceder á planificación dun pedido.
    * Premer co botón dereito sobre a tarefa que se desexa asignar na opción de asignación de recursos.
    * A aplicación amosa unha pantalla na que se pode  visualizar a seguinte información.
@@ -879,13 +879,13 @@ Para realizar calquera das dúas asignacións de recursos é necesario  dar os s
        * Asignacións: Listado de asignacións realizadas.  Neste listado poderanse ver as asignacións xenéricas (o nome sería a  lista de criterios satisfeita, horas e número de recursos por día). Cada  asignación realizada pode ser borrada explicitamente premendo no botón  de borrar.
 
    * Seleccionar a opción de "Procura de recursos".
-   * A aplicación amosa unha nova pantalla formada por unha árbore de  criterios e un listado á dereita dos traballadores que cumpren os criterios seleccionados:
+   * A aplicación amosa unha nova pantalla formada por unha árbore de criterios e un listado á dereita dos traballadores que cumpren os criterios seleccionados:
    * Seleccionar o tipo de asignación a realizar:
 
        * Asignación específica. Ver sección "Asignación específica" para  coñecer que significa elixir esta opción.
        * Asignación xenérica. Ver sección "Asignación xenérica para coñecer  que significa elixir esta opción.
-   
-   * Seleccionar unha lista de criterios (asignación xenérica) ou unha lista de traballadores (asignación específica). A elección  múltiple realízase premendo no botón "Crtl" á hora de pulsar en cada traballador ou criterio.
+
+   * Seleccionar unha lista de criterios (asignación xenérica) ou unha lista de traballadores (asignación específica). A elección múltiple realízase premendo no botón "Crtl" á hora de pulsar en cada traballador ou criterio.
    * Premer no botón "Seleccionar". É  importante ter en conta que, se non se marca asignación xenérica, é  necesario escoller un traballador ou máquina para poder realizar unha  asignación, en caso contrario chega con elixir un ou varios criterios.
    * A aplicación amosa no listado de asignacións da  pantalla orixinal de asignación de recursos a lista de criterios ou  recursos seleccionados.
    * Cubrir as horas ou o número de recursos por día dependendo da estratexia de asignación que se solicitou levar a cabo á aplicación.
@@ -896,9 +896,9 @@ Para realizar calquera das dúas asignacións de recursos é necesario  dar os s
 Asignación de recursos específicos
 ==================================
 
-A asignación específica é aquela asignación de un recurso de xeito concreto e específico a unha tarefa de un proxecto, é dicir, o usuario  da aplicación está decidindo que "nome e apelidos" ou qué "máquina"  concreta debe ser asignada a unha tarefa.
+A asignación específica é aquela asignación de un recurso de xeito concreto e específico a unha tarefa de un proxecto, é dicir, o usuario  da aplicación está decidindo que "nome e apelidos" ou qué "máquina" concreta debe ser asignada a unha tarefa.
 
-A aplicación, cando un recurso é asignado especificamente, crea  asignacións diarias en relación á porcentaxe de recurso diario que se  elixiu para asignación, contrastando previamente co calendario dispoñible do recurso. Exemplo: unha asignación de 0.5 recursos para  unha tarefa de 32 horas fai que se asignen ó recurso específico  (supoñendo un calendario laboral de 8 horas diarias) 4 horas diarias para realizar a tarefa.
+A aplicación, cando un recurso é asignado especificamente, crea asignacións diarias en relación á porcentaxe de recurso diario que se elixiu para asignación, contrastando previamente co calendario dispoñible do recurso. Exemplo: unha asignación de 0.5 recursos para  unha tarefa de 32 horas fai que se asignen ó recurso específico  (supoñendo un calendario laboral de 8 horas diarias) 4 horas diarias para realizar a tarefa.
 
 Para realizar a asignación a un recurso específico é preciso centrarse nos seguintes pasos na pestana de asignación de recursos dunha tarefa.
 
@@ -940,9 +940,9 @@ Se había  unha asignación previa, o sistema elimina dita asignación substitu�
 Revisión de asignación na pantalla de carga de recursos
 =======================================================
 
-No momento de contar con  recursos asignados a tarefas dun pedido ten sentido consultar a carga  que teñen os recursos asignados. Para iso contase coa segunda  perspectiva denominada carga de recursos. 
+No momento de contar con recursos asignados a tarefas dun pedido ten sentido consultar a carga  que teñen os recursos asignados. Para iso contase coa segunda  perspectiva denominada carga de recursos.
 
-Nesta vista vese a  información dos recursos específicos ou xenéricos asignados ao proxecto así coma a carga, coa información das  tarefas as que teñen sido asignados os mesmos. 
+Nesta vista vese a información dos recursos específicos ou xenéricos asignados ao proxecto así coma a carga, coa información das  tarefas as que teñen sido asignados os mesmos.
 
 Nun primeiro nivel mostrase  o nome do recurso e ao seu carón mostrase unha liña gráfica que indica a  carga do recurso no tempo. Se nun intervalo a barra está en vermello  o  recurso se atopa sobrecargado por riba do 100%, en laranxa se a carga  está ao 100% e en verde se a carga é inferior ao 100%.  Esta barra marca  con liñas verticais brancas os cambios de asignacións de tarefas.
 
@@ -952,13 +952,13 @@ Por cada liña de recurso pódese expandir a  información e consultar as tarefa
 
 Esta  perspectiva permite coñecer en detalle a situación dos recursos con  respecto as tarefas do pedido.
 
-Revisión de asignacións na pantalla  de asignación avanzada
+Revisión de asignacións na pantalla de asignación avanzada
 ===========================================================
 
 Una vez se está consultando  a información dun pedido se este pedido ten asignacións pódese acceder  a perspectiva de vista de asignación avanzada. Nesta vista vese o  pedido coma unha táboa que mostra tarefas e recursos asignados a mesma  ao longo do tempo. Sendo filas as tarefas e cada asignación a un recurso  recursos un subelemento da fila. E sendo as columnas as unidades de  tempo dependendo do nivel definido de Zoom.
 
 Nesta vista pódese cotexar o  resultado da asignación diaria de cada unha das asignacións específicas  feitas previamente. Existen dous modos de acceder á asignación  avanzada:
- 
+
    * Accedendo a un pedido  concreto e cambiar de perspectiva para  asignación avanzada. Neste caso  amosaranse todas as tarefas do pedido e  os recursos asignados (tanto  específicos como xenéricos).
    * Accedendo á asignación  de recursos e premendo no botón "Asignación  avanzada". Neste caso  amosaranse as asignacións da tarefa para a que se  está asignando  recursos (amósanse tanto as xenéricas como as específicas).
 
@@ -966,8 +966,12 @@ Pódese  acceder ó nivel de  zoom que desexe:
 
    * Se o  zoom elixido é un zoom superior a día. Se o usuario modifica o  valor  de horas asignado á semana, mes, cuadrimestre ou semestre, o  sistema  reparte as horas de xeito lineal durante todos os días do  período  elixido.
    * Se o zoom elixido é un zoom de día. Se o usuario  modifica o valor de  horas asignado ó día, estas horas só aplican ó  día. Deste xeito o  usuario pode decidir cantas horas se asignan  diariamente ós recursos da tarefa.
-   
+
    Para  consolidar os cambios da asignación avanzada é preciso premer o botón de  gravar. É importante que o total de horas coincida co total de horas asignadas a un intervalo temporal.
+
+Na pantalla de asignación avanzada é posible realizar asignacións en base a funcións:
+   * Función lineal por tramos. Calcula tramos lineais en base a unha serie de puntos dadots polos pares: punto que marca un momento na tarefa, porcentaxe de avance esperado.
+   * Función de interpolación polinómica. Función que en base a unha serie de puntos dados polos pares (punto que marca un momento na tarefa, porcentaxe de avance esperado) calcula o polinomio que satisfai a curva.
 
 Creación de fitos
 =================
@@ -1038,11 +1042,11 @@ Conceptos teóricos
 ==================
 
 O avance ou progreso é unha medida que indica en que grao está feito un traballo. En NavalPlan os avances se xestionan a dous niveis:
-   
+
    * Elemento de pedido. Un elemento de pedido representa un traballo a ser realizado e, consecuentemente, é posible no programa medir o progreso dese traballo.
    * Pedido, equivalencia de proxecto. Os pedidos de forma global tamén teñen un estado de progreso segundo o grao de finalización que teñen.
 
-O progreso ten que ser medido manualmente polas persoas encargadas da planificación na empresa porque é un xuízo que se leva en base a unha valoración do estado dos traballos. 
+O progreso ten que ser medido manualmente polas persoas encargadas da planificación na empresa porque é un xuízo que se leva en base a unha valoración do estado dos traballos.
 
 As características máis importantes do sistema de avances en NavalPlan é o seguinte:
 
@@ -1055,7 +1059,7 @@ Administración de tipos de avance
 
 A administración de tipos de avance permite ao usuario definir as distintas maneiras nas que desexa medir os avances sobre os elementos de pedido e pedidos. Para dar de alta un tipo de avance hai que levar a cabo os seguintes pasos:
 
-   * Ir a opción Administración > Xestionar tipos de avance.
+   * Ir a opción Administración > Tipos de datos > Avances.
    * Premer no botón **Crear**.
    * Cubrir no formulario que se mostra os seguintes datos:
 
@@ -1066,7 +1070,7 @@ A administración de tipos de avance permite ao usuario definir as distintas man
       * Porcentaxe. Se se indica que un tipo de avance está marcado como porcentaxe significa que o valor máximo vai a estar predefinido ao valor 100 e non se ofrecerá ao usuario a posibilidade de cambialo cando se asigne a un elemento de pedido.
 
    * Premer no botón Gardar.
-  
+
 Borrado de tipo de avance
 -------------------------
 
@@ -1074,7 +1078,7 @@ O borrado dun tipo de avance só ten sentido no caso de que non fora asignado nu
 
 Se este é o caso hai que dar os seguintes pasos:
 
-   * Ir a opción Administración > Xestionar tipos de avance.
+   * Ir a opción Administración > Tipos de datos > Avances.
    * Identificar a fila correspondente o tipo de avance que se desexa borrar.
    * Pulsar no icono da papeleira.
    * Se desprega unha ventá emerxente no cal se pide confirmación. Pulsar en Si.
@@ -1083,7 +1087,7 @@ Asignación de tipos de avances a elementos de pedido
 ====================================================
 
 Esta operación consiste en configurar a medición do progreso dun determinado elemento de pedido a través dun tipo de avance. Para asignar un tipo de avance a un elemento de pedido ten que cumprirse unha serie de regras:
-  
+
    * Non debe existir ningunha asignación do tipo de avance desexado nalgún dos seus descendentes.
    * Non debe existir ningunha asignación do tipo de avance desexado nalgún dos seu ancestros.
 
@@ -1091,7 +1095,7 @@ O anterior quere dicir que o tipo de avance so pode estar asignado en outra rama
 
 Para dar de alta o tipo de avance nun elemento de pedido hai que dar os seguintes pasos:
 
-   * Ira a opción Planificación > Lista de pedidos.
+   * Ira a opción Planificación > Proxectos.
    * Seleccionar a fila que se corresponda co pedido no cal se desexa configuración un tipo de avance para medir o progreso.
    * Premer no botón editar do pedido.
    * Seleccionar a pestana **Elementos de pedido**
@@ -1099,7 +1103,7 @@ Para dar de alta o tipo de avance nun elemento de pedido hai que dar os seguinte
    * Premer sobre o botón editar do elemento de pedido.
    * Sobre a ventá emerxente que aparece, seleccionar a pestana Avances.
    * Na pestana hai unha primeira área recadrada denominada **Asignación de avances**. O usuario debe premer o botón **Engadir nova asignación de avance**.
-   * Nese momento se engade unha nova fila a táboa de tipos de avance asignados. Na columna tipo aparece un selector no que hai que seleccionar o tipo de avance. 
+   * Nese momento se engade unha nova fila a táboa de tipos de avance asignados. Na columna tipo aparece un selector no que hai que seleccionar o tipo de avance.
    * Introducir o valor máximo para as medicións dese tipo de avance sobre o elemento do pedido.
    * Premer no botón da parte inferior **Atrás**
    * Facer clic co rato no icono de gardar, representado por un disquete, na barra de accións.
@@ -1107,9 +1111,9 @@ Para dar de alta o tipo de avance nun elemento de pedido hai que dar os seguinte
 Engadir lectura de avance sobre un tipo de avance asignado nun elemento de pedido
 =================================================================================
 
-Esta operación pode ser levada a cabo unha vez que se configurou previamente unha medición de tipo de avance sobre un elemento de pedido. Partindo deste suposto, os pasos para engadir unha lectura de avance sobre un tipo de avance asignado a un elemento de pedido son os seguintes:
+Esta operación pode ser levada a cabo unha vez que se configurou previamente unha medición de tipo de avance sobre un elemento de pedido. Existen dúas formas de engadir avance sobre unha tarefa ou elemento de pedido. A primeira opción é:
 
-   * Ir a opción Planificación > Lista de pedidos.
+   * Ir a opción Planificación > Proxectos.
    * Seleccionar a fila que se corresponda co pedido no cal se desexa configuración un tipo de avance para medir o progreso.
    * Premer no botón editar do pedido.
    * Seleccionar a pestana **Elementos de pedido**
@@ -1120,20 +1124,30 @@ Esta operación pode ser levada a cabo unha vez que se configurou previamente un
    * Coa pulsación anterior se habilita a sección inferior denominada **Medidas de avance** e se escribe ao lado do título **Medidas de avance** o tipo de avance que se acaba de seleccionar. Ademais se cargan na táboa desa sección todas as lecturas de avance que ata ese momento se teñen do tipo de avance seleccionado.
    * Pulsar no botón *Engadir nova medición de avance*
    * Nese momento se engade unha nova fila na táboa inferior de medicións de avance. O usuario debe cubrir nela os datos:
-      
+
       * Valor. Aquí debe introducir a medida de avance nas unidades que define o tipo de avance. O valor máximo ven determinado pola configuración da asignación do tipo de avance ao elemento de pedido e a precisión polo valor de precisión determinado polo tipo de avance.
       * Data. A data indica cal é o día ao cal corresponde esta medición de avance.
       * Porcentaxe. Esta columna é unha columna calculada e informa de que porcentaxe representa a medición de avance considerando que a tarefa rematada é un 100%.
-   
+
    * Premer no botón **Atrás**
    * Facer clic co rato no icono de gardar, representado por un disquete, na barra de accións.
+
+A segunda das opcións é:
+
+   * Ir á opción de Planificación > Planificación de pedidos.
+   * Acceder ó proxecto desexado.
+   * Elexir a tarefa á que se lle desexa engadir avance.
+   * Premer botón dereito sobre a elixida e seleccionar a operación "Asignación de avance".
+   * Continuar co noveno paso da primeira opción.
+
+É importante resaltar que asignando avance sobre un elemento de pedido concreto ou sobre unha caixa de Gantt dunha tarefa correspondente co anterior elemento de pedido, a operación realizara é a mesma.
 
 Mostrado da evolución de lecturas de avance graficamente
 ========================================================
 
 Sobre a pantalla de configuración de medidas de avance é posible ver a evolución graficamente de un ou máis tipos de avance configurados graficamente. Para elo o que hai que realizar é:
 
-   * Ir a opción Planificación > Lista de pedidos.
+   * Ir a opción Planificación > Proxectos.
    * Seleccionar a fila que se corresponda co pedido no cal se desexa configuración un tipo de avance para medir o progreso.
    * Premer no botón editar do pedido.
    * Seleccionar a pestana **Elementos de pedido**
@@ -1143,8 +1157,10 @@ Sobre a pantalla de configuración de medidas de avance é posible ver a evoluci
    * Na sección **Asignación de avances** seleccionar a columna *Mostrar* de cada un dos tipos de avance que se queiran ver graficamente.
    * Observar na gráfica cal é a evolución das lecturas dos tipos de avance seleccionados no tempo.
 
-Configuración de propagación de tipo de avance 
+Configuración de propagación de tipo de avance
 ==============================================
+
+Propagar é a operación que permite calcular o avance en nodos superiores en base ós nodos fillos, de modo que o tipo de avance que sexa propagado cara un pai, será o utilizado para calcular o avance de dito pai.
 
 Existe unha columna na táboa de asignación de tipos de avance a elementos de pedido que é un botón radio que forma un conxunto con tódolos tipos de avance asignados ao elemento de pedido que se está configurando. Isto significa que é unha columna que ten que estar marcada unha delas como que propaga e non pode haber máis con este atributo.
 
@@ -1152,7 +1168,7 @@ O tipo de avance configurado sobre un elemento de pedido marcado como que propag
 
 Para configurar o tipo de avance que propaga nun elemento de pedido hai que seguir a secuencia seguinte de accións:
 
-   * Ir a opción Planificación > Lista de pedidos.
+   * Ir a opción Planificación > Proxectos.
    * Seleccionar a fila que se corresponda co pedido no cal se desexa configuración un tipo de avance para medir o progreso.
    * Premer no botón editar do pedido.
    * Seleccionar a pestana **Elementos de pedido**
@@ -1190,3 +1206,87 @@ Pois ben, nesa vista de empresa se o pedido ou os elementos de pedido do seu int
 
 A representación do avance sobre o pedido, é a mesma que o explicado para os elementos de pedido.
 
+--------------------------
+Outros conceptos avanzados
+--------------------------
+
+Recursos limitantes
+===================
+
+Os recursos limitantes son recursos que limitan a planificación, de xeito que só aceptan tarefas de xeito secuencial. Por esta razón, o modo de funcionamento é en modo de colas. Un recurso declarado como limitante aceptará planificación de tarefas encoladas. NavalPlan permite a xestión de ditas colas.
+
+Para xestionar ditas colas é necesario contar con tarefas de tipo "Asignación de recursos limitantes". Para conseguir tarefas deste tipo accederase ás propiedades da tarefa (dende Planificación > Planificación de proxectos) e no combo de selección "Asignación de tipos de recursos" seleccionar "Asignación de recursos limitantes".
+
+Unha vez unha tarefa é do tipo anterior, NavalPlan ofrece a posibilidade de asignar:
+
+   * Un recurso limitante específico.
+   * Un criterio xenérico. É importante asignar un criterio que se saiba satisfarán os recursos limitantes.
+
+Agora ben, esta asignación non fai unha asignación de horas a dito recurso, está facendo unha asignación á cola do recurso. Faría falla agora xestionar dita cola. Para realizala, é necesario seguir os seguintes pasos:
+
+   * Premer en "Planificación > Asignación de recursos limitantes".
+   * O sistema amosará a lista de colas dispoñibles.
+   * O sistema amosará tamén a lista de tarefas pendentes de introducir nas colas, por exemplo, as que se asignan a recursos específicos no paso anterior ou a criterios.
+   * O usuario pode elixir introducir a tarefa automáticamente nunha cola:
+
+      * O sistema buscará o mellor oco que satisfaga as restriccións da tarefa.
+
+   * O usuario pode elixir introducir a tarefa manualmente nun punto da cola:
+
+      * Apropiativamente: Movendo a tarefa que interfira coa introducida, movéndoa para un punto posterior.
+      * Non apropiativamente: Permitindo engadir a tarefa só onde hai un oco do tamaño necesario.
+
+   * As tarefas asignadas a recursos só se poden asignar a colas de ditos recursos.
+   * As tarefas asignadas a criterios poderán ser asignadas a colas de recursos que satisfán os criterios.
+   * Para afianzar os datos das colas é necesario premer na incoa de "Gravar", en caso contrario pérdense os datos das colas asignadas.
+
+
+Consolidación de avances
+========================
+
+Ainda que é posible introducir avances no sistema, ditos avances non se traducen en cambios nas tarefas e nas asignacións das mesmas. Sen embargo, consolidando os avances introducidos, sí se produce dito efecto. Consolidar unha tarefa significa asentar o avance para unha data dada definitivamente. Para consolidar un avance é necesario realizar os seguintes pasos:
+
+   * Premer co botón dereito na tarefa elixida.
+   * Elixir o primeiro dos avances a consolidar.
+   * Premer en "Aceptar".
+   * Gardar o proxecto.
+
+Para interpretar o que sucede cando se consolida un avance, é necesario ver os diferentes casos con un exemplo.
+
+   * Suposto: unha tarefa que comeza o luns dunha semana concreta e remata no venres da mesma semana, con unha duración de 40 horas de 1 recurso:
+      * Consolidar avance do 20% na data da metade da tarefa.
+
+         * O sistema busca cantas horas se asignaron ata dito día, suposto, 20 horas por tratarse da metade da tarefa
+         * Se se consolida o 20% quere dicir que queda o 80% por facer, en consecuencia de 40 estimadas quedarían 32 horas por facer, pero como xa se levaban feitas 20 horas, o novo total da tarefa son 56 horas, das que 20 están consolidadas e 36 quedan por facer.
+         * En consecuencia, o proxecto leva retraso e para acabalo en tempo é necesario ampliar a asignación de recursos, se é posible.
+
+      * Consolidar avance do 80% na data da metade da tarefa.
+
+         * O sistema busca cantas horas se asignaron ata dito día, suposto, 20 horas por tratarse da metade da tarefa
+         * Se se consolida o 80% quere dicir que queda o 20% por facer, en consecuencia de 40 estimadas quedarían 8 horas por facer, pero como xa se levaban feitas 20 horas, o novo total da tarefa son 28 horas, das que 20 están consolidadas e 8 quedan por facer.
+         * En consecuencia, o proxecto leva adianto pero o final de tarefa mantense onde estaba, é responsabilidade do que planifica decidir se quere adiantar o tempo de finalización da tarefa aumentando asignacións.
+
+      * Consolidar avance do 50% na data da metade da tarefa.
+
+         * A tarefa continúa no mesmo estado porque se consolidan 20 e quedan 20 por facer tal como se estimaba no inicio da mesma.
+
+
+Escenarios
+=============
+
+Os escenarios representan diferentes entornos de traballo. Os escenarios comparten certas tipos de datos que son comúns, outras poden pertencer a varios escenarios e outras son completamente diferentes:
+
+   * Tipos de entidades comúns: criterios, etiquetas, etc.
+   * Tipos de entidades que poden ser comúns: pedidos, elementos de pedido e a asociación de datos ós mesmos.
+   * Tipos de entidades independentes: asignacións de horas
+
+Cando un usuario cambia de escenario, as asignacións de horas son diferentes entre pedidos porque as condicións poden ser diferentes, por exemplo, un novo pedido que existe nun novo escenario.
+
+As operacións básicas de operación entre escenarios son:
+
+   * Creación de escenario
+   * Cambio de escenario
+   * Creación de pedido en escenario
+   * Envío de pedido de un escenario a outro. Esta operación copia toda a información de un pedido de un escenario a outro, excepto as saignacións de horas.
+
+Os escenarios son xestionados dende a opción de menú "Escenarios" onde é posible administrar os escenarios existentes e crear novos. Por outro lado existe un botón de acceso rápido a escenario na zona dereita superior de NavalPlan.
