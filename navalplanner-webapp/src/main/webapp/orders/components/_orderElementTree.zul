@@ -44,7 +44,7 @@
                 visible="${treeComponent.createFromTemplateEnabled}"/>
         </hbox>
     </vbox>
-    <vbox>
+    <vbox width="100%">
         <tree id="tree" height="440px" multiple="false" droppable="true"
             onDrop="treeController.move(self, event.dragged)"
             onSelect="treeController.updateControlButtons(event)"
