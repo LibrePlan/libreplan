@@ -21,9 +21,7 @@
 package org.navalplanner.web.common.components.bandboxsearch;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -68,8 +66,6 @@ public class BandboxSearch extends HtmlMacroComponent {
     private Bandbox bandbox;
 
     private IBandboxFinder finder;
-
-    private static Map<String, Object> mapMatching = new HashMap<String, Object>();
 
     private String widthBandbox;
 
