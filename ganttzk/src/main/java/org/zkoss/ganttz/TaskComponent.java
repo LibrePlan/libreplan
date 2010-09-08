@@ -210,8 +210,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
 
     protected void updateClass() {
-        response(null, new AuInvoke(this, "setClass",
-                new Object[] { calculateCSSClass() }));
+        setSclass(calculateCSSClass());
     }
 
     public final void afterCompose() {

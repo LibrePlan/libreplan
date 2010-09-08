@@ -137,11 +137,6 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
             var position = jq(this.$n()).position();
 
             zAu.send(new zk.Event(this, 'onUpdatePosition', [new String(position.left), new String(position.top)]));
-//            zkau.send( {
-//                uuid : cmp.id,
-//                cmd : "updatePosition",
-//                data : [ cmp.style.left, cmp.style.top ]
-//            });
         }), null, false);
     },
     _createArrow : function(){
@@ -197,7 +192,6 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     resizeCompletion2Advance : function(width){
         jq('#' + this.uuid + ' > .completion2:first').css('width', width);
     },
-    setClass : function(){},
     showTaskLabel : function(){
         jq('#'+ this.uuid + ' .task-labels').show();
     },
