@@ -16,6 +16,13 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         this.domUnlisten_(this.$n(), "onMouseover", '_showTooltip');
         this.$supers('unbind_', arguments);
     },
+    addDependency : function(){
+        this._createArrow();
+    },
+    consolidateNewDependency : function(task){
+        zAu.send( new zk.Event(this, 'onAddDependency', [task.id]));
+        ganttz.DependencyList.getInstance().clear();
+    },
     addRelatedDependency : function(dependency){
         if(this._dependencies == undefined) this._dependencies = [];
         this._dependencies.push(dependency);
