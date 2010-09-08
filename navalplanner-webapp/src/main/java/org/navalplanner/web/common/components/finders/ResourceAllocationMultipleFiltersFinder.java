@@ -25,9 +25,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.hibernate.notification.IAutoUpdatedSnapshot;
+import org.navalplanner.business.hibernate.notification.ReloadOn;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -62,9 +64,9 @@ public class ResourceAllocationMultipleFiltersFinder extends
 
     private boolean isLimitingResourceAllocation = false;
 
-    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
+    private IAutoUpdatedSnapshot<Map<Class<?>, List<Resource>>> mapResources;
 
-    private static final Map<Class, List<Resource>> mapResources = new HashMap<Class, List<Resource>>();
+    private IAutoUpdatedSnapshot<Map<CriterionType, List<Criterion>>> mapCriterions;
 
     protected ResourceAllocationMultipleFiltersFinder() {
 
@@ -77,37 +79,50 @@ public class ResourceAllocationMultipleFiltersFinder extends
 
     @Transactional(readOnly = true)
     public void init() {
-        getAdHocTransactionService().runOnReadOnlyTransaction(
-                new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        loadCriterions();
-                        loadResources();
-                        return null;
-                    }
-                });
+        mapCriterions = getSnapshotRefresher().takeSnapshot(
+                onTransaction(getCriterionsMapCallable()),
+                ReloadOn.onChangeOf(CriterionType.class, Criterion.class));
+        mapResources = getSnapshotRefresher()
+                .takeSnapshot(
+                        onTransaction(getResourcesMapCallable()),
+                        ReloadOn.onChangeOf(Resource.class, Worker.class,
+                        Machine.class, VirtualWorker.class));
     }
 
-    private void loadCriterions() {
-        mapCriterions.clear();
-        List<CriterionType> criterionTypes = criterionTypeDAO
-                .getCriterionTypes();
-        for (CriterionType criterionType : criterionTypes) {
-            List<Criterion> criterions = new ArrayList<Criterion>(criterionDAO
-                    .findByType(criterionType));
+    private Callable<Map<CriterionType, List<Criterion>>> getCriterionsMapCallable() {
+        return new Callable<Map<CriterionType, List<Criterion>>>() {
 
-            mapCriterions.put(criterionType, criterions);
-        }
+            @Override
+            public Map<CriterionType, List<Criterion>> call()
+                    throws Exception {
+                Map<CriterionType, List<Criterion>> result = new HashMap<CriterionType, List<Criterion>>();
+                for (CriterionType criterionType : criterionTypeDAO
+                        .getCriterionTypes()) {
+                    List<Criterion> criterions = new ArrayList<Criterion>(
+                            criterionDAO.findByType(criterionType));
+
+                    result.put(criterionType, criterions);
+                }
+                return result;
+            }
+        };
     }
 
-    private void loadResources() {
-        mapResources.clear();
-        mapResources.put(Worker.class, new ArrayList<Resource>(resourceDAO
-                .getRealWorkers()));
-        mapResources.put(Machine.class, new ArrayList<Resource>(resourceDAO
-                .getMachines()));
-        mapResources.put(VirtualWorker.class, new ArrayList<Resource>(
-                resourceDAO.getVirtualWorkers()));
+    private Callable<Map<Class<?>, List<Resource>>> getResourcesMapCallable() {
+        return new Callable<Map<Class<?>, List<Resource>>>() {
+
+            @Override
+            public Map<Class<?>, List<Resource>> call() throws Exception {
+                Map<Class<?>, List<Resource>> result = new HashMap<Class<?>, List<Resource>>();
+                result.put(Worker.class,
+                        new ArrayList<Resource>(resourceDAO.getRealWorkers()));
+                result.put(Machine.class,
+                        new ArrayList<Resource>(resourceDAO.getMachines()));
+                result.put(VirtualWorker.class, new ArrayList<Resource>(
+                        resourceDAO.getVirtualWorkers()));
+                return result;
+            }
+        };
     }
 
     public List<FilterPair> getFirstTenFilters() {
@@ -123,9 +138,11 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private List<FilterPair> fillWithFirstTenFiltersResources() {
-        Iterator<Class> iteratorClass = mapResources.keySet().iterator();
+        Map<Class<?>, List<Resource>> mapResources = this.mapResources
+                .getValue();
+        Iterator<Class<?>> iteratorClass = mapResources.keySet().iterator();
         while (iteratorClass.hasNext() && getListMatching().size() < 10) {
-            Class className = iteratorClass.next();
+            Class<?> className = iteratorClass.next();
             for (int i = 0; getListMatching().size() < 10
                     && i < mapResources.get(className).size(); i++) {
                 Resource resource = mapResources.get(className).get(i);
@@ -146,6 +163,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
+        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
+                .getValue();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -175,6 +194,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void searchInCriterionTypes(String filter) {
+        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
+                .getValue();
         boolean limited = (filter.length() < 3);
         for (CriterionType type : mapCriterions.keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
@@ -188,6 +209,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void searchInCriterions(CriterionType type, String filter) {
+        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
+                .getValue();
         for (Criterion criterion : mapCriterions.get(type)) {
             String name = StringUtils.deleteWhitespace(criterion.getName()
                     .toLowerCase());
@@ -201,6 +224,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void setFilterPairCriterionType(CriterionType type, boolean limited) {
+        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
+                .getValue();
         for (Criterion criterion : mapCriterions.get(type)) {
             addCriterion(type, criterion);
             if ((limited) && (getListMatching().size() > 9)) {
@@ -210,8 +235,10 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void searchInResources(String filter) {
+        Map<Class<?>, List<Resource>> mapResources = this.mapResources
+                .getValue();
         boolean limited = (filter.length() < 3);
-        for (Class className : mapResources.keySet()) {
+        for (Class<?> className : mapResources.keySet()) {
             for (Resource resource : mapResources.get(className)) {
 
                 if (isLimitingResourceAllocation
@@ -232,6 +259,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void setFilterPairResource(Class className, boolean limited) {
+        Map<Class<?>, List<Resource>> mapResources = this.mapResources
+                .getValue();
         for (Resource resource : mapResources.get(className)) {
             addResource(className, resource);
             if ((limited) && (getListMatching().size() > 9)) {

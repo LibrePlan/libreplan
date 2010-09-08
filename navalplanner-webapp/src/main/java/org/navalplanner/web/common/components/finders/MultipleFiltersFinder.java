@@ -24,9 +24,12 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.hibernate.notification.ISnapshotRefresherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -37,6 +40,9 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
 
+    @Autowired
+    private ISnapshotRefresherService snapshotRefresherService;
+
     private List<FilterPair> listMatching = new ArrayList<FilterPair>();
 
     private final String headers[] = { _("Filter type"), _("Filter pattern") };
@@ -46,6 +52,16 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     public IAdHocTransactionService getAdHocTransactionService() {
         return adHocTransactionService;
+    }
+
+    public ISnapshotRefresherService getSnapshotRefresher() {
+        return snapshotRefresherService;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> Callable<T> onTransaction(Callable<T> callable) {
+        return AdHocTransactionService.readOnlyProxy(
+                getAdHocTransactionService(), Callable.class, callable);
     }
 
     public void setAdHocTransactionService(
