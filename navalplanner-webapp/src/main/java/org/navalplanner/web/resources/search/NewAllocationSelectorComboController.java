@@ -92,6 +92,7 @@ public class NewAllocationSelectorComboController extends
     }
 
     public void clearAll() {
+        this.bdLimitingAllocationSelector.clear();
     }
 
     public List<Resource> getSelectedResources() {
