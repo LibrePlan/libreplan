@@ -38,7 +38,6 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -63,8 +62,6 @@ import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.Machine;
-import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -492,7 +489,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             StringBuilder result = new StringBuilder();
             result.append(_("Name: {0}", getName()) + "<br/>");
             result.append(_("Advance") + ": ").append(
-                    getAdvancePercentage().multiply(new BigDecimal(100)))
+                    (getAdvancePercentage().multiply(new BigDecimal(100)))
+                            .setScale(2, RoundingMode.DOWN))
                     .append("% , ");
 
             result.append(_("Hours invested") + ": ").append(

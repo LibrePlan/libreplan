@@ -25,7 +25,7 @@
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-        <property name="advancePercentage" column="ADVANCE_PERCENTAGE" />
+        <property name="advancePercentage" column="ADVANCE_PERCENTAGE" access="field" scale="4"/>
 
         <!-- Indexed -->
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"

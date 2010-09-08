@@ -384,9 +384,9 @@ public class OrderLineGroup extends OrderElement implements
                 result = result.add(childPercentage.multiply(new BigDecimal(
                         childHours)));
             }
-
-            result = result.setScale(2).divide(new BigDecimal(hours),
+            result = result.divide(new BigDecimal(hours).setScale(2), 4,
                     RoundingMode.DOWN);
+
         }
 
         return result;
