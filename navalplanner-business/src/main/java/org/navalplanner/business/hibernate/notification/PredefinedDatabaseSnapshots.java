@@ -35,8 +35,10 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -68,12 +70,19 @@ public class PredefinedDatabaseSnapshots {
         return labelsMap.getValue();
     }
 
+    private IAutoUpdatedSnapshot<List<Worker>> listWorkers;
+
+    public List<Worker> snapshotListWorkers() {
+        return listWorkers.getValue();
+    }
+
     @PostConstruct
     @SuppressWarnings("unused")
     private void postConstruct() {
         criterionsMap = snapshot(calculateCriterionsMap(), CriterionType.class,
                 Criterion.class);
         labelsMap = snapshot(calculateLabelsMap(), LabelType.class, Label.class);
+        listWorkers = snapshot(calculateWorkers(), Worker.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(Callable<T> callable,
@@ -128,6 +137,19 @@ public class PredefinedDatabaseSnapshots {
                     result.put(labelType, labels);
                 }
                 return result;
+            }
+        };
+    }
+
+    @Autowired
+    private IWorkerDAO workerDAO;
+
+    private Callable<List<Worker>> calculateWorkers() {
+        return new Callable<List<Worker>>() {
+
+            @Override
+            public List<Worker> call() throws Exception {
+                return workerDAO.getAll();
             }
         };
     }
