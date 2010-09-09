@@ -60,8 +60,7 @@
 
     <bean id="workerMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.WorkerMultipleFiltersFinder" scope="singleton"/>
 
-    <bean id="criterionMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="criterionMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"/>
 
     <bean id="scenarioManager"
         class="org.navalplanner.web.scenarios.CurrentUserScenarioAwareManager"

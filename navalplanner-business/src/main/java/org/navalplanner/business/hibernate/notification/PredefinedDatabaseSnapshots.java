@@ -84,6 +84,12 @@ public class PredefinedDatabaseSnapshots {
         return listCostCategories.getValue();
     }
 
+    private IAutoUpdatedSnapshot<List<Criterion>> listCriterion;
+
+    public List<Criterion> snapshotListCriterion() {
+        return listCriterion.getValue();
+    }
+
     @PostConstruct
     @SuppressWarnings("unused")
     private void postConstruct() {
@@ -93,6 +99,7 @@ public class PredefinedDatabaseSnapshots {
         listWorkers = snapshot(calculateWorkers(), Worker.class);
         listCostCategories = snapshot(calculateListCostCategories(),
                 CostCategory.class);
+        listCriterion = snapshot(calculateListCriterion(), Criterion.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(Callable<T> callable,
@@ -172,6 +179,15 @@ public class PredefinedDatabaseSnapshots {
             @Override
             public List<CostCategory> call() throws Exception {
                 return costCategoryDAO.findActive();
+            }
+        };
+    }
+
+    private Callable<List<Criterion>> calculateListCriterion() {
+        return new Callable<List<Criterion>>() {
+            @Override
+            public List<Criterion> call() throws Exception {
+                return criterionDAO.getAll();
             }
         };
     }

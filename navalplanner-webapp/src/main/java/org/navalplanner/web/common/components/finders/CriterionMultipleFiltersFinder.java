@@ -24,22 +24,16 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.hibernate.notification.IAutoUpdatedSnapshot;
-import org.navalplanner.business.hibernate.notification.ReloadOn;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ICriterionDAO criterionDAO;
-
-    private IAutoUpdatedSnapshot<List<Criterion>> criterionList;
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     private IFilterEnum criterionFilterEnum = new IFilterEnum() {
         @Override
@@ -48,26 +42,12 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     };
 
-    @Transactional(readOnly = true)
     public void init() {
-        criterionList = getSnapshotRefresher().takeSnapshot(
-                onTransaction(getCriterionListCallable()),
-                ReloadOn.onChangeOf(Criterion.class));
-    }
-
-    private Callable<List<Criterion>> getCriterionListCallable() {
-        return new Callable<List<Criterion>>() {
-            @Override
-            public List<Criterion> call() throws Exception {
-                return criterionDAO.getAll();
-            }
-        };
     }
 
     @Override
     public List<FilterPair> getFirstTenFilters() {
-        Iterator<Criterion> iteratorCriterion = criterionList.getValue()
-                .iterator();
+        Iterator<Criterion> iteratorCriterion = getCriterions().iterator();
         while(iteratorCriterion.hasNext() && getListMatching().size() < 10) {
             Criterion criterion = iteratorCriterion.next();
             getListMatching().add(new FilterPair(
@@ -75,6 +55,10 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         }
         addNoneFilter();
         return getListMatching();
+    }
+
+    private List<Criterion> getCriterions() {
+        return databaseSnapshots.snapshotListCriterion();
     }
 
     @Override
@@ -89,7 +73,7 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
 
     }
     private void searchInCriteria(String filter) {
-        for (Criterion criterion : criterionList.getValue()) {
+        for (Criterion criterion : getCriterions()) {
             String name = StringUtils.deleteWhitespace(
                     criterion.getName().toLowerCase());
             if(name.contains(filter)) {
