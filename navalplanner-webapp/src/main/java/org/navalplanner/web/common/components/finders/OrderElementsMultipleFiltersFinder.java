@@ -20,25 +20,17 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.hibernate.notification.IAutoUpdatedSnapshot;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
-import org.navalplanner.business.hibernate.notification.ReloadOn;
-import org.navalplanner.business.labels.daos.ILabelDAO;
-import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implements all the methods needed to search the criterion to filter the
@@ -50,41 +42,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ILabelTypeDAO labelTypeDAO;
-
-    @Autowired
-    private ILabelDAO labelDAO;
-
-    @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
-
-    private IAutoUpdatedSnapshot<Map<LabelType, List<Label>>> mapLabels;
 
     protected OrderElementsMultipleFiltersFinder() {
 
     }
 
-    @Transactional(readOnly = true)
     public void init() {
-        mapLabels = getSnapshotRefresher().takeSnapshot(
-                onTransaction(getMapLabelsCallable()),
-                ReloadOn.onChangeOf(LabelType.class, Label.class));
-    }
-
-    private Callable<Map<LabelType, List<Label>>> getMapLabelsCallable() {
-        return new Callable<Map<LabelType, List<Label>>>() {
-
-            @Override
-            public Map<LabelType, List<Label>> call() throws Exception {
-                Map<LabelType, List<Label>> result = new HashMap<LabelType, List<Label>>();
-                for (LabelType labelType : labelTypeDAO.getAll()) {
-                    List<Label> labels = new ArrayList<Label>(
-                            labelDAO.findByType(labelType));
-                    result.put(labelType, labels);
-                }
-                return result;
-            }
-        };
     }
 
     public List<FilterPair> getFirstTenFilters() {
@@ -96,7 +60,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersLabels() {
-        Map<LabelType, List<Label>> mapLabels = this.mapLabels.getValue();
+        Map<LabelType, List<Label>> mapLabels = getLabelsMap();
         Iterator<LabelType> iteratorLabelType = mapLabels.keySet().iterator();
         while (iteratorLabelType.hasNext() && getListMatching().size() < 10) {
             LabelType type = iteratorLabelType.next();
@@ -110,6 +74,10 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
             }
         }
         return getListMatching();
+    }
+
+    private Map<LabelType, List<Label>> getLabelsMap() {
+        return databaseSnapshots.snapshotLabelsMap();
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
@@ -191,7 +159,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInLabelTypes(String filter) {
         boolean limited = (filter.length() < 3);
-        for (LabelType type : mapLabels.getValue().keySet()) {
+        for (LabelType type : getLabelsMap().keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -203,7 +171,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInLabels(LabelType type, String filter) {
-        for (Label label : mapLabels.getValue().get(type)) {
+        for (Label label : getLabelsMap().get(type)) {
             String name = StringUtils.deleteWhitespace(label.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -216,7 +184,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void setFilterPairLabelType(LabelType type, boolean limited) {
-        for (Label label : mapLabels.getValue().get(type)) {
+        for (Label label : getLabelsMap().get(type)) {
             addLabel(type, label);
             if ((limited) && (getListMatching().size() > 9)) {
                 return;

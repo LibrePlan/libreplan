@@ -21,7 +21,6 @@
 package org.navalplanner.web.common.components.finders;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +30,6 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
-import org.navalplanner.business.labels.daos.ILabelDAO;
-import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -55,21 +52,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ILabelTypeDAO labelTypeDAO;
-
-    @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
-
-    @Autowired
-    private ILabelDAO labelDAO;
 
     @Autowired
     private IOrderDAO orderDAO;
 
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
-
-    private static final Map<LabelType, List<Label>> mapLabels = new HashMap<LabelType, List<Label>>();
 
     private static final List<ExternalCompany> externalCompanies = new ArrayList<ExternalCompany>();
 
@@ -89,23 +78,12 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
                 .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
             @Override
                     public Void execute() {
-                        loadLabels();
                         loadExternalCompanies();
                         loadOrdersStatusEnums();
                         loadOrderCodesAndCustomerReferences();
                         return null;
                     }
                 });
-    }
-
-    private void loadLabels() {
-        mapLabels.clear();
-        List<LabelType> labelTypes = labelTypeDAO.getAll();
-        for (LabelType labelType : labelTypes) {
-            List<Label> labels = new ArrayList<Label>(labelDAO
-                    .findByType(labelType));
-            mapLabels.put(labelType, labels);
-        }
     }
 
     private void loadExternalCompanies() {
@@ -145,6 +123,8 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersLabels() {
+        Map<LabelType, List<Label>> mapLabels = databaseSnapshots
+                .snapshotLabelsMap();
         Iterator<LabelType> iteratorLabelType = mapLabels.keySet().iterator();
         while (iteratorLabelType.hasNext() && getListMatching().size() < 10) {
             LabelType type = iteratorLabelType.next();
@@ -276,6 +256,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInLabelTypes(String filter) {
+        Map<LabelType, List<Label>> mapLabels = getLabelsMap();
         boolean limited = (filter.length() < 3);
         for (LabelType type : mapLabels.keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
@@ -288,8 +269,12 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     }
 
+    private Map<LabelType, List<Label>> getLabelsMap() {
+        return databaseSnapshots.snapshotLabelsMap();
+    }
+
     private void searchInLabels(LabelType type, String filter) {
-        for (Label label : mapLabels.get(type)) {
+        for (Label label : getLabelsMap().get(type)) {
             String name = StringUtils.deleteWhitespace(label.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -302,7 +287,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void setFilterPairLabelType(LabelType type, boolean limited) {
-        for (Label label : mapLabels.get(type)) {
+        for (Label label : getLabelsMap().get(type)) {
             addLabel(type, label);
             if ((limited) && (getListMatching().size() > 9)) {
                 return;

@@ -29,6 +29,10 @@ import javax.annotation.PostConstruct;
 
 import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.labels.daos.ILabelDAO;
+import org.navalplanner.business.labels.daos.ILabelTypeDAO;
+import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -58,11 +62,18 @@ public class PredefinedDatabaseSnapshots {
         return criterionsMap.getValue();
     }
 
+    private IAutoUpdatedSnapshot<Map<LabelType, List<Label>>> labelsMap;
+
+    public Map<LabelType, List<Label>> snapshotLabelsMap() {
+        return labelsMap.getValue();
+    }
+
     @PostConstruct
     @SuppressWarnings("unused")
     private void postConstruct() {
         criterionsMap = snapshot(calculateCriterionsMap(), CriterionType.class,
                 Criterion.class);
+        labelsMap = snapshot(calculateLabelsMap(), LabelType.class, Label.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(Callable<T> callable,
@@ -94,6 +105,27 @@ public class PredefinedDatabaseSnapshots {
                     List<Criterion> criterions = new ArrayList<Criterion>(
                             criterionDAO.findByType(criterionType));
                     result.put(criterionType, criterions);
+                }
+                return result;
+            }
+        };
+    }
+
+    @Autowired
+    private ILabelTypeDAO labelTypeDAO;
+
+    @Autowired
+    private ILabelDAO labelDAO;
+
+    private Callable<Map<LabelType, List<Label>>> calculateLabelsMap() {
+        return new Callable<Map<LabelType,List<Label>>>() {
+            @Override
+            public Map<LabelType, List<Label>> call() throws Exception {
+                Map<LabelType, List<Label>> result = new HashMap<LabelType, List<Label>>();
+                for (LabelType labelType : labelTypeDAO.getAll()) {
+                    List<Label> labels = new ArrayList<Label>(
+                            labelDAO.findByType(labelType));
+                    result.put(labelType, labels);
                 }
                 return result;
             }
