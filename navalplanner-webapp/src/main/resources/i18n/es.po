@@ -407,7 +407,7 @@ msgstr "Nuevo elemento del formulario de calidad"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/NewAllocationSelector.java:49
 msgid "generic allocation"
-msgstr "Asignación de recursos"
+msgstr "asignación genérica"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/streches/StretchesFunctionModel.java:143
 msgid "For interpolation at least two stretches are needed"
@@ -453,7 +453,7 @@ msgstr "Criterio requerido"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/EffortDurationPicker.java:60
 msgid "Minutes"
-msgstr "Líneas"
+msgstr "Minutos"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/scenarios/ScenarioModel.java:131
 msgid "You can not remove a scenario with derived scenarios"
@@ -1000,7 +1000,7 @@ msgstr "Perspectivas"
 
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:67
 msgid "Workable time"
-msgstr ""
+msgstr "Tiempo trabajable"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/materials/impl/MaterialConverter.java:239
 msgid "missing code in a subcategory"
@@ -3136,7 +3136,7 @@ msgstr ">>"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/EffortDurationPicker.java:61
 msgid "Seconds"
-msgstr "Enviar"
+msgstr "Segundos"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/labels/AssignedLabelsController.java:107
 msgid "please, select an item"
@@ -3471,7 +3471,7 @@ msgstr "Recurso: {0} "
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:259
 msgid "Work Hours"
-msgstr "Partes de trabajo"
+msgstr "Horas de trabajo"
 
 #: navalplanner-webapp/src/main/webapp/workreports/_sortFieldsAndLabels.zul:26
 msgid "Heading"
@@ -3767,7 +3767,7 @@ msgstr "Transferir"
 
 #: navalplanner-webapp/src/main/webapp/costcategories/_listTypesOfWorkHours.zul:21
 msgid "Work Hours Types List"
-msgstr "Lista de trabajadores"
+msgstr "Lista de tipos de horas de trabajo"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/materials/UnitTypeController.java:145
 msgid "Unit {0} cannot be  removed because it is used in materials"
@@ -4268,7 +4268,7 @@ msgstr "Administración de horas"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/NewAllocationSelector.java:42
 msgid "specific allocation"
-msgstr "Asignación de recursos"
+msgstr "asignación específica"
 
 #: scripts/../navalplanner-business/src/main/java/org/navalplanner/business/externalcompanies/entities/ExternalCompany.java:146
 msgid "company name has to be unique. It is already used"
@@ -4742,7 +4742,7 @@ msgstr "Criterios requeridos"
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:122
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:151
 msgid "Workable Time"
-msgstr ""
+msgstr "Tiempo trabajable"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:702
 msgid "Calculated advances can not be removed"
