@@ -33,51 +33,54 @@
 
     <vbox id="messagesContainer"></vbox>
 
-    <hbox>
-        <vbox>
-            <label value="${i18n:_('Source scenario')}" />
-            <hbox>
-                <label value="${i18n:_('Select scenario')}" />
-                <bandboxSearch
+                <grid fixedLayout="true">
+                    <columns>
+                        <column label="${i18n:_('Source scenario')}"/>
+                        <column label="${i18n:_('Destination scenario')}"/>
+                    </columns>
+                    <rows>
+                        <row  style="padding:10px">
+                        <hbox>
+                        <label value="${i18n:_('Select source')}"/>
+                        <bandboxSearch
                     id="sourceScenarioBandboxSearch"
                     finder="ScenarioBandboxFinder"
                     model="@{transferOrdersController.scenarios}"
                     selectedElement="@{transferOrdersController.sourceScenario}" />
-            </hbox>
-            <label value="${i18n:_('Orders')}" />
-            <listbox id="sourceScenarioOrders"
-                model="@{transferOrdersController.sourceScenarioOrders}"
-                itemRenderer="@{transferOrdersController.sourceOrderRenderer}">
-                <listhead>
-                    <listheader label="${i18n:_('Code')}" />
-                    <listheader label="${i18n:_('Name')}" />
-                    <listheader label="${i18n:_('Version')}" />
-                    <listheader label="${i18n:_('Operations')}" />
-                </listhead>
-            </listbox>
-        </vbox>
-        <vbox>
-            <label value="${i18n:_('Destination scenario')}" />
-            <hbox>
-                <label value="${i18n:_('Select scenario')}" />
+                    </hbox>
+                    <hbox>
+                      <label value="${i18n:_('Select destination')}"/>
                 <bandboxSearch
                     id="destinationScenarioBandboxSearch"
                     finder="ScenarioBandboxFinder"
                     model="@{transferOrdersController.scenarios}"
                     selectedElement="@{transferOrdersController.destinationScenario}" />
-            </hbox>
-            <label value="${i18n:_('Orders')}" />
+                    </hbox>
+                        </row>
+                        <row  style="padding:10px; vertical-align:top;">
+            <listbox id="sourceScenarioOrders"
+                model="@{transferOrdersController.sourceScenarioOrders}"
+                itemRenderer="@{transferOrdersController.sourceOrderRenderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Code')}" tooltiptext="${i18n:_('Code')}" sort="auto(lower(code))" />
+                    <listheader label="${i18n:_('Name')}" tooltiptext="${i18n:_('Name')}" sort="auto(lower(name))"/>
+                    <listheader label="${i18n:_('Version')}" tooltiptext="${i18n:_('Version')}" />
+                    <listheader label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" />
+                </listhead>
+            </listbox>
             <listbox id="destinationScenarioOrders"
                 model="@{transferOrdersController.destinationScenarioOrders}"
                 itemRenderer="@{transferOrdersController.destinationOrderRenderer}">
                 <listhead>
-                    <listheader label="${i18n:_('Code')}" />
-                    <listheader label="${i18n:_('Name')}" />
-                    <listheader label="${i18n:_('Version')}" />
+                    <listheader label="${i18n:_('Code')}" tooltiptext="${i18n:_('Code')}" sort="auto(lower(code))" />
+                    <listheader label="${i18n:_('Name')}" tooltiptext="${i18n:_('Name')}" sort="auto(lower(name))"/>
+                    <listheader label="${i18n:_('Version')}" tooltiptext="${i18n:_('Version')}" />
                 </listhead>
             </listbox>
-        </vbox>
-    </hbox>
+                        </row>
+                    </rows>
+                    </grid>
+
 
 </window>
 
