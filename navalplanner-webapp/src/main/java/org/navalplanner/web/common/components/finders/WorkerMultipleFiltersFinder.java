@@ -42,9 +42,6 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     };
 
-    public void init() {
-    }
-
     @Override
     public List<FilterPair> getFirstTenFilters() {
         Iterator<Worker> iteratorWorker = getListWorkers().iterator();

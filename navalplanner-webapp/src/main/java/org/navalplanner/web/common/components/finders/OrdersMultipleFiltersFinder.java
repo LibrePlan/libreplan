@@ -51,9 +51,6 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     protected OrdersMultipleFiltersFinder() {
     }
 
-    public void init() {
-    }
-
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();
         fillWithFirstTenFiltersLabels();

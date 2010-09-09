@@ -42,9 +42,6 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     };
 
-    public void init() {
-    }
-
     @Override
     public List<FilterPair> getFirstTenFilters() {
         Iterator<Criterion> iteratorCriterion = getCriterions().iterator();

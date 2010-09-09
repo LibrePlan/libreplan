@@ -46,9 +46,6 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     protected ResourcesMultipleFiltersFinder() {
     }
 
-    public void init() {
-    }
-
     @Override
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();

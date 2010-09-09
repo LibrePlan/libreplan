@@ -48,9 +48,6 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     }
 
-    public void init() {
-    }
-
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();
         fillWithFirstTenFiltersLabels();

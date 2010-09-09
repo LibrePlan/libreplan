@@ -57,9 +57,6 @@ public class ResourceAllocationMultipleFiltersFinder extends
         this.isLimitingResourceAllocation = isLimitingResourceAllocation;
     }
 
-    public void init() {
-    }
-
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();
         if (!isModeResource()) {
