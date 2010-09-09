@@ -21,25 +21,16 @@
 package org.navalplanner.web.common.components.finders;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.hibernate.notification.IAutoUpdatedSnapshot;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
-import org.navalplanner.business.hibernate.notification.ReloadOn;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
-import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.VirtualWorker;
-import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implements all the methods needed to search the criterion and resources to
@@ -50,14 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourceAllocationMultipleFiltersFinder extends
         MultipleFiltersFinder {
 
-    @Autowired
-    private IResourceDAO resourceDAO;
-
     private IFilterEnum mode = FilterEnumNone.None;
 
     private boolean isLimitingResourceAllocation = false;
-
-    private IAutoUpdatedSnapshot<Map<Class<?>, List<Resource>>> mapResources;
 
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
@@ -71,30 +57,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         this.isLimitingResourceAllocation = isLimitingResourceAllocation;
     }
 
-    @Transactional(readOnly = true)
     public void init() {
-        mapResources = getSnapshotRefresher()
-                .takeSnapshot(
-                        onTransaction(getResourcesMapCallable()),
-                        ReloadOn.onChangeOf(Resource.class, Worker.class,
-                        Machine.class, VirtualWorker.class));
-    }
-
-    private Callable<Map<Class<?>, List<Resource>>> getResourcesMapCallable() {
-        return new Callable<Map<Class<?>, List<Resource>>>() {
-
-            @Override
-            public Map<Class<?>, List<Resource>> call() throws Exception {
-                Map<Class<?>, List<Resource>> result = new HashMap<Class<?>, List<Resource>>();
-                result.put(Worker.class,
-                        new ArrayList<Resource>(resourceDAO.getRealWorkers()));
-                result.put(Machine.class,
-                        new ArrayList<Resource>(resourceDAO.getMachines()));
-                result.put(VirtualWorker.class, new ArrayList<Resource>(
-                        resourceDAO.getVirtualWorkers()));
-                return result;
-            }
-        };
     }
 
     public List<FilterPair> getFirstTenFilters() {
@@ -110,8 +73,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private List<FilterPair> fillWithFirstTenFiltersResources() {
-        Map<Class<?>, List<Resource>> mapResources = this.mapResources
-                .getValue();
+        Map<Class<?>, List<Resource>> mapResources = databaseSnapshots
+                .snapshotMapResources();
         Iterator<Class<?>> iteratorClass = mapResources.keySet().iterator();
         while (iteratorClass.hasNext() && getListMatching().size() < 10) {
             Class<?> className = iteratorClass.next();
@@ -207,8 +170,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void searchInResources(String filter) {
-        Map<Class<?>, List<Resource>> mapResources = this.mapResources
-                .getValue();
+        Map<Class<?>, List<Resource>> mapResources = databaseSnapshots
+                .snapshotMapResources();
         boolean limited = (filter.length() < 3);
         for (Class<?> className : mapResources.keySet()) {
             for (Resource resource : mapResources.get(className)) {
@@ -226,17 +189,6 @@ public class ResourceAllocationMultipleFiltersFinder extends
                         return;
                     }
                 }
-            }
-        }
-    }
-
-    private void setFilterPairResource(Class className, boolean limited) {
-        Map<Class<?>, List<Resource>> mapResources = this.mapResources
-                .getValue();
-        for (Resource resource : mapResources.get(className)) {
-            addResource(className, resource);
-            if ((limited) && (getListMatching().size() > 9)) {
-                return;
             }
         }
     }

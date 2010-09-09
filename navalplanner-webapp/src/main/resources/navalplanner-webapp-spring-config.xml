@@ -52,11 +52,9 @@
 
     <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton" />
 
-    <bean id="limitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.LimitingResourceAllocationMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="limitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.LimitingResourceAllocationMultipleFiltersFinder" scope="singleton"/>
 
-    <bean id="nonLimitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.NonLimitingResourceAllocationMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="nonLimitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.NonLimitingResourceAllocationMultipleFiltersFinder" scope="singleton" />
 
     <bean id="workerMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.WorkerMultipleFiltersFinder" scope="singleton"/>
 

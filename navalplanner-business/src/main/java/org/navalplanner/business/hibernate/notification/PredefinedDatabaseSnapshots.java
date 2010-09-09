@@ -37,9 +37,13 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -90,6 +94,12 @@ public class PredefinedDatabaseSnapshots {
         return listCriterion.getValue();
     }
 
+    private IAutoUpdatedSnapshot<Map<Class<?>, List<Resource>>> mapResources;
+
+    public Map<Class<?>, List<Resource>> snapshotMapResources() {
+        return mapResources.getValue();
+    }
+
     @PostConstruct
     @SuppressWarnings("unused")
     private void postConstruct() {
@@ -100,6 +110,8 @@ public class PredefinedDatabaseSnapshots {
         listCostCategories = snapshot(calculateListCostCategories(),
                 CostCategory.class);
         listCriterion = snapshot(calculateListCriterion(), Criterion.class);
+        mapResources = snapshot(calculateMapResources(), Resource.class,
+                Worker.class, Machine.class, VirtualWorker.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(Callable<T> callable,
@@ -188,6 +200,26 @@ public class PredefinedDatabaseSnapshots {
             @Override
             public List<Criterion> call() throws Exception {
                 return criterionDAO.getAll();
+            }
+        };
+    }
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    private Callable<Map<Class<?>, List<Resource>>> calculateMapResources() {
+        return new Callable<Map<Class<?>, List<Resource>>>() {
+
+            @Override
+            public Map<Class<?>, List<Resource>> call() throws Exception {
+                Map<Class<?>, List<Resource>> result = new HashMap<Class<?>, List<Resource>>();
+                result.put(Worker.class,
+                        new ArrayList<Resource>(resourceDAO.getRealWorkers()));
+                result.put(Machine.class,
+                        new ArrayList<Resource>(resourceDAO.getMachines()));
+                result.put(VirtualWorker.class, new ArrayList<Resource>(
+                        resourceDAO.getVirtualWorkers()));
+                return result;
             }
         };
     }
