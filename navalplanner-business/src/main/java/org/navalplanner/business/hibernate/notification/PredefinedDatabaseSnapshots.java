@@ -29,6 +29,8 @@ import javax.annotation.PostConstruct;
 
 import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
@@ -76,6 +78,12 @@ public class PredefinedDatabaseSnapshots {
         return listWorkers.getValue();
     }
 
+    private IAutoUpdatedSnapshot<List<CostCategory>> listCostCategories;
+
+    public List<CostCategory> snapshotListCostCategories() {
+        return listCostCategories.getValue();
+    }
+
     @PostConstruct
     @SuppressWarnings("unused")
     private void postConstruct() {
@@ -83,6 +91,8 @@ public class PredefinedDatabaseSnapshots {
                 Criterion.class);
         labelsMap = snapshot(calculateLabelsMap(), LabelType.class, Label.class);
         listWorkers = snapshot(calculateWorkers(), Worker.class);
+        listCostCategories = snapshot(calculateListCostCategories(),
+                CostCategory.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(Callable<T> callable,
@@ -150,6 +160,18 @@ public class PredefinedDatabaseSnapshots {
             @Override
             public List<Worker> call() throws Exception {
                 return workerDAO.getAll();
+            }
+        };
+    }
+
+    @Autowired
+    private ICostCategoryDAO costCategoryDAO;
+
+    private Callable<List<CostCategory>> calculateListCostCategories() {
+        return new Callable<List<CostCategory>>() {
+            @Override
+            public List<CostCategory> call() throws Exception {
+                return costCategoryDAO.findActive();
             }
         };
     }

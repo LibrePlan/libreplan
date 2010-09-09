@@ -50,8 +50,7 @@
 
     <bean id="orderElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrderElementsMultipleFiltersFinder" scope="singleton"/>
 
-    <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton" />
 
     <bean id="limitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.LimitingResourceAllocationMultipleFiltersFinder" scope="singleton"
         init-method="init" />

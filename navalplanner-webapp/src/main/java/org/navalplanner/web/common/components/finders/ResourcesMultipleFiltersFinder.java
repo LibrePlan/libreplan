@@ -20,20 +20,16 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implements all the methods needed to search the criterion to filter the
@@ -45,33 +41,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ICostCategoryDAO costCategoryDAO;
-
-    @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    private static final List<CostCategory> costCategories = new ArrayList<CostCategory>();
-
     protected ResourcesMultipleFiltersFinder() {
-
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void init() {
-        getAdHocTransactionService()
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        loadCostCategories();
-                        return null;
-                    }
-                });
-    }
-
-    private void loadCostCategories() {
-        costCategories.clear();
-        costCategories.addAll(costCategoryDAO.findActive());
     }
 
     @Override
@@ -103,6 +79,8 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCostCategories() {
+        List<CostCategory> costCategories = databaseSnapshots
+                .snapshotListCostCategories();
         for (int i = 0; getListMatching().size() < 10
                 && i < costCategories.size(); i++) {
             CostCategory costCategory = costCategories.get(i);
@@ -162,7 +140,8 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInCostCategories(String filter) {
-        for (CostCategory costCategory : costCategories) {
+        for (CostCategory costCategory : databaseSnapshots
+                .snapshotListCostCategories()) {
             String name = StringUtils.deleteWhitespace(costCategory.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
