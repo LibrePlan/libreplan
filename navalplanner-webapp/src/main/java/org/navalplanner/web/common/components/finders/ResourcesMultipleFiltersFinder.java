@@ -46,7 +46,6 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     protected ResourcesMultipleFiltersFinder() {
     }
 
-    @Override
     public void init() {
     }
 

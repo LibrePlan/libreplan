@@ -31,8 +31,6 @@ import org.zkoss.zul.ListitemRenderer;
 
 public interface IMultipleFiltersFinder {
 
-    void init();
-
     /**
      * Return the FilterPair list match with filter.
      * @param filter
