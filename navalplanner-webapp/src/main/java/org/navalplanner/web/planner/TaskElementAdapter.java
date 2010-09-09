@@ -85,6 +85,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
+    private boolean preventCalculateResourcesText = false;
+
+    public boolean isPreventCalculateResourcesText() {
+        return preventCalculateResourcesText;
+    }
+
+    public void setPreventCalculateResourcesText(
+            boolean preventCalculateResourcesText) {
+        this.preventCalculateResourcesText = preventCalculateResourcesText;
+    }
+
     public static List<Constraint<Date>> getStartConstraintsFor(
             TaskElement taskElement) {
         if (taskElement instanceof ITaskLeafConstraint) {
@@ -380,7 +391,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public String getResourcesText() {
-            if (taskElement.getOrderElement() == null) {
+            if (isPreventCalculateResourcesText() ||
+                    taskElement.getOrderElement() == null) {
                 return "";
             }
             try {

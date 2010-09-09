@@ -680,6 +680,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private PlannerConfiguration<TaskElement> createConfiguration(
             IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
+        taskElementAdapter.setPreventCalculateResourcesText(true);
         List<TaskElement> toShow;
         toShow = retainOnlyTopLevel(predicate);
 
