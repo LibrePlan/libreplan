@@ -17,79 +17,70 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <vbox id="${arg.id}"
     apply="org.navalplanner.web.orders.AssignedHoursToOrderElementController">
 
     <!-- Direct imputation -->
     <vbox>
-        <panel title="${i18n:_('Direct imputation')}">
+        <panel title="${i18n:_('Imputed hours calculation')}">
             <panelchildren>
-                <grid style="border:0px" height="100%"
+                <grid
                     model="@{assignedHoursToOrderElementController.workReportLines}"
                     mold="paging" pageSize="10">
                     <columns>
-                        <column label="${i18n:_('Date')}" />
+                        <column label="${i18n:_('Date')}" width="120px" />
                         <column label="${i18n:_('Resource')}" />
-                        <column label="${i18n:_('Hours')}" />
+                        <column label="${i18n:_('Hours')}" width="100px" />
                     </columns>
                     <rows>
                         <row self="@{each='workReportLine'}">
-                            <label value="@{workReportLine.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
-                            <label value="@{workReportLine.resource.shortDescription}" />
+                            <label
+                                value="@{workReportLine.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                            <label
+                                value="@{workReportLine.resource.shortDescription}" />
                             <label value="@{workReportLine.numHours}" />
                         </row>
                     </rows>
                 </grid>
-            </panelchildren>
-        </panel>
-        <grid fixedLayout="true">
-            <columns>
-                <column width="200px" />
-                <column />
-            </columns>
-            <rows>
-                <row>
-                    <label value="${i18n:_('Total')}:" />
-                    <label
-                        value="@{assignedHoursToOrderElementController.totalAssignedDirectHours}" />
-                </row>
-            </rows>
-        </grid>
-    </vbox>
-    <separator spacing="5px" orient="horizontal"/>
-
-    <!-- Order lines imputation -->
-    <vbox>
-        <panel title="${i18n:_('Order lines imputation')}">
-            <panelchildren>
-                <grid fixedLayout="true">
+                <grid style="border:0px">
                     <columns>
-                        <column width="200px" />
                         <column />
+                        <column width="100px" />
                     </columns>
                     <rows>
+                        <row style="border-top:1px solid black">
+                            <label
+                                value="${i18n:_('Sum of direct imputed hours')}" />
+                            <label
+                                value="@{assignedHoursToOrderElementController.totalAssignedDirectHours}" />
+                        </row>
                         <row>
                             <label
-                                value="${i18n:_('Order lines imputation')}:" />
+                                value="${i18n:_('Sum of all order line elements imputed hours')}" />
                             <label id="totalIDC"
                                 value="@{assignedHoursToOrderElementController.hoursChildren}" />
                         </row>
-                        <row>
-                            <label value="${i18n:_('Total')}:" />
+                        <row
+                            style="border-top:1px solid black; font-weight: bold;">
+                            <label value="${i18n:_('Total hours')}"
+                                style="font-weight: bold" />
                             <label id="addtotal"
-                                value="@{assignedHoursToOrderElementController.totalAssignedHours}" />
+                                value="@{assignedHoursToOrderElementController.totalAssignedHours}"
+                                style="font-weight: bold" />
                         </row>
                     </rows>
                 </grid>
+
             </panelchildren>
         </panel>
     </vbox>
-    <separator spacing="5px" orient="horizontal"/>
+
+    <separator spacing="5px" orient="horizontal" />
 
     <!-- Hours consumed -->
     <vbox>
-        <panel title="${i18n:_('Percentage of consumed budget hours / hours consumed')}">
+        <panel
+            title="${i18n:_('Percentage of estimated budget hours / hours consumed')}">
             <panelchildren>
                 <grid fixedLayout="true">
                     <columns>
@@ -101,7 +92,7 @@
                             <grid fixedLayout="true">
                                 <columns>
                                     <column width="200px" />
-                                    <column />
+                                    <column width="200px" />
                                 </columns>
                                 <rows>
                                     <row>
@@ -123,8 +114,7 @@
                                     value="@{assignedHoursToOrderElementController.progressWork}" />
                                 <label value="${i18n:_('%')}" />
                                 <progressmeter id="hoursProgressBar" />
-                                <progressmeter
-                                    id="exceedHoursProgressBar" />
+                                <progressmeter id="exceedHoursProgressBar" />
                             </hbox>
                         </row>
                     </rows>
