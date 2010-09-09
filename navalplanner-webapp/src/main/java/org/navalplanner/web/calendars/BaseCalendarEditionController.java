@@ -47,6 +47,7 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.navalplanner.web.common.components.EffortDurationPicker;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -134,11 +135,24 @@ public abstract class BaseCalendarEditionController extends
 
     private EffortDurationPicker addEffortDurationPickerAtWorkableTimeRow(
             Component comp) {
-        Component container = comp.getFellow("exceptionDayWorkableTimeRow");
-        EffortDurationPicker result = new EffortDurationPicker();
+        EffortDurationPicker result = ensureOnePickerOn(comp);
         result.setValue(EffortDuration.zero());
-        container.appendChild(result);
         return result;
+    }
+
+    private EffortDurationPicker ensureOnePickerOn(Component comp) {
+        Component container = comp.getFellow("exceptionDayWorkableTimeRow");
+        @SuppressWarnings("unchecked")
+        List<EffortDurationPicker> existent = ComponentsFinder
+                .findComponentsOfType(EffortDurationPicker.class,
+                        container.getChildren());
+        if (!existent.isEmpty()) {
+            return existent.get(0);
+        } else {
+            EffortDurationPicker result = new EffortDurationPicker();
+            container.appendChild(result);
+            return result;
+        }
     }
 
     private void prepareExceptionTypeCombo() {
