@@ -31,10 +31,14 @@ import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -100,6 +104,24 @@ public class PredefinedDatabaseSnapshots {
         return mapResources.getValue();
     }
 
+    private IAutoUpdatedSnapshot<List<ExternalCompany>> externalCompanies;
+
+    public List<ExternalCompany> snapshotExternalCompanies() {
+        return externalCompanies.getValue();
+    }
+
+    private IAutoUpdatedSnapshot<List<String>> customerReferences;
+
+    public List<String> snapshotCustomerReferences() {
+        return customerReferences.getValue();
+    }
+
+    private IAutoUpdatedSnapshot<List<String>> ordersCodes;
+
+    public List<String> snapshotOrdersCodes() {
+        return ordersCodes.getValue();
+    }
+
     @PostConstruct
     @SuppressWarnings("unused")
     private void postConstruct() {
@@ -112,6 +134,11 @@ public class PredefinedDatabaseSnapshots {
         listCriterion = snapshot(calculateListCriterion(), Criterion.class);
         mapResources = snapshot(calculateMapResources(), Resource.class,
                 Worker.class, Machine.class, VirtualWorker.class);
+        externalCompanies = snapshot(calculateExternalCompanies(),
+                ExternalCompany.class);
+        customerReferences = snapshot(calculateCustomerReferences(),
+                Order.class);
+        ordersCodes = snapshot(calculateOrdersCodes(), Order.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(Callable<T> callable,
@@ -219,6 +246,51 @@ public class PredefinedDatabaseSnapshots {
                         new ArrayList<Resource>(resourceDAO.getMachines()));
                 result.put(VirtualWorker.class, new ArrayList<Resource>(
                         resourceDAO.getVirtualWorkers()));
+                return result;
+            }
+        };
+    }
+
+    @Autowired
+    private IExternalCompanyDAO externalCompanyDAO;
+
+    private Callable<List<ExternalCompany>> calculateExternalCompanies() {
+        return new Callable<List<ExternalCompany>>() {
+            @Override
+            public List<ExternalCompany> call() throws Exception {
+                return externalCompanyDAO.getExternalCompaniesAreClient();
+            }
+        };
+    }
+
+    @Autowired
+    private IOrderDAO orderDAO;
+
+    private Callable<List<String>> calculateCustomerReferences() {
+        return new Callable<List<String>>() {
+            @Override
+            public List<String> call() throws Exception {
+                // FIXME replace by a HQL query, for god's sake!
+                List<String> result = new ArrayList<String>();
+                for (Order order : orderDAO.getOrders()) {
+                    if ((order.getCustomerReference() != null)
+                            && (!order.getCustomerReference().isEmpty())) {
+                        result.add(order.getCustomerReference());
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
+    private Callable<List<String>> calculateOrdersCodes() {
+        return new Callable<List<String>>() {
+            @Override
+            public List<String> call() throws Exception {
+                List<String> result = new ArrayList<String>();
+                for (Order order : orderDAO.getOrders()) {
+                    result.add(order.getCode());
+                }
                 return result;
             }
         };

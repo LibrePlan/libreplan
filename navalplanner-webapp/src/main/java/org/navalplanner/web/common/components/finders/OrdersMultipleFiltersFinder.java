@@ -20,25 +20,19 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
-import org.navalplanner.business.orders.daos.IOrderDAO;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -52,55 +46,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private IExternalCompanyDAO externalCompanyDAO;
-
-    @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    private static final List<ExternalCompany> externalCompanies = new ArrayList<ExternalCompany>();
-
-    private static final List<String> customerReferences = new ArrayList<String>();
-
-    private static final List<String> ordersCodes = new ArrayList<String>();
-
     protected OrdersMultipleFiltersFinder() {
-
     }
 
-    @Transactional(readOnly = true)
     public void init() {
-        getAdHocTransactionService()
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-            @Override
-                    public Void execute() {
-                        loadExternalCompanies();
-                        loadOrderCodesAndCustomerReferences();
-                        return null;
-                    }
-                });
-    }
-
-    private void loadExternalCompanies() {
-        externalCompanies.clear();
-        externalCompanies.addAll(externalCompanyDAO
-                .getExternalCompaniesAreClient());
-    }
-
-    private void loadOrderCodesAndCustomerReferences() {
-        customerReferences.clear();
-        ordersCodes.clear();
-        for (Order order : orderDAO.getOrders()) {
-            // load customer references
-            if ((order.getCustomerReference() != null)
-                    && (!order.getCustomerReference().isEmpty())) {
-                customerReferences.add(order.getCustomerReference());
-            }
-            // load the order codes
-            ordersCodes.add(order.getCode());
-        }
     }
 
     public List<FilterPair> getFirstTenFilters() {
@@ -156,6 +107,8 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCustomer() {
+        List<ExternalCompany> externalCompanies = databaseSnapshots
+                .snapshotExternalCompanies();
         for (int i = 0; getListMatching().size() < 10
                 && i < externalCompanies.size(); i++) {
             ExternalCompany externalCompany = externalCompanies.get(i);
@@ -174,6 +127,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWihtFirstTenFiltersCodes() {
+        List<String> ordersCodes = databaseSnapshots.snapshotOrdersCodes();
         for (int i = 0; getListMatching().size() < 10 && i < ordersCodes.size(); i++) {
             String code = ordersCodes.get(i);
             addCode(code);
@@ -182,6 +136,8 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWihtFirstTenFiltersCustomerReferences() {
+        List<String> customerReferences = databaseSnapshots
+                .snapshotCustomerReferences();
         for (int i = 0; getListMatching().size() < 10
                 && i < customerReferences.size(); i++) {
             String reference = customerReferences.get(i);
@@ -289,7 +245,8 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInExternalCompanies(String filter){
-        for(ExternalCompany externalCompany : externalCompanies){
+        for(ExternalCompany externalCompany : databaseSnapshots
+                .snapshotExternalCompanies()){
             String name = StringUtils.deleteWhitespace(externalCompany
                     .getName().toLowerCase());
             String nif = StringUtils.deleteWhitespace(externalCompany.getNif()
@@ -319,7 +276,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInOrderCodes(String filter) {
         if (filter.indexOf("cod:") == 0) {
             String codeFilter = filter.replaceFirst("cod:", "");
-            for (String code : ordersCodes) {
+            for (String code : databaseSnapshots.snapshotOrdersCodes()) {
                 code = StringUtils.deleteWhitespace(code.toLowerCase());
                 if (code.equals(codeFilter)) {
                     addCode(code);
@@ -332,7 +289,8 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     private void searchInCustomerReferences(String filter) {
         if (filter.indexOf("rc:") == 0) {
             String referenceFilter = filter.replaceFirst("rc:", "");
-            for (String reference : customerReferences) {
+            for (String reference : databaseSnapshots
+                    .snapshotCustomerReferences()) {
                 reference = StringUtils.deleteWhitespace(reference
                         .toLowerCase());
                 if (reference.equals(referenceFilter)) {
