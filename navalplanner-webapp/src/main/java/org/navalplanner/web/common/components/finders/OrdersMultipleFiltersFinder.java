@@ -64,8 +64,6 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private static final List<String> customerReferences = new ArrayList<String>();
 
-    private static OrderStatusEnum[] ordersStatusEnums;
-
     private static final List<String> ordersCodes = new ArrayList<String>();
 
     protected OrdersMultipleFiltersFinder() {
@@ -79,7 +77,6 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
             @Override
                     public Void execute() {
                         loadExternalCompanies();
-                        loadOrdersStatusEnums();
                         loadOrderCodesAndCustomerReferences();
                         return null;
                     }
@@ -90,10 +87,6 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         externalCompanies.clear();
         externalCompanies.addAll(externalCompanyDAO
                 .getExternalCompaniesAreClient());
-    }
-
-    private void loadOrdersStatusEnums() {
-        ordersStatusEnums = OrderStatusEnum.values();
     }
 
     private void loadOrderCodesAndCustomerReferences() {
@@ -311,7 +304,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInOrderStatus(String filter) {
-        for (OrderStatusEnum state : ordersStatusEnums) {
+        for (OrderStatusEnum state : OrderStatusEnum.values()) {
             String name = StringUtils.deleteWhitespace(state.name()
                     .toLowerCase());
             if (name.contains(filter)) {
