@@ -29,13 +29,12 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.hibernate.notification.IAutoUpdatedSnapshot;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.hibernate.notification.ReloadOn;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,18 +50,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
-
-    @Autowired
     private ILabelTypeDAO labelTypeDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
 
     @Autowired
     private ILabelDAO labelDAO;
 
-    private IAutoUpdatedSnapshot<Map<CriterionType, List<Criterion>>> mapCriterions;
+    @Autowired
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     private IAutoUpdatedSnapshot<Map<LabelType, List<Label>>> mapLabels;
 
@@ -72,9 +66,6 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Transactional(readOnly = true)
     public void init() {
-        mapCriterions = getSnapshotRefresher().takeSnapshot(
-                onTransaction(getCriterionsMapCallable()),
-                ReloadOn.onChangeOf(Criterion.class, CriterionType.class));
         mapLabels = getSnapshotRefresher().takeSnapshot(
                 onTransaction(getMapLabelsCallable()),
                 ReloadOn.onChangeOf(LabelType.class, Label.class));
@@ -90,23 +81,6 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
                     List<Label> labels = new ArrayList<Label>(
                             labelDAO.findByType(labelType));
                     result.put(labelType, labels);
-                }
-                return result;
-            }
-        };
-    }
-
-    private Callable<Map<CriterionType, List<Criterion>>> getCriterionsMapCallable() {
-        return new Callable<Map<CriterionType, List<Criterion>>>() {
-            @Override
-            public Map<CriterionType, List<Criterion>> call() throws Exception {
-                Map<CriterionType, List<Criterion>> result = new HashMap<CriterionType, List<Criterion>>();
-                List<CriterionType> criterionTypes = criterionTypeDAO
-                        .getCriterionTypes();
-                for (CriterionType criterionType : criterionTypes) {
-                    List<Criterion> criterions = new ArrayList<Criterion>(
-                            criterionDAO.findByType(criterionType));
-                    result.put(criterionType, criterions);
                 }
                 return result;
             }
@@ -139,8 +113,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
-                .getValue();
+        Map<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -157,6 +130,10 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
+    private Map<CriterionType, List<Criterion>> getMapCriterions() {
+        return databaseSnapshots.snapshotCriterionsMap();
+    }
+
     public List<FilterPair> getMatching(String filter) {
         getListMatching().clear();
         if ((filter != null) && (!filter.isEmpty())) {
@@ -171,7 +148,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCriterionTypes(String filter) {
         boolean limited = (filter.length() < 3);
-        for (CriterionType type : mapCriterions.getValue().keySet()) {
+        for (CriterionType type : getMapCriterions().keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -183,7 +160,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInCriterions(CriterionType type, String filter) {
-        List<Criterion> list = mapCriterions.getValue().get(type);
+        List<Criterion> list = getMapCriterions().get(type);
         if (list == null) {
             return;
         }
@@ -200,7 +177,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void setFilterPairCriterionType(CriterionType type, boolean limited) {
-        List<Criterion> list = mapCriterions.getValue().get(type);
+        List<Criterion> list = getMapCriterions().get(type);
         if (list == null) {
             return;
         }

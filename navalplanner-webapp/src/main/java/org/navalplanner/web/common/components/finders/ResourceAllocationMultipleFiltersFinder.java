@@ -29,9 +29,8 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.hibernate.notification.IAutoUpdatedSnapshot;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.hibernate.notification.ReloadOn;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -52,12 +51,6 @@ public class ResourceAllocationMultipleFiltersFinder extends
         MultipleFiltersFinder {
 
     @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
-
-    @Autowired
     private IResourceDAO resourceDAO;
 
     private IFilterEnum mode = FilterEnumNone.None;
@@ -66,7 +59,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
 
     private IAutoUpdatedSnapshot<Map<Class<?>, List<Resource>>> mapResources;
 
-    private IAutoUpdatedSnapshot<Map<CriterionType, List<Criterion>>> mapCriterions;
+    @Autowired
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     protected ResourceAllocationMultipleFiltersFinder() {
 
@@ -79,33 +73,11 @@ public class ResourceAllocationMultipleFiltersFinder extends
 
     @Transactional(readOnly = true)
     public void init() {
-        mapCriterions = getSnapshotRefresher().takeSnapshot(
-                onTransaction(getCriterionsMapCallable()),
-                ReloadOn.onChangeOf(CriterionType.class, Criterion.class));
         mapResources = getSnapshotRefresher()
                 .takeSnapshot(
                         onTransaction(getResourcesMapCallable()),
                         ReloadOn.onChangeOf(Resource.class, Worker.class,
                         Machine.class, VirtualWorker.class));
-    }
-
-    private Callable<Map<CriterionType, List<Criterion>>> getCriterionsMapCallable() {
-        return new Callable<Map<CriterionType, List<Criterion>>>() {
-
-            @Override
-            public Map<CriterionType, List<Criterion>> call()
-                    throws Exception {
-                Map<CriterionType, List<Criterion>> result = new HashMap<CriterionType, List<Criterion>>();
-                for (CriterionType criterionType : criterionTypeDAO
-                        .getCriterionTypes()) {
-                    List<Criterion> criterions = new ArrayList<Criterion>(
-                            criterionDAO.findByType(criterionType));
-
-                    result.put(criterionType, criterions);
-                }
-                return result;
-            }
-        };
     }
 
     private Callable<Map<Class<?>, List<Resource>>> getResourcesMapCallable() {
@@ -163,8 +135,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
-                .getValue();
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -181,6 +152,10 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return getListMatching();
     }
 
+    private Map<CriterionType, List<Criterion>> getCriterionsMap() {
+        return this.databaseSnapshots.snapshotCriterionsMap();
+    }
+
     public List<FilterPair> getMatching(String filter) {
         getListMatching().clear();
         if ((filter != null) && (!filter.isEmpty())) {
@@ -194,8 +169,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void searchInCriterionTypes(String filter) {
-        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
-                .getValue();
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         boolean limited = (filter.length() < 3);
         for (CriterionType type : mapCriterions.keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
@@ -209,8 +183,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void searchInCriterions(CriterionType type, String filter) {
-        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
-                .getValue();
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         for (Criterion criterion : mapCriterions.get(type)) {
             String name = StringUtils.deleteWhitespace(criterion.getName()
                     .toLowerCase());
@@ -224,8 +197,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void setFilterPairCriterionType(CriterionType type, boolean limited) {
-        Map<CriterionType, List<Criterion>> mapCriterions = this.mapCriterions
-                .getValue();
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         for (Criterion criterion : mapCriterions.get(type)) {
             addCriterion(type, criterion);
             if ((limited) && (getListMatching().size() > 9)) {

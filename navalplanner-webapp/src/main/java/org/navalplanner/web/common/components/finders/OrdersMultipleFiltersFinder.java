@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
@@ -37,8 +38,6 @@ import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,16 +55,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
-
-    @Autowired
     private ILabelTypeDAO labelTypeDAO;
 
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
 
     @Autowired
     private ILabelDAO labelDAO;
@@ -73,7 +66,8 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     @Autowired
     private IOrderDAO orderDAO;
 
-    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
+    @Autowired
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     private static final Map<LabelType, List<Label>> mapLabels = new HashMap<LabelType, List<Label>>();
 
@@ -96,25 +90,12 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
             @Override
                     public Void execute() {
                         loadLabels();
-                        loadCriterions();
                         loadExternalCompanies();
                         loadOrdersStatusEnums();
                         loadOrderCodesAndCustomerReferences();
                         return null;
                     }
                 });
-    }
-
-    private void loadCriterions() {
-        mapCriterions.clear();
-        List<CriterionType> criterionTypes = criterionTypeDAO
-                .getCriterionTypes();
-        for (CriterionType criterionType : criterionTypes) {
-            List<Criterion> criterions = new ArrayList<Criterion>(criterionDAO
-                    .findByType(criterionType));
-
-            mapCriterions.put(criterionType, criterions);
-        }
     }
 
     private void loadLabels() {
@@ -180,6 +161,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
+        Map<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -194,6 +176,10 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
             }
         }
         return getListMatching();
+    }
+
+    private Map<CriterionType, List<Criterion>> getMapCriterions() {
+        return databaseSnapshots.snapshotCriterionsMap();
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCustomer() {
@@ -254,6 +240,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInCriterionTypes(String filter) {
+        Map<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
         boolean limited = (filter.length() < 3);
         for (CriterionType type : mapCriterions.keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
@@ -267,7 +254,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInCriterions(CriterionType type, String filter) {
-        for (Criterion criterion : mapCriterions.get(type)) {
+        for (Criterion criterion : getMapCriterions().get(type)) {
             String name = StringUtils.deleteWhitespace(criterion.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -280,7 +267,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void setFilterPairCriterionType(CriterionType type, boolean limited) {
-        for (Criterion criterion : mapCriterions.get(type)) {
+        for (Criterion criterion : getMapCriterions().get(type)) {
             addCriterion(type, criterion);
             if ((limited) && (getListMatching().size() > 9)) {
                 return;
