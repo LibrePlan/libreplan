@@ -185,7 +185,7 @@ public class ResourceAllocationDAO extends
         if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
             query += "inner join generic.task as task ";
             if(intervalFilterEndDate != null) {
-                query += "where task.startDate <= :intervalFilterEndDate ";
+                query += "where task.startDate.date <= :intervalFilterEndDate ";
             }
             if(intervalFilterStartDate != null) {
                 if(intervalFilterEndDate != null) {
@@ -194,15 +194,17 @@ public class ResourceAllocationDAO extends
                 else {
                     query += "where ";
                 }
-                query += "task.endDate >= :intervalFilterStartDate ";
+                query += "task.endDate.date >= :intervalFilterStartDate ";
             }
         }
         Query q = getSession().createQuery(query);
         if(intervalFilterStartDate != null) {
-            q.setParameter("intervalFilterStartDate", intervalFilterStartDate);
+            q.setParameter("intervalFilterStartDate",
+                    LocalDate.fromDateFields(intervalFilterStartDate));
         }
         if(intervalFilterEndDate != null) {
-            q.setParameter("intervalFilterEndDate", intervalFilterEndDate);
+            q.setParameter("intervalFilterEndDate",
+                    LocalDate.fromDateFields(intervalFilterEndDate));
         }
         return stripAllocationsWithoutAssignations(byCriterion(q.list()));
     }
@@ -254,19 +256,21 @@ public class ResourceAllocationDAO extends
         }
         query += "where criterion in(:criterions) ";
         if(intervalFilterEndDate != null) {
-            query += "and task.startDate <= :intervalFilterEndDate ";
+            query += "and task.startDate.date <= :intervalFilterEndDate ";
         }
         if(intervalFilterStartDate != null) {
-            query += "and task.endDate >= :intervalFilterStartDate ";
+            query += "and task.endDate.date >= :intervalFilterStartDate ";
         }
 
         Query q = getSession().createQuery(query);
         q.setParameterList("criterions", criterions);
         if(intervalFilterStartDate != null) {
-            q.setParameter("intervalFilterStartDate", intervalFilterStartDate);
+            q.setParameter("intervalFilterStartDate",
+                    LocalDate.fromDateFields(intervalFilterStartDate));
         }
         if(intervalFilterEndDate != null) {
-            q.setParameter("intervalFilterEndDate", intervalFilterEndDate);
+            q.setParameter("intervalFilterEndDate",
+                    LocalDate.fromDateFields(intervalFilterEndDate));
         }
         return stripAllocationsWithoutAssignations(byCriterion(q.list()));
     }
