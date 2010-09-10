@@ -459,6 +459,9 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateCompletionIfPossible() {
+        if (task instanceof Milestone) {
+            return;
+        }
         try {
             updateCompletion();
         } catch (Exception e) {
