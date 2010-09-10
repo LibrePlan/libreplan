@@ -379,9 +379,7 @@ public abstract class BaseCalendarEditionController extends
         dateboxStartDate.setValue(selectedDay);
         Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
         dateboxEndDate.setValue(selectedDay);
-        exceptionDurationPicker
-                .setValue(baseCalendarModel.isExceptional() ? baseCalendarModel
-                        .getWorkableTime() : EffortDuration.zero());
+        exceptionDurationPicker.setValue(baseCalendarModel.getWorkableTime());
     }
 
     private void highlightDaysOnCalendar() {
