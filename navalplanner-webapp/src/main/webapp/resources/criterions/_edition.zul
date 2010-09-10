@@ -26,10 +26,10 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid fixedLayout="true" width="800px">
+                <grid fixedLayout="true">
                     <columns>
-                        <column width="400px"/>
-                        <column width="400px"/>
+                        <column width="200px"/>
+                        <column/>
                     </columns>
                     <rows>
                         <row>

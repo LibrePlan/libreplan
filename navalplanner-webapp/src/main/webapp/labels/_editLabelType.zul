@@ -29,8 +29,8 @@
         <tabpanels>
             <tabpanel>
                 <!--  Name labeltype -->
-                <vbox style="margin-bottom: 5px">
-                    <grid>
+                <vbox style="margin-bottom: 5px" width="100%" >
+                    <grid fixedLayout="true">
                         <columns>
                             <column width="200px" />
                             <column />
