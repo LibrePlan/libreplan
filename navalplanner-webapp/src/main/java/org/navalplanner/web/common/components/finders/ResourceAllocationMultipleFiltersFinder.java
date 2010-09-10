@@ -147,8 +147,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
                     && i < mapResources.get(className).size(); i++) {
                 Resource resource = mapResources.get(className).get(i);
 
-                if (isLimitingResourceAllocation
-                        && !resource.isLimitingResource()) {
+                if (isLimitingResourceAllocation != resource
+                        .isLimitingResource()) {
                     continue;
                 }
 
@@ -241,8 +241,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
         for (Class<?> className : mapResources.keySet()) {
             for (Resource resource : mapResources.get(className)) {
 
-                if (isLimitingResourceAllocation
-                        && !resource.isLimitingResource()) {
+                if (isLimitingResourceAllocation != resource
+                        .isLimitingResource()) {
                     continue;
                 }
 
