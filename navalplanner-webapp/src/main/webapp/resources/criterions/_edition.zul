@@ -85,6 +85,6 @@
         <button id="save_and_continue" onClick="controller.saveAndContinue();"
             label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
         <button id="close" onClick="controller.close();"
-            label="${i18n:_('Close')}" sclass="cancel-button global-action"/>
+            label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
     </hbox>
 </window>
