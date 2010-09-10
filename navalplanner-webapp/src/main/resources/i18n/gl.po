@@ -841,7 +841,7 @@ msgstr "Presuposto total"
 
 #: navalplanner-webapp/src/main/webapp/costcategories/typeOfWorkHours.zul:22
 msgid "NavalPlan: Work Hours"
-msgstr "NavalPlan: Parte de traballo"
+msgstr "NavalPlan: Horas de Traballo"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:748
 msgid ""
@@ -1165,7 +1165,7 @@ msgstr "Total de horas"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/costcategories/TypeOfWorkHoursCRUDController.java:74
 msgid "Create Work Hours Type"
-msgstr "Crear novo tipo de parte de traballo"
+msgstr "Crear Tipo de Horas de Traballo"
 
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:59
 msgid "Filter by task status"
@@ -2762,7 +2762,7 @@ msgstr "Valor gañado"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/costcategories/TypeOfWorkHoursCRUDController.java:82
 msgid "Edit Work Hours Type"
-msgstr "Editar traballador"
+msgstr "Editar Tipo de Horas de Traballo"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/reassign/Type.java:42
 msgid "From Today"
@@ -3458,7 +3458,7 @@ msgstr "Recurso: {0} "
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:259
 msgid "Work Hours"
-msgstr "Horas de traballo"
+msgstr "Horas de Traballo"
 
 #: navalplanner-webapp/src/main/webapp/workreports/_sortFieldsAndLabels.zul:26
 msgid "Heading"
@@ -3755,7 +3755,7 @@ msgstr "Transferir"
 
 #: navalplanner-webapp/src/main/webapp/costcategories/_listTypesOfWorkHours.zul:21
 msgid "Work Hours Types List"
-msgstr "Lista de tipos de horas de traballo"
+msgstr "Lista de Tipos de Horas de Traballo"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/materials/UnitTypeController.java:145
 msgid "Unit {0} cannot be  removed because it is used in materials"
