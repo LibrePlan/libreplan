@@ -45,7 +45,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
 
     private List<FilterPair> listMatching = new ArrayList<FilterPair>();
 
-    private final String headers[] = { _("Filter type"), _("Filter pattern") };
+    private final String headers[] = {};
 
     MultipleFiltersFinder() {
     }

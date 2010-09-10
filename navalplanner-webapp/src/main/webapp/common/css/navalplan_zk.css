@@ -1357,3 +1357,7 @@ tr.z-tree-row-seld .z-row-cnt {
 .projects-list .date {
     width:120px;
 }
+
+.z-band-popup td.z-list-cell {
+    border-right: dotted 1px #cccccc;
+}
