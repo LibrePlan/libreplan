@@ -90,14 +90,6 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Exception Type')}" />
-                            <combobox id="exceptionTypes">
-                                <comboitem self="@{each='calendarExceptionType'}"
-                                    value="@{calendarExceptionType}"
-                                    label="@{calendarExceptionType.name}" />
-                            </combobox>
-                        </row>
-                        <row>
                             <label value="${i18n:_('Start Date')}" />
                             <datebox id="exceptionStartDate"
                                 value="@{calendarController.editionController.selectedDay}" />
@@ -105,6 +97,14 @@
                         <row>
                             <label value="${i18n:_('End Date')}" />
                             <datebox id="exceptionEndDate" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Exception Type')}" />
+                            <combobox id="exceptionTypes">
+                                <comboitem self="@{each='calendarExceptionType'}"
+                                    value="@{calendarExceptionType}"
+                                    label="@{calendarExceptionType.name}" />
+                            </combobox>
                         </row>
                         <row id="exceptionDayWorkableTimeRow">
                             <label value="${i18n:_('Workable Time')}" />
