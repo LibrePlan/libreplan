@@ -19,24 +19,22 @@
 -->
 
 <window id="${arg.id}" title="${i18n:_('Quality Forms List')}">
-    <separator bar="false" spacing="20px" orient="vertical"/>
     <div align="right">
         <hbox align="end">
           <!-- Filter by name -->
           <label value="${i18n:_('Filter quality forms by :')}"/>
           <label value="${i18n:_('name')}"/>
           <textbox value="" id="txtFilter"/>
-          <button label="${i18n:_('Filter')}" style="margin-top: -4px"
-                onClick="controller.onApplyFilter(event)"/>
+          <button label="${i18n:_('Filter')}" onClick="controller.onApplyFilter(event)"/>
         </hbox>
     </div>
-    <separator bar="false" spacing="20px" orient="vertical"/>
+    <separator bar="false" spacing="5px" orient="vertical"/>
     <grid id="qualityFormsList" model="@{controller.qualityForms}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Name')}" sort="auto(name)" sortDirection="ascending" />
+            <column label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
             <column label="${i18n:_('Description')}" />
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_('Operations')}" width="120px"/>
         </columns>
         <rows>
             <row self="@{each='qualityForm'}" value="@{qualityForm}">
