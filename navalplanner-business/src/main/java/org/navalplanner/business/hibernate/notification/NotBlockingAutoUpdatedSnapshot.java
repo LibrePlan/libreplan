@@ -114,6 +114,8 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
                         newValue));
                 return newValue;
             }
+            LOG.info(name + " the ongoing calculation has not been completed. "
+                    + "Returning previous value");
             return previousValue.getValue();
         }
 
@@ -121,18 +123,22 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
             try {
                 return ongoingCalculation.get();
             } catch (Exception e) {
-                LOG.error("error creating new snapshot, keeping old value",
-                        e);
+                LOG.error("error creating new value for " + name
+                        + ", keeping old value", e);
                 return previousValue.getValue();
             }
         }
 
         @Override
         void cancel() {
+            if (ongoingCalculation.isDone() || ongoingCalculation.isCancelled()) {
+                return;
+            }
+            LOG.info(name + " cancelling ongoing future");
             try {
                 ongoingCalculation.cancel(true);
             } catch (Exception e) {
-                LOG.error("error cancelling future", e);
+                LOG.error("error cancelling future for " + name, e);
             }
         }
     }
