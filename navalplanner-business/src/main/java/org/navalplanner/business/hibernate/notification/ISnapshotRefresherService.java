@@ -27,6 +27,6 @@ import java.util.concurrent.Callable;
  */
 public interface ISnapshotRefresherService {
 
-    public <T> IAutoUpdatedSnapshot<T> takeSnapshot(Callable<T> callable, ReloadOn reloadOn);
+    public <T> IAutoUpdatedSnapshot<T> takeSnapshot(String name, Callable<T> callable, ReloadOn reloadOn);
 
 }

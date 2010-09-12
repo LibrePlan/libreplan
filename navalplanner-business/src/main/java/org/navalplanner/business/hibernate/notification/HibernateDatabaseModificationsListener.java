@@ -106,9 +106,10 @@ public class HibernateDatabaseModificationsListener implements
     }
 
     @Override
-    public <T> IAutoUpdatedSnapshot<T> takeSnapshot(Callable<T> callable, ReloadOn reloadOn) {
+    public <T> IAutoUpdatedSnapshot<T> takeSnapshot(String name,
+            Callable<T> callable, ReloadOn reloadOn) {
         final NotBlockingAutoUpdatedSnapshot<T> result;
-        result = new NotBlockingAutoUpdatedSnapshot<T>(callable);
+        result = new NotBlockingAutoUpdatedSnapshot<T>(name, callable);
         for (Class<?> each : reloadOn.getClassesOnWhichToReload()) {
             interested.putIfAbsent(each, emptyQueue());
             BlockingQueue<NotBlockingAutoUpdatedSnapshot<?>> queue = interested

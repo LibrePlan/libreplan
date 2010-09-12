@@ -41,6 +41,10 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
 
     private final AtomicReference<State> currentState;
 
+    private final String name;
+
+    private final ExecutionsReport executionsReport;
+
     private abstract class State {
         abstract T getValue();
 
@@ -156,10 +160,13 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
 
     }
 
-    public NotBlockingAutoUpdatedSnapshot(Callable<T> callable) {
+    public NotBlockingAutoUpdatedSnapshot(String name, Callable<T> callable) {
         Validate.notNull(callable);
+        Validate.notNull(name);
+        this.name = "*" + name + "*";
         this.callable = callable;
-        currentState = new AtomicReference<State>(new NotLaunchState());
+        this.currentState = new AtomicReference<State>(new NotLaunchState());
+        this.executionsReport = new ExecutionsReport();
     }
 
     @Override
@@ -168,7 +175,8 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
     }
 
     public void reloadNeeded(ExecutorService executorService) {
-        Future<T> future = executorService.submit(callable);
+        Future<T> future = executorService
+                .submit(callableDecoratedWithStatistics());
         State previousState;
         State newState = null;
         do {
@@ -185,7 +193,8 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
         if (hasBeenInitialized()) {
             return;
         }
-        Future<T> future = executorService.submit(callable);
+        Future<T> future = executorService
+                .submit(callableDecoratedWithStatistics());
         State previous = currentState.get();
         State newState = previous.nextState(future);
         boolean compareAndSet = currentState.compareAndSet(previous, newState);
@@ -196,6 +205,71 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
 
     private boolean hasBeenInitialized() {
         return currentState.get().hasBeenInitialized();
+    }
+
+    private Callable<T> callableDecoratedWithStatistics() {
+        final long requestTime = System.currentTimeMillis();
+        return new Callable<T>() {
+
+            @Override
+            public T call() throws Exception {
+                long start = System.currentTimeMillis();
+                long timeWaiting = start - requestTime;
+                try {
+                    return callable.call();
+                } finally {
+                    long timeExecuting = System.currentTimeMillis() - start;
+                    executionsReport.newData(timeWaiting, timeExecuting);
+                }
+            }
+        };
+    }
+
+    private static class Data {
+        final int executionTimes;
+        long totalMsWaiting;
+        long totalMsExecuting;
+
+        private Data(int executionTimes, long totalMsWaiting,
+                long totalMsExecuting) {
+            this.executionTimes = executionTimes;
+            this.totalMsWaiting = totalMsWaiting;
+            this.totalMsExecuting = totalMsExecuting;
+        }
+
+        public Data newData(long timeWaiting, long timeExcuting) {
+            return new Data(executionTimes + 1, totalMsWaiting + timeWaiting,
+                    totalMsExecuting + timeExcuting);
+        }
+
+    }
+
+    private class ExecutionsReport {
+
+        private AtomicReference<Data> data = new AtomicReference<Data>(
+                new Data(0, 0, 0));
+
+        public void newData(long timeWaiting, long timeExecuting) {
+            Data previousData;
+            Data newData;
+            do {
+                previousData = data.get();
+                newData = previousData.newData(timeWaiting, timeExecuting);
+            } while (!data.compareAndSet(previousData, newData));
+            report(timeWaiting, timeExecuting, newData);
+        }
+
+        private void report(long timeWaiting, long timeExecuting, Data data) {
+            LOG.info(name + " took " + timeExecuting + " ms executing");
+            LOG.info(name + " waited for " + timeWaiting
+                    + " ms until executing");
+            LOG.info(name + " mean time waiting for execution: "
+                    + data.totalMsWaiting / data.executionTimes + " ms");
+            LOG.info(name + " mean time  executing: "
+                    + data.totalMsExecuting / data.executionTimes + " ms");
+            LOG.info(name + " has been executed " + data.executionTimes
+                    + " times");
+        }
     }
 
 }

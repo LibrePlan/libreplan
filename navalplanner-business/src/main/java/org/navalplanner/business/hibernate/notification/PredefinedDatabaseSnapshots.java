@@ -125,25 +125,32 @@ public class PredefinedDatabaseSnapshots {
     @PostConstruct
     @SuppressWarnings("unused")
     private void postConstruct() {
-        criterionsMap = snapshot(calculateCriterionsMap(), CriterionType.class,
-                Criterion.class);
-        labelsMap = snapshot(calculateLabelsMap(), LabelType.class, Label.class);
-        listWorkers = snapshot(calculateWorkers(), Worker.class);
-        listCostCategories = snapshot(calculateListCostCategories(),
+        criterionsMap = snapshot("criterions map", calculateCriterionsMap(),
+                CriterionType.class, Criterion.class);
+        labelsMap = snapshot("labels map", calculateLabelsMap(),
+                LabelType.class, Label.class);
+        listWorkers = snapshot("workers", calculateWorkers(), Worker.class);
+        listCostCategories = snapshot("list cost categories",
+                calculateListCostCategories(),
                 CostCategory.class);
-        listCriterion = snapshot(calculateListCriterion(), Criterion.class);
-        mapResources = snapshot(calculateMapResources(), Resource.class,
-                Worker.class, Machine.class, VirtualWorker.class);
-        externalCompanies = snapshot(calculateExternalCompanies(),
+        listCriterion = snapshot("list criterions", calculateListCriterion(),
+                Criterion.class);
+        mapResources = snapshot("map resources", calculateMapResources(),
+                Resource.class, Worker.class, Machine.class,
+                VirtualWorker.class);
+        externalCompanies = snapshot("external companies",
+                calculateExternalCompanies(),
                 ExternalCompany.class);
-        customerReferences = snapshot(calculateCustomerReferences(),
+        customerReferences = snapshot("customer references",
+                calculateCustomerReferences(), Order.class);
+        ordersCodes = snapshot("order codes", calculateOrdersCodes(),
                 Order.class);
-        ordersCodes = snapshot(calculateOrdersCodes(), Order.class);
     }
 
-    private <T> IAutoUpdatedSnapshot<T> snapshot(Callable<T> callable,
+    private <T> IAutoUpdatedSnapshot<T> snapshot(String name,
+            Callable<T> callable,
             Class<?>... reloadOnChangesOf) {
-        return snapshotRefresherService.takeSnapshot(
+        return snapshotRefresherService.takeSnapshot(name,
                 callableOnReadOnlyTransaction(callable),
                 ReloadOn.onChangeOf(reloadOnChangesOf));
     }
