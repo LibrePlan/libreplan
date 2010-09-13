@@ -108,7 +108,9 @@
         <vbox id="registeredItemsInsertionPoint" width="90px"/>
         </n:div>
     </west>
-    <center class="main-area" style="border: 1px solid pink" self="@{insert(content)}" />
+
+    <center self="@{insert(content)}"  class="main-area"/>
+
     </borderlayout>
 
 </center>
