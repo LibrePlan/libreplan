@@ -21,8 +21,6 @@
 package org.navalplanner.web.planner.advances;
 
 
-import java.math.BigDecimal;
-
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -76,7 +74,6 @@ public class AdvanceAssignmentPlanningModel implements
             calculateAdvancePercentage(parent);
             parent = parent.getParent();
         }
-
     }
 
     @Override
@@ -151,13 +148,7 @@ public class AdvanceAssignmentPlanningModel implements
     }
 
     private void calculateAdvancePercentage(OrderElement orderElement) {
-        BigDecimal advancePercentage = orderElement.getAdvancePercentage();
-        if (orderElement.getTaskSource() != null) {
-            if (orderElement.getTaskSource().getTask() != null) {
-                orderElement.getTaskSource().getTask().setAdvancePercentage(
-                        advancePercentage);
-            }
-        }
+        orderElement.updateAdvancePercentageTaskElement();
     }
 
 }

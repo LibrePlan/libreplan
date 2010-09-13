@@ -544,10 +544,6 @@ public class OrderElementTest {
                 new BigDecimal(1000), two, new BigDecimal(100), three,
                 new BigDecimal(350), four, new BigDecimal(400));
 
-        System.out.println("advance " + orderElement.getAdvancePercentage());
-        System.out.println("otro "
-                + new BigDecimal(4333).divide(new BigDecimal(10000))
-                        .setScale(4));
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
                 4333).divide(new BigDecimal(10000)).setScale(4)));
 

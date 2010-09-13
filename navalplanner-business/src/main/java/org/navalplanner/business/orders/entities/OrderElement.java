@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -1257,6 +1257,16 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public SumChargedHours getSumChargedHours() {
         return sumChargedHours;
+    }
+
+    public void updateAdvancePercentageTaskElement() {
+        BigDecimal advancePercentage = this.getAdvancePercentage();
+        if (this.getTaskSource() != null) {
+            if (this.getTaskSource().getTask() != null) {
+                this.getTaskSource().getTask().setAdvancePercentage(
+                        advancePercentage);
+            }
+        }
     }
 
 }

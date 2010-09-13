@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,7 +88,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.zul.Messagebox;
@@ -567,13 +565,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void calculateAdvancePercentage(OrderElement orderElement) {
-        BigDecimal advancePercentage = orderElement.getAdvancePercentage();
-        if (orderElement.getTaskSource() != null) {
-            if (orderElement.getTaskSource().getTask() != null) {
-                orderElement.getTaskSource().getTask().setAdvancePercentage(
-                        advancePercentage);
-            }
-        }
+        orderElement.updateAdvancePercentageTaskElement();
     }
 
     private void createAndSaveNewOrderVersion(Scenario currentScenario,
