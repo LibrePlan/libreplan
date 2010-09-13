@@ -228,7 +228,7 @@ public class HoursDistributor {
             Resource resource = resources.get(i).resource;
             IWorkHours workHoursForResource = resources.get(i).workHours;
             int alreadyAssignedHours = assignedHoursForResource
-                    .getAssignedHoursAt(resource, day);
+                    .getAssignedDurationAt(resource, day).roundToHours();
             Integer capacityEachOne = workHoursForResource.toHours(day, ONE);
             final int capacityUnits = resources.get(i).capacityUnits;
             assert capacityUnits >= 1;

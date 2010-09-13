@@ -32,6 +32,8 @@ import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.from;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,9 +144,18 @@ public class GenericResourceAllocationTest {
         worker1 = createNiceMock(Worker.class);
         worker2 = createNiceMock(Worker.class);
         worker3 = createNiceMock(Worker.class);
+        mockZeroLoad(worker1, worker2, worker3);
         setupCalendarIsNull(worker1);
         buildWorkersList();
         replay(worker1, worker2, worker3);
+    }
+
+    public static void mockZeroLoad(Resource... resources) {
+        for (Resource each : resources) {
+            expect(
+                    each.getAssignedDurationDiscounting(isA(Object.class),
+                            isA(LocalDate.class))).andReturn(zero()).anyTimes();
+        }
     }
 
     private void buildWorkersList() {
@@ -161,8 +172,8 @@ public class GenericResourceAllocationTest {
         expect(result.getAssignedHours(isA(LocalDate.class))).andReturn(hours)
                 .anyTimes();
         expect(
-                result.getAssignedHoursDiscounting(isA(Object.class),
-                        isA(LocalDate.class))).andReturn(hours).anyTimes();
+                result.getAssignedDurationDiscounting(isA(Object.class),
+                        isA(LocalDate.class))).andReturn(hours(hours)).anyTimes();
         expect(result.getSatisfactionsFor(isA(ICriterion.class))).andReturn(
                 satisfactionsForPredefinedCriterions(result)).anyTimes();
         replay(result);
@@ -547,9 +558,9 @@ public class GenericResourceAllocationTest {
         expect(worker.getAssignedHours(isA(LocalDate.class))).andReturn(
                 fullLoadForAll).anyTimes();
         expect(
-                worker.getAssignedHoursDiscounting(isA(Object.class),
-                                                   isA(LocalDate.class)))
-                        .andReturn(fullLoadForAll).anyTimes();
+                worker.getAssignedDurationDiscounting(isA(Object.class),
+                        isA(LocalDate.class))).andReturn(hours(fullLoadForAll))
+                .anyTimes();
         expect(worker.getCalendar()).andReturn(createCalendar(capacity, 8))
                 .anyTimes();
         replay(worker);

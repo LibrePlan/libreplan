@@ -187,6 +187,7 @@ public class AllocationUntilFillingHoursTest {
 
     private Worker createWorker() {
         Worker worker = createNiceMock(Worker.class);
+        GenericResourceAllocationTest.mockZeroLoad(worker);
         replay(worker);
         return worker;
     }
