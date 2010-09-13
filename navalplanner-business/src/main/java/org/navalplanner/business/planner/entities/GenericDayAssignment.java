@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  *
@@ -117,11 +120,15 @@ public class GenericDayAssignment extends DayAssignment {
     }
 
 
+    @Deprecated
     public static GenericDayAssignment create(LocalDate day, int hours,
             Resource resource) {
-        GenericDayAssignment result = new GenericDayAssignment(day, hours,
-                        resource);
-        return create(result);
+        return create(new GenericDayAssignment(day, hours(hours), resource));
+    }
+
+    public static GenericDayAssignment create(LocalDate day,
+            EffortDuration duration, Resource resource) {
+        return create(new GenericDayAssignment(day, duration, resource));
     }
 
     public static Set<GenericDayAssignment> copy(
@@ -163,8 +170,9 @@ public class GenericDayAssignment extends DayAssignment {
         return result;
     }
 
-    private GenericDayAssignment(LocalDate day, int hours, Resource resource) {
-        super(day, hours, resource);
+    private GenericDayAssignment(LocalDate day, EffortDuration duration,
+            Resource resource) {
+        super(day, duration, resource);
         parentState = new ContainerNotSpecified();
     }
 

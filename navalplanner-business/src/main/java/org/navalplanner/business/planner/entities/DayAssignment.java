@@ -173,12 +173,13 @@ public abstract class DayAssignment extends BaseEntity {
 
     }
 
-    protected DayAssignment(LocalDate day, int hours, Resource resource) {
+    protected DayAssignment(LocalDate day, EffortDuration duration,
+            Resource resource) {
         Validate.notNull(day);
-        Validate.isTrue(hours >= 0);
+        Validate.notNull(duration);
         Validate.notNull(resource);
         this.day = day;
-        this.duration = EffortDuration.hours(hours);
+        this.duration = duration;
         this.resource = resource;
     }
 
