@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -92,10 +91,6 @@ public abstract class ChartFiller implements IChartFiller {
         protected boolean included(T each) {
             return true;
         }
-    }
-
-    protected static EffortDuration min(EffortDuration... durations) {
-        return Collections.min(Arrays.asList(durations));
     }
 
     protected static EffortDuration sumCalendarCapacitiesForDay(

@@ -21,6 +21,7 @@
 package org.navalplanner.web.planner.order;
 
 import static org.navalplanner.business.common.AdHocTransactionService.readOnlyProxy;
+import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 

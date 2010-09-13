@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.company;
 
+import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 

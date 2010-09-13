@@ -21,6 +21,8 @@
 package org.navalplanner.business.workingday;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 
@@ -222,6 +224,10 @@ public class EffortDuration implements Comparable<EffortDuration> {
             return 0;
         }
         return Math.max(1, roundHalfUpToHours(this.decompose()));
+    }
+
+    public static EffortDuration min(EffortDuration... durations) {
+        return Collections.min(Arrays.asList(durations));
     }
 
     private static int roundHalfUpToHours(
