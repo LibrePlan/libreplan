@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -73,7 +75,7 @@ public abstract class ResourcesPerDayModification extends
         public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
                 int limit) {
             return genericAllocation.createAssignmentsAtDay(getResources(),
-                    day, getGoal(), limit);
+                    day, getGoal(), hours(limit));
         }
 
         @Override
@@ -125,7 +127,7 @@ public abstract class ResourcesPerDayModification extends
         public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
                 int limit) {
             return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
-                    limit);
+                    hours(limit));
         }
 
         @Override

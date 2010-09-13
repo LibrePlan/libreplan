@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.min;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +49,7 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -178,9 +181,9 @@ public class SpecificResourceAllocation extends
             AssignmentsAllocation {
         @Override
         protected List<SpecificDayAssignment> distributeForDay(
-                LocalDate day, int totalHours) {
+                LocalDate day, EffortDuration effort) {
             return Arrays.asList(SpecificDayAssignment.create(day,
-                    totalHours, resource));
+                    effort.roundToHours(), resource));
         }
 
         @Override
@@ -206,10 +209,10 @@ public class SpecificResourceAllocation extends
     }
 
     public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-            ResourcesPerDay resourcesPerDay, int limit) {
-        int hours = calculateTotalToDistribute(day, resourcesPerDay);
-        SpecificDayAssignment specific = SpecificDayAssignment.create(day, Math
-                .min(limit, hours), resource);
+            ResourcesPerDay resourcesPerDay, EffortDuration limit) {
+        EffortDuration effort = calculateTotalToDistribute(day, resourcesPerDay);
+        SpecificDayAssignment specific = SpecificDayAssignment.create(day,
+                min(limit, effort).roundToHours(), resource);
         List<DayAssignment> result = new ArrayList<DayAssignment>();
         result.add(specific);
         return result;

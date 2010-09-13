@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.min;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,8 +36,8 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.IWorkHours;
-import org.navalplanner.business.planner.entities.HoursDistributor.IResourceSelector;
-import org.navalplanner.business.planner.entities.HoursDistributor.ResourceWithAssignedHours;
+import org.navalplanner.business.planner.entities.EffortDistributor.IResourceSelector;
+import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -46,6 +48,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -212,23 +215,23 @@ public class GenericResourceAllocation extends
 
     private class GenericAllocation extends AssignmentsAllocation {
 
-        private HoursDistributor hoursDistributor;
+        private EffortDistributor hoursDistributor;
         private final List<Resource> resources;
 
         public GenericAllocation(List<Resource> resources) {
             this.resources = resources;
-            hoursDistributor = new HoursDistributor(resources,
+            hoursDistributor = new EffortDistributor(resources,
                     getAssignedHoursForResource(),
                     new ResourcesSatisfyingCriterionsSelector());
         }
 
         @Override
         protected List<GenericDayAssignment> distributeForDay(LocalDate day,
-                int totalHours) {
+                EffortDuration effort) {
             List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
-            for (ResourceWithAssignedHours each : hoursDistributor
-                    .distributeForDay(day, totalHours)) {
-                result.add(GenericDayAssignment.create(day, each.hours,
+            for (ResourceWithAssignedDuration each : hoursDistributor
+                    .distributeForDay(day, effort)) {
+                result.add(GenericDayAssignment.create(day, each.duration,
                         each.resource));
             }
             return result;
@@ -410,12 +413,13 @@ public class GenericResourceAllocation extends
 
     public List<DayAssignment> createAssignmentsAtDay(
             List<Resource> resources, LocalDate day,
-            ResourcesPerDay resourcesPerDay, final int maxLimit) {
-        final int hours = Math.min(calculateTotalToDistribute(day,
-                resourcesPerDay), maxLimit);
+ ResourcesPerDay resourcesPerDay,
+            final EffortDuration maxLimit) {
+        final EffortDuration durations = min(
+                calculateTotalToDistribute(day, resourcesPerDay), maxLimit);
         GenericAllocation genericAllocation = new GenericAllocation(resources);
         return new ArrayList<DayAssignment>(genericAllocation.distributeForDay(
-                day, hours));
+                day, durations));
     }
 
 

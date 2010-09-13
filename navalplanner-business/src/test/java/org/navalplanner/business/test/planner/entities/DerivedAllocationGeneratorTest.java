@@ -153,6 +153,7 @@ public class DerivedAllocationGeneratorTest {
             int hours) {
         DayAssignment dayAssignment = createNiceMock(DayAssignment.class);
         expect(dayAssignment.getHours()).andReturn(hours).anyTimes();
+        expect(dayAssignment.getDuration()).andReturn(hours(hours)).anyTimes();
         expect(dayAssignment.getResource()).andReturn(machine).anyTimes();
         expect(dayAssignment.getDay()).andReturn(day).anyTimes();
         expect(dayAssignment.isAssignedTo(machine)).andReturn(true).anyTimes();

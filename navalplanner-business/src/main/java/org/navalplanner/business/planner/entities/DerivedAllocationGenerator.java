@@ -19,6 +19,9 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.HoursDistributor.ResourceWithAssignedHours;
+import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
@@ -98,13 +101,14 @@ public class DerivedAllocationGenerator {
             List<Resource> resourcesFound,
             List<? extends DayAssignment> dayAssignments) {
         List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
-        HoursDistributor distributor = new HoursDistributor(resourcesFound,
+        EffortDistributor distributor = new EffortDistributor(resourcesFound,
                 new AssignedHoursDiscounting(parent));
         for (DayAssignment each : dayAssignments) {
-            BigDecimal hours = alpha.multiply(new BigDecimal(each.getHours()));
+            int durationInSeconds = alpha.multiply(
+                    new BigDecimal(each.getDuration().getSeconds())).intValue();
             LocalDate day = each.getDay();
-            List<ResourceWithAssignedHours> distributeForDay = distributor
-                    .distributeForDay(day, hours.intValue());
+            List<ResourceWithAssignedDuration> distributeForDay = distributor
+                    .distributeForDay(day, seconds(durationInSeconds));
             result.addAll(asDerived(parent, day, distributeForDay));
         }
         return result;
@@ -112,11 +116,11 @@ public class DerivedAllocationGenerator {
 
     private static List<DerivedDayAssignment> asDerived(
             DerivedAllocation parent, LocalDate day,
-            List<ResourceWithAssignedHours> distributeForDay) {
+            List<ResourceWithAssignedDuration> distributeForDay) {
         List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
-        for (ResourceWithAssignedHours each : distributeForDay) {
-            if (each.hours > 0) {
-                result.add(DerivedDayAssignment.create(day, each.hours,
+        for (ResourceWithAssignedDuration each : distributeForDay) {
+            if (each.duration.compareTo(zero()) > 0) {
+                result.add(DerivedDayAssignment.create(day, each.duration,
                         each.resource, parent));
             }
         }

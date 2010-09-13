@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,12 +32,13 @@ import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class HoursDistributor {
+public class EffortDistributor {
 
     public interface IResourceSelector {
         boolean isSelectable(Resource resource, LocalDate day);
@@ -71,13 +74,16 @@ public class HoursDistributor {
         }
     }
 
-    public static class ResourceWithAssignedHours {
-        public final Integer hours;
+    public static class ResourceWithAssignedDuration {
+        public final EffortDuration duration;
 
         public final Resource resource;
 
-        private ResourceWithAssignedHours(Integer hours, Resource resource) {
-            this.hours = hours;
+        private ResourceWithAssignedDuration(EffortDuration duration,
+                Resource resource) {
+            Validate.notNull(duration);
+            Validate.notNull(resource);
+            this.duration = duration;
             this.resource = resource;
         }
     }
@@ -138,12 +144,12 @@ public class HoursDistributor {
 
     private final IResourceSelector resourceSelector;
 
-    public HoursDistributor(List<Resource> resources,
+    public EffortDistributor(List<Resource> resources,
             IAssignedHoursForResource assignedHoursForResource) {
         this(resources, assignedHoursForResource, null);
     }
 
-    public HoursDistributor(List<Resource> resources,
+    public EffortDistributor(List<Resource> resources,
             IAssignedHoursForResource assignedHoursForResource,
             IResourceSelector selector) {
         this.resources = ResourceWithDerivedData.from(resources);
@@ -153,14 +159,14 @@ public class HoursDistributor {
     }
 
 
-    public List<ResourceWithAssignedHours> distributeForDay(LocalDate day,
-            int totalHours) {
+    public List<ResourceWithAssignedDuration> distributeForDay(LocalDate day,
+            EffortDuration totalDuration) {
         List<ResourceWithDerivedData> resourcesAssignable = resourcesAssignableAt(day);
         List<ShareSource> shares = divisionAt(resourcesAssignable, day);
         ShareDivision currentDivision = ShareSource.all(shares);
-        ShareDivision newDivison = currentDivision.plus(totalHours);
+        ShareDivision newDivison = currentDivision.plus(totalDuration.getSeconds());
         int[] differences = currentDivision.to(newDivison);
-        return ShareSource.hoursForEachResource(shares, differences,
+        return ShareSource.durationsForEachResource(shares, differences,
                 ResourceWithDerivedData.resources(resourcesAssignable));
     }
 
@@ -186,19 +192,20 @@ public class HoursDistributor {
             return ShareDivision.create(shares);
         }
 
-        public static List<ResourceWithAssignedHours> hoursForEachResource(
-                List<ShareSource> sources, int[] differences,
+        public static List<ResourceWithAssignedDuration> durationsForEachResource(
+                List<ShareSource> sources, int[] differencesInSeconds,
                 List<Resource> resources) {
-            List<ResourceWithAssignedHours> result = new ArrayList<ResourceWithAssignedHours>();
+            List<ResourceWithAssignedDuration> result = new ArrayList<ResourceWithAssignedDuration>();
             int differencesIndex = 0;
             for (int i = 0; i < resources.size(); i++) {
                 Resource resource = resources.get(i);
                 ShareSource shareSource = sources.get(i);
                 final int differencesToTake = shareSource.shares.size();
-                int sum = sumDifferences(differences, differencesIndex,
+                int sum = sumDifferences(differencesInSeconds, differencesIndex,
                         differencesToTake);
                 differencesIndex += differencesToTake;
-                result.add(new ResourceWithAssignedHours(sum, resource));
+                result.add(new ResourceWithAssignedDuration(seconds(sum),
+                        resource));
             }
             return result;
         }
@@ -227,16 +234,18 @@ public class HoursDistributor {
             List<Share> shares = new ArrayList<Share>();
             Resource resource = resources.get(i).resource;
             IWorkHours workHoursForResource = resources.get(i).workHours;
-            int alreadyAssignedHours = assignedHoursForResource
-                    .getAssignedDurationAt(resource, day).roundToHours();
-            Integer capacityEachOne = workHoursForResource.toHours(day, ONE);
+            EffortDuration alreadyAssigned = assignedHoursForResource
+                    .getAssignedDurationAt(resource, day);
+            final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
+            Integer capacityEachOneSeconds = workHoursForResource.toHours(day,
+                    ONE) * 3600;
             final int capacityUnits = resources.get(i).capacityUnits;
             assert capacityUnits >= 1;
-            final int assignedForEach = alreadyAssignedHours / capacityUnits;
-            final int remainder = alreadyAssignedHours % capacityUnits;
+            final int assignedForEach = alreadyAssignedSeconds / capacityUnits;
+            final int remainder = alreadyAssignedSeconds % capacityUnits;
             for (int j = 0; j < capacityUnits; j++) {
-                int assigned = assignedForEach + (j < remainder ? 1 : 0);
-                shares.add(new Share(assigned - capacityEachOne));
+                int assignedSeconds = assignedForEach + (j < remainder ? 1 : 0);
+                shares.add(new Share(assignedSeconds - capacityEachOneSeconds));
             }
             result.add(new ShareSource(shares));
         }
