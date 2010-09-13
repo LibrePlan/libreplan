@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -48,6 +46,9 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     private final String headers[] = {};
 
     MultipleFiltersFinder() {
+    }
+
+    public void reset() {
     }
 
     public IAdHocTransactionService getAdHocTransactionService() {

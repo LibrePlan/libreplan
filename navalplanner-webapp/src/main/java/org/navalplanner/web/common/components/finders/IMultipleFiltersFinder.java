@@ -59,4 +59,6 @@ public interface IMultipleFiltersFinder {
 
     ListitemRenderer getItemRenderer();
 
+    void reset();
+
 }

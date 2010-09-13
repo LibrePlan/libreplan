@@ -119,7 +119,6 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
                 final String inputText = ((InputEvent) event).getValue();
                 if ((inputText == null) || (inputText.isEmpty())) {
                     clear();
-                    searchMultipleFilters();
                 } else {
                     searchMultipleFilters(inputText);
                 }
@@ -195,6 +194,8 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         bandbox.setValue("");
         selectedFiltersText = "";
         selectedFilters.clear();
+        multipleFiltersFinder.reset();
+        searchMultipleFilters();
     }
 
     public void addSelectedElement(Object obj) {
