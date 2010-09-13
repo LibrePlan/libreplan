@@ -335,8 +335,9 @@ public class QueueComponent extends XulElement implements
             LimitingResourceQueueElement queueElement) {
 
         int workableHours = queueElement.getLimitingResourceQueue()
-                .getResource().getCalendar().getCapacityAt(
-                        queueElement.getEndDate());
+                .getResource().getCalendar()
+                .getCapacityDurationAt(queueElement.getEndDate())
+                .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR
@@ -365,8 +366,9 @@ public class QueueComponent extends XulElement implements
             LimitingResourceQueueElement queueElement) {
 
         int workableHours = queueElement.getLimitingResourceQueue()
-                .getResource().getCalendar().getCapacityAt(
-                        queueElement.getEndDate());
+                .getResource().getCalendar()
+                .getCapacityDurationAt(queueElement.getEndDate())
+                .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR
@@ -376,7 +378,7 @@ public class QueueComponent extends XulElement implements
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR
                 / datesMapper.getMilisecondsPerPixel()).intValue()
                 + shadeWidth;
-        ;
+
         Div notWorkableHoursShade = new Div();
         notWorkableHoursShade.setContext("");
         notWorkableHoursShade.setSclass("limiting-completion");

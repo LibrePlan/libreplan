@@ -29,13 +29,13 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.DatePoint;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTime;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -127,10 +127,12 @@ public class Gap implements Comparable<Gap> {
 
         final ResourceCalendar calendar = resource.getCalendar();
 
+        int capacityRounded = calendar.getCapacityDurationAt(startDate)
+                .roundToHours();
         if (startDate.equals(endDate)) {
-            return calendar.getCapacityAt(startDate) - Math.max(startHour, endHour);
+            return capacityRounded - Math.max(startHour, endHour);
         } else {
-            int hoursAtStart = calendar.getCapacityAt(startDate) - startHour;
+            int hoursAtStart = capacityRounded - startHour;
             int hoursInBetween = calendar.getWorkableHours(startDate
                     .plusDays(1), endDate.minusDays(1));
             return hoursAtStart + hoursInBetween + endHour;
@@ -174,7 +176,7 @@ public class Gap implements Comparable<Gap> {
 
     private int getHoursAtDay(LocalDate day, BaseCalendar calendar,
             DateAndHour realStart, boolean isFirst, final boolean isLast) {
-        final int capacity = calendar.getCapacityAt(day);
+        final int capacity = calendar.getCapacityDurationAt(day).roundToHours();
         if (isLast && isFirst) {
             return Math.min(endTime.getHour() - realStart.getHour(),
                     capacity);
