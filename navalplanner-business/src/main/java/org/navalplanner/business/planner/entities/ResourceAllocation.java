@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -724,18 +727,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private ResourcesPerDay calculateResourcesPerDayFromAssignments(
             Collection<? extends T> assignments) {
         Map<LocalDate, List<T>> byDay = DayAssignment.byDay(assignments);
-        int sumTotalHours = 0;
-        int sumWorkableHours = 0;
+        EffortDuration sumTotalEffort = zero();
+        EffortDuration sumWorkableEffort = zero();
         final ResourcesPerDay one = ResourcesPerDay.amount(1);
         for (Entry<LocalDate, List<T>> entry : byDay.entrySet()) {
-            sumWorkableHours += getWorkHoursPerDay().toHours(entry.getKey(),
-                    one);
-            sumTotalHours += getAssignedHours(entry.getValue());
+            sumWorkableEffort = sumWorkableEffort
+                    .plus(hours(getWorkHoursPerDay().toHours(entry.getKey(),
+                            one)));
+            sumTotalEffort = sumTotalEffort.plus(getAssignedDuration(entry
+                    .getValue()));
         }
-        if (sumWorkableHours == 0) {
+        if (sumWorkableEffort.equals(zero())) {
             return ResourcesPerDay.amount(0);
         }
-        return ResourcesPerDay.calculateFrom(sumTotalHours, sumWorkableHours);
+        return ResourcesPerDay.calculateFrom(sumTotalEffort, sumWorkableEffort);
     }
 
     private IWorkHours getWorkHoursPerDay() {
@@ -1073,13 +1078,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public int getAssignedHours(final Resource resource, LocalDate start,
             LocalDate endExclusive) {
-        return getAssignedHours(filter(getAssignments(start, endExclusive),new PredicateOnDayAssignment() {
-
-            @Override
-            public boolean satisfiedBy(DayAssignment dayAssignment) {
-                return dayAssignment.isAssignedTo(resource);
-            }
-                }));
+        return getAssignedDuration(filter(getAssignments(start, endExclusive),
+                new PredicateOnDayAssignment() {
+                            @Override
+                            public boolean satisfiedBy(
+                                    DayAssignment dayAssignment) {
+                                return dayAssignment.isAssignedTo(resource);
+                            }
+                        })).roundToHours();
     }
 
     public List<DayAssignment> getAssignments(LocalDate start,
@@ -1089,7 +1095,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public int getAssignedHours(LocalDate start, LocalDate endExclusive) {
-        return getAssignedHours(getAssignments(start, endExclusive));
+        return getAssignedDuration(getAssignments(start, endExclusive))
+                .roundToHours();
     }
 
     private List<DayAssignment> filter(List<DayAssignment> assignments,
@@ -1103,12 +1110,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
-    private int getAssignedHours(List<? extends DayAssignment> assignments) {
-        int sum = 0;
+    private EffortDuration getAssignedDuration(
+            List<? extends DayAssignment> assignments) {
+        EffortDuration result = zero();
         for (DayAssignment dayAssignment : assignments) {
-            sum += dayAssignment.getHours();
+            result = result.plus(dayAssignment.getDuration());
         }
-        return sum;
+        return result;
     }
 
     public void mergeAssignmentsAndResourcesPerDay(Scenario scenario,
