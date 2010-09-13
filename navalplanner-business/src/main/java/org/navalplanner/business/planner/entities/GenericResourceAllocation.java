@@ -411,9 +411,8 @@ public class GenericResourceAllocation extends
         return GenericDayAssignment.class;
     }
 
-    public List<DayAssignment> createAssignmentsAtDay(
-            List<Resource> resources, LocalDate day,
- ResourcesPerDay resourcesPerDay,
+    public List<DayAssignment> createAssignmentsAtDay(List<Resource> resources,
+            LocalDate day, ResourcesPerDay resourcesPerDay,
             final EffortDuration maxLimit) {
         final EffortDuration durations = min(
                 calculateTotalToDistribute(day, resourcesPerDay), maxLimit);

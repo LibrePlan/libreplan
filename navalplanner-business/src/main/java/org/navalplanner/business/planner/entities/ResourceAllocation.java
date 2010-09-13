@@ -211,7 +211,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 @Override
                 protected List<DayAssignment> createAssignmentsAtDay(
                         ResourcesPerDayModification allocation, LocalDate day,
-                        Integer limit) {
+                        EffortDuration limit) {
                     return allocation.createAssignmentsAtDay(day, limit);
                 }
 
@@ -228,7 +228,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 protected boolean thereAreAvailableHoursFrom(
                         LocalDate start,
                         ResourcesPerDayModification resourcesPerDayModification,
-                        int hoursToAllocate) {
+                        EffortDuration effortToAllocate) {
                     IWorkHours workHoursPerDay = getWorkHoursPerDay(resourcesPerDayModification);
                     ResourcesPerDay resourcesPerDay = resourcesPerDayModification
                             .getGoal();
@@ -236,7 +236,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             .getAvailability();
                     availability.invalidUntil(start);
                     return workHoursPerDay.thereAreHoursOn(availability,
-                            resourcesPerDay, hoursToAllocate);
+                            resourcesPerDay, effortToAllocate.roundToHours());
                 }
 
                 private CombinedWorkHours getWorkHoursPerDay(
@@ -252,7 +252,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     allocation.markAsUnsatisfied();
                 }
             };
-            return allocator.untilAllocating(hoursToAllocate);
+            return allocator.untilAllocating(hours(hoursToAllocate));
         }
 
         public void allocateOnTaskLength() {

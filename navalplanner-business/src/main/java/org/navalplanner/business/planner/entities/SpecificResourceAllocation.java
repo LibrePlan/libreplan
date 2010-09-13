@@ -182,8 +182,8 @@ public class SpecificResourceAllocation extends
         @Override
         protected List<SpecificDayAssignment> distributeForDay(
                 LocalDate day, EffortDuration effort) {
-            return Arrays.asList(SpecificDayAssignment.create(day,
-                    effort.roundToHours(), resource));
+            return Arrays.asList(SpecificDayAssignment.create(day, effort,
+                    resource));
         }
 
         @Override
@@ -212,7 +212,7 @@ public class SpecificResourceAllocation extends
             ResourcesPerDay resourcesPerDay, EffortDuration limit) {
         EffortDuration effort = calculateTotalToDistribute(day, resourcesPerDay);
         SpecificDayAssignment specific = SpecificDayAssignment.create(day,
-                min(limit, effort).roundToHours(), resource);
+                min(limit, effort), resource);
         List<DayAssignment> result = new ArrayList<DayAssignment>();
         result.add(specific);
         return result;

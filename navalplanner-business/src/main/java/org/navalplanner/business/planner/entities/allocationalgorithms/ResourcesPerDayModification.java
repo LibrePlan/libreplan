@@ -20,8 +20,6 @@
 
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
-import static org.navalplanner.business.workingday.EffortDuration.hours;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,6 +40,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class ResourcesPerDayModification extends
@@ -73,9 +72,9 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-                int limit) {
+                EffortDuration limit) {
             return genericAllocation.createAssignmentsAtDay(getResources(),
-                    day, getGoal(), hours(limit));
+                    day, getGoal(), limit);
         }
 
         @Override
@@ -125,9 +124,9 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-                int limit) {
+                EffortDuration limit) {
             return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
-                    hours(limit));
+                    limit);
         }
 
         @Override
@@ -211,7 +210,7 @@ public abstract class ResourcesPerDayModification extends
     public abstract void applyAllocationUntil(LocalDate endExclusive);
 
     public abstract List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-            int limit);
+            EffortDuration limit);
 
     public abstract AvailabilityTimeLine getAvailability();
 
