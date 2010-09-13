@@ -129,7 +129,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
                 resourcesPerDayModification, day, remaining);
         resultAssignments.get(resourcesPerDayModification).addAll(
                 newAssignments);
-        return DayAssignment.sum(newAssignments);
+        return DayAssignment.sum(newAssignments).roundToHours();
     }
 
     private static class HoursPerAllocation {

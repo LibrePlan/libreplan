@@ -836,7 +836,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public int getAssignedHours() {
-        return DayAssignment.sum(getAssignments());
+        return DayAssignment.sum(getAssignments()).roundToHours();
     }
 
     protected abstract class DayAssignmentsState {
@@ -968,11 +968,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract DayAssignmentsState getDayAssignmentsState();
 
     public int getConsolidatedHours() {
-        return DayAssignment.sum(getConsolidatedAssignments());
+        return DayAssignment.sum(getConsolidatedAssignments()).roundToHours();
     }
 
     public int getNonConsolidatedHours() {
-        return DayAssignment.sum(getNonConsolidatedAssignments());
+        return DayAssignment.sum(getNonConsolidatedAssignments())
+                .roundToHours();
     }
 
     /**

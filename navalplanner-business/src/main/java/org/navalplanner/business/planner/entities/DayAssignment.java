@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,10 +82,11 @@ public abstract class DayAssignment extends BaseEntity {
         return start;
     }
 
-    public static int sum(Collection<? extends DayAssignment> assignments) {
-        int result = 0;
-        for (DayAssignment dayAssignment : assignments) {
-            result += dayAssignment.getHours();
+    public static EffortDuration sum(
+            Collection<? extends DayAssignment> assignments) {
+        EffortDuration result = zero();
+        for (DayAssignment each : assignments) {
+            result = result.plus(each.getDuration());
         }
         return result;
     }
