@@ -19,11 +19,11 @@
  */
 package org.navalplanner.business.common;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.math.fraction.Fraction;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -31,7 +31,7 @@ import java.util.List;
 public class ProportionalDistributor {
 
     public static ProportionalDistributor create(int... initialShares) {
-        return new ProportionalDistributor(toProportions(
+        return new ProportionalDistributor(toFractions(
                 sumIntegerParts(initialShares), initialShares));
     }
 
@@ -43,69 +43,66 @@ public class ProportionalDistributor {
         return sum;
     }
 
-    private static BigDecimal[] toProportions(int initialTotal, int... shares) {
-        BigDecimal total = new BigDecimal(initialTotal);
-        BigDecimal[] result = new BigDecimal[shares.length];
+    private static Fraction[] toFractions(int initialTotal, int... shares) {
+        Fraction[] result = new Fraction[shares.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = (total.equals(BigDecimal.ZERO)) ? BigDecimal.ZERO
-                    : new BigDecimal(shares[i]).divide(total, 4,
-                            RoundingMode.DOWN);
+            result[i] = initialTotal == 0 ? Fraction.ZERO : new Fraction(
+                    shares[i], initialTotal);
         }
         return result;
     }
 
-    private static class ProportionWithPosition implements
-            Comparable<ProportionWithPosition> {
+    private static class FractionWithPosition implements
+            Comparable<FractionWithPosition> {
 
-        public static List<ProportionWithPosition> transform(
-                BigDecimal[] proportions) {
-            List<ProportionWithPosition> result = new ArrayList<ProportionWithPosition>();
-            for (int i = 0; i < proportions.length; i++) {
-                result.add(new ProportionWithPosition(i, proportions[i]));
+        public static List<FractionWithPosition> transform(Fraction[] fractions) {
+            List<FractionWithPosition> result = new ArrayList<FractionWithPosition>();
+            for (int i = 0; i < fractions.length; i++) {
+                result.add(new FractionWithPosition(i, fractions[i]));
             }
             return result;
         }
 
         final int position;
-        final BigDecimal proportion;
+        final Fraction fraction;
 
-        ProportionWithPosition(int position, BigDecimal proportion) {
+        FractionWithPosition(int position, Fraction fraction) {
             this.position = position;
-            this.proportion = proportion;
+            this.fraction = fraction;
         }
 
         @Override
-        public int compareTo(ProportionWithPosition other) {
-            return proportion.compareTo(other.proportion);
+        public int compareTo(FractionWithPosition other) {
+            return fraction.compareTo(other.fraction);
         }
 
     }
 
-    private final BigDecimal[] proportions;
+    private final Fraction[] fractions;
 
-    private ProportionalDistributor(BigDecimal[] proportions) {
-        this.proportions = proportions;
+    private ProportionalDistributor(Fraction[] fractions) {
+        this.fractions = fractions;
     }
 
     public int[] distribute(final int total) {
-        if (proportions.length == 0) {
+        if (fractions.length == 0) {
             return new int[0];
         }
-        int[] result = new int[proportions.length];
+        int[] result = new int[fractions.length];
         int remaining = total - assignIntegerParts(total, result);
         if (remaining == 0) {
             return result;
         }
-        BigDecimal[] currentProportions = toProportions(total, result);
-        assignRemaining(result, currentProportions, remaining);
+        Fraction[] currentFractions = toFractions(total, result);
+        assignRemaining(result, currentFractions, remaining);
         return result;
     }
 
     private int assignIntegerParts(int current, int[] result) {
+        Fraction currentAsFraction = new Fraction(current, 1);
         int substract = 0;
-        for (int i = 0; i < proportions.length; i++) {
-            int intValue = proportions[i].multiply(new BigDecimal(current))
-                    .intValue();
+        for (int i = 0; i < fractions.length; i++) {
+            int intValue = fractions[i].multiply(currentAsFraction).intValue();
             if (intValue > 0) {
                 result[i] = result[i] + intValue;
                 substract += intValue;
@@ -114,22 +111,22 @@ public class ProportionalDistributor {
         return substract;
     }
 
-    private void assignRemaining(int[] result, BigDecimal[] currentProportions,
+    private void assignRemaining(int[] result, Fraction[] currentProportions,
             int remaining) {
-        List<ProportionWithPosition> transform = ProportionWithPosition
+        List<FractionWithPosition> transform = FractionWithPosition
                 .transform(difference(currentProportions));
         Collections.sort(transform, Collections.reverseOrder());
         for (int i = 0; i < remaining; i++) {
-            ProportionWithPosition proportionWithPosition = transform.get(i
+            FractionWithPosition proportionWithPosition = transform.get(i
                     % currentProportions.length);
             result[proportionWithPosition.position] = result[proportionWithPosition.position] + 1;
         }
     }
 
-    private BigDecimal[] difference(BigDecimal[] pr) {
-        BigDecimal[] result = new BigDecimal[proportions.length];
+    private Fraction[] difference(Fraction[] pr) {
+        Fraction[] result = new Fraction[fractions.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = proportions[i].subtract(pr[i]);
+            result[i] = fractions[i].subtract(pr[i]);
         }
         return result;
     }
