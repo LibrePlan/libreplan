@@ -1129,7 +1129,7 @@ span.z-dottree-line {
 }
 
 .main-area > .z-center-body:first-child {
-    height: auto !important;
+/*    height: auto !important; */
     width: auto !important;
 }
 

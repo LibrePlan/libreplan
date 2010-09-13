@@ -98,7 +98,7 @@
 </north>
 
 <center border="none">
-    <borderlayout class="main-layout" width="auto" height="100%">
+    <borderlayout width="auto" height="100%">
     <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
         <n:div>
@@ -108,9 +108,7 @@
         <vbox id="registeredItemsInsertionPoint" width="90px"/>
         </n:div>
     </west>
-    <center class="main-area">
-        <div self="@{insert(content)}"/>
-    </center>
+    <center class="main-area" style="border: 1px solid pink" self="@{insert(content)}" />
     </borderlayout>
 
 </center>

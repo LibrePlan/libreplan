@@ -772,8 +772,13 @@ div.z-tree {
 }
 
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
-    height:550px;
+/*    height: 100%; */
 }
+
+.temp-class {
+height: 100%
+}
+
 .orderslayout {
     height:550px;
 }
@@ -1185,3 +1190,7 @@ body .perspectives-column {
 .subcontracted-task .completion2 {
     background-color: #484e4d;
 }
+
+.main-area .z-center-body > span {height: 100%;}
+.main-area .z-center-body > span > div { height: 100%;}
+.main-area .z-center-body > span > div > span { height: 100%;}
