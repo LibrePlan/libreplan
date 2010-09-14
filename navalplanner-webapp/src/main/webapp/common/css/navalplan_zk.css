@@ -440,6 +440,12 @@ h4.message_WARNING {
     margin-top: 5px;
 }
 
+.main-area .z-center-body > .z-window-embedded {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 10px;
+}
+
 /* Hide inner second level embed window titles */
 .z-window-embedded
 .z-window-embedded
