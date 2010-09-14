@@ -48,7 +48,6 @@ import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -64,8 +63,6 @@ public class NewAllocationSelectorController extends
         AllocationSelectorController {
 
     private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
-
-    private Textbox txtName;
 
     private Radiogroup allocationTypeSelector;
 
@@ -100,7 +97,7 @@ public class NewAllocationSelectorController extends
                 // is executed, refreshing the results into the workers listbox
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    searchResources(txtName.getValue(), getSelectedCriterions());
+                    searchResources("", getSelectedCriterions());
                 }
             });
         }
@@ -226,7 +223,6 @@ public class NewAllocationSelectorController extends
     }
 
     public void clearAll() {
-        txtName.setValue("");
         refreshListBoxResources(getAllResources());
         criterionsTree.setModel(getCriterions());
         clearSelection(listBoxResources);
