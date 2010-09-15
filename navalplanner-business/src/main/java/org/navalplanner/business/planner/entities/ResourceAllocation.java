@@ -592,9 +592,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private AvailabilityTimeLine getAvailability() {
             AvailabilityTimeLine resourcesAvailability = getResourcesAvailability();
-            if (getTaskCalendar() != null) {
-                return getTaskCalendar().getAvailability().and(
-                        resourcesAvailability);
+            BaseCalendar taskCalendar = getTask().getCalendar();
+            if (taskCalendar != null) {
+                return taskCalendar.getAvailability()
+                        .and(resourcesAvailability);
             } else {
                 return resourcesAvailability;
             }
@@ -754,19 +755,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private IWorkHours getTaskWorkHours() {
-        if (getTaskCalendar() == null) {
+        if (getTask().getCalendar() == null) {
             return SameWorkHoursEveryDay.getDefaultWorkingDay();
         } else {
-            return getTaskCalendar();
+            return getTask().getCalendar();
         }
     }
 
     protected abstract IWorkHours getWorkHoursGivenTaskHours(
             IWorkHours taskWorkHours);
-
-    protected final BaseCalendar getTaskCalendar() {
-        return getTask().getCalendar();
-    }
 
     private void resetGenericAssignmentsTo(List<DayAssignment> assignments) {
         resetAssignmentsTo(cast(assignments));
