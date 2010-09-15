@@ -885,11 +885,21 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
     }
 
     @Override
+    @Deprecated
     public Integer toHours(LocalDate day, ResourcesPerDay resourcesPerDay) {
         final EffortDuration workableHours = getWorkableTimeAt(day);
         return limitOverAssignability(day,
                 resourcesPerDay.asDurationGivenWorkingDayOf(workableHours),
                 workableHours).roundToHours();
+    }
+
+    @Override
+    public EffortDuration asDurationOn(LocalDate day,
+            ResourcesPerDay resourcesPerDay) {
+        final EffortDuration workableHours = getWorkableTimeAt(day);
+        return limitOverAssignability(day,
+                resourcesPerDay.asDurationGivenWorkingDayOf(workableHours),
+                workableHours);
     }
 
     private EffortDuration limitOverAssignability(LocalDate day,

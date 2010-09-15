@@ -21,6 +21,8 @@
 package org.navalplanner.business.calendars.entities;
 
 import static java.util.Arrays.asList;
+import static org.navalplanner.business.workingday.EffortDuration.max;
+import static org.navalplanner.business.workingday.EffortDuration.min;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,13 +83,19 @@ public abstract class CombinedWorkHours implements IWorkHours {
     }
 
     @Override
+    @Deprecated
     public Integer toHours(LocalDate day, ResourcesPerDay amount) {
-        Integer current = null;
+        return asDurationOn(day, amount).roundToHours();
+    }
+
+    @Override
+    public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount) {
+        EffortDuration result = null;
         for (IWorkHours each : workHours) {
-            current = current == null ? each.toHours(day, amount)
-                    : updateHours(current, each.toHours(day, amount));
+            result = result == null ? each.asDurationOn(day, amount)
+                    : updateDuration(result, each.asDurationOn(day, amount));
         }
-        return current;
+        return result;
     }
 
     @Override
@@ -102,7 +110,8 @@ public abstract class CombinedWorkHours implements IWorkHours {
     protected abstract AvailabilityTimeLine compoundAvailability(
             AvailabilityTimeLine accumulated, AvailabilityTimeLine each);
 
-    protected abstract Integer updateHours(Integer current, Integer each);
+    protected abstract EffortDuration updateDuration(EffortDuration current,
+            EffortDuration each);
 
     protected abstract EffortDuration updateCapacity(EffortDuration current,
             EffortDuration each);
@@ -128,8 +137,9 @@ class Min extends CombinedWorkHours {
     }
 
     @Override
-    protected Integer updateHours(Integer current, Integer each) {
-        return Math.min(current, each);
+    protected EffortDuration updateDuration(EffortDuration current,
+            EffortDuration each) {
+        return min(current, each);
     }
 
     @Override
@@ -153,8 +163,9 @@ class Max extends CombinedWorkHours {
     }
 
     @Override
-    protected Integer updateHours(Integer current, Integer each) {
-        return Math.max(current, each);
+    protected EffortDuration updateDuration(EffortDuration current,
+            EffortDuration each) {
+        return max(current, each);
     }
 
     @Override

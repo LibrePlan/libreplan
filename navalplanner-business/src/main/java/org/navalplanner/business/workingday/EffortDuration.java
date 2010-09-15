@@ -230,6 +230,10 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return Collections.min(Arrays.asList(durations));
     }
 
+    public static EffortDuration max(EffortDuration... durations) {
+        return Collections.max(Arrays.asList(durations));
+    }
+
     private static int roundHalfUpToHours(
             EnumMap<Granularity, Integer> components) {
         int seconds = components.get(Granularity.SECONDS);

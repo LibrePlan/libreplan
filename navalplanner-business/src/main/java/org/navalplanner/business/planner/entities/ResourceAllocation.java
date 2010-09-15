@@ -779,6 +779,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
 
             @Override
+            public EffortDuration asDurationOn(LocalDate day,
+                    ResourcesPerDay amount) {
+                return getSubyacent().asDurationOn(day, amount);
+            }
+
+            @Override
             public boolean thereAreHoursOn(AvailabilityTimeLine availability,
                     ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
                 return ThereAreHoursOnWorkHoursCalculator.thereAreHoursOn(this,

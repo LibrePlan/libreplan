@@ -36,6 +36,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.from;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.HashMap;
 import java.util.List;
@@ -82,20 +83,35 @@ public class SpecificResourceAllocationTest {
         expect(this.calendar.toHours(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andAnswer(
                 toHoursAnswer(hours)).anyTimes();
+        expect(
+                this.calendar.asDurationOn(isA(LocalDate.class),
+                        isA(ResourcesPerDay.class))).andAnswer(
+                asDurationOnAnswer(hours(hours))).anyTimes();
         expect(this.calendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);
     }
 
     private IAnswer<Integer> toHoursAnswer(final int hours) {
+        final IAnswer<? extends EffortDuration> durationOnAnswer = asDurationOnAnswer(hours(hours));
         return new IAnswer<Integer>() {
 
             @Override
             public Integer answer() throws Throwable {
+                return durationOnAnswer.answer().roundToHours();
+            }
+        };
+    }
+
+    private IAnswer<? extends EffortDuration> asDurationOnAnswer(
+            final EffortDuration duration) {
+        return new IAnswer<EffortDuration>() {
+
+            @Override
+            public EffortDuration answer() throws Throwable {
                 ResourcesPerDay perDay = (ResourcesPerDay) EasyMock
                         .getCurrentArguments()[1];
-                return perDay.asDurationGivenWorkingDayOf(
-                        EffortDuration.hours(hours)).roundToHours();
+                return perDay.asDurationGivenWorkingDayOf(duration);
             }
         };
     }
@@ -116,22 +132,32 @@ public class SpecificResourceAllocationTest {
                         return EffortDuration.hours(defaultAnswer);
                     }
                 }).anyTimes();
+        final IAnswer<Integer> toHoursAnswer = new IAnswer<Integer>() {
+
+            @Override
+            public Integer answer() throws Throwable {
+                LocalDate date = (LocalDate) EasyMock
+                        .getCurrentArguments()[0];
+                int hours;
+                if (answersForDates.containsKey(date)) {
+                    hours = answersForDates.get(date);
+                } else {
+                    hours = defaultAnswer;
+                }
+                return toHoursAnswer(hours).answer();
+            }
+        };
         expect(
                 this.calendar.toHours(isA(LocalDate.class),
+                        isA(ResourcesPerDay.class))).andAnswer(toHoursAnswer)
+                .anyTimes();
+        expect(
+                this.calendar.asDurationOn(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andAnswer(
-                new IAnswer<Integer>() {
-
+                new IAnswer<EffortDuration>() {
                     @Override
-                    public Integer answer() throws Throwable {
-                        LocalDate date = (LocalDate) EasyMock
-                                .getCurrentArguments()[0];
-                        int hours;
-                        if (answersForDates.containsKey(date)) {
-                            hours = answersForDates.get(date);
-                        } else {
-                            hours = defaultAnswer;
-                        }
-                        return toHoursAnswer(hours).answer();
+                    public EffortDuration answer() throws Throwable {
+                        return hours(toHoursAnswer.answer());
                     }
                 }).anyTimes();
         expect(this.calendar.getAvailability()).andReturn(

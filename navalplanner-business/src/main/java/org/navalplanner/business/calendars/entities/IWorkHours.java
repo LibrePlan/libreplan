@@ -29,11 +29,24 @@ public interface IWorkHours {
     /**
      * Translates the received amount into the corresponding hours at the given
      * date
+     *
+     * @deprecated use asDurationOn
      * @param day
      * @param amount
      * @return
      */
+    @Deprecated
     public Integer toHours(LocalDate day, ResourcesPerDay amount);
+
+    /**
+     * Translates the received amount into the corresponding duration at the
+     * given date
+     *
+     * @param day
+     * @param amount
+     * @return
+     */
+    public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount);
 
     /**
      * Calculates the capacity duration at a given date. It means all the time

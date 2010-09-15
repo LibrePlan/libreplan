@@ -47,9 +47,14 @@ public class SameWorkHoursEveryDay implements IWorkHours {
     }
 
     @Override
+    @Deprecated
     public Integer toHours(LocalDate day, ResourcesPerDay amount) {
-        return amount.asDurationGivenWorkingDayOf(getCapacityDurationAt(day))
-                .roundToHours();
+        return asDurationOn(day, amount).roundToHours();
+    }
+
+    @Override
+    public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount) {
+        return amount.asDurationGivenWorkingDayOf(getCapacityDurationAt(day));
     }
 
     @Override
