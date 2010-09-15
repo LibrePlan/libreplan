@@ -19,6 +19,9 @@
  */
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -26,6 +29,7 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTi
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -92,16 +96,17 @@ public class ThereAreHoursOnWorkHoursCalculator {
     private static int sumHoursUntil(IWorkHours workHours, int maximum,
             ResourcesPerDay resourcesPerDay,
             LocalDate start, LocalDate end) {
-        int result = 0;
+        EffortDuration result = zero();
+        EffortDuration maximumDuration = hours(maximum);
         int days = org.joda.time.Days.daysBetween(start, end).getDays();
         for (int i = 0; i < days; i++) {
             LocalDate current = start.plusDays(i);
-            result += workHours.toHours(current, resourcesPerDay);
-            if (result >= maximum) {
-                return result;
+            result = result.plus(workHours.asDurationOn(current, resourcesPerDay));
+            if (result.compareTo(maximumDuration) >= 0) {
+                return result.getHours();
             }
         }
-        return result;
+        return result.getHours();
     }
 
 }

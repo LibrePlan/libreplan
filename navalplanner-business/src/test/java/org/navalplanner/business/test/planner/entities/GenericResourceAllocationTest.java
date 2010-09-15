@@ -234,23 +234,21 @@ public class GenericResourceAllocationTest {
                 .andReturn(hours(hoursPerDay)).anyTimes();
         expect(baseCalendar.isActive(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
-        expect(
-                baseCalendar.toHours(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class))).andAnswer(
-                new IAnswer<Integer>() {
-
-                    @Override
-                    public Integer answer() throws Throwable {
-                        ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
-                        return resourcesPerDay.asDurationGivenWorkingDayOf(
-                                EffortDuration.hours(hoursPerDay))
-                                .roundToHours();
-                    }
-                }).anyTimes();
         expect(baseCalendar.canWork(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
         expect(baseCalendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
+        expect(
+                baseCalendar.asDurationOn(isA(LocalDate.class),
+                        isA(ResourcesPerDay.class))).andAnswer(
+                new IAnswer<EffortDuration>() {
+                    @Override
+                    public EffortDuration answer() throws Throwable {
+                        ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
+                        return resourcesPerDay
+                                .asDurationGivenWorkingDayOf(hours(hoursPerDay));
+                    }
+                }).anyTimes();
         if (baseCalendar instanceof ResourceCalendar) {
             ResourceCalendar resourceCalendar = (ResourceCalendar) baseCalendar;
             expect(resourceCalendar.getCapacity()).andReturn(1);
@@ -569,10 +567,14 @@ public class GenericResourceAllocationTest {
 
     private ResourceCalendar createCalendar(int capacity, int unit) {
         ResourceCalendar calendar = createNiceMock(ResourceCalendar.class);
-        expect(calendar.toHours(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class))).andReturn(unit).anyTimes();
         expect(calendar.isActive(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
+
+        expect(
+                calendar.asDurationOn(isA(LocalDate.class),
+                        isA(ResourcesPerDay.class))).andReturn(hours(unit))
+                .anyTimes();
+
         expect(calendar.canWork(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
         expect(calendar.getCapacity()).andReturn(capacity).anyTimes();

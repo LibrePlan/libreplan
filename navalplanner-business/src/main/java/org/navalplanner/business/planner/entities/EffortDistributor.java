@@ -237,8 +237,8 @@ public class EffortDistributor {
             EffortDuration alreadyAssigned = assignedHoursForResource
                     .getAssignedDurationAt(resource, day);
             final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
-            Integer capacityEachOneSeconds = workHoursForResource.toHours(day,
-                    ONE) * 3600;
+            Integer capacityEachOneSeconds = workHoursForResource.asDurationOn(
+                    day, ONE).getSeconds();
             final int capacityUnits = resources.get(i).capacityUnits;
             assert capacityUnits >= 1;
             final int assignedForEach = alreadyAssignedSeconds / capacityUnits;

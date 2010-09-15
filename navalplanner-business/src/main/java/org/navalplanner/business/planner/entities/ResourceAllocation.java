@@ -725,9 +725,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final EffortDuration calculateTotalToDistribute(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
-        // FIXME get a duration from workHoursPerDay
-        return EffortDuration.hours(getWorkHoursPerDay().toHours(day,
-                resourcesPerDay));
+        return getWorkHoursPerDay().asDurationOn(day, resourcesPerDay);
     }
 
     public ResourcesPerDay calculateResourcesPerDayFromAssignments() {
@@ -739,11 +737,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         Map<LocalDate, List<T>> byDay = DayAssignment.byDay(assignments);
         EffortDuration sumTotalEffort = zero();
         EffortDuration sumWorkableEffort = zero();
-        final ResourcesPerDay one = ResourcesPerDay.amount(1);
+        final ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay.amount(1);
         for (Entry<LocalDate, List<T>> entry : byDay.entrySet()) {
-            sumWorkableEffort = sumWorkableEffort
-                    .plus(hours(getWorkHoursPerDay().toHours(entry.getKey(),
-                            one)));
+            sumWorkableEffort = sumWorkableEffort.plus(getWorkHoursPerDay()
+                    .asDurationOn(entry.getKey(), ONE_RESOURCE_PER_DAY));
             sumTotalEffort = sumTotalEffort.plus(getAssignedDuration(entry
                     .getValue()));
         }
@@ -771,11 +768,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 } else {
                     return getTaskCalendar();
                 }
-            }
-
-            @Override
-            public Integer toHours(LocalDate day, ResourcesPerDay amount) {
-                return getSubyacent().toHours(day, amount);
             }
 
             @Override
