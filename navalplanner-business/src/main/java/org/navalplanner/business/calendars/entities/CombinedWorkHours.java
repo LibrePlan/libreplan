@@ -34,22 +34,22 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
-public abstract class CombinedWorkHours implements IWorkHours {
+public abstract class CombinedWorkHours implements ICalendar {
 
-    private final List<IWorkHours> workHours;
+    private final List<ICalendar> calendars;
 
-    public CombinedWorkHours(Collection<? extends IWorkHours> workHours) {
-        Validate.notNull(workHours);
-        Validate.isTrue(!workHours.isEmpty());
-        this.workHours = notNull(workHours);
-        Validate.isTrue(!this.workHours.isEmpty(),
+    public CombinedWorkHours(Collection<? extends ICalendar> calendars) {
+        Validate.notNull(calendars);
+        Validate.isTrue(!calendars.isEmpty());
+        this.calendars = notNull(calendars);
+        Validate.isTrue(!this.calendars.isEmpty(),
                 "there should be at least one workHours not null");
     }
 
-    private static List<IWorkHours> notNull(
-            Collection<? extends IWorkHours> workHours) {
-        List<IWorkHours> result = new ArrayList<IWorkHours>();
-        for (IWorkHours each : workHours) {
+    private static List<ICalendar> notNull(
+            Collection<? extends ICalendar> calendars) {
+        List<ICalendar> result = new ArrayList<ICalendar>();
+        for (ICalendar each : calendars) {
             if (each != null) {
                 result.add(each);
             }
@@ -57,24 +57,24 @@ public abstract class CombinedWorkHours implements IWorkHours {
         return result;
     }
 
-    public static CombinedWorkHours minOf(IWorkHours... workHours) {
+    public static CombinedWorkHours minOf(ICalendar... workHours) {
         Validate.notNull(workHours);
         return new Min(asList(workHours));
     }
 
-    public static CombinedWorkHours maxOf(IWorkHours... workHours) {
+    public static CombinedWorkHours maxOf(ICalendar... workHours) {
         return maxOf(asList(workHours));
     }
 
     public static CombinedWorkHours maxOf(
-            Collection<? extends IWorkHours> workHours) {
-        return new Max(workHours);
+            Collection<? extends ICalendar> calendars) {
+        return new Max(calendars);
     }
 
     @Override
     public EffortDuration getCapacityDurationAt(LocalDate date) {
         EffortDuration current = null;
-        for (IWorkHours workHour : workHours) {
+        for (ICalendar workHour : calendars) {
             current = current == null ? workHour.getCapacityDurationAt(date)
                     : updateCapacity(current,
                             workHour.getCapacityDurationAt(date));
@@ -85,7 +85,7 @@ public abstract class CombinedWorkHours implements IWorkHours {
     @Override
     public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount) {
         EffortDuration result = null;
-        for (IWorkHours each : workHours) {
+        for (ICalendar each : calendars) {
             result = result == null ? each.asDurationOn(day, amount)
                     : updateDuration(result, each.asDurationOn(day, amount));
         }
@@ -95,7 +95,7 @@ public abstract class CombinedWorkHours implements IWorkHours {
     @Override
     public AvailabilityTimeLine getAvailability() {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
-        for (IWorkHours each : workHours) {
+        for (ICalendar each : calendars) {
             result = compoundAvailability(result, each.getAvailability());
         }
         return result;
@@ -120,8 +120,8 @@ public abstract class CombinedWorkHours implements IWorkHours {
 
 class Min extends CombinedWorkHours {
 
-    public Min(List<IWorkHours> workHours) {
-        super(workHours);
+    public Min(List<ICalendar> calendars) {
+        super(calendars);
     }
 
     @Override
@@ -146,8 +146,8 @@ class Min extends CombinedWorkHours {
 
 class Max extends CombinedWorkHours {
 
-    public Max(Collection<? extends IWorkHours> workHours) {
-        super(workHours);
+    public Max(Collection<? extends ICalendar> calendars) {
+        super(calendars);
     }
 
     @Override

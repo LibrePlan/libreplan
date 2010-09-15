@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.resources.entities.Resource;
@@ -88,7 +88,7 @@ public class EffortDistributor {
         }
     }
 
-    private static final IWorkHours generateWorkHoursFor(Resource resource) {
+    private static final ICalendar generateCalendarFor(Resource resource) {
         if (resource.getCalendar() != null) {
             return resource.getCalendar();
         } else {
@@ -128,12 +128,12 @@ public class EffortDistributor {
 
         public final int capacityUnits;
 
-        public final IWorkHours workHours;
+        public final ICalendar calendar;
 
         public ResourceWithDerivedData(Resource resource) {
             this.resource = resource;
             this.capacityUnits = getCapacityFor(resource);
-            this.workHours = generateWorkHoursFor(resource);
+            this.calendar = generateCalendarFor(resource);
         }
 
     }
@@ -233,11 +233,11 @@ public class EffortDistributor {
         for (int i = 0; i < resources.size(); i++) {
             List<Share> shares = new ArrayList<Share>();
             Resource resource = resources.get(i).resource;
-            IWorkHours workHoursForResource = resources.get(i).workHours;
+            ICalendar calendarForResource = resources.get(i).calendar;
             EffortDuration alreadyAssigned = assignedHoursForResource
                     .getAssignedDurationAt(resource, day);
             final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
-            Integer capacityEachOneSeconds = workHoursForResource.asDurationOn(
+            Integer capacityEachOneSeconds = calendarForResource.asDurationOn(
                     day, ONE).getSeconds();
             final int capacityUnits = resources.get(i).capacityUnits;
             assert capacityUnits >= 1;

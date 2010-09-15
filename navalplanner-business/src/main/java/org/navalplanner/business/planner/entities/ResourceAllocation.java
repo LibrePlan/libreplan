@@ -45,7 +45,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
@@ -228,22 +228,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         LocalDate start,
                         ResourcesPerDayModification resourcesPerDayModification,
                         EffortDuration effortToAllocate) {
-                    IWorkHours workHoursPerDay = getWorkHoursPerDay(resourcesPerDayModification);
+                    ICalendar calendar = getCalendar(resourcesPerDayModification);
                     ResourcesPerDay resourcesPerDay = resourcesPerDayModification
                             .getGoal();
                     AvailabilityTimeLine availability = resourcesPerDayModification
                             .getAvailability();
                     availability.invalidUntil(start);
-                    return workHoursPerDay.thereAreCapacityFor(availability,
+                    return calendar.thereAreCapacityFor(availability,
                             resourcesPerDay, effortToAllocate);
                 }
 
-                private CombinedWorkHours getWorkHoursPerDay(
+                private CombinedWorkHours getCalendar(
                         ResourcesPerDayModification resourcesPerDayModification) {
                     return CombinedWorkHours.minOf(resourcesPerDayModification
-                            .getBeingModified().getTaskWorkHours(),
-                            resourcesPerDayModification
-                                    .getResourcesWorkHoursPerDay());
+                            .getBeingModified().getTaskCalendar(),
+                            resourcesPerDayModification.getResourcesCalendar());
                 }
 
                 @Override
@@ -634,7 +633,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private Share getShareAt(LocalDate day,
                 AvailabilityTimeLine availability) {
             if (availability.isValid(day)) {
-                EffortDuration capacityAtDay = getWorkHoursPerDay()
+                EffortDuration capacityAtDay = getAllocationCalendar()
                         .getCapacityDurationAt(day);
                 return new Share(-capacityAtDay.getSeconds());
             } else {
@@ -725,7 +724,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final EffortDuration calculateTotalToDistribute(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
-        return getWorkHoursPerDay().asDurationOn(day, resourcesPerDay);
+        return getAllocationCalendar().asDurationOn(day, resourcesPerDay);
     }
 
     public ResourcesPerDay calculateResourcesPerDayFromAssignments() {
@@ -739,7 +738,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         EffortDuration sumWorkableEffort = zero();
         final ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay.amount(1);
         for (Entry<LocalDate, List<T>> entry : byDay.entrySet()) {
-            sumWorkableEffort = sumWorkableEffort.plus(getWorkHoursPerDay()
+            sumWorkableEffort = sumWorkableEffort.plus(getAllocationCalendar()
                     .asDurationOn(entry.getKey(), ONE_RESOURCE_PER_DAY));
             sumTotalEffort = sumTotalEffort.plus(getAssignedDuration(entry
                     .getValue()));
@@ -750,11 +749,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return ResourcesPerDay.calculateFrom(sumTotalEffort, sumWorkableEffort);
     }
 
-    private IWorkHours getWorkHoursPerDay() {
-        return getWorkHoursGivenTaskHours(getTaskWorkHours());
+    private ICalendar getAllocationCalendar() {
+        return getCalendarGivenTaskCalendar(getTaskCalendar());
     }
 
-    private IWorkHours getTaskWorkHours() {
+    private ICalendar getTaskCalendar() {
         if (getTask().getCalendar() == null) {
             return SameWorkHoursEveryDay.getDefaultWorkingDay();
         } else {
@@ -762,8 +761,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
-    protected abstract IWorkHours getWorkHoursGivenTaskHours(
-            IWorkHours taskWorkHours);
+    protected abstract ICalendar getCalendarGivenTaskCalendar(
+            ICalendar taskCalendar);
 
     private void resetGenericAssignmentsTo(List<DayAssignment> assignments) {
         resetAssignmentsTo(cast(assignments));

@@ -50,7 +50,7 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  * some exceptions of its parent calendar.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendar extends IntegrationEntity implements IWorkHours {
+public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     private static final EffortDuration DEFAULT_VALUE = EffortDuration.zero();
 

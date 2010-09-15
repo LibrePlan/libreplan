@@ -24,7 +24,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
-public interface IWorkHours {
+public interface ICalendar {
 
     /**
      * Translates the received amount into the corresponding duration at the

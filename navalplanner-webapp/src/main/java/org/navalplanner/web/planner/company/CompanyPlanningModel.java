@@ -41,7 +41,7 @@ import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -894,7 +894,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
                 private EffortDuration getOverloadAt(LocalDate day,
                         Resource resource, EffortDuration assignedDuration) {
-                    IWorkHours calendar = resource.getCalendarOrDefault();
+                    ICalendar calendar = resource.getCalendarOrDefault();
                     EffortDuration workableDuration = calendar
                             .getCapacityDurationAt(day);
                     if (assignedDuration.compareTo(workableDuration) > 0) {

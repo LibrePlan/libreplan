@@ -45,7 +45,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IntegrationEntity;
@@ -875,12 +875,12 @@ public abstract class Resource extends IntegrationEntity {
                 criterion);
     }
 
-    public IWorkHours getCalendarOrDefault() {
+    public ICalendar getCalendarOrDefault() {
         return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay
                 .getDefaultWorkingDay();
     }
 
-    private int getTotalWorkHoursFor(IWorkHours calendar, LocalDate start,
+    private int getTotalWorkHoursFor(ICalendar calendar, LocalDate start,
             LocalDate end, ICriterion criterionToSatisfy) {
         EffortDuration sum = zero();
         final int days = Days.daysBetween(start, end).getDays();

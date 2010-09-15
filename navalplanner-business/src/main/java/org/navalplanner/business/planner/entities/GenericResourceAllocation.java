@@ -35,7 +35,7 @@ import java.util.Set;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.planner.entities.EffortDistributor.IResourceSelector;
 import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
@@ -261,8 +261,8 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    protected IWorkHours getWorkHoursGivenTaskHours(IWorkHours taskWorkHours) {
-        return taskWorkHours;
+    protected ICalendar getCalendarGivenTaskCalendar(ICalendar taskCalendar) {
+        return taskCalendar;
     }
 
     public IAllocatable forResources(Collection<? extends Resource> resources) {

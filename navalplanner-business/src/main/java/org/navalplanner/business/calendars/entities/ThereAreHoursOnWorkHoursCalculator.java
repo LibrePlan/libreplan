@@ -43,7 +43,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
     /**
      * Caculates if there are enough hours
      */
-    public static boolean thereIsAvailableCapacityFor(IWorkHours workHours,
+    public static boolean thereIsAvailableCapacityFor(ICalendar calendar,
             AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, EffortDuration effortToAllocate) {
         if (effortToAllocate.isZero()) {
@@ -52,7 +52,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
         if (resourcesPerDay.isZero()) {
             return false;
         }
-        AvailabilityTimeLine realAvailability = workHours.getAvailability()
+        AvailabilityTimeLine realAvailability = calendar.getAvailability()
                 .and(availability);
         List<Interval> validPeriods = realAvailability.getValidPeriods();
         if (validPeriods.isEmpty()) {
@@ -65,7 +65,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
                 || first.getStart().equals(StartOfTime.create());
 
         return isOpenEnded
-                || thereAreCapacityOn(workHours, effortToAllocate,
+                || thereAreCapacityOn(calendar, effortToAllocate,
                         resourcesPerDay,
                         validPeriods);
 
@@ -75,7 +75,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
         return validPeriods.get(validPeriods.size() - 1);
     }
 
-    private static boolean thereAreCapacityOn(IWorkHours workHours,
+    private static boolean thereAreCapacityOn(ICalendar calendar,
             EffortDuration effortToAllocate,
             ResourcesPerDay resourcesPerDay, List<Interval> validPeriods) {
         EffortDuration sum = zero();
@@ -83,7 +83,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
             FixedPoint start = (FixedPoint) each.getStart();
             FixedPoint end = (FixedPoint) each.getEnd();
             EffortDuration pending = effortToAllocate.minus(sum);
-            sum = sum.plus(sumDurationUntil(workHours, pending,
+            sum = sum.plus(sumDurationUntil(calendar, pending,
                     resourcesPerDay, start.getDate(), end.getDate()));
             if (sum.compareTo(effortToAllocate) >= 0) {
                 return true;
@@ -92,7 +92,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
         return false;
     }
 
-    private static EffortDuration sumDurationUntil(IWorkHours workHours,
+    private static EffortDuration sumDurationUntil(ICalendar calendar,
             EffortDuration maximum,
             ResourcesPerDay resourcesPerDay,
             LocalDate start, LocalDate end) {
@@ -100,7 +100,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
         int days = org.joda.time.Days.daysBetween(start, end).getDays();
         for (int i = 0; i < days; i++) {
             LocalDate current = start.plusDays(i);
-            result = result.plus(workHours.asDurationOn(current, resourcesPerDay));
+            result = result.plus(calendar.asDurationOn(current, resourcesPerDay));
             if (result.compareTo(maximum) >= 0) {
                 return maximum;
             }

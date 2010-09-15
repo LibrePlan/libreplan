@@ -29,7 +29,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.AvailabilityCalculator;
@@ -85,16 +85,16 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public IWorkHours getResourcesWorkHoursPerDay() {
-            return CombinedWorkHours.maxOf(resourcesWorkHours());
+        public ICalendar getResourcesCalendar() {
+            return CombinedWorkHours.maxOf(resourcesCalendar());
         }
 
-        private List<IWorkHours> resourcesWorkHours() {
-            List<IWorkHours> workHours = new ArrayList<IWorkHours>();
+        private List<ICalendar> resourcesCalendar() {
+            List<ICalendar> calendar = new ArrayList<ICalendar>();
             for (Resource each : getResources()) {
-                workHours.add(workHoursFor(each));
+                calendar.add(calendarFor(each));
             }
-            return workHours;
+            return calendar;
         }
 
     }
@@ -140,8 +140,8 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public IWorkHours getResourcesWorkHoursPerDay() {
-            return workHoursFor(getAssociatedResource());
+        public ICalendar getResourcesCalendar() {
+            return calendarFor(getAssociatedResource());
         }
 
     }
@@ -183,7 +183,7 @@ public abstract class ResourcesPerDayModification extends
         return result;
     }
 
-    protected static IWorkHours workHoursFor(Resource associatedResource) {
+    protected static ICalendar calendarFor(Resource associatedResource) {
         ResourceCalendar calendar = associatedResource.getCalendar();
         return calendar != null ? calendar : SameWorkHoursEveryDay
                 .getDefaultWorkingDay();
@@ -203,7 +203,7 @@ public abstract class ResourcesPerDayModification extends
         return goal;
     }
 
-    public abstract IWorkHours getResourcesWorkHoursPerDay();
+    public abstract ICalendar getResourcesCalendar();
 
     public abstract void applyAllocationOnAllTaskLength();
 

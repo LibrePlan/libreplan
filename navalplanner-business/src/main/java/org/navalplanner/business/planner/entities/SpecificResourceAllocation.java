@@ -38,7 +38,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -198,8 +198,8 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    protected IWorkHours getWorkHoursGivenTaskHours(IWorkHours taskWorkHours) {
-        return CombinedWorkHours.minOf(taskWorkHours, getResource()
+    protected ICalendar getCalendarGivenTaskCalendar(ICalendar taskCalendar) {
+        return CombinedWorkHours.minOf(taskCalendar, getResource()
                 .getCalendar());
     }
 
