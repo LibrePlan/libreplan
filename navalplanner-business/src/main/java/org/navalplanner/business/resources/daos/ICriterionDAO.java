@@ -26,7 +26,6 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Contract for {@link CriterionDAO} <br />
@@ -49,8 +48,9 @@ public interface ICriterionDAO extends IIntegrationEntityDAO<Criterion> {
 
     List<Criterion> findByType(ICriterionType<?> type);
 
-    @Transactional(readOnly = true)
     List<Criterion> getAll();
+
+    List<Criterion> getAllSorted();
 
     boolean thereIsOtherWithSameNameAndType(Criterion criterion);
 

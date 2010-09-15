@@ -23,6 +23,7 @@ package org.navalplanner.web.resources.search;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,16 +68,18 @@ public class ResourceSearchModel implements IResourceSearchModel {
     public Map<CriterionType, Set<Criterion>> getCriterions() {
         HashMap<CriterionType, Set<Criterion>> result = new HashMap<CriterionType, Set<Criterion>>();
 
-        List<Criterion> criterions = criterionDAO.getAll();
+        List<Criterion> criterions = criterionDAO.getAllSorted();
         for (Criterion criterion : criterions) {
+
             CriterionType key = criterion.getType();
-            Set<Criterion> values = (!result.containsKey(key)) ?
-                    new HashSet<Criterion>() : (Set<Criterion>) result.get(key);
+            Set<Criterion> values = (!result.containsKey(key)) ? new LinkedHashSet<Criterion>()
+                    : (Set<Criterion>) result.get(key);
             values.add(criterion);
             result.put(key, values);
         }
         return result;
     }
+
 
     @Override
     @Transactional(readOnly = true)

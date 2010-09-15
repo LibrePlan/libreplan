@@ -27,6 +27,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -160,6 +161,12 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion>
 
     public List<Criterion> getAll() {
         return list(Criterion.class);
+    }
+
+    public List<Criterion> getAllSorted() {
+        Criteria c = getSession().createCriteria(Criterion.class);
+        c.addOrder(Order.asc("name"));
+        return (List<Criterion>) c.list();
     }
 
 }
