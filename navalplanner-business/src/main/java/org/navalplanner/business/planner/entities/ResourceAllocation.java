@@ -47,7 +47,6 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.IWorkHours;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
-import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
@@ -755,39 +754,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private IWorkHours getTaskWorkHours() {
-        return new IWorkHours() {
-
-            @Override
-            public EffortDuration getCapacityDurationAt(LocalDate date) {
-                return getSubyacent().getCapacityDurationAt(date);
-            }
-
-            private IWorkHours getSubyacent() {
-                if (getTaskCalendar() == null) {
-                    return SameWorkHoursEveryDay.getDefaultWorkingDay();
-                } else {
-                    return getTaskCalendar();
-                }
-            }
-
-            @Override
-            public EffortDuration asDurationOn(LocalDate day,
-                    ResourcesPerDay amount) {
-                return getSubyacent().asDurationOn(day, amount);
-            }
-
-            @Override
-            public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
-                    ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
-                return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(this,
-                        availability, resourcesPerDay, durationToAllocate);
-            }
-
-            @Override
-            public AvailabilityTimeLine getAvailability() {
-                return getSubyacent().getAvailability();
-            }
-        };
+        if (getTaskCalendar() == null) {
+            return SameWorkHoursEveryDay.getDefaultWorkingDay();
+        } else {
+            return getTaskCalendar();
+        }
     }
 
     protected abstract IWorkHours getWorkHoursGivenTaskHours(
