@@ -66,9 +66,9 @@ public class ResourceCalendarTest {
     public void testGetWorkableHours() {
         ResourceCalendar calendar = createBasicResourceCalendar();
 
-        assertThat(calendar.getCapacityDurationAt(PAST),
+        assertThat(calendar.getCapacityOn(PAST),
                 equalTo(EffortDuration.zero()));
-        assertThat(calendar.getCapacityDurationAt(FUTURE),
+        assertThat(calendar.getCapacityOn(FUTURE),
                 equalTo(EffortDuration.hours(8)));
     }
 

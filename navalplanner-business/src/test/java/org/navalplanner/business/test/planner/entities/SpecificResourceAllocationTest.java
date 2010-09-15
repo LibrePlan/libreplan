@@ -78,7 +78,7 @@ public class SpecificResourceAllocationTest {
 
     private void givenResourceCalendarAlwaysReturning(final int hours) {
         this.calendar = createNiceMock(ResourceCalendar.class);
-        expect(this.calendar.getCapacityDurationAt(isA(LocalDate.class)))
+        expect(this.calendar.getCapacityOn(isA(LocalDate.class)))
                 .andReturn(EffortDuration.hours(hours)).anyTimes();
         expect(
                 this.calendar.asDurationOn(isA(LocalDate.class),
@@ -115,7 +115,7 @@ public class SpecificResourceAllocationTest {
 
     private void givenResourceCalendar(final int defaultAnswer, final Map<LocalDate, Integer> answersForDates){
         this.calendar = createNiceMock(ResourceCalendar.class);
-        expect(this.calendar.getCapacityDurationAt(isA(LocalDate.class)))
+        expect(this.calendar.getCapacityOn(isA(LocalDate.class)))
                 .andAnswer(new IAnswer<EffortDuration>() {
 
                     @Override

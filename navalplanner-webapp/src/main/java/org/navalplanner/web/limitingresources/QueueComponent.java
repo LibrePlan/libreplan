@@ -336,7 +336,7 @@ public class QueueComponent extends XulElement implements
 
         int workableHours = queueElement.getLimitingResourceQueue()
                 .getResource().getCalendar()
-                .getCapacityDurationAt(queueElement.getEndDate())
+                .getCapacityOn(queueElement.getEndDate())
                 .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)
@@ -367,7 +367,7 @@ public class QueueComponent extends XulElement implements
 
         int workableHours = queueElement.getLimitingResourceQueue()
                 .getResource().getCalendar()
-                .getCapacityDurationAt(queueElement.getEndDate())
+                .getCapacityOn(queueElement.getEndDate())
                 .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)

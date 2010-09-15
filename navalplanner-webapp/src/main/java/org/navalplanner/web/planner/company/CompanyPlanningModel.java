@@ -852,9 +852,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     BaseCalendar calendar = resource.getCalendar();
 
                     EffortDuration workableTime = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getCapacityDurationAt(day);
+                            .getDefaultWorkingDay().getCapacityOn(day);
                     if (calendar != null) {
-                        workableTime = calendar.getCapacityDurationAt(day);
+                        workableTime = calendar.getCapacityOn(day);
                     }
 
                     EffortDuration assignedDuration = durationsGrouped.get(day)
@@ -896,7 +896,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                         Resource resource, EffortDuration assignedDuration) {
                     ICalendar calendar = resource.getCalendarOrDefault();
                     EffortDuration workableDuration = calendar
-                            .getCapacityDurationAt(day);
+                            .getCapacityOn(day);
                     if (assignedDuration.compareTo(workableDuration) > 0) {
                         return assignedDuration.minus(workableDuration);
                     }

@@ -887,7 +887,7 @@ public abstract class Resource extends IntegrationEntity {
         for (int i = 0; i < days; i++) {
             LocalDate current = start.plusDays(i);
             EffortDuration capacityCurrent = calendar
-                    .getCapacityDurationAt(current);
+                    .getCapacityOn(current);
             if (capacityCurrent != null
                     && (criterionToSatisfy == null || satisfiesCriterionAt(
                             criterionToSatisfy, current))) {

@@ -634,7 +634,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 AvailabilityTimeLine availability) {
             if (availability.isValid(day)) {
                 EffortDuration capacityAtDay = getAllocationCalendar()
-                        .getCapacityDurationAt(day);
+                        .getCapacityOn(day);
                 return new Share(-capacityAtDay.getSeconds());
             } else {
                 return new Share(Integer.MAX_VALUE);

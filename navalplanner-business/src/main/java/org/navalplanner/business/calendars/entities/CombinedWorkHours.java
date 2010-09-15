@@ -72,12 +72,12 @@ public abstract class CombinedWorkHours implements ICalendar {
     }
 
     @Override
-    public EffortDuration getCapacityDurationAt(LocalDate date) {
+    public EffortDuration getCapacityOn(LocalDate date) {
         EffortDuration current = null;
         for (ICalendar workHour : calendars) {
-            current = current == null ? workHour.getCapacityDurationAt(date)
+            current = current == null ? workHour.getCapacityOn(date)
                     : updateCapacity(current,
-                            workHour.getCapacityDurationAt(date));
+                            workHour.getCapacityOn(date));
         }
         return current;
     }

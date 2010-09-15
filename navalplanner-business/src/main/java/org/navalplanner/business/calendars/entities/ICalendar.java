@@ -44,7 +44,7 @@ public interface ICalendar {
      *            the date at which the capacity is calculated
      * @return the capacity at which the resource can work
      */
-    public EffortDuration getCapacityDurationAt(LocalDate date);
+    public EffortDuration getCapacityOn(LocalDate date);
 
     public AvailabilityTimeLine getAvailability();
 

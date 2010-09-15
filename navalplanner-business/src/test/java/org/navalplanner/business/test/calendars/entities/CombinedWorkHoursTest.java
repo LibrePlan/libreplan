@@ -58,14 +58,14 @@ public class CombinedWorkHoursTest {
     public void returnsTheMinOfCalendars() {
         ICalendar minOf = CombinedWorkHours
                 .minOf(hours(4), hours(2), hours(7));
-        EffortDuration duration = minOf.getCapacityDurationAt(new LocalDate(
+        EffortDuration duration = minOf.getCapacityOn(new LocalDate(
                 2000, 3, 3));
         assertThat(duration, equalTo(EffortDuration.hours(2)));
     }
 
     private ICalendar hours(int hours) {
         ICalendar result = createNiceMock(ICalendar.class);
-        expect(result.getCapacityDurationAt(isA(LocalDate.class))).andReturn(
+        expect(result.getCapacityOn(isA(LocalDate.class))).andReturn(
                 EffortDuration.hours(hours));
         replay(result);
         return result;

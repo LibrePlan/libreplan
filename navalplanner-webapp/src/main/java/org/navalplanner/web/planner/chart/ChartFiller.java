@@ -104,7 +104,7 @@ public abstract class ChartFiller implements IChartFiller {
 
     protected static EffortDuration calendarCapacityFor(Resource resource,
             LocalDate day) {
-        return resource.getCalendarOrDefault().getCapacityDurationAt(day);
+        return resource.getCalendarOrDefault().getCapacityOn(day);
     }
 
     protected abstract class GraphicSpecificationCreator implements

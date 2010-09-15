@@ -287,7 +287,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return null;
     }
 
-    public EffortDuration getCapacityDurationAt(LocalDate date) {
+    public EffortDuration getCapacityOn(LocalDate date) {
         return getWorkableTimeAt(date);
     }
 
@@ -382,7 +382,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         EffortDuration result = zero();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            result = result.plus(getCapacityDurationAt(current));
+            result = result.plus(getCapacityOn(current));
             init = init.plusDays(1);
         }
         return result;
@@ -525,7 +525,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             }
             return DayType.ANCESTOR_EXCEPTION;
         }
-        if (getCapacityDurationAt(date).isZero()) {
+        if (getCapacityOn(date).isZero()) {
             return DayType.ZERO_HOURS;
         }
         return DayType.NORMAL;
@@ -728,7 +728,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         Set<LocalDate> result = new HashSet<LocalDate>();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            if (getCapacityDurationAt(current).isZero()) {
+            if (getCapacityOn(current).isZero()) {
                 result.add(current);
             }
         }

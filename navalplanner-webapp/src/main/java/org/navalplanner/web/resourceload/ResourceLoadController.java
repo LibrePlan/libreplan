@@ -698,7 +698,7 @@ public class ResourceLoadController implements Composer {
                     EffortDuration assignedDuration = resourceWithDuration
                             .getValue();
                     EffortDuration resourceCapacity = resource
-                            .getCalendarOrDefault().getCapacityDurationAt(day);
+                            .getCalendarOrDefault().getCapacityOn(day);
                     result = result
                             .plus(min(assignedDuration, resourceCapacity));
                 }
@@ -720,7 +720,7 @@ public class ResourceLoadController implements Composer {
                     EffortDuration assignedDuration = resourceWithDuration
                             .getValue();
                     EffortDuration resourceCapacity = resource
-                            .getCalendarOrDefault().getCapacityDurationAt(day);
+                            .getCalendarOrDefault().getCapacityOn(day);
                     EffortDuration overloadIncrement = assignedDuration
                             .minus(min(resourceCapacity, assignedDuration));
                     result = result.plus(overloadIncrement);

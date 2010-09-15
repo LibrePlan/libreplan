@@ -127,7 +127,7 @@ public class Gap implements Comparable<Gap> {
 
         final ResourceCalendar calendar = resource.getCalendar();
 
-        int capacityRounded = calendar.getCapacityDurationAt(startDate)
+        int capacityRounded = calendar.getCapacityOn(startDate)
                 .roundToHours();
         if (startDate.equals(endDate)) {
             return capacityRounded - Math.max(startHour, endHour);
@@ -176,7 +176,7 @@ public class Gap implements Comparable<Gap> {
 
     private int getHoursAtDay(LocalDate day, BaseCalendar calendar,
             DateAndHour realStart, boolean isFirst, final boolean isLast) {
-        final int capacity = calendar.getCapacityDurationAt(day).roundToHours();
+        final int capacity = calendar.getCapacityOn(day).roundToHours();
         if (isLast && isFirst) {
             return Math.min(endTime.getHour() - realStart.getHour(),
                     capacity);

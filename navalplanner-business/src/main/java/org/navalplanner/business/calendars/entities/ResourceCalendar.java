@@ -66,20 +66,20 @@ public class ResourceCalendar extends BaseCalendar {
     }
 
     public Integer getCapacity(LocalDate from, LocalDate to) {
-        EffortDuration result = getCapacityDurationAt(to);
+        EffortDuration result = getCapacityOn(to);
         for (LocalDate date = from; date.isBefore(to);) {
-            result = result.plus(getCapacityDurationAt(date));
+            result = result.plus(getCapacityOn(date));
             date = date.plusDays(1);
         }
         return result.roundToHours();
     }
 
     @Override
-    public EffortDuration getCapacityDurationAt(LocalDate date) {
+    public EffortDuration getCapacityOn(LocalDate date) {
         if (!isActive(date)) {
             return EffortDuration.zero();
         }
-        return multiplyByCapacity(super.getCapacityDurationAt(date));
+        return multiplyByCapacity(super.getCapacityOn(date));
     }
 
     protected Integer multiplyByCapacity(Integer duration) {

@@ -42,13 +42,13 @@ public class SameWorkHoursEveryDay implements ICalendar {
     }
 
     @Override
-    public EffortDuration getCapacityDurationAt(LocalDate date) {
+    public EffortDuration getCapacityOn(LocalDate date) {
         return EffortDuration.hours(hours);
     }
 
     @Override
     public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount) {
-        return amount.asDurationGivenWorkingDayOf(getCapacityDurationAt(day));
+        return amount.asDurationGivenWorkingDayOf(getCapacityOn(day));
     }
 
     @Override
