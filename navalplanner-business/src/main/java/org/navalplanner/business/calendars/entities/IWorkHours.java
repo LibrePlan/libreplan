@@ -48,6 +48,6 @@ public interface IWorkHours {
 
     public AvailabilityTimeLine getAvailability();
 
-    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate);
+    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate);
 }

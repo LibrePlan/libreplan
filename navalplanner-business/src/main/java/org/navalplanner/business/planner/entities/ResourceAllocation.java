@@ -235,8 +235,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     AvailabilityTimeLine availability = resourcesPerDayModification
                             .getAvailability();
                     availability.invalidUntil(start);
-                    return workHoursPerDay.thereAreHoursOn(availability,
-                            resourcesPerDay, effortToAllocate.roundToHours());
+                    return workHoursPerDay.thereAreCapacityFor(availability,
+                            resourcesPerDay, effortToAllocate);
                 }
 
                 private CombinedWorkHours getWorkHoursPerDay(
@@ -777,11 +777,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
 
             @Override
-            public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-                    ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-                return ThereAreHoursOnWorkHoursCalculator.thereAreHoursOn(this,
-                        availability, resourcesPerDay,
-                        hoursToAllocate);
+            public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+                    ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
+                return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(this,
+                        availability, resourcesPerDay, durationToAllocate);
             }
 
             @Override

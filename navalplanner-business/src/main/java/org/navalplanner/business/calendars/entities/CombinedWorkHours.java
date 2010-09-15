@@ -111,10 +111,10 @@ public abstract class CombinedWorkHours implements IWorkHours {
             EffortDuration each);
 
     @Override
-    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        return ThereAreHoursOnWorkHoursCalculator.thereAreHoursOn(this,
-                availability, resourcesPerDay, hoursToAllocate);
+    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
+        return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(this,
+                availability, resourcesPerDay, durationToAllocate);
     }
 }
 

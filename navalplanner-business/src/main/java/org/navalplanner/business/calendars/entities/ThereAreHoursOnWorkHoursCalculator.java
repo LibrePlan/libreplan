@@ -19,7 +19,6 @@
  */
 package org.navalplanner.business.calendars.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.List;
@@ -44,10 +43,10 @@ public class ThereAreHoursOnWorkHoursCalculator {
     /**
      * Caculates if there are enough hours
      */
-    public static boolean thereAreHoursOn(IWorkHours workHours,
+    public static boolean thereIsAvailableCapacityFor(IWorkHours workHours,
             AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        if (hoursToAllocate == 0) {
+            ResourcesPerDay resourcesPerDay, EffortDuration effortToAllocate) {
+        if (effortToAllocate.isZero()) {
             return true;
         }
         if (resourcesPerDay.isZero()) {
@@ -66,7 +65,8 @@ public class ThereAreHoursOnWorkHoursCalculator {
                 || first.getStart().equals(StartOfTime.create());
 
         return isOpenEnded
-                || thereAreHoursOn(workHours, hoursToAllocate, resourcesPerDay,
+                || thereAreCapacityOn(workHours, effortToAllocate,
+                        resourcesPerDay,
                         validPeriods);
 
     }
@@ -75,38 +75,37 @@ public class ThereAreHoursOnWorkHoursCalculator {
         return validPeriods.get(validPeriods.size() - 1);
     }
 
-    private static boolean thereAreHoursOn(IWorkHours workHours,
-            int hoursToAllocate,
+    private static boolean thereAreCapacityOn(IWorkHours workHours,
+            EffortDuration effortToAllocate,
             ResourcesPerDay resourcesPerDay, List<Interval> validPeriods) {
-        int sum = 0;
+        EffortDuration sum = zero();
         for (Interval each : validPeriods) {
             FixedPoint start = (FixedPoint) each.getStart();
             FixedPoint end = (FixedPoint) each.getEnd();
-            int pending = hoursToAllocate - sum;
-            sum += sumHoursUntil(workHours, pending, resourcesPerDay, start
-                    .getDate(), end
-                    .getDate());
-            if (sum >= hoursToAllocate) {
+            EffortDuration pending = effortToAllocate.minus(sum);
+            sum = sum.plus(sumDurationUntil(workHours, pending,
+                    resourcesPerDay, start.getDate(), end.getDate()));
+            if (sum.compareTo(effortToAllocate) >= 0) {
                 return true;
             }
         }
         return false;
     }
 
-    private static int sumHoursUntil(IWorkHours workHours, int maximum,
+    private static EffortDuration sumDurationUntil(IWorkHours workHours,
+            EffortDuration maximum,
             ResourcesPerDay resourcesPerDay,
             LocalDate start, LocalDate end) {
         EffortDuration result = zero();
-        EffortDuration maximumDuration = hours(maximum);
         int days = org.joda.time.Days.daysBetween(start, end).getDays();
         for (int i = 0; i < days; i++) {
             LocalDate current = start.plusDays(i);
             result = result.plus(workHours.asDurationOn(current, resourcesPerDay));
-            if (result.compareTo(maximumDuration) >= 0) {
-                return result.getHours();
+            if (result.compareTo(maximum) >= 0) {
+                return maximum;
             }
         }
-        return result.getHours();
+        return result;
     }
 
 }

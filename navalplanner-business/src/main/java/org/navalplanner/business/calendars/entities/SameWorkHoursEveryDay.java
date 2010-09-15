@@ -52,8 +52,8 @@ public class SameWorkHoursEveryDay implements IWorkHours {
     }
 
     @Override
-    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
+    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
         return true;
     }
 
