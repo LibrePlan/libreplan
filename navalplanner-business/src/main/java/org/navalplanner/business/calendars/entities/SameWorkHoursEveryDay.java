@@ -42,12 +42,6 @@ public class SameWorkHoursEveryDay implements IWorkHours {
     }
 
     @Override
-    @Deprecated
-    public Integer getCapacityAt(LocalDate date) {
-        return hours;
-    }
-
-    @Override
     public EffortDuration getCapacityDurationAt(LocalDate date) {
         return EffortDuration.hours(hours);
     }

@@ -759,10 +759,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private IWorkHours getTaskWorkHours() {
         return new IWorkHours() {
-            @Override
-            public Integer getCapacityAt(LocalDate day) {
-                return getSubyacent().getCapacityAt(day);
-            }
 
             @Override
             public EffortDuration getCapacityDurationAt(LocalDate date) {

@@ -65,7 +65,6 @@ public class CombinedWorkHoursTest {
 
     private IWorkHours hours(int hours) {
         IWorkHours result = createNiceMock(IWorkHours.class);
-        expect(result.getCapacityAt(isA(LocalDate.class))).andReturn(hours);
         expect(result.getCapacityDurationAt(isA(LocalDate.class))).andReturn(
                 EffortDuration.hours(hours));
         replay(result);

@@ -70,11 +70,6 @@ public abstract class CombinedWorkHours implements IWorkHours {
     }
 
     @Override
-    public Integer getCapacityAt(LocalDate date) {
-        return getCapacityDurationAt(date).roundToHours();
-    }
-
-    @Override
     public EffortDuration getCapacityDurationAt(LocalDate date) {
         EffortDuration current = null;
         for (IWorkHours workHour : workHours) {

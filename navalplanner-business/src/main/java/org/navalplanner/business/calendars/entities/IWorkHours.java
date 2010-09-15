@@ -36,18 +36,6 @@ public interface IWorkHours {
     public Integer toHours(LocalDate day, ResourcesPerDay amount);
 
     /**
-     * Calculates the capacity at a given date. It means all the hours that
-     * could be worked without having overtime
-     *
-     * @param date
-     *            the date at which the capacity is calculated
-     * @return the capacity at which the resource can work
-     *
-     */
-    @Deprecated
-    public Integer getCapacityAt(LocalDate date);
-
-    /**
      * Calculates the capacity duration at a given date. It means all the time
      * that could be worked without having overtime
      *

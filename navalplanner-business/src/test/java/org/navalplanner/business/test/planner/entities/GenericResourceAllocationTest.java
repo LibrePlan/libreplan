@@ -230,8 +230,6 @@ public class GenericResourceAllocationTest {
     private <T extends BaseCalendar> T createCalendar(Class<T> klass,
             final int hoursPerDay) {
         BaseCalendar baseCalendar = createNiceMock(klass);
-        expect(baseCalendar.getCapacityAt(isA(LocalDate.class))).andReturn(
-                hoursPerDay).anyTimes();
         expect(baseCalendar.getCapacityDurationAt(isA(LocalDate.class)))
                 .andReturn(hours(hoursPerDay)).anyTimes();
         expect(baseCalendar.isActive(isA(LocalDate.class))).andReturn(true)
@@ -423,7 +421,7 @@ public class GenericResourceAllocationTest {
     public void allocatingSeveralResourcesPerDayHavingJustOneResourceProducesOvertime() {
         LocalDate start = new LocalDate(2006, 10, 5);
         final Integer standardHoursPerDay = SameWorkHoursEveryDay
-                .getDefaultWorkingDay().getCapacityAt(start);
+                .getDefaultWorkingDay().getCapacityDurationAt(start).getHours();
         final int TASK_DURATION_DAYS = 4;
         givenBaseCalendarWithoutExceptions(standardHoursPerDay);
         givenTaskWithStartAndEnd(toInterval(start, Period
@@ -464,7 +462,7 @@ public class GenericResourceAllocationTest {
         LocalDate start = new LocalDate(2006, 10, 5);
         final int TASK_DURATION_DAYS = 1;
         final Integer defaultWorkableHours = SameWorkHoursEveryDay
-                .getDefaultWorkingDay().getCapacityAt(start);
+                .getDefaultWorkingDay().getCapacityDurationAt(start).getHours();
         givenBaseCalendarWithoutExceptions(defaultWorkableHours);
         givenTaskWithStartAndEnd(toInterval(start, Period
                 .days(TASK_DURATION_DAYS)));
@@ -571,8 +569,6 @@ public class GenericResourceAllocationTest {
 
     private ResourceCalendar createCalendar(int capacity, int unit) {
         ResourceCalendar calendar = createNiceMock(ResourceCalendar.class);
-        expect(calendar.getCapacityAt(isA(LocalDate.class))).andReturn(
-                capacity * unit).anyTimes();
         expect(calendar.toHours(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andReturn(unit).anyTimes();
         expect(calendar.isActive(isA(LocalDate.class))).andReturn(true)
