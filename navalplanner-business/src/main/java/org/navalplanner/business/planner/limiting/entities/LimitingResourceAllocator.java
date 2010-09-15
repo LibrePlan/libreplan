@@ -20,12 +20,13 @@
 
 package org.navalplanner.business.planner.limiting.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -35,7 +36,6 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.ResourcesPerDay;
@@ -301,7 +301,7 @@ public class LimitingResourceAllocator {
             if (hoursTaken == current.getHours()) {
                 listIterator.remove();
             } else {
-                listIterator.set(current.withHours(hoursTaken));
+                listIterator.set(current.withDuration(hours(hoursTaken)));
             }
         }
     }

@@ -218,8 +218,9 @@ public class GenericDayAssignment extends DayAssignment {
         return parentState.getScenario();
     }
 
-    public DayAssignment withHours(int newHours) {
-        GenericDayAssignment result = create(getDay(), newHours, getResource());
+    public DayAssignment withDuration(EffortDuration newDuration) {
+        GenericDayAssignment result = create(getDay(), newDuration,
+                getResource());
         if (container != null) {
             result.parentState.setParent(container);
         } else if (this.getGenericResourceAllocation() != null) {

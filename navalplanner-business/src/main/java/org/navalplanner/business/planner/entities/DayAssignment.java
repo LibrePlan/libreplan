@@ -258,6 +258,6 @@ public abstract class DayAssignment extends BaseEntity {
      */
     public abstract Scenario getScenario();
 
-    public abstract DayAssignment withHours(int newHours);
+    public abstract DayAssignment withDuration(EffortDuration newDuration);
 
 }

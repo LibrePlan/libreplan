@@ -205,8 +205,9 @@ public class SpecificDayAssignment extends DayAssignment {
     }
 
     @Override
-    public DayAssignment withHours(int newHours) {
-        SpecificDayAssignment result = create(getDay(), newHours, getResource());
+    public DayAssignment withDuration(EffortDuration newDuration) {
+        SpecificDayAssignment result = create(getDay(), newDuration,
+                getResource());
         if (container != null) {
             result.parentState.setParent(container);
         } else if (this.getSpecificResourceAllocation() != null) {

@@ -175,7 +175,7 @@ public class DerivedDayAssignment extends DayAssignment {
     }
 
     @Override
-    public DayAssignment withHours(int newHours) {
+    public DayAssignment withDuration(EffortDuration newDuration) {
         throw new UnsupportedOperationException();
     }
 
