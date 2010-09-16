@@ -706,7 +706,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
     protected void resetAssignmentsTo(List<T> assignments) {
-        removingAssignments((List<? extends DayAssignment>) removeConsolidated(getAssignments()));
+        removingAssignments(removeConsolidated(getAssignments()));
         addingAssignments(assignments);
         updateOriginalTotalAssigment();
     }
