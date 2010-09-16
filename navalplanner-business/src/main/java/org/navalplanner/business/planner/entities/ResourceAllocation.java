@@ -21,6 +21,7 @@
 package org.navalplanner.business.planner.entities;
 
 import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.seconds;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
@@ -64,6 +65,7 @@ import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.TaskDate;
 
 /**
  * Resources are allocated to planner tasks.
@@ -230,10 +232,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 protected void setNewDataForAllocation(
-                        ResourceAllocation<?> allocation,
+                        ResourceAllocation<?> allocation, TaskDate end,
                         ResourcesPerDay resourcesPerDay,
                         List<DayAssignment> dayAssignments) {
-                    allocation.resetGenericAssignmentsTo(dayAssignments);
+                    allocation.resetGenericAssignmentsTo(dayAssignments, end);
                     allocation.updateResourcesPerDay();
                 }
 
@@ -264,7 +266,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     allocation.markAsUnsatisfied();
                 }
             };
-            return allocator.untilAllocating(hours(hoursToAllocate));
+            TaskDate result = allocator.untilAllocating(hours(hoursToAllocate));
+            return result.getDate().plusDays(1);
         }
 
         public void allocateOnTaskLength() {
@@ -705,18 +708,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
     protected void resetAssignmentsTo(List<T> assignments) {
+        resetAssignmentsTo(assignments, null);
+    }
+
+    protected void resetAssignmentsTo(List<T> assignments,
+            TaskDate endDateWithinADay) {
         removingAssignments(withoutConsolidated(getAssignments()));
         addingAssignments(assignments);
         updateOriginalTotalAssigment();
+        getDayAssignmentsState().setEndDateWithinADay(endDateWithinADay);
     }
 
     protected void resetAssigmentsForInterval(LocalDate startInclusive,
             LocalDate endExclusive, List<T> assignmentsCreated) {
+        boolean finishedByEnd = isAlreadyFinishedBy(endExclusive);
         removingAssignments(withoutConsolidated(getAssignments(startInclusive,
                 endExclusive)));
         addingAssignments(assignmentsCreated);
         updateOriginalTotalAssigment();
         updateResourcesPerDay();
+        if (finishedByEnd) {
+            getDayAssignmentsState().setEndDateWithinADay(null);
+        }
     }
 
     private static <T extends DayAssignment> List<T> withoutConsolidated(
@@ -765,8 +778,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         EffortDuration sumWorkableEffort = zero();
         final ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay.amount(1);
         for (Entry<LocalDate, List<T>> entry : byDay.entrySet()) {
-            sumWorkableEffort = sumWorkableEffort.plus(getAllocationCalendar()
-                    .asDurationOn(entry.getKey(), ONE_RESOURCE_PER_DAY));
+            LocalDate day = entry.getKey();
+            EffortDuration incrementWorkable = getAllocationCalendar()
+                    .asDurationOn(entry.getKey(), ONE_RESOURCE_PER_DAY);
+            TaskDate endDateWithinADay = getDayAssignmentsState().getEndDateWithinADay();
+            if (endDateWithinADay != null
+                    && day.equals(endDateWithinADay.getDate())) {
+                incrementWorkable = min(incrementWorkable,
+                        endDateWithinADay.getEffortDuration());
+            }
+            sumWorkableEffort = sumWorkableEffort.plus(incrementWorkable);
             sumTotalEffort = sumTotalEffort.plus(getAssignedDuration(entry
                     .getValue()));
         }
@@ -791,8 +812,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract ICalendar getCalendarGivenTaskCalendar(
             ICalendar taskCalendar);
 
-    private void resetGenericAssignmentsTo(List<DayAssignment> assignments) {
-        resetAssignmentsTo(cast(assignments));
+    private void resetGenericAssignmentsTo(List<DayAssignment> assignments,
+            TaskDate end) {
+        resetAssignmentsTo(cast(assignments), end);
     }
 
     private List<T> cast(List<DayAssignment> value) {
@@ -847,6 +869,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
             return dayAssignmentsOrdered;
         }
+
+        /**
+         * It can be null. It allows to mark that the allocation is finished in
+         * a point within a day instead of taking the whole day
+         */
+        abstract TaskDate getEndDateWithinADay();
+
+        /**
+         * Set a new endDateWithinADay.
+         *
+         * @param endDateWithinADay
+         *            it can be <code>null</code>
+         * @see getEndDateWithinADay
+         */
+        public abstract void setEndDateWithinADay(TaskDate endDateWithinADay);
 
         protected abstract Collection<T> getUnorderedAssignments();
 
@@ -916,6 +953,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             DayAssignmentsState {
 
         @Override
+        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
+            modificationsNotAllowed();
+        }
+
+        @Override
         protected final void removeAssignments(
                 List<? extends DayAssignment> assignments) {
             modificationsNotAllowed();
@@ -953,10 +995,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         protected Collection<T> getUnorderedAssignments() {
-            Scenario currentScenario = Registry
-                    .getScenarioManager().getCurrent();
+            Scenario currentScenario = currentScenario();
             return getUnorderedAssignmentsForScenario(currentScenario);
         }
+
+        private Scenario currentScenario() {
+            return Registry.getScenarioManager().getCurrent();
+        }
+
+        TaskDate getEndDateWithinADay() {
+            return getEndDateWithinADay(currentScenario);
+        }
+
+        protected abstract TaskDate getEndDateWithinADay(Scenario scenario);
 
         protected abstract Collection<T> getUnorderedAssignmentsForScenario(
                 Scenario scenario);
@@ -1155,6 +1206,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final void mergeAssignments(ResourceAllocation<?> modifications) {
         getDayAssignmentsState().mergeAssignments(modifications);
+        getDayAssignmentsState().setEndDateWithinADay(
+                modifications.getDayAssignmentsState().getEndDateWithinADay());
     }
 
     public void detach() {

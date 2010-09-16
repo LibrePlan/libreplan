@@ -90,6 +90,26 @@ public class AllocationUntilFillingHoursTest {
     }
 
     @Test
+    public void theResourcesPerDayIsCalculatedCorrectlyIfTheLastDayHasFilledAllHours() {
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        ResourceAllocation.allocating(allocations).untilAllocating(32);
+        ResourceAllocation<?> allocation = allocations.get(0)
+                .getBeingModified();
+        assertThat(allocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
+    public void theResourcesPerDayIsCalculatedCorrectlyIfHasEndedInTheMiddleOfTheEnd() {
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        ResourceAllocation.allocating(allocations).untilAllocating(30);
+        ResourceAllocation<?> allocation = allocations.get(0)
+                .getBeingModified();
+        assertThat(allocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
     public void worksWellForSeveralSpecificAllocations() {
         givenSpecificAllocations(ResourcesPerDay.amount(1), ResourcesPerDay
                 .amount(1));

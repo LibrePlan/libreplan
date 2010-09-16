@@ -81,6 +81,14 @@
         -->
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
         <many-to-one name="scenario" />
+
+        <component name="endDateWithinADay" class="org.navalplanner.business.workingday.TaskDate">
+            <property name="date" column="endDate"
+                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="effortDuration" column="durationInLastDay"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        </component>
+
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="SPECIFIC_CONTAINER_ID" />
             <one-to-many class="SpecificDayAssignment"/>
@@ -101,6 +109,14 @@
         -->
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
         <many-to-one name="scenario" />
+
+        <component name="endDateWithinADay" class="org.navalplanner.business.workingday.TaskDate">
+            <property name="date" column="endDate"
+                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="effortDuration" column="durationInLastDay"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        </component>
+
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="GENERIC_CONTAINER_ID" />
             <one-to-many class="GenericDayAssignment"/>

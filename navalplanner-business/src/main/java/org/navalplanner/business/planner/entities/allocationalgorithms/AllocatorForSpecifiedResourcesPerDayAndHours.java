@@ -38,6 +38,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.TaskDate;
 
 public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 
@@ -60,22 +61,22 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
         }
     }
 
-    public LocalDate untilAllocating(EffortDuration effortToAllocate) {
+    public TaskDate untilAllocating(EffortDuration effortToAllocate) {
         LocalDate taskStart = LocalDate.fromDateFields(task.getStartDate());
         LocalDate start = (task.getFirstDayNotConsolidated().compareTo(
                 taskStart) >= 0) ? task.getFirstDayNotConsolidated()
                 : taskStart;
         int i = 0;
-        int maxDaysElapsed = 0;
+        TaskDate currentEnd = TaskDate.create(start, zero());
         for (EffortPerAllocation each : effortPerAllocation(start,
                 effortToAllocate)) {
-            int daysElapsedForCurrent = untilAllocating(start, each.allocation,
+            TaskDate endCandidate = untilAllocating(start, each.allocation,
                     each.duration);
-            maxDaysElapsed = Math.max(maxDaysElapsed, daysElapsedForCurrent);
+            currentEnd = TaskDate.max(currentEnd, endCandidate);
             i++;
         }
-        setAssignmentsForEachAllocation();
-        return start.plusDays(maxDaysElapsed);
+        setAssignmentsForEachAllocation(currentEnd);
+        return currentEnd;
     }
 
     private List<EffortPerAllocation> effortPerAllocation(LocalDate start,
@@ -84,21 +85,29 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
                 .calculateEffortsPerAllocation(start, toBeAssigned);
     }
 
-    private int untilAllocating(LocalDate start,
+    /**
+     *
+     * @param start
+     * @param resourcesPerDayModification
+     * @param effortRemaining
+     * @return the moment on which the allocation would be completed
+     */
+    private TaskDate untilAllocating(LocalDate start,
             ResourcesPerDayModification resourcesPerDayModification,
             EffortDuration effortRemaining) {
-        int day = 0;
-        while (effortRemaining.compareTo(zero()) > 0) {
-            LocalDate current = start.plusDays(day);
-            EffortDuration taken = assignForDay(resourcesPerDayModification,
+        EffortDuration taken = zero();
+        LocalDate lastDate = start;
+        for (LocalDate current = start; effortRemaining.compareTo(zero()) > 0; current = current
+                .plusDays(1)) {
+            lastDate = current;
+            taken = assignForDay(resourcesPerDayModification,
                     current, effortRemaining);
             effortRemaining = effortRemaining.minus(taken);
-            day++;
         }
-        return day;
+        return TaskDate.create(lastDate, taken);
     }
 
-    private void setAssignmentsForEachAllocation() {
+    private void setAssignmentsForEachAllocation(TaskDate end) {
         for (Entry<ResourcesPerDayModification, List<DayAssignment>> entry : resultAssignments
                 .entrySet()) {
             ResourceAllocation<?> allocation = entry.getKey()
@@ -106,12 +115,14 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             ResourcesPerDay resourcesPerDay = entry.getKey()
                     .getGoal();
             List<DayAssignment> value = entry.getValue();
-            setNewDataForAllocation(allocation, resourcesPerDay, value);
+            setNewDataForAllocation(allocation, end, resourcesPerDay,
+                    value);
         }
     }
 
     protected abstract void setNewDataForAllocation(
-            ResourceAllocation<?> allocation, ResourcesPerDay resourcesPerDay,
+            ResourceAllocation<?> allocation, TaskDate explicitEnd,
+            ResourcesPerDay resourcesPerDay,
             List<DayAssignment> dayAssignments);
 
     protected abstract List<DayAssignment> createAssignmentsAtDay(

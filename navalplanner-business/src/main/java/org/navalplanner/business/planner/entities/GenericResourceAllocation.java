@@ -50,6 +50,7 @@ import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.TaskDate;
 
 /**
  * Represents the relation between {@link Task} and a generic {@link Resource}.
@@ -315,12 +316,24 @@ public class GenericResourceAllocation extends
             return new ExplicitlySpecifiedScenarioState(
                     scenario);
         }
+
+        @Override
+        TaskDate getEndDateWithinADay() {
+            return container.getEndDateWithinADay();
+        }
+
+        @Override
+        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
+            container.setEndDateWithinADay(endDateWithinADay);
+        }
     }
 
     private class TransientState extends DayAssignmentsState {
         private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
 
         private final Set<GenericDayAssignment> genericDayAssignments;
+
+        private TaskDate endDateWithinADay;
 
         TransientState(Set<GenericDayAssignment> genericDayAssignments) {
             this.genericDayAssignments = genericDayAssignments;
@@ -366,6 +379,16 @@ public class GenericResourceAllocation extends
             result.resetTo(genericDayAssignments);
             return result;
         }
+
+        @Override
+        TaskDate getEndDateWithinADay() {
+            return endDateWithinADay;
+        }
+
+        @Override
+        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
+            this.endDateWithinADay = endDateWithinADay;
+        }
     }
 
     private Set<GenericDayAssignment> getUnorderedForScenario(
@@ -376,6 +399,15 @@ public class GenericResourceAllocation extends
             return new HashSet<GenericDayAssignment>();
         }
         return container.getDayAssignments();
+    }
+
+    private TaskDate getEndDataWithinADayFor(Scenario scenario) {
+        GenericDayAssignmentsContainer container = containersByScenario().get(
+                scenario);
+        if (container == null) {
+            return null;
+        }
+        return container.getEndDateWithinADay();
     }
 
     private class GenericDayAssignmentsNoExplicitlySpecifiedScenario extends
@@ -390,6 +422,11 @@ public class GenericResourceAllocation extends
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
             return new ExplicitlySpecifiedScenarioState(scenario);
+        }
+
+        @Override
+        protected TaskDate getEndDateWithinADay(Scenario scenario) {
+            return getEndDataWithinADayFor(scenario);
         }
     }
 
