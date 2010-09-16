@@ -110,20 +110,26 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
     private void setAssignmentsForEachAllocation(TaskDate end) {
         for (Entry<ResourcesPerDayModification, List<DayAssignment>> entry : resultAssignments
                 .entrySet()) {
-            ResourceAllocation<?> allocation = entry.getKey()
-                    .getBeingModified();
-            ResourcesPerDay resourcesPerDay = entry.getKey()
-                    .getGoal();
-            List<DayAssignment> value = entry.getValue();
-            setNewDataForAllocation(allocation, end, resourcesPerDay,
-                    value);
+            setNewDataForAllocation(entry, end);
         }
     }
 
-    protected abstract void setNewDataForAllocation(
-            ResourceAllocation<?> allocation, TaskDate explicitEnd,
-            ResourcesPerDay resourcesPerDay,
-            List<DayAssignment> dayAssignments);
+    private <T extends DayAssignment> void setNewDataForAllocation(
+            Entry<ResourcesPerDayModification, List<DayAssignment>> entry,
+            TaskDate end) {
+        @SuppressWarnings("unchecked")
+        ResourceAllocation<T> allocation = (ResourceAllocation<T>) entry
+                .getKey().getBeingModified();
+        ResourcesPerDay resourcesPerDay = entry.getKey().getGoal();
+        @SuppressWarnings("unchecked")
+        List<T> value = (List<T>) entry.getValue();
+        setNewDataForAllocation(allocation, end, resourcesPerDay,
+                value);
+    }
+
+    protected abstract <T extends DayAssignment> void setNewDataForAllocation(
+            ResourceAllocation<T> allocation, TaskDate explicitEnd,
+            ResourcesPerDay resourcesPerDay, List<T> dayAssignments);
 
     protected abstract List<DayAssignment> createAssignmentsAtDay(
             ResourcesPerDayModification allocation, LocalDate day,

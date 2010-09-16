@@ -231,11 +231,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
 
                 @Override
-                protected void setNewDataForAllocation(
-                        ResourceAllocation<?> allocation, TaskDate end,
-                        ResourcesPerDay resourcesPerDay,
-                        List<DayAssignment> dayAssignments) {
-                    allocation.resetGenericAssignmentsTo(dayAssignments, end);
+                protected <T extends DayAssignment> void setNewDataForAllocation(
+                        ResourceAllocation<T> allocation, TaskDate end,
+                        ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
+                    allocation.resetAssignmentsTo(dayAssignments, end);
                     allocation.updateResourcesPerDay();
                 }
 
@@ -811,19 +810,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected abstract ICalendar getCalendarGivenTaskCalendar(
             ICalendar taskCalendar);
-
-    private void resetGenericAssignmentsTo(List<DayAssignment> assignments,
-            TaskDate end) {
-        resetAssignmentsTo(cast(assignments), end);
-    }
-
-    private List<T> cast(List<DayAssignment> value) {
-        List<T> result = new ArrayList<T>();
-        for (DayAssignment dayAssignment : value) {
-            result.add(getDayAssignmentType().cast(dayAssignment));
-        }
-        return result;
-    }
 
     protected abstract Class<T> getDayAssignmentType();
 
