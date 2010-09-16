@@ -286,6 +286,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new HoursAllocationSpecified(hoursModifications);
     }
 
+    /**
+     * Needed for doing fluent interface calls:
+     * <ul>
+     * <li>
+     * {@link ResourceAllocation#allocatingHours(List)}.
+     * {@link HoursAllocationSpecified#allocateUntil(LocalDate)
+     * allocateUntil(LocalDate)}</li>
+     * <li>
+     * {@link ResourceAllocation#allocatingHours(List)}.
+     * {@link HoursAllocationSpecified#allocate() allocate()}</li>
+     * </li>
+     * </ul>
+     *
+     */
     public static class HoursAllocationSpecified {
 
         private final List<HoursModification> hoursModifications;
