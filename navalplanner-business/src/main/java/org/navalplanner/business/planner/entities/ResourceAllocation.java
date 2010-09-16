@@ -145,6 +145,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new AllocationsCurried(resourceAllocations);
     }
 
+    /**
+     * Needed for doing fluent interface calls:
+     * <ul>
+     * <li>
+     * {@link ResourceAllocation#allocating(List)}.
+     * {@link AllocationsCurried#untilAllocating(int) untiAllocating(int)}</li>
+     * <li> {@link ResourceAllocation#allocating(List)}.
+     * {@link AllocationsCurried#allocateOnTaskLength() allocateOnTaskLength}</li>
+     * <li>
+     * {@link ResourceAllocation#allocating(List)}.
+     * {@link AllocationsCurried#allocateUntil(LocalDate)
+     * allocateUntil(LocalDate)}</li>
+     * </ul>
+     *
+     */
     public static class AllocationsCurried {
 
         private final List<ResourcesPerDayModification> allocations;
