@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -706,30 +705,29 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
     protected void resetAssignmentsTo(List<T> assignments) {
-        removingAssignments(removeConsolidated(getAssignments()));
+        removingAssignments(withoutConsolidated(getAssignments()));
         addingAssignments(assignments);
         updateOriginalTotalAssigment();
     }
 
     protected void resetAssigmentsForInterval(LocalDate startInclusive,
             LocalDate endExclusive, List<T> assignmentsCreated) {
-        removingAssignments(removeConsolidated(getAssignments(startInclusive,
+        removingAssignments(withoutConsolidated(getAssignments(startInclusive,
                 endExclusive)));
         addingAssignments(assignmentsCreated);
         updateOriginalTotalAssigment();
         updateResourcesPerDay();
     }
 
-    private List<? extends DayAssignment> removeConsolidated(
-            List<? extends DayAssignment> assignments) {
-        for (Iterator<? extends DayAssignment> iterator = assignments
-                .iterator(); iterator.hasNext();) {
-            DayAssignment dayAssignment = (DayAssignment) iterator.next();
-            if (dayAssignment.isConsolidated()) {
-                iterator.remove();
+    private static <T extends DayAssignment> List<T> withoutConsolidated(
+            List<? extends T> assignments) {
+        List<T> result = new ArrayList<T>();
+        for (T each : assignments) {
+            if (!each.isConsolidated()) {
+                result.add(each);
             }
         }
-        return assignments;
+        return result;
     }
 
     protected final void addingAssignments(Collection<? extends T> assignments) {
