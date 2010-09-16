@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.workingday;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
@@ -31,7 +33,17 @@ import org.joda.time.LocalDate;
  * @author Óscar González Fernández
  *
  */
-public class TaskDate {
+public class TaskDate implements Comparable<TaskDate> {
+
+    public static TaskDate min(TaskDate... dates) {
+        Validate.noNullElements(dates);
+        return Collections.min(Arrays.asList(dates));
+    }
+
+    public static TaskDate max(TaskDate... dates) {
+        Validate.noNullElements(dates);
+        return Collections.max(Arrays.asList(dates));
+    }
 
     public static TaskDate create(LocalDate date, EffortDuration effortDuration) {
         return new TaskDate(date, effortDuration);
@@ -90,6 +102,15 @@ public class TaskDate {
 
     public DateTime toDateTimeAtStartOfDay() {
         return this.date.toDateTimeAtStartOfDay();
+    }
+
+    @Override
+    public int compareTo(TaskDate other) {
+        int result = date.compareTo(other.date);
+        if (result == 0) {
+            result = effortDuration.compareTo(other.effortDuration);
+        }
+        return result;
     }
 
 }

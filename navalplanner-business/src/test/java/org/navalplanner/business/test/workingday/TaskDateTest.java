@@ -82,4 +82,21 @@ public class TaskDateTest {
                 .toDateTimeAtStartOfDay();
         assertThat(dateTime, equalTo(today.toDateTimeAtStartOfDay()));
     }
+
+    @Test
+    public void implementsComparable() {
+        assertTrue(Comparable.class.isAssignableFrom(TaskDate.class));
+        assertTrue(TaskDate.create(today, halfHour).compareTo(
+                TaskDate.create(today, oneHour)) < 0);
+        assertTrue(TaskDate.create(today, oneHour).compareTo(
+                TaskDate.create(tomorrow, halfHour)) < 0);
+    }
+
+    @Test
+    public void hasMaxAndMinMethods() {
+        TaskDate a = TaskDate.create(today, halfHour);
+        TaskDate b = TaskDate.create(today, oneHour);
+        assertThat(TaskDate.min(a, b), equalTo(a));
+        assertThat(TaskDate.max(a, b), equalTo(b));
+    }
 }
