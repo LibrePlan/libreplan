@@ -140,9 +140,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         };
     }
 
-    public static AllocationsCurried allocating(
+    public static AllocationsSpecified allocating(
             List<ResourcesPerDayModification> resourceAllocations) {
-        return new AllocationsCurried(resourceAllocations);
+        return new AllocationsSpecified(resourceAllocations);
     }
 
     /**
@@ -150,23 +150,23 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * <ul>
      * <li>
      * {@link ResourceAllocation#allocating(List)}.
-     * {@link AllocationsCurried#untilAllocating(int) untiAllocating(int)}</li>
+     * {@link AllocationsSpecified#untilAllocating(int) untiAllocating(int)}</li>
      * <li> {@link ResourceAllocation#allocating(List)}.
-     * {@link AllocationsCurried#allocateOnTaskLength() allocateOnTaskLength}</li>
+     * {@link AllocationsSpecified#allocateOnTaskLength() allocateOnTaskLength}</li>
      * <li>
      * {@link ResourceAllocation#allocating(List)}.
-     * {@link AllocationsCurried#allocateUntil(LocalDate)
+     * {@link AllocationsSpecified#allocateUntil(LocalDate)
      * allocateUntil(LocalDate)}</li>
      * </ul>
      *
      */
-    public static class AllocationsCurried {
+    public static class AllocationsSpecified {
 
         private final List<ResourcesPerDayModification> allocations;
 
         private final Task task;
 
-        public AllocationsCurried(
+        public AllocationsSpecified(
                 List<ResourcesPerDayModification> resourceAllocations) {
             Validate.notNull(resourceAllocations);
             Validate.notEmpty(resourceAllocations);
@@ -281,18 +281,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
-    public static HoursAllocationCurried allocatingHours(
+    public static HoursAllocationSpecified allocatingHours(
             List<HoursModification> hoursModifications) {
-        return new HoursAllocationCurried(hoursModifications);
+        return new HoursAllocationSpecified(hoursModifications);
     }
 
-    public static class HoursAllocationCurried {
+    public static class HoursAllocationSpecified {
 
         private final List<HoursModification> hoursModifications;
 
         private Task task;
 
-        public HoursAllocationCurried(List<HoursModification> hoursModifications) {
+        public HoursAllocationSpecified(List<HoursModification> hoursModifications) {
             Validate.noNullElements(hoursModifications);
             Validate.isTrue(!hoursModifications.isEmpty());
             this.hoursModifications = hoursModifications;
