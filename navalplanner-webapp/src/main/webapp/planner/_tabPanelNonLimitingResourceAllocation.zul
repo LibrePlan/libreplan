@@ -31,8 +31,8 @@
 <tabpanel id="resourceAllocationTabpanel">
  <tabbox mold="accordion">
         <tabs>
-            <tab id="tbResourceAllocation" label="${i18n:_('Non limiting resource allocation')}" image="common/img/collapse.gif" />
-            <tab id="workerSearchTab" label="${i18n:_('Resources search')}" image="common/img/collapse.gif"/>
+            <tab id="tbResourceAllocation" />
+            <tab id="workerSearchTab" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -64,7 +64,7 @@
                     </vbox>
                 </groupbox>
 
-                <groupbox sclass="assignedresources" closable="false" width="310px" height="170px" >
+                <groupbox sclass="assignedresources" closable="false" width="340px" height="170px" >
                     <caption label="${i18n:_('Allocation configuration')}" />
 
                     <hbox>
@@ -95,9 +95,10 @@
 
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
-                    <hbox>
+                    <hbox align="bottom">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" />
-                        <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
+                        <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
+                        <button label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
                     </hbox>
                     <separator spacing="20px"/>
                     <grid id="allocationsGrid"
@@ -142,7 +143,7 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Apply tab changes')}" id="applyButton" sclass="global-action" />
-        <button label="${i18n:_('Go to advanced Allocation')}"
+        <button label="${i18n:_('Go to advanced Allocation')}" id="advancedAllocationButton"
             onClick="editController.goToAdvancedAllocation();" sclass="global-action" />
     </hbox>
 </tabpanel>

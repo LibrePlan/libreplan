@@ -70,6 +70,8 @@ public class NewAllocationSelectorController extends
 
     private Listbox listBoxResources;
 
+    private Label allocationSelectedItems;
+
     private CriterionRenderer criterionRenderer = new CriterionRenderer();
 
     private AllocationType currentAllocationType;
@@ -139,8 +141,8 @@ public class NewAllocationSelectorController extends
     }
 
     private void doInitialSelection() {
-        currentAllocationType = AllocationType.SPECIFIC;
-        AllocationType.SPECIFIC.doTheSelectionOn(allocationTypeSelector);
+        currentAllocationType = AllocationType.GENERIC;
+        AllocationType.GENERIC.doTheSelectionOn(allocationTypeSelector);
         onType(currentAllocationType);
     }
 
@@ -307,7 +309,7 @@ public class NewAllocationSelectorController extends
     }
 
     public List<AllocationType> getAllocationTypes() {
-        return Arrays.asList(AllocationType.values());
+        return Arrays.asList(AllocationType.GENERIC, AllocationType.SPECIFIC);
     }
 
     /**
@@ -419,6 +421,28 @@ public class NewAllocationSelectorController extends
 
     public void allowSelectMultipleResources(boolean multiple) {
         listBoxResources.setMultiple(multiple);
+    }
+
+    public void showSelectedAllocations() {
+        String result = "[";
+
+        if (currentAllocationType == AllocationType.GENERIC) {
+
+            for (Treeitem each : (Set<Treeitem>) criterionsTree
+                    .getSelectedItems()) {
+                Object node = ((CriterionTreeNode) each.getValue()).getData();
+                if (node instanceof Criterion) {
+                    result += ((Criterion) node).getCompleteName();
+                }
+            }
+        } else {
+            for (Object each : listBoxResources.getSelectedItems()) {
+                result += ((Resource) ((Listitem) each).getValue())
+                        .getShortDescription();
+            }
+        }
+
+        allocationSelectedItems.setValue(result);
     }
 
 }

@@ -27,6 +27,42 @@
 
 <vbox apply="${selectorController}">
 
+        <groupbox style="margin-top: 5px" closable="false">
+        <caption label="${i18n:_('Select criteria set or specific resources for allocation')}" />
+
+
+    <hbox>
+        <vbox sclass="allocation-criterion-selector">
+            <!-- Criteria -->
+
+            <tree id="criterionsTree" width="420px"
+                height="340px" vflex="true" multiple="true"
+                model="@{selectorController.criterions}"
+                zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
+                <attribute name="onSelect"><![CDATA[ selectorController.showSelectedAllocations() ]]></attribute>
+                <treecols>
+                    <treecol label="${i18n:_('Criteria')}" tooltiptext="${i18n:_('Criteria (Hold CTRL for multiple selection)')}" />
+                </treecols>
+            </tree>
+        </vbox>
+
+        <vbox>
+
+            <!--Matchings -->
+            <listbox id="listBoxResources" width="420px"
+                vflex="true" multiple="true" height="340px"
+                itemRenderer="@{selectorController.listitemRenderer}" style="margin:5px;"
+                onFocus="selectorController.showSelectedAllocations()" >
+                <attribute name="onSelect"><![CDATA[
+                    selectorController.showSelectedAllocations();
+                     ]]></attribute>
+                <listhead>
+                    <listheader label="${i18n:_('Found resources')}" tooltiptext="${i18n:_('Resources matching selected criteria')}" sort="auto" />
+                </listhead>
+            </listbox>
+        </vbox>
+    </hbox>
+
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
@@ -39,36 +75,14 @@
             <radio forEach="${selectorController.allocationTypes}"
                 label="${each.name}" value="${each}" />
         </radiogroup>
-        </row>
+            </row>
+            <row>
+            <label value="${i18n:_('Current selection')}" />
+            <label id="allocationSelectedItems" value="${i18n:_('[generic all resources]')}" />
+            </row>
         </rows></grid>
 
-    <hbox>
-        <vbox sclass="allocation-criterion-selector">
-            <!-- Criteria -->
-
-            <tree id="criterionsTree" width="400px"
-                height="400px" vflex="true" multiple="true"
-                model="@{selectorController.criterions}"
-                zclass="z-dottree">
-                <treecols>
-                    <treecol label="${i18n:_('Criteria')}" tooltiptext="${i18n:_('Criteria (Hold CTRL for multiple selection)')}" />
-                </treecols>
-            </tree>
-        </vbox>
-
-        <vbox>
-
-            <!--Matchings -->
-            <listbox id="listBoxResources" width="400px"
-                vflex="true" multiple="true" height="400px"
-                itemRenderer="@{selectorController.listitemRenderer}">
-                <listhead>
-                    <listheader label="${i18n:_('Resources')}" tooltiptext="${i18n:_('Resources matching selected criteria')}" sort="auto" />
-                </listhead>
-            </listbox>
-        </vbox>
-    </hbox>
-
+</groupbox>
 
 
     <popup id="allocation-type-popup" width="700px" >

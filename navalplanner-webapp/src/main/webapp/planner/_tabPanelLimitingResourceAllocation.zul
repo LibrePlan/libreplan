@@ -78,7 +78,8 @@
                     <separator spacing="10px"/>
                     <hbox>
                     <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" />
-                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
+                    <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
+                    <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true);" />
                     </hbox>
                     <separator spacing="10px"/>
                     <grid id="gridLimitingAllocations"

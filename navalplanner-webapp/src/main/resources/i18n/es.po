@@ -4612,7 +4612,7 @@ msgstr "Etiqueta guardada"
 
 #: navalplanner-webapp/src/main/webapp/resources/search/allocation_selector_combo.zul:30
 msgid "Select criteria or resources"
-msgstr "Filtrar por recursos"
+msgstr "Seleccionar criterios o recursos"
 
 #: navalplanner-webapp/src/main/webapp/orders/_orderElementTreeFilter.zul:23
 #: navalplanner-webapp/src/main/webapp/orders/_orderFilter.zul:23
