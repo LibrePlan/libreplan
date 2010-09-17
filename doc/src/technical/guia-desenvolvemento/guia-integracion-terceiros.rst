@@ -1012,12 +1012,12 @@ Clases involucradas en NavalPlan
 Descrición do fluxo
   1. A aplicación cliente que se integra fara unha petición ao servizo indicando o periodo de tempo e opcionalmente o código do recurso.
   #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
-  #. O servizo web procesa a petición, e xera un ficheiro XML coa información de hotras traballadas polos recursos no periodo.
-  #. O servizo web devolve o XML ou a saida de erros se a execución do servizo non foi correcta.
+  #. O servizo web procesa a petición, e xera un ficheiro XML coa información de horas traballadas polos recursos no periodo.
+  #. O servizo web devolve o XML ou a saída de erros se a execución do servizo non foi correcta.
   #. A aplicación cliente procesa a saída XML do servizo e incorpora os datos sobre horas traballadas ou procesa os erros detectados polo servizo.
 
 
-Exemplo de ficheiro de importación:
+Exemplo de ficheiro de exportación:
  ::
 
   <resource-worked-hours-list xmlns="http://rest.ws.navalplanner.org" start-date="2009-10-01" end-date="2009-10-31">
