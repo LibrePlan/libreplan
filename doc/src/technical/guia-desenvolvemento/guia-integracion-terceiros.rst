@@ -435,14 +435,14 @@ Exemplo de ficheiro de importación
          <label code="1002" name="Media" />
          <label code="1003" name="Alta" />
        </labels-list>
-    </label>
+    </label-type>
     <label-type code="20" name="Complexidade" >
        <labels-list>
          <label code="2001" name="Baja" />
          <label code="2002" name="Media" />
          <label code="2003" name="Alta" />
        </labels-list>
-    </label>
+    </label-type>
    </labels-type-list>
 
 
