@@ -44,6 +44,14 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
             return Arrays.asList();
         }
     },
+    MACHINE_LOCATION_GROUP(_("MACHINE LOCATION_GROUP"),
+            "Location where there are machines", false, true, true,
+            ResourceEnum.MACHINE) {
+        @Override
+        public List<String> getPredefined() {
+            return Arrays.asList();
+        }
+    },
     LEAVE(_("LEAVE"), "Leave",false, false, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
