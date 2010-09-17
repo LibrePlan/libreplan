@@ -39,14 +39,16 @@ import org.zkoss.zul.api.Radiogroup;
 public class NewAllocationSelector extends AllocationSelector {
 
     public enum AllocationType {
-        SPECIFIC(_("specific allocation")) {
+        GENERIC_WORKERS(_("generic workers allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller,
                     INewAllocationsAdder allocationsAdder) {
-                allocationsAdder.addSpecific(controller.getSelectedWorkers());
+                allocationsAdder.addGeneric(new HashSet<Criterion>(controller
+                        .getSelectedCriterions()), controller
+                        .getSelectedWorkers());
             }
         },
-        GENERIC(_("generic allocation")) {
+        GENERIC_MACHINES(_("generic machines allocation")) {
             @Override
             public void addTo(
                     NewAllocationSelectorController controller,
@@ -55,7 +57,15 @@ public class NewAllocationSelector extends AllocationSelector {
                         .getSelectedCriterions()), controller
                         .getSelectedWorkers());
             }
+        },
+        SPECIFIC(_("specific allocation")) {
+            @Override
+            public void addTo(NewAllocationSelectorController controller,
+                    INewAllocationsAdder allocationsAdder) {
+                allocationsAdder.addSpecific(controller.getSelectedWorkers());
+            }
         };
+
 
         /**
          * Forces to mark the string as needing translation

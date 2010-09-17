@@ -20,14 +20,16 @@
 
 package org.navalplanner.web.resources.search;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
@@ -119,6 +121,7 @@ public class NewAllocationSelectorController extends
                         AllocationType type = AllocationType
                                 .getSelected(allocationTypeSelector);
                         onType(type);
+                        showSelectedAllocations();
                     }
                 });
         listBoxResources.addEventListener(Events.ON_SELECT,
@@ -126,8 +129,14 @@ public class NewAllocationSelectorController extends
 
             @Override
             public void onEvent(Event event) throws Exception {
-                if (currentAllocationType == AllocationType.GENERIC) {
-                            clearSelection(listBoxResources);
+                if (currentAllocationType == AllocationType.GENERIC_WORKERS) {
+                            // FIXME: Change selection when generic machines
+                            // allocation allowed
+                            allocationTypeSelector.setSelectedIndex(1);
+                            AllocationType type = AllocationType
+                                    .getSelected(allocationTypeSelector);
+                            onType(type);
+                            showSelectedAllocations();
                 }
             }
         });
@@ -141,16 +150,13 @@ public class NewAllocationSelectorController extends
     }
 
     private void doInitialSelection() {
-        currentAllocationType = AllocationType.GENERIC;
-        AllocationType.GENERIC.doTheSelectionOn(allocationTypeSelector);
+        currentAllocationType = AllocationType.GENERIC_WORKERS;
+        AllocationType.GENERIC_WORKERS.doTheSelectionOn(allocationTypeSelector);
         onType(currentAllocationType);
     }
 
     private void onType(AllocationType type) {
-        listBoxResources.setDisabled(AllocationType.GENERIC == type);
-        if (AllocationType.GENERIC == type) {
-            clearSelection(listBoxResources);
-        }
+        listBoxResources.setDisabled(AllocationType.GENERIC_WORKERS == type);
         currentAllocationType = type;
     }
 
@@ -233,7 +239,7 @@ public class NewAllocationSelectorController extends
     }
 
     public List<Resource> getSelectedWorkers() {
-        if(currentAllocationType== AllocationType.GENERIC){
+        if (currentAllocationType == AllocationType.GENERIC_WORKERS) {
             return allResourcesShown();
         } else {
             return getSelectedResourcesOnListbox();
@@ -309,7 +315,11 @@ public class NewAllocationSelectorController extends
     }
 
     public List<AllocationType> getAllocationTypes() {
-        return Arrays.asList(AllocationType.GENERIC, AllocationType.SPECIFIC);
+        // FIXME: Change selection when generic machines allocation allowed
+        List<AllocationType> result = new ArrayList<AllocationType>();
+        result.add(AllocationType.GENERIC_WORKERS);
+        result.add(AllocationType.SPECIFIC);
+        return result;
     }
 
     /**
@@ -424,25 +434,27 @@ public class NewAllocationSelectorController extends
     }
 
     public void showSelectedAllocations() {
-        String result = "[";
+        List<String> result = new ArrayList<String>();
 
-        if (currentAllocationType == AllocationType.GENERIC) {
-
+        if (currentAllocationType == AllocationType.SPECIFIC) {
+            for (Object each : listBoxResources.getSelectedItems()) {
+                result.add(((Resource) ((Listitem) each).getValue())
+                        .getShortDescription());
+            }
+        } else {
             for (Treeitem each : (Set<Treeitem>) criterionsTree
                     .getSelectedItems()) {
                 Object node = ((CriterionTreeNode) each.getValue()).getData();
                 if (node instanceof Criterion) {
-                    result += ((Criterion) node).getCompleteName();
+                    result.add(((Criterion) node).getCompleteName());
                 }
             }
-        } else {
-            for (Object each : listBoxResources.getSelectedItems()) {
-                result += ((Resource) ((Listitem) each).getValue())
-                        .getShortDescription();
+            if (result.isEmpty()) {
+                result.add(_("[generic all workers]"));
             }
         }
 
-        allocationSelectedItems.setValue(result);
+        allocationSelectedItems.setValue(StringUtils.join(result, ","));
     }
 
 }

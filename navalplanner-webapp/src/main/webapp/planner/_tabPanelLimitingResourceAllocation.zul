@@ -32,13 +32,8 @@
 <tabpanel id="${arg.id}">
  <tabbox mold="accordion">
         <tabs>
-            <tab id="tabLimitingResourceAllocation"
-                    label="${i18n:_('Limiting resource allocation')}"
-                    image="common/img/collapse.gif" />
-
-           <tab id="tabLimitingWorkerSearch"
-                    label="${i18n:_('Resources search')}"
-                    image="common/img/collapse.gif" />
+            <tab id="tabLimitingResourceAllocation" />
+            <tab id="tabLimitingWorkerSearch" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -79,7 +74,7 @@
                     <hbox>
                     <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" />
                     <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
-                    <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true);" />
+                    <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true); " />
                     </hbox>
                     <separator spacing="10px"/>
                     <grid id="gridLimitingAllocations"

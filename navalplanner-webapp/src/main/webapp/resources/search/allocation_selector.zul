@@ -78,7 +78,7 @@
             </row>
             <row>
             <label value="${i18n:_('Current selection')}" />
-            <label id="allocationSelectedItems" value="${i18n:_('[generic all resources]')}" />
+            <label id="allocationSelectedItems" value="${i18n:_('[generic all workers]')}" />
             </row>
         </rows></grid>
 

@@ -127,7 +127,7 @@ public class LimitingAllocationRow {
 
     public AllocationType getAllocationType() {
         return (resourceAllocation instanceof SpecificResourceAllocation) ? AllocationType.SPECIFIC
-                : AllocationType.GENERIC;
+                : AllocationType.GENERIC_WORKERS;
     }
 
     public String getAllocationTypeStr() {
@@ -136,7 +136,7 @@ public class LimitingAllocationRow {
 
     public String getAllocation() {
         final AllocationType type = getAllocationType();
-        if (AllocationType.GENERIC.equals(type)) {
+        if (AllocationType.GENERIC_WORKERS.equals(type)) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
             return Criterion.getNames(generic.getCriterions());
         }
