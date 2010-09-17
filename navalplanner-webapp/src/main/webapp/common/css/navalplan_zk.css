@@ -617,6 +617,25 @@ div.z-grid {
     overflow: hidden;
 }
 
+#timetrackerheader div.z-grid {
+    border: 0;
+}
+
+#timetrackerheader th,
+#timetracker th {
+    border-top: 0;
+}
+
+#timetrackerheader th {
+    border-top: 0;
+}
+
+.listdetails div {
+    border: 0;
+}
+
+
+
 .z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
 .z-listbox .z-longbox,.z-listbox .z-doublebox {
     height: 22px;
@@ -1366,4 +1385,17 @@ tr.z-tree-row-seld .z-row-cnt {
 
 .z-band-popup td.z-list-cell {
     border-right: dotted 1px #cccccc;
+}
+
+.edit-task-window .z-tab-accordion {
+display:none;
+}
+
+.edit-task-window .z-tabpanel-accordion {
+    border:0;
+}
+
+.edit-task-window .message_ERROR,
+.edit-task-window .message_INFO {
+    width:auto;
 }

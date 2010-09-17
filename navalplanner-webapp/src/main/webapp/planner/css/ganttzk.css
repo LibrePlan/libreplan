@@ -371,11 +371,11 @@ div.box.limiting-unassigned {
 /* Watermark alternate row color */
 #watermark .timetracker_column_even {
     background-color: #EEEEEE !important;
-    height: 458px;
+    height: 650px;
 }
 
 .limitingresources #watermark .bankHoliday {
-    height: 458px;
+    height: 650px;
 }
 
 #watermark .timetracker_column_today.timetracker_column_deadline,
@@ -751,6 +751,10 @@ div.limitingresourcesleftpane  {
     position: relative;
 }
 
+.timetrackergap {
+    height: 32px;
+}
+
 .tree-datecolumn {
     width: 100px;
 }
@@ -1015,7 +1019,7 @@ height: 100%
 }
 
 #timetrackerheader table {
-    height:15px;
+    height:16px;
 }
 
 #timetrackerheader .z-grid-body {
