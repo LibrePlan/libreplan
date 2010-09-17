@@ -43,7 +43,8 @@
                                 onChange="controller.setResource(self.selectedItem)" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Multiple values per resource')}"/>
+                            <label value="${i18n:_('Multiple values per resource')}"
+                                tooltiptext="${i18n:_('Allow multiple values of this type of criterion in the same period of time')}"/>
                             <checkbox checked="@{controller.criterionType.allowSimultaneousCriterionsPerResource}"/>
                         </row>
                         <row>
