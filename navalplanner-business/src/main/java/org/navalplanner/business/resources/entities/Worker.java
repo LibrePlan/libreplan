@@ -172,9 +172,7 @@ public class Worker extends Resource {
    @Override
    protected boolean isCriterionSatisfactionOfCorrectType(
       CriterionSatisfaction c) {
-
-       return super.isCriterionSatisfactionOfCorrectType(c) ||
-           c.getResourceType().equals(ResourceEnum.WORKER);
+        return c.getResourceType().equals(ResourceEnum.WORKER);
 
    }
 

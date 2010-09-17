@@ -291,7 +291,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private static String asString(ResourceEnum resourceType) {
             switch (resourceType) {
-            case RESOURCE:
             case MACHINE:
             case WORKER:
                 return _(resourceType.getDisplayName());

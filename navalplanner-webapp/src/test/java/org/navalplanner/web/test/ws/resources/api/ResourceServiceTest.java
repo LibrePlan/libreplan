@@ -210,7 +210,7 @@ public class ResourceServiceTest {
     public void testAddResourceWithCriterionSatisfactions() {
 
         /* Create a criterion type. */
-        CriterionType ct = createCriterionType();
+        CriterionType ct = createCriterionType(ResourceEnum.MACHINE);
 
         /* Create a resource DTO. */
         MachineDTO m1 = new MachineDTO("name", "desc");
@@ -286,7 +286,7 @@ public class ResourceServiceTest {
     public void testAddResourceWithCriterionSatisfactionWithoutStartDate() {
 
         /* Create a criterion type. */
-        CriterionType ct = createCriterionType();
+        CriterionType ct = createCriterionType(ResourceEnum.MACHINE);
 
         /* Create a machine DTO. */
         MachineDTO machineDTO = new MachineDTO("name", "desc");
@@ -305,7 +305,7 @@ public class ResourceServiceTest {
     public void testAddResourceWithCriterionSatisfactionWithNegativeInterval() {
 
         /* Create a criterion type. */
-        CriterionType ct = createCriterionType();
+        CriterionType ct = createCriterionType(ResourceEnum.MACHINE);
 
         /* Create a machine DTO. */
         MachineDTO machineDTO = new MachineDTO("name", "desc");
@@ -324,7 +324,7 @@ public class ResourceServiceTest {
     public void testAddResourceWithOverlappingCriterionSatisfactionsAllowed() {
 
         /* Create a criterion type. */
-        CriterionType ct = createCriterionType();
+        CriterionType ct = createCriterionType(ResourceEnum.MACHINE);
 
         /*
          * Create a machine DTO. OK, because
@@ -346,8 +346,8 @@ public class ResourceServiceTest {
     public void testAddResourceWithOverlappingCriterionSatisfactions() {
 
         /* Create criterion types. */
-        CriterionType ct1 = createCriterionType();
-        CriterionType ct2 = createCriterionType(ResourceEnum.RESOURCE, false);
+        CriterionType ct1 = createCriterionType(ResourceEnum.MACHINE);
+        CriterionType ct2 = createCriterionType(ResourceEnum.MACHINE, false);
 
         /*
          * Create resource DTOs. Each resource contains one criterion
@@ -732,13 +732,14 @@ public class ResourceServiceTest {
     @Test
     public void testUpdateResources() throws InstanceNotFoundException {
 
-        /* Create a criterion type and a cost category. */
-        CriterionType ct = createCriterionType();
+        CriterionType ctMachine = createCriterionType(ResourceEnum.MACHINE);
+        CriterionType ctWorker = createCriterionType(ResourceEnum.WORKER);
         CostCategory costCategory = createCostCategory();
 
         /* Create a machine DTO. */
         MachineDTO m1 = new MachineDTO("name", "desc");
-        CriterionSatisfactionDTO m1s1 = new CriterionSatisfactionDTO(ct
+        CriterionSatisfactionDTO m1s1 = new CriterionSatisfactionDTO(
+                ctMachine
                 .getName(), "c1", getDate(2000, 1, 1), getDate(2000, 2, 1));
         m1.criterionSatisfactions.add(m1s1);
         ResourcesCostCategoryAssignmentDTO m1a1 = new ResourcesCostCategoryAssignmentDTO(
@@ -749,7 +750,8 @@ public class ResourceServiceTest {
         /* Create a worker DTO. */
         String nif = getUniqueName();
         WorkerDTO w1 = new WorkerDTO(getUniqueName(), "surname", nif);
-        CriterionSatisfactionDTO w1s1 = new CriterionSatisfactionDTO(ct
+        CriterionSatisfactionDTO w1s1 = new CriterionSatisfactionDTO(
+                ctWorker
                 .getName(), "c1", getDate(2000, 1, 1), getDate(2000, 2, 1));
         w1.criterionSatisfactions.add(w1s1);
         ResourcesCostCategoryAssignmentDTO w1a1 = new ResourcesCostCategoryAssignmentDTO(
@@ -777,7 +779,8 @@ public class ResourceServiceTest {
 
         WorkerDTO w1Updated = new WorkerDTO(w1.code, null, "surname"
                 + "UPDATED", null);
-        CriterionSatisfactionDTO w1s2 = new CriterionSatisfactionDTO(ct
+        CriterionSatisfactionDTO w1s2 = new CriterionSatisfactionDTO(
+                ctWorker
                 .getName(), "c1", getDate(2000, 3, 1), getDate(2000, 4, 1));
         w1Updated.criterionSatisfactions.add(w1s2);
         ResourcesCostCategoryAssignmentDTO w1a1Updated = new ResourcesCostCategoryAssignmentDTO(
@@ -819,7 +822,7 @@ public class ResourceServiceTest {
     }
 
     private CriterionType createCriterionType() {
-        return createCriterionType(ResourceEnum.RESOURCE, true);
+        return createCriterionType(ResourceEnum.WORKER, true);
     }
 
     private CriterionType createCriterionType(final ResourceEnum resourceType) {

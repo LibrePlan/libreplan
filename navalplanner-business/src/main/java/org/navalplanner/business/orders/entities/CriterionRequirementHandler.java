@@ -475,9 +475,9 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
         for (CriterionRequirement requirement : requirements) {
             ResourceEnum resourceTypeParent = requirement.getCriterion()
                     .getType().getResource();
-            if ((resourceTypeParent.equals(resourceType))
-                    || (resourceTypeParent.equals(ResourceEnum.RESOURCE)))
+            if (resourceTypeParent.equals(resourceType)) {
                 result.add(requirement);
+            }
         }
         return result;
     }

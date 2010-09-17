@@ -42,9 +42,8 @@ public class ResourceEnumConverter {
 
     static {
 
-        resourceEnumToDTO.put(ResourceEnum.RESOURCE, ResourceEnumDTO.RESOURCE);
-        resourceEnumFromDTO
-                .put(ResourceEnumDTO.RESOURCE, ResourceEnum.RESOURCE);
+        resourceEnumToDTO.put(ResourceEnum.WORKER, ResourceEnumDTO.RESOURCE);
+        resourceEnumFromDTO.put(ResourceEnumDTO.RESOURCE, ResourceEnum.WORKER);
 
         resourceEnumToDTO.put(ResourceEnum.WORKER, ResourceEnumDTO.WORKER);
         resourceEnumFromDTO.put(ResourceEnumDTO.WORKER, ResourceEnum.WORKER);

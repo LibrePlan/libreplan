@@ -253,7 +253,6 @@ public class MachineModel implements IMachineModel {
         HashSet<ResourceEnum> appliableToMachine =
             new HashSet<ResourceEnum>();
         appliableToMachine.add(ResourceEnum.MACHINE);
-        appliableToMachine.add(ResourceEnum.RESOURCE);
         unit.addRequiredCriterion(criterion);
     }
 

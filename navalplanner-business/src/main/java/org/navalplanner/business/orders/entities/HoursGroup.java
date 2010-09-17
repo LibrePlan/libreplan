@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
@@ -181,10 +182,7 @@ public class HoursGroup extends BaseEntity implements Cloneable,
     }
 
     public void setResourceType(ResourceEnum resource) {
-        if ((resource != null) && (resource.equals(ResourceEnum.getDefault()))) {
-            throw new IllegalArgumentException(
-                    _("the resource type should be Worker or Machine"));
-        }
+        Validate.notNull(resource);
         this.resourceType = resource;
     }
 

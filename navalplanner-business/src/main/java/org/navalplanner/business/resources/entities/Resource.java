@@ -1124,12 +1124,8 @@ public abstract class Resource extends IntegrationEntity {
         return getFirstRepeatedCode(resourcesCostCategoryAssignments) == null;
     }
 
-    protected boolean isCriterionSatisfactionOfCorrectType(
-        CriterionSatisfaction c) {
-
-        return c.getResourceType().equals(ResourceEnum.RESOURCE);
-
-    }
+    protected abstract boolean isCriterionSatisfactionOfCorrectType(
+            CriterionSatisfaction c);
 
     protected IResourceDAO getIntegrationEntityDAO() {
         return Registry.getResourceDAO();

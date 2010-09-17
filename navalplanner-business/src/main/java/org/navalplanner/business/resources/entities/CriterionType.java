@@ -284,8 +284,7 @@ public class CriterionType extends IntegrationEntity implements
      */
     @Override
     public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
-        return ResourceEnum.RESOURCE.equals(getResource())
-                || getResource().isAssignableFrom(klass);
+        return getResource().isAssignableFrom(klass);
     }
 
 

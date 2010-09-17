@@ -29,7 +29,6 @@ import static org.navalplanner.business.i18n.I18nHelper._;
  */
 public enum ResourceEnum {
 
-    RESOURCE(Resource.class, _("RESOURCE")),
     WORKER(Worker.class, _("WORKER")),
     MACHINE(Machine.class, _("MACHINE"));
 
@@ -50,7 +49,7 @@ public enum ResourceEnum {
     }
 
     public static ResourceEnum getDefault() {
-        return RESOURCE;
+        return WORKER;
     }
 
     public String toString() {

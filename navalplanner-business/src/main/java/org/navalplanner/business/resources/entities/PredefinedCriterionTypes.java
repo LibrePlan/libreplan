@@ -19,10 +19,10 @@
  */
 
 package org.navalplanner.business.resources.entities;
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.Arrays;
 import java.util.List;
-
-import static org.navalplanner.business.i18n.I18nHelper._;
 
 /**
  * This class defines some criterion types known a priori<br />
@@ -37,7 +37,8 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
             return WorkingRelationship.getCriterionNames();
         }
     },
-    LOCATION_GROUP(_("LOCATION_GROUP"), "Location where the resource work",false, true, true, ResourceEnum.RESOURCE) {
+    LOCATION_GROUP(_("LOCATION_GROUP"), "Location where the workers work",
+            false, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();
