@@ -1027,6 +1027,51 @@ Exemplo de ficheiro de importación:
    <resource-worked-hours resource="324" hours="124" >
   </resource-worked-hours-list>
 
+Exportación de Tipos de Excepcións do Calendario
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Descrición
+     * Os diferentes días dos calendarios poden marcarse con diferentes tipos de excepcións do calendario.
+     * O servizo de exportación dos tipos de excepción permite consultar os diferentes tipos de excepcións do calendario definidos na aplicación.
+
+Roles
+     * Cliente: pide a aplicación NavalPlan sen necesidade de pasar ningún argumento.
+     * Servidor: procesa a petición do cliente xerando un ficheiro XML coa información dos tipos de excepcións do calendario.
+
+Postcondicións
+    *  Obtense a lista de tipos de excepcións do calendario definidos na aplicación.
+
+Clases involucradas en NavalPlan
+ .. image:: images/calendars.png
+    :width: 400
+    :alt: Diagrama de Clases do dominio de Calendarios en NavalPlan
+
+Descrición do fluxo
+  1. A aplicación cliente que se integra fara unha petición ao servizo.
+  #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
+  #. O servizo web procesa a petición, e xera un ficheiro XML coa información de tipos de excepcións do calendario.
+  #. O servizo web devolve o XML ou a saída de erros se a execución do servizo non foi correcta.
+  #. A aplicación cliente procesa a saída XML do servizo e incorpora os datos sobre tipos de excepcións ou procesa os erros detectados polo servizo.
+
+
+Exemplo de ficheiro de exportación:
+ ::
+
+  <calendar-exception-type-list xmlns="http://rest.ws.navalplanner.org">
+    <calendar-exception-type over-assignable="false" color="red"
+      name="BANK_HOLIDAY" code="BANK_HOLIDAY" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="HOLIDAY" code="HOLIDAY" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="LEAVE" code="LEAVE" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="SICK_LEAVE" code="SICK_LEAVE" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="STRIKE" code="STRIKE" />
+    <calendar-exception-type over-assignable="true" color="orange"
+      name="WORKABLE_BANK_HOLIDAY" code="WORKABLE_BANK_HOLIDAY" />
+  </calendar-exception-type-list>
+
 
 Fluxos con outras instancias de NavalPlan
 -----------------------------------------
