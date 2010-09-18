@@ -372,14 +372,14 @@ Exemplo de ficheiro de importación
          <material code="TOR15" description="Tornillos Serie-15" price="123.12" unit-type="10" disabled="false"/>
        </material-list>
        <children>
-         <material-category code=20" name="Tornillos Planos" >
+         <material-category code="20" name="Tornillos Planos" >
             <material-list>
               <material code="TORP12" description="Tornillos Serie-12" price="123.12" unit-type="10" disabled="false"/>
               <material code="TORP13" description="Tornillos Serie-13" price="123.12" unit-type="10" disabled="false"/>
               <material code="TORP15" description="Tornillos Serie-15" price="123.12" unit-type="10" disabled="false"/>
             </material-list>
          </material-category>
-         <material-category code=23" name="Tornillos Estrella" >
+         <material-category code="23" name="Tornillos Estrella" >
             <material-list>
               <material code="TORE12" description="Tornillos Serie-12" price="123.12" unit-type="10" disabled="false"/>
               <material code="TORE13" description="Tornillos Serie-13" price="123.12" unit-type="10" disabled="false"/>

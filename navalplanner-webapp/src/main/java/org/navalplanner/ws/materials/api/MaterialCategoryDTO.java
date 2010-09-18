@@ -43,7 +43,7 @@ public class MaterialCategoryDTO extends IntegrationEntityDTO {
     @XmlAttribute
     public String parent;
 
-    @XmlElement
+    @XmlElement(name = "children")
     public MaterialCategoryListDTO subcategories;
 
     @XmlElementWrapper(name = "material-list")
