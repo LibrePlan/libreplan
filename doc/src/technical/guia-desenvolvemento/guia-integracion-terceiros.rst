@@ -629,24 +629,32 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
+  <?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <cost-category-list xmlns="http://rest.ws.navalplanner.org">
-    <cost-category code="12" name="Oficial 1" enabled="true" >
-       <hour-cost-list>
-        <hour-cost hour-type="12" price="12.32" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="13" price="15.32" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="12" price="13.32" init-date="2010-01-01" />
-        <hour-cost hour-type="13" price="16.32" init-date="2009-01-01" />
-       </hour-cost-list>
+    <cost-category enabled="true" name="Categoria A"
+    code="18d6ef79-5b45-4928-bfd5-ec80a374699c">
+      <hour-cost-list>
+        <hour-cost work-hours-type="t1"
+        endDate="2010-04-27T12:26:47.010+01:00"
+        initDate="2010-03-17T12:26:47.010+01:00" priceCost="5.00"
+        code="31001efc-64f2-45be-acb0-045b1d9562ee" />
+        <hour-cost work-hours-type="t2"
+        endDate="2010-04-27T12:26:47.010+01:00"
+        initDate="2010-03-11T12:26:47.014+01:00" priceCost="8.00"
+        code="fa840393-2718-4cbd-ba8e-c7f6503a7e9b" />
+      </hour-cost-list>
     </cost-category>
-    <cost-category code="33" name="Oficial 1" enabled="true" >
-       <hour-cost-list>
-        <hour-cost hour-type="12" price="10.32" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="13" price="12.12" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="12" price="14.32" init-date="2010-01-01" />
-        <hour-cost hour-type="13" price="15.32" init-date="2009-01-01" />
-       </hour-cost-list>
+    <cost-category enabled="true" name="Categoria B"
+    code="b1029095-6ec4-484b-a620-5f0562cef800">
+     <hour-cost-list>
+      <hour-cost work-hours-type="t3"
+         endDate="2010-05-27T12:26:47.010+01:00"
+         initDate="2010-05-17T12:26:47.010+01:00" priceCost="6.50"
+         code="72974982374kjfkjsdjsjdfsjls" />
+     </hour-cost-list>
     </cost-category>
   </cost-category-list>
+
 
 Incorporación de Recursos
 ~~~~~~~~~~~~~~~~~~~~~~~~~
