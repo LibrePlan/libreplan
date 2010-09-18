@@ -1090,6 +1090,71 @@ Exemplo de ficheiro de importación
   </base-calendar-list>
 
 
+Incorporación de Tipos de Horas de Traballo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Descrición
+     * A incorporación de tipos de horas de traballo permitirá a importación da información dos tipos de horas dende outras aplicacións.
+     * Os tipos de horas de traballo empréganse para determinar as categorías de coste na aplicación.
+
+Roles
+     * Cliente: proporciona nova información sobre os tipos de horas de traballo ao servidor NavalPlan.
+     * Servidor: procesa a petición do cliente incorporando a nova información dos tipos de horas de traballo.
+
+Precondicións
+    * Os tipos de horas de traballo terán unha codificación unica dentro da empresa.
+
+Postcondicións
+    *  Os novos tipos de horas de traballo serán incorporados ao sistema.
+    *  Os tipos de horas xa existentes verán actualizada a súa información.
+
+Clases involucradas en NavalPlan
+ .. image:: images/costcategories.png
+    :width: 150
+    :alt: Diagrama de Clases do dominio de Tipos de Horas de Traballo en NavalPlan
+
+Descrición do fluxo
+  1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
+  #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
+  #. O servizo web procesa a alta de tipos de horas de traballo e actualiza os datos dos xa existentes.
+  #. O servizo web devolve nun XML a saída de erros ou a correcta execución do servizo.
+  #. A aplicación cliente procesa a saída XML do servizo e reporta o éxito ou os erros detectados polo servizo.
+
+Exemplo de ficheiro de importación
+ ::
+
+  <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <type-work-hours-list xmlns="http://rest.ws.navalplanner.org">
+  <!-- Ok-->
+    <type-work-hours enabled="true" defaultPrice="8.00" name="Hora Extra" code="t1" />
+
+  <!-- Ok-->
+    <type-work-hours enabled="false" defaultPrice="5.00" name="Normal" code="t2" />
+
+  <!-- Ok-->
+    <type-work-hours enabled="true" defaultPrice="9.50" name="Plus Nocturnidad" code="t3" />
+
+  <!-- [ without enabled property ] Ok -->
+    <type-work-hours defaultPrice="9.50" name="t4-name" code="t4" />
+
+  <!-- [ without defaultPrice property ] Ok -->
+  <type-work-hours enabled="true" name="t5-name" code="t5" />
+
+  <!-- [ without name property ] -->
+    <type-work-hours enabled="true" defaultPrice="9.50" code="t6" />
+
+  <!-- [ without code property ] -->
+  <type-work-hours enabled="true" defaultPrice="9.50" name="t7-name"  />
+
+  <!-- [ with a repeated name ] -->
+    <type-work-hours enabled="true" defaultPrice="9.50" name="Normal" code="t8" />
+
+  <!-- [ with a repeated code ] OK updated -->
+  <type-work-hours enabled="true" defaultPrice="9.50" name="t9-name" code="t1" />
+
+  </type-work-hours-list>
+
+
 Exportación de Horas Traballadas por Recursos
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
