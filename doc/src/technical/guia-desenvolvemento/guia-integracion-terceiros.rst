@@ -984,6 +984,112 @@ Exemplo de ficheiro de importación
    </order>
   </order-list>
 
+
+Incorporación de Calendarios
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Descrición
+     * A incorporación de calendarios permitirá a importación da información dos calendarios dende outras aplicacións.
+     * Os calendarios empréganse para determinar a dispoñinibilidade dos traballadores na aplicación.
+
+Roles
+     * Cliente: proporciona nova información sobre os calendarios ao servidor NavalPlan.
+     * Servidor: procesa a petición do cliente incorporando a nova información dos calendarios.
+
+Precondicións
+    * Os calendarios terán unha codificación unica dentro da empresa.
+
+Postcondicións
+    *  Os novos calendarios serán incorporados ao sistema.
+    *  Os calendarios xa existentes verán actualizada a súa información.
+
+Clases involucradas en NavalPlan
+ .. image:: images/calendars.png
+    :width: 450
+    :alt: Diagrama de Clases do dominio de Calendarios en NavalPlan
+
+Descrición do fluxo
+  1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
+  #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
+  #. O servizo web procesa a alta de calendarios e actualiza os datos dos xa existentes.
+  #. O servizo web devolve nun XML a saída de erros ou a correcta execución do servizo.
+  #. A aplicación cliente procesa a saída XML do servizo e reporta o éxito ou os erros detectados polo servizo.
+
+Exemplo de ficheiro de importación
+ ::
+
+  <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <base-calendar-list xmlns="http://rest.ws.navalplanner.org">
+  <base-calendar name="Spanish Calendar" code="000-001">
+      <calendar-exception-list>
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-01-01"
+          code="001-001" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-01-06"
+          code="001-002" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-04-22"
+          code="001-003" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-05-01"
+          code="001-004" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-08-15"
+          code="001-005" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-10-12"
+          code="001-006" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-11-01"
+          code="001-007" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-12-06"
+          code="001-008" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-12-08"
+          code="001-009" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-12-25"
+          code="001-010" />
+      </calendar-exception-list>
+      <calendar-data-list>
+        <calendar-data code="001-001">
+          <hours-per-day-list>
+            <hours-per-day hours="8" day="MONDAY" />
+            <hours-per-day hours="8" day="TUESDAY" />
+            <hours-per-day hours="8" day="WEDNESDAY" />
+            <hours-per-day hours="8" day="THURSDAY" />
+            <hours-per-day hours="8" day="FRIDAY" />
+          </hours-per-day-list>
+        </calendar-data>
+      </calendar-data-list>
+    </base-calendar>
+    <base-calendar code="000-002" name="Galician Calendar"
+      parent="000-001">
+      <calendar-exception-list>
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-04-21"
+          code="002-001" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-05-17"
+          code="002-002" />
+      </calendar-exception-list>
+      <calendar-data-list>
+        <calendar-data code="001-002">
+          <hours-per-day-list>
+            <hours-per-day hours="8" day="MONDAY" />
+            <hours-per-day hours="8" day="TUESDAY" />
+            <hours-per-day hours="8" day="WEDNESDAY" />
+            <hours-per-day hours="8" day="THURSDAY" />
+            <hours-per-day hours="8" day="FRIDAY" />
+          </hours-per-day-list>
+        </calendar-data>
+      </calendar-data-list>
+    </base-calendar>
+  </base-calendar-list>
+
+
 Exportación de Horas Traballadas por Recursos
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1043,7 +1149,7 @@ Postcondicións
 
 Clases involucradas en NavalPlan
  .. image:: images/calendars.png
-    :width: 400
+    :width: 450
     :alt: Diagrama de Clases do dominio de Calendarios en NavalPlan
 
 Descrición do fluxo
