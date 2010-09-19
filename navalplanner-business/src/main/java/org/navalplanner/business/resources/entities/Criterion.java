@@ -111,7 +111,7 @@ public class Criterion extends IntegrationEntity implements ICriterion {
      * @param criteria
      * @return
      */
-    public static String getNames(Collection<? extends Criterion> criteria) {
+    public static String getCaptionFor(Collection<? extends Criterion> criteria) {
         List<String> names = new ArrayList<String>();
         for (Criterion each: criteria) {
             names.add(each.getName());

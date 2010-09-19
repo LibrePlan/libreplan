@@ -138,7 +138,7 @@ public class LimitingAllocationRow {
         final AllocationType type = getAllocationType();
         if (AllocationType.GENERIC_WORKERS.equals(type)) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            return Criterion.getNames(generic.getCriterions());
+            return Criterion.getCaptionFor(generic.getCriterions());
         }
         if (AllocationType.SPECIFIC.equals(type)) {
             return formatResources(resourceAllocation.getAssociatedResources());

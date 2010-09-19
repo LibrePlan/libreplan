@@ -500,13 +500,13 @@ public class FormBinder {
                         Level.ERROR,
                         _(
                                 "there are no resources for required criteria: {0}. So the generic allocation can't be added",
-                        Criterion.getNames(criterions)));
+                        Criterion.getCaptionFor(criterions)));
     }
 
     public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR, _(
                 "already exists an allocation for criteria {0}",
-                Criterion.getNames(criterions)));
+                Criterion.getCaptionFor(criterions)));
     }
 
     public void markEndDateMustBeAfterStartDate() {

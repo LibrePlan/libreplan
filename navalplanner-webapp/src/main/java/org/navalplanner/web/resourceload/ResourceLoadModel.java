@@ -537,7 +537,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         for (CriterionSatisfaction satisfaction : satisfactions) {
             criterions.add(satisfaction.getCriterion());
         }
-        return " :: " + Criterion.getNames(criterions);
+        return " :: " + Criterion.getCaptionFor(criterions);
     }
 
     private LoadTimeLine createPrincipal(Criterion criterion,
@@ -758,7 +758,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public static String getName(Collection<? extends Criterion> criterions,
             Task task) {
         String prefix = task.getName();
-        return (prefix + " :: " + Criterion.getNames(criterions));
+        return (prefix + " :: " + Criterion.getCaptionFor(criterions));
     }
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,

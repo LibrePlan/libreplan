@@ -58,7 +58,7 @@ public class GenericAllocationRow extends AllocationRow {
         GenericAllocationRow result = createDefault();
         result.criterions = criterions;
         result.resources = new ArrayList<Resource>(resources);
-        result.setName(Criterion.getNames(criterions));
+        result.setName(Criterion.getCaptionFor(criterions));
         return result;
     }
 
@@ -72,7 +72,7 @@ public class GenericAllocationRow extends AllocationRow {
 
         result.criterions = resourceAllocation.getCriterions();
         result.resources = resourceDAO.findSatisfyingAllCriterionsAtSomePoint(result.criterions);
-        result.setName(Criterion.getNames(result.criterions));
+        result.setName(Criterion.getCaptionFor(result.criterions));
         return result;
     }
 

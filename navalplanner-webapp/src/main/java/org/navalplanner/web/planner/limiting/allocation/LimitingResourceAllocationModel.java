@@ -108,7 +108,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
                     .showMessage(Level.ERROR,
                             _("there are no resources for required criteria: {0}. " +
                                     "So the generic allocation can't be added",
-                                    Criterion.getNames(criteria)));
+                                    Criterion.getCaptionFor(criteria)));
         }
 
         if (resources.size() >= 1) {
