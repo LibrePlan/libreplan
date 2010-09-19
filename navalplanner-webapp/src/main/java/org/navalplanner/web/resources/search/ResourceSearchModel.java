@@ -97,8 +97,8 @@ public class ResourceSearchModel implements IResourceSearchModel {
 
         Set<Resource> resourcesMatchingCriteria = null;
         if (!criteria.isEmpty()) {
-            resourcesMatchingCriteria = new HashSet<Resource>(resourceDAO
-                    .findSatisfyingAllCriterions(criteria, limitingResource));
+            resourcesMatchingCriteria = satisfatyingCriteriaAndLimiting(
+                    criteria, limitingResource);
             if (resourcesMatchingCriteria.isEmpty()) {
                 return new ArrayList<Resource>();
             }
@@ -111,6 +111,18 @@ public class ResourceSearchModel implements IResourceSearchModel {
         result.addAll(intersect(findMachines(name, limitingResource),
                 resourcesMatchingCriteria));
         return new ArrayList<Resource>(result);
+    }
+
+    private Set<Resource> satisfatyingCriteriaAndLimiting(
+            List<Criterion> criteria, boolean limitingResource) {
+        Set<Resource> result = new HashSet<Resource>();
+        for (Resource each : resourceDAO
+                .findSatisfyingCriterionsAtSomePoint(criteria)) {
+            if (each.isLimitingResource() == limitingResource) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     private List<Worker> findWorkers(String name, boolean limitingResource) {
