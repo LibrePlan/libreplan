@@ -34,8 +34,10 @@ import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
+import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -94,6 +96,7 @@ public class NewAllocationSelectorController extends
      * Initializes ZUL components
      */
     private void initController() {
+        doInitialSelection();
         // Add event listener onSelect to criterionsTree widget
         if (criterionsTree != null) {
             criterionsTree.addEventListener("onSelect", new EventListener() {
@@ -111,8 +114,7 @@ public class NewAllocationSelectorController extends
         criterionsTree.setTreeitemRenderer(criterionRenderer);
         listBoxResources.setItemRenderer(getListitemRenderer());
 
-        // Show all workers
-        refreshListBoxResources(getAllResources());
+        refreshListBoxResources();
 
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
@@ -141,13 +143,14 @@ public class NewAllocationSelectorController extends
                 }
             }
         });
-        doInitialSelection();
     }
 
-    private List<Resource> getAllResources() {
-        return (limitingResource) ? resourceSearchModel
-                .getAllLimitingResources() : resourceSearchModel
-                .getAllNonLimitingResources();
+    private List<? extends Resource> getAllResources() {
+        return query().byLimiting(limitingResource).execute();
+    }
+
+    private IResourcesQuery<?> query() {
+        return currentAllocationType.doQueryOn(resourceSearchModel);
     }
 
     private void doInitialSelection() {
@@ -156,10 +159,11 @@ public class NewAllocationSelectorController extends
         onType(currentAllocationType);
     }
 
-
     private void onType(AllocationType type) {
         currentAllocationType = type;
         listBoxResources.setDisabled(isGenericType());
+        Util.reloadBindings(criterionsTree);
+        refreshListBoxResources();
     }
 
     private static final EnumSet<AllocationType> genericTypes = EnumSet.of(
@@ -202,8 +206,10 @@ public class NewAllocationSelectorController extends
      * @param criterions
      */
     private void searchResources(String name, List<Criterion> criterions) {
-        final List<Resource> resources = resourceSearchModel.findResources(
-                name, criterions, limitingResource);
+        final List<? extends Resource> resources = query().byName(name)
+                .byCriteria(criterions)
+                .byLimiting(limitingResource)
+                .execute();
         refreshListBoxResources(resources);
     }
 
@@ -240,11 +246,15 @@ public class NewAllocationSelectorController extends
     }
 
     public void clearAll() {
-        refreshListBoxResources(getAllResources());
+        refreshListBoxResources();
         criterionsTree.setModel(getCriterions());
         clearSelection(listBoxResources);
         clearSelection(criterionsTree);
         doInitialSelection();
+    }
+
+    private void refreshListBoxResources() {
+        refreshListBoxResources(getAllResources());
     }
 
     public List<Resource> getSelectedWorkers() {
@@ -312,8 +322,7 @@ public class NewAllocationSelectorController extends
      * @return
      */
     public TreeModel getCriterions() {
-        Map<CriterionType, Set<Criterion>> criterions = resourceSearchModel
-                .getCriterions();
+        Map<CriterionType, Set<Criterion>> criterions = query().getCriteria();
 
         List<CriterionTreeNode> rootList = new ArrayList<CriterionTreeNode>();
         for (Entry<CriterionType, Set<Criterion>> entry : criterions.entrySet()) {

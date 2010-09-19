@@ -26,10 +26,12 @@ import java.util.List;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.ResourceAllocationFilterEnum;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
+import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -57,9 +59,22 @@ public class NewAllocationSelectorComboController extends
      * Does the actual search for workers
      * @param criterions
      */
-    private List<Resource> searchResources(List<Criterion> criterions) {
-        return resourceSearchModel.findResources("", criterions,
-                limitingResource);
+    private List<? extends Resource> searchResources(List<Criterion> criterions) {
+        return query(inferType(criterions)).byCriteria(criterions)
+                .byLimiting(limitingResource).execute();
+    }
+
+    private static ResourceEnum inferType(List<Criterion> criterions) {
+        if (criterions.isEmpty()) {
+            // FIXME resolve the ambiguity. One option is asking the user
+            return ResourceEnum.WORKER;
+        }
+        Criterion first = criterions.iterator().next();
+        return first.getType().getResource();
+    }
+
+    private IResourcesQuery<?> query(ResourceEnum resourceEnum) {
+        return resourceSearchModel.searchBy(resourceEnum);
     }
 
     /**
@@ -109,7 +124,7 @@ public class NewAllocationSelectorComboController extends
         if (!getSelectedItems().isEmpty()) {
             if (isGeneric()) {
                 List<Criterion> criteria = getSelectedCriterions();
-                List<Resource> resources = searchResources(criteria);
+                List<? extends Resource> resources = searchResources(criteria);
                 allocationsAdder.addGeneric(new HashSet<Criterion>(criteria),
                         resources);
             } else {

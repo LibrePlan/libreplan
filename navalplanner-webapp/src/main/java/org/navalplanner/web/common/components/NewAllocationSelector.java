@@ -26,6 +26,8 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
+import org.navalplanner.web.resources.search.IResourceSearchModel;
+import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
 import org.zkoss.zul.api.Radio;
 import org.zkoss.zul.api.Radiogroup;
@@ -47,6 +49,12 @@ public class NewAllocationSelector extends AllocationSelector {
                         .getSelectedCriterions()), controller
                         .getSelectedWorkers());
             }
+
+            @Override
+            public IResourcesQuery<?> doQueryOn(
+                    IResourceSearchModel resourceSearchModel) {
+                return resourceSearchModel.searchWorkers();
+            }
         },
         GENERIC_MACHINES(_("generic machines allocation")) {
             @Override
@@ -57,12 +65,24 @@ public class NewAllocationSelector extends AllocationSelector {
                         .getSelectedCriterions()), controller
                         .getSelectedWorkers());
             }
+
+            @Override
+            public IResourcesQuery<?> doQueryOn(
+                    IResourceSearchModel resourceSearchModel) {
+                return resourceSearchModel.searchMachines();
+            }
         },
         SPECIFIC(_("specific allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller,
                     INewAllocationsAdder allocationsAdder) {
                 allocationsAdder.addSpecific(controller.getSelectedWorkers());
+            }
+
+            @Override
+            public IResourcesQuery<?> doQueryOn(
+                    IResourceSearchModel resourceSearchModel) {
+                return resourceSearchModel.searchBoth();
             }
         };
 
@@ -106,6 +126,9 @@ public class NewAllocationSelector extends AllocationSelector {
         public abstract void addTo(
                 NewAllocationSelectorController newAllocationSelectorController,
                 INewAllocationsAdder allocationsAdder);
+
+        public abstract IResourcesQuery<?> doQueryOn(
+                IResourceSearchModel resourceSearchModel);
     }
 
     public NewAllocationSelectorController getController() {

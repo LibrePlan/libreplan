@@ -20,13 +20,17 @@
 
 package org.navalplanner.web.resources.search;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Conversation for worker search
@@ -35,40 +39,42 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public interface IResourceSearchModel {
 
-    /**
-     * Returns all resources filtering by name, criteria and limitingResource
-     *
-     * @param name
-     * @param criterions
-     * @param limitingResource
-     * @return
-     */
-    List<Resource> findResources(String name, List<Criterion> criteria, boolean limitingResource);
+    public interface IResourcesQuery<T extends Resource> {
+
+        IResourcesQuery<T> byName(String name);
+
+        IResourcesQuery<T> byCriteria(Collection<? extends Criterion> criteria);
+
+        IResourcesQuery<T> byLimiting(boolean limiting);
+
+        List<T> execute();
+
+        /**
+         * <p>
+         * Gets all {@link Criterion} and groups then by {@link CriterionType}
+         * with the condition that the {@link CriterionType#getResource()} is of
+         * a type compatible for this query.
+         * </p>
+         * For example if this query has been created by
+         * {@link IResourceSearchModel#searchWorkers()} only the criteria with
+         * criterion type such its resource is {@link ResourceEnum.WORKER}
+         * @return HashMap<CriterionType, Set<Criterion>>
+         */
+        Map<CriterionType, Set<Criterion>> getCriteria();
+    }
+
+    public IResourcesQuery<Worker> searchWorkers();
+
+    public IResourcesQuery<Machine> searchMachines();
+
+    public IResourcesQuery<?> searchBy(ResourceEnum resourceType);
+
+    public IResourcesQuery<Resource> searchBoth();
 
     /**
      * Returns all resources
      * @return
      */
     List<Resource> getAllResources();
-
-    /**
-     * Gets all {@link Criterion} and groups then by {@link CriterionType}
-     * @return HashMap<CriterionType, Set<Criterion>>
-     */
-    Map<CriterionType, Set<Criterion>> getCriterions();
-
-    /**
-     * Returns all limiting resources
-     *
-     * @return
-     */
-    List<Resource> getAllLimitingResources();
-
-    /**
-     * Returns all non-limiting resources
-     *
-     * @return
-     */
-    List<Resource> getAllNonLimitingResources();
 
 }
