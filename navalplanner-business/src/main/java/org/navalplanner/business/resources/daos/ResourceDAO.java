@@ -129,32 +129,6 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     }
 
     @Override
-    public List<Resource> findSatisfyingAllCriterions(
-            Collection<? extends Criterion> criteria,
-            boolean limitingResource) {
-        // FIXME don't query all resources. One possible solution is to do a
-        // query for the first criteria and then filter in memory for the
-        // remaining
-        return selectSatisfiyingAllCriterions(new ArrayList<Resource>(
-                getResources()), criteria, limitingResource);
-    }
-
-    private List<Resource> selectSatisfiyingAllCriterions(
-            List<Resource> resources,
-            Collection<? extends Criterion> criterions,
-            Boolean limitingResource) {
-
-        List<Resource> result = new ArrayList<Resource>();
-        for (Resource each : resources) {
-            if (limitingResource.equals(each.isLimitingResource())
-                    && each.satisfiesCriterions(criterions)) {
-                result.add(each);
-            }
-        }
-        return result;
-    }
-
-    @Override
     public List<Resource> findResourcesRelatedTo(List<Task> taskElements) {
         if (taskElements.isEmpty()) {
             return new ArrayList<Resource>();
