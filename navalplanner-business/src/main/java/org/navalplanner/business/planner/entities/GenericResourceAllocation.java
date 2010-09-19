@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
@@ -45,6 +46,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
@@ -106,6 +108,9 @@ public class GenericResourceAllocation extends
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
+    @OnCopy(Strategy.SHARE)
+    private ResourceEnum resourceType;
+
     private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
 
     @Valid
@@ -135,8 +140,24 @@ public class GenericResourceAllocation extends
 
     public static GenericResourceAllocation create(Task task,
             Collection<? extends Criterion> criterions) {
+        return create(task, inferType(criterions), criterions);
+    }
+
+    public static ResourceEnum inferType(
+            Collection<? extends Criterion> criterions) {
+        if (criterions.isEmpty()) {
+            return ResourceEnum.WORKER;
+        }
+        Criterion first = criterions.iterator().next();
+        return first.getType().getResource();
+    }
+
+    public static GenericResourceAllocation create(Task task,
+            ResourceEnum resourceType, Collection<? extends Criterion> criterions) {
+        Validate.notNull(resourceType);
         GenericResourceAllocation result = new GenericResourceAllocation(task);
         result.criterions = new HashSet<Criterion>(criterions);
+        result.resourceType = resourceType;
         result.setResourcesPerDayToAmount(1);
         return create(result);
     }
@@ -569,6 +590,10 @@ public class GenericResourceAllocation extends
             resetAssignmentsTo(GenericDayAssignment
                     .copyToAssignmentsWithoutParent(originAssignments));
         }
+    }
+
+    public ResourceEnum getResourceType() {
+        return resourceType != null ? resourceType : inferType(criterions);
     }
 
 }

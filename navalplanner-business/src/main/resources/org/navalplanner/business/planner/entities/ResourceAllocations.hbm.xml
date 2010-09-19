@@ -59,6 +59,12 @@
                 <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
+            <property name="resourceType">
+              <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
+              </type>
+            </property>
+
             <set name="genericDayAssignmentsContainers" cascade="all-delete-orphan">
                 <key column="RESOURCE_ALLOCATION_ID" />
                 <one-to-many class="GenericDayAssignmentsContainer"/>
