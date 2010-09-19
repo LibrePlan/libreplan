@@ -103,7 +103,7 @@ public class LimitingAllocationRow {
     public static LimitingAllocationRow create(Set<Criterion> criteria,
             Collection<? extends Resource> resources, Task task, int priority) {
         LimitingAllocationRow result = new LimitingAllocationRow(
-                GenericResourceAllocation.createForLimiting(task, criteria), task,
+                GenericResourceAllocation.create(task, criteria), task,
                 priority);
         result.setResources(resources);
         return result;

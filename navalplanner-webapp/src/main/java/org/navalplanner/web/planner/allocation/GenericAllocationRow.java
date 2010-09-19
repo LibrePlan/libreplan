@@ -103,7 +103,7 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     private GenericResourceAllocation createGenericAllocation(Task task) {
-        GenericResourceAllocation result = GenericResourceAllocation.createForLimiting(task, criterions);
+        GenericResourceAllocation result = GenericResourceAllocation.create(task, criterions);
         GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
         if (origin != null) {
             result.overrideAssignedHoursForResource(origin);
