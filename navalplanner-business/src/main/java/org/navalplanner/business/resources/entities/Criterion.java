@@ -107,21 +107,50 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     /**
      * Returns a string of criterion names separated by comma
-     *
+     * @deprecated use {@link #getCaptionFor(ResourceEnum, Collection)} instead
      * @param criteria
      * @return
      */
+    @Deprecated
     public static String getCaptionFor(Collection<? extends Criterion> criteria) {
-        List<String> names = new ArrayList<String>();
-        for (Criterion each: criteria) {
-            names.add(each.getName());
+        return getCaptionFor(ResourceEnum.WORKER, criteria);
+    }
+
+    /**
+     * Returns a string of criterion names separated by comma
+     * @param resourceType
+     * @param criteria
+     * @return
+     */
+    public static String getCaptionFor(ResourceEnum resourceType,
+            Collection<? extends Criterion> criteria) {
+        if (criteria.isEmpty()) {
+            return allCaptionFor(resourceType);
         }
-        return (names.isEmpty()) ? allWorkersCaption() : StringUtils.join(
-                names, ",");
+        List<String> result = new ArrayList<String>();
+        for (Criterion each : criteria) {
+            result.add(each.getName());
+        }
+        return StringUtils.join(result, ",");
+    }
+
+    private static String allCaptionFor(ResourceEnum resourceType) {
+        switch (resourceType) {
+        case WORKER:
+            return allWorkersCaption();
+        case MACHINE:
+            return allMachinesCaption();
+        default:
+            throw new RuntimeException("cant handle " + resourceType);
+        }
     }
 
     private static String allWorkersCaption() {
         return _("[generic all workers]");
+    }
+
+    private static String allMachinesCaption() {
+        return _("[generic all machines]");
     }
 
     public void updateUnvalidated(String name, Boolean active) {
