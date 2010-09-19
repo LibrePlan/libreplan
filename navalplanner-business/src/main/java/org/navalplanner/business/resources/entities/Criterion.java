@@ -50,8 +50,6 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
  */
 public class Criterion extends IntegrationEntity implements ICriterion {
 
-    private static final String ALL_WORKERS = _("[generic all workers]");
-
     public static Criterion createUnvalidated(String code, String name,
         CriterionType type, Criterion parent, Boolean active) {
 
@@ -118,7 +116,12 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         for (Criterion each: criteria) {
             names.add(each.getName());
         }
-        return (names.isEmpty()) ? Criterion.ALL_WORKERS : StringUtils.join(names, ",");
+        return (names.isEmpty()) ? allWorkersCaption() : StringUtils.join(
+                names, ",");
+    }
+
+    private static String allWorkersCaption() {
+        return _("[generic all workers]");
     }
 
     public void updateUnvalidated(String name, Boolean active) {
