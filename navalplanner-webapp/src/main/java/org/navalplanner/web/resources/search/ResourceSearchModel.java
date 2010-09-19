@@ -43,7 +43,6 @@ import org.hibernate.classic.Session;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
@@ -54,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -230,16 +228,7 @@ public class ResourceSearchModel implements IResourceSearchModel {
     }
 
     @Autowired
-    private IResourceDAO resourceDAO;
-
-    @Autowired
     private ICriterionDAO criterionDAO;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Resource> getAllResources() {
-        return resourceDAO.getResources();
-    }
 
     private IOnTransaction<Map<CriterionType, Set<Criterion>>> getCriterionsTree(
             final Class<? extends Resource> klassTheCriterionTypeMustBeRelatedWith) {

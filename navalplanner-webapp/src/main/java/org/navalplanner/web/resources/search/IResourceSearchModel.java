@@ -71,10 +71,4 @@ public interface IResourceSearchModel {
 
     public IResourcesQuery<Resource> searchBoth();
 
-    /**
-     * Returns all resources
-     * @return
-     */
-    List<Resource> getAllResources();
-
 }
