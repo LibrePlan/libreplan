@@ -72,7 +72,8 @@ public class GenericAllocationRow extends AllocationRow {
 
         result.criterions = resourceAllocation.getCriterions();
         result.resources = resourceDAO.findSatisfyingAllCriterionsAtSomePoint(result.criterions);
-        result.setName(Criterion.getCaptionFor(result.criterions));
+        result.setName(Criterion
+                .getCaptionForCriterionsFrom(resourceAllocation));
         return result;
     }
 

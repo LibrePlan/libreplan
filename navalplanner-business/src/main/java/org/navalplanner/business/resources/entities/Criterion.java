@@ -40,6 +40,7 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 
@@ -114,6 +115,12 @@ public class Criterion extends IntegrationEntity implements ICriterion {
     @Deprecated
     public static String getCaptionFor(Collection<? extends Criterion> criteria) {
         return getCaptionFor(ResourceEnum.WORKER, criteria);
+    }
+
+    public static String getCaptionForCriterionsFrom(
+            GenericResourceAllocation allocation) {
+        return getCaptionFor(allocation.getResourceType(),
+                allocation.getCriterions());
     }
 
     /**
