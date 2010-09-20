@@ -1195,11 +1195,15 @@ body .perspectives-column {
     background-color: #484e4d;
 }
 
+#watermark .timetracker_column {
+    height: 650px;
+}
+
 /* Workaround for zk 100% height just root components */
 .main-area {height: 100%;}
 .main-area .z-center-body > span {height: 100%; display: block;}
-.main-area .z-center-body > span > div { height: 100%;}
 .main-area .z-center-body > span > div > span { height: 100%; display: block;}
+.main-area .z-center-body > span > div { height: 100%;}
 .main-area .z-center-body > span > div > div  { height: 100%;}
 .main-area .z-center-body > span > div > div > span { height: 100%; display: block;}
 .main-area .z-center-body > span > div > div > div { height: 100%;}
