@@ -2,7 +2,7 @@
 
 <order-list xmlns="http://rest.ws.navalplanner.org">
   <order xmlns="http://rest.ws.navalplanner.org"
-    code="ORDER-1" name="Order" init-date="2010-01-01">
+    code="ORDER-1" name="Order UPDATED" init-date="2010-01-01">
     <children>
       <order-line-group code="ORDER-1-OE-1" name="Order element 1">
         <children>
@@ -13,14 +13,14 @@
           </order-line>
           <order-line code="ORDER-1-OE-1-2" name="Order element 1.2">
             <hours-groups>
-              <hours-group code="HG-1" working-hours="2500" resource-type="WORKER" />
+              <hours-group code="HG-2" working-hours="2500" resource-type="WORKER" />
             </hours-groups>
           </order-line>
         </children>
       </order-line-group>
       <order-line code="ORDER-1-OE-2" name="Order element 2">
         <hours-groups>
-          <hours-group code="HG-1" working-hours="1500" resource-type="WORKER" />
+          <hours-group code="HG-3" working-hours="1500" resource-type="WORKER" />
         </hours-groups>
       </order-line>
     </children>

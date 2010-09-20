@@ -954,7 +954,7 @@ Exemplo de ficheiro de importación
          <indirect-criterion-requirement code="20" is-valid="true"/>
         </criterion-requirements>
         <hours-group-list>
-         <hours-group code="HG-1" working-hours="2000" resource-type="WORKER" >
+         <hours-group code="HG-2" working-hours="2000" resource-type="WORKER" >
           <criterion-requirements>
            <indirect-criterion-requirement code="10" is-valid="true"/>
            <indirect-criterion-requirement code="20" is-valid="true"/>
@@ -977,7 +977,7 @@ Exemplo de ficheiro de importación
         <label name="medium" type="risk" />
       </labels>
       <hours-group-list>
-       <hours-group code="HG-1" working-hours="1500" resource-type="WORKER">
+       <hours-group code="HG-3" working-hours="1500" resource-type="WORKER">
         <criterion-requirements>
          <indirect-criterion-requirement code="10" is-valid="true"/>
          <indirect-criterion-requirement code="20" is-valid="true" />
