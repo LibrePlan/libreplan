@@ -38,11 +38,11 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -51,6 +51,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,8 +129,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             hours[i++] = each.getHours();
             List<Resource> resourcesFound = resourceDAO
                     .findSatisfyingAllCriterionsAtSomePoint(each.getCriterions());
-            allocationRowsHandler.addGeneric(each.getCriterions(),
-                    reloadResources(resourcesFound), each.getHours());
+            allocationRowsHandler.addGeneric(each.getResourceType(),
+                    each.getCriterions(), reloadResources(resourcesFound),
+                    each.getHours());
         }
         return ProportionalDistributor.create(hours);
     }
@@ -140,7 +142,19 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             Collection<? extends Resource> resourcesMatched) {
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
-        allocationRowsHandler.addGeneric(criterions, reloadResources);
+        // TODO infer the type proviosionally. It must be explicitly specified
+        // to avoid confusions when the criteria is empty
+        allocationRowsHandler.addGeneric(inferType(criterions), criterions,
+                reloadResources);
+    }
+
+    private static ResourceEnum inferType(
+            Collection<? extends Criterion> criterions) {
+        if (criterions.isEmpty()) {
+            return ResourceEnum.WORKER;
+        }
+        Criterion first = criterions.iterator().next();
+        return first.getType().getResource();
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -44,27 +45,31 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  */
 public class GenericAllocationRow extends AllocationRow {
 
-    private static GenericAllocationRow createDefault() {
+    private static GenericAllocationRow createDefault(ResourceEnum resourceType) {
+        Validate.notNull(resourceType);
         GenericAllocationRow result = new GenericAllocationRow();
         result.setName(_("Generic"));
         result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
+        result.resourceType = resourceType;
         return result;
     }
 
-    public static GenericAllocationRow create(Set<Criterion> criterions,
+    public static GenericAllocationRow create(ResourceEnum resourceType,
+            Set<Criterion> criterions,
             Collection<? extends Resource> resources) {
         Validate.isTrue(!resources.isEmpty());
         Validate.notNull(criterions);
-        GenericAllocationRow result = createDefault();
+        GenericAllocationRow result = createDefault(resourceType);
         result.criterions = criterions;
         result.resources = new ArrayList<Resource>(resources);
-        result.setName(Criterion.getCaptionFor(criterions));
+        result.setName(Criterion.getCaptionFor(resourceType, criterions));
         return result;
     }
 
     public static GenericAllocationRow from(
             GenericResourceAllocation resourceAllocation, IResourceDAO resourceDAO) {
-        GenericAllocationRow result = createDefault();
+        GenericAllocationRow result = createDefault(resourceAllocation
+                .getResourceType());
         result.setOrigin(resourceAllocation);
 
         result.setNonConsolidatedResourcesPerDay(resourceAllocation
@@ -77,6 +82,7 @@ public class GenericAllocationRow extends AllocationRow {
         return result;
     }
 
+    private ResourceEnum resourceType;
     private Set<Criterion> criterions;
     private List<Resource> resources;
 
@@ -104,7 +110,8 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     private GenericResourceAllocation createGenericAllocation(Task task) {
-        GenericResourceAllocation result = GenericResourceAllocation.create(task, criterions);
+        GenericResourceAllocation result = GenericResourceAllocation.create(
+                task, resourceType, criterions);
         GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
         if (origin != null) {
             result.overrideAssignedHoursForResource(origin);

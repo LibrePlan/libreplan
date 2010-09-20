@@ -29,13 +29,14 @@ import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 public class AllocationRowsHandler {
@@ -83,18 +84,20 @@ public class AllocationRowsHandler {
         }
     }
 
-    public void addGeneric(Set<Criterion> criterions,
+    public void addGeneric(ResourceEnum resourceType,
+            Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched) {
-        addGeneric(criterions, resourcesMatched, null);
+        addGeneric(resourceType, criterions, resourcesMatched, null);
     }
 
-    public void addGeneric(Set<Criterion> criterions,
+    public void addGeneric(ResourceEnum resourceType,
+            Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched, Integer hours) {
         if (resourcesMatched.isEmpty()) {
             formBinder.markNoResourcesMatchedByCriterions(criterions);
         } else {
             GenericAllocationRow genericAllocationRow = GenericAllocationRow
-                    .create(criterions, resourcesMatched);
+                    .create(resourceType, criterions, resourcesMatched);
             if (hours != null) {
                 genericAllocationRow.setHoursToInput(hours);
             }
