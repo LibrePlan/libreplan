@@ -34,11 +34,11 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
+import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -153,10 +153,11 @@ public abstract class AllocationRow {
     }
 
     public static List<AllocationRow> toRows(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations, IResourceDAO resourceDAO) {
+            Collection<? extends ResourceAllocation<?>> resourceAllocations,
+            IResourceSearchModel searchModel) {
         List<AllocationRow> result = new ArrayList<AllocationRow>();
-        result.addAll(GenericAllocationRow
-                .toGenericAllocations(resourceAllocations, resourceDAO));
+        result.addAll(GenericAllocationRow.toGenericAllocations(
+                resourceAllocations, searchModel));
         result.addAll(SpecificAllocationRow
                 .toSpecificAllocations(resourceAllocations));
         return result;

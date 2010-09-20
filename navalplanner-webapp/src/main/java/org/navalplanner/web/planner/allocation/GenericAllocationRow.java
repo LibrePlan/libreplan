@@ -34,11 +34,11 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.web.resources.search.IResourceSearchModel;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -68,7 +68,8 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     public static GenericAllocationRow from(
-            GenericResourceAllocation resourceAllocation, IResourceDAO resourceDAO) {
+            GenericResourceAllocation resourceAllocation,
+            IResourceSearchModel searchModel) {
         GenericAllocationRow result = createDefault(resourceAllocation
                 .getResourceType());
         result.setOrigin(resourceAllocation);
@@ -77,7 +78,10 @@ public class GenericAllocationRow extends AllocationRow {
                 .getNonConsolidatedResourcePerDay());
 
         result.criterions = resourceAllocation.getCriterions();
-        result.resources = resourceDAO.findSatisfyingAllCriterionsAtSomePoint(result.criterions);
+        result.resources = new ArrayList<Resource>(searchModel
+                .searchBy(resourceAllocation.getResourceType())
+                .byCriteria(resourceAllocation.getCriterions())
+                .byLimiting(resourceAllocation.isLimiting()).execute());
         result.setName(Criterion
                 .getCaptionForCriterionsFrom(resourceAllocation));
         return result;
@@ -93,11 +97,13 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     public static Collection<GenericAllocationRow> toGenericAllocations(
-            Collection<? extends ResourceAllocation<?>> resourceAllocations, IResourceDAO resourceDAO) {
+            Collection<? extends ResourceAllocation<?>> resourceAllocations,
+            IResourceSearchModel searchModel) {
         ArrayList<GenericAllocationRow> result = new ArrayList<GenericAllocationRow>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
-                result.add(from((GenericResourceAllocation) resourceAllocation, resourceDAO));
+                result.add(from((GenericResourceAllocation) resourceAllocation,
+                        searchModel));
             }
         }
         return result;

@@ -251,8 +251,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
         loadResources(this.task.getSatisfiedResourceAllocations());
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
-        List<AllocationRow> initialRows = AllocationRow.toRows(task
-                .getNonLimitingResourceAllocations(), resourceDAO);
+        List<AllocationRow> initialRows = AllocationRow.toRows(
+                task.getNonLimitingResourceAllocations(), searchModel);
         allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
                 createWorkerFinder());
         return allocationRowsHandler;
