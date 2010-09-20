@@ -21,6 +21,7 @@
 package org.navalplanner.web.resources.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -315,11 +316,7 @@ public class NewAllocationSelectorController extends
     }
 
     public List<AllocationType> getAllocationTypes() {
-        // FIXME: Change selection when generic machines allocation allowed
-        List<AllocationType> result = new ArrayList<AllocationType>();
-        result.add(AllocationType.GENERIC_WORKERS);
-        result.add(AllocationType.SPECIFIC);
-        return result;
+        return Arrays.asList(AllocationType.values());
     }
 
     /**
