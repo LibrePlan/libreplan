@@ -125,22 +125,6 @@ public class NewAllocationSelectorController extends
                         showSelectedAllocations();
                     }
                 });
-        listBoxResources.addEventListener(Events.ON_SELECT,
-                new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (currentAllocationType == AllocationType.GENERIC_WORKERS) {
-                            // FIXME: Change selection when generic machines
-                            // allocation allowed
-                            allocationTypeSelector.setSelectedIndex(1);
-                            AllocationType type = AllocationType
-                                    .getSelected(allocationTypeSelector);
-                            onType(type);
-                            showSelectedAllocations();
-                }
-            }
-        });
     }
 
     private List<? extends Resource> getAllResources() {
