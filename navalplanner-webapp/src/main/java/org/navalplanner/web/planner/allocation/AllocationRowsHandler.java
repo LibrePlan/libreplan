@@ -94,7 +94,8 @@ public class AllocationRowsHandler {
             Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resourcesMatched, Integer hours) {
         if (resourcesMatched.isEmpty()) {
-            formBinder.markNoResourcesMatchedByCriterions(criteria);
+            formBinder.markNoResourcesMatchedByCriterions(resourceType,
+                    criteria);
         } else {
             GenericAllocationRow genericAllocationRow = GenericAllocationRow
                     .create(resourceType, criteria, resourcesMatched);
@@ -102,7 +103,8 @@ public class AllocationRowsHandler {
                 genericAllocationRow.setHoursToInput(hours);
             }
             if (alreadyExistsAllocationFor(criteria)) {
-                formBinder.markThereisAlreadyAssignmentWith(criteria);
+                formBinder.markThereisAlreadyAssignmentWith(resourceType,
+                        criteria);
             } else {
                 currentRows.add(genericAllocationRow);
                 formBinder.newAllocationAdded();

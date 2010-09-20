@@ -39,6 +39,7 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -492,21 +493,22 @@ public class FormBinder {
         return resourcesDescriptions;
     }
 
-    public void markNoResourcesMatchedByCriterions(
+    public void markNoResourcesMatchedByCriterions(ResourceEnum resourceType,
             Collection<? extends Criterion> criterions) {
         messagesForUser
                 .showMessage(
                         Level.ERROR,
                         _(
                                 "there are no resources for required criteria: {0}. So the generic allocation can't be added",
-                        Criterion.getCaptionFor(criterions)));
+                                Criterion.getCaptionFor(resourceType,
+                                        criterions)));
     }
 
-    public void markThereisAlreadyAssignmentWith(
+    public void markThereisAlreadyAssignmentWith(ResourceEnum resourceType,
             Collection<? extends Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR, _(
                 "already exists an allocation for criteria {0}",
-                Criterion.getCaptionFor(criterions)));
+                        Criterion.getCaptionFor(resourceType, criterions)));
     }
 
     public void markEndDateMustBeAfterStartDate() {
