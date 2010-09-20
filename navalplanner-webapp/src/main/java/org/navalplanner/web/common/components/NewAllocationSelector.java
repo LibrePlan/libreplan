@@ -22,6 +22,7 @@ package org.navalplanner.web.common.components;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -47,9 +48,11 @@ public class NewAllocationSelector extends AllocationSelector {
             @Override
             public void addTo(NewAllocationSelectorController controller,
                     INewAllocationsAdder allocationsAdder) {
-                allocationsAdder.addGeneric(new HashSet<Criterion>(controller
-                        .getSelectedCriterions()), controller
-                        .getSelectedWorkers());
+                Set<Criterion> criteria = new HashSet<Criterion>(
+                        controller
+                        .getSelectedCriterions());
+                allocationsAdder.addGeneric(ResourceEnum.WORKER, criteria,
+                        controller.getSelectedWorkers());
             }
 
             @Override
@@ -68,9 +71,11 @@ public class NewAllocationSelector extends AllocationSelector {
             public void addTo(
                     NewAllocationSelectorController controller,
                     INewAllocationsAdder allocationsAdder) {
-                allocationsAdder.addGeneric(new HashSet<Criterion>(controller
-                        .getSelectedCriterions()), controller
-                        .getSelectedWorkers());
+                List<Criterion> criteria = controller.getSelectedCriterions();
+                allocationsAdder.addGeneric(
+                        ResourceEnum.MACHINE,
+                        new HashSet<Criterion>(criteria),
+                        controller.getSelectedWorkers());
             }
 
             @Override

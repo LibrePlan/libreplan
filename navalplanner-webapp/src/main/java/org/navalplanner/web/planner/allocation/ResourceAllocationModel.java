@@ -138,23 +138,13 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void addGeneric(Set<Criterion> criterions,
+    public void addGeneric(ResourceEnum resourceType,
+            Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched) {
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
-        // TODO infer the type proviosionally. It must be explicitly specified
-        // to avoid confusions when the criteria is empty
-        allocationRowsHandler.addGeneric(inferType(criterions), criterions,
+        allocationRowsHandler.addGeneric(resourceType, criterions,
                 reloadResources);
-    }
-
-    private static ResourceEnum inferType(
-            Collection<? extends Criterion> criterions) {
-        if (criterions.isEmpty()) {
-            return ResourceEnum.WORKER;
-        }
-        Criterion first = criterions.iterator().next();
-        return first.getType().getResource();
     }
 
     @Override

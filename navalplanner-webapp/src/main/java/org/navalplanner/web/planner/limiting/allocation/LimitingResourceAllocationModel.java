@@ -42,6 +42,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.planner.order.PlanningState;
@@ -101,21 +102,22 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
     @Override
     @Transactional(readOnly = true)
-    public void addGeneric(Set<Criterion> criteria,
+    public void addGeneric(ResourceEnum resourceType, Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
         if (resources.isEmpty()) {
             getMessagesForUser()
                     .showMessage(Level.ERROR,
                             _("there are no resources for required criteria: {0}. " +
                                     "So the generic allocation can't be added",
-                                    Criterion.getCaptionFor(criteria)));
+                            Criterion.getCaptionFor(resourceType, criteria)));
         }
 
         if (resources.size() >= 1) {
             if (planningState != null) {
                 planningState.reassociateResourcesWithSession();
             }
-            addGenericResourceAllocation(criteria, reloadResources(resources));
+            addGenericResourceAllocation(resourceType, criteria,
+                    reloadResources(resources));
         }
     }
 
@@ -132,7 +134,8 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         return limitingResourceAllocationController.getMessagesForUser();
     }
 
-    private void addGenericResourceAllocation(Set<Criterion> criteria,
+    private void addGenericResourceAllocation(ResourceEnum resourceType,
+            Set<Criterion> criteria,
             Collection<? extends Resource> resources) {
 
         if (isNew(criteria, resources)) {

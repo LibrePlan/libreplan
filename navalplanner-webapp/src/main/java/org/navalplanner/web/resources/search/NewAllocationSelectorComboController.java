@@ -125,8 +125,9 @@ public class NewAllocationSelectorComboController extends
             if (isGeneric()) {
                 List<Criterion> criteria = getSelectedCriterions();
                 List<? extends Resource> resources = searchResources(criteria);
-                allocationsAdder.addGeneric(new HashSet<Criterion>(criteria),
-                        resources);
+                ResourceEnum type = inferType(criteria);
+                allocationsAdder.addGeneric(type, new HashSet<Criterion>(
+                        criteria), resources);
             } else {
                 allocationsAdder.addSpecific(getSelectedResources());
             }

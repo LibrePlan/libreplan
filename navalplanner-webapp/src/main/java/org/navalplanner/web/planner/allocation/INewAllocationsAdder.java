@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -33,6 +34,7 @@ public interface INewAllocationsAdder {
 
     public void addSpecific(Collection<? extends Resource> resources);
 
-    public void addGeneric(Set<Criterion> criterions,
+    public void addGeneric(ResourceEnum resourceType,
+            Set<Criterion> criterions,
             Collection<? extends Resource> resourcesMatched);
 }
