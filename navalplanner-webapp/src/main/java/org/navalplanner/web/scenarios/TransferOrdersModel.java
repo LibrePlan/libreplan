@@ -152,6 +152,7 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                     _("Source and destination scenarios should be different"));
         }
 
+        orderDAO.save(order);
         OrderVersion sourceOrderVersion = order
                 .getOrderVersionFor(sourceScenario);
         if (sourceOrderVersion == null) {
@@ -168,7 +169,6 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                     _("Order version is the same in source and destination scenarios"));
         }
 
-        orderDAO.save(order);
         order.useSchedulingDataFor(sourceOrderVersion);
 
         OrderVersion newOrderVersion = OrderVersion
