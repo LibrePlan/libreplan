@@ -21,8 +21,10 @@
 package org.navalplanner.web.common.components;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
@@ -55,6 +57,11 @@ public class NewAllocationSelector extends AllocationSelector {
                     IResourceSearchModel resourceSearchModel) {
                 return resourceSearchModel.searchWorkers();
             }
+
+            @Override
+            public String asCaption(List<Criterion> criterions) {
+                return Criterion.getCaptionFor(ResourceEnum.WORKER, criterions);
+            }
         },
         GENERIC_MACHINES(_("generic machines allocation")) {
             @Override
@@ -71,6 +78,12 @@ public class NewAllocationSelector extends AllocationSelector {
                     IResourceSearchModel resourceSearchModel) {
                 return resourceSearchModel.searchMachines();
             }
+
+            @Override
+            public String asCaption(List<Criterion> criterions) {
+                return Criterion
+                        .getCaptionFor(ResourceEnum.MACHINE, criterions);
+            }
         },
         SPECIFIC(_("specific allocation")) {
             @Override
@@ -83,6 +96,11 @@ public class NewAllocationSelector extends AllocationSelector {
             public IResourcesQuery<?> doQueryOn(
                     IResourceSearchModel resourceSearchModel) {
                 return resourceSearchModel.searchBoth();
+            }
+
+            @Override
+            public String asCaption(List<Criterion> criterions) {
+                throw new UnsupportedOperationException();
             }
         };
 
@@ -129,6 +147,8 @@ public class NewAllocationSelector extends AllocationSelector {
 
         public abstract IResourcesQuery<?> doQueryOn(
                 IResourceSearchModel resourceSearchModel);
+
+        public abstract String asCaption(List<Criterion> criterions);
     }
 
     public NewAllocationSelectorController getController() {

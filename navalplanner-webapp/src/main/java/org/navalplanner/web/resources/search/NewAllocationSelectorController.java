@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.resources.search;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -452,27 +450,21 @@ public class NewAllocationSelectorController extends
     }
 
     public void showSelectedAllocations() {
-        List<String> result = new ArrayList<String>();
+        allocationSelectedItems.setValue(buildSelectedAllocationsString());
+    }
+
+    private String buildSelectedAllocationsString() {
 
         if (currentAllocationType == AllocationType.SPECIFIC) {
-            for (Object each : listBoxResources.getSelectedItems()) {
-                result.add(((Resource) ((Listitem) each).getValue())
-                        .getShortDescription());
+            List<String> result = new ArrayList<String>();
+            for (Resource each : getSelectedResourcesOnListbox()) {
+                result.add(each.getShortDescription());
             }
+            return StringUtils.join(result, ",");
         } else {
-            for (Treeitem each : (Set<Treeitem>) criterionsTree
-                    .getSelectedItems()) {
-                Object node = ((CriterionTreeNode) each.getValue()).getData();
-                if (node instanceof Criterion) {
-                    result.add(((Criterion) node).getCompleteName());
-                }
-            }
-            if (result.isEmpty()) {
-                result.add(_("[generic all workers]"));
-            }
+            List<Criterion> criterions = getSelectedCriterions();
+            return currentAllocationType.asCaption(criterions);
         }
-
-        allocationSelectedItems.setValue(StringUtils.join(result, ","));
     }
 
 }
