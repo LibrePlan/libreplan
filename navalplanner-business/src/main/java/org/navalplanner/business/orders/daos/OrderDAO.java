@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -183,8 +184,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Override
     public List<Order> getOrdersByReadAuthorization(User user) {
-        if (user.getRoles().contains(UserRole.ROLE_READ_ALL_ORDERS) ||
-            user.getRoles().contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        Set<UserRole> roles = user.getAllRoles();
+        if (roles.contains(UserRole.ROLE_READ_ALL_ORDERS) ||
+            roles.contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return getOrders();
         }
         else {

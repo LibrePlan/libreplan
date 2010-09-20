@@ -109,6 +109,19 @@ public class User extends BaseEntity {
         roles.remove(role);
     }
 
+    /**
+     * Retrieves UserRoles from related Profiles and returns them
+     * together with the UserRoles related directly to the User entity
+     * @return A list of UserRole objects
+     */
+    public Set<UserRole> getAllRoles() {
+        Set<UserRole> allRoles = new HashSet<UserRole>(roles);
+        for(Profile profile : getProfiles()) {
+            allRoles.addAll(profile.getRoles());
+        }
+        return allRoles;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
