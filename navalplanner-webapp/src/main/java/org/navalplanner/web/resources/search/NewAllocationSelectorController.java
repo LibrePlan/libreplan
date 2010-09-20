@@ -248,7 +248,7 @@ public class NewAllocationSelectorController extends
     }
 
     public List<Resource> getSelectedWorkers() {
-        if (currentAllocationType == AllocationType.GENERIC_WORKERS) {
+        if (isGenericType()) {
             return allResourcesShown();
         } else {
             return getSelectedResourcesOnListbox();
