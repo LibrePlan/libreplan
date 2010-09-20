@@ -71,7 +71,7 @@ public class GenericAllocationRow extends AllocationRow {
                 .getNonConsolidatedResourcePerDay());
 
         result.criterions = resourceAllocation.getCriterions();
-        result.resources = resourceDAO.findSatisfyingCriterionsAtSomePoint(result.criterions);
+        result.resources = resourceDAO.findSatisfyingAllCriterionsAtSomePoint(result.criterions);
         result.setName(Criterion.getNames(result.criterions));
         return result;
     }

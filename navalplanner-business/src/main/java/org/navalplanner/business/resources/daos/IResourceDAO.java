@@ -60,12 +60,12 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
             boolean limitingResource);
 
     /**
-     * Returns a list of {@link Resource} satisfying at least one criterion from criterions
-     *
+     * Returns a list of {@link Resource} satisfying all criteria at some point
+     * in time
      * @param criterions
      * @return
      */
-    List<Resource> findSatisfyingCriterionsAtSomePoint(Collection<? extends Criterion> criterions);
+    List<Resource> findSatisfyingAllCriterionsAtSomePoint(Collection<? extends Criterion> criterions);
 
     /**
      * Returns all {@link Machine}

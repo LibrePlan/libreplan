@@ -99,7 +99,7 @@ abstract class QueueTaskGenerator {
             private List<Resource> findResources(final Criterion criterion,
                     final IResourceDAO resourcesDAO) {
                 return resourcesDAO
-                        .findSatisfyingCriterionsAtSomePoint(Collections
+                        .findSatisfyingAllCriterionsAtSomePoint(Collections
                                 .singletonList(criterion));
             }
         };

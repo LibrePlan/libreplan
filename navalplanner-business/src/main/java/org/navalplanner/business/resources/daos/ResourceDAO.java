@@ -92,14 +92,27 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     }
 
     @Override
-    public List<Resource> findSatisfyingCriterionsAtSomePoint(
+    public List<Resource> findSatisfyingAllCriterionsAtSomePoint(
             Collection<? extends Criterion> criterions) {
         Validate.notNull(criterions);
         Validate.noNullElements(criterions);
         if (criterions.isEmpty()) {
             return list(Resource.class);
         }
-        return findRelatedWithSomeOfTheCriterions(criterions);
+        return selectSatisfiyingAllAtSomePoint(
+                findRelatedWithSomeOfTheCriterions(criterions), criterions);
+    }
+
+    private List<Resource> selectSatisfiyingAllAtSomePoint(
+            List<Resource> resources,
+            Collection<? extends Criterion> criterions) {
+        List<Resource> result = new ArrayList<Resource>();
+        for (Resource each : resources) {
+            if (each.satisfiesCriterionsAtSomePoint(criterions)) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -107,8 +120,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
             Collection<? extends Criterion> criterions) {
         String strQuery = "SELECT DISTINCT resource "
                 + "FROM Resource resource "
-                + "LEFT OUTER JOIN resource.criterionSatisfactions criterionSatisfactions "
-                + "LEFT OUTER JOIN criterionSatisfactions.criterion criterion "
+                + "JOIN resource.criterionSatisfactions criterionSatisfactions "
+                + "JOIN criterionSatisfactions.criterion criterion "
                 + "WHERE criterion IN (:criterions)";
         Query query = getSession().createQuery(strQuery);
         query.setParameterList("criterions", criterions);

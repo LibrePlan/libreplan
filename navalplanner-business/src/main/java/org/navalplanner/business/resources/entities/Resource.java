@@ -44,6 +44,7 @@ import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -54,6 +55,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
+import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -965,6 +967,13 @@ public abstract class Resource extends IntegrationEntity {
         ICriterion compositedCriterion = CriterionCompounder.buildAnd(
                 criterions).getResult();
         return compositedCriterion.isSatisfiedBy(this);
+    }
+
+    public boolean satisfiesCriterionsAtSomePoint(
+            Collection<? extends Criterion> criterions) {
+        AvailabilityTimeLine availability = AvailabilityCalculator
+                .getCriterionsAvailabilityFor(criterions, this);
+        return !availability.getValidPeriods().isEmpty();
     }
 
     @Valid

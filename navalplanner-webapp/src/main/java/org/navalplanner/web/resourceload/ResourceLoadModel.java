@@ -919,7 +919,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         else {
             resources =resourcesDAO
-                .findSatisfyingCriterionsAtSomePoint(criteriaToShow());
+                .findSatisfyingAllCriterionsAtSomePoint(criteriaToShow());
         }
         for (Resource resource : resources) {
             resourcesDAO.reattach(resource);

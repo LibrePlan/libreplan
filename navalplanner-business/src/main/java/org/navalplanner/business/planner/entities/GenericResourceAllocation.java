@@ -507,7 +507,7 @@ public class GenericResourceAllocation extends
 
     @Override
     public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
-        return resourceDAO.findSatisfyingCriterionsAtSomePoint(getCriterions());
+        return resourceDAO.findSatisfyingAllCriterionsAtSomePoint(getCriterions());
     }
 
     public static Map<Criterion, List<GenericResourceAllocation>> byCriterion(

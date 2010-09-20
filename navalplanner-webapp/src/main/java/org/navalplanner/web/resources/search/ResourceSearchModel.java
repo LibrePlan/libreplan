@@ -117,7 +117,7 @@ public class ResourceSearchModel implements IResourceSearchModel {
             List<Criterion> criteria, boolean limitingResource) {
         Set<Resource> result = new HashSet<Resource>();
         for (Resource each : resourceDAO
-                .findSatisfyingCriterionsAtSomePoint(criteria)) {
+                .findSatisfyingAllCriterionsAtSomePoint(criteria)) {
             if (each.isLimitingResource() == limitingResource) {
                 result.add(each);
             }
