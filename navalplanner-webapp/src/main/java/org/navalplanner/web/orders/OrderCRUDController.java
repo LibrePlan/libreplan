@@ -243,6 +243,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("bdFilters");
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
+
+        checkCreationPermissions();
     }
 
     private void initEditOrderElementWindow() {
@@ -895,7 +897,6 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderModel.prepareForCreate();
             prepareEditWindow();
             showEditWindow(_("Create order"));
-            checkCreationPermissions();
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
@@ -1223,14 +1224,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     /**
      * Checks the creation permissions of the current user and enables/disables
-     * the save buttons accordingly.
+     * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            saveOrderAndContinueButton.setDisabled(false);
-        }
-        else {
-            saveOrderAndContinueButton.setDisabled(true);
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            createOrderButton.setDisabled(true);
+            createOrderFromTemplateButton.setDisabled(true);
         }
     }
 
