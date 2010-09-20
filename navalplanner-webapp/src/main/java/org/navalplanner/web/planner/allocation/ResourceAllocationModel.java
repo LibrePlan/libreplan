@@ -110,13 +110,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 .addSpecificResourceAllocationFor(reloadResources(resources));
     }
 
-    private List<Resource> reloadResources(
-            Collection<? extends Resource> resources) {
-        List<Resource> result = new ArrayList<Resource>();
-        for (Resource each : resources) {
+    @SuppressWarnings("unchecked")
+    private <T extends Resource> List<T> reloadResources(
+            Collection<? extends T> resources) {
+        List<T> result = new ArrayList<T>();
+        for (T each : resources) {
             Resource reloaded = resourceDAO.findExistingEntity(each.getId());
             reattachResource(reloaded);
-            result.add(reloaded);
+            result.add((T) reloaded);
         }
         return result;
     }
@@ -263,17 +264,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
             @Override
             public Collection<Worker> findWorkersMatching(
-                    Collection<? extends Criterion> requiredCriterions) {
+                    Collection<? extends Criterion> requiredCriteria) {
                 reassociateResourcesWithSession();
-                List<Resource> allSatisfyingCriterions;
-                if (!requiredCriterions.isEmpty()) {
-                    allSatisfyingCriterions = resourceDAO
-                            .findSatisfyingAllCriterionsAtSomePoint(requiredCriterions);
-                } else {
-                    allSatisfyingCriterions = new ArrayList<Resource>();
+                List<Worker> workers = new ArrayList<Worker>();
+                if (!requiredCriteria.isEmpty()) {
+                    workers = searchModel.searchWorkers()
+                            .byCriteria(requiredCriteria).execute();
                 }
-                return Resource.workers(reloadResources(Resource
-                        .workers(allSatisfyingCriterions)));
+                return reloadResources(workers);
             }
         };
     }
