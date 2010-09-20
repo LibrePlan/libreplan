@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,12 +56,12 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     public static GenericAllocationRow create(ResourceEnum resourceType,
-            Set<Criterion> criterions,
+            Collection<? extends Criterion> criterions,
             Collection<? extends Resource> resources) {
         Validate.isTrue(!resources.isEmpty());
         Validate.notNull(criterions);
         GenericAllocationRow result = createDefault(resourceType);
-        result.criterions = criterions;
+        result.criterions = new HashSet<Criterion>(criterions);
         result.resources = new ArrayList<Resource>(resources);
         result.setName(Criterion.getCaptionFor(resourceType, criterions));
         return result;

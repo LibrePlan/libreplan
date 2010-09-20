@@ -102,7 +102,8 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
     @Override
     @Transactional(readOnly = true)
-    public void addGeneric(ResourceEnum resourceType, Set<Criterion> criteria,
+    public void addGeneric(ResourceEnum resourceType,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources) {
         if (resources.isEmpty()) {
             getMessagesForUser()
@@ -135,7 +136,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     }
 
     private void addGenericResourceAllocation(ResourceEnum resourceType,
-            Set<Criterion> criteria,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources) {
 
         if (isNew(criteria, resources)) {
@@ -146,7 +147,8 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         }
     }
 
-    private boolean isNew(Set<Criterion> criteria, Collection<? extends Resource> resources) {
+    private boolean isNew(Collection<? extends Criterion> criteria,
+            Collection<? extends Resource> resources) {
         LimitingAllocationRow allocationRow = getLimitingAllocationRow();
 
         if (allocationRow == null || allocationRow.isSpecific()) {

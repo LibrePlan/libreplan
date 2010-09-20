@@ -21,7 +21,6 @@
 package org.navalplanner.web.resources.search;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.navalplanner.business.resources.entities.Criterion;
@@ -126,8 +125,7 @@ public class NewAllocationSelectorComboController extends
                 List<Criterion> criteria = getSelectedCriterions();
                 List<? extends Resource> resources = searchResources(criteria);
                 ResourceEnum type = inferType(criteria);
-                allocationsAdder.addGeneric(type, new HashSet<Criterion>(
-                        criteria), resources);
+                allocationsAdder.addGeneric(type, criteria, resources);
             } else {
                 allocationsAdder.addSpecific(getSelectedResources());
             }

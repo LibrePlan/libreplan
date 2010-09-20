@@ -20,7 +20,6 @@
 package org.navalplanner.web.planner.allocation;
 
 import java.util.Collection;
-import java.util.Set;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -35,6 +34,6 @@ public interface INewAllocationsAdder {
     public void addSpecific(Collection<? extends Resource> resources);
 
     public void addGeneric(ResourceEnum resourceType,
-            Set<Criterion> criterions,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resourcesMatched);
 }

@@ -19,8 +19,6 @@
  */
 package org.navalplanner.web.planner.limiting.allocation;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -100,7 +98,8 @@ public class LimitingAllocationRow {
         }
     }
 
-    public static LimitingAllocationRow create(Set<Criterion> criteria,
+    public static LimitingAllocationRow create(
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources, Task task, int priority) {
         LimitingAllocationRow result = new LimitingAllocationRow(
                 GenericResourceAllocation.create(task, criteria), task,

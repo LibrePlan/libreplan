@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -503,7 +502,8 @@ public class FormBinder {
                         Criterion.getCaptionFor(criterions)));
     }
 
-    public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
+    public void markThereisAlreadyAssignmentWith(
+            Collection<? extends Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR, _(
                 "already exists an allocation for criteria {0}",
                 Criterion.getCaptionFor(criterions)));

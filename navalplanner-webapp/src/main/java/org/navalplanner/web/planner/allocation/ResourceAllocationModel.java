@@ -139,11 +139,11 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     @Override
     @Transactional(readOnly = true)
     public void addGeneric(ResourceEnum resourceType,
-            Set<Criterion> criterions,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resourcesMatched) {
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
-        allocationRowsHandler.addGeneric(resourceType, criterions,
+        allocationRowsHandler.addGeneric(resourceType, criteria,
                 reloadResources);
     }
 

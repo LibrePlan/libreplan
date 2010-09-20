@@ -85,24 +85,24 @@ public class AllocationRowsHandler {
     }
 
     public void addGeneric(ResourceEnum resourceType,
-            Set<Criterion> criterions,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resourcesMatched) {
-        addGeneric(resourceType, criterions, resourcesMatched, null);
+        addGeneric(resourceType, criteria, resourcesMatched, null);
     }
 
     public void addGeneric(ResourceEnum resourceType,
-            Set<Criterion> criterions,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resourcesMatched, Integer hours) {
         if (resourcesMatched.isEmpty()) {
-            formBinder.markNoResourcesMatchedByCriterions(criterions);
+            formBinder.markNoResourcesMatchedByCriterions(criteria);
         } else {
             GenericAllocationRow genericAllocationRow = GenericAllocationRow
-                    .create(resourceType, criterions, resourcesMatched);
+                    .create(resourceType, criteria, resourcesMatched);
             if (hours != null) {
                 genericAllocationRow.setHoursToInput(hours);
             }
-            if (alreadyExistsAllocationFor(criterions)) {
-                formBinder.markThereisAlreadyAssignmentWith(criterions);
+            if (alreadyExistsAllocationFor(criteria)) {
+                formBinder.markThereisAlreadyAssignmentWith(criteria);
             } else {
                 currentRows.add(genericAllocationRow);
                 formBinder.newAllocationAdded();
@@ -118,11 +118,13 @@ public class AllocationRowsHandler {
         return !getAllocationsFor(resource).isEmpty();
     }
 
-    private boolean alreadyExistsAllocationFor(Set<Criterion> criterions) {
+    private boolean alreadyExistsAllocationFor(
+            Collection<? extends Criterion> criterions) {
+        Set<Criterion> criterionsSet = new HashSet<Criterion>(criterions);
         List<GenericAllocationRow> generic = AllocationRow
                 .getGeneric(getCurrentRows());
         for (GenericAllocationRow each : generic) {
-            if (each.hasSameCriterions(criterions)) {
+            if (each.hasSameCriterions(criterionsSet)) {
                 return true;
             }
         }
