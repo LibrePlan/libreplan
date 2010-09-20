@@ -23,11 +23,12 @@ package org.navalplanner.web.resources.search;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -155,9 +156,17 @@ public class NewAllocationSelectorController extends
         onType(currentAllocationType);
     }
 
+
     private void onType(AllocationType type) {
-        listBoxResources.setDisabled(AllocationType.GENERIC_WORKERS == type);
         currentAllocationType = type;
+        listBoxResources.setDisabled(isGenericType());
+    }
+
+    private static final EnumSet<AllocationType> genericTypes = EnumSet.of(
+            AllocationType.GENERIC_MACHINES, AllocationType.GENERIC_WORKERS);
+
+    private boolean isGenericType() {
+        return genericTypes.contains(currentAllocationType);
     }
 
     @SuppressWarnings("unchecked")
