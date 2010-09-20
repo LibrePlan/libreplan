@@ -141,9 +141,9 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
         if (isNew(criteria, resources)) {
             limitingAllocationRows.clear();
-            LimitingAllocationRow allocationRow = LimitingAllocationRow.create(
-                    criteria, resources, task, LimitingAllocationRow.DEFAULT_PRIORITY);
-            limitingAllocationRows.add(allocationRow);
+            limitingAllocationRows.add(LimitingAllocationRow.create(
+                    resourceType, criteria, resources, task,
+                    LimitingAllocationRow.DEFAULT_PRIORITY));
         }
     }
 

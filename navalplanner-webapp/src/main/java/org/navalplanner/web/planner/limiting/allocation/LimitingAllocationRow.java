@@ -33,6 +33,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 
 /**
@@ -98,12 +99,12 @@ public class LimitingAllocationRow {
         }
     }
 
-    public static LimitingAllocationRow create(
+    public static LimitingAllocationRow create(ResourceEnum resourceType,
             Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources, Task task, int priority) {
         LimitingAllocationRow result = new LimitingAllocationRow(
-                GenericResourceAllocation.create(task, criteria), task,
-                priority);
+                GenericResourceAllocation.create(task, resourceType, criteria),
+                task, priority);
         result.setResources(resources);
         return result;
     }
