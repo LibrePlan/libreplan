@@ -54,6 +54,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -75,6 +76,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IResourceSearchModel searchModel;
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
@@ -127,8 +131,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         int i = 0;
         for (AggregatedHoursGroup each : hoursGroups) {
             hours[i++] = each.getHours();
-            List<Resource> resourcesFound = resourceDAO
-                    .findSatisfyingAllCriterionsAtSomePoint(each.getCriterions());
+            List<? extends Resource> resourcesFound = searchModel
+                    .searchBy(each.getResourceType())
+                    .byCriteria(each.getCriterions()).execute();
             allocationRowsHandler.addGeneric(each.getResourceType(),
                     each.getCriterions(), reloadResources(resourcesFound),
                     each.getHours());
