@@ -41,12 +41,38 @@ public interface IResourceSearchModel {
 
     public interface IResourcesQuery<T extends Resource> {
 
+        /**
+         * Restrict the result to resources that have name as a substring. The
+         * match is case insensitive.
+         *
+         * @param name
+         * @return this same object in order to cascade calls
+         */
         IResourcesQuery<T> byName(String name);
 
+        /**
+         * Restrict the result to a list of {@link Resource} satisfying all
+         * criteria at some point in time
+         *
+         * @param criteria
+         * @return this same object in order to cascade calls
+         */
         IResourcesQuery<T> byCriteria(Collection<? extends Criterion> criteria);
 
+        /**
+         * Restrict resources to the ones having the provided limiting value. By
+         * default, if this method is not called, the resources are restricted
+         * to the ones not limiting.
+         * @param limiting
+         * @return this same object in order to cascade calls
+         */
         IResourcesQuery<T> byLimiting(boolean limiting);
 
+        /**
+         * Retrieve the list of resources that match the restrictions specified.
+         *
+         * @return
+         */
         List<T> execute();
 
         /**
@@ -63,12 +89,30 @@ public interface IResourceSearchModel {
         Map<CriterionType, Set<Criterion>> getCriteria();
     }
 
+    /**
+     * Do the search limited to workers
+     *
+     * @return
+     */
     public IResourcesQuery<Worker> searchWorkers();
 
+    /**
+     * Do the search limited to machines
+     * @return
+     */
     public IResourcesQuery<Machine> searchMachines();
 
+    /**
+     * Search machines or workers based on the value of resourceType
+     * @param resourceType
+     * @return
+     */
     public IResourcesQuery<?> searchBy(ResourceEnum resourceType);
 
+    /**
+     * Search both resources and machines
+     * @return
+     */
     public IResourcesQuery<Resource> searchBoth();
 
 }
