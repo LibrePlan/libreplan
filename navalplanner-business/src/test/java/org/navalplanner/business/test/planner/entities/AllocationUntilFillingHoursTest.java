@@ -73,11 +73,19 @@ public class AllocationUntilFillingHoursTest {
     }
 
     @Test
-    public void theNewEndDateIsWhenAllTheHoursAreAllocated() {
+    public void theEndDateIsTheDayAfterAllTheHoursAreAllocatedIfItIsCompletelyFilled() {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
         LocalDate endDate = ResourceAllocation.allocating(allocations)
                 .untilAllocating(32);
         assertThat(endDate, equalTo(startDate.plusDays(2)));
+    }
+
+    @Test
+    public void theEndDateIsTheSameDayIfItIsNotCompletelyFilled() {
+        givenSpecificAllocations(ResourcesPerDay.amount(2));
+        LocalDate endDate = ResourceAllocation.allocating(allocations)
+                .untilAllocating(31);
+        assertThat(endDate, equalTo(startDate.plusDays(1)));
     }
 
     @Test

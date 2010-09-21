@@ -264,9 +264,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 protected void markUnsatisfied(ResourceAllocation<?> allocation) {
                     allocation.markAsUnsatisfied();
                 }
+
             };
-            IntraDayDate result = allocator.untilAllocating(hours(hoursToAllocate));
-            return result.getDate().plusDays(1);
+            IntraDayDate result = allocator
+                    .untilAllocating(hours(hoursToAllocate));
+            return result.getDate();
         }
 
         public void allocateOnTaskLength() {
@@ -796,7 +798,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return ResourcesPerDay.calculateFrom(sumTotalEffort, sumWorkableEffort);
     }
 
-    private ICalendar getAllocationCalendar() {
+    public ICalendar getAllocationCalendar() {
         return getCalendarGivenTaskCalendar(getTaskCalendar());
     }
 

@@ -37,8 +37,8 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 
@@ -103,6 +103,9 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             taken = assignForDay(resourcesPerDayModification,
                     current, effortRemaining);
             effortRemaining = effortRemaining.minus(taken);
+        }
+        if (resourcesPerDayModification.isDayFilled(lastDate, taken)) {
+            return IntraDayDate.startOfDay(lastDate.plusDays(1));
         }
         return IntraDayDate.create(lastDate, taken);
     }

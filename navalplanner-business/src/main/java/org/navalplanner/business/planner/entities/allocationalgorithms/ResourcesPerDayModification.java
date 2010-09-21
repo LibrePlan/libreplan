@@ -214,5 +214,9 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract AvailabilityTimeLine getAvailability();
 
+    public boolean isDayFilled(LocalDate lastDate, EffortDuration taken) {
+        return getBeingModified().getAllocationCalendar()
+                .asDurationOn(lastDate, goal).equals(taken);
+    }
 
 }

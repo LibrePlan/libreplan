@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.workingday;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -43,6 +45,10 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
     public static IntraDayDate max(IntraDayDate... dates) {
         Validate.noNullElements(dates);
         return Collections.max(Arrays.asList(dates));
+    }
+
+    public static IntraDayDate startOfDay(LocalDate date) {
+        return create(date, zero());
     }
 
     public static IntraDayDate create(LocalDate date, EffortDuration effortDuration) {
@@ -73,6 +79,10 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
     public EffortDuration getEffortDuration() {
         return effortDuration == null ? EffortDuration.zero() : effortDuration;
+    }
+
+    public boolean isStartOfDay() {
+        return effortDuration.isZero();
     }
 
     @Override
