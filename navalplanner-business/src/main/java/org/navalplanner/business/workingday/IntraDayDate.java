@@ -33,20 +33,20 @@ import org.joda.time.LocalDate;
  * @author Óscar González Fernández
  *
  */
-public class TaskDate implements Comparable<TaskDate> {
+public class IntraDayDate implements Comparable<IntraDayDate> {
 
-    public static TaskDate min(TaskDate... dates) {
+    public static IntraDayDate min(IntraDayDate... dates) {
         Validate.noNullElements(dates);
         return Collections.min(Arrays.asList(dates));
     }
 
-    public static TaskDate max(TaskDate... dates) {
+    public static IntraDayDate max(IntraDayDate... dates) {
         Validate.noNullElements(dates);
         return Collections.max(Arrays.asList(dates));
     }
 
-    public static TaskDate create(LocalDate date, EffortDuration effortDuration) {
-        return new TaskDate(date, effortDuration);
+    public static IntraDayDate create(LocalDate date, EffortDuration effortDuration) {
+        return new IntraDayDate(date, effortDuration);
     }
 
     private LocalDate date;
@@ -56,10 +56,10 @@ public class TaskDate implements Comparable<TaskDate> {
     /**
      * Default constructor for hibernate do not use!
      */
-    public TaskDate() {
+    public IntraDayDate() {
     }
 
-    private TaskDate(LocalDate date, EffortDuration effortDuration) {
+    private IntraDayDate(LocalDate date, EffortDuration effortDuration) {
         Validate.notNull(date);
         Validate.notNull(effortDuration);
         this.date = date;
@@ -77,8 +77,8 @@ public class TaskDate implements Comparable<TaskDate> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof TaskDate) {
-            TaskDate other = (TaskDate) obj;
+        if (obj instanceof IntraDayDate) {
+            IntraDayDate other = (IntraDayDate) obj;
             return this.date.equals(other.date)
                     && this.getEffortDuration().equals(
                             other.getEffortDuration());
@@ -105,7 +105,7 @@ public class TaskDate implements Comparable<TaskDate> {
     }
 
     @Override
-    public int compareTo(TaskDate other) {
+    public int compareTo(IntraDayDate other) {
         int result = date.compareTo(other.date);
         if (result == 0) {
             result = effortDuration.compareTo(other.effortDuration);

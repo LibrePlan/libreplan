@@ -31,13 +31,13 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
-import org.navalplanner.business.workingday.TaskDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández
  *
  */
-public class TaskDateTest {
+public class IntraDayDateTest {
 
     private LocalDate today = new LocalDate();
     private LocalDate tomorrow = today.plusDays(1);
@@ -46,12 +46,12 @@ public class TaskDateTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void needsANotNullDuration() {
-        TaskDate.create(new LocalDate(), null);
+        IntraDayDate.create(new LocalDate(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void needsANotNullDate() {
-        TaskDate.create(null, EffortDuration.elapsing(1, Granularity.HOURS));
+        IntraDayDate.create(null, EffortDuration.elapsing(1, Granularity.HOURS));
     }
 
     @Test
@@ -60,43 +60,43 @@ public class TaskDateTest {
         LocalDate tomorrow = today.plusDays(1);
         EffortDuration oneHour = EffortDuration.hours(1);
         EffortDuration halfHour = EffortDuration.minutes(30);
-        assertEquals(TaskDate.create(today, halfHour),
-                TaskDate.create(tomorrow.minusDays(1), halfHour));
-        assertEquals(TaskDate.create(today, halfHour).hashCode(), TaskDate
+        assertEquals(IntraDayDate.create(today, halfHour),
+                IntraDayDate.create(tomorrow.minusDays(1), halfHour));
+        assertEquals(IntraDayDate.create(today, halfHour).hashCode(), IntraDayDate
                 .create(tomorrow.minusDays(1), halfHour).hashCode());
-        assertThat(TaskDate.create(today, halfHour),
-                not(equalTo(TaskDate.create(today, oneHour))));
+        assertThat(IntraDayDate.create(today, halfHour),
+                not(equalTo(IntraDayDate.create(today, oneHour))));
     }
 
     @Test
     public void canKnowIfAreSameDay() {
-        assertTrue(TaskDate.create(today, halfHour).areSameDay(today));
-        assertTrue(TaskDate.create(today, oneHour).areSameDay(today));
-        assertFalse(TaskDate.create(today, halfHour).areSameDay(tomorrow));
-        assertFalse(TaskDate.create(tomorrow, halfHour).areSameDay(today));
+        assertTrue(IntraDayDate.create(today, halfHour).areSameDay(today));
+        assertTrue(IntraDayDate.create(today, oneHour).areSameDay(today));
+        assertFalse(IntraDayDate.create(today, halfHour).areSameDay(tomorrow));
+        assertFalse(IntraDayDate.create(tomorrow, halfHour).areSameDay(today));
     }
 
     @Test
     public void canGetDateTimeAtStartOfDay() {
-        DateTime dateTime = TaskDate.create(today, halfHour)
+        DateTime dateTime = IntraDayDate.create(today, halfHour)
                 .toDateTimeAtStartOfDay();
         assertThat(dateTime, equalTo(today.toDateTimeAtStartOfDay()));
     }
 
     @Test
     public void implementsComparable() {
-        assertTrue(Comparable.class.isAssignableFrom(TaskDate.class));
-        assertTrue(TaskDate.create(today, halfHour).compareTo(
-                TaskDate.create(today, oneHour)) < 0);
-        assertTrue(TaskDate.create(today, oneHour).compareTo(
-                TaskDate.create(tomorrow, halfHour)) < 0);
+        assertTrue(Comparable.class.isAssignableFrom(IntraDayDate.class));
+        assertTrue(IntraDayDate.create(today, halfHour).compareTo(
+                IntraDayDate.create(today, oneHour)) < 0);
+        assertTrue(IntraDayDate.create(today, oneHour).compareTo(
+                IntraDayDate.create(tomorrow, halfHour)) < 0);
     }
 
     @Test
     public void hasMaxAndMinMethods() {
-        TaskDate a = TaskDate.create(today, halfHour);
-        TaskDate b = TaskDate.create(today, oneHour);
-        assertThat(TaskDate.min(a, b), equalTo(a));
-        assertThat(TaskDate.max(a, b), equalTo(b));
+        IntraDayDate a = IntraDayDate.create(today, halfHour);
+        IntraDayDate b = IntraDayDate.create(today, oneHour);
+        assertThat(IntraDayDate.min(a, b), equalTo(a));
+        assertThat(IntraDayDate.max(a, b), equalTo(b));
     }
 }

@@ -12,13 +12,13 @@
         <property name="name" />
         <property name="notes"/>
         <component name="startDate"
-            class="org.navalplanner.business.workingday.TaskDate">
+            class="org.navalplanner.business.workingday.IntraDayDate">
             <property  name="date" column="startDate" not-null="true"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
             <property name="effortDuration" column="startDayDuration"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
-        <component name="endDate" class="org.navalplanner.business.workingday.TaskDate">
+        <component name="endDate" class="org.navalplanner.business.workingday.IntraDayDate">
             <property name="date" column="endDate" not-null="true"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="effortDuration" column="endDayDuration"

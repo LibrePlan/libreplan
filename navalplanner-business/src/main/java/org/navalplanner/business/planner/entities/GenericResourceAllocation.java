@@ -51,8 +51,8 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
-import org.navalplanner.business.workingday.TaskDate;
 
 /**
  * Represents the relation between {@link Task} and a generic {@link Resource}.
@@ -339,13 +339,13 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        TaskDate getEndDateWithinADay() {
-            return container.getEndDateWithinADay();
+        IntraDayDate getIntraDayEnd() {
+            return container.getIntraDayEnd();
         }
 
         @Override
-        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
-            container.setEndDateWithinADay(endDateWithinADay);
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            container.setIntraDayEnd(intraDayEnd);
         }
     }
 
@@ -354,7 +354,7 @@ public class GenericResourceAllocation extends
 
         private final Set<GenericDayAssignment> genericDayAssignments;
 
-        private TaskDate endDateWithinADay;
+        private IntraDayDate intraDayEnd;
 
         TransientState(Set<GenericDayAssignment> genericDayAssignments) {
             this.genericDayAssignments = genericDayAssignments;
@@ -402,13 +402,13 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        TaskDate getEndDateWithinADay() {
-            return endDateWithinADay;
+        IntraDayDate getIntraDayEnd() {
+            return intraDayEnd;
         }
 
         @Override
-        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
-            this.endDateWithinADay = endDateWithinADay;
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            this.intraDayEnd = intraDayEnd;
         }
     }
 
@@ -422,13 +422,13 @@ public class GenericResourceAllocation extends
         return container.getDayAssignments();
     }
 
-    private TaskDate getEndDataWithinADayFor(Scenario scenario) {
+    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
         GenericDayAssignmentsContainer container = containersByScenario().get(
                 scenario);
         if (container == null) {
             return null;
         }
-        return container.getEndDateWithinADay();
+        return container.getIntraDayEnd();
     }
 
     private class GenericDayAssignmentsNoExplicitlySpecifiedScenario extends
@@ -446,8 +446,8 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        protected TaskDate getEndDateWithinADay(Scenario scenario) {
-            return getEndDataWithinADayFor(scenario);
+        protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
+            return getIntraDayEndFor(scenario);
         }
     }
 

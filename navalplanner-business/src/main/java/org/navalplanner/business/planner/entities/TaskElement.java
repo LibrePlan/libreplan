@@ -46,7 +46,7 @@ import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
-import org.navalplanner.business.workingday.TaskDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -115,9 +115,9 @@ public abstract class TaskElement extends BaseEntity {
     @OnCopy(Strategy.SHARE)
     private IDatesInterceptor datesInterceptor = EMPTY_INTERCEPTOR;
 
-    private TaskDate startDate;
+    private IntraDayDate startDate;
 
-    private TaskDate endDate;
+    private IntraDayDate endDate;
 
     private LocalDate deadline;
 
@@ -246,7 +246,7 @@ public abstract class TaskElement extends BaseEntity {
     public void setStartDate(Date startDate) {
         Date previousDate = getStartDate();
         long previousLenghtMilliseconds = getLengthMilliseconds();
-        this.startDate = startDate != null ? TaskDate.create(
+        this.startDate = startDate != null ? IntraDayDate.create(
                 LocalDate.fromDateFields(startDate), EffortDuration.zero())
                 : null;
         datesInterceptor.setStartDate(previousDate, previousLenghtMilliseconds,
@@ -266,7 +266,7 @@ public abstract class TaskElement extends BaseEntity {
         setStartDate(newStartDate);
         DateTime newEnd = this.startDate.toDateTimeAtStartOfDay().plus(
                 durationMilliseconds);
-        this.endDate = TaskDate.create(newEnd.toLocalDate(),
+        this.endDate = IntraDayDate.create(newEnd.toLocalDate(),
                 EffortDuration.zero());
         if (!sameDay) {
             moveAllocations(scenario);
@@ -283,7 +283,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setEndDate(Date endDate) {
         long previousLength = getLengthMilliseconds();
-        this.endDate = endDate != null ? TaskDate.create(
+        this.endDate = endDate != null ? IntraDayDate.create(
                 LocalDate.fromDateFields(endDate), EffortDuration.zero())
                 : null;
         datesInterceptor.setLengthMilliseconds(previousLength,

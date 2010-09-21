@@ -64,8 +64,8 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
-import org.navalplanner.business.workingday.TaskDate;
 
 /**
  * Resources are allocated to planner tasks.
@@ -232,7 +232,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 protected <T extends DayAssignment> void setNewDataForAllocation(
-                        ResourceAllocation<T> allocation, TaskDate end,
+                        ResourceAllocation<T> allocation, IntraDayDate end,
                         ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
                     allocation.resetAssignmentsTo(dayAssignments, end);
                     allocation.updateResourcesPerDay();
@@ -265,7 +265,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     allocation.markAsUnsatisfied();
                 }
             };
-            TaskDate result = allocator.untilAllocating(hours(hoursToAllocate));
+            IntraDayDate result = allocator.untilAllocating(hours(hoursToAllocate));
             return result.getDate().plusDays(1);
         }
 
@@ -711,11 +711,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected void resetAssignmentsTo(List<T> assignments,
-            TaskDate endDateWithinADay) {
+            IntraDayDate intraDayEnd) {
         removingAssignments(withoutConsolidated(getAssignments()));
         addingAssignments(assignments);
         updateOriginalTotalAssigment();
-        getDayAssignmentsState().setEndDateWithinADay(endDateWithinADay);
+        getDayAssignmentsState().setIntraDayEnd(intraDayEnd);
     }
 
     protected void resetAssigmentsForInterval(LocalDate startInclusive,
@@ -727,7 +727,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         updateOriginalTotalAssigment();
         updateResourcesPerDay();
         if (finishedByEnd) {
-            getDayAssignmentsState().setEndDateWithinADay(null);
+            getDayAssignmentsState().setIntraDayEnd(null);
         }
     }
 
@@ -780,11 +780,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             LocalDate day = entry.getKey();
             EffortDuration incrementWorkable = getAllocationCalendar()
                     .asDurationOn(entry.getKey(), ONE_RESOURCE_PER_DAY);
-            TaskDate endDateWithinADay = getDayAssignmentsState().getEndDateWithinADay();
-            if (endDateWithinADay != null
-                    && day.equals(endDateWithinADay.getDate())) {
+            IntraDayDate intraDayEnd = getDayAssignmentsState()
+                    .getIntraDayEnd();
+            if (intraDayEnd != null && day.equals(intraDayEnd.getDate())) {
                 incrementWorkable = min(incrementWorkable,
-                        endDateWithinADay.getEffortDuration());
+                        intraDayEnd.getEffortDuration());
             }
             sumWorkableEffort = sumWorkableEffort.plus(incrementWorkable);
             sumTotalEffort = sumTotalEffort.plus(getAssignedDuration(entry
@@ -860,16 +860,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
          * It can be null. It allows to mark that the allocation is finished in
          * a point within a day instead of taking the whole day
          */
-        abstract TaskDate getEndDateWithinADay();
+        abstract IntraDayDate getIntraDayEnd();
 
         /**
-         * Set a new endDateWithinADay.
+         * Set a new intraDayEnd.
          *
-         * @param endDateWithinADay
+         * @param intraDayEnd
          *            it can be <code>null</code>
-         * @see getEndDateWithinADay
+         * @see getIntraDayEnd
          */
-        public abstract void setEndDateWithinADay(TaskDate endDateWithinADay);
+        public abstract void setIntraDayEnd(IntraDayDate intraDayEnd);
 
         protected abstract Collection<T> getUnorderedAssignments();
 
@@ -939,7 +939,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             DayAssignmentsState {
 
         @Override
-        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
             modificationsNotAllowed();
         }
 
@@ -989,11 +989,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return Registry.getScenarioManager().getCurrent();
         }
 
-        TaskDate getEndDateWithinADay() {
-            return getEndDateWithinADay(currentScenario);
+        IntraDayDate getIntraDayEnd() {
+            return getIntraDayEndFor(currentScenario);
         }
 
-        protected abstract TaskDate getEndDateWithinADay(Scenario scenario);
+        protected abstract IntraDayDate getIntraDayEndFor(Scenario scenario);
 
         protected abstract Collection<T> getUnorderedAssignmentsForScenario(
                 Scenario scenario);
@@ -1192,8 +1192,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final void mergeAssignments(ResourceAllocation<?> modifications) {
         getDayAssignmentsState().mergeAssignments(modifications);
-        getDayAssignmentsState().setEndDateWithinADay(
-                modifications.getDayAssignmentsState().getEndDateWithinADay());
+        getDayAssignmentsState().setIntraDayEnd(
+                modifications.getDayAssignmentsState().getIntraDayEnd());
     }
 
     public void detach() {

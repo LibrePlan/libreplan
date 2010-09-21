@@ -31,7 +31,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
-import org.navalplanner.business.workingday.TaskDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * Object containing the {@link SpecificDayAssignment specific day assignments}
@@ -57,7 +57,7 @@ public class SpecificDayAssignmentsContainer extends BaseEntity {
     /**
      * It can be <code>null</code>
      */
-    private TaskDate endDateWithinADay;
+    private IntraDayDate intraDayEnd;
 
     @Valid
     public Set<SpecificDayAssignment> getDayAssignments() {
@@ -106,12 +106,12 @@ public class SpecificDayAssignmentsContainer extends BaseEntity {
         return SpecificDayAssignment.copy(this, assignments);
     }
 
-    public TaskDate getEndDateWithinADay() {
-        return endDateWithinADay;
+    public IntraDayDate getIntraDayEnd() {
+        return intraDayEnd;
     }
 
-    public void setEndDateWithinADay(TaskDate endDateWithinADay) {
-        this.endDateWithinADay = endDateWithinADay;
+    public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+        this.intraDayEnd = intraDayEnd;
     }
 
 }

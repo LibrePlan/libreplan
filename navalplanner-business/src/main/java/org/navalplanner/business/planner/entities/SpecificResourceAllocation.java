@@ -50,8 +50,8 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
-import org.navalplanner.business.workingday.TaskDate;
 
 /**
  * Represents the relation between {@link Task} and a specific {@link Worker}.
@@ -301,13 +301,13 @@ public class SpecificResourceAllocation extends
         }
 
         @Override
-        TaskDate getEndDateWithinADay() {
-            return container.getEndDateWithinADay();
+        IntraDayDate getIntraDayEnd() {
+            return container.getIntraDayEnd();
         }
 
         @Override
-        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
-            container.setEndDateWithinADay(endDateWithinADay);
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            container.setIntraDayEnd(intraDayEnd);
         }
 
         @Override
@@ -327,7 +327,7 @@ public class SpecificResourceAllocation extends
 
         private final Set<SpecificDayAssignment> specificDaysAssignment;
 
-        private TaskDate endDateWithinADay;
+        private IntraDayDate intraDayEnd;
 
         TransientState(Set<SpecificDayAssignment> specificDayAssignments) {
             this.specificDaysAssignment = specificDayAssignments;
@@ -375,13 +375,13 @@ public class SpecificResourceAllocation extends
         }
 
         @Override
-        TaskDate getEndDateWithinADay() {
-            return endDateWithinADay;
+        IntraDayDate getIntraDayEnd() {
+            return intraDayEnd;
         }
 
         @Override
-        public void setEndDateWithinADay(TaskDate endDateWithinADay) {
-            this.endDateWithinADay = endDateWithinADay;
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            this.intraDayEnd = intraDayEnd;
         }
     }
 
@@ -394,13 +394,13 @@ public class SpecificResourceAllocation extends
         return container.getDayAssignments();
     }
 
-    private TaskDate getEndDataWithinADayFor(Scenario scenario) {
+    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
         SpecificDayAssignmentsContainer container = containersByScenario().get(
                 scenario);
         if (container == null) {
             return null;
         }
-        return container.getEndDateWithinADay();
+        return container.getIntraDayEnd();
     }
 
     private class SpecificDayAssignmentsNoExplicitlySpecifiedScenario extends
@@ -418,8 +418,8 @@ public class SpecificResourceAllocation extends
         }
 
         @Override
-        protected TaskDate getEndDateWithinADay(Scenario scenario) {
-            return getEndDataWithinADayFor(scenario);
+        protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
+            return getIntraDayEndFor(scenario);
         }
 
     }
