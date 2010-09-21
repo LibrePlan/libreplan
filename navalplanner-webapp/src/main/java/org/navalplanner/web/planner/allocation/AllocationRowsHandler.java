@@ -102,7 +102,7 @@ public class AllocationRowsHandler {
             if (hours != null) {
                 genericAllocationRow.setHoursToInput(hours);
             }
-            if (alreadyExistsAllocationFor(criteria)) {
+            if (alreadyExistsAllocationFor(resourceType, criteria)) {
                 formBinder.markThereisAlreadyAssignmentWith(resourceType,
                         criteria);
             } else {
@@ -120,13 +120,13 @@ public class AllocationRowsHandler {
         return !getAllocationsFor(resource).isEmpty();
     }
 
-    private boolean alreadyExistsAllocationFor(
+    private boolean alreadyExistsAllocationFor(ResourceEnum resourceType,
             Collection<? extends Criterion> criterions) {
         Set<Criterion> criterionsSet = new HashSet<Criterion>(criterions);
         List<GenericAllocationRow> generic = AllocationRow
                 .getGeneric(getCurrentRows());
         for (GenericAllocationRow each : generic) {
-            if (each.hasSameCriterions(criterionsSet)) {
+            if (each.hasSameCriterionsAndType(criterionsSet, resourceType)) {
                 return true;
             }
         }

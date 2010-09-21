@@ -133,8 +133,10 @@ public class GenericAllocationRow extends AllocationRow {
                 getHoursFromInput(), resources);
     }
 
-    public boolean hasSameCriterions(Set<Criterion> criterions) {
-        return this.criterions.equals(criterions);
+    public boolean hasSameCriterionsAndType(Set<Criterion> criterions,
+            ResourceEnum resourceType) {
+        return this.resourceType == resourceType
+                && this.criterions.equals(criterions);
     }
 
     @Override
