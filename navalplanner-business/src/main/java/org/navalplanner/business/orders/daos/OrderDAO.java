@@ -209,7 +209,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Override
     public List<Order> getOrdersByWriteAuthorization(User user) {
-        if (user.getRoles().contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (user.getAllRoles().contains(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return getOrders();
         }
         else {
