@@ -23,6 +23,7 @@ package org.navalplanner.web.common;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -189,6 +190,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     private CustomMenuController topItem(String name, String url,
+            String helpUri, Collection<? extends CustomMenuItem> items) {
+        return topItem(name, url, helpUri, items.toArray(new CustomMenuItem[0]));
+    }
+
+    private CustomMenuController topItem(String name, String url,
             String helpUri,
             CustomMenuItem... items) {
         return topItem(name, url, helpUri, false, items);
@@ -227,15 +233,18 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Limiting Resources Planning"),"/planner/index.zul;limiting_resources","01-introducion.html"),
             subItem(_("Project Templates"), "/templates/templates.zul", ""));
 
-        topItem(_("Resources"), "/resources/worker/worker.zul", "",
-            subItem(_("Workers"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"),
-            subItem(_("Machines"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"),
-            subItem(_("Virtual Workers Groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"),
-            subItem(_("Work Reports"), "/workreports/workReport.zul", "09-partes.html#id3"),
-            subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""),
-            subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
+        List<CustomMenuItem> resourcesItems = new ArrayList<CustomMenuItem>();
+        resourcesItems.add(subItem(_("Workers"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"));
+        resourcesItems.add(subItem(_("Machines"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"));
+        resourcesItems.add(subItem(_("Virtual Workers Groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
+        resourcesItems.add(subItem(_("Work Reports"), "/workreports/workReport.zul", "09-partes.html#id3"));
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
+            resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
+        }
+        resourcesItems.add(subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
                 subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
-		subItem(_("Report Advances"), "/subcontract/reportAdvances.zul", "")));
+                subItem(_("Report Advances"), "/subcontract/reportAdvances.zul", "")));
+        topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
 
         topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
                 subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
