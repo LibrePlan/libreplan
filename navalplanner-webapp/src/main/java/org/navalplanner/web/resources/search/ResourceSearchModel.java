@@ -121,8 +121,10 @@ public class ResourceSearchModel implements IResourceSearchModel {
                         public List<T> execute() {
                             Session session = sessionFactory
                                     .getCurrentSession();
-                            return buildCriteria(session).list();
+                            List<T> resources = buildCriteria(session).list();
+                            return restrictToSatisfyAllCriteria(resources);
                         }
+
                     });
         }
 
@@ -130,17 +132,21 @@ public class ResourceSearchModel implements IResourceSearchModel {
             Criteria result = session.createCriteria(klass);
             result.add(eq("limitingResource", limiting));
             addQueryByName(result);
-            addQueryByCriteria(result);
+            addFindRelatedWithSomeOfTheCriterions(result);
             result.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             return result;
         }
 
-        private void addQueryByCriteria(Criteria criteria) {
-            if (this.criteria == null || this.criteria.isEmpty()) {
+        private void addFindRelatedWithSomeOfTheCriterions(Criteria criteria) {
+            if (!criteriaSpecified()) {
                 return;
             }
             criteria.createCriteria("criterionSatisfactions")
                     .add(in("criterion", this.criteria));
+        }
+
+        private boolean criteriaSpecified() {
+            return this.criteria != null && !this.criteria.isEmpty();
         }
 
         private void addQueryByName(Criteria criteria) {
@@ -159,6 +165,19 @@ public class ResourceSearchModel implements IResourceSearchModel {
             } else {
                 LOG.warn("can't handle " + klass);
             }
+        }
+
+        private List<T> restrictToSatisfyAllCriteria(List<T> resources) {
+            if (!criteriaSpecified()) {
+                return resources;
+            }
+            List<T> result = new ArrayList<T>();
+            for (T each : resources) {
+                if (each.satisfiesCriterionsAtSomePoint(criteria)) {
+                    result.add(each);
+                }
+            }
+            return result;
         }
 
         @Override
