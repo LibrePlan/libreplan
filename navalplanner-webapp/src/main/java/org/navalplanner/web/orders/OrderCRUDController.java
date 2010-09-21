@@ -225,11 +225,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
 
-        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            createOrderButton.setDisabled(false);
-            createOrderFromTemplateButton.setDisabled(false);
-        }
-
         // Configuration of the order filter
         Component filterComponent = Executions.createComponents(
                 "/orders/_orderFilter.zul", orderFilter,
