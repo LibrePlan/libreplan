@@ -34,10 +34,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -65,6 +65,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -74,8 +75,8 @@ import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -242,58 +243,62 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             configuration.setDoubleClickCommand(doubleClickCommand);
         }
 
-        ICommand<TaskElement> createNewOrderCommand = new ICommand<TaskElement>() {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            ICommand<TaskElement> createNewOrderCommand = new ICommand<TaskElement>() {
 
-            @Override
-            public String getName() {
-                return _("Create new order");
-            }
-
-            @Override
-            public String getImage() {
-                return "/common/img/ico_add.png";
-            }
-
-            @Override
-            public void doAction(IContext<TaskElement> context) {
-                tabs.goToCreateForm();
-            }
-
-        };
-
-        configuration.addGlobalCommand(createNewOrderCommand);
-
-        ICommand<TaskElement> createNewOrderFromTemplateCommand = new ICommand<TaskElement>() {
-
-            @Override
-            public String getName() {
-                return _("Create new order from template");
-            }
-
-            @Override
-            public String getImage() {
-                return "/common/img/ico_copy.png";
-            }
-
-            @Override
-            public void doAction(IContext<TaskElement> context) {
-                TemplateFinderPopup templateFinderPopup = (TemplateFinderPopup) planner.getFellowIfAny("templateFinderPopup");
-                Button createOrderFromTemplateButton = planner.findCommandComponent(getName());
-                if(templateFinderPopup != null){
-                    templateFinderPopup.openForOrderCreation(
-                            createOrderFromTemplateButton, "after_start",
-                            new IOnResult<OrderTemplate>() {
-                             @Override
-                             public void found(OrderTemplate template) {
-                                    goToCreateOtherOrderFromTemplate(template);
-                                }
-                            });
+                @Override
+                public String getName() {
+                    return _("Create new order");
                 }
-            }
 
-        };
+                @Override
+                public String getImage() {
+                    return "/common/img/ico_add.png";
+                }
 
-        configuration.addGlobalCommand(createNewOrderFromTemplateCommand);
+                @Override
+                public void doAction(IContext<TaskElement> context) {
+                    tabs.goToCreateForm();
+                }
+
+            };
+
+            configuration.addGlobalCommand(createNewOrderCommand);
+
+            ICommand<TaskElement> createNewOrderFromTemplateCommand = new ICommand<TaskElement>() {
+
+                @Override
+                public String getName() {
+                    return _("Create new order from template");
+                }
+
+                @Override
+                public String getImage() {
+                    return "/common/img/ico_copy.png";
+                }
+
+                @Override
+                public void doAction(IContext<TaskElement> context) {
+                    TemplateFinderPopup templateFinderPopup = (TemplateFinderPopup) planner
+                            .getFellowIfAny("templateFinderPopup");
+                    Button createOrderFromTemplateButton = planner
+                            .findCommandComponent(getName());
+                    if (templateFinderPopup != null) {
+                        templateFinderPopup.openForOrderCreation(
+                                createOrderFromTemplateButton, "after_start",
+                                new IOnResult<OrderTemplate>() {
+                                    @Override
+                                    public void found(OrderTemplate template) {
+                                        goToCreateOtherOrderFromTemplate(template);
+                                    }
+                                });
+                    }
+                }
+
+            };
+
+            configuration.addGlobalCommand(createNewOrderFromTemplateCommand);
+        }
 
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
