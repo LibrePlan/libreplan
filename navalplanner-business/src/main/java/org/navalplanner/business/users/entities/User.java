@@ -122,6 +122,21 @@ public class User extends BaseEntity {
         return allRoles;
     }
 
+    /**
+     * Checks if current user is in the requested role
+     */
+    public boolean isInRole(UserRole role) {
+        if (roles.contains(role)) {
+            return true;
+        }
+        for (Profile profile : profiles) {
+            if (profile.getRoles().contains(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
