@@ -618,6 +618,9 @@
                 <directory>../navalplanner-webapp/src/main/jasper/hoursWorkedPerWorker_Bundle/</directory>
             </resource>
             <resource>
+                <directory>../navalplanner-webapp/src/main/jasper/hoursWorkedPerWorkerInAMonth_Bundle/</directory>
+            </resource>
+            <resource>
                 <directory>../navalplanner-webapp/src/main/jasper/orderCostsPerResource_Bundle/</directory>
             </resource>
             <resource>

@@ -28,6 +28,7 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
+import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
@@ -120,9 +121,18 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      * the specified dates.
      * @return
      */
-    public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
+    List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
             List<Resource> resources, List<Label> labels,
             List<Criterion> criterions, Date startingDate,
             Date endingDate);
+
+    /**
+     * Returns all {@link HoursWorkedPerWorkerInAMonthDTO} in year and month
+     *
+     * @param year
+     * @param month
+     * @return
+     */
+    List<HoursWorkedPerWorkerInAMonthDTO> getWorkingHoursPerWorker(Integer year, Integer month);
 
 }
