@@ -27,6 +27,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
@@ -167,6 +168,16 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion>
         Criteria c = getSession().createCriteria(Criterion.class);
         c.addOrder(Order.asc("name"));
         return (List<Criterion>) c.list();
+    }
+
+    @Override
+    public List<Criterion> getAllSortedByTypeAndName() {
+        Query query = getSession()
+                .createQuery(
+                "select criterion from Criterion criterion "
+                        + "JOIN criterion.type type "
+                        + "order by type.name asc, criterion.name asc");
+        return (List<Criterion>) query.list();
     }
 
 }

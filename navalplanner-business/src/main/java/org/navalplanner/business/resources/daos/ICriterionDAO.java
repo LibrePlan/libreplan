@@ -50,6 +50,8 @@ public interface ICriterionDAO extends IIntegrationEntityDAO<Criterion> {
 
     List<Criterion> getAll();
 
+    List<Criterion> getAllSortedByTypeAndName();
+
     List<Criterion> getAllSorted();
 
     boolean thereIsOtherWithSameNameAndType(Criterion criterion);

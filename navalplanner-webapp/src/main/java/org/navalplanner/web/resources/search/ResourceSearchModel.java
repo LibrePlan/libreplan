@@ -28,7 +28,7 @@ import static org.hibernate.criterion.Restrictions.or;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -254,8 +254,9 @@ public class ResourceSearchModel implements IResourceSearchModel {
         return new IOnTransaction<Map<CriterionType, Set<Criterion>>>() {
             @Override
             public Map<CriterionType, Set<Criterion>> execute() {
-                Map<CriterionType, Set<Criterion>> result = new HashMap<CriterionType, Set<Criterion>>();
-                for (Criterion criterion : criterionDAO.getAllSorted()) {
+                Map<CriterionType, Set<Criterion>> result = new LinkedHashMap<CriterionType, Set<Criterion>>();
+                for (Criterion criterion : criterionDAO
+                        .getAllSortedByTypeAndName()) {
                     CriterionType key = criterion.getType();
                     if (klassTheCriterionTypeMustBeRelatedWith
                             .isAssignableFrom(key.getResource().asClass())) {
