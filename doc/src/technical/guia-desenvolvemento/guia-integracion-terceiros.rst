@@ -495,7 +495,8 @@ Información de realización da chamada
    * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/criteriontypes
    * *Método POST*
 
-Descrición do formato do ficheiro XML
+Descrición do formato do ficheiro XML::
+
    * Nodo criterion-type-list: raíz da importación de tipos de criterios. Pode conter un ou varios nodos do tipo criterion-type.
 
       * Nodo criterion-type: representa un tipo de criterio.
@@ -596,7 +597,7 @@ Descrición
      * A incorporación de categorías de custo permitirá a importación da información das categorías de custo dende outras aplicacións.
      * As categorías de custo incorporan a información dos custos de precio por hora du tipo de recurso segundo o tipo de hora de traballo que realice.
      * As categorías de custo teñen un precio por hora distinto ao longo do tempo.
-     * Exemplo: Categorías de custo: Oficial de primeira. Ten un precio asociado de hora extra de 20€ a hora durante o ano 2010.
+     * Exemplo: Categorías de custo: Oficial de primeira. Ten un precio asociado de hora extra de 20 euros á hora durante o ano 2010.
 
 Roles
      * Cliente: proporciona nova información sobre as categorías de custo ao servidor NavalPlan.
@@ -701,7 +702,8 @@ Información de realización da chamada
    * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/resources
    * *Método POST*
 
-Descrición do formato do ficheiro XML
+Descrición do formato do ficheiro XML::
+
    * Nodo resource-list: raíz da importación de recursos. Poder conter un ou varios nodos de tipo machine ou worker.
 
       * Nodo machine: representa un recurso máquina.
