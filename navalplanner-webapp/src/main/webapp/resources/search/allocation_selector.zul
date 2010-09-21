@@ -71,7 +71,7 @@
                     <rows>
                         <row>
         <hbox><label value="${i18n:_('Assignment Type')}" /><image sclass="context-help-popup" height="15px" src="/common/img/axuda.gif" tooltip="allocation-type-popup" /></hbox>
-        <radiogroup id="allocationTypeSelector" orient="vertical">
+        <radiogroup id="allocationTypeSelector" orient="vertical" onSelect="selectorController.showSelectedAllocations()">
             <radio forEach="${selectorController.allocationTypes}"
                 label="${each.name}" value="${each}" />
         </radiogroup>
@@ -86,7 +86,7 @@
 
 
     <popup id="allocation-type-popup" width="700px" >
-        <iframe id="iframe" src="/help/${i18n:_('en')}/05-recursos.html#recursos-limitantes" width="100%" />
+        <iframe id="iframe" src="/help/${i18n:_('en')}/08-asignacion.html" width="100%" />
     </popup>
 
 </vbox>
