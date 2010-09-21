@@ -255,7 +255,7 @@ public class ResourceSearchModel implements IResourceSearchModel {
             @Override
             public Map<CriterionType, Set<Criterion>> execute() {
                 Map<CriterionType, Set<Criterion>> result = new HashMap<CriterionType, Set<Criterion>>();
-                for (Criterion criterion : criterionDAO.getAll()) {
+                for (Criterion criterion : criterionDAO.getAllSorted()) {
                     CriterionType key = criterion.getType();
                     if (klassTheCriterionTypeMustBeRelatedWith
                             .isAssignableFrom(key.getResource().asClass())) {
