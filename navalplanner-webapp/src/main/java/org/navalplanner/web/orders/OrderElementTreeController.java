@@ -516,13 +516,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             return currentElement.getSchedulingState();
         }
 
-
         @Override
         protected void onDoubleClickForSchedulingStateCell(
                 final OrderElement currentOrderElement) {
             IOrderElementModel model = orderModel
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
+            updateOrderElementHours(currentOrderElement);
         }
 
         protected void addCodeCell(final OrderElement orderElement) {
@@ -847,16 +847,15 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
-        updateOrderElementHours(currentOrderElement, item.getTreerow());
+        updateOrderElementHours(currentOrderElement);
     }
 
-    private void updateOrderElementHours(OrderElement orderElement,
-            final Treerow item) {
+    private void updateOrderElementHours(OrderElement orderElement) {
         if ((!readOnly) && (orderElement instanceof OrderLine)) {
             Intbox boxHours = (Intbox) getRenderer().hoursIntBoxByOrderElement
                 .get(orderElement);
             boxHours.setValue(orderElement.getWorkHours());
-            Treecell tc = (Treecell) item.getChildren().get(3);
+            Treecell tc = (Treecell) boxHours.getParent();
             setReadOnlyHoursCell(orderElement, boxHours, tc);
             boxHours.invalidate();
         }
