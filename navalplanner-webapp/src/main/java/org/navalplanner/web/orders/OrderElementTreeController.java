@@ -80,6 +80,7 @@ import org.zkoss.zul.impl.api.InputElement;
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class OrderElementTreeController extends TreeController<OrderElement> {
 
@@ -609,7 +610,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 intboxHours.setDisabled(true);
             }
-            addCell(intboxHours);
+
+            Treecell cellHours = addCell(intboxHours);
+            setReadOnlyHoursCell(currentOrderElement, intboxHours, cellHours);
             registerKeyboardListener(intboxHours);
         }
 
@@ -844,6 +847,33 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
+        updateOrderElementHours(currentOrderElement, item.getTreerow());
+    }
+
+    private void updateOrderElementHours(OrderElement orderElement,
+            final Treerow item) {
+        if ((!readOnly) && (orderElement instanceof OrderLine)) {
+            Intbox boxHours = (Intbox) getRenderer().hoursIntBoxByOrderElement
+                .get(orderElement);
+            boxHours.setValue(orderElement.getWorkHours());
+            Treecell tc = (Treecell) item.getChildren().get(3);
+            setReadOnlyHoursCell(orderElement, boxHours, tc);
+            boxHours.invalidate();
+        }
+    }
+
+    private void setReadOnlyHoursCell(OrderElement orderElement,
+            Intbox boxHours, Treecell tc) {
+        if ((!readOnly) && (orderElement instanceof OrderLine)) {
+            if (orderElement.getHoursGroups().size() > 1) {
+                boxHours.setReadonly(true);
+                tc
+                    .setTooltiptext(_("Not editable for containing more that an hours group."));
+            } else {
+                boxHours.setReadonly(false);
+                tc.setTooltiptext(_(""));
+            }
+        }
     }
 
     public Treeitem getTreeitemByOrderElement(OrderElement element) {
