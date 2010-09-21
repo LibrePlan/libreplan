@@ -22,6 +22,7 @@ package org.navalplanner.web.resources.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -114,7 +115,16 @@ public class NewAllocationSelectorController extends
         listBoxResources.setItemRenderer(getListitemRenderer());
 
         refreshListBoxResources();
+        listBoxResources.addEventListener(Events.ON_SELECT,
+                new EventListener() {
 
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (isGenericType()) {
+                    returnToSpecificDueToResourceSelection();
+                }
+            }
+        });
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
 
@@ -144,9 +154,44 @@ public class NewAllocationSelectorController extends
 
     private void onType(AllocationType type) {
         currentAllocationType = type;
-        listBoxResources.setDisabled(isGenericType());
         Util.reloadBindings(criterionsTree);
         refreshListBoxResources();
+    }
+
+    private void returnToSpecificDueToResourceSelection() {
+        currentAllocationType = AllocationType.SPECIFIC;
+        List<Criterion> criteria = getSelectedCriterions();
+        List<Resource> selectedWorkers = getSelectedWorkers();
+        refreshListBoxResources(query().byCriteria(criteria)
+                .byLimiting(limitingResource).execute());
+        listBoxResources.renderAll(); // force render so list items has the
+                                      // value property so the resources can be
+                                      // selected
+
+        selectWorkers(selectedWorkers);
+        currentAllocationType.doTheSelectionOn(allocationTypeSelector);
+    }
+
+    private void selectWorkers(Collection<? extends Resource> selectedWorkers) {
+        for (Resource each : selectedWorkers) {
+            Listitem listItem = findListItemFor(each);
+            if (listItem != null) {
+                listItem.setSelected(true);
+            }
+        }
+    }
+
+    private Listitem findListItemFor(Resource resource) {
+        @SuppressWarnings("unchecked")
+        Collection<Listitem> items = listBoxResources.getItems();
+        for (Listitem item : items) {
+            Resource itemResource = (Resource) item.getValue();
+            if (itemResource != null
+                    && itemResource.getId().equals(resource.getId())) {
+                return item;
+            }
+        }
+        return null;
     }
 
     private static final EnumSet<AllocationType> genericTypes = EnumSet.of(
