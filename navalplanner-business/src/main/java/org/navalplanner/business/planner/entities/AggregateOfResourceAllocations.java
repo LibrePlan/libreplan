@@ -86,24 +86,24 @@ public class AggregateOfResourceAllocations {
         return sum;
     }
 
-    public LocalDate getStart() {
-        IntraDayDate start = getIntraDayStart();
+    private LocalDate getStartAsLocalDate() {
+        IntraDayDate start = getStart();
         return start != null ? start.getDate() : null;
     }
 
-    public IntraDayDate getIntraDayStart() {
+    public IntraDayDate getStart() {
         if (isEmpty()) {
             throw new IllegalStateException("the aggregate is empty");
         }
         return getAllocationsSortedByStartDate().get(0).getIntraDayStartDate();
     }
 
-    public LocalDate getEnd(){
-        IntraDayDate end = getIntraDayEnd();
+    private LocalDate getEndAsLocalDate() {
+        IntraDayDate end = getEnd();
         return end != null ? end.getDate() : null;
     }
 
-    public IntraDayDate getIntraDayEnd() {
+    public IntraDayDate getEnd() {
         if (isEmpty()) {
             throw new IllegalStateException("the aggregate is empty");
         }
@@ -115,7 +115,8 @@ public class AggregateOfResourceAllocations {
     }
 
     public Integer getDaysDuration() {
-        return Days.daysBetween(getStart(), getEnd()).getDays();
+        return Days.daysBetween(getStartAsLocalDate(), getEndAsLocalDate())
+                .getDays();
     }
 
     private IntraDayDate bigger(IntraDayDate one, IntraDayDate other) {

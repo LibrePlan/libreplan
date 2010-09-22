@@ -123,4 +123,15 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return result;
     }
 
+    /**
+     * Return the day which is the exclusive end given this {@link IntraDayDate}
+     * @return
+     */
+    public LocalDate asExclusiveEnd() {
+        if (isStartOfDay()) {
+            return getDate();
+        }
+        return getDate().plusDays(1);
+    }
+
 }

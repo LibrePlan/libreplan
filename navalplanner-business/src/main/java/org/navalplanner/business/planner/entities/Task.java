@@ -366,8 +366,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         if (aggregate.isEmpty()) {
             return;
         }
-        final IntraDayDate start = aggregate.getIntraDayStart();
-        final IntraDayDate end = aggregate.getIntraDayEnd();
+        final IntraDayDate start = aggregate.getStart();
+        final IntraDayDate end = aggregate.getEnd();
         mergeAllocation(scenario, start, end, calculatedValue, newAllocations,
                 modifications, toRemove);
     }
