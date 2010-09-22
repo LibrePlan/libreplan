@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -86,19 +87,29 @@ public class AggregateOfResourceAllocations {
     }
 
     public LocalDate getStart() {
-        if(isEmpty()){
+        IntraDayDate start = getIntraDayStart();
+        return start != null ? start.getDate() : null;
+    }
+
+    public IntraDayDate getIntraDayStart() {
+        if (isEmpty()) {
             throw new IllegalStateException("the aggregate is empty");
         }
-        return getAllocationsSortedByStartDate().get(0).getStartDate();
+        return getAllocationsSortedByStartDate().get(0).getIntraDayStartDate();
     }
 
     public LocalDate getEnd(){
-        if(isEmpty()){
+        IntraDayDate end = getIntraDayEnd();
+        return end != null ? end.getDate() : null;
+    }
+
+    public IntraDayDate getIntraDayEnd() {
+        if (isEmpty()) {
             throw new IllegalStateException("the aggregate is empty");
         }
-        LocalDate result = null;
+        IntraDayDate result = null;
         for (ResourceAllocation<?> allocation : resourceAllocations) {
-            result = bigger(allocation.getEndDate(), result);
+            result = bigger(allocation.getIntraDayEndDate(), result);
         }
         return result;
     }
@@ -107,7 +118,7 @@ public class AggregateOfResourceAllocations {
         return Days.daysBetween(getStart(), getEnd()).getDays();
     }
 
-    private LocalDate bigger(LocalDate one, LocalDate other) {
+    private IntraDayDate bigger(IntraDayDate one, IntraDayDate other) {
         if (one == null) {
             return other;
         }
