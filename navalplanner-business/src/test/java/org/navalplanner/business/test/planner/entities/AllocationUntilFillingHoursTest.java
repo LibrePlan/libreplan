@@ -25,7 +25,9 @@ import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class AllocationUntilFillingHoursTest {
@@ -75,17 +78,19 @@ public class AllocationUntilFillingHoursTest {
     @Test
     public void theEndDateIsTheDayAfterAllTheHoursAreAllocatedIfItIsCompletelyFilled() {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
-        LocalDate endDate = ResourceAllocation.allocating(allocations)
+        IntraDayDate endDate = ResourceAllocation.allocating(allocations)
                 .untilAllocating(32);
-        assertThat(endDate, equalTo(startDate.plusDays(2)));
+        assertThat(endDate.getDate(), equalTo(startDate.plusDays(2)));
+        assertTrue(endDate.isStartOfDay());
     }
 
     @Test
     public void theEndDateIsTheSameDayIfItIsNotCompletelyFilled() {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
-        LocalDate endDate = ResourceAllocation.allocating(allocations)
+        IntraDayDate endDate = ResourceAllocation.allocating(allocations)
                 .untilAllocating(31);
-        assertThat(endDate, equalTo(startDate.plusDays(1)));
+        assertThat(endDate.getDate(), equalTo(startDate.plusDays(1)));
+        assertThat(endDate.getEffortDuration(), equalTo(hours(15)));
     }
 
     @Test

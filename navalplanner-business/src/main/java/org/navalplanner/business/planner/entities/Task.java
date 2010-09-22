@@ -52,6 +52,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.AfterCopy;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -498,10 +499,10 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                               .allocateOnTaskLength();
             break;
         case END_DATE:
-            LocalDate end = ResourceAllocation
+            IntraDayDate end = ResourceAllocation
                                 .allocating(allocations)
                                 .untilAllocating(getAssignedHours());
-            setEndDate(end.toDateTimeAtStartOfDay().toDate());
+            setIntraDayEndDate(end);
             break;
         case RESOURCES_PER_DAY:
             List<HoursModification> hoursModified = strategy

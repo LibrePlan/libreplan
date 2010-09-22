@@ -219,7 +219,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        public LocalDate untilAllocating(int hoursToAllocate) {
+        public IntraDayDate untilAllocating(int hoursToAllocate) {
             AllocatorForSpecifiedResourcesPerDayAndHours allocator = new AllocatorForSpecifiedResourcesPerDayAndHours(
                     task, allocations) {
 
@@ -266,9 +266,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
 
             };
-            IntraDayDate result = allocator
-                    .untilAllocating(hours(hoursToAllocate));
-            return result.getDate();
+            return allocator.untilAllocating(hours(hoursToAllocate));
         }
 
         public void allocateOnTaskLength() {

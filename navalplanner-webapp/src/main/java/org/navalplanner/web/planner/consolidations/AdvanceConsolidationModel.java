@@ -39,16 +39,17 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -240,11 +241,11 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
 
                 if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
-                    LocalDate date = ResourceAllocation.allocating(
+                    IntraDayDate date = ResourceAllocation.allocating(
                             Arrays.asList(resourceAllocation
                                     .asResourcesPerDayModification()))
                             .untilAllocating(pendingHours);
-                    task.setEndDate(date.toDateTimeAtStartOfDay().toDate());
+                    task.setIntraDayEndDate(date);
                 } else {
                     reassign(resourceAllocation, startInclusive, endExclusive,
                             pendingHours);

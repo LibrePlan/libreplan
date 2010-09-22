@@ -770,7 +770,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         for(TaskElement task : parentElementsToBeUpdated) {
             TaskElement parent = task;
             while(parent != null) {
-                parent.setEndDate(null);
+                parent.setIntraDayEndDate(null);
                 parent.initializeEndDateIfDoesntExist();
                 taskDAO.save(parent);
                 parent = parent.getParent();
