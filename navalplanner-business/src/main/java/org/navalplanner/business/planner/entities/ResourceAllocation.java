@@ -130,13 +130,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             @Override
             public int compare(ResourceAllocation<?> o1,
                     ResourceAllocation<?> o2) {
-                if (o1.getStartDate() == null) {
+                if (o1.getIntraDayStartDate() == null) {
                     return -1;
                 }
-                if (o2.getStartDate() == null) {
+                if (o2.getIntraDayStartDate() == null) {
                     return 1;
                 }
-                return o1.getStartDate().compareTo(o2.getStartDate());
+                return o1.getIntraDayStartDate().compareTo(
+                        o2.getIntraDayStartDate());
             }
         };
     }
