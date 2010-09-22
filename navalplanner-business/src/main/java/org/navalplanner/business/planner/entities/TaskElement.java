@@ -45,8 +45,8 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -235,6 +235,10 @@ public abstract class TaskElement extends BaseEntity {
                 .toDate() : null;
     }
 
+    public IntraDayDate getIntraDayStartDate() {
+        return startDate;
+    }
+
     public LocalDate getStartAsLocalDate() {
         return startDate == null ? null : startDate.getDate();
     }
@@ -244,11 +248,14 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setStartDate(Date startDate) {
+        setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate
+                .fromDateFields(startDate)));
+    }
+
+    public void setIntraDayStartDate(IntraDayDate startDate) {
         Date previousDate = getStartDate();
         long previousLenghtMilliseconds = getLengthMilliseconds();
-        this.startDate = startDate != null ? IntraDayDate.create(
-                LocalDate.fromDateFields(startDate), EffortDuration.zero())
-                : null;
+        this.startDate = startDate;
         datesInterceptor.setStartDate(previousDate, previousLenghtMilliseconds,
                 getStartDate());
     }
@@ -282,12 +289,20 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setEndDate(Date endDate) {
-        long previousLength = getLengthMilliseconds();
-        this.endDate = endDate != null ? IntraDayDate.create(
+        setIntraDayEndDate(endDate != null ? IntraDayDate.create(
                 LocalDate.fromDateFields(endDate), EffortDuration.zero())
-                : null;
+                : null);
+    }
+
+    public void setIntraDayEndDate(IntraDayDate endDate) {
+        long previousLength = getLengthMilliseconds();
+        this.endDate = endDate;
         datesInterceptor.setLengthMilliseconds(previousLength,
                 getLengthMilliseconds());
+    }
+
+    public IntraDayDate getIntraDayEndDate() {
+        return endDate;
     }
 
     public void resizeTo(Scenario scenario, Date endDate) {
