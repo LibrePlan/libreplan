@@ -711,7 +711,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
                 user, currentScenario);
         for (Order order : list) {
-            order.useSchedulingDataFor(currentScenario);
+            order.useSchedulingDataFor(currentScenario, false);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
             if (associatedTaskElement != null
