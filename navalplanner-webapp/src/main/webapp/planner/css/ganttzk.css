@@ -1209,10 +1209,13 @@ body .perspectives-column {
 .main-area .z-center-body > span > div > div > div { height: 100%;}
 .main-area .z-center-body > span > div > div > div > span { height: 100%; display: block;}
 
-
-
 .main-area > span {height: 100%; display: block;}
 .main-area > span > div { height: 100%;}
 .main-area > span > div > span { height: 100%; display: block;}
 .main-area > span > div > div { height: 100%;}
 .main-area > span > div > div > span { height: 100%; display: block;}
+
+.main-area .advanced-assignment-area .z-center-body > span,
+.main-area .advanced-assignment-area .z-center-body > span > div > div {
+    height: auto;
+}
