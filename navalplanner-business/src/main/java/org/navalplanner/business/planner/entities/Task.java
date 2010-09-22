@@ -366,21 +366,21 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         if (aggregate.isEmpty()) {
             return;
         }
-        final LocalDate start = aggregate.getStart();
-        final LocalDate end = aggregate.getEnd();
+        final IntraDayDate start = aggregate.getIntraDayStart();
+        final IntraDayDate end = aggregate.getIntraDayEnd();
         mergeAllocation(scenario, start, end, calculatedValue, newAllocations,
                 modifications, toRemove);
     }
 
-    private void mergeAllocation(Scenario scenario, final LocalDate start,
-            final LocalDate end,
+    private void mergeAllocation(Scenario scenario, final IntraDayDate start,
+            final IntraDayDate end,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
         this.calculatedValue = calculatedValue;
-        setStartDate(start.toDateTimeAtStartOfDay().toDate());
-        setDaysDuration(Days.daysBetween(start, end).getDays());
+        setIntraDayStartDate(start);
+        setIntraDayEndDate(end);
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
             pair.getOriginal().mergeAssignmentsAndResourcesPerDay(scenario,
@@ -514,8 +514,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
         updateDerived(copied);
-        mergeAllocation(onScenario, asLocalDate(getStartDate()),
-                asLocalDate(getEndDate()),
+        mergeAllocation(onScenario, getIntraDayStartDate(),
+                getIntraDayEndDate(),
                 calculatedValue, Collections
                         .<ResourceAllocation<?>> emptyList(), copied,
                 Collections.<ResourceAllocation<?>> emptyList());
