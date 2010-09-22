@@ -74,6 +74,8 @@ public class Worker extends Resource {
 
     }
 
+    private final static ResourceEnum type = ResourceEnum.WORKER;
+
     private String firstName;
 
     private String surname;
@@ -176,4 +178,8 @@ public class Worker extends Resource {
 
    }
 
+    @Override
+    public ResourceEnum getType() {
+        return type;
+    }
 }

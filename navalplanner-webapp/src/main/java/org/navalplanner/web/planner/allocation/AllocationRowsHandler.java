@@ -28,10 +28,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -75,7 +76,13 @@ public class AllocationRowsHandler {
             if (alreadyExistsAllocationFor(each)) {
                 alreadyPresent.add(each);
             } else {
-                currentRows.add(SpecificAllocationRow.forResource(each));
+                SpecificAllocationRow specificAllocationRow = SpecificAllocationRow
+                        .forResource(each);
+                Integer calculatedHours = calculateHours(specificAllocationRow);
+                if (calculatedHours != null) {
+                    specificAllocationRow.setHoursToInput(calculatedHours);
+                }
+                currentRows.add(specificAllocationRow);
                 formBinder.newAllocationAdded();
             }
         }
@@ -101,6 +108,11 @@ public class AllocationRowsHandler {
                     .create(resourceType, criteria, resourcesMatched);
             if (hours != null) {
                 genericAllocationRow.setHoursToInput(hours);
+            } else {
+                Integer calculatedHours = calculateHours(genericAllocationRow);
+                if (calculatedHours != null) {
+                    genericAllocationRow.setHoursToInput(calculatedHours);
+                }
             }
             if (alreadyExistsAllocationFor(resourceType, criteria)) {
                 formBinder.markThereisAlreadyAssignmentWith(resourceType,
@@ -109,6 +121,77 @@ public class AllocationRowsHandler {
                 currentRows.add(genericAllocationRow);
                 formBinder.newAllocationAdded();
             }
+        }
+    }
+
+    private Integer calculateHours(AllocationRow allocationRow) {
+        if ((isAllocationByResourceType(allocationRow, ResourceEnum.WORKER))
+                && notStillExistAnotherAllocation(ResourceEnum.WORKER)) {
+            return calculateHoursByCalculatedValue(ResourceEnum.WORKER);
+        } else if (isAllocationByResourceType(allocationRow,
+                ResourceEnum.MACHINE)
+                && notStillExistAnotherAllocation(ResourceEnum.MACHINE)) {
+            return calculateHoursByCalculatedValue(ResourceEnum.MACHINE);
+        }
+        return null;
+    }
+
+    private Integer calculateHoursByCalculatedValue(ResourceEnum resource) {
+        switch (calculatedValue) {
+            case NUMBER_OF_HOURS:
+                break;
+            case END_DATE:
+            case RESOURCES_PER_DAY:
+                return calculateHoursGroupByResourceType(resource);
+        }
+        return null;
+    }
+
+    private Integer calculateHoursGroupByResourceType(ResourceEnum resource) {
+        Integer hours = new Integer(0);
+        for(HoursGroup hourGroup : task.getTaskSource().getHoursGroups()){
+            if (hourGroup.getResourceType().equals(resource)) {
+                hours += hourGroup.getWorkingHours();
+            }
+        }
+        return hours;
+    }
+
+    private boolean notStillExistAnotherAllocation(ResourceEnum type) {
+        for (AllocationRow allocation : getCurrentRows()) {
+            if (isAllocationByResourceType(allocation, type)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isAllocationByResourceType(AllocationRow allocationRow,
+            ResourceEnum resourceType) {
+        if (!allocationRow.isGeneric()) {
+            Resource resource = ((SpecificAllocationRow) allocationRow)
+                    .getResource();
+            return resource.getType().equals(resourceType);
+        } else {
+            Collection<? extends Criterion> criteria = ((GenericAllocationRow) allocationRow)
+                    .getCriterions();
+            for (Criterion criterion : criteria) {
+                if (criterion.getType().getResource().equals(resourceType)) {
+                    return true;
+                }
+            }
+            return isGenericAllBy(((GenericAllocationRow) allocationRow),
+                    resourceType);
+        }
+    }
+
+    private boolean isGenericAllBy(GenericAllocationRow generic,
+            ResourceEnum type) {
+        String captionName = generic.getName();
+        if (type.equals(ResourceEnum.WORKER)) {
+            return captionName.equals(Criterion.allWorkersCaption());
+        } else {
+            return captionName.equals(Criterion.allMachinesCaption());
         }
     }
 

@@ -152,11 +152,11 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         }
     }
 
-    private static String allWorkersCaption() {
+    public static String allWorkersCaption() {
         return _("[generic all workers]");
     }
 
-    private static String allMachinesCaption() {
+    public static String allMachinesCaption() {
         return _("[generic all machines]");
     }
 

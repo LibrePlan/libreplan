@@ -1103,6 +1103,8 @@ public abstract class Resource extends IntegrationEntity {
 
     }
 
+    public abstract ResourceEnum getType();
+
     public boolean isVirtual() {
         return false;
     }

@@ -37,6 +37,8 @@ import org.hibernate.validator.Valid;
 */
 public class Machine extends Resource {
 
+    private final static ResourceEnum type = ResourceEnum.MACHINE;
+
     private String name;
 
     private String description;
@@ -126,4 +128,8 @@ public class Machine extends Resource {
         return c.getResourceType().equals(ResourceEnum.MACHINE);
     }
 
+    @Override
+    public ResourceEnum getType() {
+        return type;
+    }
 }
