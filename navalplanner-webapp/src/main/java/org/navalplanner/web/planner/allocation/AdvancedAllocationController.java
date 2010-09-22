@@ -949,20 +949,20 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<ColumnOnRow> getColumnsForLeft() {
         List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
-        result.add(new ColumnOnRow(_("Name")) {
+        result.add(new ColumnOnRow("Name") {
 
             @Override
             public Component cellFor(Row row) {
                 return row.getNameLabel();
             }
         });
-        result.add(new ColumnOnRow(_("Hours")) {
+        result.add(new ColumnOnRow("Hours") {
             @Override
             public Component cellFor(Row row) {
                 return row.getAllHours();
             }
         });
-        result.add(new ColumnOnRow(_("Function")) {
+        result.add(new ColumnOnRow("Function") {
             @Override
             public Component cellFor(Row row) {
                 return row.getFunction();
@@ -1027,7 +1027,7 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     @Override
     public Column toColumn() {
         Column column = new org.zkoss.zul.Column();
-        column.setLabel(columnName);
+        column.setLabel(_(columnName));
         column.setSclass(((String) columnName).toLowerCase());
         return column;
     }
