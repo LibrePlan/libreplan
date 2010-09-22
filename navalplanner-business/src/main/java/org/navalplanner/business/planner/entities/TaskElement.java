@@ -99,7 +99,6 @@ public abstract class TaskElement extends BaseEntity {
     protected static <T extends TaskElement> T create(T taskElement,
             TaskSource taskSource) {
         taskElement.taskSource = taskSource;
-        Date orderElementDeadline = taskSource.getOrderElement().getDeadline();
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.setStartDate(taskElement.getOrderElement().getOrder()
