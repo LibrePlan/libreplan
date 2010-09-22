@@ -186,7 +186,7 @@ public class AllocationResult {
     }
 
     public LocalDate getStart() {
-        return new LocalDate(task.getStartDate().getTime());
+        return task.getStartAsLocalDate();
     }
 
 }
