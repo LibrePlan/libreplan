@@ -145,6 +145,12 @@ public class EditTaskController extends GenericForwardComposer {
 
     private void showEditForm(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
+        showEditForm(context, taskElement, planningState, false);
+    }
+
+    private void showEditForm(IContextWithPlannerTask<TaskElement> context,
+            TaskElement taskElement, PlanningState planningState,
+            boolean fromLimitingResourcesView) {
         this.taskElement = taskElement;
         this.context = context;
         this.planningState = planningState;
@@ -153,9 +159,13 @@ public class EditTaskController extends GenericForwardComposer {
 
         try {
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
-            window.setMode("modal");
             showSelectedTabPanel();
             Util.reloadBindings(window);
+            if (fromLimitingResourcesView) {
+                window.doModal();
+            } else {
+                window.setMode("modal");
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -210,15 +220,23 @@ public class EditTaskController extends GenericForwardComposer {
         showEditForm(context, taskElement, planningState);
     }
 
-    public void showEditFormResourceAllocation(TaskElement taskElement) {
+    public void showEditFormResourceAllocationFromLimitingResources(TaskElement taskElement) {
         limitingResourceAllocationController.setDisableHours(false);
         taskPropertiesTab.setVisible(false);
-        showEditFormResourceAllocation(null, taskElement, null);
+        showEditFormResourceAllocation(null, taskElement, null, true);
     }
 
     public void showEditFormResourceAllocation(
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
+        showEditFormResourceAllocation(context, taskElement, planningState,
+                false);
+    }
+
+    public void showEditFormResourceAllocation(
+            IContextWithPlannerTask<TaskElement> context,
+            TaskElement taskElement, PlanningState planningState,
+            boolean fromLimitingResourcesView) {
 
         if (isTask(taskElement)) {
             Task task = asTask(taskElement);
@@ -230,7 +248,8 @@ public class EditTaskController extends GenericForwardComposer {
         } else {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
         }
-        showEditForm(context, taskElement, planningState);
+        showEditForm(context, taskElement, planningState,
+                fromLimitingResourcesView);
     }
 
     public void selectAssignmentTab(int index) {

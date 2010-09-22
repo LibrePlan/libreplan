@@ -327,7 +327,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             Task task = oldElement.getTask();
 
             EditTaskController editTaskController = getEditController(editTaskWindow);
-            editTaskController.showEditFormResourceAllocation(task);
+            editTaskController.showEditFormResourceAllocationFromLimitingResources(task);
 
             Set<LimitingResourceQueueDependency> outgoingDependencies = oldElement.getDependenciesAsOrigin();
             Set<LimitingResourceQueueDependency> incomingDependencies = oldElement.getDependenciesAsDestiny();
