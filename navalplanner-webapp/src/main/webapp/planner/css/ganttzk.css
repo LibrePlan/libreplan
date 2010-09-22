@@ -1219,3 +1219,7 @@ body .perspectives-column {
 .main-area .advanced-assignment-area .z-center-body > span > div > div {
     height: auto;
 }
+
+.advanced-allocation-layout {
+    height: 100%;
+}
