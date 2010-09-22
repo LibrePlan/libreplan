@@ -148,4 +148,9 @@ public class GenericAllocationRow extends AllocationRow {
     public Set<Criterion> getCriterions() {
         return Collections.unmodifiableSet(criterions);
     }
+
+    @Override
+    public ResourceEnum getType() {
+        return resourceType;
+    }
 }

@@ -35,6 +35,7 @@ import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
@@ -496,5 +497,7 @@ public abstract class AllocationRow {
         resourcesPerDayInput.setValue(nonConsolidatedResourcesPerDay
                 .getAmount());
     }
+
+    public abstract ResourceEnum getType();
 
 }
