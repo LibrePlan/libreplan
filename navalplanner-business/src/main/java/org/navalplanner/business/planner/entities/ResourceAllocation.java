@@ -1088,15 +1088,31 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public LocalDate getStartDate() {
-        return LocalDate.fromDateFields(task.getStartDate());
+        IntraDayDate start = getIntraDayStartDate();
+        return start != null ? start.getDate() : null;
+    }
+
+    public IntraDayDate getIntraDayStartDate() {
+        return task.getIntraDayStartDate();
     }
 
     public LocalDate getEndDate() {
+        IntraDayDate intraDayEndDate = getIntraDayEndDate();
+        return intraDayEndDate != null ? intraDayEndDate.getDate() : null;
+    }
+
+    public IntraDayDate getIntraDayEndDate() {
+        IntraDayDate intraDayEnd = getDayAssignmentsState().getIntraDayEnd();
+        if (intraDayEnd != null) {
+            return intraDayEnd;
+        }
+
         List<? extends DayAssignment> assignments = getAssignments();
         if (assignments.isEmpty()) {
             return null;
         }
-        return assignments.get(assignments.size() - 1).getDay().plusDays(1);
+        DayAssignment lastAssignment = assignments.get(assignments.size() - 1);
+        return IntraDayDate.startOfDay(lastAssignment.getDay().plusDays(1));
     }
 
     public boolean isAlreadyFinishedBy(LocalDate date) {
