@@ -31,17 +31,18 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.allocation.AllocationResult;
-import org.navalplanner.web.planner.allocation.FormBinder;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
+import org.navalplanner.web.planner.allocation.AllocationResult;
+import org.navalplanner.web.planner.allocation.FormBinder;
+import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.limiting.allocation.LimitingResourceAllocationController;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.order.SubcontractController;
@@ -389,8 +390,8 @@ public class EditTaskController extends GenericForwardComposer {
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
             this.allocation = allocation;
             final int totalHours = allocation.getAggregate().getTotalHours();
-            final LocalDate start = allocation.getStart();
-            final LocalDate end = start.plusDays(allocation.getDaysDuration());
+            final IntraDayDate start = allocation.getIntraDayStart();
+            final IntraDayDate end = allocation.getIntraDayEnd();
             final CalculatedValue calculatedValue = allocation
                     .getCalculatedValue();
             restrictionSource = new IRestrictionSource() {
@@ -402,12 +403,12 @@ public class EditTaskController extends GenericForwardComposer {
 
                 @Override
                 public LocalDate getStart() {
-                    return start;
+                    return start.getDate();
                 }
 
                 @Override
                 public LocalDate getEnd() {
-                    return end;
+                    return end.asExclusiveEnd();
                 }
 
                 @Override
