@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -190,10 +190,17 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public void useSchedulingDataFor(OrderVersion orderVersion) {
+        useSchedulingDataFor(orderVersion, true);
+    }
+
+    public void useSchedulingDataFor(OrderVersion orderVersion,
+            boolean recursive) {
         Validate.notNull(orderVersion);
         SchedulingDataForVersion schedulingVersion = schedulingVersionFor(orderVersion);
-        for (OrderElement each : getChildren()) {
-            each.useSchedulingDataFor(orderVersion);
+        if (recursive) {
+            for (OrderElement each : getChildren()) {
+                each.useSchedulingDataFor(orderVersion);
+            }
         }
         current = schedulingVersion.makeAvailableFor(orderVersion);
     }

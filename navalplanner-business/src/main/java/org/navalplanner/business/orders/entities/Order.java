@@ -150,9 +150,13 @@ public class Order extends OrderLineGroup {
     }
 
     public void useSchedulingDataFor(Scenario scenario) {
+        useSchedulingDataFor(scenario, true);
+    }
+
+    public void useSchedulingDataFor(Scenario scenario, boolean recursive) {
         OrderVersion orderVersion = scenarios.get(scenario);
         currentVersionInfo = CurrentVersionInfo.create(scenario, orderVersion);
-        useSchedulingDataFor(orderVersion);
+        useSchedulingDataFor(orderVersion, recursive);
     }
 
     @Override
