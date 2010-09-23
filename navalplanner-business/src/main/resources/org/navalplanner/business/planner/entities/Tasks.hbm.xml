@@ -27,6 +27,8 @@
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="advancePercentage" column="ADVANCE_PERCENTAGE" access="field" scale="4"/>
 
+        <property name="sumOfHoursAllocated"/>
+
         <!-- Indexed -->
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
             index="idx_TaskElement_on_TaskGroup" />
