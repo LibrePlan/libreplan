@@ -88,7 +88,7 @@ public class OrderLineGroup extends OrderElement implements
 
         @Override
         protected void onChildRemovedAdditionalActions(OrderElement removedChild) {
-            if (removedChild.isScheduled()) {
+            if (removedChild.isScheduled() && getThis().isScheduled()) {
                 removeChildTask(removedChild);
             }
         }
