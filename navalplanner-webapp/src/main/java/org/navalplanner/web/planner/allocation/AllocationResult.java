@@ -103,7 +103,7 @@ public class AllocationResult {
         this.aggregate = aggregate;
         this.daysDuration = aggregate.isEmpty() ? task.getDaysDuration()
                 : aggregate.getDaysDuration();
-        this.end = aggregate.getEnd();
+        this.end = aggregate.isEmpty() ? null : aggregate.getEnd();
         this.newAllocations = newAllocations;
         this.modified = modified;
     }

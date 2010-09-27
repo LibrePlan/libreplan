@@ -103,6 +103,13 @@ public class AggregateOfResourceAllocations {
         return end != null ? end.getDate() : null;
     }
 
+    /**
+     * Calculates the latest end of all the allocations of this aggregate
+     *
+     * @return
+     * @throws IllegalStateException
+     *             if the aggregate is empty
+     */
     public IntraDayDate getEnd() {
         if (isEmpty()) {
             throw new IllegalStateException("the aggregate is empty");
