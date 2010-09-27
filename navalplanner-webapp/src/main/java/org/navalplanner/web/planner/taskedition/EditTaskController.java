@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
@@ -363,6 +364,11 @@ public class EditTaskController extends GenericForwardComposer {
             formBinder.doApply();
             allocationResult = formBinder.getLastAllocation();
         }
+        if (allocationResult.getAggregate().isEmpty()) {
+            getMessagesForUser().showMessage(Level.WARNING,
+                    _("Some allocations needed"));
+            return;
+        }
         getSwitcher().goToAdvancedAllocation(
                 allocationResult, createResultReceiver(allocationResult));
         window.setVisible(false);
@@ -388,6 +394,7 @@ public class EditTaskController extends GenericForwardComposer {
         private final IRestrictionSource restrictionSource;
 
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
+            Validate.isTrue(!allocation.getAggregate().isEmpty());
             this.allocation = allocation;
             final int totalHours = allocation.getAggregate().getTotalHours();
             final IntraDayDate start = allocation.getIntraDayStart();
