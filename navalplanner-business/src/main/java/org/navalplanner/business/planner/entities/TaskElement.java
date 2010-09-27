@@ -375,7 +375,7 @@ public abstract class TaskElement extends BaseEntity {
         detachFromParent();
     }
 
-    private void detachFromParent() {
+    public void detachFromParent() {
         if (parent != null) {
             parent.remove(this);
         }
