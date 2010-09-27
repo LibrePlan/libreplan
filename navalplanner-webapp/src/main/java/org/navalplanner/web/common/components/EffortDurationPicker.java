@@ -135,6 +135,9 @@ public class EffortDurationPicker extends Hbox {
     }
 
     public void setValue(EffortDuration effortDuration) {
+        if (effortDuration == null) {
+            effortDuration = EffortDuration.zero();
+        }
         updateUIWithValuesFrom(effortDuration);
     }
 

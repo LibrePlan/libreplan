@@ -24,6 +24,12 @@
     </component>
 
     <component>
+        <component-name>effortDurationPicker</component-name>
+        <component-class>org.navalplanner.web.common.components.EffortDurationPicker</component-class>
+        <extends>hbox</extends>
+    </component>
+
+    <component>
         <component-name>calendarhighlighteddays</component-name>
         <component-class>org.navalplanner.web.common.components.CalendarHighlightedDays</component-class>
         <macro-uri>/common/components/calendarhighlighteddays.zul</macro-uri>

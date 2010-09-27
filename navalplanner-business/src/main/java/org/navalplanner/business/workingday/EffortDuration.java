@@ -243,4 +243,8 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return hours;
     }
 
+    public String toString() {
+        return getHours() + ":" + getMinutes() + ":" + getSeconds();
+    }
+
 }
