@@ -56,9 +56,8 @@ public class CriticalPathCalculatorTest {
             int durationDays) {
         ITaskFundamentalProperties result = createNiceMock(ITaskFundamentalProperties.class);
         expect(result.getBeginDate()).andReturn(toDate(start)).anyTimes();
-        expect(result.getLengthMilliseconds()).andReturn(
-                toDate(start.plusDays(durationDays)).getTime()
-                        - toDate(start).getTime()).anyTimes();
+        expect(result.getEndDate()).andReturn(
+                toDate(start.plusDays(durationDays))).anyTimes();
         replay(result);
         return result;
     }
@@ -67,9 +66,8 @@ public class CriticalPathCalculatorTest {
             LocalDate start, int durationDays, LocalDate date) {
         ITaskFundamentalProperties result = createNiceMock(ITaskFundamentalProperties.class);
         expect(result.getBeginDate()).andReturn(toDate(start)).anyTimes();
-        expect(result.getLengthMilliseconds()).andReturn(
-                toDate(start.plusDays(durationDays)).getTime()
-                        - toDate(start).getTime()).anyTimes();
+        expect(result.getEndDate()).andReturn(
+                toDate(start.plusDays(durationDays))).anyTimes();
 
         Constraint<Date> constraint = DateConstraint.biggerOrEqualThan(date
                 .toDateTimeAtStartOfDay().toDate());
@@ -84,9 +82,8 @@ public class CriticalPathCalculatorTest {
             LocalDate start, int durationDays, LocalDate date) {
         ITaskFundamentalProperties result = createNiceMock(ITaskFundamentalProperties.class);
         expect(result.getBeginDate()).andReturn(toDate(start)).anyTimes();
-        expect(result.getLengthMilliseconds()).andReturn(
-                toDate(start.plusDays(durationDays)).getTime()
-                        - toDate(start).getTime()).anyTimes();
+        expect(result.getEndDate()).andReturn(
+                toDate(start.plusDays(durationDays))).anyTimes();
 
         Constraint<Date> constraint = DateConstraint.equalTo(date
                 .toDateTimeAtStartOfDay().toDate());
@@ -113,9 +110,10 @@ public class CriticalPathCalculatorTest {
         return localDate.toDateTimeAtStartOfDay().toDate();
     }
 
-    private int toDays(long millis) {
-        return Days.daysBetween(new LocalDate(0), new LocalDate(millis))
-                .getDays();
+    private int daysBetweenStartAndEnd(ITaskFundamentalProperties task) {
+        LocalDate start = LocalDate.fromDateFields(task.getBeginDate());
+        LocalDate end = LocalDate.fromDateFields(task.getEndDate());
+        return Days.daysBetween(start, end).getDays();
     }
 
     /**
@@ -1396,7 +1394,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)),
                 equalTo(10));
     }
 
@@ -1470,8 +1468,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(10));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(10));
     }
 
     @Test
@@ -1482,8 +1479,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(10),
-                    equalTo(5)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(10), equalTo(5)));
         }
     }
 
@@ -1495,8 +1492,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(10),
-                    equalTo(5)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(10), equalTo(5)));
         }
     }
 
@@ -1508,8 +1505,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(6),
-                    equalTo(4)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(6), equalTo(4)));
         }
     }
 
@@ -1521,8 +1518,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
-                    equalTo(10)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5), equalTo(10)));
         }
     }
 
@@ -1533,8 +1530,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(20));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(20));
     }
 
     @Test
@@ -1554,8 +1550,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
-                    equalTo(10)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(4), equalTo(10)));
         }
     }
 
@@ -1567,8 +1563,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
-                    equalTo(5)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(4), equalTo(5)));
         }
     }
 
@@ -1580,8 +1576,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
-                    equalTo(5)));
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(4), equalTo(5)));
         }
     }
 
@@ -1593,8 +1588,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
-                    equalTo(10)));
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(5), equalTo(10)));
         }
     }
 
@@ -1606,8 +1600,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
-                    equalTo(5), equalTo(10)));
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(4), equalTo(5), equalTo(10)));
         }
     }
 
@@ -1620,8 +1613,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(6),
-                    equalTo(4), equalTo(10)));
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(6), equalTo(4), equalTo(10)));
         }
     }
 
@@ -1634,8 +1626,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
-                    equalTo(10), equalTo(8)));
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(4), equalTo(10), equalTo(8)));
         }
     }
 
@@ -1647,8 +1638,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(6),
-                    equalTo(20)));
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(6), equalTo(20)));
         }
     }
 
@@ -1660,8 +1650,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(4));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
-                    equalTo(8), equalTo(3), equalTo(10)));
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(4), equalTo(8), equalTo(3), equalTo(10)));
         }
     }
 
@@ -1673,9 +1662,10 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(6));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
-                    equalTo(8), equalTo(3), equalTo(10), equalTo(6),
-                    equalTo(19)));
+            assertThat(
+                    daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(4), equalTo(8), equalTo(3), equalTo(10),
+                            equalTo(6), equalTo(19)));
         }
     }
 
@@ -1687,8 +1677,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
-                    equalTo(10)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5), equalTo(10)));
         }
     }
 
@@ -1699,8 +1689,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(8));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(8));
     }
 
     @Test
@@ -1711,7 +1700,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), equalTo(5));
+            assertThat(daysBetweenStartAndEnd(task), equalTo(5));
         }
     }
 
@@ -1723,7 +1712,7 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(4),
                     equalTo(6)));
         }
     }
@@ -1736,7 +1725,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(4),
                     equalTo(15)));
         }
     }
@@ -1749,8 +1739,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
-                    equalTo(6)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5), equalTo(6)));
         }
     }
 
@@ -1762,7 +1752,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(2),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(2),
                     equalTo(10)));
         }
     }
@@ -1775,7 +1766,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(4));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(4),
                     equalTo(7), equalTo(5), equalTo(6)));
         }
     }
@@ -1788,7 +1780,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5),
                     equalTo(10)));
         }
     }
@@ -1801,7 +1794,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5),
                     equalTo(4), equalTo(8)));
         }
     }
@@ -1814,7 +1808,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5),
                     equalTo(8)));
         }
     }
@@ -1827,7 +1822,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(10),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(10),
                     equalTo(5)));
         }
     }
@@ -1839,8 +1835,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(10));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(10));
     }
 
     @Test
@@ -1851,7 +1846,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(4),
                     equalTo(3)));
         }
     }
@@ -1863,8 +1859,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(6));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(6));
     }
 
     @Test
@@ -1875,7 +1870,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5),
                     equalTo(3), equalTo(2)));
         }
     }
@@ -1888,7 +1884,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(4),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(4),
                     equalTo(6)));
         }
     }
@@ -1901,7 +1898,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5),
                     equalTo(4)));
         }
     }
@@ -1914,7 +1912,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(5),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(5),
                     equalTo(4), equalTo(3)));
         }
     }
@@ -1926,8 +1925,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(10));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(10));
     }
 
     @Test
@@ -1938,8 +1936,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(3));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(3));
     }
 
     @Test
@@ -1951,7 +1948,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(2),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(2),
                     equalTo(5), equalTo(3)));
         }
     }
@@ -1964,8 +1962,7 @@ public class CriticalPathCalculatorTest {
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
-        assertThat(toDays(criticalPath.get(0).getLengthMilliseconds()),
-                equalTo(3));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(3));
     }
 
     @Test
@@ -1977,7 +1974,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(2),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(2),
                     equalTo(6)));
         }
     }
@@ -1990,7 +1988,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), equalTo(10));
+            assertThat(daysBetweenStartAndEnd(task),
+                    equalTo(10));
         }
     }
 
@@ -2002,7 +2001,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), equalTo(10));
+            assertThat(daysBetweenStartAndEnd(task),
+                    equalTo(10));
         }
     }
 
@@ -2014,7 +2014,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(10),
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(10),
                     equalTo(5)));
         }
     }
@@ -2027,8 +2028,8 @@ public class CriticalPathCalculatorTest {
 
         assertThat(criticalPath.size(), equalTo(3));
         for (ITaskFundamentalProperties task : criticalPath) {
-            assertThat(toDays(task.getLengthMilliseconds()), anyOf(equalTo(10),
-                    equalTo(5)));
+            assertThat(daysBetweenStartAndEnd(task),
+                    anyOf(equalTo(10), equalTo(5)));
         }
     }
 

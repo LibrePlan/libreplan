@@ -183,11 +183,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public long getLengthMilliseconds() {
-            return taskElement.getLengthMilliseconds();
-        }
-
-        @Override
         public void setBeginDate(final Date beginDate) {
             transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
@@ -198,12 +193,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                             return null;
                         }
                     });
-        }
-
-        @Override
-        public void setLengthMilliseconds(final long lengthMilliseconds) {
-            setEndDate(new Date(getBeginDate().getTime()
-                    + lengthMilliseconds));
         }
 
         @Override
@@ -295,7 +284,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private LocalDate calculateLimitDate(BigDecimal advancePercentage) {
-            Long totalMillis = getLengthMilliseconds();
+            Long totalMillis = taskElement.getLengthMilliseconds();
             Long advanceMillis = advancePercentage.multiply(
                     new BigDecimal(totalMillis)).longValue();
             return new LocalDate(getBeginDate().getTime() + advanceMillis);

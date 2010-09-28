@@ -95,15 +95,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return lengthMilliseconds;
     }
 
-    public void setLengthMilliseconds(long lengthMilliseconds) {
-        if (lengthMilliseconds < 0) {
-            throw new IllegalArgumentException(
-                    "a task must not have a negative length. Received value: "
-                            + lengthMilliseconds);
-        }
-        this.lengthMilliseconds = lengthMilliseconds;
-    }
-
     @Override
     public Date getEndDate() {
         return new Date(beginDate + getLengthMilliseconds());

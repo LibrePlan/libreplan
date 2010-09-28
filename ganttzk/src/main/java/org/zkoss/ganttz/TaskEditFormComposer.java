@@ -97,8 +97,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
         result.name = task.getName();
         result.beginDate = task.getBeginDate();
-        result.endDate = new Date(task.getBeginDate().getTime()
-                + task.getLengthMilliseconds());
+        result.endDate = task.getEndDate();
         result.notes = task.getNotes();
         result.deadlineDate = task.getDeadline();
 
@@ -108,8 +107,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     private void copyFromDTO(TaskDTO taskDTO, Task currentTask) {
         currentTask.setName(taskDTO.name);
         currentTask.setBeginDate(taskDTO.beginDate);
-        currentTask.setLengthMilliseconds(taskDTO.endDate.getTime()
-                - taskDTO.beginDate.getTime());
+        currentTask.setEndDate(taskDTO.endDate);
         currentTask.setNotes(taskDTO.notes);
         currentTask.setDeadline(taskDTO.deadlineDate);
     }

@@ -52,13 +52,9 @@ public interface ITaskFundamentalProperties {
 
     public Date getConsolidatedline();
 
-    public void setLengthMilliseconds(long lengthMilliseconds);
-
     public Date getEndDate();
 
     public void setEndDate(Date endDate);
-
-    public long getLengthMilliseconds();
 
     public String getNotes();
 

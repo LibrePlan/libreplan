@@ -386,8 +386,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             task.moveTo(begin);
         } else if (updatedComponent == getEndDateBox()) {
             Date newEnd = getEndDateBox().getValue();
-            task.setLengthMilliseconds(newEnd.getTime()
-                    - task.getBeginDate().getTime());
+            task.setEndDate(newEnd);
         }
     }
 

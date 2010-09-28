@@ -114,8 +114,7 @@ public class Node<T extends ITaskFundamentalProperties> {
     }
 
     private LocalDate getTaskEndDate() {
-        return new LocalDate(task.getBeginDate().getTime()
-                + task.getLengthMilliseconds());
+        return new LocalDate(task.getEndDate());
     }
 
     @Override

@@ -34,8 +34,8 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
@@ -348,7 +348,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdateSize(String size) {
         int pixels = stripPx(size);
-        this.task.setLengthMilliseconds(getMapper().toMilliseconds(pixels));
+        this.task.setEndDate(new Date(this.task.getBeginDate().getTime()
+                + getMapper().toMilliseconds(pixels)));
         updateWidth();
     }
 
