@@ -174,13 +174,12 @@ public abstract class Task implements ITaskFundamentalProperties {
         Validate.notNull(dependenciesEnforcerHook);
     }
 
-    public long setBeginDate(Date newStart) {
+    public void setBeginDate(Date newStart) {
         Date previousValue = fundamentalProperties.getBeginDate();
         Date previousEnd = fundamentalProperties.getEndDate();
         fundamentalProperties.setBeginDate(newStart);
         dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
                 newStart);
-        return fundamentalProperties.getLengthMilliseconds();
     }
 
     private void reloadResourcesTextIfChange(Date newDate, Date previousDate) {

@@ -188,22 +188,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public long setBeginDate(final Date beginDate) {
-            Long runOnReadOnlyTransaction = transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Long>() {
+        public void setBeginDate(final Date beginDate) {
+            transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
-                        public Long execute() {
+                        public Void execute() {
                             stepsBeforePossibleReallocation();
-                            Long result = setBeginDateInsideTransaction(beginDate);
-                            return result;
+                            taskElement.moveTo(currentScenario, beginDate);
+                            return null;
                         }
                     });
-            return runOnReadOnlyTransaction;
-        }
-
-        private Long setBeginDateInsideTransaction(final Date beginDate) {
-            taskElement.moveTo(currentScenario, beginDate);
-            return getLengthMilliseconds();
         }
 
         @Override

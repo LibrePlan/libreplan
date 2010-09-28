@@ -36,11 +36,9 @@ public interface ITaskFundamentalProperties {
     public void setName(String name);
 
     /**
-     * Sets the beginDate. As result of this, the length of the task can change.
-     * So the new value is returned
-     * @return the new length
+     * Sets the beginDate.
      */
-    public long setBeginDate(Date beginDate);
+    public void setBeginDate(Date beginDate);
 
     public Date getBeginDate();
 
