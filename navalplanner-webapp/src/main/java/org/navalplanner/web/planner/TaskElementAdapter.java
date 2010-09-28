@@ -208,21 +208,25 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public void setLengthMilliseconds(final long lengthMilliseconds) {
+            setEndDate(new Date(getBeginDate().getTime()
+                    + lengthMilliseconds));
+        }
+
+        @Override
+        public Date getEndDate() {
+            return taskElement.getEndDate();
+        }
+
+        public void setEndDate(final Date endDate) {
             transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            updateEndDate(lengthMilliseconds);
+                            taskElement.resizeTo(currentScenario, endDate);
                             return null;
                         }
                     });
-        }
-
-        private void updateEndDate(long lengthMilliseconds) {
-            Date endDate = new Date(getBeginDate().getTime()
-                    + lengthMilliseconds);
-            taskElement.resizeTo(currentScenario, endDate);
         }
 
         @Override

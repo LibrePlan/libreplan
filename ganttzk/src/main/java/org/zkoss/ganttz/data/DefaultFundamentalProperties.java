@@ -105,6 +105,16 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         this.lengthMilliseconds = lengthMilliseconds;
     }
 
+    @Override
+    public Date getEndDate() {
+        return new Date(beginDate + getLengthMilliseconds());
+    }
+
+    @Override
+    public void setEndDate(Date endDate) {
+        this.lengthMilliseconds = endDate.getTime() - beginDate;
+    }
+
     public String getNotes() {
         return notes;
     }

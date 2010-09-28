@@ -34,8 +34,8 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnforcement;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.ganttz.data.constraint.DateConstraint;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
 
 /**
@@ -233,6 +233,7 @@ public abstract class Task implements ITaskFundamentalProperties {
                 .removePropertyChangeListener(listener);
     }
 
+    @Override
     public Date getEndDate() {
         return new Date(getBeginDate().getTime() + getLengthMilliseconds());
     }
@@ -261,6 +262,7 @@ public abstract class Task implements ITaskFundamentalProperties {
                 previousValue, this.fundamentalProperties.getNotes());
     }
 
+    @Override
     public void setEndDate(Date value) {
         if (value == null) {
             return;
