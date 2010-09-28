@@ -32,8 +32,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -48,7 +48,7 @@ import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
-import org.navalplanner.business.planner.entities.DerivedAllocation;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -58,9 +58,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -132,9 +130,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     private ITaskElementDAO taskDAO;
 
     @Autowired
-    private IResourceDAO resourceDAO;
-
-    @Autowired
     private ICriterionDAO criterionDAO;
 
     @Autowired
@@ -204,20 +199,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         }
                     });
             return runOnReadOnlyTransaction;
-        }
-
-        private Set<Resource> resourcesForTask() {
-            Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
-            Set<Resource> resources = new HashSet<Resource>();
-            for (ResourceAllocation<?> each : resourceAllocations) {
-                resources.addAll(each.getAssociatedResources());
-                for (DerivedAllocation derivedAllocation : each
-                        .getDerivedAllocations()) {
-                    resources
-                            .addAll(derivedAllocation.getResources());
-                }
-            }
-            return resources;
         }
 
         private Long setBeginDateInsideTransaction(final Date beginDate) {
