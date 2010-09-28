@@ -615,38 +615,6 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    public void orderWithLabelRepeatedInTheSameBranchIsNotAddedTwice() {
-        int previous = orderDAO.getOrders().size();
-
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.name = "Order name " + UUID.randomUUID().toString();
-        orderDTO.code = "order-code " + UUID.randomUUID().toString();
-        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
-
-        LabelReferenceDTO labelReferenceDTO = new LabelReferenceDTO();
-        labelReferenceDTO.code = labelCode;
-        orderDTO.labels.add(labelReferenceDTO);
-
-        OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.name = "Order line";
-        orderLineDTO.code = "order-line-code";
-        HoursGroupDTO hoursGroupDTO = new HoursGroupDTO("hours-group",
-                ResourceEnumDTO.WORKER, 1000,
-                new HashSet<CriterionRequirementDTO>());
-        orderLineDTO.hoursGroups.add(hoursGroupDTO);
-        orderLineDTO.labels.add(labelReferenceDTO);
-        orderDTO.children.add(orderLineDTO);
-
-        OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
-                .addOrders(orderListDTO).instanceConstraintViolationsList;
-        assertTrue(instanceConstraintViolationsList.toString(),
-                instanceConstraintViolationsList.size() == 1);
-
-        assertThat(orderDAO.getOrders().size(), equalTo(previous));
-    }
-
-    @Test
     public void updateLabels() throws InstanceNotFoundException,
             IncompatibleTypeException {
         String code = "order-code-" + UUID.randomUUID().toString();
