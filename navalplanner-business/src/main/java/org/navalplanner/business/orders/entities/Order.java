@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +35,9 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
@@ -329,16 +333,6 @@ public class Order extends OrderLineGroup {
         return dayAssignments;
     }
 
-    public List<OrderElement> getAllOrderElements() {
-        List<OrderElement> result = new ArrayList<OrderElement>(
-                this
-                .getChildren());
-        for (OrderElement orderElement : this.getChildren()) {
-            result.addAll(orderElement.getAllChildren());
-        }
-        return result;
-    }
-
     public Set<Resource> getResources() {
         Set<Resource> resources = new HashSet<Resource>();
         for (DayAssignment dayAssignment : getDayAssignments()) {
@@ -389,23 +383,6 @@ public class Order extends OrderLineGroup {
     @NotNull(message = "last order element sequence code not specified")
     public Integer getLastOrderElementSequenceCode() {
         return lastOrderElementSequenceCode;
-    }
-
-    public OrderElement findRepeatedOrderCode() {
-        Set<String> codes = new HashSet<String>();
-        codes.add(getCode());
-
-        for (OrderElement each : getAllOrderElements()) {
-            String code = each.getCode();
-            if (code != null) {
-                if (codes.contains(code)) {
-                    return each;
-                }
-                codes.add(code);
-            }
-        }
-
-        return null;
     }
 
     @Override
@@ -537,4 +514,32 @@ public class Order extends OrderLineGroup {
         }
         return false;
     }
+
+    public static void checkConstraintOrderUniqueCode(OrderElement orderElement) {
+        if (orderElement instanceof OrderLineGroup) {
+            checkConstraintOrderUniqueCode((OrderLineGroup) orderElement);
+        }
+    }
+
+    public static void checkConstraintOrderUniqueCode(OrderLineGroup order) {
+        OrderElement repeatedOrder;
+
+        // Check no code is repeated in this order
+        repeatedOrder = order.findRepeatedOrderCode();
+        if (repeatedOrder != null) {
+            throw new ValidationException(_(
+                    "Repeated Order code {0} in Order {1}",
+                    repeatedOrder.getCode(), repeatedOrder.getName()));
+        }
+
+        // Check no code is repeated within the DB
+        repeatedOrder = Registry.getOrderElementDAO()
+                .findRepeatedOrderCodeInDB(order);
+        if (repeatedOrder != null) {
+            throw new ValidationException(_(
+                    "Repeated Order code {0} in Order {1}",
+                    repeatedOrder.getCode(), repeatedOrder.getName()));
+        }
+    }
+
 }

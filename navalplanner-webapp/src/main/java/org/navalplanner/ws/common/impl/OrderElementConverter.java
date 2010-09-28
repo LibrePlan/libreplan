@@ -244,6 +244,7 @@ public final class OrderElementConverter {
     public final static OrderElement toEntity(OrderVersion orderVersion,
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration) {
+
         if (orderVersion == null) {
             Scenario current = Registry.getScenarioManager().getCurrent();
             orderVersion = OrderVersion.createInitialVersion(current);
@@ -441,6 +442,9 @@ public final class OrderElementConverter {
             addAdvanceMeasurements(orderElement, orderElementDTO);
         }
 
+        // Validate code must be unique
+        Order.checkConstraintOrderUniqueCode(orderElement);
+
         return orderElement;
     }
 
@@ -597,8 +601,21 @@ public final class OrderElementConverter {
                     update(orderElement.getOrderElement(childDTO.code),
                             childDTO, configuration);
                 } else {
-                    ((OrderLineGroup) orderElement).add(toEntity(childDTO,
-                            configuration));
+                    // Check there's not other OrderElement with the same code in DB
+                    try {
+                        OrderElement existsByCode = Registry.getOrderElementDAO().findByCode(childDTO.code);
+                        if (existsByCode != null) {
+                            throw new ValidationException(_(
+                                    "Order element {0} : Duplicate code in DB"
+                                            + orderElement.getCode()));
+                        } else {
+                            ((OrderLineGroup) orderElement).add(toEntity(childDTO,
+                                    configuration));
+                        }
+                    } catch (InstanceNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
 

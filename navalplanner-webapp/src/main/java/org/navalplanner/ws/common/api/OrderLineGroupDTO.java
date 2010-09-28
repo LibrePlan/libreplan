@@ -21,6 +21,7 @@
 package org.navalplanner.ws.common.api;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -61,6 +62,42 @@ public class OrderLineGroupDTO extends OrderElementDTO {
         super(name, code, initDate, deadline, description, labels,
                 materialAssignments, advanceMeasurements, criterionRequirements);
         this.children = children;
+    }
+
+    public OrderElementDTO findRepeatedOrderCode() {
+        Set<String> codes = new HashSet<String>();
+        codes.add(code);
+
+        for (OrderElementDTO each : getAllOrderElements()) {
+            String code = each.code;
+            if (code != null) {
+                if (codes.contains(code)) {
+                    return each;
+                }
+                codes.add(code);
+            }
+        }
+
+        return null;
+    }
+
+    private List<OrderElementDTO> getAllOrderElements() {
+        List<OrderElementDTO> result = new ArrayList<OrderElementDTO>();
+        for (OrderElementDTO each: children) {
+            result.add(each);
+            if (isOrderLineGroupDTO(each)) {
+                result.addAll(toOrderLineGroupDTO(each).getAllOrderElements());
+            }
+        }
+        return result;
+    }
+
+    private boolean isOrderLineGroupDTO(OrderElementDTO orderElement) {
+        return orderElement instanceof OrderLineGroupDTO;
+    }
+
+    private OrderLineGroupDTO toOrderLineGroupDTO(OrderElementDTO orderElement) {
+        return (OrderLineGroupDTO) orderElement;
     }
 
 }

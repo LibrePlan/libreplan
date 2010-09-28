@@ -41,6 +41,7 @@ import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -603,7 +604,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Override
     @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
-    public OrderElement findRepeatedOrderCodeInDB(Order order) {
+    public OrderElement findRepeatedOrderCodeInDB(OrderLineGroup order) {
         final Map<String, OrderElement> orderElements = createMapByCode(getOrderAndAllChildren(order));
         final Map<String, OrderElement> orderElementsInDB = createMapByCode(getAll());
 
@@ -621,7 +622,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return null;
     }
 
-    private List<OrderElement> getOrderAndAllChildren(Order order) {
+    private List<OrderElement> getOrderAndAllChildren(OrderLineGroup order) {
         List<OrderElement> result = new ArrayList<OrderElement>();
         result.add(order);
         result.addAll(order.getAllChildren());

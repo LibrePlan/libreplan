@@ -1013,4 +1013,30 @@ public class OrderLineGroup extends OrderElement implements
         return getCurrentSchedulingData().getOriginOrderVersion();
     }
 
+    public OrderElement findRepeatedOrderCode() {
+        Set<String> codes = new HashSet<String>();
+        codes.add(getCode());
+
+        for (OrderElement each : getAllOrderElements()) {
+            String code = each.getCode();
+            if (code != null) {
+                if (codes.contains(code)) {
+                    return each;
+                }
+                codes.add(code);
+            }
+        }
+
+        return null;
+    }
+
+    public List<OrderElement> getAllOrderElements() {
+        List<OrderElement> result = new ArrayList<OrderElement>(
+                this.getChildren());
+        for (OrderElement orderElement : this.getChildren()) {
+            result.addAll(orderElement.getAllChildren());
+        }
+        return result;
+    }
+
 }

@@ -510,7 +510,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
-        checkConstraintOrderUniqueCode();
+        Order.checkConstraintOrderUniqueCode(order);
         checkConstraintHoursGroupUniqueCode();
 
         reattachCriterions();
@@ -560,25 +560,6 @@ public class OrderModel implements IOrderModel {
                     "Repeated Hours Group code {0} in Order {1}",
                     repeatedHoursGroup.getCode(), repeatedHoursGroup
                             .getParentOrderLine().getName()));
-        }
-    }
-
-    private void checkConstraintOrderUniqueCode() {
-        OrderElement repeatedOrder;
-
-        // Check no code is repeated in this order
-        repeatedOrder = order.findRepeatedOrderCode();
-        if (repeatedOrder != null) {
-            throw new ValidationException(_(
-                    "Repeated Order code {0} in Order {1}",
-                    repeatedOrder.getCode(), repeatedOrder.getName()));
-        }
-
-        repeatedOrder = orderElementDAO.findRepeatedOrderCodeInDB(order);
-        if (repeatedOrder != null) {
-            throw new ValidationException(_(
-                    "Repeated Order code {0} in Order {1}",
-                    repeatedOrder.getCode(), repeatedOrder.getName()));
         }
     }
 

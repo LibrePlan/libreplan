@@ -1259,4 +1259,28 @@ public class OrderElementServiceTest {
         return new OrderListDTO(orderList);
 
     }
+
+    @Test
+    public void testCannotExistTwoOrderElementsWithTheSameCode() {
+        final String code = "code1";
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
+        orderLineDTO.code = code;
+        orderLineDTO.name = UUID.randomUUID().toString();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
+        orderDTO.code = code;
+        orderDTO.name = UUID.randomUUID().toString();
+        orderDTO.children.add(orderLineDTO);
+
+        OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
 }
