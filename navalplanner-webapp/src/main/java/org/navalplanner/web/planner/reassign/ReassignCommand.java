@@ -46,8 +46,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.GanttDiagramGraph.DeferedNotifier;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.LongOperationFeedback;
@@ -146,14 +146,13 @@ public class ReassignCommand implements IReassignCommand {
                 for (final WithAssociatedEntity each : reassignations) {
                     Task ganttTask = each.ganntTask;
                     final Date previousBeginDate = ganttTask.getBeginDate();
-                    final long previousLength = ganttTask
-                            .getLengthMilliseconds();
+                    final Date previousEnd = ganttTask.getEndDate();
 
                     transactionService
                             .runOnReadOnlyTransaction(reassignmentTransaction(each));
                     diagramGraph.enforceRestrictions(each.ganntTask);
                     ganttTask.fireChangesForPreviousValues(previousBeginDate,
-                            previousLength);
+                            previousEnd);
                     updater.doUpdate(showCompleted(i, total));
                     i++;
                 }

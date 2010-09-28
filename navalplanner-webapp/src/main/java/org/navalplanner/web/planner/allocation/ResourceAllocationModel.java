@@ -196,10 +196,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             IOnTransaction<?> allocationDoer) {
         org.zkoss.ganttz.data.Task ganttTask = context.getTask();
         Date previousStartDate = ganttTask.getBeginDate();
-        long previousLength = ganttTask.getLengthMilliseconds();
+        Date previousEnd = ganttTask.getEndDate();
         transactionService.runOnReadOnlyTransaction(allocationDoer);
-        ganttTask.fireChangesForPreviousValues(previousStartDate,
-                previousLength);
+        ganttTask.fireChangesForPreviousValues(previousStartDate, previousEnd);
     }
 
     private void stepsBeforeDoingAllocation() {

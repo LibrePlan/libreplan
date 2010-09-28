@@ -54,24 +54,23 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
 public abstract class TaskElement extends BaseEntity {
 
     public interface IDatesInterceptor {
-        public void setStartDate(Date previousStart, long previousLength,
-                Date newStart);
+        public void setStartDate(IntraDayDate previousStart,
+                IntraDayDate previousEnd, IntraDayDate newStart);
 
-        public void setLengthMilliseconds(long previousLengthMilliseconds,
-                long newLengthMilliseconds);
+        public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd);
     }
 
     private static final IDatesInterceptor EMPTY_INTERCEPTOR = new IDatesInterceptor() {
 
         @Override
-        public void setStartDate(Date previousStart, long previousLength,
-                Date newStart) {
+        public void setStartDate(IntraDayDate previousStart,
+                IntraDayDate previousEnd, IntraDayDate newStart) {
         }
 
         @Override
-        public void setLengthMilliseconds(long previousLengthMilliseconds,
-                long newLengthMilliseconds) {
+        public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd) {
         }
+
     };
 
     public static Comparator<TaskElement> getByStartDateComparator() {
@@ -252,11 +251,11 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setIntraDayStartDate(IntraDayDate startDate) {
-        Date previousDate = getStartDate();
-        long previousLenghtMilliseconds = getLengthMilliseconds();
+        IntraDayDate previousStart = getIntraDayStartDate();
+        IntraDayDate previousEnd = getIntraDayEndDate();
         this.startDate = startDate;
-        datesInterceptor.setStartDate(previousDate, previousLenghtMilliseconds,
-                getStartDate());
+        datesInterceptor.setStartDate(previousStart, previousEnd,
+                getIntraDayStartDate());
     }
 
     /**
@@ -294,10 +293,9 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setIntraDayEndDate(IntraDayDate endDate) {
-        long previousLength = getLengthMilliseconds();
+        IntraDayDate previousEnd = getIntraDayEndDate();
         this.endDate = endDate;
-        datesInterceptor.setLengthMilliseconds(previousLength,
-                getLengthMilliseconds());
+        datesInterceptor.setNewEnd(previousEnd, this.endDate);
     }
 
     public IntraDayDate getIntraDayEndDate() {

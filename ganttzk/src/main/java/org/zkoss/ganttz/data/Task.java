@@ -74,23 +74,22 @@ public abstract class Task implements ITaskFundamentalProperties {
     private final INotificationAfterDependenciesEnforcement notifyDates = new INotificationAfterDependenciesEnforcement() {
 
         @Override
-        public void onStartDateChange(Date previousStart, long oldLength,
+        public void onStartDateChange(Date previousStart, Date previousEnd,
                 Date newStart) {
             fundamentalPropertiesListeners.firePropertyChange("beginDate",
                     previousStart, fundamentalProperties.getBeginDate());
-            fireLengthMilliseconds(oldLength);
+            fireEndDate(previousEnd);
             reloadResourcesTextIfChange(newStart, previousStart);
         }
 
         @Override
-        public void onLengthChange(long previousLength, long newLength) {
-            fireLengthMilliseconds(previousLength);
+        public void onEndDateChange(Date previousEnd, Date newEnd) {
+            fireEndDate(previousEnd);
         }
 
-        private void fireLengthMilliseconds(long previousValue) {
-            fundamentalPropertiesListeners.firePropertyChange(
-                    "lengthMilliseconds", previousValue, fundamentalProperties
-                            .getLengthMilliseconds());
+        private void fireEndDate(Date previousEnd) {
+            fundamentalPropertiesListeners.firePropertyChange("endDate",
+                    previousEnd, fundamentalProperties.getEndDate());
         }
     };
 
@@ -177,9 +176,9 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public long setBeginDate(Date newStart) {
         Date previousValue = fundamentalProperties.getBeginDate();
-        long previousLength = fundamentalProperties.getLengthMilliseconds();
+        Date previousEnd = fundamentalProperties.getEndDate();
         fundamentalProperties.setBeginDate(newStart);
-        dependenciesEnforcerHook.setStartDate(previousValue, previousLength,
+        dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
                 newStart);
         return fundamentalProperties.getLengthMilliseconds();
     }
@@ -191,11 +190,10 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void fireChangesForPreviousValues(Date previousStart,
-            long previousLength) {
-        dependenciesEnforcerHook.setStartDate(previousStart, previousLength,
+            Date previousEnd) {
+        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
                 fundamentalProperties.getBeginDate());
-        dependenciesEnforcerHook.setLengthMilliseconds(previousLength,
-                fundamentalProperties.getLengthMilliseconds());
+        dependenciesEnforcerHook.setNewEnd(previousEnd, getEndDate());
     }
 
     public Date getBeginDate() {
@@ -203,14 +201,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void setLengthMilliseconds(long lengthMilliseconds) {
-        long previousValue = fundamentalProperties.getLengthMilliseconds();
-        fundamentalProperties.setLengthMilliseconds(lengthMilliseconds);
-        dependenciesEnforcerHook.setLengthMilliseconds(previousValue,
-                lengthMilliseconds);
+        setEndDate(new Date(getBeginDate().getTime() + lengthMilliseconds));
     }
 
     public long getLengthMilliseconds() {
-        return fundamentalProperties.getLengthMilliseconds();
+        return getEndDate().getTime() - getBeginDate().getTime();
     }
 
     public void addVisibilityPropertiesChangeListener(
@@ -235,7 +230,7 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     @Override
     public Date getEndDate() {
-        return new Date(getBeginDate().getTime() + getLengthMilliseconds());
+        return fundamentalProperties.getEndDate();
     }
 
     public Constraint<Date> getCurrentLengthConstraint() {
@@ -267,7 +262,10 @@ public abstract class Task implements ITaskFundamentalProperties {
         if (value == null) {
             return;
         }
-        setLengthMilliseconds(value.getTime() - getBeginDate().getTime());
+        Date previousEnd = fundamentalProperties.getEndDate();
+        fundamentalProperties.setEndDate(value);
+        dependenciesEnforcerHook.setNewEnd(previousEnd,
+                fundamentalProperties.getEndDate());
     }
 
     public void removed() {
@@ -312,9 +310,9 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public void moveTo(Date date) {
         Date previousStart = getBeginDate();
-        long previousLength = getLengthMilliseconds();
+        Date previousEnd = getEndDate();
         fundamentalProperties.moveTo(date);
-        dependenciesEnforcerHook.setStartDate(previousStart, previousLength, date);
+        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, date);
     }
 
     @Override

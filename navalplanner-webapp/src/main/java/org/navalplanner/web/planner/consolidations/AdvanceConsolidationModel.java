@@ -143,7 +143,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         if (context != null && orderElement != null && isVisibleAdvances()) {
             org.zkoss.ganttz.data.Task ganttTask = context.getTask();
             Date previousStartDate = ganttTask.getBeginDate();
-            long previousLength = ganttTask.getLengthMilliseconds();
+            Date previousEnd = ganttTask.getEndDate();
 
             createConsolidationIfNeeded();
 
@@ -158,7 +158,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             updateConsolidationInAdvanceIfIsNeeded();
 
             ganttTask.fireChangesForPreviousValues(previousStartDate,
-                    previousLength);
+                    previousEnd);
             ganttTask.reloadResourcesText();
             context.reloadCharts();
         }

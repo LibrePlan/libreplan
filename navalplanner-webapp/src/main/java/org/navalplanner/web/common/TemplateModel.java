@@ -27,10 +27,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -38,11 +39,11 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -50,6 +51,7 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,18 +188,23 @@ public class TemplateModel implements ITemplateModel {
         return new IDatesInterceptor() {
 
             @Override
-            public void setStartDate(Date previousStart, long previousLength,
-                    Date newStart) {
-                hook.setStartDate(previousStart, previousLength, newStart);
+            public void setStartDate(IntraDayDate previousStart,
+                    IntraDayDate previousEnd, IntraDayDate newStart) {
+                hook.setStartDate(convert(previousStart.getDate()),
+                        convert(previousEnd.asExclusiveEnd()),
+                        convert(newStart.getDate()));
             }
 
             @Override
-            public void setLengthMilliseconds(long previousLengthMilliseconds,
-                    long newLengthMilliseconds) {
-                hook.setLengthMilliseconds(previousLengthMilliseconds,
-                        newLengthMilliseconds);
+            public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd) {
+                hook.setNewEnd(convert(previousEnd.getDate()),
+                        convert(newEnd.asExclusiveEnd()));
             }
         };
+    }
+
+    private static Date convert(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     public class Adapter implements

@@ -61,12 +61,11 @@ public class GanttDiagramGraph<V, D> {
         return new IDependenciesEnforcerHook() {
 
             @Override
-            public void setLengthMilliseconds(long previousLengthMilliseconds,
-                    long lengthMilliseconds) {
+            public void setNewEnd(Date previousEnd, Date newEnd) {
             }
 
             @Override
-            public void setStartDate(Date previousStart, long previousLength,
+            public void setStartDate(Date previousStart, Date previousEnd,
                     Date newStart) {
             }
         };
@@ -408,11 +407,10 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public interface IDependenciesEnforcerHook {
-        public void setStartDate(Date previousStart, long previousLength,
+        public void setStartDate(Date previousStart, Date previousEnd,
                 Date newStart);
 
-        public void setLengthMilliseconds(long previousLengthMilliseconds,
-                long newLengthMilliseconds);
+        public void setNewEnd(Date previousEnd, Date newEnd);
     }
 
     public interface IDependenciesEnforcerHookFactory<T> {
@@ -423,21 +421,21 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public interface INotificationAfterDependenciesEnforcement {
-        public void onStartDateChange(Date previousStart, long previousLength,
+        public void onStartDateChange(Date previousStart, Date previousEnd,
                 Date newStart);
 
-        public void onLengthChange(long previousLength, long newLength);
+        public void onEndDateChange(Date previousEnd, Date newEnd);
     }
 
     private static final INotificationAfterDependenciesEnforcement EMPTY_NOTIFICATOR  = new INotificationAfterDependenciesEnforcement() {
 
         @Override
-        public void onStartDateChange(Date previousStart, long previousLength,
+        public void onStartDateChange(Date previousStart, Date previousEnd,
                 Date newStart) {
         }
 
         @Override
-        public void onLengthChange(long previousLength, long newLength) {
+        public void onEndDateChange(Date previousEnd, Date newEnd) {
         }
     };
 
@@ -503,54 +501,52 @@ public class GanttDiagramGraph<V, D> {
 
         private final INotificationAfterDependenciesEnforcement notification;
         private final Date previousStart;
-        private final long previousLength;
+        private final Date previousEnd;
         private final Date newStart;
 
         public StartDateNofitication(
                 INotificationAfterDependenciesEnforcement notification,
-                Date previousStart, long previousLength, Date newStart) {
+                Date previousStart, Date previousEnd, Date newStart) {
             this.notification = notification;
             this.previousStart = previousStart;
-            this.previousLength = previousLength;
+            this.previousEnd = previousEnd;
             this.newStart = newStart;
         }
 
         public StartDateNofitication coalesce(
                 StartDateNofitication startDateNofitication) {
             return new StartDateNofitication(notification, previousStart,
-                    previousLength, startDateNofitication.newStart);
+                    previousEnd, startDateNofitication.newStart);
         }
 
         void doNotification() {
-            notification.onStartDateChange(previousStart, previousLength,
-                    newStart);
+            notification
+                    .onStartDateChange(previousStart, previousEnd, newStart);
         }
     }
 
     private class LengthNotification {
 
         private final INotificationAfterDependenciesEnforcement notification;
-        private final long previousLengthMilliseconds;
-        private final long newLengthMilliseconds;
+        private final Date previousEnd;
+        private final Date newEnd;
 
         public LengthNotification(
                 INotificationAfterDependenciesEnforcement notification,
-                long previousLengthMilliseconds, long lengthMilliseconds) {
+                Date previousEnd, Date newEnd) {
             this.notification = notification;
-            this.previousLengthMilliseconds = previousLengthMilliseconds;
-            this.newLengthMilliseconds = lengthMilliseconds;
+            this.previousEnd = previousEnd;
+            this.newEnd = newEnd;
 
         }
 
         public LengthNotification coalesce(LengthNotification lengthNofitication) {
-            return new LengthNotification(notification,
-                    previousLengthMilliseconds,
-                    lengthNofitication.newLengthMilliseconds);
+            return new LengthNotification(notification, previousEnd,
+                    lengthNofitication.newEnd);
         }
 
         void doNotification() {
-            notification.onLengthChange(previousLengthMilliseconds,
-                    newLengthMilliseconds);
+            notification.onEndDateChange(previousEnd, newEnd);
         }
     }
 
@@ -574,17 +570,16 @@ public class GanttDiagramGraph<V, D> {
         private IDependenciesEnforcerHook onEntrance(final V task) {
             return new IDependenciesEnforcerHook() {
 
-                @Override
-                public void setStartDate(Date previousStart,
-                        long previousLength, Date newStart) {
+                public void setStartDate(Date previousStart, Date previousEnd,
+                        Date newStart) {
                     taskPositionModified(task);
                 }
 
                 @Override
-                public void setLengthMilliseconds(
-                        long previousLengthMilliseconds, long lengthMilliseconds) {
+                public void setNewEnd(Date previousEnd, Date newEnd) {
                     taskPositionModified(task);
                 }
+
             };
         }
 
@@ -593,22 +588,19 @@ public class GanttDiagramGraph<V, D> {
             return new IDependenciesEnforcerHook() {
 
                 @Override
-                public void setStartDate(Date previousStart,
-                        long previousLength, Date newStart) {
+                public void setStartDate(Date previousStart, Date previousEnd,
+                        Date newStart) {
                     StartDateNofitication startDateNotification = new StartDateNofitication(
-                            notification,
-                                    previousStart, previousLength, newStart);
+                            notification, previousStart, previousEnd,
+                            newStart);
                     deferedNotifier.get().add(task, startDateNotification);
 
                 }
 
                 @Override
-                public void setLengthMilliseconds(
-                        long previousLengthMilliseconds,
-                        long newLengthMilliseconds) {
+                public void setNewEnd(Date previousEnd, Date newEnd) {
                     LengthNotification lengthNotification = new LengthNotification(
-                            notification, previousLengthMilliseconds,
-                            newLengthMilliseconds);
+                            notification, previousEnd, newEnd);
                     deferedNotifier.get().add(task, lengthNotification);
                 }
             };
@@ -622,7 +614,7 @@ public class GanttDiagramGraph<V, D> {
 
                 @Override
                 public void setStartDate(final Date previousStart,
-                        final long previousLength, final Date newStart) {
+                        final Date previousEnd, final Date newStart) {
                     positionsUpdatingGuard
                             .entranceRequested(new IReentranceCases() {
 
@@ -634,10 +626,10 @@ public class GanttDiagramGraph<V, D> {
                                         public void doAction() {
                                             notification.setStartDate(
                                                     previousStart,
-                                                    previousLength, newStart);
+                                                    previousEnd, newStart);
                                             onEntrance.setStartDate(
-                                                    previousStart,
-                                                    previousLength, newStart);
+                                                    previousStart, previousEnd,
+                                                    newStart);
                                         }
                                     });
                                 }
@@ -645,16 +637,14 @@ public class GanttDiagramGraph<V, D> {
                                 @Override
                                 public void ifAlreadyInside() {
                                     notification.setStartDate(previousStart,
-                                            previousLength, newStart);
+                                            previousEnd, newStart);
 
                                 }
                             });
                 }
 
                 @Override
-                public void setLengthMilliseconds(
-                        final long previousLengthMilliseconds,
-                        final long lengthMilliseconds) {
+                public void setNewEnd(final Date previousEnd, final Date newEnd) {
                     positionsUpdatingGuard
                             .entranceRequested(new IReentranceCases() {
 
@@ -664,21 +654,17 @@ public class GanttDiagramGraph<V, D> {
 
                                         @Override
                                         public void doAction() {
-                                            notification.setLengthMilliseconds(
-                                                    previousLengthMilliseconds,
-                                                    lengthMilliseconds);
-                                            onEntrance.setLengthMilliseconds(
-                                                    previousLengthMilliseconds,
-                                                    lengthMilliseconds);
+                                            notification.setNewEnd(previousEnd,
+                                                    newEnd);
+                                            onEntrance.setNewEnd(previousEnd,
+                                                    newEnd);
                                         }
                                     });
                                 }
 
                                 @Override
                                 public void ifAlreadyInside() {
-                                    notification.setLengthMilliseconds(
-                                            previousLengthMilliseconds,
-                                            lengthMilliseconds);
+                                    notification.setNewEnd(previousEnd, newEnd);
                                 }
                             });
                 }
