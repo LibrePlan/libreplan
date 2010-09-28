@@ -395,7 +395,7 @@ public class HoursGroup extends BaseEntity implements Cloneable,
         return false;
     }
 
-    @AssertTrue(message = "code is already being used")
+    @AssertTrue(message = "hours group code is already being used")
     public boolean checkConstraintUniqueCode() {
         if (code == null) {
             LOG.warn("Hours group code is null. "
