@@ -1030,6 +1030,23 @@ public class OrderLineGroup extends OrderElement implements
         return null;
     }
 
+    public HoursGroup findRepeatedHoursGroupCode() {
+        Set<String> codes = new HashSet<String>();
+
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            String code = hoursGroup.getCode();
+            if (code != null) {
+                if (codes.contains(code)) {
+                    return hoursGroup;
+                }
+                codes.add(code);
+            }
+        }
+
+        return null;
+    }
+
+
     public List<OrderElement> getAllOrderElements() {
         List<OrderElement> result = new ArrayList<OrderElement>(
                 this.getChildren());

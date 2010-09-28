@@ -511,7 +511,7 @@ public class OrderModel implements IOrderModel {
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
         Order.checkConstraintOrderUniqueCode(order);
-        checkConstraintHoursGroupUniqueCode();
+        HoursGroup.checkConstraintHoursGroupUniqueCode(order);
 
         reattachCriterions();
         reattachTasksForTasksSources();
@@ -541,26 +541,6 @@ public class OrderModel implements IOrderModel {
         }
         saveDerivedScenarios();
         calculateAdvancePercentageIncludingChildren(order);
-    }
-
-    private void checkConstraintHoursGroupUniqueCode() {
-        HoursGroup repeatedHoursGroup;
-
-        repeatedHoursGroup = order.findRepeatedHoursGroupCode();
-        if (repeatedHoursGroup != null) {
-            throw new ValidationException(_(
-                    "Repeated Hours Group code {0} in Order {1}",
-                    repeatedHoursGroup.getCode(), repeatedHoursGroup
-                            .getParentOrderLine().getName()));
-        }
-
-        repeatedHoursGroup = hoursGroupDAO.findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
-        if (repeatedHoursGroup != null) {
-            throw new ValidationException(_(
-                    "Repeated Hours Group code {0} in Order {1}",
-                    repeatedHoursGroup.getCode(), repeatedHoursGroup
-                            .getParentOrderLine().getName()));
-        }
     }
 
     private void calculateAdvancePercentageIncludingChildren(OrderElement order) {

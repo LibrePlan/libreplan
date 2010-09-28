@@ -38,7 +38,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -1294,11 +1293,6 @@ public class OrderElementServiceTest {
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
-
-        if (!instanceConstraintViolationsList.isEmpty()) {
-            InstanceConstraintViolationsDTO constraint = instanceConstraintViolationsList.iterator().next();
-            System.out.println("### Constraint: " + constraint);
-        }
 
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 1);

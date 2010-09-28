@@ -428,22 +428,6 @@ public class Order extends OrderLineGroup {
         }
     }
 
-    public HoursGroup findRepeatedHoursGroupCode() {
-        Set<String> codes = new HashSet<String>();
-
-        for (HoursGroup hoursGroup : getHoursGroups()) {
-            String code = hoursGroup.getCode();
-            if (code != null) {
-                if (codes.contains(code)) {
-                    return hoursGroup;
-                }
-                codes.add(code);
-            }
-        }
-
-        return null;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;

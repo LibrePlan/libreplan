@@ -20,10 +20,9 @@
 
 package org.navalplanner.business.orders.daos;
 
-import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import java.util.List;
 
-import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 

@@ -39,9 +39,7 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IHoursGroupDAO;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
@@ -415,6 +413,29 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     @Override
     protected IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
         return Registry.getHoursGroupDAO();
+    }
+
+    public static void checkConstraintHoursGroupUniqueCode(OrderElement order) {
+        HoursGroup repeatedHoursGroup;
+
+        if (order instanceof OrderLineGroup) {
+            repeatedHoursGroup = ((OrderLineGroup) order).findRepeatedHoursGroupCode();
+            if (repeatedHoursGroup != null) {
+                throw new ValidationException(_(
+                        "Repeated Hours Group code {0} in Order {1}",
+                        repeatedHoursGroup.getCode(), repeatedHoursGroup
+                                .getParentOrderLine().getName()));
+            }
+        }
+
+        repeatedHoursGroup = Registry.getHoursGroupDAO()
+                .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
+        if (repeatedHoursGroup != null) {
+            throw new ValidationException(_(
+                    "Repeated Hours Group code {0} in Order {1}",
+                    repeatedHoursGroup.getCode(), repeatedHoursGroup
+                            .getParentOrderLine().getName()));
+        }
     }
 
 }

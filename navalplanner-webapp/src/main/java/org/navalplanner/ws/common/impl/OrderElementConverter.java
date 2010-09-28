@@ -48,6 +48,7 @@ import org.navalplanner.business.materials.bootstrap.PredefinedMaterialCategorie
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.ICriterionRequirable;
 import org.navalplanner.business.orders.entities.Order;
@@ -444,6 +445,7 @@ public final class OrderElementConverter {
 
         // Validate code must be unique
         Order.checkConstraintOrderUniqueCode(orderElement);
+        HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
 
         return orderElement;
     }
@@ -601,21 +603,18 @@ public final class OrderElementConverter {
                     update(orderElement.getOrderElement(childDTO.code),
                             childDTO, configuration);
                 } else {
-                    // Check there's not other OrderElement with the same code in DB
-                    try {
-                        OrderElement existsByCode = Registry.getOrderElementDAO().findByCode(childDTO.code);
-                        if (existsByCode != null) {
-                            throw new ValidationException(_(
-                                    "Order element {0} : Duplicate code in DB"
-                                            + orderElement.getCode()));
-                        } else {
-                            ((OrderLineGroup) orderElement).add(toEntity(childDTO,
-                                    configuration));
-                        }
-                    } catch (InstanceNotFoundException e) {
-                        e.printStackTrace();
+                    if (checkConstraintUniqueOrderCode(orderElementDTO)) {
+                        throw new ValidationException(
+                                _("Order element {0} : Duplicate code in DB"
+                                        + orderElementDTO.code));
                     }
-
+                    if (checkConstraintUniqueHoursGroupCode(orderElementDTO)) {
+                        throw new ValidationException(
+                                _("Hours Group {0} : Duplicate code in DB"
+                                        + orderElementDTO.code));
+                    }
+                    ((OrderLineGroup) orderElement).add(toEntity(childDTO,
+                            configuration));
                 }
             }
 
@@ -674,6 +673,52 @@ public final class OrderElementConverter {
             orderElement.setDescription(orderElementDTO.description);
         }
 
+    }
+
+    /**
+     * Returns true is there's another {@link OrderElement} in DB with the same code
+     *
+     * @param orderElement
+     * @return
+     */
+    private static boolean checkConstraintUniqueOrderCode(OrderElementDTO orderElement) {
+        try {
+            OrderElement existsByCode = Registry.getOrderElementDAO()
+                    .findByCode(orderElement.code);
+            return existsByCode != null;
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if there's another {@link HoursGroup} in DB with the same code
+     *
+     * @param orderElement
+     * @return
+     */
+    private static boolean checkConstraintUniqueHoursGroupCode(OrderElementDTO orderElement) {
+        if (orderElement instanceof OrderLineDTO) {
+            return checkConstraintUniqueHoursGroupCode((OrderLineDTO) orderElement);
+        }
+        return false;
+    }
+
+    private static boolean checkConstraintUniqueHoursGroupCode(OrderLineDTO orderLine) {
+        try {
+            IHoursGroupDAO hoursGroupDAO = Registry.getHoursGroupDAO();
+            Set<HoursGroupDTO> hoursGroups = orderLine.hoursGroups;
+            for (HoursGroupDTO each: hoursGroups) {
+                HoursGroup hoursGroup = hoursGroupDAO.findByCodeAnotherTransaction(each.code);
+                if (hoursGroup != null) {
+                    return true;
+                }
+            }
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public final static void update(HoursGroup hoursGroup,
