@@ -60,7 +60,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     private PropertyChangeSupport criticalPathProperty = new PropertyChangeSupport(
             this);
 
-    private ITaskFundamentalProperties fundamentalProperties;
+    private final ITaskFundamentalProperties fundamentalProperties;
 
     private boolean visible = true;
 
