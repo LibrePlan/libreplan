@@ -1262,17 +1262,11 @@ public class OrderElementServiceTest {
 
     @Test
     public void testCannotExistTwoOrderElementsWithTheSameCode() {
-        final String code = "code1";
+        final String repeatedCode = "code1";
 
-        OrderLineDTO orderLineDTO = new OrderLineDTO();
-        orderLineDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
-        orderLineDTO.code = code;
-        orderLineDTO.name = UUID.randomUUID().toString();
+        OrderLineDTO orderLineDTO = createOrderLineDTO(repeatedCode);
 
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
-        orderDTO.code = code;
-        orderDTO.name = UUID.randomUUID().toString();
+        OrderDTO orderDTO = createOrderDTO(repeatedCode);
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -1281,6 +1275,56 @@ public class OrderElementServiceTest {
 
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 1);
+    }
+
+    @Test
+    public void testCannotExistTwoHoursGroupWithTheSameCode() {
+        final String repeatedCode = "code1";
+
+        OrderLineDTO orderLineDTO1 = createOrderLineDTO("orderLineCode1");
+        orderLineDTO1.hoursGroups.add(createHoursGroupDTO(repeatedCode));
+
+        OrderLineDTO orderLineDTO2 = createOrderLineDTO("orderLineCode2");
+        orderLineDTO2.hoursGroups.add(createHoursGroupDTO(repeatedCode));
+
+        OrderDTO orderDTO = createOrderDTO("orderCode");
+        orderDTO.children.add(orderLineDTO1);
+        orderDTO.children.add(orderLineDTO2);
+
+        OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        if (!instanceConstraintViolationsList.isEmpty()) {
+            InstanceConstraintViolationsDTO constraint = instanceConstraintViolationsList.iterator().next();
+            System.out.println("### Constraint: " + constraint);
+        }
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+    }
+
+    private OrderDTO createOrderDTO(String code) {
+        OrderDTO result = new OrderDTO();
+        result.initDate = DateConverter.toXMLGregorianCalendar(new Date());
+        result.code = code;
+        result.name = UUID.randomUUID().toString();
+        return result;
+    }
+
+    private OrderLineDTO createOrderLineDTO(String code) {
+        OrderLineDTO result = new OrderLineDTO();
+        result.initDate = DateConverter.toXMLGregorianCalendar(new Date());
+        result.code = code;
+        result.name = UUID.randomUUID().toString();
+        return result;
+    }
+
+    private HoursGroupDTO createHoursGroupDTO(String code) {
+        HoursGroupDTO result = new HoursGroupDTO();
+        result.code = code;
+        result.resourceType = ResourceEnumDTO.MACHINE;
+        return result;
     }
 
 }
