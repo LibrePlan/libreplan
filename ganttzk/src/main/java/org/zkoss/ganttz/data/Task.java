@@ -97,32 +97,10 @@ public abstract class Task implements ITaskFundamentalProperties {
         this.fundamentalProperties = fundamentalProperties;
     }
 
-    public Task() {
-        this(new DefaultFundamentalProperties());
-    }
-
     @Override
     public List<Constraint<Date>> getStartConstraints() {
         return violationNotificator.withListener(fundamentalProperties
                 .getStartConstraints());
-    }
-
-    public Task(String name, Date beginDate, long lengthMilliseconds) {
-        this();
-        if (name == null) {
-            throw new IllegalArgumentException("name cannot be null");
-        }
-        if (beginDate == null) {
-            throw new IllegalArgumentException("beginDate cannot be null");
-        }
-        if (lengthMilliseconds < 0) {
-            throw new IllegalArgumentException(
-                    "length in milliseconds must be positive. Instead it is "
-                            + lengthMilliseconds);
-        }
-        this.fundamentalProperties.setName(name);
-        this.fundamentalProperties.setBeginDate(beginDate);
-        this.fundamentalProperties.setLengthMilliseconds(lengthMilliseconds);
     }
 
     public abstract boolean isLeaf();
