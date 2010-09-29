@@ -1276,4 +1276,27 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
+    public static void checkConstraintOrderUniqueCode(OrderElement order) {
+        OrderElement repeatedOrder;
+
+        // Check no code is repeated in this order
+        if (order instanceof OrderLineGroup) {
+            repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
+            if (repeatedOrder != null) {
+                throw new ValidationException(_(
+                        "Repeated Order code {0} in Order {1}",
+                        repeatedOrder.getCode(), repeatedOrder.getName()));
+            }
+        }
+
+        // Check no code is repeated within the DB
+        repeatedOrder = Registry.getOrderElementDAO()
+                .findRepeatedOrderCodeInDB(order);
+        if (repeatedOrder != null) {
+            throw new ValidationException(_(
+                    "Repeated Order code {0} in Order {1}",
+                    repeatedOrder.getCode(), repeatedOrder.getName()));
+        }
+    }
+
 }

@@ -443,7 +443,7 @@ public final class OrderElementConverter {
             addAdvanceMeasurements(orderElement, orderElementDTO);
         }
 
-        // Validate code must be unique
+        // Validate OrderElement.code and HoursGroup.code must be unique
         Order.checkConstraintOrderUniqueCode(orderElement);
         HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
 

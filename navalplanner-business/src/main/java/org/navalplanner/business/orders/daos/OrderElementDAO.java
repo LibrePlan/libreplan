@@ -604,7 +604,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Override
     @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
-    public OrderElement findRepeatedOrderCodeInDB(OrderLineGroup order) {
+    public OrderElement findRepeatedOrderCodeInDB(OrderElement order) {
         final Map<String, OrderElement> orderElements = createMapByCode(getOrderAndAllChildren(order));
         final Map<String, OrderElement> orderElementsInDB = createMapByCode(getAll());
 
@@ -622,7 +622,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return null;
     }
 
-    private List<OrderElement> getOrderAndAllChildren(OrderLineGroup order) {
+    private List<OrderElement> getOrderAndAllChildren(OrderElement order) {
         List<OrderElement> result = new ArrayList<OrderElement>();
         result.add(order);
         result.addAll(order.getAllChildren());

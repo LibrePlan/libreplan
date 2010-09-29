@@ -1046,7 +1046,6 @@ public class OrderLineGroup extends OrderElement implements
         return null;
     }
 
-
     public List<OrderElement> getAllOrderElements() {
         List<OrderElement> result = new ArrayList<OrderElement>(
                 this.getChildren());

@@ -499,31 +499,4 @@ public class Order extends OrderLineGroup {
         return false;
     }
 
-    public static void checkConstraintOrderUniqueCode(OrderElement orderElement) {
-        if (orderElement instanceof OrderLineGroup) {
-            checkConstraintOrderUniqueCode((OrderLineGroup) orderElement);
-        }
-    }
-
-    public static void checkConstraintOrderUniqueCode(OrderLineGroup order) {
-        OrderElement repeatedOrder;
-
-        // Check no code is repeated in this order
-        repeatedOrder = order.findRepeatedOrderCode();
-        if (repeatedOrder != null) {
-            throw new ValidationException(_(
-                    "Repeated Order code {0} in Order {1}",
-                    repeatedOrder.getCode(), repeatedOrder.getName()));
-        }
-
-        // Check no code is repeated within the DB
-        repeatedOrder = Registry.getOrderElementDAO()
-                .findRepeatedOrderCodeInDB(order);
-        if (repeatedOrder != null) {
-            throw new ValidationException(_(
-                    "Repeated Order code {0} in Order {1}",
-                    repeatedOrder.getCode(), repeatedOrder.getName()));
-        }
-    }
-
 }

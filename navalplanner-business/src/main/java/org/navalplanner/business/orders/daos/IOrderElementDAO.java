@@ -153,6 +153,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      * @param order
      * @return
      */
-    OrderElement findRepeatedOrderCodeInDB(OrderLineGroup order);
+    OrderElement findRepeatedOrderCodeInDB(OrderElement order);
 
 }
