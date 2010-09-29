@@ -1099,7 +1099,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public LocalDate getEndDate() {
         IntraDayDate intraDayEndDate = getIntraDayEndDate();
-        return intraDayEndDate != null ? intraDayEndDate.getDate() : null;
+        return intraDayEndDate != null ? intraDayEndDate.asExclusiveEnd()
+                : null;
     }
 
     public IntraDayDate getIntraDayEndDate() {
