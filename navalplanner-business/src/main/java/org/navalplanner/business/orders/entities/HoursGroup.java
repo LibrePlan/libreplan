@@ -37,8 +37,9 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -48,7 +49,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.templates.entities.OrderLineTemplate;
 
-public class HoursGroup extends BaseEntity implements Cloneable,
+public class HoursGroup extends IntegrationEntity implements Cloneable,
         ICriterionRequirable {
 
     private static final Log LOG = LogFactory.getLog(HoursGroup.class);
@@ -430,6 +431,11 @@ public class HoursGroup extends BaseEntity implements Cloneable,
 
     public void setOrigin(HoursGroup origin) {
         this.origin = origin;
+    }
+
+    @Override
+    protected IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
+        return Registry.getHoursGroupDAO();
     }
 
 }

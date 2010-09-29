@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -339,8 +340,9 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: name, workingHours
-        assertThat(constraintViolations.size(), equalTo(1));
+        // Mandatory fields: code, workingHours
+        assertThat(constraintViolations.size(), equalTo(2));
+
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
             assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
                     mustEnd("workingHours")));
@@ -520,6 +522,7 @@ public class OrderElementServiceTest {
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
+
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
