@@ -40,7 +40,7 @@ import org.zkoss.ganttz.util.Interval;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
+public class DetailFourTimeTrackerState extends TimeTrackerState {
 
     private static final int NUMBER_OF_WEEKS_MINIMUM = 40;
 

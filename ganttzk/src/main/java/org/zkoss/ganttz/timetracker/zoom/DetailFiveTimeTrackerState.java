@@ -30,7 +30,7 @@ import org.joda.time.ReadablePeriod;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
+public class DetailFiveTimeTrackerState extends TimeTrackerState {
 
     private static final int NUMBER_OF_DAYS_MINIMUM = 50;
     public static final int FIRST_LEVEL_SIZE = 210;
