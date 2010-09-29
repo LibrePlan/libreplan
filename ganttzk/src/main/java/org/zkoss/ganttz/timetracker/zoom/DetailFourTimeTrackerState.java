@@ -114,8 +114,8 @@ public class DetailFourTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     }
 
     @Override
-    protected Days getMinimumPeriod() {
-        return Days.days(7 * NUMBER_OF_WEEKS_MINIMUM);
+    protected Period getMinimumPeriod() {
+        return PeriodType.WEEKS.amount(NUMBER_OF_WEEKS_MINIMUM);
     }
 
     @Override

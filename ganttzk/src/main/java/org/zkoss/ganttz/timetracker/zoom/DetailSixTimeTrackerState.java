@@ -93,8 +93,8 @@ public class DetailSixTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     }
 
     @Override
-    protected Days getMinimumPeriod() {
-        return Days.days(NUMBER_OF_DAYS_MINIMUM);
+    protected Period getMinimumPeriod() {
+        return PeriodType.DAYS.amount(NUMBER_OF_DAYS_MINIMUM);
     }
 
     @Override

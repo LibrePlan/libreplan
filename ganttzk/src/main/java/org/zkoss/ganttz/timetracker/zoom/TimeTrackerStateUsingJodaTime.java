@@ -28,7 +28,11 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
+import org.joda.time.base.BaseSingleFieldPeriod;
 import org.zkoss.ganttz.util.Interval;
 
 /**
@@ -88,16 +92,101 @@ public abstract class TimeTrackerStateUsingJodaTime extends TimeTrackerState {
 
     protected abstract LocalDate round(LocalDate date, boolean down);
 
-    protected abstract Days getMinimumPeriod();
+    public enum PeriodType {
+        YEARS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Years.years(amount);
+            }
+
+            @Override
+            public Years differenceBetween(LocalDate start,
+                    LocalDate end) {
+                return Years.yearsBetween(start, end);
+            }
+        },
+        MONTHS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Months.months(amount);
+            }
+
+            @Override
+            public Months differenceBetween(LocalDate start,
+                    LocalDate end) {
+                return Months.monthsBetween(start, end);
+            }
+        },
+        WEEKS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Weeks.weeks(amount);
+            }
+
+            @Override
+            public Weeks differenceBetween(LocalDate start,
+                    LocalDate end) {
+                return Weeks.weeksBetween(start, end);
+            }
+        },
+        DAYS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Days.days(amount);
+            }
+
+            @Override
+            public Days differenceBetween(LocalDate start,
+                    LocalDate end) {
+                return Days.daysBetween(start, end);
+            }
+        };
+
+        public abstract ReadablePeriod toPeriod(int amount);
+
+        public abstract BaseSingleFieldPeriod differenceBetween(LocalDate start,
+                LocalDate end);
+
+        public Period amount(int amount) {
+            return new Period(this, amount);
+        }
+
+    }
+
+    static class Period {
+
+        private final PeriodType type;
+
+        private final int amount;
+
+        private Period(PeriodType type, int amount) {
+            this.type = type;
+            this.amount = amount;
+        }
+
+        ReadablePeriod toPeriod() {
+            return this.type.toPeriod(amount);
+        }
+
+        BaseSingleFieldPeriod asPeriod(Interval interval) {
+            LocalDate start = LocalDate.fromDateFields(interval.getStart());
+            LocalDate end = LocalDate.fromDateFields(interval.getFinish());
+            return type.differenceBetween(start, end);
+        }
+    }
+
+    protected abstract Period getMinimumPeriod();
 
     private Interval calculateIntervalWithMinimum(Interval interval) {
-        ReadablePeriod minimumPeriod = getMinimumPeriod();
-        Days intervalDays = asPeriod(interval);
-        if (intervalDays.compareTo(minimumPeriod) >= 0) {
+        Period minimumPeriod = getMinimumPeriod();
+        BaseSingleFieldPeriod intervalAsPeriod = minimumPeriod
+                .asPeriod(interval);
+        if (intervalAsPeriod
+                .compareTo(minimumPeriod.toPeriod()) >= 0) {
             return interval;
         }
         LocalDate newEnd = new LocalDate(interval.getStart())
-                .plus(minimumPeriod);
+                .plus(minimumPeriod.toPeriod());
         return new Interval(interval.getStart(), newEnd
                 .toDateTimeAtStartOfDay().toDate());
     }
