@@ -123,6 +123,42 @@ public class AllocationUntilFillingHoursTest {
     }
 
     @Test
+    public void theResourcesPerDayAreKeptCorrectlyCalculatedAfterUpdatingTheEndInterval() {
+        final ResourcesPerDay oneResourcePerDay = ResourcesPerDay.amount(1);
+        givenSpecificAllocations(oneResourcePerDay);
+        ResourceAllocation.allocating(allocations).untilAllocating(30);
+        SpecificResourceAllocation allocation = (SpecificResourceAllocation) allocations
+                .get(0)
+                .getBeingModified();
+        // hours per day: 8, 8, 8, 6
+        allocation.onInterval(startDate, startDate.plusDays(1))
+                .allocateHours(6);
+        // hours per day: 6, 8, 8, 6
+        assertTrue(allocation.getResourcesPerDay().getAmount()
+                .compareTo(oneResourcePerDay.getAmount()) < 0);
+
+        allocation.onInterval(startDate.plusDays(3), startDate.plusDays(4))
+                .allocateHours(8);
+        // hours per day: 6, 8, 8, 8
+        assertThat(allocation.getResourcesPerDay(), equalTo(oneResourcePerDay));
+        // This last assertion is questionable. A solution would be to keep a
+        // Spec object at ResourceAllocation with the desired parameters from
+        // the user and then the real values. In the meantime doing an effort to
+        // keep the original value
+
+        allocation.onInterval(startDate.plusDays(4), startDate.plusDays(5))
+                .allocateHours(8);
+        // hours per day: 6, 8, 8, 8, 8
+        assertTrue(allocation.getResourcesPerDay().getAmount()
+                .compareTo(oneResourcePerDay.getAmount()) < 0);
+
+        // hours per day: 6, 8, 8, 8, 10
+        allocation.onInterval(startDate.plusDays(4), startDate.plusDays(5))
+                .allocateHours(10);
+        assertThat(allocation.getResourcesPerDay(), equalTo(oneResourcePerDay));
+    }
+
+    @Test
     public void worksWellForSeveralSpecificAllocations() {
         givenSpecificAllocations(ResourcesPerDay.amount(1), ResourcesPerDay
                 .amount(1));
