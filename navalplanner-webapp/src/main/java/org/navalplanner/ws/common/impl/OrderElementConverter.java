@@ -252,9 +252,14 @@ public final class OrderElementConverter {
         }
         OrderElement orderElement = toEntityExceptCriterionRequirements(
                 orderVersion, orderElementDTO, configuration);
+        // Validate OrderElement.code and HoursGroup.code must be unique
+        Order.checkConstraintOrderUniqueCode(orderElement);
+        HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
+
         if (configuration.isCriterionRequirements()) {
             addOrCriterionRequirements(orderElement, orderElementDTO);
         }
+
         return orderElement;
     }
 
@@ -356,6 +361,7 @@ public final class OrderElementConverter {
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
             throws ValidationException {
+
         Validate.notNull(parentOrderVersion);
         OrderElement orderElement;
 
@@ -442,10 +448,6 @@ public final class OrderElementConverter {
         if (configuration.isAdvanceMeasurements()) {
             addAdvanceMeasurements(orderElement, orderElementDTO);
         }
-
-        // Validate OrderElement.code and HoursGroup.code must be unique
-        Order.checkConstraintOrderUniqueCode(orderElement);
-        HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
 
         return orderElement;
     }

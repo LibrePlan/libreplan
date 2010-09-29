@@ -52,8 +52,6 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
 
     private static final Log LOG = LogFactory.getLog(HoursGroup.class);
 
-    private String code;
-
     private ResourceEnum resourceType = ResourceEnum.WORKER;
 
     private Integer workingHours = 0;
@@ -88,11 +86,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
 
     public static HoursGroup createUnvalidated(String code,
             ResourceEnum resourceType, Integer workingHours) {
-        HoursGroup result = new HoursGroup();
+        HoursGroup result = create(new HoursGroup());
         result.setCode(code);
         result.setResourceType(resourceType);
         result.setWorkingHours(workingHours);
-        return create(result);
+        return result;
     }
 
     /**
@@ -158,22 +156,13 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     private HoursGroup(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
         String code = parentOrderLine.getCode();
-        this.code = code != null ? code : "";
+        this.setCode(code != null ? code : "");
         this.setOrderLineTemplate(null);
     }
 
     private HoursGroup(OrderLineTemplate orderLineTemplate) {
         this.orderLineTemplate = orderLineTemplate;
         this.setParentOrderLine(null);
-    }
-
-    @NotEmpty(message = "code not specified")
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public ResourceEnum getResourceType() {
@@ -413,6 +402,13 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     @Override
     protected IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
         return Registry.getHoursGroupDAO();
+    }
+
+    @Override
+    public boolean checkConstraintUniqueCode() {
+        // the automatic checking of this constraint is avoided because it uses
+        // the wrong code property
+        return true;
     }
 
     public static void checkConstraintHoursGroupUniqueCode(OrderElement order) {

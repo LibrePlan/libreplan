@@ -339,8 +339,8 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: code, workingHours
-        assertThat(constraintViolations.size(), equalTo(2));
+        // Mandatory fields: code
+        assertThat(constraintViolations.size(), equalTo(1));
 
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
             assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
