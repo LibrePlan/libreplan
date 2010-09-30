@@ -31,7 +31,8 @@ import org.joda.time.Years;
  * @author Francisco Javier Moran Rúa
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailTwoTimeTrackerState extends TimeTrackerState {
+public class DetailTwoTimeTrackerState extends
+        TimeTrackerStateWithSubintervalsFitting {
 
     private static final int FIRST_LEVEL_ITEM_SIZE = 400;
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;

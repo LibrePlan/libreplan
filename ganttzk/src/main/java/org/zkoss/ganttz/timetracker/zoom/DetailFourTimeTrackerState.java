@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -40,7 +41,8 @@ import org.zkoss.ganttz.util.Interval;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailFourTimeTrackerState extends TimeTrackerState {
+public class DetailFourTimeTrackerState extends
+        TimeTrackerStateWithSubintervalsFitting {
 
     private static final int NUMBER_OF_WEEKS_MINIMUM = 40;
 
@@ -64,9 +66,11 @@ public class DetailFourTimeTrackerState extends TimeTrackerState {
     }
 
 
+    private IDetailItemCreator firstLevelCreator;
+
     @Override
     protected IDetailItemCreator getDetailItemCreatorFirstLevel() {
-        return new IDetailItemCreator() {
+        firstLevelCreator = new IDetailItemCreator() {
 
             @Override
             public DetailItem create(DateTime dateTime) {
@@ -75,6 +79,7 @@ public class DetailFourTimeTrackerState extends TimeTrackerState {
                         .plusMonths(1));
             }
         };
+        return firstLevelCreator;
     }
 
     @Override
@@ -130,9 +135,11 @@ public class DetailFourTimeTrackerState extends TimeTrackerState {
 
     @Override
     public Collection<DetailItem> createDetails(Interval interval,
-            ReadablePeriod period, IDetailItemCreator detailItemCreator) {
-        if (period.equals(getPeriodFirstLevel())) {
-            return super.createDetails(interval, period, detailItemCreator);
+            Iterator<DateTime> datesGenerator,
+            IDetailItemCreator detailItemCreator) {
+        if (firstLevelCreator.equals(detailItemCreator)) {
+            return super.createDetails(interval, datesGenerator,
+                    detailItemCreator);
         } else {
             return createDetails(interval, detailItemCreator);
         }

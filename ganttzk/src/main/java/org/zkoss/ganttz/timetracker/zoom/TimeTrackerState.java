@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -47,6 +48,32 @@ public abstract class TimeTrackerState {
         calendar.clear();
         calendar.set(Calendar.YEAR, year);
         return calendar.getTime();
+    }
+
+    public static abstract class LazyGenerator<T> implements Iterator<T> {
+
+        private T current;
+
+        protected LazyGenerator(T first) {
+            this.current = first;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public T next() {
+            return this.current = next(this.current);
+        }
+
+        protected abstract T next(T last);
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     protected static final long MILLSECONDS_IN_DAY = 1000 * 60 * 60 * 24;
@@ -116,7 +143,8 @@ public abstract class TimeTrackerState {
     }
 
     public Collection<DetailItem> createDetails(Interval interval,
-            ReadablePeriod period, IDetailItemCreator detailItemCreator) {
+            Iterator<DateTime> datesGenerator,
+            IDetailItemCreator detailItemCreator) {
         DateTime current = asLocalDate(interval.getStart())
                 .toDateTimeAtStartOfDay();
         DateTime end = asLocalDate(interval.getFinish())
@@ -124,30 +152,41 @@ public abstract class TimeTrackerState {
         List<DetailItem> result = new ArrayList<DetailItem>();
         while (current.isBefore(end)) {
             result.add(detailItemCreator.create(current));
-            current = current.plus(period);
+            assert datesGenerator.hasNext();
+            current = datesGenerator.next();
         }
         return result;
     }
 
     private final Collection<DetailItem> createDetailsForFirstLevel(
             Interval interval) {
-        return createDetails(getRealIntervalFor(interval),
-                getPeriodFirstLevel(), getDetailItemCreatorFirstLevel());
+        Interval realInterval = getRealIntervalFor(interval);
+        return createDetails(realInterval,
+                getPeriodsFirstLevelGenerator(startOf(realInterval)),
+                getDetailItemCreatorFirstLevel());
     }
+
+    protected abstract Iterator<DateTime> getPeriodsFirstLevelGenerator(
+            DateTime start);
 
     private final Collection<DetailItem> createDetailsForSecondLevel(
             Interval interval) {
-        return createDetails(getRealIntervalFor(interval),
-                getPeriodSecondLevel(), getDetailItemCreatorSecondLevel());
+        Interval realInterval = getRealIntervalFor(interval);
+        return createDetails(realInterval,
+                getPeriodsSecondLevelGenerator(startOf(realInterval)),
+                getDetailItemCreatorSecondLevel());
     }
+
+    private static DateTime startOf(Interval interval) {
+        return new DateTime(interval.getStart().getTime());
+    }
+
+    protected abstract Iterator<DateTime> getPeriodsSecondLevelGenerator(
+            DateTime start);
 
     protected abstract IDetailItemCreator getDetailItemCreatorFirstLevel();
 
-    protected abstract ReadablePeriod getPeriodFirstLevel();
-
     protected abstract IDetailItemCreator getDetailItemCreatorSecondLevel();
-
-    protected abstract ReadablePeriod getPeriodSecondLevel();
 
     protected abstract LocalDate round(LocalDate date, boolean down);
 

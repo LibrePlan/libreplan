@@ -31,7 +31,8 @@ import org.zkoss.util.Locales;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailThreeTimeTrackerState extends TimeTrackerState {
+public class DetailThreeTimeTrackerState extends
+        TimeTrackerStateWithSubintervalsFitting {
 
     private static final int NUMBER_OF_MONTHS_MINIMUM = 20;
 

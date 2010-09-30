@@ -32,7 +32,8 @@ import org.joda.time.Years;
  * @author Francisco Javier Moran Rúa
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailOneTimeTrackerState extends TimeTrackerState {
+public class DetailOneTimeTrackerState extends
+        TimeTrackerStateWithSubintervalsFitting {
 
     public static final Period MINIMUN_PERIOD = PeriodType.YEARS.amount(4);
 
