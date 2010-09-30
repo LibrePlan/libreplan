@@ -22,7 +22,7 @@ package org.zkoss.ganttz.timetracker.zoom;
 import java.util.Iterator;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.ReadablePeriod;
 
 /**
@@ -38,29 +38,29 @@ public abstract class TimeTrackerStateWithSubintervalsFitting extends
         super(firstLevelModificator, secondLevelModificator);
     }
 
-    private final class PeriodicalGenerator extends LazyGenerator<DateTime> {
+    private final class PeriodicalGenerator extends LazyGenerator<LocalDate> {
         private final ReadablePeriod period;
 
-        private PeriodicalGenerator(DateTime first, ReadablePeriod period) {
+        private PeriodicalGenerator(LocalDate first, ReadablePeriod period) {
             super(first);
             Validate.notNull(period);
             this.period = period;
         }
 
         @Override
-        protected DateTime next(DateTime last) {
+        protected LocalDate next(LocalDate last) {
             return last.plus(period);
         }
     }
 
     @Override
-    protected Iterator<DateTime> getPeriodsFirstLevelGenerator(
-            final DateTime start) {
+    protected Iterator<LocalDate> getPeriodsFirstLevelGenerator(
+            final LocalDate start) {
         return new PeriodicalGenerator(start, getPeriodFirstLevel());
     }
 
     @Override
-    protected Iterator<DateTime> getPeriodsSecondLevelGenerator(DateTime start) {
+    protected Iterator<LocalDate> getPeriodsSecondLevelGenerator(LocalDate start) {
         return new PeriodicalGenerator(start, getPeriodSecondLevel());
     }
 

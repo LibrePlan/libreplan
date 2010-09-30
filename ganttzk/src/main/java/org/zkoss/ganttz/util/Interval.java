@@ -23,75 +23,89 @@
  */
 package org.zkoss.ganttz.util;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.Collections;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.math.Fraction;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 
 public class Interval {
-    private final Date start;
 
-    private final Date finish;
+    private final Duration lengthBetween;
 
-    private final long lengthBetween;
+    private final Days daysBetween;
+
+    private LocalDate startInclusive;
+
+    private LocalDate endExclusive;
 
     public Interval(Date start, Date finish) {
-        if (start == null) {
-            throw new IllegalArgumentException("begin cannot be null");
-        }
-        if (finish == null) {
-            throw new IllegalArgumentException("end cannot be null");
-        }
-        if (start.compareTo(finish) > 0) {
-            throw new IllegalArgumentException("start must be prior to end");
-        }
-        this.start = start;
-        this.finish = finish;
-        lengthBetween = this.finish.getTime() - this.start.getTime();
+        this(LocalDate.fromDateFields(start), LocalDate.fromDateFields(finish));
     }
 
-    public Date getStart() {
-        return new Date(start.getTime());
+    public Interval(LocalDate startInclusive, LocalDate endExclusive) {
+        Validate.notNull(startInclusive);
+        Validate.notNull(endExclusive);
+        Validate.isTrue(endExclusive.isAfter(startInclusive));
+        this.startInclusive = startInclusive;
+        this.endExclusive = endExclusive;
+        this.lengthBetween = new Duration(
+                this.startInclusive.toDateTimeAtStartOfDay(),
+                this.endExclusive.toDateTimeAtStartOfDay());
+        this.daysBetween = Days.daysBetween(this.startInclusive,
+                this.endExclusive);
     }
 
-    public Date getFinish() {
-        return new Date(finish.getTime());
+    public Days getDaysBetween() {
+        return daysBetween;
     }
 
-    public long getLengthBetween() {
+    public LocalDate getStart() {
+        return startInclusive;
+    }
+
+    public LocalDate getFinish() {
+        return endExclusive;
+    }
+
+    public Duration getLengthBetween() {
         return lengthBetween;
     }
 
-    public Date atProportion(double proportion) {
-        // comparisons with doubles are dangerous, change it
-        if (proportion > 1.0d) {
-            throw new IllegalArgumentException(
-                    "the proportion must be less or equal than one");
-        }
-        if (proportion < 0d) {
-            throw new IllegalArgumentException(
-                    "the proportion must be bigger than cero");
-        }
-        return new Date(start.getTime() + (int) (lengthBetween * proportion));
+    public Fraction getProportion(DateTime date) {
+        Validate.isTrue(!date.isAfter(endExclusive.toDateTimeAtStartOfDay()));
+        Days fromStartToDate = Days.daysBetween(startInclusive,
+                date.toLocalDate());
+        Fraction fraction = Fraction.getFraction(fromStartToDate.getDays(),
+                this.daysBetween.getDays());
+        return fraction.add(inTheDayIncrement(date));
     }
 
-    public double getProportion(Date date) {
-        if (!isIncluded(date)) {
-            // Negative proportions are allowed for tasks starting before
-            // interval so no exception raised
+    private Fraction inTheDayIncrement(DateTime date) {
+        DateTime atStartOfDay = date.toLocalDate().toDateTimeAtStartOfDay();
+        Duration duration = new Duration(atStartOfDay, date);
+        double result = ((double) duration.getMillis())
+                / lengthBetween.getMillis();
+        try {
+            return Fraction.getFraction(result);
+        } catch (ArithmeticException e) {
+            return Fraction.ZERO;
         }
-        return ((double) date.getTime() - start.getTime()) / lengthBetween;
     }
 
-    private boolean isIncluded(Date date) {
-        return start.compareTo(date) <= 0 && finish.compareTo(date) >= 0;
-    }
-
+    @SuppressWarnings("unchecked")
     public Interval coalesce(Interval otherInterval) {
         Validate.notNull(otherInterval);
-        return new Interval(Collections.min(Arrays.asList(start,
-                otherInterval.start)), Collections.max(Arrays.asList(finish,
-                otherInterval.finish)));
+        LocalDate minStart = Collections.min(asList(startInclusive,
+                otherInterval.startInclusive));
+        LocalDate maxEnd = Collections.max(asList(endExclusive,
+                otherInterval.endExclusive));
+        return new Interval(minStart, maxEnd);
     }
 }

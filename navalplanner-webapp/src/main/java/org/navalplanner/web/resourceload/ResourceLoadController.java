@@ -23,10 +23,10 @@ package org.navalplanner.web.resourceload;
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.resourceload.ResourceLoadModel.asDate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -319,22 +319,24 @@ public class ResourceLoadController implements Composer {
         Label label1 = new Label(_("Time filter") + ":");
         Label label2 = new Label("-");
         final Datebox initDate = new Datebox();
-        initDate.setValue(resourceLoadModel.getInitDateFilter());
+        initDate.setValue(asDate(resourceLoadModel.getInitDateFilter()));
         initDate.setWidth("75px");
         initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                resourceLoadModel.setInitDateFilter(initDate.getValue());
+                resourceLoadModel.setInitDateFilter(LocalDate
+                        .fromDateFields(initDate.getValue()));
                 reload(currentFilterByResources);
             }
         });
         final Datebox endDate = new Datebox();
-        endDate.setValue(resourceLoadModel.getEndDateFilter());
+        endDate.setValue(asDate(resourceLoadModel.getEndDateFilter()));
         endDate.setWidth("75px");
         endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                resourceLoadModel.setEndDateFilter(endDate.getValue());
+                resourceLoadModel.setEndDateFilter(LocalDate
+                        .fromDateFields(endDate.getValue()));
                 reload(currentFilterByResources);
             }
         });
@@ -419,9 +421,7 @@ public class ResourceLoadController implements Composer {
     }
 
     private void resetAdditionalFilters() {
-        Date initDateValue = new Date();
-        initDateValue.setDate(initDateValue.getDate() -15);
-        resourceLoadModel.setInitDateFilter(initDateValue);
+        resourceLoadModel.setInitDateFilter(new LocalDate().minusDays(1));
         resourceLoadModel.setEndDateFilter(null);
 
         resourceLoadModel.setCriteriaToShow(new ArrayList<Criterion>());
@@ -589,8 +589,8 @@ public class ResourceLoadController implements Composer {
 
             resetMinimumAndMaximumValueForChart();
 
-            Date start = interval.getStart();
-            Date finish = interval.getFinish();
+            LocalDate start = interval.getStart();
+            LocalDate finish = interval.getFinish();
             if ((resourceLoadModel.getInitDateFilter() != null)
                     && (resourceLoadModel.getInitDateFilter().compareTo(start) > 0)) {
                 start = resourceLoadModel.getInitDateFilter();
@@ -631,11 +631,8 @@ public class ResourceLoadController implements Composer {
             chart.setHeight("150px");
         }
 
-        private SortedMap<LocalDate, EffortDuration> getLoad(Date start,
-                Date finish) {
-            final LocalDate startDay = new LocalDate(start);
-            final LocalDate finishDay = new LocalDate(finish);
-
+        private SortedMap<LocalDate, EffortDuration> getLoad(LocalDate start,
+                LocalDate finish) {
             List<DayAssignment> dayAssignments = resourceLoadModel
                     .getDayAssignments();
 
@@ -645,18 +642,15 @@ public class ResourceLoadController implements Composer {
             for (Entry<LocalDate, EffortDuration> each : mapDayAssignments
                     .entrySet()) {
                 LocalDate day = each.getKey();
-                if (day.compareTo(startDay) >= 0
-                        && day.compareTo(finishDay) <= 0) {
+                if (day.compareTo(start) >= 0 && day.compareTo(finish) <= 0) {
                     result.put(day, each.getValue());
                 }
             }
             return result;
         }
 
-        private SortedMap<LocalDate, EffortDuration> getOverload(Date start,
-                Date finish) {
-            final LocalDate startDay = new LocalDate(start);
-            final LocalDate finishDay = new LocalDate(finish);
+        private SortedMap<LocalDate, EffortDuration> getOverload(
+                LocalDate start, LocalDate finish) {
             List<DayAssignment> dayAssignments = resourceLoadModel
                     .getDayAssignments();
 
@@ -668,8 +662,7 @@ public class ResourceLoadController implements Composer {
                     .entrySet()) {
                 LocalDate day = each.getKey();
                 EffortDuration overload = each.getValue();
-                if (day.compareTo(startDay) >= 0
-                        && day.compareTo(finishDay) <= 0) {
+                if (day.compareTo(start) >= 0 && day.compareTo(finish) <= 0) {
                     EffortDuration maxAvailability = mapMaxAvailability
                             .get(day);
                     mapDayAssignments.put(day, overload.plus(maxAvailability));
@@ -677,8 +670,7 @@ public class ResourceLoadController implements Composer {
             }
             SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
             for (LocalDate day : mapDayAssignments.keySet()) {
-                if (day.compareTo(startDay) >= 0
-                        && day.compareTo(finishDay) <= 0) {
+                if (day.compareTo(start) >= 0 && day.compareTo(finish) <= 0) {
                     result.put(day, mapDayAssignments.get(day));
                 }
             }
@@ -731,13 +723,13 @@ public class ResourceLoadController implements Composer {
         }
 
         private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
-                Date start, Date finish) {
+                LocalDate start, LocalDate finish) {
             return calculateHoursAdditionByDay(
                     resourceLoadModel.getResources(), start, finish);
         }
 
         private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDay(
-                List<Resource> resources, Date start, Date finish) {
+                List<Resource> resources, LocalDate start, LocalDate finish) {
             return new EffortByDayCalculator<Entry<LocalDate, List<Resource>>>() {
 
                 @Override
@@ -756,10 +748,9 @@ public class ResourceLoadController implements Composer {
         }
 
         private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
-                List<Resource> resources, Date start, Date finish) {
-            LocalDate end = new LocalDate(finish);
+                List<Resource> resources, LocalDate start, LocalDate finish) {
             Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
-            for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
+            for (LocalDate date = start; date.compareTo(finish) <= 0; date = date
                     .plusDays(1)) {
                 result.put(date, resources);
             }

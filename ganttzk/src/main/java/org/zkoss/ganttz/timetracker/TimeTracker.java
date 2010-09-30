@@ -40,8 +40,8 @@ import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.Component;
 
@@ -278,8 +278,8 @@ public class TimeTracker {
                     endPlusOneMonth(task));
             invalidatingChangeHappened();
         } else {
-            Date newStart = interval.getStart();
-            Date newFinish = interval.getFinish();
+            LocalDate newStart = interval.getStart();
+            LocalDate newFinish = interval.getFinish();
 
             boolean changed = false;
             if (interval.getStart().compareTo(startMinusTwoWeeks(task)) > 0) {
@@ -320,19 +320,19 @@ public class TimeTracker {
         return date1.compareTo(date2) <= 0 ? date1 : date2;
     }
 
-    private Date endPlusOneMonth(Task task) {
+    private LocalDate endPlusOneMonth(Task task) {
         Date taskEnd = max(task.getEndDate(), task.getDeadline());
-        return new LocalDate(taskEnd).plusMonths(1).toDateMidnight().toDate();
+        return new LocalDate(taskEnd).plusMonths(1);
     }
 
-    private Date startMinusTwoWeeks(Task task) {
+    private LocalDate startMinusTwoWeeks(Task task) {
         // the deadline could be before the start
         Date start = min(task.getBeginDate(), task.getDeadline());
         // the last consolidated value could be before the start
         if (task.getConsolidatedline() != null) {
             start = min(start, task.getConsolidatedline());
         }
-        return new LocalDate(start).minusWeeks(2).toDateMidnight().toDate();
+        return new LocalDate(start).minusWeeks(2);
     }
 
 }

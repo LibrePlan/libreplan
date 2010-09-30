@@ -143,15 +143,14 @@ public abstract class TimeTrackerState {
     }
 
     private Collection<DetailItem> createDetails(Interval interval,
-            Iterator<DateTime> datesGenerator,
+            Iterator<LocalDate> datesGenerator,
             IDetailItemCreator detailItemCreator) {
-        DateTime current = asLocalDate(interval.getStart())
-                .toDateTimeAtStartOfDay();
-        DateTime end = asLocalDate(interval.getFinish())
-                .toDateTimeAtStartOfDay();
+        LocalDate current = interval.getStart();
+        LocalDate end = interval.getFinish();
         List<DetailItem> result = new ArrayList<DetailItem>();
         while (current.isBefore(end)) {
-            result.add(detailItemCreator.create(current));
+            result.add(detailItemCreator.create(current
+                    .toDateTimeAtStartOfDay()));
             assert datesGenerator.hasNext();
             current = datesGenerator.next();
         }
@@ -162,27 +161,23 @@ public abstract class TimeTrackerState {
             Interval interval) {
         Interval realInterval = getRealIntervalFor(interval);
         return createDetails(realInterval,
-                getPeriodsFirstLevelGenerator(startOf(realInterval)),
+                getPeriodsFirstLevelGenerator(realInterval.getStart()),
                 getDetailItemCreatorFirstLevel());
     }
 
-    protected abstract Iterator<DateTime> getPeriodsFirstLevelGenerator(
-            DateTime start);
+    protected abstract Iterator<LocalDate> getPeriodsFirstLevelGenerator(
+            LocalDate start);
 
     private final Collection<DetailItem> createDetailsForSecondLevel(
             Interval interval) {
         Interval realInterval = getRealIntervalFor(interval);
         return createDetails(realInterval,
-                getPeriodsSecondLevelGenerator(startOf(realInterval)),
+                getPeriodsSecondLevelGenerator(realInterval.getStart()),
                 getDetailItemCreatorSecondLevel());
     }
 
-    private static DateTime startOf(Interval interval) {
-        return new DateTime(interval.getStart().getTime());
-    }
-
-    protected abstract Iterator<DateTime> getPeriodsSecondLevelGenerator(
-            DateTime start);
+    protected abstract Iterator<LocalDate> getPeriodsSecondLevelGenerator(
+            LocalDate start);
 
     protected abstract IDetailItemCreator getDetailItemCreatorFirstLevel();
 
@@ -263,9 +258,8 @@ public abstract class TimeTrackerState {
         }
 
         BaseSingleFieldPeriod asPeriod(Interval interval) {
-            LocalDate start = LocalDate.fromDateFields(interval.getStart());
-            LocalDate end = LocalDate.fromDateFields(interval.getFinish());
-            return type.differenceBetween(start, end);
+            return type.differenceBetween(interval.getStart(),
+                    interval.getFinish());
         }
     }
 
@@ -280,8 +274,7 @@ public abstract class TimeTrackerState {
         }
         LocalDate newEnd = new LocalDate(interval.getStart())
                 .plus(minimumPeriod.toPeriod());
-        return new Interval(interval.getStart(), newEnd
-                .toDateTimeAtStartOfDay().toDate());
+        return new Interval(interval.getStart(), newEnd);
     }
 
     public Interval getRealIntervalFor(Interval testInterval) {
@@ -289,8 +282,8 @@ public abstract class TimeTrackerState {
     }
 
     private Interval calculateForAtLeastMinimum(Interval atLeastMinimum) {
-        LocalDate start = round(asLocalDate(atLeastMinimum.getStart()), true);
-        LocalDate finish = round(asLocalDate(atLeastMinimum.getFinish()), false);
+        LocalDate start = round(atLeastMinimum.getStart(), true);
+        LocalDate finish = round(atLeastMinimum.getFinish(), false);
         Interval result = new Interval(start.toDateTimeAtStartOfDay().toDate(),
                 finish.toDateTimeAtStartOfDay().toDate());
         return result;

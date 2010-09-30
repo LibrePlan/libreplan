@@ -114,8 +114,8 @@ public abstract class ChartFiller implements IChartFiller {
         private final SortedMap<LocalDate, BigDecimal> map;
         private final LocalDate start;
 
-        protected GraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, BigDecimal> map, Date start) {
+        protected GraphicSpecificationCreator(LocalDate finish,
+                SortedMap<LocalDate, BigDecimal> map, LocalDate start) {
             this.finish = new LocalDate(finish);
             this.map = map;
             this.start = new LocalDate(start);
@@ -229,8 +229,8 @@ public abstract class ChartFiller implements IChartFiller {
     protected class DefaultGraphicSpecificationCreator extends
             GraphicSpecificationCreator {
 
-        private DefaultGraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, BigDecimal> map, Date start) {
+        private DefaultGraphicSpecificationCreator(LocalDate finish,
+                SortedMap<LocalDate, BigDecimal> map, LocalDate start) {
             super(finish, map, start);
         }
 
@@ -248,8 +248,9 @@ public abstract class ChartFiller implements IChartFiller {
     protected class JustDaysWithInformationGraphicSpecificationCreator extends
             GraphicSpecificationCreator {
 
-        public JustDaysWithInformationGraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, BigDecimal> map, Date start) {
+        public JustDaysWithInformationGraphicSpecificationCreator(
+                LocalDate finish, SortedMap<LocalDate, BigDecimal> map,
+                LocalDate start) {
             super(finish, map, start);
         }
 
@@ -563,7 +564,7 @@ public abstract class ChartFiller implements IChartFiller {
 
     private String getServletUri(
             final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
-            final Date start, final Date finish,
+            final LocalDate start, final LocalDate finish,
             final GraphicSpecificationCreator graphicSpecificationCreator) {
         if (mapDayAssignments.isEmpty()) {
             return "";

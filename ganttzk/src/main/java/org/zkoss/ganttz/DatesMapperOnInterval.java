@@ -25,35 +25,46 @@ package org.zkoss.ganttz;
 
 import java.util.Date;
 
+import org.apache.commons.lang.math.Fraction;
+import org.joda.time.DateTime;
 import org.zkoss.ganttz.util.Interval;
 
 public class DatesMapperOnInterval implements IDatesMapper {
     private final int horizontalSize;
-    private final Interval stubInterval;
+    private final Interval interval;
     private long millisecondsPerPixel;
+    private Fraction pixelsPerDay;
 
-    public DatesMapperOnInterval(int horizontalSize, Interval stubInterval) {
+    public DatesMapperOnInterval(int horizontalSize, Interval interval) {
         this.horizontalSize = horizontalSize;
-        this.stubInterval = stubInterval;
-        this.millisecondsPerPixel = stubInterval.getLengthBetween()
+        this.interval = interval;
+        this.millisecondsPerPixel = interval.getLengthBetween().getMillis()
                 / horizontalSize;
+        this.pixelsPerDay = Fraction.getFraction(horizontalSize, interval
+                .getDaysBetween().getDays());
     }
 
     @Override
     public Date toDate(int pixels) {
-        return new Date(stubInterval.getStart().getTime()
-                + millisecondsPerPixel * pixels);
+        int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
+                .intValue();
+        return interval.getStart().plusDays(daysInto).toDateTimeAtStartOfDay()
+                .toDate();
     }
 
     @Override
     public int toPixels(Date date) {
-        double proportion = stubInterval.getProportion(date);
-        return (int) (horizontalSize * proportion);
+        Fraction proportion = interval.getProportion(new DateTime(date
+                .getTime()));
+        return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1))
+                .intValue();
     }
 
     @Override
     public int toPixels(long milliseconds) {
-        Date date = new Date(stubInterval.getStart().getTime() + milliseconds);
+        Date date = new Date(interval.getStart().toDateTimeAtStartOfDay()
+                .getMillis()
+                + milliseconds);
         return this.toPixels(date);
     }
 

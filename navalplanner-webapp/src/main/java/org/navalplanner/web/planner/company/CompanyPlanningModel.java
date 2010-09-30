@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.company;
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.resourceload.ResourceLoadModel.asDate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,10 +35,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -75,8 +76,8 @@ import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -176,8 +177,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private Scenario currentScenario;
 
-    private Date filterStartDate;
-    private Date filterFinishDate;
+    private LocalDate filterStartDate;
+    private LocalDate filterFinishDate;
     private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = EnumSet
             .of(OrderStatusEnum.ACCEPTED, OrderStatusEnum.OFFERED,
                     OrderStatusEnum.STARTED,
@@ -735,8 +736,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             endDate = Collections.max(notNull(endDate, each.getDeadline(),
                     associatedTaskElement.getEndDate()));
         }
-        filterStartDate = startDate;
-        filterFinishDate = endDate;
+        filterStartDate = LocalDate.fromDateFields(startDate);
+        filterFinishDate = LocalDate.fromDateFields(endDate);
     }
 
     private static <T> List<T> notNull(T... values) {
@@ -753,23 +754,13 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
     @Override
-    public Date getFilterStartDate() {
+    public LocalDate getFilterStartDate() {
         return filterStartDate;
     }
 
-    private LocalDate getFilterStartLocalDate() {
-        return filterStartDate != null ?
-                LocalDate.fromDateFields(filterStartDate) : null;
-    }
-
     @Override
-    public Date getFilterFinishDate() {
+    public LocalDate getFilterFinishDate() {
         return filterFinishDate;
-    }
-
-    private LocalDate getFilterFinishLocalDate() {
-        return filterFinishDate != null ?
-                LocalDate.fromDateFields(filterFinishDate) : null;
     }
 
     private class CompanyLoadChartFiller extends ChartFiller {
@@ -784,8 +775,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             resetMinimumAndMaximumValueForChart();
 
-            Date start = filterStartDate!=null ? filterStartDate : interval.getStart();
-            Date finish = filterFinishDate != null ? filterFinishDate
+            LocalDate start = filterStartDate != null ? filterStartDate
+                    : interval.getStart();
+            LocalDate finish = filterFinishDate != null ? filterFinishDate
                     : interval.getFinish();
 
             Plotinfo plotInfoLoad = createPlotinfoFromDurations(
@@ -815,18 +807,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             chart.setHeight("150px");
         }
 
-        private SortedMap<LocalDate, EffortDuration> getLoad(Date start,
-                Date finish) {
+        private SortedMap<LocalDate, EffortDuration> getLoad(LocalDate start,
+                LocalDate finish) {
             List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
-                    currentScenario, LocalDate.fromDateFields(start), LocalDate
-                            .fromDateFields(finish));
+                    currentScenario, start, finish);
             SortedMap<LocalDate, Map<Resource, EffortDuration>> durationsGrouped = groupDurationsByDayAndResource(dayAssignments);
             return calculateHoursAdditionByDayWithoutOverload(durationsGrouped);
         }
 
-        private SortedMap<LocalDate, EffortDuration> getOverload(Date start,
-                Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario, LocalDate.fromDateFields(start), LocalDate.fromDateFields(finish));
+        private SortedMap<LocalDate, EffortDuration> getOverload(
+                LocalDate start, LocalDate finish) {
+            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
+                    currentScenario, start, finish);
 
             SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped = groupDurationsByDayAndResource(dayAssignments);
             SortedMap<LocalDate, EffortDuration> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
@@ -912,13 +904,13 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
-                Date start, Date finish) {
+                LocalDate start, LocalDate finish) {
             return calculateAvailabilityDurationByDay(
                     resourceDAO.list(Resource.class), start, finish);
         }
 
         private SortedMap<LocalDate, EffortDuration> calculateAvailabilityDurationByDay(
-                List<Resource> resources, Date start, Date finish) {
+                List<Resource> resources, LocalDate start, LocalDate finish) {
             return new EffortByDayCalculator<Entry<LocalDate, List<Resource>>>() {
 
                 @Override
@@ -939,10 +931,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
-                List<Resource> resources, Date start, Date finish) {
-            LocalDate end = new LocalDate(finish);
+                List<Resource> resources, LocalDate start, LocalDate finish) {
             Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
-            for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
+            for (LocalDate date = new LocalDate(start); date.compareTo(finish) <= 0; date = date
                     .plusDays(1)) {
                 result.put(date, resources);
             }
@@ -954,15 +945,14 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
+            List<TaskElement> list = taskElementDAO.listFilteredByDate(asDate(filterStartDate), asDate(filterFinishDate));
 
             SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
                 if (taskElement instanceof Task) {
                     addCost(estimatedCost, hoursCostCalculator
-                            .getEstimatedCost((Task) taskElement,
-                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
+                            .getEstimatedCost((Task) taskElement, filterStartDate, filterFinishDate));
                 }
             }
 
@@ -985,7 +975,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
             List<WorkReportLine> workReportLines = workReportLineDAO
-                    .findFilteredByDate(filterStartDate, filterFinishDate);
+                    .findFilteredByDate(asDate(filterStartDate), asDate(filterFinishDate));
 
             if (workReportLines.isEmpty()) {
                 return result;
@@ -1005,7 +995,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
+            List<TaskElement> list = taskElementDAO.listFilteredByDate(asDate(filterStartDate), asDate(filterFinishDate));
 
             SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
 
@@ -1013,7 +1003,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 if (taskElement instanceof Task) {
                     addCost(advanceCost, hoursCostCalculator
                             .getAdvanceCost((Task) taskElement,
-                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
+                            filterStartDate, filterFinishDate));
                 }
             }
 

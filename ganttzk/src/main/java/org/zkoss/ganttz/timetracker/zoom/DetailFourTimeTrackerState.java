@@ -76,7 +76,8 @@ public class DetailFourTimeTrackerState extends TimeTrackerState {
 
             @Override
             public DetailItem create(DateTime dateTime) {
-                int daysUntilFirstDayNextWeek = getDaysUntilFirstDayNextWeek(dateTime);
+                int daysUntilFirstDayNextWeek = getDaysUntilFirstDayNextWeek(dateTime
+                        .toLocalDate());
                 int sizeWeek = new BigDecimal(pixelPerDay()
                         * daysUntilFirstDayNextWeek).intValue();
 
@@ -120,22 +121,22 @@ public class DetailFourTimeTrackerState extends TimeTrackerState {
     }
 
     @Override
-    protected Iterator<DateTime> getPeriodsFirstLevelGenerator(DateTime start) {
-        return new LazyGenerator<DateTime>(start) {
+    protected Iterator<LocalDate> getPeriodsFirstLevelGenerator(LocalDate start) {
+        return new LazyGenerator<LocalDate>(start) {
 
             @Override
-            protected DateTime next(DateTime last) {
+            protected LocalDate next(LocalDate last) {
                 return last.plus(Months.ONE);
             }
         };
     }
 
     @Override
-    protected Iterator<DateTime> getPeriodsSecondLevelGenerator(DateTime start) {
-        return new LazyGenerator<DateTime>(start) {
+    protected Iterator<LocalDate> getPeriodsSecondLevelGenerator(LocalDate start) {
+        return new LazyGenerator<LocalDate>(start) {
 
             @Override
-            protected DateTime next(DateTime last) {
+            protected LocalDate next(LocalDate last) {
                 if (last.getDayOfWeek() != 1) {
                     return last.plusDays(getDaysUntilFirstDayNextWeek(last));
                 } else {
@@ -145,7 +146,7 @@ public class DetailFourTimeTrackerState extends TimeTrackerState {
         };
     }
 
-    private int getDaysUntilFirstDayNextWeek(DateTime dateTime) {
-        return 8 - dateTime.getDayOfWeek();
+    private int getDaysUntilFirstDayNextWeek(LocalDate date) {
+        return 8 - date.getDayOfWeek();
     }
 }
