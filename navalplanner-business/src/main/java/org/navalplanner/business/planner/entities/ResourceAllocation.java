@@ -634,7 +634,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private List<T> onlyNonZeroHours(List<T> assignmentsCreated) {
             List<T> result = new ArrayList<T>();
             for (T each : assignmentsCreated) {
-                if (each.getHours() > 0) {
+                if (!each.getDuration().isZero()) {
                     result.add(each);
                 }
             }
