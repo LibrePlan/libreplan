@@ -182,8 +182,9 @@ public class AdvancedAllocationTabCreator {
         }
 
         private void applyChanges() {
-            taskElementDAO.save(task);
+            taskElementDAO.reattach(task);
             allocationResult.applyTo(currentScenario, task);
+            taskElementDAO.save(task);
         }
     }
 
