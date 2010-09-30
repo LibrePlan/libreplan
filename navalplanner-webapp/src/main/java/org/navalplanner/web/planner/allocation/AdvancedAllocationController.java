@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.Map.Entry;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,9 +48,9 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -63,8 +63,8 @@ import org.zkoss.ganttz.timetracker.PairOfLists;
 import org.zkoss.ganttz.timetracker.TimeTrackedTable;
 import org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
+import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -591,8 +591,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         public void setInterval(Interval realInterval) {
-            intervalStart = new DateTime(realInterval.getStart());
-            intervalEnd = new DateTime(realInterval.getFinish());
+            intervalStart = realInterval.getStart().toDateTimeAtStartOfDay();
+            intervalEnd = realInterval.getFinish().toDateTimeAtStartOfDay();
             paginatorStart = intervalStart;
             paginatorEnd = intervalStart.plus(intervalIncrease());
             if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
