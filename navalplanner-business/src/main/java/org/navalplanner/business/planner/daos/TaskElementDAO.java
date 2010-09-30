@@ -28,15 +28,18 @@ import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -76,4 +79,52 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
         }
         return criteria.list();
     }
+
+    private void updateSumOfAllocatedHours(TaskElement taskElement) {
+        Integer allocatedHours = 0;
+        Integer oldAllocatedHours = taskElement.getSumOfHoursAllocated();
+        for(ResourceAllocation<?> allocation : taskElement.getAllResourceAllocations()) {
+            allocatedHours += allocation.getAssignedHours();
+        }
+        if(allocatedHours != oldAllocatedHours) {
+            taskElement.setSumOfHoursAllocated(allocatedHours);
+            updateSumOfAllocatedHoursToParent(taskElement.getParent(),
+                    allocatedHours - oldAllocatedHours);
+            updateSumOfAllocatedHoursToChildren(taskElement,
+                    allocatedHours - oldAllocatedHours);
+        }
+    }
+
+    private void updateSumOfAllocatedHoursToChildren(
+            TaskElement parent, Integer differenceOfHours) {
+        if(parent instanceof TaskGroup) {
+            for(TaskElement child : parent.getChildren()) {
+                Integer allocatedHours = 0;
+                Integer oldAllocatedHours = child.getSumOfHoursAllocated();
+                for(ResourceAllocation<?> allocation : child.getAllResourceAllocations()) {
+                    allocatedHours += allocation.getAssignedHours();
+                }
+                if(allocatedHours != oldAllocatedHours) {
+                    child.setSumOfHoursAllocated(allocatedHours);
+                    updateSumOfAllocatedHoursToChildren(child,
+                            allocatedHours - oldAllocatedHours);
+                }
+            }
+        }
+    }
+
+    private void updateSumOfAllocatedHoursToParent(TaskGroup taskGroup, Integer differenceOfHours) {
+        if(taskGroup != null) {
+            taskGroup.addSumOfHoursAllocated(differenceOfHours);
+            updateSumOfAllocatedHoursToParent(taskGroup.getParent(), differenceOfHours);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void save(TaskElement taskElement) {
+        updateSumOfAllocatedHours(taskElement);
+        super.save(taskElement);
+    }
+
 }
