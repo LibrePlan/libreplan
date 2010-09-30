@@ -82,7 +82,7 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
     }
 
     public boolean isStartOfDay() {
-        return effortDuration.isZero();
+        return getEffortDuration().isZero();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
     public int compareTo(IntraDayDate other) {
         int result = date.compareTo(other.date);
         if (result == 0) {
-            result = effortDuration.compareTo(other.effortDuration);
+            result = getEffortDuration().compareTo(other.getEffortDuration());
         }
         return result;
     }
