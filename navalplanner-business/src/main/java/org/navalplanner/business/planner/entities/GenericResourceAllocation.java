@@ -447,7 +447,7 @@ public class GenericResourceAllocation extends
 
         @Override
         protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
-            return getIntraDayEndFor(scenario);
+            return retrieveOrCreateContainerFor(scenario).getIntraDayEnd();
         }
     }
 

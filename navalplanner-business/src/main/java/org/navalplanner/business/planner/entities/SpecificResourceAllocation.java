@@ -419,7 +419,7 @@ public class SpecificResourceAllocation extends
 
         @Override
         protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
-            return getIntraDayEndFor(scenario);
+            return retrieveOrCreateContainerFor(scenario).getIntraDayEnd();
         }
 
     }
