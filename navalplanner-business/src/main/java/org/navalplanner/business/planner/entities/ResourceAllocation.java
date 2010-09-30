@@ -992,7 +992,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         IntraDayDate getIntraDayEnd() {
-            return getIntraDayEndFor(currentScenario);
+            return getIntraDayEndFor(currentScenario());
         }
 
         protected abstract IntraDayDate getIntraDayEndFor(Scenario scenario);
