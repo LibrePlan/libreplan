@@ -187,6 +187,10 @@ public abstract class DayAssignment extends BaseEntity {
         this.resource = resource;
     }
 
+    /**
+     * @deprecated Use {@link #getDuration()}
+     */
+    @Deprecated
     public int getHours() {
         return duration.getHours();
     }
