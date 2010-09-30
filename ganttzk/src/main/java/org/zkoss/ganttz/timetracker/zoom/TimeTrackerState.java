@@ -142,7 +142,7 @@ public abstract class TimeTrackerState {
         return result;
     }
 
-    public Collection<DetailItem> createDetails(Interval interval,
+    private Collection<DetailItem> createDetails(Interval interval,
             Iterator<DateTime> datesGenerator,
             IDetailItemCreator detailItemCreator) {
         DateTime current = asLocalDate(interval.getStart())

@@ -21,28 +21,20 @@
 package org.zkoss.ganttz.timetracker.zoom;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.List;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
-import org.joda.time.ReadablePeriod;
-import org.joda.time.Weeks;
-import org.zkoss.ganttz.util.Interval;
 
 /**
  * Zoom level for months and years and weeks in the second level
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailFourTimeTrackerState extends
-        TimeTrackerStateWithSubintervalsFitting {
+public class DetailFourTimeTrackerState extends TimeTrackerState {
 
     private static final int NUMBER_OF_WEEKS_MINIMUM = 40;
 
@@ -51,11 +43,7 @@ public class DetailFourTimeTrackerState extends
         super(firstLevelModificator, secondLevelModificator);
     }
 
-    private static final int FIRST_LEVEL_SIZE = 210;
     private static final int SECOND_LEVEL_SIZE = 56;
-    private static final int MAX_DAYS = 8;
-
-    private int daysWeek = 7;
 
     public final double pixelPerDay() {
         return (SECOND_LEVEL_SIZE / (double) 7);
@@ -88,25 +76,15 @@ public class DetailFourTimeTrackerState extends
 
             @Override
             public DetailItem create(DateTime dateTime) {
-                daysWeek = MAX_DAYS - dateTime.getDayOfWeek();
-                int sizeWeek = (new BigDecimal(pixelPerDay() * daysWeek))
-                        .intValue();
+                int daysUntilFirstDayNextWeek = getDaysUntilFirstDayNextWeek(dateTime);
+                int sizeWeek = new BigDecimal(pixelPerDay()
+                        * daysUntilFirstDayNextWeek).intValue();
 
-                return new DetailItem(sizeWeek, dateTime
-                        .getWeekOfWeekyear()
-                        + "", dateTime, dateTime.plusDays(daysWeek));
+                return new DetailItem(sizeWeek, dateTime.getWeekOfWeekyear()
+                        + "", dateTime,
+                        dateTime.plusDays(daysUntilFirstDayNextWeek));
             }
         };
-    }
-
-    @Override
-    protected ReadablePeriod getPeriodFirstLevel() {
-        return Months.months(1);
-    }
-
-    @Override
-    protected ReadablePeriod getPeriodSecondLevel() {
-        return Weeks.weeks(1);
     }
 
     @Override
@@ -133,37 +111,41 @@ public class DetailFourTimeTrackerState extends
         return SECOND_LEVEL_SIZE;
     }
 
-    @Override
-    public Collection<DetailItem> createDetails(Interval interval,
-            Iterator<DateTime> datesGenerator,
-            IDetailItemCreator detailItemCreator) {
-        if (firstLevelCreator.equals(detailItemCreator)) {
-            return super.createDetails(interval, datesGenerator,
-                    detailItemCreator);
-        } else {
-            return createDetails(interval, detailItemCreator);
-        }
-    }
-
-    private Collection<DetailItem> createDetails(Interval interval,
-            IDetailItemCreator detailItemCreator) {
-        DateTime current = asLocalDate(interval.getStart())
-                .toDateTimeAtStartOfDay();
-        DateTime end = asLocalDate(interval.getFinish())
-                .toDateTimeAtStartOfDay();
-        List<DetailItem> result = new ArrayList<DetailItem>();
-        while (current.isBefore(end)) {
-            result.add(detailItemCreator.create(current));
-            current = current.plus(Days.days(daysWeek));
-        }
-        return result;
-    }
-
     private int getSizeMonth(DateTime dateTime) {
         Calendar cal = new GregorianCalendar(dateTime.getYear(), dateTime
                 .getMonthOfYear() - 1, dateTime.getDayOfMonth());
         // Get the number of days in that month
         int days = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         return new BigDecimal(pixelPerDay() * days).intValue();
+    }
+
+    @Override
+    protected Iterator<DateTime> getPeriodsFirstLevelGenerator(DateTime start) {
+        return new LazyGenerator<DateTime>(start) {
+
+            @Override
+            protected DateTime next(DateTime last) {
+                return last.plus(Months.ONE);
+            }
+        };
+    }
+
+    @Override
+    protected Iterator<DateTime> getPeriodsSecondLevelGenerator(DateTime start) {
+        return new LazyGenerator<DateTime>(start) {
+
+            @Override
+            protected DateTime next(DateTime last) {
+                if (last.getDayOfWeek() != 1) {
+                    return last.plusDays(getDaysUntilFirstDayNextWeek(last));
+                } else {
+                    return last.plusWeeks(1);
+                }
+            }
+        };
+    }
+
+    private int getDaysUntilFirstDayNextWeek(DateTime dateTime) {
+        return 8 - dateTime.getDayOfWeek();
     }
 }
