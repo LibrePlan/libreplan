@@ -1019,7 +1019,7 @@ public class OrderLineGroup extends OrderElement implements
 
         for (OrderElement each : getAllOrderElements()) {
             String code = each.getCode();
-            if (code != null) {
+            if (code != null && !code.isEmpty()) {
                 if (codes.contains(code)) {
                     return each;
                 }
@@ -1035,7 +1035,7 @@ public class OrderLineGroup extends OrderElement implements
 
         for (HoursGroup hoursGroup : getHoursGroups()) {
             String code = hoursGroup.getCode();
-            if (code != null) {
+            if (code != null && !code.isEmpty()) {
                 if (codes.contains(code)) {
                     return hoursGroup;
                 }
