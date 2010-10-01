@@ -30,6 +30,9 @@ import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.ReadableDuration;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnforcement;
@@ -183,6 +186,10 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public long getLengthMilliseconds() {
         return getEndDate().getTime() - getBeginDate().getTime();
+    }
+
+    public ReadableDuration getLength() {
+        return new Duration(getBeginDate().getTime(), getEndDate().getTime());
     }
 
     public void addVisibilityPropertiesChangeListener(
@@ -369,6 +376,10 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public boolean isFixed() {
         return fundamentalProperties.isFixed();
+    }
+
+    public LocalDate getBeginDateAsLocalDate() {
+        return LocalDate.fromDateFields(getBeginDate());
     }
 
 }

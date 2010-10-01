@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -321,11 +322,11 @@ public class QueueComponent extends XulElement implements
         if (advancementEndDate == null) {
             return null;
         }
-        long millis = (advancementEndDate.toDateTime().getMillis() - queueElement
-                .getStartTime().toDateTime().getMillis());
+        Duration durationBetween = new Duration(queueElement.getStartTime()
+                .toDateTime().getMillis(), advancementEndDate.toDateTime().getMillis());
         Div progressBar = new Div();
         if (!queueElement.getStartDate().isEqual(advancementEndDate.getDate())) {
-            progressBar.setWidth(datesMapper.toPixels(millis) + "px");
+            progressBar.setWidth(datesMapper.toPixels(durationBetween) + "px");
             progressBar.setSclass("queue-progress-bar");
         }
         return progressBar;
@@ -390,13 +391,7 @@ public class QueueComponent extends XulElement implements
 
     private static int getWidthPixels(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
-        return datesMapper.toPixels(getEndMillis(queueElement)
-                - getStartMillis(queueElement));
-    }
-
-    private static long getStartMillis(LimitingResourceQueueElement queueElement) {
-        return queueElement.getStartDate().toDateMidnight().getMillis()
-                + (queueElement.getStartHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
+        return datesMapper.toPixels(queueElement.getLengthBetween());
     }
 
     private static int getDeadlinePixels(IDatesMapper datesMapper,
@@ -404,12 +399,6 @@ public class QueueComponent extends XulElement implements
         // Deadline date is considered inclusively
         return datesMapper.toPixelsAbsolute(deadlineDate.plusDays(1)
                 .toDateMidnight().getMillis());
-    }
-
-
-    private static long getEndMillis(LimitingResourceQueueElement queueElement) {
-        return queueElement.getEndDate().toDateMidnight().getMillis()
-                + (queueElement.getEndHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
     }
 
     private static String forCSS(int pixels) {

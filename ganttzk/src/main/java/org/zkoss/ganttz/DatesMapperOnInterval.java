@@ -23,10 +23,11 @@
  */
 package org.zkoss.ganttz;
 
-import java.util.Date;
-
 import org.apache.commons.lang.math.Fraction;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.ReadableDuration;
 import org.zkoss.ganttz.util.Interval;
 
 public class DatesMapperOnInterval implements IDatesMapper {
@@ -45,38 +46,46 @@ public class DatesMapperOnInterval implements IDatesMapper {
     }
 
     @Override
-    public Date toDate(int pixels) {
+    public LocalDate toDate(int pixels) {
         int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
                 .intValue();
-        return interval.getStart().plusDays(daysInto).toDateTimeAtStartOfDay()
-                .toDate();
+        return interval.getStart().plusDays(daysInto);
     }
 
     @Override
-    public int toPixels(Date date) {
-        Fraction proportion = interval.getProportion(new DateTime(date
-                .getTime()));
+    public int toPixels(LocalDate date) {
+        return toPixels(getProportion(date));
+    }
+
+    private Fraction getProportion(LocalDate date) {
+        return getProportion(date.toDateTimeAtStartOfDay());
+    }
+
+    private Fraction getProportion(DateTime dateTime) {
+        return interval.getProportion(dateTime);
+    }
+
+    private int toPixels(Fraction proportion) {
         return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1))
                 .intValue();
     }
 
     @Override
-    public int toPixels(long milliseconds) {
-        Date date = new Date(interval.getStart().toDateTimeAtStartOfDay()
-                .getMillis()
-                + milliseconds);
-        return this.toPixels(date);
+    public int toPixels(ReadableDuration duration) {
+        DateTime end = interval.getStart().toDateTimeAtStartOfDay()
+                .plus(duration);
+        return toPixels(getProportion(end));
     }
 
     @Override
     public int toPixelsAbsolute(long milliseconds) {
-        Date date = new Date(milliseconds);
-        return this.toPixels(date);
+        DateTime date = new DateTime(milliseconds);
+        return this.toPixels(getProportion(date));
     }
 
     @Override
-    public long toMilliseconds(int pixels) {
-        return millisecondsPerPixel * pixels;
+    public ReadableDuration toDuration(int pixels) {
+        return new Duration(millisecondsPerPixel * pixels);
     }
 
     @Override

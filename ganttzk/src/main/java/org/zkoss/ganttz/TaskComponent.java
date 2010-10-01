@@ -31,6 +31,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
@@ -338,7 +341,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdatePosition(String leftX, String topY) {
         Date startBeforeMoving = this.task.getBeginDate();
-        this.task.moveTo(getMapper().toDate(stripPx(leftX)));
+        LocalDate newPosition = getMapper().toDate(stripPx(leftX));
+        this.task.moveTo(newPosition.toDateTimeAtStartOfDay().toDate());
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -348,8 +352,9 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdateSize(String size) {
         int pixels = stripPx(size);
-        this.task.setEndDate(new Date(this.task.getBeginDate().getTime()
-                + getMapper().toMilliseconds(pixels)));
+        DateTime end = new DateTime(this.task.getBeginDate().getTime())
+                .plus(getMapper().toDuration(pixels));
+        this.task.setEndDate(end.toDate());
         updateWidth();
     }
 
@@ -422,7 +427,8 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
         setLeft("0");
-        setLeft(getMapper().toPixels(this.task.getBeginDate()) + "px");
+        setLeft(getMapper().toPixels(this.task.getBeginDateAsLocalDate())
+                + "px");
         updateWidth();
         smartUpdate("name", this.task.getName());
         DependencyList dependencyList = getDependencyList();
@@ -436,13 +442,14 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private void updateWidth() {
         setWidth("0");
-        setWidth(getMapper().toPixels(this.task.getLengthMilliseconds())
-                + "px");
+        setWidth(getMapper().toPixels(this.task.getLength()) + "px");
     }
 
     private void updateDeadline() {
         if (task.getDeadline() != null) {
-            String position = getMapper().toPixels(task.getDeadline()) + "px";
+            String position = getMapper().toPixels(
+                    LocalDate.fromDateFields(task.getDeadline()))
+                    + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
         } else {
             // Move deadline out of visible area
@@ -450,8 +457,10 @@ public class TaskComponent extends Div implements AfterCompose {
         }
 
         if (task.getConsolidatedline() != null) {
-            String position = (getMapper().toPixels(task.getConsolidatedline()) - CONSOLIDATED_MARK_HALF_WIDTH)
-                    + "px";
+            int pixels = getMapper().toPixels(
+                    LocalDate.fromDateFields(task.getConsolidatedline()))
+                    - CONSOLIDATED_MARK_HALF_WIDTH;
+            String position = pixels + "px";
             response(null, new AuInvoke(this, "moveConsolidatedline", position));
         } else {
             // Move consolidated line out of visible area
@@ -471,31 +480,25 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateCompletion() {
-        long beginMilliseconds = this.task.getBeginDate().getTime();
-
-        long hoursAdvanceEndMilliseconds = this.task.getHoursAdvanceEndDate()
-                .getTime()
-                - beginMilliseconds;
-        if (hoursAdvanceEndMilliseconds < 0) {
-            hoursAdvanceEndMilliseconds = 0;
-        }
         String widthHoursAdvancePercentage = getMapper().toPixels(
-                hoursAdvanceEndMilliseconds)
+                fromStartUntil(this.task.getHoursAdvanceEndDate()))
                 + "px";
         response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
 
-        long advanceEndMilliseconds = this.task.getAdvanceEndDate()
-                .getTime()
-                - beginMilliseconds;
-        if (advanceEndMilliseconds < 0) {
-            advanceEndMilliseconds = 0;
-        }
         String widthAdvancePercentage = getMapper().toPixels(
-                advanceEndMilliseconds)
+                fromStartUntil(this.task.getHoursAdvanceEndDate()))
                 + "px";
         response(null, new AuInvoke(this, "resizeCompletion2Advance",
                 widthAdvancePercentage));
+    }
+
+    private Duration fromStartUntil(Date until) {
+        DateTime start = new DateTime(this.task.getBeginDate().getTime());
+        DateTime end = new DateTime(until.getTime());
+        Duration duration = end.isAfter(start) ? new Duration(start, end)
+                : Duration.ZERO;
+        return duration;
     }
 
     public void updateTooltipText() {
