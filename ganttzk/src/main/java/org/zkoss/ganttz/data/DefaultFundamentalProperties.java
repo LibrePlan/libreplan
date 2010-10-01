@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -154,8 +155,8 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public void moveTo(Date date) {
-        setBeginDate(date);
+    public void moveTo(LocalDate date) {
+        setBeginDate(date.toDateTimeAtStartOfDay().toDate());
     }
 
     @Override

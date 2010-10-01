@@ -342,7 +342,7 @@ public class TaskComponent extends Div implements AfterCompose {
     void doUpdatePosition(String leftX, String topY) {
         Date startBeforeMoving = this.task.getBeginDate();
         LocalDate newPosition = getMapper().toDate(stripPx(leftX));
-        this.task.moveTo(newPosition.toDateTimeAtStartOfDay().toDate());
+        this.task.moveTo(newPosition);
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -354,7 +354,7 @@ public class TaskComponent extends Div implements AfterCompose {
         int pixels = stripPx(size);
         DateTime end = new DateTime(this.task.getBeginDate().getTime())
                 .plus(getMapper().toDuration(pixels));
-        this.task.setEndDate(end.toDate());
+        this.task.resizeTo(end.toLocalDate());
         updateWidth();
     }
 

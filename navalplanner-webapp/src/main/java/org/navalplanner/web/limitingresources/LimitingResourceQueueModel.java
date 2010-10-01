@@ -699,7 +699,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             LocalDate endDate) {
         task.setStartDate(toDate(startDate));
         task.setEndDate(toDate(endDate));
-        task.explicityMoved(toDate(startDate));
+        task.explicityMoved(startDate);
     }
 
     private Date toDate(LocalDate date) {

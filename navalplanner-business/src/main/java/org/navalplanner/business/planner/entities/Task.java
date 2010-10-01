@@ -404,7 +404,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         }
     }
 
-    public void explicityMoved(Date date) {
+    public void explicityMoved(LocalDate date) {
         getStartConstraint().explicityMovedTo(date);
     }
 

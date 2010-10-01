@@ -180,10 +180,6 @@ public abstract class Task implements ITaskFundamentalProperties {
         return new Date(fundamentalProperties.getBeginDate().getTime());
     }
 
-    public void setLengthMilliseconds(long lengthMilliseconds) {
-        setEndDate(new Date(getBeginDate().getTime() + lengthMilliseconds));
-    }
-
     public long getLengthMilliseconds() {
         return getEndDate().getTime() - getBeginDate().getTime();
     }
@@ -252,6 +248,10 @@ public abstract class Task implements ITaskFundamentalProperties {
                 fundamentalProperties.getEndDate());
     }
 
+    public void resizeTo(LocalDate date) {
+        setEndDate(date.toDateTimeAtStartOfDay().toDate());
+    }
+
     public void removed() {
         setVisible(false);
     }
@@ -292,11 +292,12 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getResourcesText();
     }
 
-    public void moveTo(Date date) {
+    public void moveTo(LocalDate date) {
         Date previousStart = getBeginDate();
         Date previousEnd = getEndDate();
         fundamentalProperties.moveTo(date);
-        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, date);
+        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, date
+                .toDateTimeAtStartOfDay().toDate());
     }
 
     @Override

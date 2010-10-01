@@ -333,7 +333,7 @@ public class TemplateModel implements ITemplateModel {
 
         @Override
         public void setStartDateFor(TaskElement task, Date newStart) {
-            task.moveTo(scenario, newStart);
+            task.moveTo(scenario, LocalDate.fromDateFields(newStart));
         }
 
         @Override

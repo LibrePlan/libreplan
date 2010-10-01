@@ -22,6 +22,7 @@ package org.zkoss.ganttz;
 
 import java.util.Date;
 
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -107,7 +108,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     private void copyFromDTO(TaskDTO taskDTO, Task currentTask) {
         currentTask.setName(taskDTO.name);
         currentTask.setBeginDate(taskDTO.beginDate);
-        currentTask.setEndDate(taskDTO.endDate);
+        currentTask.resizeTo(LocalDate.fromDateFields(taskDTO.endDate));
         currentTask.setNotes(taskDTO.notes);
         currentTask.setDeadline(taskDTO.deadlineDate);
     }

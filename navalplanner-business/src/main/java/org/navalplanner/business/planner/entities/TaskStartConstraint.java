@@ -22,6 +22,7 @@ package org.navalplanner.business.planner.entities;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 
 /**
  * Component class that encapsulates a {@link StartConstraintType} and its
@@ -42,10 +43,10 @@ public class TaskStartConstraint {
                 : StartConstraintType.AS_SOON_AS_POSSIBLE;
     }
 
-    public void explicityMovedTo(Date date) {
+    public void explicityMovedTo(LocalDate date) {
         Validate.notNull(date);
         startConstraintType = startConstraintType.newTypeAfterMoved();
-        constraintDate = new Date(date.getTime());
+        constraintDate = date.toDateTimeAtStartOfDay().toDate();
     }
 
     public Date getConstraintDate() {

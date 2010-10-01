@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -76,7 +77,7 @@ public interface ITaskFundamentalProperties {
 
     List<Constraint<Date>> getStartConstraints();
 
-    public void moveTo(Date date);
+    public void moveTo(LocalDate date);
 
     public boolean isSubcontracted();
 

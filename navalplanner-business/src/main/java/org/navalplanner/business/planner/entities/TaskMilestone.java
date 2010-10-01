@@ -29,6 +29,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
@@ -144,7 +145,7 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
         return false;
     }
 
-    public void explicityMoved(Date date) {
+    public void explicityMoved(LocalDate date) {
         getStartConstraint().explicityMovedTo(date);
     }
 

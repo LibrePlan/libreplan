@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.ComponentsFinder;
@@ -383,10 +384,10 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             task.setName(getNameBox().getValue());
         } else if (updatedComponent == getStartDateBox()) {
             Date begin = getStartDateBox().getValue();
-            task.moveTo(begin);
+            task.moveTo(LocalDate.fromDateFields(begin));
         } else if (updatedComponent == getEndDateBox()) {
             Date newEnd = getEndDateBox().getValue();
-            task.setEndDate(newEnd);
+            task.resizeTo(LocalDate.fromDateFields(newEnd));
         }
     }
 

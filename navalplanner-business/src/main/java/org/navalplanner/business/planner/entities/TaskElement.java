@@ -262,13 +262,13 @@ public abstract class TaskElement extends BaseEntity {
      * Sets the startDate to newStartDate. It can update the endDate
      * @param newStartDate
      */
-    public void moveTo(Scenario scenario, Date newStartDate) {
+    public void moveTo(Scenario scenario, LocalDate newStartDate) {
         if (newStartDate == null) {
             return;
         }
         final boolean sameDay = this.startDate.areSameDay(newStartDate);
         long durationMilliseconds = getLengthMilliseconds();
-        setStartDate(newStartDate);
+        setIntraDayStartDate(IntraDayDate.startOfDay(newStartDate));
         DateTime newEnd = this.startDate.toDateTimeAtStartOfDay().plus(
                 durationMilliseconds);
         this.endDate = IntraDayDate.create(newEnd.toLocalDate(),

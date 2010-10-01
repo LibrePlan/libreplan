@@ -184,6 +184,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public void setBeginDate(final Date beginDate) {
+            setBeginDate(beginDate != null ? LocalDate
+                    .fromDateFields(beginDate) : null);
+        }
+
+        private void setBeginDate(final LocalDate beginDate) {
             transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
@@ -518,7 +523,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public void moveTo(Date date) {
+        public void moveTo(LocalDate date) {
             setBeginDate(date);
             if (taskElement instanceof Task) {
                 Task task = (Task) taskElement;
