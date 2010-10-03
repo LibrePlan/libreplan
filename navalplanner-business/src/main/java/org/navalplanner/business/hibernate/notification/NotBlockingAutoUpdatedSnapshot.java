@@ -209,6 +209,11 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
         }
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     private boolean hasBeenInitialized() {
         return currentState.get().hasBeenInitialized();
     }
