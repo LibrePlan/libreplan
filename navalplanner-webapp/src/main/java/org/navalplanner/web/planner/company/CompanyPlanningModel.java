@@ -736,8 +736,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             endDate = Collections.max(notNull(endDate, each.getDeadline(),
                     associatedTaskElement.getEndDate()));
         }
-        filterStartDate = LocalDate.fromDateFields(startDate);
-        filterFinishDate = LocalDate.fromDateFields(endDate);
+        filterStartDate = startDate != null ? LocalDate
+                .fromDateFields(startDate) : null;
+        filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate)
+                : null;
     }
 
     private static <T> List<T> notNull(T... values) {
