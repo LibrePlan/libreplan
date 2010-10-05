@@ -883,7 +883,7 @@ public class GanttDiagramGraph<V, D> {
                         break;
                     }
                 }
-                recalculationToAdd.fromParent(current);
+                recalculationToAdd.comesFromPredecessor(current);
                 result.addAll(getParentsRecalculations(
                         parentRecalculationsAlreadyDone, each));
                 result.add(recalculationToAdd);
@@ -972,8 +972,8 @@ public class GanttDiagramGraph<V, D> {
             couldHaveBeenModifiedBeforehand = true;
         }
 
-        public void fromParent(Recalculation parent) {
-            recalculationsCouldAffectThis.add(parent);
+        public void comesFromPredecessor(Recalculation predecessor) {
+            recalculationsCouldAffectThis.add(predecessor);
         }
 
         boolean doRecalculation() {
