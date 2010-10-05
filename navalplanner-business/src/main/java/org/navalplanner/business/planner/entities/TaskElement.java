@@ -316,11 +316,16 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void resizeTo(Scenario scenario, Date endDate) {
+        resizeTo(scenario,
+                IntraDayDate.startOfDay(LocalDate.fromDateFields(endDate)));
+    }
+
+    public void resizeTo(Scenario scenario, IntraDayDate endDate) {
         if (!canBeResized()) {
             return;
         }
-        boolean sameDay = this.endDate.areSameDay(endDate);
-        setEndDate(endDate);
+        boolean sameDay = this.endDate.areSameDay(endDate.getDate());
+        setIntraDayEndDate(endDate);
         if (!sameDay) {
             moveAllocations(scenario);
         }
