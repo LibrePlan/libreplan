@@ -22,7 +22,7 @@ package org.zkoss.ganttz.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -57,40 +57,14 @@ public class TaskContainer extends Task {
         return result;
     }
 
-    private static <T> T getSmallest(Collection<T> elements,
-            Comparator<T> comparator) {
-        List<T> withoutNulls = removeNulls(elements);
-        if (withoutNulls.isEmpty()) {
-            throw new IllegalArgumentException("at least one required");
-        }
-        T result = null;
-        for (T element : withoutNulls) {
-            result = result == null ? element : (comparator.compare(result,
-                    element) < 0 ? result : element);
-        }
-        return result;
-    }
-
     private static <T extends Comparable<? super T>> T getSmallest(
             Collection<T> elements) {
-        return getSmallest(elements, new Comparator<T>() {
-
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.compareTo(o2);
-            }
-        });
+        return Collections.min(removeNulls(elements));
     }
 
     private static <T extends Comparable<? super T>> T getBiggest(
             Collection<T> elements) {
-        return getSmallest(elements, new Comparator<T>() {
-
-            @Override
-            public int compare(T o1, T o2) {
-                return o2.compareTo(o1);
-            }
-        });
+        return Collections.max(removeNulls(elements));
     }
 
     private List<Task> tasks = new ArrayList<Task>();
