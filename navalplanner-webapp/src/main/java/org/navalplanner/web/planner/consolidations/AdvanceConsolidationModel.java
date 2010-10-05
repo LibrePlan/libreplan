@@ -74,8 +74,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private Task task;
 
-    private PlanningState planningState;
-
     private IContextWithPlannerTask<TaskElement> context;
 
     private Consolidation consolidation;
@@ -85,10 +83,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     private boolean isUnitType = false;
 
     private OrderElement orderElement;
-
-    private Date firstConsolidatedDate;
-
-    private String info_message;
 
     private List<AdvanceConsolidationDTO> consolidationDTOs = new ArrayList<AdvanceConsolidationDTO>();
 
@@ -409,7 +403,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             IContextWithPlannerTask<TaskElement> context,
             PlanningState planningState) {
         this.context = context;
-        this.planningState = planningState;
         initTask(task);
         initOrderElement();
         initConsolidation();
