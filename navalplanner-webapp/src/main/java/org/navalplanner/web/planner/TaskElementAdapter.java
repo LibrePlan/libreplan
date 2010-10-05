@@ -62,12 +62,17 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.GanttDate.Cases;
+import org.zkoss.ganttz.data.GanttDate.CustomDate;
+import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.DateConstraint;
@@ -144,6 +149,74 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     }
 
     public TaskElementAdapter() {
+    }
+
+    public static GanttDate toGantt(IntraDayDate date) {
+        return new GanttDateAdapter(date);
+    }
+
+    public static IntraDayDate toIntraDay(GanttDate date) {
+        return date.byCases(new Cases<GanttDateAdapter, IntraDayDate>(
+                GanttDateAdapter.class) {
+
+            @Override
+            public IntraDayDate on(LocalDateBased localDate) {
+                return IntraDayDate.startOfDay(localDate.getLocalDate());
+            }
+
+            @Override
+            protected IntraDayDate onCustom(GanttDateAdapter customType) {
+                return customType.date;
+            }
+        });
+    }
+
+    public static LocalDate toLocalDate(GanttDate date) {
+        return toIntraDay(date).getDate();
+    }
+
+    static class GanttDateAdapter extends CustomDate {
+
+        private final IntraDayDate date;
+
+        GanttDateAdapter(IntraDayDate date) {
+            this.date = date;
+        }
+
+        protected int compareToCustom(CustomDate customType) {
+            if (customType instanceof GanttDateAdapter) {
+                GanttDateAdapter other = (GanttDateAdapter) customType;
+                return this.date.compareTo(other.date);
+            }
+            throw new RuntimeException("incompatible type: " + customType);
+        }
+
+        protected int compareToLocalDate(LocalDate localDate) {
+            return this.date.compareTo(localDate);
+        }
+
+        public IntraDayDate getDate() {
+            return date;
+        }
+
+        @Override
+        public Date toDateApproximation() {
+            return date.toDateTimeAtStartOfDay().toDate();
+        }
+
+        @Override
+        protected boolean isEqualsToCustom(CustomDate customType) {
+            if (customType instanceof GanttDateAdapter) {
+                GanttDateAdapter other = (GanttDateAdapter) customType;
+                return this.date.equals(other.date);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return date.hashCode();
+        }
     }
 
     private class TaskElementWrapper implements ITaskFundamentalProperties {
