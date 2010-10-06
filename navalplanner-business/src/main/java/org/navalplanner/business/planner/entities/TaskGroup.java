@@ -33,6 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -186,15 +187,15 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
-    public Date getSmallestStartDateFromChildren() {
+    public IntraDayDate getSmallestStartDateFromChildren() {
         return Collections.min(getChildrenStartDates());
     }
 
-    private List<Date> getChildrenStartDates() {
-        List<Date> dates = new ArrayList<Date>();
-        for (TaskElement taskElement : getChildren()) {
-            dates.add(taskElement.getStartDate());
+    private List<IntraDayDate> getChildrenStartDates() {
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+        for (TaskElement each : getChildren()) {
+            result.add(each.getIntraDayStartDate());
         }
-        return dates;
+        return result;
     }
 }

@@ -280,7 +280,9 @@ public class TemplateModel implements ITemplateModel {
         @Override
         public Date getSmallestBeginDateFromChildrenFor(TaskElement container) {
             TaskGroup taskGroup = (TaskGroup) container;
-            return taskGroup.getSmallestStartDateFromChildren();
+            IntraDayDate smallestStart = taskGroup
+                    .getSmallestStartDateFromChildren();
+            return smallestStart.toDateTimeAtStartOfDay().toDate();
         }
 
         @Override
