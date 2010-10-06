@@ -307,7 +307,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         .getTotalChargedHours();
             }
 
-            LocalDate date = calculateLimitDate(assignedHours);
+            LocalDate date = null;
+            if(!(taskElement instanceof TaskGroup)) {
+                date = calculateLimitDate(assignedHours);
+            }
             if (date == null) {
                 Integer hours = 0;
                 if (orderElement != null) {
