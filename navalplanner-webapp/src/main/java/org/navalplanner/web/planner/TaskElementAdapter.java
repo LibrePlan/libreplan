@@ -75,7 +75,7 @@ import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 
 /**
  * Responsible of adaptating a {@link TaskElement} into a

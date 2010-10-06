@@ -25,13 +25,15 @@ import static org.junit.Assert.assertThat;
 import java.util.Date;
 
 import org.junit.Test;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 
-public class DateConstraintTest {
+public class ConstraintOnComparableValuesTest {
 
     private Date now = new Date();
 
     private Constraint<Date> biggerOrEqualThanNow = DateConstraint
             .biggerOrEqualThan(now);
+
     private Constraint<Date> equalToNow = DateConstraint.equalTo(now);
 
     @Test

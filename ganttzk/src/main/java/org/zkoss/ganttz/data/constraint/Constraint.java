@@ -157,8 +157,8 @@ public abstract class Constraint<T> {
     private WeakReferencedListeners<IConstraintViolationListener<T>> weakListeners = WeakReferencedListeners
             .create();
 
-    public final T applyTo(T currentValue) {
-        T result = applyConstraintTo(currentValue);
+    public final T applyTo(T value) {
+        T result = applyConstraintTo(value);
         if (!isSatisfiedBy(result)) {
             throw new IllegalStateException(result
                     + " doesn't fulfill this constraint: " + this);

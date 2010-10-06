@@ -27,7 +27,7 @@ import java.util.List;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 
 /**
  * This enum tells the type of a depepdency. Each instance contanins the correct

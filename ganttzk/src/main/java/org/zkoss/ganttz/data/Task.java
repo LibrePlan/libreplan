@@ -38,7 +38,7 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnforcement;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
 
 /**

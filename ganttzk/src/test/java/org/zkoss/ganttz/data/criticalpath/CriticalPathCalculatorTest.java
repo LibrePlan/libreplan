@@ -40,7 +40,7 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 
 /**
  * Tests for {@link CriticalPathCalculator}.

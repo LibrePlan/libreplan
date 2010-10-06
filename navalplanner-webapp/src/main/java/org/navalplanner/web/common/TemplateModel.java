@@ -70,7 +70,7 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;

@@ -31,7 +31,7 @@ import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
