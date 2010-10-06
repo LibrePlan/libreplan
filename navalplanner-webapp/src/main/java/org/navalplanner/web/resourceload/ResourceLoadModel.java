@@ -269,6 +269,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     public static Date asDate(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
         return date.toDateTimeAtStartOfDay().toDate();
     }
 
